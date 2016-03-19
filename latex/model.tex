@@ -1,0 +1,89 @@
+\section{Crowd dynamics}
+\subsection{Total Force on Agent}
+Total force on the agent
+\begin{align}
+\mathbf{F}_{i} &= m_{i} \frac{d\mathbf{v}_{i}}{dt} = m_{i} \frac{d^{2}\mathbf{x}_{i}}{dt^{2}} \\
+&= \mathbf{f}_{i}(t) + \boldsymbol{\xi}_{i}
+\end{align}
+
+
+\begin{enumerate}
+\item 
+Force on the agent $ i $
+\begin{align}
+\mathbf{f}_{i}(t) = \frac{m_{i}}{\tau_{i}} (\mathbf{v}_{i}^{0} - \mathbf{v}_{i}) + \sum_{i\neq j}^{} \left(\mathbf{f}_{ij}^{soc} + \mathbf{f}_{ij}^{c}\right) + \sum_{w}^{} \left(\mathbf{f}_{iw}^{soc} + \mathbf{f}_{iw}^{c}\right)
+\end{align}
+
+\begin{enumerate}
+\item 
+Force adjusting pedestrian movement towards desired in characteristic time $ \tau_{i} $
+\begin{align}
+\frac{m_{i}}{\tau_{i}} (\mathbf{v}_{i}^{0} - \mathbf{v}_{i})
+\end{align}
+
+\item 
+Psychological tendency to keep a certain distance to other pedestrians $ \mathbf{f}_{ij}^{soc} $ and walls $ \mathbf{f}_{iw}^{soc} $.
+
+\item 
+Physical contact forces with other pedestrians $ \mathbf{f}_{ij}^{c} $ and walls $ \mathbf{f}_{iw}^{c} $.
+
+\end{enumerate}
+
+\item 
+Random fluctuation force $ \boldsymbol{\xi}_{i} $.
+
+
+\end{enumerate}
+
+\subsection{Power Law}
+Interaction force between agents
+\begin{align}
+\mathbf{F}_{ij} &= -\nabla_{\mathbf{x}_{ij}} E(\tau) \\
+&= -\nabla_{\mathbf{x}_{ij}} \left(k \tau^{-2} e^{-\tau / \tau_{0}} \right)
+\\
+&= - \left[\frac{k e^{-\tau / \tau_{0}}}{\left\|\mathbf{v}_{ij}\right\|^{2} \tau^{2}} \left(\frac{2}{\tau} + \frac{1}{\tau_{0}}\right) \right] 
+\\
+&\left[ \mathbf{v}_{ij} - \frac{\left\|\mathbf{v}_{ij}\right\|^{2} \mathbf{x}_{ij} - \left(\mathbf{x}_{ij}\cdot\mathbf{v}_{ij}\right) \mathbf{v}_{ij} }{\sqrt{\left(\mathbf{x}_{ij}\cdot\mathbf{v}_{ij}\right)^{2} - \left\|\mathbf{v}_{ij}\right\|^{2} \left( \left\|\mathbf{x}_{ij}\right\|^{2} - \left(r_{i} + r_{j}\right)^{2} \right) }} \right]
+\end{align}
+
+\begin{align}
+\mathbf{x}_{ij} = \mathbf{x}_{i} - \mathbf{x}_{j} \\
+\mathbf{v}_{ij} = \mathbf{v}_{i} - \mathbf{v}_{j}
+\end{align}
+
+\subsection{Symbols}
+\begin{enumerate}
+\item Number of agents $ N \in \mathbb{N} $
+\begin{enumerate}
+\item Current agent $ i $
+\item Other agent $ j $
+\end{enumerate}
+$ i,j \in \{0, \ldots, N\} $ and $ i \neq j $
+
+\item 
+Wall $ w $
+
+\item 
+Mass of an agent $ m_{i} $
+
+\item 
+Radius of an agent $ r_{i} $
+
+\item 
+Velocity of an agent
+\begin{enumerate}
+\item Desired velocity $ v_{i}^{0} $
+\item Current velocity $ v_{i} $
+\end{enumerate}
+
+\item 
+Characteristic time 
+\begin{enumerate}
+\item $ \tau_{0} $
+\item $ \tau_{i} $
+\end{enumerate}
+
+\item 
+$ k $
+
+\end{enumerate}
