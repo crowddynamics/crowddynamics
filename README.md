@@ -1,12 +1,7 @@
 Crowd Dynamics Simulation
 =========================
-Code for reviewing 
-    
-    - Crowd dynamics
-    - Force models and power law governing predestrian interactions
-    - Game theoretical model for congestion in exit situations
-
-Our goal is to produce a simulate these phenomena.
+Crowd dynamics simulation using power law for pedestrian interactions
+and game theory to model agents exiting a building.
 
 Resources
 ---------
@@ -14,5 +9,8 @@ Resources
 [Patient and impatient pedestrians in a spatial game for egress congestion](http://journals.aps.org/pre/abstract/10.1103/PhysRevE.87.012802)
 [Power Law](http://motion.cs.umn.edu/PowerLaw/)
 [Universal Power Law Governing Pedestrian Interactions](http://journals.aps.org/prl/abstract/10.1103/PhysRevLett.113.238701)
+[Faster is slower](http://www.sciencedirect.com/science/article/pii/S2352146514001215)
 
-
+Keywords
+--------
+Crowd dynamics, Social force model

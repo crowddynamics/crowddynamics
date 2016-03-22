@@ -8,24 +8,13 @@ import numba
 import numpy as np
 
 
-# @numba.jit(nopython=True, cache=True)
+@numba.jit(nopython=True, cache=True)
 def distance(v1, v2):
     d = v1 - v2
     return np.sqrt(np.dot(d, d))
 
 
 # @numba.jit(nopython=True, cache=True)
-# def distances(position):
-#     size = len(position)
-#     neighbors = np.zeros((size, size))
-#     for i in range(size):
-#         for j in range(size):
-#             if i == j:
-#                 continue
-#             neighbors[i, j] = distance(position[i], position[j])
-#     return neighbors
-
-
 def f_soc_ij(xi, xj, vi, vj, ri, rj):
     r"""
     Social interaction force between two agents `i` and `j`. [1]
@@ -53,7 +42,6 @@ def f_soc_ij(xi, xj, vi, vj, ri, rj):
     force = np.zeros(2)
 
     # Constants
-    # radius = 0.2
     k = 1.5
     m = 2.0
     tau_0 = 3
@@ -62,16 +50,17 @@ def f_soc_ij(xi, xj, vi, vj, ri, rj):
 
     dist = distance(xi, xj)
     if dist > sight:
+        print("Not in sight")
         return force
 
     # Variables
-    x = xi - xj  # position[i] - position[j]
+    x = xj - xi  # position[i] - position[j]
     v = vi - vj  # velocity[i] - velocity[j]
     r = ri + rj  # radius + radius
 
     # If two agents are overlapping reduce r
     if r > dist:
-        r = 0.99 * dist
+        r = dist / 2.1
 
     b = np.dot(x, v)
     a = np.dot(v, v)
@@ -88,15 +77,13 @@ def f_soc_ij(xi, xj, vi, vj, ri, rj):
         return force
 
     # Force is returned negative as repulsive force
-    force = -1.0 * k * np.exp(-tau / tau_0) * \
-            (m / tau + 1 / tau_0) * \
-            (v - (v * b - x * a) / d) / (a * tau ** m)
+    force -= k * np.exp(-tau / tau_0) * (m / tau + 1 / tau_0) * \
+             (v - (v * b - x * a) / d) / (a * tau ** m)
 
     mag = np.sqrt(np.dot(force, force))
-
     if mag > force_max:
         # Scales magnitude of force to force max
-        force = force_max * force / mag
+        force *= force_max / mag
 
     return force
 
@@ -116,6 +103,7 @@ def f_c_iw():
     return force
 
 
+@numba.jit(nopython=True, cache=True)
 def f_adjust(v_0, v, mass, tau):
     """
 
@@ -140,18 +128,15 @@ def f_tot(i, v_0, v, x, r, mass, tau):
     :return: Vector of length 2 containing `x` and `y` components of force
              on agent i.
     """
-    force = f_adjust(v_0, v[i], mass, tau) + \
-            f_random_fluctuation()
-
+    force = f_adjust(v_0, v[i], mass, tau) + f_random_fluctuation()
     for j in range(len(x)):
         if i == j:
             continue
         force += f_soc_ij(x[i], x[j], v[i], v[j], r[i], r[j])
-
     return force
 
 
-def update(x, v, gv, r, masses, tau, dt=0.02):
+def update_positions(x, v, gv, r, masses, tau, dt=0.01):
     """
     Updates positions and velocities of agents using forces affecting them with
     given timestep.
@@ -161,13 +146,13 @@ def update(x, v, gv, r, masses, tau, dt=0.02):
     :param dt:
     :return:
     """
-    dx = np.zeros_like(x)
-    dv = np.zeros_like(v)
-
-    for i in range(len(x)):
-        f = f_tot(i, gv[i], v, x, r, masses[i], tau)
-        dv[i] = f * dt
-        dx[i] = f * dt**2
-
-    v += dv
-    x += dx
+    iteration = 0
+    forces = np.zeros_like(v)
+    while True:
+        for i in range(len(x)):
+            forces[i] = f_tot(i, gv[i], v, x, r, masses[i], tau)
+        v += forces * dt
+        x += v * dt
+        iteration += 1
+        # print(iteration)
+        yield x
