@@ -25,7 +25,6 @@ def init_simulation(agents_num, size):
     position = np.random.uniform(0, size, shape)
     velocity = np.stack((np.cos(angle), np.sin(angle)), axis=1)
     goal_velocity = 1.5 * np.copy(velocity)
-    # mass = np.random.uniform(60, 90, agents_num)
     mass = np.ones(agents_num)
     rad = 0.2
     radius = rad * np.ones(agents_num)
@@ -34,7 +33,8 @@ def init_simulation(agents_num, size):
 
     fig, ax = plt.subplots()
     ax.set(xlim=(0, size), ylim=(0, size), xlabel=r'$ x $', ylabel=r'$ y $')
-    line, = ax.plot([], [], lw=0, markersize=20, marker='o', alpha=0.5)
+    line, = ax.plot([], [], lw=0, markersize=rad * 300 / size,
+                    marker='o', alpha=0.5)
 
     def init():
         line.set_data(position.T)
@@ -50,4 +50,4 @@ def init_simulation(agents_num, size):
     plt.show()
 
 
-init_simulation(14, 4)
+init_simulation(40, 10)

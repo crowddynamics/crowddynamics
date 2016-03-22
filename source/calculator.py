@@ -50,13 +50,12 @@ def f_soc_ij(xi, xj, vi, vj, ri, rj):
 
     dist = distance(xi, xj)
     if dist > sight:
-        print("Not in sight")
         return force
 
     # Variables
-    x = xj - xi  # position[i] - position[j]
+    x = xj - xi  # position[j] - position[i]
     v = vi - vj  # velocity[i] - velocity[j]
-    r = ri + rj  # radius + radius
+    r = ri + rj  # radius[i] + radius[j]
 
     # If two agents are overlapping reduce r
     if r > dist:
