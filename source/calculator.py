@@ -9,10 +9,9 @@ import numpy as np
 from numba import float64
 
 
-# @numba.jit(float64[:](float64[:], float64[:],
-#                       float64[:], float64[:],
-#                       float64, float64),
-#            nopython=True, cache=True)
+@numba.jit("float64[:](float64[:], float64[:], "
+           "float64[:], float64[:], float64, float64)",
+           nopython=True)
 def f_soc_ij(xi, xj, vi, vj, ri, rj):
     r"""
     Social interaction force between two agents `i` and `j`. [1]
@@ -86,6 +85,16 @@ def f_soc_ij(xi, xj, vi, vj, ri, rj):
     return force
 
 
+@numba.jit(nopython=True)
+def f_soc_ij_tot(i, x, v, r):
+    force = np.zeros(2)
+    for j in range(len(x)):
+        if i == j:
+            continue
+        force += f_soc_ij(x[i], x[j], v[i], v[j], r[i], r[j])
+    return force
+
+
 def f_soc_iw():
     force = np.zeros(2)
     return force
@@ -101,7 +110,7 @@ def f_c_iw():
     return force
 
 
-@numba.jit(nopython=True, cache=True)
+@numba.jit(nopython=True)
 def f_adjust(v_0, v, mass, tau):
     """
 
@@ -116,23 +125,32 @@ def f_adjust(v_0, v, mass, tau):
     return force
 
 
+@numba.jit(nopython=True)
 def f_random_fluctuation():
-    force = np.random.uniform(-1, 1, 2)
+    force = np.zeros(2)
+    for i in range(len(force)):
+        force[i] = np.random.uniform(-1, 1)
     return force
 
 
-def f_tot(i, v_0, v, x, r, mass, tau):
+@numba.jit(nopython=True)
+def f_tot_i(i, v_0, v, x, r, mass, tau):
     """
     :return: Vector of length 2 containing `x` and `y` components of force
              on agent i.
     """
     force = f_adjust(v_0, v[i], mass, tau) + \
+            f_soc_ij_tot(i, x, v, r) + \
             f_random_fluctuation()
-    for j in range(len(x)):
-        if i == j:
-            continue
-        force += f_soc_ij(x[i], x[j], v[i], v[j], r[i], r[j])
     return force
+
+
+@numba.jit(nopython=True)
+def f_tot(gv, v, x, r, masses, tau):
+    forces = np.zeros_like(v)
+    for i in range(len(x)):
+            forces[i] = f_tot_i(i, gv[i], v, x, r, masses[i], tau)
+    return forces
 
 
 def update_positions(x, v, gv, r, masses, tau, dt=0.01):
@@ -146,10 +164,8 @@ def update_positions(x, v, gv, r, masses, tau, dt=0.01):
     :return:
     """
     iteration = 0
-    forces = np.zeros_like(v)
     while True:
-        for i in range(len(x)):
-            forces[i] = f_tot(i, gv[i], v, x, r, masses[i], tau)
+        forces = f_tot(gv, v, x, r, masses, tau)
         v += forces * dt
         x += v * dt
         iteration += 1

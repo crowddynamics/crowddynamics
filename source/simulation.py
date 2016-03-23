@@ -7,7 +7,6 @@ from __future__ import unicode_literals
 import sys
 sys.path.append('/home/jaan/Dropbox/Projects/Crowd-Dynamics/')
 
-
 import numpy as np
 import matplotlib.animation as animation
 import matplotlib.pyplot as plt
@@ -17,8 +16,8 @@ from source.calculator import update_positions
 
 tau = 0.5
 rad = 0.2
-agents_num = 30
-size = 4
+agents_num = 200
+size = 8
 positions = None
 velocities = None
 # Track distances
@@ -46,6 +45,11 @@ def init_simulation():
 
 def visualization():
     init_simulation()
+
+    writer = animation.writers['ffmpeg']
+    writer = writer(fps=15, bitrate=1800)
+    path = '/home/jaan/Dropbox/Projects/Crowd-Dynamics/animations/'
+
     ms = rad * 300 / size
 
     fig, ax = plt.subplots()
@@ -67,12 +71,9 @@ def visualization():
                                    frames=100,
                                    interval=500/30,
                                    blit=True)
-    # plt.show()
-    writer = animation.writers['ffmpeg']
-    writer = writer(fps=15, bitrate=1800)
-    path = '/home/jaan/Dropbox/Projects/Crowd-Dynamics/animations/'
-    anim.save(path + 'power_law.mp4', writer=writer)
-    # plt.show()
+
+    # anim.save(path + 'power_law.mp4', writer=writer)
+    plt.show()
 
 
 def profile(iterations):
