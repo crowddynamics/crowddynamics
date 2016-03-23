@@ -6,15 +6,13 @@ from __future__ import unicode_literals
 
 import numba
 import numpy as np
+from numba import float64
 
 
-@numba.jit(nopython=True, cache=True)
-def distance(v1, v2):
-    d = v1 - v2
-    return np.sqrt(np.dot(d, d))
-
-
-# @numba.jit(nopython=True, cache=True)
+# @numba.jit(float64[:](float64[:], float64[:],
+#                       float64[:], float64[:],
+#                       float64, float64),
+#            nopython=True, cache=True)
 def f_soc_ij(xi, xj, vi, vj, ri, rj):
     r"""
     Social interaction force between two agents `i` and `j`. [1]
@@ -36,34 +34,35 @@ def f_soc_ij(xi, xj, vi, vj, ri, rj):
     ----------
     [1] http://motion.cs.umn.edu/PowerLaw/
     """
-    maxt = 999
-
     # Init output values.
     force = np.zeros(2)
 
     # Constants
-    k = 1.5
-    m = 2.0
-    tau_0 = 3
-    sight = 7
-    force_max = 5
-
-    dist = distance(xi, xj)
-    if dist > sight:
-        return force
+    k = 1.5  # Constant
+    m = 2.0  # Exponent in power law
+    tau_0 = 3.0  # Max interaction range 2 - 4, aka interaction time horizon
+    sight = 7.0  # Max distance between agents for interaction to occur
+    force_max = 5.0  # Forces that are greater will be truncated to max force
+    maxt = 999.0
 
     # Variables
     x = xj - xi  # position[j] - position[i]
     v = vi - vj  # velocity[i] - velocity[j]
     r = ri + rj  # radius[i] + radius[j]
 
+    dot_x = np.dot(x, x)
+    dist = np.sqrt(dot_x)
+    # No force if another agent is not in range of sight
+    if dist > sight:
+        return force
+
     # If two agents are overlapping reduce r
     if r > dist:
-        r = dist / 2.1
+        r = 0.50 * dist
 
     b = np.dot(x, v)
     a = np.dot(v, v)
-    c = np.dot(x, x) - r ** 2
+    c = dot_x - r ** 2
     d = b ** 2 - a * c
 
     if (d < 0) or (- 0.001 < a < 0.001):
@@ -127,7 +126,8 @@ def f_tot(i, v_0, v, x, r, mass, tau):
     :return: Vector of length 2 containing `x` and `y` components of force
              on agent i.
     """
-    force = f_adjust(v_0, v[i], mass, tau) + f_random_fluctuation()
+    force = f_adjust(v_0, v[i], mass, tau) + \
+            f_random_fluctuation()
     for j in range(len(x)):
         if i == j:
             continue
@@ -153,5 +153,5 @@ def update_positions(x, v, gv, r, masses, tau, dt=0.01):
         v += forces * dt
         x += v * dt
         iteration += 1
-        # print(iteration)
+        print(iteration)
         yield x

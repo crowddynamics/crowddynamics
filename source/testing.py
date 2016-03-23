@@ -67,5 +67,5 @@ for j in range(agents_num):
     args = (position[i], position[j],
             velocity[i], velocity[j],
             rad, rad)
-    print(dE(*args))
+    # print(dE(*args))
     print(f_soc_ij(*args))
