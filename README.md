@@ -21,7 +21,3 @@ Resources
 
 - [2014 - Experimental evidence of the `Faster Is Slower` effect]
   (http://www.sciencedirect.com/science/article/pii/S2352146514001215)
-
-Keywords
---------
-Crowd dynamics, Social force model
