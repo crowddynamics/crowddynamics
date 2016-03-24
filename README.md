@@ -16,7 +16,7 @@ Resources
 - [2014 - Universal Power Law Governing Pedestrian Interactions]
   (http://journals.aps.org/prl/abstract/10.1103/PhysRevLett.113.238701)
 
-- [Power Law]
+- [Universal Power Law Governing Pedestrian Interactions]
   (http://motion.cs.umn.edu/PowerLaw/)
 
 - [2014 - Experimental evidence of the `Faster Is Slower` effect]
