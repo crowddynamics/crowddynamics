@@ -5,22 +5,25 @@ from __future__ import print_function
 from __future__ import unicode_literals
 
 import sys
-sys.path.append('/home/jaan/Dropbox/Projects/Crowd-Dynamics/')
 
-import numpy as np
 import matplotlib.animation as animation
 import matplotlib.pyplot as plt
+import numpy as np
 import seaborn as sns
-from source.calculator import update_positions
+
+# Find "Source" module to perform import
+module_path = '/home/jaan/Dropbox/Projects/Crowd-Dynamics/'
+sys.path.append(module_path)
+
+from source.core import update_positions
 
 
-tau = 0.5
 rad = 0.2
 agents_num = 200
 size = 8
 positions = None
 velocities = None
-# Track distances
+# TODO: Track distances
 
 
 def init_simulation():
@@ -40,7 +43,7 @@ def init_simulation():
     mass = np.ones(agents_num)
     radius = rad * np.ones(agents_num)
     # Generator for new positions
-    simu = update_positions(positions, velocities, goal_velocity, radius, mass, tau)
+    simu = update_positions(positions, velocities, goal_velocity, radius, mass)
 
 
 def visualization():
