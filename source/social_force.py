@@ -8,7 +8,7 @@ import numba
 import numpy as np
 
 
-@numba.jit(nopython=True)
+@numba.jit(nopython=True, nogil=True)
 def f_soc_ij(xi, xj, vi, vj, ri, rj, tau_0, sight, force_max):
     r"""
     About
@@ -36,17 +36,12 @@ def f_soc_ij(xi, xj, vi, vj, ri, rj, tau_0, sight, force_max):
     # Init output values.
     force = np.zeros(2)
 
-    # Constants
-    k = 1.5  # Constant
-    m = 2.0  # Exponent in power law
-    maxt = 999.0
-
     # Variables
-    x = xj - xi  # position[j] - position[i]
-    v = vi - vj  # velocity[i] - velocity[j]
-    r = ri + rj  # radius[i] + radius[j]
+    x_ji = xj - xi  # position
+    v_ij = vi - vj  # velocity
+    r_ij = ri + rj  # radius
 
-    dot_x = np.dot(x, x)
+    dot_x = np.dot(x_ji, x_ji)
     dist = np.sqrt(dot_x)
     # No force if another agent is not in range of sight
     if dist > sight:
@@ -54,12 +49,12 @@ def f_soc_ij(xi, xj, vi, vj, ri, rj, tau_0, sight, force_max):
 
     # TODO: Update overlapping to f_c_ij
     # If two agents are overlapping reduce r
-    if r > dist:
-        r = 0.50 * dist
+    if r_ij > dist:
+        r_ij = 0.50 * dist
 
-    b = np.dot(x, v)
-    a = np.dot(v, v)
-    c = dot_x - r ** 2
+    b = np.dot(x_ji, v_ij)
+    a = np.dot(v_ij, v_ij)
+    c = dot_x - r_ij ** 2
     d = b ** 2 - a * c
 
     if (d < 0) or (- 0.001 < a < 0.001):
@@ -68,12 +63,16 @@ def f_soc_ij(xi, xj, vi, vj, ri, rj, tau_0, sight, force_max):
     d = np.sqrt(d)
     tau = (b - d) / a  # Time-to-collision
 
+    k = 1.5  # Constant
+    m = 2.0  # Exponent in power law
+    maxt = 999.0
+
     if tau < 0 or tau > maxt:
         return force
 
     # Force is returned negative as repulsive force
     force -= k * np.exp(-tau / tau_0) * (m / tau + 1 / tau_0) * \
-             (v - (v * b - x * a) / d) / (a * tau ** m)
+             (v_ij - (v_ij * b - x_ji * a) / d) / (a * tau ** m)
 
     mag = np.sqrt(np.dot(force, force))
     if mag > force_max:
@@ -83,7 +82,7 @@ def f_soc_ij(xi, xj, vi, vj, ri, rj, tau_0, sight, force_max):
     return force
 
 
-@numba.jit(nopython=True)
+@numba.jit(nopython=True, nogil=True)
 def f_soc_ij_tot(i, x, v, r, tau_0, sight, force_max):
     force = np.zeros(2)
     for j in range(len(x)):
@@ -95,14 +94,27 @@ def f_soc_ij_tot(i, x, v, r, tau_0, sight, force_max):
 
 
 def f_soc_iw(a, b, radius, d, n):
+    """
+    About
+    -----
+
+
+    Params
+    ------
+    :param a: Coefficient
+    :param b: Coefficient
+    :param radius: Radius of the agent
+    :param d: Distance to the wall
+    :param n: Unit vector that is perpendicular to the agent and the wall
+    :return:
+    """
     force = np.zeros(2)
     force += a * np.exp((radius - d) / b) * n
     return force
 
 
-def f_c_ij():
+def f_c_ij(k, kappa, r_ij, d_ij, n_ij, v_ji, t_ij):
     force = np.zeros(2)
-
     return force
 
 
@@ -111,7 +123,15 @@ def f_c_iw():
     return force
 
 
-@numba.jit(nopython=True)
+def f_ij():
+    pass
+
+
+def f_iw():
+    pass
+
+
+@numba.jit(nopython=True, nogil=True)
 def f_adjust(v_0, v, mass, tau):
     """
     Params
@@ -120,15 +140,14 @@ def f_adjust(v_0, v, mass, tau):
     :param v: Current velocity
     :param mass: Mass of an agent
     :param tau: Characteristic time where agent adapts its movement from current velocity to goal velocity
-    :return: Vector of length 2 containing `x` and `y` components of force
-             on agent i.
+    :return: Vector of length 2 containing `x` and `y` components of force on agent i.
     """
     # TODO: v_0 = magnitude(v_0) * direction
     force = (v_0 - v) * mass / tau
     return force
 
 
-@numba.jit(nopython=True)
+@numba.jit(nopython=True, nogil=True)
 def f_random_fluctuation():
     force = np.zeros(2)
     for i in range(len(force)):
@@ -136,7 +155,7 @@ def f_random_fluctuation():
     return force
 
 
-@numba.jit(nopython=True)
+@numba.jit(nopython=True, nogil=True)
 def f_tot_i(i, v_0, v, x, r, mass, tau, tau_0, sight, force_max):
     """
     Total force on individual agent i.
@@ -150,7 +169,7 @@ def f_tot_i(i, v_0, v, x, r, mass, tau, tau_0, sight, force_max):
     return force
 
 
-@numba.jit(nopython=True)
+@numba.jit(nopython=True, nogil=True)
 def f_tot(gv, v, x, r, mass, tau, tau_0, sight, force_max):
     """
     About

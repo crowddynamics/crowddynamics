@@ -50,7 +50,7 @@ def visualization():
     init_simulation()
 
     writer = animation.writers['ffmpeg']
-    writer = writer(fps=15, bitrate=1800)
+    writer = writer(fps=30, bitrate=1800)
     path = '/home/jaan/Dropbox/Projects/Crowd-Dynamics/animations/'
 
     ms = rad * 300 / size
@@ -71,12 +71,12 @@ def visualization():
 
     anim = animation.FuncAnimation(fig, update_line,
                                    init_func=init,
-                                   frames=100,
-                                   interval=500/30,
+                                   frames=1000,
+                                   interval=1,  #500/30,
                                    blit=True)
 
-    # anim.save(path + 'power_law.mp4', writer=writer)
-    plt.show()
+    anim.save(path + 'power_law.mp4', writer=writer)
+    # plt.show()
 
 
 def profile(iterations):

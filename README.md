@@ -7,6 +7,9 @@ Crowd dynamics simulation using _Helbing's social force model_ [1], _power law f
 
 Resources
 ---------
+
+Academic 
+
 1. - [2000 - Simulating dynamical features of escape panic]
      (http://www.nature.com/nature/journal/v407/n6803/full/407487a0.html)
    
@@ -23,3 +26,13 @@ Resources
 
 4. [2014 - Experimental evidence of the "Faster Is Slower" effect]
    (http://www.sciencedirect.com/science/article/pii/S2352146514001215)
+
+Motivation
+----------
+To better understand and predict how large numbers of people move in emergency situations.
+
+Preventing tragedies such:
+[List of human stampedes]
+(https://en.wikipedia.org/wiki/List_of_human_crushes)
+
+

@@ -2,7 +2,7 @@
 \subsection{Social force model}
 Total force on the agent $ i $
 \begin{align}
-\mathbf{f}_{i}(t) = \mathbf{f}_{i}^{adjust} + \sum_{i\neq j}^{} \left(\mathbf{f}_{ij}^{soc} + \mathbf{f}_{ij}^{c}\right) + \sum_{w}^{} \left(\mathbf{f}_{iw}^{soc} + \mathbf{f}_{iw}^{c}\right) + \boldsymbol{\xi}_{i}
+\mathbf{f}_{i}(t) = \mathbf{f}_{i}^{adjust} + \sum_{j\neq i}^{} \left(\mathbf{f}_{ij}^{soc} + \mathbf{f}_{ij}^{c}\right) + \sum_{w}^{} \left(\mathbf{f}_{iw}^{soc} + \mathbf{f}_{iw}^{c}\right) + \boldsymbol{\xi}_{i}
 \end{align}
 
 \begin{enumerate}[label=\roman{enumi})]
@@ -13,31 +13,44 @@ Force adjusting pedestrian movement towards desired in characteristic time $ \ta
 &=  \frac{m_{i}}{\tau_{i}} (\left\|v_{i}^{0}\right\| \mathbf{e}_{i} - \mathbf{v}_{i})
 \end{align}
 
+
 \item 
 Psychological tendency to keep a certain distance to other pedestrians
 \begin{align}
-\mathbf{f}_{ij}^{soc}
+\mathbf{f}_{ij}^{soc} \to \text{power law}
 \end{align}
 and walls
 \begin{align}
-\mathbf{f}_{iw}^{soc}.
+\mathbf{f}_{iw}^{soc} &= a_{i} \exp\left(\frac{r_{i} - d_{iw}}{b_{i}}\right)
 \end{align}
+
 
 \item 
 Physical contact forces with other pedestrians
 \begin{align}
-\mathbf{f}_{ij}^{c}
+\mathbf{f}_{ij}^{c} &= k \cdot (r_{ij} - d_{ij}) \mathbf{n}_{ij} - \kappa \cdot (r_{ij} - d_{ij}) \Delta \mathbf{v}_{ij}^{t} \mathbf{t}_{ij}
+\end{align}
+\begin{align}
+r_{ij} &= r_{i} + r_{j} \\
+d_{ij} &= \left\|\mathbf{x}_{i} - \mathbf{x}_{j}\right\| \\
+\mathbf{n}_{ij} &= \frac{\mathbf{x}_{i} - \mathbf{x}_{j}}{d_{ij}} \\
+\mathbf{t}_{ij} &= R(\theta) \mathbf{n}_{ij} \\
+R(\theta) &= \begin{bmatrix}\cos \theta & -\sin \theta \\\sin \theta & \cos \theta \\\end{bmatrix} \\
+\Delta \mathbf{v}_{ji}^{t} &= (\mathbf{v}_{j} - \mathbf{v}_{i}) \cdot \mathbf{t}_{ij}
 \end{align}
 and walls
 \begin{align}
-\mathbf{f}_{iw}^{c}.
+\mathbf{f}_{iw}^{c} &= k \cdot (r_{i} - d_{iw}) \mathbf{n}_{iw} - \kappa \cdot (r_{i} - d_{iw}) (\mathbf{v}_{i} \cdot \mathbf{t}_{iw}) \mathbf{t}_{iw}
 \end{align}
+
 
 \item 
 Random fluctuation force
 \begin{align}
-\boldsymbol{\xi}_{i}
+\boldsymbol{\xi}_{i}.
 \end{align}
+Uniformly distributed.
+
 
 \end{enumerate}
 
@@ -58,50 +71,4 @@ Interaction force between agents
 \mathbf{v}_{ij} = \mathbf{v}_{i} - \mathbf{v}_{j}
 \end{align}
 
-\subsection{Properties}
-Indexing
-\begin{enumerate}
-\item Number of agents $ N \in \mathbb{N} $
-\begin{enumerate}
-\item Current agent $ i $
-\item Other agent $ j $
-\end{enumerate}
-$ i,j \in \{0, \ldots, N\} $ and $ i \neq j $
-
-\item 
-Wall $ w $
-
-\end{enumerate}
-
-Agent
-\begin{enumerate}
-\item 
-Mass $ m_{i} $
-
-\item 
-Shape
-\begin{enumerate}
-\item 
-Circle, radius $ r_{i} $
-
-\item 
-Ellipse
-\end{enumerate}
-
-
-\item 
-Velocity
-\begin{enumerate}
-\item Desired velocity $ v_{i}^{0} $
-\item Current velocity $ v_{i} $
-\end{enumerate}
-
-\item 
-Characteristic time 
-\begin{enumerate}
-\item $ \tau_{0} $
-\item $ \tau_{i} $
-\end{enumerate}
-
-\end{enumerate}
 
