@@ -35,15 +35,18 @@ def init_simulation():
     """
     # Arrays shape of (agent_num, 2) for x and y-components
     global positions, velocities, simu
+
     shape = (agents_num, 2)  # rows, cols
     angle = np.random.uniform(0, 2 * np.pi, agents_num)
+
     positions = np.random.uniform(0, size, shape)
     velocities = np.stack((np.cos(angle), np.sin(angle)), axis=1)
     goal_velocity = 1.5 * np.copy(velocities)
-    mass = np.ones(agents_num)
-    radius = rad * np.ones(agents_num)
+    masses = np.ones(agents_num)
+    radii = rad * np.ones(agents_num)
+
     # Generator for new positions
-    simu = update_positions(positions, velocities, goal_velocity, radius, mass)
+    simu = update_positions(positions, velocities, goal_velocity, radii, masses)
 
 
 def visualization():
@@ -85,5 +88,5 @@ def profile(iterations):
         next(simu)
 
 
-visualization()
-# profile(100)
+# visualization()
+profile(2)

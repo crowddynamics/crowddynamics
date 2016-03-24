@@ -21,24 +21,24 @@ Psychological tendency to keep a certain distance to other pedestrians
 \end{align}
 and walls
 \begin{align}
-\mathbf{f}_{iw}^{soc} &= a_{i} \exp\left(\frac{r_{i} - d_{iw}}{b_{i}}\right)
-\end{align}
+\mathbf{f}_{iw}^{soc} &= A_{i} \exp\left(\frac{r_{i} - d_{iw}}{B_{i}}\right) \mathbf{n}_{iw}
+\end{align} 
 
 
 \item 
-Physical contact forces with other pedestrians
+Physical contact forces $ r_{ij} > d_{ij} $ with other pedestrians 
 \begin{align}
-\mathbf{f}_{ij}^{c} &= k \cdot (r_{ij} - d_{ij}) \mathbf{n}_{ij} - \kappa \cdot (r_{ij} - d_{ij}) \Delta \mathbf{v}_{ij}^{t} \mathbf{t}_{ij}
+\mathbf{f}_{ij}^{c} &= k \cdot (r_{ij} - d_{ij}) \mathbf{n}_{ij} - \kappa \cdot (r_{ij} - d_{ij}) \Delta \mathbf{v}_{ij}^{t} \mathbf{t}_{ij} 
 \end{align}
 \begin{align}
 r_{ij} &= r_{i} + r_{j} \\
 d_{ij} &= \left\|\mathbf{x}_{i} - \mathbf{x}_{j}\right\| \\
 \mathbf{n}_{ij} &= \frac{\mathbf{x}_{i} - \mathbf{x}_{j}}{d_{ij}} \\
-\mathbf{t}_{ij} &= R(\theta) \mathbf{n}_{ij} \\
-R(\theta) &= \begin{bmatrix}\cos \theta & -\sin \theta \\\sin \theta & \cos \theta \\\end{bmatrix} \\
+\mathbf{t}_{ij} &= R(45^{\circ}) \cdot \mathbf{n}_{ij} \\
+%R(\theta) &= \begin{bmatrix}\cos \theta & -\sin \theta \\\sin \theta & \cos \theta \\\end{bmatrix} \\
 \Delta \mathbf{v}_{ji}^{t} &= (\mathbf{v}_{j} - \mathbf{v}_{i}) \cdot \mathbf{t}_{ij}
 \end{align}
-and walls
+and walls $ r_{iw} > d_{iw} $
 \begin{align}
 \mathbf{f}_{iw}^{c} &= k \cdot (r_{i} - d_{iw}) \mathbf{n}_{iw} - \kappa \cdot (r_{i} - d_{iw}) (\mathbf{v}_{i} \cdot \mathbf{t}_{iw}) \mathbf{t}_{iw}
 \end{align}

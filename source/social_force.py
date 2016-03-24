@@ -93,7 +93,7 @@ def f_soc_ij_tot(i, x, v, r, tau_0, sight, force_max):
     return force
 
 
-def f_soc_iw(a, b, radius, d, n):
+def f_soc_iw(a_i, b_i, r_i, d_iw, n_iw):
     """
     About
     -----
@@ -101,25 +101,26 @@ def f_soc_iw(a, b, radius, d, n):
 
     Params
     ------
-    :param a: Coefficient
-    :param b: Coefficient
-    :param radius: Radius of the agent
-    :param d: Distance to the wall
-    :param n: Unit vector that is perpendicular to the agent and the wall
+    :param a_i: Coefficient
+    :param b_i: Coefficient
+    :param r_i: Radius of the agent
+    :param d_iw: Distance to the wall
+    :param n_iw: Unit vector that is perpendicular to the agent and the wall
     :return:
     """
-    force = np.zeros(2)
-    force += a * np.exp((radius - d) / b) * n
+    force = a_i * np.exp((r_i - d_iw) / b_i) * n_iw
     return force
 
 
 def f_c_ij(k, kappa, r_ij, d_ij, n_ij, v_ji, t_ij):
-    force = np.zeros(2)
+    dist = r_ij - d_ij
+    force = k * dist * n_ij - kappa * dist * np.dot(v_ji, t_ij) * t_ij
     return force
 
 
-def f_c_iw():
-    force = np.zeros(2)
+def f_c_iw(k, kappa, r_i, d_iw, n_iw, v_i, t_iw):
+    dist = r_i - d_iw
+    force = k * dist * n_iw - kappa * dist * np.dot(v_i, t_iw) * t_iw
     return force
 
 
@@ -132,18 +133,18 @@ def f_iw():
 
 
 @numba.jit(nopython=True, nogil=True)
-def f_adjust(v_0, v, mass, tau):
+def f_adjust_i(v_0_i, v_i, mass_i, tau_i):
     """
     Params
     ------
-    :param v_0: Goal velocity of an agent
-    :param v: Current velocity
-    :param mass: Mass of an agent
-    :param tau: Characteristic time where agent adapts its movement from current velocity to goal velocity
+    :param v_0_i: Goal velocity of an agent
+    :param v_i: Current velocity
+    :param mass_i: Mass of an agent
+    :param tau_i: Characteristic time where agent adapts its movement from current velocity to goal velocity
     :return: Vector of length 2 containing `x` and `y` components of force on agent i.
     """
     # TODO: v_0 = magnitude(v_0) * direction
-    force = (v_0 - v) * mass / tau
+    force = (v_0_i - v_i) * mass_i / tau_i
     return force
 
 
@@ -163,7 +164,7 @@ def f_tot_i(i, v_0, v, x, r, mass, tau, tau_0, sight, force_max):
     :return: Vector of length 2 containing `x` and `y` components of force
              on agent i.
     """
-    force = f_adjust(v_0, v[i], mass, tau) + \
+    force = f_adjust_i(v_0, v[i], mass, tau) + \
             f_soc_ij_tot(i, x, v, r, tau_0, sight, force_max) + \
             f_random_fluctuation()
     return force
