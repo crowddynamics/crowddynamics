@@ -1,7 +1,7 @@
 Crowd Dynamics Simulation
 =========================
-Crowd dynamics simulation using power law for pedestrian interactions
-and game theory to model agents exiting a building.
+Crowd dynamics simulation [1] using power law for pedestrian interactions [3]
+and game theory [2] to model agents exiting a building.
 
 Resources
 ---------
