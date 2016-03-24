@@ -3,7 +3,7 @@ Crowd Dynamics Simulation
 
 About
 -----
-_Crowd dynamics simulation_ using Helbing's social force model [1], _power law for pedestrian interactions_ [3] and _game theoretical model_ [2] for modelling agents exiting a building in emergency situations. 
+Crowd dynamics simulation using _Helbing's social force model_ [1], _power law for pedestrian interactions_ [3] and _game theoretical model_ [2] for modelling agents exiting a building in emergency situations. 
 
 Resources
 ---------
