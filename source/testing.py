@@ -6,7 +6,7 @@ from __future__ import unicode_literals
 
 import numpy as np
 
-from source.calculator import f_soc_ij
+from source.social_force import f_soc_ij
 
 
 def dE(pa, pb, va, vb, ra, rb):

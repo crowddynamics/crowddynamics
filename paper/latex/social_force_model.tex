@@ -1,39 +1,46 @@
 \section{Crowd dynamics}
-\subsection{Total Force on Agent}
-Total force on the agent
+\subsection{Social force model}
+Total force on the agent $ i $
 \begin{align}
-\mathbf{F}_{i} &= m_{i} \frac{d\mathbf{v}_{i}}{dt} = m_{i} \frac{d^{2}\mathbf{x}_{i}}{dt^{2}} \\
-&= \mathbf{f}_{i}(t) + \boldsymbol{\xi}_{i}
+\mathbf{f}_{i}(t) = \mathbf{f}_{i}^{adjust} + \sum_{i\neq j}^{} \left(\mathbf{f}_{ij}^{soc} + \mathbf{f}_{ij}^{c}\right) + \sum_{w}^{} \left(\mathbf{f}_{iw}^{soc} + \mathbf{f}_{iw}^{c}\right) + \boldsymbol{\xi}_{i}
 \end{align}
 
-
-\begin{enumerate}
-\item 
-Force on the agent $ i $
-\begin{align}
-\mathbf{f}_{i}(t) = \frac{m_{i}}{\tau_{i}} (\mathbf{v}_{i}^{0} - \mathbf{v}_{i}) + \sum_{i\neq j}^{} \left(\mathbf{f}_{ij}^{soc} + \mathbf{f}_{ij}^{c}\right) + \sum_{w}^{} \left(\mathbf{f}_{iw}^{soc} + \mathbf{f}_{iw}^{c}\right)
-\end{align}
-
-\begin{enumerate}
+\begin{enumerate}[label=\roman{enumi})]
 \item 
 Force adjusting pedestrian movement towards desired in characteristic time $ \tau_{i} $
 \begin{align}
-\frac{m_{i}}{\tau_{i}} (\mathbf{v}_{i}^{0} - \mathbf{v}_{i})
+\mathbf{f}_{i}^{adjust} &= \frac{m_{i}}{\tau_{i}} (\mathbf{v}_{i}^{0} - \mathbf{v}_{i}) \\
+&=  \frac{m_{i}}{\tau_{i}} (\left\|v_{i}^{0}\right\| \mathbf{e}_{i} - \mathbf{v}_{i})
 \end{align}
 
 \item 
-Psychological tendency to keep a certain distance to other pedestrians $ \mathbf{f}_{ij}^{soc} $ and walls $ \mathbf{f}_{iw}^{soc} $.
+Psychological tendency to keep a certain distance to other pedestrians
+\begin{align}
+\mathbf{f}_{ij}^{soc}
+\end{align}
+and walls
+\begin{align}
+\mathbf{f}_{iw}^{soc}.
+\end{align}
 
 \item 
-Physical contact forces with other pedestrians $ \mathbf{f}_{ij}^{c} $ and walls $ \mathbf{f}_{iw}^{c} $.
+Physical contact forces with other pedestrians
+\begin{align}
+\mathbf{f}_{ij}^{c}
+\end{align}
+and walls
+\begin{align}
+\mathbf{f}_{iw}^{c}.
+\end{align}
+
+\item 
+Random fluctuation force
+\begin{align}
+\boldsymbol{\xi}_{i}
+\end{align}
 
 \end{enumerate}
 
-\item 
-Random fluctuation force $ \boldsymbol{\xi}_{i} $.
-
-
-\end{enumerate}
 
 \subsection{Power Law}
 Interaction force between agents

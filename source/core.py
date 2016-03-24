@@ -4,7 +4,7 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
-from source.calculator import f_tot
+from source.social_force import f_tot
 
 
 def update_positions(x, v, gv, r, mass, dt=0.01):

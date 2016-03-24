@@ -52,6 +52,7 @@ def f_soc_ij(xi, xj, vi, vj, ri, rj, tau_0, sight, force_max):
     if dist > sight:
         return force
 
+    # TODO: Update overlapping to f_c_ij
     # If two agents are overlapping reduce r
     if r > dist:
         r = 0.50 * dist
@@ -93,13 +94,15 @@ def f_soc_ij_tot(i, x, v, r, tau_0, sight, force_max):
     return force
 
 
-def f_soc_iw():
+def f_soc_iw(a, b, radius, d, n):
     force = np.zeros(2)
+    force += a * np.exp((radius - d) / b) * n
     return force
 
 
 def f_c_ij():
     force = np.zeros(2)
+
     return force
 
 
@@ -111,7 +114,8 @@ def f_c_iw():
 @numba.jit(nopython=True)
 def f_adjust(v_0, v, mass, tau):
     """
-
+    Params
+    ------
     :param v_0: Goal velocity of an agent
     :param v: Current velocity
     :param mass: Mass of an agent
@@ -135,16 +139,10 @@ def f_random_fluctuation():
 @numba.jit(nopython=True)
 def f_tot_i(i, v_0, v, x, r, mass, tau, tau_0, sight, force_max):
     """
-    About
-    -----
+    Total force on individual agent i.
 
-    Params
-    ------
     :return: Vector of length 2 containing `x` and `y` components of force
              on agent i.
-
-    Resources
-    ------
     """
     force = f_adjust(v_0, v[i], mass, tau) + \
             f_soc_ij_tot(i, x, v, r, tau_0, sight, force_max) + \
@@ -154,6 +152,21 @@ def f_tot_i(i, v_0, v, x, r, mass, tau, tau_0, sight, force_max):
 
 @numba.jit(nopython=True)
 def f_tot(gv, v, x, r, mass, tau, tau_0, sight, force_max):
+    """
+    About
+    -----
+    Total forces on all agents in the system. Uses `Helbing's` social force model
+    [1] and with power law [2].
+
+    Params
+    ------
+    :return: Array of forces.
+
+    References
+    ----------
+    [1] http://www.nature.com/nature/journal/v407/n6803/full/407487a0.html \n
+    [2] http://motion.cs.umn.edu/PowerLaw/
+    """
     forces = np.zeros_like(v)
     for i in range(len(x)):
             forces[i] = f_tot_i(i, gv[i], v, x, r, mass[i],
