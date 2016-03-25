@@ -19,7 +19,7 @@ from source.core import update_positions
 
 
 rad = 0.2
-agents_num = 200
+agents_num = 50
 size = 8
 positions = None
 velocities = None
