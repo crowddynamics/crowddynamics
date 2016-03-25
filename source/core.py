@@ -6,17 +6,17 @@ from __future__ import unicode_literals
 
 import time
 
-import numpy
+import numpy as np
 
 from source.social_force import f_tot
 
 
-def update_positions(positions: numpy.ndarray,
-                     velocities: numpy.ndarray,
-                     goal_velocities: numpy.ndarray,
-                     radii: numpy.ndarray,
-                     masses: numpy.ndarray,
-                     dt: float = 0.01) -> numpy.ndarray:
+def update_positions(positions: np.ndarray,
+                     velocities: np.ndarray,
+                     goal_velocities: np.ndarray,
+                     radii: np.ndarray,
+                     masses: np.ndarray,
+                     dt: float = 0.01) -> np.ndarray:
     """
     About
     -----
@@ -51,6 +51,6 @@ def update_positions(positions: numpy.ndarray,
         positions += velocities * dt
         iteration += 1
         t1 = time.clock()
-        print(iteration, ':', t1 - t0)
+        print(iteration, ':', round(t1 - t0, 4))
         t0 = t1
-        yield positions
+        yield positions, forces

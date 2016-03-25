@@ -112,15 +112,13 @@ def f_soc_iw(a_i, b_i, r_i, d_iw, n_iw):
     return force
 
 
-def f_c_ij(k, kappa, r_ij, d_ij, n_ij, v_ji, t_ij):
-    dist = r_ij - d_ij
-    force = k * dist * n_ij - kappa * dist * np.dot(v_ji, t_ij) * t_ij
+def f_c_ij(k, kappa, h_ij, n_ij, v_ji, t_ij):
+    force = h_ij * (k * n_ij - kappa * np.dot(v_ji, t_ij) * t_ij)
     return force
 
 
-def f_c_iw(k, kappa, r_i, d_iw, n_iw, v_i, t_iw):
-    dist = r_i - d_iw
-    force = k * dist * n_iw - kappa * dist * np.dot(v_i, t_iw) * t_iw
+def f_c_iw(k, kappa, h_iw, n_iw, v_i, t_iw):
+    force = h_iw * (k * n_iw - kappa * np.dot(v_i, t_iw) * t_iw)
     return force
 
 
@@ -187,8 +185,9 @@ def f_tot(gv, v, x, r, mass, tau, tau_0, sight, force_max):
     [1] http://www.nature.com/nature/journal/v407/n6803/full/407487a0.html \n
     [2] http://motion.cs.umn.edu/PowerLaw/
     """
+    # TODO: AOT complilation
     forces = np.zeros_like(v)
     for i in range(len(x)):
-            forces[i] = f_tot_i(i, gv[i], v, x, r, mass[i],
-                                tau, tau_0, sight, force_max)
+        forces[i] = f_tot_i(i, gv[i], v, x, r, mass[i],
+                            tau, tau_0, sight, force_max)
     return forces
