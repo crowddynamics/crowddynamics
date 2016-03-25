@@ -43,6 +43,7 @@ def init_simulation():
     velocities = np.stack((np.cos(angle), np.sin(angle)), axis=1)
     goal_velocity = 1.5 * np.copy(velocities)
     masses = np.ones(agents_num)
+    # masses = np.random.uniform(0.9, 1, agents_num)
     radii = rad * np.ones(agents_num)
 
     # Generator for new positions
@@ -100,5 +101,5 @@ def profile(iterations):
         next(simu)
 
 
-# visualization(1000)
-profile(100)
+visualization(1000)
+# profile(100)

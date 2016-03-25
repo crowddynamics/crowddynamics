@@ -20,6 +20,14 @@ d_{ij} &= \left\|\mathbf{x}_{ij}\right\|
 \end{align}
 
 \begin{align}
+a &= \mathbf{v}_{ij} \cdot \mathbf{v}_{ij} \\
+b &= -\mathbf{x}_{ij} \cdot \mathbf{v}_{ij} \\
+c &= d_{ij}^{2} - r_{ij}^{2} \\
+d &= \sqrt{b^{2} - a c} \\
+\tau &= \frac{b - \sqrt{d}}{a} > 0
+\end{align}
+
+\begin{align}
 h_{iw} &= r_{i} - d_{iw} \\
 h_{ij} &= r_{ij} - d_{ij}
 \end{align}
@@ -33,22 +41,26 @@ h_{ij} &= r_{ij} - d_{ij}
 \subsection{Social force model}
 Total force on the agent $ i $
 \begin{align}
-\mathbf{f}_{i}(t) = \mathbf{f}_{i}^{adjust} + \sum_{j\neq i}^{} \left(\mathbf{f}_{ij}^{soc} + \mathbf{f}_{ij}^{c}\right) + \sum_{w}^{} \left(\mathbf{f}_{iw}^{soc} + \mathbf{f}_{iw}^{c}\right) + \boldsymbol{\xi}_{i}
+\mathbf{f}_{i}(t) = \mathbf{f}_{i}^{adj} + \sum_{j\neq i}^{} \left(\mathbf{f}_{ij}^{soc} + \mathbf{f}_{ij}^{c}\right) + \sum_{w}^{} \left(\mathbf{f}_{iw}^{soc} + \mathbf{f}_{iw}^{c}\right) + \boldsymbol{\xi}_{i}
 \end{align}
 
 \begin{enumerate}[label=\roman{enumi})]
 \item 
-Force adjusting pedestrian movement towards desired in characteristic time $ \tau_{i} $
+Force adjusting agent's movement towards desired in some characteristic time $ \tau_{i}^{adj} $
 \begin{align}
-\mathbf{f}_{i}^{adjust} &= \frac{m_{i}}{\tau_{i}} (\mathbf{v}_{i}^{0} - \mathbf{v}_{i}) \\
-&=  \frac{m_{i}}{\tau_{i}} (\left\|v_{i}^{0}\right\| \mathbf{e}_{i} - \mathbf{v}_{i})
+\mathbf{f}_{i}^{adj} &= \frac{m_{i}}{\tau_{i}^{adj}} (\mathbf{v}_{i}^{0} - \mathbf{v}_{i}) \\
+&=  \frac{m_{i}}{\tau_{i}^{adj}} (\left\|v_{i}^{0}\right\| \mathbf{e}_{i} - \mathbf{v}_{i})
 \end{align}
 
 
 \item 
-Psychological tendency to keep a certain distance to other pedestrians
+Psychological tendency to keep a certain distance to other agents
 \begin{align}
-\mathbf{f}_{ij}^{soc} \to \text{power law}
+\mathbf{f}_{ij}^{soc} &=
+\begin{cases}
+\mathbf{f}_{} &  d_{ij} \leq sight \\
+0 & \text{otherwise}
+\end{cases}
 \end{align}
 and walls
 \begin{align}
@@ -57,11 +69,11 @@ and walls
 
 
 \item 
-Physical contact forces with other pedestrians 
+Physical contact forces with other agents 
 \begin{align}
 \mathbf{f}_{ij}^{c} &= 
 \begin{cases}
-h_{ij} \left(k \cdot \mathbf{n}_{ij} - \kappa \cdot \Delta \mathbf{v}_{ij}^{t} \mathbf{t}_{ij}\right) & h_{ij} > 0 \\
+h_{ij} \left(\mu \cdot \mathbf{n}_{ij} - \kappa \cdot \Delta \mathbf{v}_{ij}^{t} \mathbf{t}_{ij}\right) & h_{ij} > 0 \\
 0 & \text{otherwise}
 \end{cases}
 \end{align}
@@ -69,7 +81,7 @@ and walls
 \begin{align}
 \mathbf{f}_{iw}^{c} &= 
 \begin{cases}
-h_{iw} \left(k \cdot \mathbf{n}_{iw} - \kappa \cdot (\mathbf{v}_{i} \cdot \mathbf{t}_{iw}) \mathbf{t}_{iw}\right) & h_{iw} > 0 \\
+h_{iw} \left(\mu \cdot \mathbf{n}_{iw} - \kappa \cdot (\mathbf{v}_{i} \cdot \mathbf{t}_{iw}) \mathbf{t}_{iw}\right) & h_{iw} > 0 \\
 0 & \text{otherwise}
 \end{cases}
 \end{align}
@@ -85,13 +97,20 @@ Uniformly distributed random fluctuation force
 \end{enumerate}
 
 
-\subsection{Power Law}
+\subsection{Universal power law governing pedestrian interactions}
 Interaction force between agents
 \begin{align}
-\mathbf{F}_{ij} &= -\nabla_{\mathbf{x}_{ij}} E(\tau) \\
-&= -\nabla_{\mathbf{x}_{ij}} \left(k \tau^{-2} e^{-\tau / \tau_{0}} \right)
-\\
-&= - \left[\frac{k e^{-\tau / \tau_{0}}}{\left\|\mathbf{v}_{ij}\right\|^{2} \tau^{2}} \left(\frac{2}{\tau} + \frac{1}{\tau_{0}}\right) \right] 
-\\
-&\left[ \mathbf{v}_{ij} - \frac{\left\|\mathbf{v}_{ij}\right\|^{2} \mathbf{x}_{ij} - \left(\mathbf{x}_{ij}\cdot\mathbf{v}_{ij}\right) \mathbf{v}_{ij} }{\sqrt{\left(\mathbf{x}_{ij}\cdot\mathbf{v}_{ij}\right)^{2} - \left\|\mathbf{v}_{ij}\right\|^{2} \left( \left\|\mathbf{x}_{ij}\right\|^{2} - r_{ij}^{2} \right) }} \right]
+\mathbf{f}_{ij}^{} &= -\nabla_{\mathbf{x}_{ij}} E(\tau) 
+= -\nabla_{\mathbf{x}_{ij}} \left(\frac{k}{\tau^{2}} \exp \left( -\frac{\tau}{\tau_{0}} \right) \right) \\
+%\\
+%&= - \left[\frac{k}{\left\|\mathbf{v}_{ij}\right\|^{2} \tau^{2}} \exp \left( -\frac{\tau}{\tau_{0}} \right) \left(\frac{2}{\tau} + \frac{1}{\tau_{0}}\right) \right] 
+%\\
+%&\left[ \mathbf{v}_{ij} - \frac{\left\|\mathbf{v}_{ij}\right\|^{2} \mathbf{x}_{ij} - \left(\mathbf{x}_{ij}\cdot\mathbf{v}_{ij}\right) \mathbf{v}_{ij} }{\sqrt{\left(\mathbf{x}_{ij}\cdot\mathbf{v}_{ij}\right)^{2} - \left\|\mathbf{v}_{ij}\right\|^{2} \left( \left\|\mathbf{x}_{ij}\right\|^{2} - r_{ij}^{2} \right) }} \right]
+&= - \left(\frac{k}{a \tau^{2}}\right) 
+\left(\frac{2}{\tau} + \frac{1}{\tau_{0}}\right) 
+\exp\left (-\frac{\tau}{\tau_{0}}\right )
+\left(\mathbf{v}_{ij} -\frac{a \mathbf{x}_{ij} + b \mathbf{v}_{ij}}{d} \right) 
 \end{align}
+
+
+

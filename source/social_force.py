@@ -37,11 +37,11 @@ def f_soc_ij(xi, xj, vi, vj, ri, rj, tau_0, sight, force_max):
     force = np.zeros(2)
 
     # Variables
-    x_ji = xj - xi  # position
+    x_ij = xi - xj  # position
     v_ij = vi - vj  # velocity
     r_ij = ri + rj  # radius
 
-    dot_x = np.dot(x_ji, x_ji)
+    dot_x = np.dot(x_ij, x_ij)
     dist = np.sqrt(dot_x)
     # No force if another agent is not in range of sight
     if dist > sight:
@@ -52,8 +52,8 @@ def f_soc_ij(xi, xj, vi, vj, ri, rj, tau_0, sight, force_max):
     if r_ij > dist:
         r_ij = 0.50 * dist
 
-    b = np.dot(x_ji, v_ij)
     a = np.dot(v_ij, v_ij)
+    b = - np.dot(x_ij, v_ij)
     c = dot_x - r_ij ** 2
     d = b ** 2 - a * c
 
@@ -63,7 +63,7 @@ def f_soc_ij(xi, xj, vi, vj, ri, rj, tau_0, sight, force_max):
     d = np.sqrt(d)
     tau = (b - d) / a  # Time-to-collision
 
-    k = 1.5  # Constant
+    k = 1.5  # Constant for setting units for interaction force. Scale with mass
     m = 2.0  # Exponent in power law
     maxt = 999.0
 
@@ -71,8 +71,8 @@ def f_soc_ij(xi, xj, vi, vj, ri, rj, tau_0, sight, force_max):
         return force
 
     # Force is returned negative as repulsive force
-    force -= k * np.exp(-tau / tau_0) * (m / tau + 1 / tau_0) * \
-             (v_ij - (v_ij * b - x_ji * a) / d) / (a * tau ** m)
+    force -= k / (a * tau ** m) * np.exp(-tau / tau_0) * \
+             (m / tau + 1 / tau_0) * (v_ij - (v_ij * b + x_ij * a) / d)
 
     mag = np.sqrt(np.dot(force, force))
     if mag > force_max:
@@ -112,13 +112,13 @@ def f_soc_iw(a_i, b_i, r_i, d_iw, n_iw):
     return force
 
 
-def f_c_ij(k, kappa, h_ij, n_ij, v_ji, t_ij):
-    force = h_ij * (k * n_ij - kappa * np.dot(v_ji, t_ij) * t_ij)
+def f_c_ij(mu, kappa, h_ij, n_ij, v_ji, t_ij):
+    force = h_ij * (mu * n_ij - kappa * np.dot(v_ji, t_ij) * t_ij)
     return force
 
 
-def f_c_iw(k, kappa, h_iw, n_iw, v_i, t_iw):
-    force = h_iw * (k * n_iw - kappa * np.dot(v_i, t_iw) * t_iw)
+def f_c_iw(mu, kappa, h_iw, n_iw, v_i, t_iw):
+    force = h_iw * (mu * n_iw - kappa * np.dot(v_i, t_iw) * t_iw)
     return force
 
 

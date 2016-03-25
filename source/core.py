@@ -16,7 +16,7 @@ def update_positions(positions: np.ndarray,
                      goal_velocities: np.ndarray,
                      radii: np.ndarray,
                      masses: np.ndarray,
-                     dt: float = 0.01) -> np.ndarray:
+                     dt: float = 0.01):
     """
     About
     -----
@@ -45,6 +45,7 @@ def update_positions(positions: np.ndarray,
     t0 = time.clock()
     iteration = 0
     while True:
+        # TODO: Acceleration
         forces = f_tot(goal_velocities, velocities, positions, radii, masses,
                        tau, tau_0, sight, force_max)
         velocities += forces * dt
