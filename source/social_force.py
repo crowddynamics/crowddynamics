@@ -95,10 +95,6 @@ def f_soc_ij_tot(i, x, v, r, tau_0, sight, force_max):
 
 def f_soc_iw(a_i, b_i, r_i, d_iw, n_iw):
     """
-    About
-    -----
-
-
     Params
     ------
     :param a_i: Coefficient
@@ -148,6 +144,10 @@ def f_adjust_i(v_0_i, v_i, mass_i, tau_i):
 
 @numba.jit(nopython=True, nogil=True)
 def f_random_fluctuation():
+    """
+
+    :return: Uniformly distributed random force.
+    """
     force = np.zeros(2)
     for i in range(len(force)):
         force[i] = np.random.uniform(-1, 1)

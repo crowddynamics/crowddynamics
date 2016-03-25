@@ -35,7 +35,7 @@ h_{ij} &= r_{ij} - d_{ij}
 \begin{align}
 \mathbf{n}_{ij} &= \frac{\mathbf{x}_{ij}}{d_{ij}} \\
 \mathbf{t}_{ij} &= R(45^{\circ}) \cdot \mathbf{n}_{ij} \\
-\Delta \mathbf{v}_{ji}^{t} &= \mathbf{v}_{ji} \cdot \mathbf{t}_{ij}
+%\Delta \mathbf{v}_{ji}^{t} &= \mathbf{v}_{ji} \cdot \mathbf{t}_{ij}
 \end{align}
 
 \subsection{Social force model}
@@ -58,7 +58,7 @@ Psychological tendency to keep a certain distance to other agents
 \begin{align}
 \mathbf{f}_{ij}^{soc} &=
 \begin{cases}
-\mathbf{f}_{} &  d_{ij} \leq sight \\
+\mathbf{f}_{ij}^{pow} &  d_{ij} \leq sight \\
 0 & \text{otherwise}
 \end{cases}
 \end{align}
@@ -73,7 +73,7 @@ Physical contact forces with other agents
 \begin{align}
 \mathbf{f}_{ij}^{c} &= 
 \begin{cases}
-h_{ij} \left(\mu \cdot \mathbf{n}_{ij} - \kappa \cdot \Delta \mathbf{v}_{ij}^{t} \mathbf{t}_{ij}\right) & h_{ij} > 0 \\
+h_{ij} \left(\mu \cdot \mathbf{n}_{ij} - \kappa \cdot \left(\mathbf{v}_{ji} \cdot \mathbf{t}_{ij}\right) \mathbf{t}_{ij}\right) & h_{ij} > 0 \\
 0 & \text{otherwise}
 \end{cases}
 \end{align}
@@ -100,7 +100,7 @@ Uniformly distributed random fluctuation force
 \subsection{Universal power law governing pedestrian interactions}
 Interaction force between agents
 \begin{align}
-\mathbf{f}_{ij}^{} &= -\nabla_{\mathbf{x}_{ij}} E(\tau) 
+\mathbf{f}_{ij}^{pow} &= -\nabla_{\mathbf{x}_{ij}} E(\tau) 
 = -\nabla_{\mathbf{x}_{ij}} \left(\frac{k}{\tau^{2}} \exp \left( -\frac{\tau}{\tau_{0}} \right) \right) \\
 %\\
 %&= - \left[\frac{k}{\left\|\mathbf{v}_{ij}\right\|^{2} \tau^{2}} \exp \left( -\frac{\tau}{\tau_{0}} \right) \left(\frac{2}{\tau} + \frac{1}{\tau_{0}}\right) \right] 
