@@ -37,8 +37,8 @@ def update_positions(positions: np.ndarray,
     tau_0 = 3.0  # [s] Max interaction range 2 - 4, aka interaction time horizon
     sight = 7.0  # [m] Max distance between agents for interaction to occur
     force_max = 5.0  # [N] Forces that are greater will be truncated to max force
-    k = 1.2e5  # [kg/s^2]
-    kappa = 2.4e5  # [kg/(m s)]
+    mu = 1.2e5  # [kg/s^2]  # Compression counteraction Friction constant
+    kappa = 2.4e5  # [kg/(m s)]  # Sliding friction constant
     a = 2e3  # [N]
     b = 0.08  # [m]
 
@@ -47,7 +47,8 @@ def update_positions(positions: np.ndarray,
     while True:
         # TODO: Acceleration
         forces = f_tot(goal_velocities, velocities, positions, radii, masses,
-                       tau, tau_0, sight, force_max)
+                       tau, tau_0, sight, force_max, mu, kappa, a, b)
+
         velocities += forces * dt
         positions += velocities * dt
         iteration += 1

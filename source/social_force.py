@@ -169,7 +169,8 @@ def f_tot_i(i, v_0, v, x, r, mass, tau, tau_0, sight, force_max):
 
 
 @numba.jit(nopython=True, nogil=True)
-def f_tot(gv, v, x, r, mass, tau, tau_0, sight, force_max):
+def f_tot(goal_velocity, velocity, positions, radii, masses,
+          tau, tau_0, sight, force_max, mu, kappa, a, b):
     """
     About
     -----
@@ -186,8 +187,8 @@ def f_tot(gv, v, x, r, mass, tau, tau_0, sight, force_max):
     [2] http://motion.cs.umn.edu/PowerLaw/
     """
     # TODO: AOT complilation
-    forces = np.zeros_like(v)
-    for i in range(len(x)):
-        forces[i] = f_tot_i(i, gv[i], v, x, r, mass[i],
-                            tau, tau_0, sight, force_max)
+    forces = np.zeros_like(velocity)
+    for i in range(len(positions)):
+        forces[i] = f_tot_i(i, goal_velocity[i], velocity, positions, radii,
+                            masses[i], tau, tau_0, sight, force_max)
     return forces
