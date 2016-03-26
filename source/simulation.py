@@ -45,6 +45,7 @@ def init_simulation():
     masses = np.ones(agents_num)
     # masses = np.random.uniform(0.9, 1, agents_num)
     radii = rad * np.ones(agents_num)
+    walls = None
 
     # Generator for new positions
     simu = update_positions(positions, velocities, goal_velocity, radii, masses)

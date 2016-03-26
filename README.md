@@ -29,10 +29,12 @@ Academic
 
 Motivation
 ----------
-To better understand and predict how large numbers of people move in emergency situations.
+To better understand and predict how people move in emergency situations for improving building design and preventing [tragedies](https://en.wikipedia.org/wiki/List_of_human_crushes).
 
-Preventing tragedies such:
-[List of human stampedes]
-(https://en.wikipedia.org/wiki/List_of_human_crushes)
+TODO
+----
+- [Python Packaging](https://python-packaging-user-guide.readthedocs.org/en/latest/)
 
+- [Sphinx Documentation](http://www.sphinx-doc.org/en/stable/#)
 
+- [Scikits](https://github.com/pv/scikit-example)

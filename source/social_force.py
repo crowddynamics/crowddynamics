@@ -41,8 +41,8 @@ def f_soc_ij(xi, xj, vi, vj, ri, rj, tau_0, sight, force_max):
     v_ij = vi - vj  # velocity
     r_ij = ri + rj  # radius
 
-    dot_x = np.dot(x_ij, x_ij)
-    dist = np.sqrt(dot_x)
+    x_dot = np.dot(x_ij, x_ij)
+    dist = np.sqrt(x_dot)
     # No force if another agent is not in range of sight
     if dist > sight:
         return force
@@ -54,7 +54,7 @@ def f_soc_ij(xi, xj, vi, vj, ri, rj, tau_0, sight, force_max):
 
     a = np.dot(v_ij, v_ij)
     b = - np.dot(x_ij, v_ij)
-    c = dot_x - r_ij ** 2
+    c = x_dot - r_ij ** 2
     d = b ** 2 - a * c
 
     if (d < 0) or (- 0.001 < a < 0.001):
@@ -118,12 +118,18 @@ def f_c_iw(mu, kappa, h_iw, n_iw, v_i, t_iw):
     return force
 
 
-def f_ij():
-    pass
+def f_ij(i, x, v, r, tau_0, sight, force_max, mu, kappa):
+    force = np.zeros(2)
+    for j in range(len(x)):
+        x_ij = x[i] - x[j]  # position
+        x_dot = np.dot(x_ij, x_ij)
+        d_ij = np.sqrt(x_dot)
+    return force
 
 
-def f_iw():
-    pass
+def f_iw(i, x, v, r, w, tau_0, sight, force_max, mu, kappa):
+    force = np.zeros(2)
+    return force
 
 
 @numba.jit(nopython=True, nogil=True)
@@ -155,7 +161,8 @@ def f_random_fluctuation():
 
 
 @numba.jit(nopython=True, nogil=True)
-def f_tot_i(i, v_0, v, x, r, mass, tau, tau_0, sight, force_max):
+def f_tot_i(i, v_0, v, x, r, mass, tau, tau_0, sight, force_max, mu, kappa,
+            a, b):
     """
     Total force on individual agent i.
 
@@ -170,7 +177,7 @@ def f_tot_i(i, v_0, v, x, r, mass, tau, tau_0, sight, force_max):
 
 @numba.jit(nopython=True, nogil=True)
 def f_tot(goal_velocity, velocity, positions, radii, masses,
-          tau, tau_0, sight, force_max, mu, kappa, a, b):
+          tau_adj, tau_0, sight, force_max, mu, kappa, a, b):
     """
     About
     -----
@@ -190,5 +197,6 @@ def f_tot(goal_velocity, velocity, positions, radii, masses,
     forces = np.zeros_like(velocity)
     for i in range(len(positions)):
         forces[i] = f_tot_i(i, goal_velocity[i], velocity, positions, radii,
-                            masses[i], tau, tau_0, sight, force_max)
+                            masses[i], tau_adj, tau_0, sight, force_max, mu, kappa,
+                            a, b)
     return forces
