@@ -1,8 +1,12 @@
 \section{Crowd dynamics}
 \subsection{Parameters}
-
+Vector norm and inner product
 \begin{align}
-\left\langle \mathbf{x}, \mathbf{x} \right\rangle &= \mathbf{x} \cdot \mathbf{x} = \left\| \mathbf{x}, \mathbf{x} \right\|^{2}
+\left\langle \mathbf{x}, \mathbf{x} \right\rangle &= \mathbf{x} \cdot \mathbf{x} = \left\| \mathbf{x}\right\|^{2}
+\end{align}
+Unit vector
+\begin{align}
+\hat{\mathbf{e}} = \frac{\mathbf{e}}{\left\|\mathbf{e}\right\|}
 \end{align}
 
 \begin{align}
@@ -28,13 +32,13 @@ d &= \sqrt{b^{2} - a c} \\
 \end{align}
 
 \begin{align}
-h_{iw} &= r_{i} - d_{iw} \\
-h_{ij} &= r_{ij} - d_{ij}
+h_{ij} &= r_{ij} - d_{ij} \\
+h_{iw} &= r_{i} - d_{iw}
 \end{align}
 
 \begin{align}
 \mathbf{n}_{ij} &= \frac{\mathbf{x}_{ij}}{d_{ij}} \\
-\mathbf{t}_{ij} &= R(45^{\circ}) \cdot \mathbf{n}_{ij} \\
+\mathbf{t}_{ij} &= R(-45^{\circ}) \cdot \mathbf{n}_{ij} \\
 %\Delta \mathbf{v}_{ji}^{t} &= \mathbf{v}_{ji} \cdot \mathbf{t}_{ij}
 \end{align}
 
@@ -48,9 +52,17 @@ Total force on the agent $ i $
 \item 
 Force adjusting agent's movement towards desired in some characteristic time $ \tau_{i}^{adj} $
 \begin{align}
-\mathbf{f}_{i}^{adj} &= \frac{m_{i}}{\tau_{i}^{adj}} (\mathbf{v}_{i}^{0} - \mathbf{v}_{i}) = \frac{m_{i}}{\tau_{i}^{adj}} (\left\|v_{i}^{0}\right\| \mathbf{e}_{i} - \mathbf{v}_{i})
+\mathbf{f}_{i}^{adj} &= \frac{m_{i}}{\tau_{i}^{adj}} (\mathbf{v}_{i}^{0} - \mathbf{v}_{i}) 
 \end{align}
-
+Target velocity can be broken down
+\begin{align}
+\mathbf{v}_{i}^{0} &= v_{i}^{0} \cdot \hat{\mathbf{e}}_{i}^{0}
+\end{align}
+Target direction
+\begin{align}
+\mathbf{e}_{i}^{0}(t) &= (1 - p_{i})\mathbf{e}_{i} + p_{i} \left\langle \mathbf{e}_{j}^{0}(t) \right\rangle_{i} \\
+\hat{\mathbf{e}}_{i}^{0}(t) &= \frac{\mathbf{e}_{i}^{0}(t)}{\left\| \mathbf{e}_{i}^{0}(t) \right\|}
+\end{align}
 
 \item 
 Psychological tendency to keep a certain distance to other agents

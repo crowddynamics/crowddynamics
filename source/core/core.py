@@ -8,7 +8,7 @@ import time
 
 import numpy as np
 
-from source.social_force import f_tot
+from source.core.social_force import f_tot
 
 
 def update_positions(positions: np.ndarray,
@@ -16,6 +16,7 @@ def update_positions(positions: np.ndarray,
                      goal_velocities: np.ndarray,
                      radii: np.ndarray,
                      masses: np.ndarray,
+                     walls: np.ndarray,
                      dt: float = 0.01):
     """
     About
@@ -30,6 +31,7 @@ def update_positions(positions: np.ndarray,
     :param goal_velocities:
     :param radii:
     :param masses:
+    :param walls:
     :param dt:
     :return:
     """
@@ -47,7 +49,7 @@ def update_positions(positions: np.ndarray,
     while True:
         # TODO: Acceleration
         forces = f_tot(goal_velocities, velocities, positions, radii, masses,
-                       tau_adj, tau_0, sight, force_max, mu, kappa, a, b)
+                       walls, tau_adj, tau_0, sight, force_max, mu, kappa, a, b)
 
         velocities += forces * dt
         positions += velocities * dt

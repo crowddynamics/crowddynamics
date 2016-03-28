@@ -143,7 +143,7 @@ def f_adjust_i(v_0_i, v_i, mass_i, tau_i):
     :param tau_i: Characteristic time where agent adapts its movement from current velocity to goal velocity
     :return: Vector of length 2 containing `x` and `y` components of force on agent i.
     """
-    # TODO: v_0 = magnitude(v_0) * direction
+    # TODO: v_0 = v_0 * e_i
     force = (v_0_i - v_i) * mass_i / tau_i
     return force
 
@@ -156,27 +156,34 @@ def f_random_fluctuation():
     """
     force = np.zeros(2)
     for i in range(len(force)):
+        # for loop so compilation can be done with numba
         force[i] = np.random.uniform(-1, 1)
     return force
 
 
 @numba.jit(nopython=True, nogil=True)
-def f_tot_i(i, v_0, v, x, r, mass, tau, tau_0, sight, force_max, mu, kappa,
-            a, b):
+def f_tot_i(i, v_0, v, x, r, mass, w,
+            tau, tau_0, sight, force_max, mu, kappa, a, b):
     """
     Total force on individual agent i.
 
     :return: Vector of length 2 containing `x` and `y` components of force
              on agent i.
     """
-    force = f_adjust_i(v_0, v[i], mass, tau) + \
-            f_soc_ij_tot(i, x, v, r, tau_0, sight, force_max) + \
-            f_random_fluctuation()
+    force = np.zeros(2)
+    force += f_adjust_i(v_0, v[i], mass, tau)
+    force += f_random_fluctuation()
+
+    # Agent-Agent
+    force += f_soc_ij_tot(i, x, v, r, tau_0, sight, force_max)
+
+    # Agent-Wall
+
     return force
 
 
 @numba.jit(nopython=True, nogil=True)
-def f_tot(goal_velocity, velocity, positions, radii, masses,
+def f_tot(goal_velocity, velocity, positions, radii, masses, walls,
           tau_adj, tau_0, sight, force_max, mu, kappa, a, b):
     """
     About
@@ -197,6 +204,6 @@ def f_tot(goal_velocity, velocity, positions, radii, masses,
     forces = np.zeros_like(velocity)
     for i in range(len(positions)):
         forces[i] = f_tot_i(i, goal_velocity[i], velocity, positions, radii,
-                            masses[i], tau_adj, tau_0, sight, force_max, mu, kappa,
-                            a, b)
+                            masses[i], walls,  tau_adj, tau_0, sight, force_max,
+                            mu, kappa, a, b)
     return forces

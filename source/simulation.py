@@ -37,15 +37,14 @@ def init_simulation():
     global positions, velocities, simu
 
     shape = (agents_num, 2)  # rows, cols
-    angle = np.random.uniform(0, 2 * np.pi, agents_num)
+    orientation = np.random.uniform(0, 2 * np.pi, agents_num)
 
     positions = np.random.uniform(0, size, shape)
-    velocities = np.stack((np.cos(angle), np.sin(angle)), axis=1)
+    velocities = np.stack((np.cos(orientation), np.sin(orientation)), axis=1)
     goal_velocity = 1.5 * np.copy(velocities)
     masses = np.ones(agents_num)
     # masses = np.random.uniform(0.9, 1, agents_num)
     radii = rad * np.ones(agents_num)
-    walls = None
 
     # Generator for new positions
     simu = update_positions(positions, velocities, goal_velocity, radii, masses)
