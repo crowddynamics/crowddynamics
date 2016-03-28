@@ -101,5 +101,5 @@ def profile(iterations):
         next(simu)
 
 
-visualization(1000)
+# visualization(1000)
 # profile(100)
