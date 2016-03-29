@@ -1,4 +1,3 @@
-# coding=utf-8
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
@@ -6,100 +5,53 @@ from __future__ import unicode_literals
 
 import sys
 
-import matplotlib.animation as animation
-import matplotlib.pyplot as plt
-import numpy as np
-import seaborn as sns
+try:
+    # Find "Source" module to perform import
+    module_path = '/home/jaan/Dropbox/Projects/Crowd-Dynamics/'
+    sys.path.append(module_path)
+except:
+    pass
 
-# Find "Source" module to perform import
-module_path = '/home/jaan/Dropbox/Projects/Crowd-Dynamics/'
-sys.path.append(module_path)
+from source.field import set_agents
+from source.core.core import update_positions
 
-from source.core import update_positions
-
-
-rad = 0.2
-agents_num = 50
-size = 8
-positions = None
-velocities = None
-# TODO: Track distances
-
-
-def init_simulation():
-    """
-
-    :param agents_num:
-    :param size:
-    :return:
-    """
-    # Arrays shape of (agent_num, 2) for x and y-components
-    global positions, velocities, simu
-
-    shape = (agents_num, 2)  # rows, cols
-    orientation = np.random.uniform(0, 2 * np.pi, agents_num)
-
-    positions = np.random.uniform(0, size, shape)
-    velocities = np.stack((np.cos(orientation), np.sin(orientation)), axis=1)
-    goal_velocity = 1.5 * np.copy(velocities)
-    masses = np.ones(agents_num)
-    # masses = np.random.uniform(0.9, 1, agents_num)
-    radii = rad * np.ones(agents_num)
-
-    # Generator for new positions
-    simu = update_positions(positions, velocities, goal_velocity, radii, masses)
+"""
+tau_adj = 0.5  # [s] Characteristic time in which agent adjusts its movement
+tau_0 = 3.0  # [s] Max interaction range 2 - 4, aka interaction time horizon
+sight = 7.0  # [m] Max distance between agents for interaction to occur
+force_max = 5.0  # [N] Forces that are greater will be truncated to max force
+mu = 1.2e5  # [kg/s^2]  # Compression counteraction Friction constant
+kappa = 2.4e5  # [kg/(m s)]  # Sliding friction constant
+a = 2e3  # [N]
+b = 0.08  # [m]
+"""
 
 
-def visualization(frames):
-    init_simulation()
+def run_simulation():
+    constants = {
+        'tau_adj': 0.5,
+        'tau_0': 3.0,
+        'sight': 7.0,
+        'force_max': 5.0,
+        'mu': 1.2e5,
+        'kappa': 2.4e5,
+        'a': 2e3,
+        'b': 0.08
+    }
 
-    writer = animation.writers['ffmpeg']
-    writer = writer(fps=30, bitrate=1800)
-    path = '/home/jaan/Dropbox/Projects/Crowd-Dynamics/animations/'
+    params = {
+        'mass_range': (70, 90),
+        'radii_range': 0.2,
+    }
 
-    ms = rad * 300 / size
-
-    fig, ax = plt.subplots(ncols=2, figsize=(16, 10))
-    sns.set()
-
-    ax[0].set(xlim=(0, size), ylim=(0, size),
-              xlabel=r'$ x $', ylabel=r'$ y $')
-
-    ax[1].set(xlim=(0, frames), ylim=(0, 10),
-              xlabel=r'$ t $', ylabel=r'$ F $')
-
-    line, = ax[0].plot([], [], lw=0, markersize=ms, marker='o', alpha=0.5)
-    line2, = ax[1].plot([], [], lw=0, markersize=2, marker='o', alpha=0.5)
-
-    ones = np.ones_like(positions)
-
-    def init():
-        line.set_data(positions.T)
-        line2.set_data(ones, np.zeros_like(ones))
-        return line, line2
-
-    def update_line(i):
-        x, f = next(simu)
-        f = np.abs(f)
-        line.set_data(x.T)
-        line2.set_data(i * ones, f)
-        return line, line2
-
-    anim = animation.FuncAnimation(fig, update_line,
-                                   init_func=init,
-                                   frames=frames,
-                                   interval=1,  #500/30,
-                                   blit=True)
-
-    # anim.save(path + 'power_law.mp4', writer=writer)
-    plt.show()
+    field = {
+        'amount': 40,
+        'x_dims': (0, 4),
+        'y_dims': (0, 4)
+    }
+    agents = set_agents(**field)
+    simulation = update_positions(agents, constants)
+    next(simulation)
 
 
-def profile(iterations):
-    init_simulation()
-    for _ in range(iterations):
-        next(simu)
-
-
-# visualization(1000)
-# profile(100)
+run_simulation()

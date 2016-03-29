@@ -1,4 +1,3 @@
-# coding=utf-8
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
@@ -162,7 +161,7 @@ def f_random_fluctuation():
 
 
 @numba.jit(nopython=True, nogil=True)
-def f_tot_i(i, v_0, v, x, r, mass, w,
+def f_tot_i(i, v_0, v, x, r, mass,
             tau, tau_0, sight, force_max, mu, kappa, a, b):
     """
     Total force on individual agent i.
@@ -183,8 +182,8 @@ def f_tot_i(i, v_0, v, x, r, mass, w,
 
 
 @numba.jit(nopython=True, nogil=True)
-def f_tot(goal_velocity, velocity, positions, radii, masses, walls,
-          tau_adj, tau_0, sight, force_max, mu, kappa, a, b):
+def acceleration(goal_velocity, velocity, position, radius, mass,
+                 tau_adj, tau_0, sight, force_max, mu, kappa, a, b):
     """
     About
     -----
@@ -201,9 +200,17 @@ def f_tot(goal_velocity, velocity, positions, radii, masses, walls,
     [2] http://motion.cs.umn.edu/PowerLaw/
     """
     # TODO: AOT complilation
-    forces = np.zeros_like(velocity)
-    for i in range(len(positions)):
-        forces[i] = f_tot_i(i, goal_velocity[i], velocity, positions, radii,
-                            masses[i], walls,  tau_adj, tau_0, sight, force_max,
-                            mu, kappa, a, b)
-    return forces
+    # TODO: Adaptive Euler Method
+    acc_max = 0
+    acc = np.zeros_like(velocity)
+    for i in range(len(position)):
+        # TODO: Acceleration
+        f = f_tot_i(i, goal_velocity[i], velocity, position, radius,
+                    mass[i], tau_adj, tau_0, sight, force_max,
+                    mu, kappa, a, b)
+        acc_ = f / mass[i]
+        # TODO: Norm
+        # if acc_ > acc_max:
+        #     acc_max = acc_
+        acc[i] = acc_
+    return acc

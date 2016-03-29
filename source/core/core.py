@@ -1,4 +1,3 @@
-# coding=utf-8
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
@@ -6,18 +5,10 @@ from __future__ import unicode_literals
 
 import time
 
-import numpy as np
-
-from source.core.social_force import f_tot
+from source.core.social_force import acceleration
 
 
-def update_positions(positions: np.ndarray,
-                     velocities: np.ndarray,
-                     goal_velocities: np.ndarray,
-                     radii: np.ndarray,
-                     masses: np.ndarray,
-                     walls: np.ndarray,
-                     dt: float = 0.01):
+def update_positions(agents, constants, dt=0.01):
     """
     About
     -----
@@ -26,35 +17,21 @@ def update_positions(positions: np.ndarray,
 
     Params
     ------
-    :param positions:
-    :param velocities:
-    :param goal_velocities:
-    :param radii:
-    :param masses:
-    :param walls:
+    :param agents:
+    :param constants:
     :param dt:
     :return:
     """
-    tau_adj = 0.5  # [s] Characteristic time in which agent adjusts its movement
-    tau_0 = 3.0  # [s] Max interaction range 2 - 4, aka interaction time horizon
-    sight = 7.0  # [m] Max distance between agents for interaction to occur
-    force_max = 5.0  # [N] Forces that are greater will be truncated to max force
-    mu = 1.2e5  # [kg/s^2]  # Compression counteraction Friction constant
-    kappa = 2.4e5  # [kg/(m s)]  # Sliding friction constant
-    a = 2e3  # [N]
-    b = 0.08  # [m]
-
     t0 = time.clock()
     iteration = 0
     while True:
-        # TODO: Acceleration
-        forces = f_tot(goal_velocities, velocities, positions, radii, masses,
-                       walls, tau_adj, tau_0, sight, force_max, mu, kappa, a, b)
+        kwargs = dict(agents, **constants)
+        acc = acceleration(**kwargs)
+        agents['velocity'] += acc * dt
+        agents['position'] += agents['velocity'] * dt
 
-        velocities += forces * dt
-        positions += velocities * dt
         iteration += 1
         t1 = time.clock()
         print(iteration, ':', round(t1 - t0, 4))
         t0 = t1
-        yield positions, forces
+        yield

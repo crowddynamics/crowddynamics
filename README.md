@@ -26,6 +26,8 @@ Academic
 
 4. [2014 - Experimental evidence of the "Faster Is Slower" effect]
    (http://www.sciencedirect.com/science/article/pii/S2352146514001215)
+   
+5. [Game Theory 101 MOOC ](https://www.youtube.com/playlist?list=PLKI1h_nAkaQoDzI4xDIXzx6U2ergFmedo)
 
 Motivation
 ----------
