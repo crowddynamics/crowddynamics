@@ -210,7 +210,8 @@ def acceleration(goal_velocity, velocity, position, radius, mass,
                     mu, kappa, a, b)
         acc_ = f / mass[i]
         # TODO: Norm
-        # if acc_ > acc_max:
-        #     acc_max = acc_
+        # acc_norm = np.sqrt(np.dot(acc, acc))
+        # if acc_norm > acc_max:
+        #     acc_max = acc_norm
         acc[i] = acc_
     return acc

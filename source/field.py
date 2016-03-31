@@ -15,17 +15,21 @@ def populate_agents(amount):
 
 
 def set_walls():
-    wall = {'circles': None,
-            'lines': None}
+    wall = {
+        'circles': None,
+        'lines': None
+    }
     return wall
 
 
 def set_agents(amount, x_dims, y_dims):
-    agent = {'mass': np.ones(amount),
-             'radius': 0.2 * np.ones(amount),
-             'position': None,
-             'velocity': None,
-             'goal_velocity': None}
+    agent = {
+        'mass': np.ones(amount),
+        'radius': 0.2 * np.ones(amount),
+        'position': None,
+        'velocity': None,
+        'goal_velocity': None
+    }
     # Variables
     orientation = np.random.uniform(0, 2 * np.pi, amount)
     position = np.stack((np.random.uniform(*x_dims, size=amount),

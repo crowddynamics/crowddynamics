@@ -30,8 +30,9 @@ def update_positions(agents, constants, dt=0.01):
         agents['velocity'] += acc * dt
         agents['position'] += agents['velocity'] * dt
 
-        iteration += 1
         t1 = time.clock()
         print(iteration, ':', round(t1 - t0, 4))
         t0 = t1
-        yield
+
+        iteration += 1
+        yield agents
