@@ -12,12 +12,12 @@ def populate_agents(amount):
     overlap each others or the walls.
     """
     pass
-
+    
 
 def set_walls():
     wall = {
-        'circles': None,
-        'lines': None
+        'round': None,
+        'linear': None
     }
     return wall
 
