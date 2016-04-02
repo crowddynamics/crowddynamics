@@ -46,7 +46,7 @@ def init_simulation():
     }
 
     field = {
-        'amount': 40,
+        'amount': 100   ,
         'x_dims': (0, 4),
         'y_dims': (0, 4)
     }

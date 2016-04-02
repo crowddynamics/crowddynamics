@@ -201,7 +201,7 @@ def acceleration(goal_velocity, velocity, position, radius, mass,
     """
     # TODO: AOT complilation
     # TODO: Adaptive Euler Method
-    acc_max = 0
+    # acc_max = 0
     acc = np.zeros_like(velocity)
     for i in range(len(position)):
         # TODO: Acceleration

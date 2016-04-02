@@ -13,16 +13,17 @@ def func_plot(simulation, agents, field, frames=None, save=False):
            xlabel=r'$ x $', ylabel=r'$ y $')
     # TODO: cmap?
     area = 20 * agents['radius']
-    line, = ax.scatter([], [], s=area, alpha=0.5)
+    line, = ax.plot([], [], marker='o', lw=0, alpha=0.5)
+    # line = ax.scatter([], [], s=area, alpha=0.5)
 
     def init():
-        positions = agents['positions']
+        positions = agents['position']
         line.set_data(positions.T)
         return line,
 
     def update_line(i):
-        x = next(simulation)
-        line.set_data(x.T)
+        agents = next(simulation)
+        line.set_data(agents['position'].T)
         return line,
 
     anim = animation.FuncAnimation(fig, update_line,
