@@ -1,0 +1,11 @@
+% Grid (x, y)
+\definecolor{light-gray}{gray}{0.85}
+\coordinate[] (p1) at (-8, -5);
+\coordinate[] (p2) at ( 8,  5);
+\draw[help lines, step=1, light-gray] (p1) grid (p2);
+
+\coordinate[] (xp) at ($ (p1) + (1, 0) + (1, 1) $);
+\coordinate[] (yp) at ($ (p1) + (0, 1) + (1, 1) $);
+\node[anchor=north] (x) at (xp)  {$ x $};
+\node[anchor=east] (y) at (yp) {$ y $};
+\draw[<->] (xp) -- ($ (p1) + (1, 1) $) -- (yp);

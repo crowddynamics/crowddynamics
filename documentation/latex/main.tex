@@ -1,4 +1,4 @@
-\documentclass[twocolumn]{article}
+\documentclass[]{article}
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage{lmodern}
@@ -16,30 +16,59 @@
 \usepackage{microtype}
 \usepackage[margin=10pt,font=small,labelfont=bf,labelsep=colon]{caption}
 \usepackage[margin=10pt,font=small,labelfont=bf,labelsep=space]{subcaption}
-\usepackage{graphicx}
-\usepackage{epstopdf}
 \usepackage{color}
 \usepackage{wrapfig}
 \usepackage{floatrow}
-%\usepackage{multicol}
+\usepackage{multicol}
 \usepackage{enumerate}
 \usepackage[inline]{enumitem}
 \usepackage{url}
-%\usepackage{minted}
 \usepackage{marvosym}
 \usepackage{wasysym}
-%\usepackage{eurosym}
+
+\usepackage{graphicx}
+\usepackage{epstopdf}
+
+%\usepackage{svg}
+%\setsvg{inkscape=inkscape -z -D}
+
+\usepackage{tikz}
+\usetikzlibrary{calc}
+\usetikzlibrary{arrows}
+%\usetikzlibrary{positioning}
+
+%\usepackage{attachfile}
+%\usepackage{minted}
 
 \graphicspath{{figures/}}
 \floatsetup[table]{capposition=top}
 \allowdisplaybreaks
 \renewcommand{\dateseparator}{--}
+
+% figures to input path
+\makeatletter
+\def\input@path{{figures/}}
+\makeatother
+
 \makeatletter
 \g@addto@macro{\UrlBreaks}{\UrlOrds}
 \makeatother
 
 \begin{document}
+
+\begin{multicols}{2}
 \input{social_force}
 \input{game_theory}
+\end{multicols}
+
+\begin{figure}[H]
+\centering
+\input{figures/linear_wall}
+\caption{Linear wall}
+\end{figure}
+
+\begin{multicols*}{2}
 \input{field}
+\end{multicols*}
+
 \end{document}

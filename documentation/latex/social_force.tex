@@ -37,8 +37,8 @@ h_{iw} &= r_{i} - d_{iw}
 \end{align}
 
 \begin{align}
-\mathbf{n}_{ij} &= \frac{\mathbf{x}_{ij}}{d_{ij}} \\
-\mathbf{t}_{ij} &= R(-45^{\circ}) \cdot \mathbf{n}_{ij} \\
+\hat{\mathbf{n}}_{ij} &= \frac{\mathbf{x}_{ij}}{d_{ij}} \\
+\hat{\mathbf{t}}_{ij} &= R(-45^{\circ}) \cdot \mathbf{n}_{ij} \\
 %\Delta \mathbf{v}_{ji}^{t} &= \mathbf{v}_{ji} \cdot \mathbf{t}_{ij}
 \end{align}
 
@@ -75,7 +75,7 @@ Psychological tendency to keep a certain distance to other agents
 \end{align}
 and walls
 \begin{align}
-\mathbf{f}_{iw}^{soc} &= A_{i} \exp\left(\frac{h_{iw}}{B_{i}}\right) \mathbf{n}_{iw}
+\mathbf{f}_{iw}^{soc} &= A_{i} \exp\left(\frac{h_{iw}}{B_{i}}\right) \hat{\mathbf{n}}_{iw}
 \end{align} 
 
 
@@ -84,7 +84,7 @@ Physical contact forces with other agents
 \begin{align}
 \mathbf{f}_{ij}^{c} &= 
 \begin{cases}
-h_{ij} \left(\mu \cdot \mathbf{n}_{ij} - \kappa \cdot \left(\mathbf{v}_{ji} \cdot \mathbf{t}_{ij}\right) \mathbf{t}_{ij}\right) & h_{ij} > 0 \\
+h_{ij} \cdot \left(\mu \cdot \hat{\mathbf{n}}_{ij} - \kappa \cdot \left(\mathbf{v}_{ji} \cdot \hat{\mathbf{t}}_{ij}\right) \hat{\mathbf{t}}_{ij}\right) & h_{ij} > 0 \\
 0 & \text{otherwise}
 \end{cases}
 \end{align}
@@ -92,7 +92,7 @@ and walls
 \begin{align}
 \mathbf{f}_{iw}^{c} &= 
 \begin{cases}
-h_{iw} \left(\mu \cdot \mathbf{n}_{iw} - \kappa \cdot (\mathbf{v}_{i} \cdot \mathbf{t}_{iw}) \mathbf{t}_{iw}\right) & h_{iw} > 0 \\
+h_{iw} \cdot \left(\mu \cdot \hat{\mathbf{n}}_{iw} - \kappa \cdot (\mathbf{v}_{i} \cdot \hat{\mathbf{t}}_{iw}) \hat{\mathbf{t}}_{iw}\right) & h_{iw} > 0 \\
 0 & \text{otherwise}
 \end{cases}
 \end{align}

@@ -8,7 +8,7 @@ import numpy as np
 
 
 @numba.jit(nopython=True, nogil=True)
-def f_soc_ij(xi, xj, vi, vj, ri, rj, tau_0, sight, force_max):
+def f_soc_ij(xi, xj, vi, vj, ri, rj, tau_0, sight, f_max):
     r"""
     About
     -----
@@ -24,7 +24,7 @@ def f_soc_ij(xi, xj, vi, vj, ri, rj, tau_0, sight, force_max):
     :param rj: Radius of agent j.
     :param tau_0: Max interaction range 2 - 4, aka interaction time horizon
     :param sight: Max distance between agents for interaction to occur
-    :param force_max: Maximum magnitude of force. Forces greater than this are scaled to force max.
+    :param f_max: Maximum magnitude of force. Forces greater than this are scaled to force max.
     :return: Vector of length 2 containing `x` and `y` components of force
              on agent i.
 
@@ -74,9 +74,9 @@ def f_soc_ij(xi, xj, vi, vj, ri, rj, tau_0, sight, force_max):
              (m / tau + 1 / tau_0) * (v_ij - (v_ij * b + x_ij * a) / d)
 
     mag = np.sqrt(np.dot(force, force))
-    if mag > force_max:
+    if mag > f_max:
         # Scales magnitude of force to force max
-        force *= force_max / mag
+        force *= f_max / mag
 
     return force
 
@@ -183,7 +183,7 @@ def f_tot_i(i, v_0, v, x, r, mass,
 
 @numba.jit(nopython=True, nogil=True)
 def acceleration(goal_velocity, velocity, position, radius, mass,
-                 tau_adj, tau_0, sight, force_max, mu, kappa, a, b):
+                 tau_adj, tau_0, sight, f_max, mu, kappa, a, b):
     """
     About
     -----
@@ -205,9 +205,8 @@ def acceleration(goal_velocity, velocity, position, radius, mass,
     acc = np.zeros_like(velocity)
     for i in range(len(position)):
         # TODO: Acceleration
-        f = f_tot_i(i, goal_velocity[i], velocity, position, radius,
-                    mass[i], tau_adj, tau_0, sight, force_max,
-                    mu, kappa, a, b)
+        f = f_tot_i(i, goal_velocity[i], velocity, position, radius, mass[i],
+                    tau_adj, tau_0, sight, f_max, mu, kappa, a, b)
         acc_ = f / mass[i]
         # TODO: Norm
         # acc_norm = np.sqrt(np.dot(acc, acc))

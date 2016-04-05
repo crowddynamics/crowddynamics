@@ -1,13 +1,43 @@
 \section{Field}
 \subsection{Walls}
-Basic elements
-\begin{enumerate}
-\item Round wall
+\subsubsection{Round}
 
+\subsubsection{Linear}
+Properties
+\begin{align}
+\hat{\mathbf{t}}_{w} = \frac{\mathbf{p}_{0} - \mathbf{p}_{1}}{\left\|\mathbf{p}_{0} - \mathbf{p}_{1}\right\|} \\
+\hat{\mathbf{n}}_{w} = R(90^{\circ}) \cdot \hat{\mathbf{t}}_{w}
+\end{align}
+where rotation matrix to counterclockwise direction is
+\begin{align}
+R(\theta) = \begin{bmatrix}\cos \theta & -\sin \theta \\\sin \theta & \cos \theta \\\end{bmatrix}, \quad R(90^{\circ}) = \begin{bmatrix}0 & -1 \\ 1 & 0 \\\end{bmatrix}.
+\end{align}
 
-\item Linear wall
+Solving linear system of equations determining the position of the agent $ \mathbf{x}_{i} $ in relation to wall
+\begin{align}
+\mathbf{p}_{0} + t \hat{\mathbf{n}}_{w} &= \mathbf{x}_{i} + s \hat{\mathbf{t}}_{w} \\
+\mathbf{p}_{1} + t \hat{\mathbf{n}}_{w} &= \mathbf{x}_{i} + s \hat{\mathbf{t}}_{w}
+\end{align}
 
-\end{enumerate}
+\begin{align}
+\mathbf{q}_{0} = \mathbf{p}_{0} - \mathbf{x}_{i} \\
+\mathbf{q}_{1} =\mathbf{p}_{1} - \mathbf{x}_{i}
+\end{align}
+
+\begin{align}
+\begin{bmatrix} t_{0} \\ s_{0} \end{bmatrix} &= (\mathbf{p}_{0} - \mathbf{x}_{i}) \cdot \begin{bmatrix} -\hat{\mathbf{n}}_{w} & \hat{\mathbf{t}}_{w} \end{bmatrix}^{-1} \\
+\begin{bmatrix} t_{1} \\ s_{1} \end{bmatrix} &= (\mathbf{p}_{1} - \mathbf{x}_{i}) \cdot \begin{bmatrix} -\hat{\mathbf{n}}_{w} & \hat{\mathbf{t}}_{w} \end{bmatrix}^{-1}
+\end{align}
+
+\begin{align}
+\begin{bmatrix} t_{0} & t_{1} \\ s_{0} & s_{1} \end{bmatrix} &= \begin{bmatrix} \mathbf{q}_{0} & \mathbf{q}_{1} \end{bmatrix} \cdot \begin{bmatrix} -\hat{\mathbf{n}}_{w} & \hat{\mathbf{t}}_{w} \end{bmatrix}^{-1}
+\end{align}
+
+%\begin{align}
+%d_{iw} &= \| (\mathbf{p}_{0}-\mathbf{x}_{i}) - ((\mathbf{p}_{0}-\mathbf{x}_{i}) \cdot \hat{\mathbf{t}}_{w}) \hat{\mathbf{t}}_{w} \| \\
+%d_{iw} &= \left\| \mathbf{p}_{0}-\mathbf{x}_{i} \right\| \\
+%d_{iw} &= \left\| \mathbf{p}_{1}-\mathbf{x}_{i} \right\|
+%\end{align}
 
 
 \subsection{Agents}

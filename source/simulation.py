@@ -20,20 +20,20 @@ from source.core.core import update_positions
 
 def init_simulation():
     """
-    tau_adj = 0.5  # [s] Characteristic time in which agent adjusts its movement
-    tau_0 = 3.0  # [s] Max interaction range 2 - 4, aka interaction time horizon
-    sight = 7.0  # [m] Max distance between agents for interaction to occur
-    force_max = 5.0  # [N] Forces that are greater will be truncated to max force
-    mu = 1.2e5  # [kg/s^2]  # Compression counteraction Friction constant
-    kappa = 2.4e5  # [kg/(m s)]  # Sliding friction constant
-    a = 2e3  # [N]
-    b = 0.08  # [m]
+    tau_adj: 0.5   [s] Characteristic time in which agent adjusts its movement
+    tau_0:   3.0   [s] Max interaction range 2 - 4, aka interaction time horizon
+    sight:   7.0   [m] Max distance between agents for interaction to occur
+    f_max:   5.0   [N] Forces that are greater will be truncated to max force
+    mu:      1.2e5 [kg s^-2] Compression counteraction Friction constant
+    kappa:   2.4e5 [kg (m s)^-1)] Sliding friction constant
+    a:       2e3   [N] Scaling coefficient for social force between wall and agent
+    b:       0.08  [m] Coefficient for social force between wall and agent
     """
     constants = {
         'tau_adj': 0.5,
         'tau_0': 3.0,
         'sight': 7.0,
-        'force_max': 5.0,
+        'f_max': 5.0,
         'mu': 1.2e5,
         'kappa': 2.4e5,
         'a': 2e3,
@@ -46,7 +46,7 @@ def init_simulation():
     }
 
     field = {
-        'amount': 100   ,
+        'amount': 100,
         'x_dims': (0, 4),
         'y_dims': (0, 4)
     }
@@ -56,5 +56,5 @@ def init_simulation():
 
 
 if __name__ == '__main__':
-    simulation = init_simulation()
-    visualization.func_plot(*simulation)
+    simulation_gen = init_simulation()
+    visualization.func_plot(*simulation_gen)
