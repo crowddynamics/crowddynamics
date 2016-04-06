@@ -1,0 +1,19 @@
+\begin{tikzpicture}
+  [
+    point/.style = {draw, circle, fill=white, inner sep=1.4pt}
+  ]
+
+\input{./grid}
+
+\def \radius {4};
+\def \angle {30};
+
+\coordinate[] (centre) at (0, 0);
+\node[above] (agent) at (centre) {$ \mathbf{x}_{i} $};
+\draw[dashed] (centre) circle (\radius);
+\draw[<->] (centre) -- node[above] {$ r_{i} $}
+           ($ (centre) + ({\radius * cos(\angle)}, {\radius * sin(\angle)} )$);
+
+
+
+\end{tikzpicture}

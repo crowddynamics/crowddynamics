@@ -15,12 +15,12 @@
 \coordinate[] (sep00) at ($ (p0) - (off) - (0, 1) $);
 \coordinate[] (sep01) at ($ (p0) + (off) + (0, 1) $);
 \draw[dashed, red, ->] (sep00) -- (sep01) ;
-\node[anchor=west] () at (sep01) {$ \mathbf{p}_{0} + t \hat{\mathbf{n}}_{w} $};
+\node[anchor=west] () at (sep01) {$ \mathbf{p}_{0} + v \hat{\mathbf{n}}_{w} $};
 
 \coordinate[] (sep10) at ($ (p1) - (off) - (0, 1) $);
 \coordinate[] (sep11) at ($ (p1) + (off) + (0, 1) $);
 \draw[dashed, red, ->] (sep10) -- (sep11) ;
-\node[anchor=west] () at (sep11) {$ \mathbf{p}_{1} + t \hat{\mathbf{n}}_{w} $};
+\node[anchor=west] () at (sep11) {$ \mathbf{p}_{1} + v \hat{\mathbf{n}}_{w} $};
 
 % Linear wall
 \node[point] (start) at (p0) {$ \mathbf{p}_{0} $};
@@ -43,7 +43,8 @@
 % Pedestrians
 % Inside of red separator lines
 % https://en.wikipedia.org/wiki/Distance_from_a_point_to_a_line
-\node[point] (x1) at ($ (start) + (2, 3) $) {$ \mathbf{x}_{i} $};
+\def \radius {3};
+\node[point] (x1) at ($ (start) + (2, \radius) $) {$ \mathbf{x}_{i} $};
 \path[] (start)
         edge[<->, gray, dotted] node[right, midway]{}
         (x1);
@@ -57,21 +58,29 @@
         ($ (start) + (2, 0) $);
 
 \coordinate[] (xvec) at ($ (x1) + (1, 0) $);
-\node[anchor=south] () at (xvec) {$ \mathbf{x}_{i} + s \hat{\mathbf{t}}_{w} $};
+\node[anchor=south] () at (xvec) {$ \mathbf{x}_{i} + h \hat{\mathbf{t}}_{w} $};
 \draw[->] (x1) -- (xvec);
 
-\path[] (x1) 
-        edge[->] node[above=9pt] {$ \hat{\mathbf{n}}_{iw} $}
-        ($ (x1) + (0, 1) $);
+\draw[->] (x1) -- ($ (x1) + (0, 1) $) node[anchor=south] 
+          {$ \hat{\mathbf{n}}_{iw} $};
 
 % Left of red separator line
-\node[point] (x2) at ($ (start) + ({3 * cos(90+45)}, {3 * sin(90+45)}) $) {$ \mathbf{x}_{i} $};
+\def \angle {45};
+\node[point] (x2) at ($ (start) + ({\radius * cos(90+\angle)}, {\radius * sin(90+\angle)}) $) 
+             {$ \mathbf{x}_{i} $};
 \path[] (start)
         edge[<->, gray] node[right]{$ d_{iw} $}
         (x2);
 
+\draw[->] (x2) -- ($ (x2) + ({cos(90+\angle)}, {sin(90+\angle)}) $)
+          node[anchor=south] {$ \hat{\mathbf{n}}_{iw} $};
+
 % Right of red separator line
-\node[point] (x2) at ($ (end) + ({3 * cos(45)}, {3 * sin(45)}) $) {$ \mathbf{x}_{i} $};
+\node[point] (x3) at ($ (end) + ({\radius * cos(\angle)}, {\radius * sin(\angle)}) $) 
+             {$ \mathbf{x}_{i} $};
 \path[] (end)
         edge[<->, gray] node[right, midway]{$ d_{iw} $}
-        (x2);
+        (x3);
+
+\draw[->] (x3) -- ($ (x3) + ({cos(\angle)}, {sin(\angle)}) $) 
+          node[anchor=south] {$ \hat{\mathbf{n}}_{iw} $};

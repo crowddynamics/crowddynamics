@@ -5,8 +5,7 @@
 \subsubsection{Linear}
 Properties
 \begin{align}
-\hat{\mathbf{t}}_{w} = \frac{\mathbf{p}_{0} - \mathbf{p}_{1}}{\left\|\mathbf{p}_{0} - \mathbf{p}_{1}\right\|} \\
-\hat{\mathbf{n}}_{w} = R(90^{\circ}) \cdot \hat{\mathbf{t}}_{w}
+l_{w} = \left\|\mathbf{p}_{1} - \mathbf{p}_{0}\right\|, && \hat{\mathbf{t}}_{w} = \frac{\mathbf{p}_{1} - \mathbf{p}_{0}}{l_{w}}, && \hat{\mathbf{n}}_{w} = R(90^{\circ}) \cdot \hat{\mathbf{t}}_{w}
 \end{align}
 where rotation matrix to counterclockwise direction is
 \begin{align}
@@ -15,22 +14,48 @@ R(\theta) = \begin{bmatrix}\cos \theta & -\sin \theta \\\sin \theta & \cos \thet
 
 Solving linear system of equations determining the position of the agent $ \mathbf{x}_{i} $ in relation to wall
 \begin{align}
-\mathbf{p}_{0} + t \hat{\mathbf{n}}_{w} &= \mathbf{x}_{i} + s \hat{\mathbf{t}}_{w} \\
-\mathbf{p}_{1} + t \hat{\mathbf{n}}_{w} &= \mathbf{x}_{i} + s \hat{\mathbf{t}}_{w}
+\begin{cases}
+\mathbf{p}_{0} + v_{0} \hat{\mathbf{n}}_{w} = \mathbf{x}_{i} + h_{0} \hat{\mathbf{t}}_{w} \\
+\mathbf{p}_{1} + v_{1} \hat{\mathbf{n}}_{w} = \mathbf{x}_{i} + h_{1} \hat{\mathbf{t}}_{w}
+\end{cases} 
+\\
+\begin{cases}
+v_{0} \hat{\mathbf{n}}_{w} - h_{0} \hat{\mathbf{t}}_{w} = \mathbf{x}_{i} - \mathbf{p}_{0} =  \mathbf{q}_{0} \\
+v_{1} \hat{\mathbf{n}}_{w} - h_{1} \hat{\mathbf{t}}_{w} = \mathbf{x}_{i} - \mathbf{p}_{1} = \mathbf{q}_{1}
+\end{cases}
+\end{align}
+In matrix form
+\begin{align}
+\begin{bmatrix} v_{0} & v_{1} \\ h_{0} & h_{1} \end{bmatrix} &= \mathbf{A}^{-1} \begin{bmatrix} \mathbf{q}_{0} & \mathbf{q}_{1} \end{bmatrix}
 \end{align}
 
 \begin{align}
-\mathbf{q}_{0} = \mathbf{p}_{0} - \mathbf{x}_{i} \\
-\mathbf{q}_{1} =\mathbf{p}_{1} - \mathbf{x}_{i}
+\mathbf{A} 
+&= \begin{bmatrix} \hat{\mathbf{n}}_{w} & -\hat{\mathbf{t}}_{w} \end{bmatrix} 
+= \left[\begin{matrix}- t_{1} & - t_{0}\\t_{0} & - t_{1}\end{matrix}\right] \\
+\mathbf{A}^{-1} 
+&= \frac{1}{t_{0}^{2} + t_{1}^{2}} \left[\begin{matrix}- t_{1} & t_{0}\\- t_{0} & - t_{1}\end{matrix}\right]
+= \left[\begin{matrix}- t_{1} & t_{0}\\- t_{0} & - t_{1}\end{matrix}\right]
 \end{align}
 
 \begin{align}
-\begin{bmatrix} t_{0} \\ s_{0} \end{bmatrix} &= (\mathbf{p}_{0} - \mathbf{x}_{i}) \cdot \begin{bmatrix} -\hat{\mathbf{n}}_{w} & \hat{\mathbf{t}}_{w} \end{bmatrix}^{-1} \\
-\begin{bmatrix} t_{1} \\ s_{1} \end{bmatrix} &= (\mathbf{p}_{1} - \mathbf{x}_{i}) \cdot \begin{bmatrix} -\hat{\mathbf{n}}_{w} & \hat{\mathbf{t}}_{w} \end{bmatrix}^{-1}
+h &= h_{1} - h_{0} \\
+v &= v_{0} \wedge v_{1},\quad (v_{0} = v_{1}) \\
+d_{iw} &=
+\begin{cases}
+\left\|\mathbf{q}_{0}\right\| & h \geq l_{w} \\
+\left|v\right| & h = l_{w} \\
+\left\|\mathbf{q}_{1}\right\| & h \leq l_{w}
+\end{cases}
 \end{align}
 
 \begin{align}
-\begin{bmatrix} t_{0} & t_{1} \\ s_{0} & s_{1} \end{bmatrix} &= \begin{bmatrix} \mathbf{q}_{0} & \mathbf{q}_{1} \end{bmatrix} \cdot \begin{bmatrix} -\hat{\mathbf{n}}_{w} & \hat{\mathbf{t}}_{w} \end{bmatrix}^{-1}
+\hat{\mathbf{n}}_{iw} &=
+\begin{cases}
+\hat{\mathbf{q}}_{0} & h \geq l_{w} \\
+\operatorname{sign}(v)\hat{\mathbf{n}}_{w} & h = l_{w} \\
+\hat{\mathbf{q}}_{1} & h \leq l_{w}
+\end{cases}
 \end{align}
 
 %\begin{align}
@@ -41,4 +66,6 @@ Solving linear system of equations determining the position of the agent $ \math
 
 
 \subsection{Agents}
+\subsubsection{Round}
+\subsubsection{Elliptical}
 
