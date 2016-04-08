@@ -15,7 +15,7 @@ except:
     pass
 
 from source.field import set_agents, set_walls
-from source.core.core import update_positions
+from source.core.system import system
 
 
 def init_simulation():
@@ -38,16 +38,22 @@ def init_simulation():
     }
 
     field = {
-        'amount': 100,
+        'amount': 200,
         'x_dims': (0, 4),
         'y_dims': (0, 4),
         'mass': (1, 1),
         'radii': (0.2, 0.2),
     }
 
+    system_params = {
+        't_delta': 0.01
+    }
+
     walls = set_walls(**wall)
     agents = set_agents(**field)
-    simulation = update_positions(agents, constants)
+
+    simulation = system(agents, walls, constants, **system_params)
+
     return simulation, agents, field
 
 
