@@ -12,7 +12,7 @@ def func_plot(simulation, agents, field, frames=None, save=False):
     ax.set(xlim=field['x_dims'], ylim=field['y_dims'],
            xlabel=r'$ x $', ylabel=r'$ y $')
     # TODO: cmap?
-    area = 20 * agents['radius']
+    # area = 20 * agents['radius']
     line, = ax.plot([], [], marker='o', lw=0, alpha=0.5)
     # line = ax.scatter([], [], s=area, alpha=0.5)
 

@@ -30,11 +30,6 @@ def init_simulation():
         'b': 0.08
     }
 
-    params = {
-        'mass_range': (70, 90),
-        'radii_range': 0.2,
-    }
-
     wall = {
         'round_w': [],
         'linear_w': [([0, 0], [0, 4]),
@@ -45,7 +40,9 @@ def init_simulation():
     field = {
         'amount': 100,
         'x_dims': (0, 4),
-        'y_dims': (0, 4)
+        'y_dims': (0, 4),
+        'mass': (1, 1),
+        'radii': (0.2, 0.2),
     }
 
     walls = set_walls(**wall)

@@ -107,6 +107,7 @@ def f_ij(i, x, v, r, tau_0, sight, f_max, mu, kappa):
     return force
 
 
+@numba.jit(nopython=True, nogil=True)
 def f_soc_iw(r_i, d_iw, n_iw, a_i, b_i):
     """
     Params
@@ -122,11 +123,13 @@ def f_soc_iw(r_i, d_iw, n_iw, a_i, b_i):
     return force
 
 
+@numba.jit(nopython=True, nogil=True)
 def f_c_iw(h_iw, n_iw, v_i, t_iw, mu, kappa):
     force = h_iw * (mu * n_iw - kappa * np.dot(v_i, t_iw) * t_iw)
     return force
 
 
+@numba.jit(nopython=True, nogil=True)
 def f_iw_linear(x_i, v_i, r_i, p_0, p_1, inv_a, l_w, n_w, sight, a, b, mu, kappa):
     force = np.zeros(2)
 
@@ -165,6 +168,7 @@ def f_iw_tot(i, x, v, r, w, f_max, sight, mu, kappa, a, b):
     force = np.zeros(2)
 
     for i in range(len(w)):
+        # TODO: wall object unpacking
         p_0, p_1, inv_a, l_w, n_w = w[i]
         force += f_iw_linear(x[i], v[i], r[i], p_0, p_1, inv_a, l_w, n_w,
                              sight, a, b, mu, kappa)

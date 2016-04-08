@@ -41,14 +41,17 @@ def populate_agents(amount):
     pass
 
 
-def set_agents(amount, x_dims, y_dims):
+def set_agents(amount, x_dims, y_dims, mass, radii):
+    np.random.seed()
+
     agent = {
-        'mass': np.ones(amount),
-        'radius': 0.2 * np.ones(amount),
+        'mass': np.random.uniform(*mass, size=amount),
+        'radius': np.random.uniform(*radii, size=amount),
         'position': None,
         'velocity': None,
         'goal_velocity': None
     }
+
     # Variables
     orientation = np.random.uniform(0, 2 * np.pi, amount)
     position = np.stack((np.random.uniform(*x_dims, size=amount),
