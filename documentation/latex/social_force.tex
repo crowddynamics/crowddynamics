@@ -26,13 +26,18 @@ Psychological tendency to keep a certain distance to other agents
 \begin{align}
 \mathbf{f}_{ij}^{soc} &=
 \begin{cases}
-\mathbf{f}_{ij}^{pow} &  d_{ij} \leq sight \\
+\mathbf{f}_{ij}^{pow} &  d_{ij} \leq \text{sight} \\
 0 & \text{otherwise}
 \end{cases}
 \end{align}
 and walls
 \begin{align}
-\mathbf{f}_{iw}^{soc} &= A_{i} \exp\left(\frac{h_{iw}}{B_{i}}\right) \hat{\mathbf{n}}_{iw}
+%\mathbf{f}_{iw}^{soc} &= A_{i} \exp\left(\frac{h_{iw}}{B_{i}}\right) \hat{\mathbf{n}}_{iw}
+\mathbf{f}_{iw}^{soc} &=
+\begin{cases}
+A_{i} \exp\left(\frac{h_{iw}}{B_{i}}\right) \hat{\mathbf{n}}_{iw} &  d_{iw} \leq \text{sight} \\
+0 & \text{otherwise}
+\end{cases}
 \end{align} 
 
 

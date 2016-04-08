@@ -1,1 +1,17 @@
 \section{Differential system}
+Acceleration on an agent $ i $
+\begin{align}
+a_{i}(t) = \frac{\mathbf{f}_{i}(t)}{m_{i}}
+\end{align}
+
+Updating velocity using discrete time step $ \Delta t $
+\begin{align}
+\Delta \mathbf{v} &= a_{i}(t_{k}) \Delta t \\
+\mathbf{v}_{i}(t_{k+1}) &= \mathbf{v}_{i}(t_{k}) + \Delta \mathbf{v}
+\end{align}
+
+Updating position
+\begin{align}
+\Delta \mathbf{x} &= \mathbf{v}_{i}(t_{k+1}) \Delta t \\
+\mathbf{x}_{i}(t_{k+1}) &= \mathbf{x}_{i}(t_{k}) + \Delta \mathbf{x}_{i}
+\end{align}

@@ -13,7 +13,7 @@ def update_positions(agents, constants, dt=0.01):
     About
     -----
     Updates positions and velocities of agents using forces affecting them with
-    given timestep. https://en.wikipedia.org/wiki/Euler_method
+    given timestep.
 
     Params
     ------
@@ -21,6 +21,10 @@ def update_positions(agents, constants, dt=0.01):
     :param constants:
     :param dt:
     :return:
+
+    Resources
+    ---------
+    https://en.wikipedia.org/wiki/Euler_method
     """
     t0 = time.clock()
     iteration = 0

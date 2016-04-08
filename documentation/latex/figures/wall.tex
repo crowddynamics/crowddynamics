@@ -72,6 +72,9 @@
         edge[<->, gray] node[right]{$ d_{iw} $}
         (x2);
 
+\draw[->] (x2) -- ($ (x2) + ({cos(\angle)}, {sin(\angle)}) $)
+          node[anchor=south] {$ \hat{\mathbf{t}}_{iw} $};
+
 \draw[->] (x2) -- ($ (x2) + ({cos(90+\angle)}, {sin(90+\angle)}) $)
           node[anchor=south] {$ \hat{\mathbf{n}}_{iw} $};
 
@@ -81,6 +84,9 @@
 \path[] (end)
         edge[<->, gray] node[right, midway]{$ d_{iw} $}
         (x3);
+
+\draw[->] (x3) -- ($ (x3) + ({cos(-90+\angle)}, {sin(-90+\angle)}) $) 
+          node[anchor=south] {$ \hat{\mathbf{t}}_{iw} $};
 
 \draw[->] (x3) -- ($ (x3) + ({cos(\angle)}, {sin(\angle)}) $) 
           node[anchor=south] {$ \hat{\mathbf{n}}_{iw} $};

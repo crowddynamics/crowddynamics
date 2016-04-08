@@ -81,8 +81,14 @@ def f_soc_ij(xi, xj, vi, vj, ri, rj, tau_0, sight, f_max):
     return force
 
 
+def f_c_ij(mu, kappa, h_ij, n_ij, v_ji, t_ij):
+    force = h_ij * (mu * n_ij - kappa * np.dot(v_ji, t_ij) * t_ij)
+    return force
+
+
 @numba.jit(nopython=True, nogil=True)
 def f_soc_ij_tot(i, x, v, r, tau_0, sight, force_max):
+    # TODO: Update to f_ij
     force = np.zeros(2)
     for j in range(len(x)):
         if i == j:
@@ -92,7 +98,16 @@ def f_soc_ij_tot(i, x, v, r, tau_0, sight, force_max):
     return force
 
 
-def f_soc_iw(a_i, b_i, r_i, d_iw, n_iw):
+def f_ij(i, x, v, r, tau_0, sight, f_max, mu, kappa):
+    force = np.zeros(2)
+    for j in range(len(x)):
+        x_ij = x[i] - x[j]  # position
+        x_dot = np.dot(x_ij, x_ij)
+        d_ij = np.sqrt(x_dot)
+    return force
+
+
+def f_soc_iw(r_i, d_iw, n_iw, a_i, b_i):
     """
     Params
     ------
@@ -107,27 +122,53 @@ def f_soc_iw(a_i, b_i, r_i, d_iw, n_iw):
     return force
 
 
-def f_c_ij(mu, kappa, h_ij, n_ij, v_ji, t_ij):
-    force = h_ij * (mu * n_ij - kappa * np.dot(v_ji, t_ij) * t_ij)
-    return force
-
-
-def f_c_iw(mu, kappa, h_iw, n_iw, v_i, t_iw):
+def f_c_iw(h_iw, n_iw, v_i, t_iw, mu, kappa):
     force = h_iw * (mu * n_iw - kappa * np.dot(v_i, t_iw) * t_iw)
     return force
 
 
-def f_ij(i, x, v, r, tau_0, sight, force_max, mu, kappa):
+def f_iw_linear(x_i, v_i, r_i, p_0, p_1, inv_a, l_w, n_w, sight, a, b, mu, kappa):
     force = np.zeros(2)
-    for j in range(len(x)):
-        x_ij = x[i] - x[j]  # position
-        x_dot = np.dot(x_ij, x_ij)
-        d_ij = np.sqrt(x_dot)
+
+    q_0 = x_i - p_0
+    q_1 = x_i - p_1
+    q = np.zeros((2, 2))
+    q[:, 0] = q_0
+    q[:, 1] = q_1
+    pos = np.dot(inv_a, q)
+    h = pos[1, 1] - pos[1, 0]
+
+    if h > l_w:
+        d_iw = np.sqrt(np.dot(q_0, q_0))
+        n_iw = q_0
+    elif h < l_w:
+        d_iw = np.sqrt(np.dot(q_1, q_1))
+        n_iw = q_1
+    else:
+        v = pos[0, 0]
+        d_iw = np.abs(v)
+        n_iw = np.sign(v) * n_w
+
+    if d_iw <= sight:
+        force += f_soc_iw(r_i, d_iw, n_iw, a, b)
+
+    h_iw = r_i - d_iw
+    if h_iw > 0:
+        rot270 = np.array([[0, 1], [-1, 0]])  # -90 degree rotation
+        t_iw = np.dot(rot270, n_iw)
+        force += f_c_iw(h_iw, n_iw, v_i, t_iw, mu, kappa)
+
     return force
 
 
-def f_iw(i, x, v, r, w, tau_0, sight, force_max, mu, kappa):
+def f_iw_tot(i, x, v, r, w, f_max, sight, mu, kappa, a, b):
     force = np.zeros(2)
+
+    for i in range(len(w)):
+        p_0, p_1, inv_a, l_w, n_w = w[i]
+        force += f_iw_linear(x[i], v[i], r[i], p_0, p_1, inv_a, l_w, n_w,
+                             sight, a, b, mu, kappa)
+
     return force
 
 
@@ -162,7 +203,7 @@ def f_random_fluctuation():
 
 @numba.jit(nopython=True, nogil=True)
 def f_tot_i(i, v_0, v, x, r, mass,
-            tau, tau_0, sight, force_max, mu, kappa, a, b):
+            tau, tau_0, sight, f_max, mu, kappa, a, b):
     """
     Total force on individual agent i.
 
@@ -174,7 +215,7 @@ def f_tot_i(i, v_0, v, x, r, mass,
     force += f_random_fluctuation()
 
     # Agent-Agent
-    force += f_soc_ij_tot(i, x, v, r, tau_0, sight, force_max)
+    force += f_soc_ij_tot(i, x, v, r, tau_0, sight, f_max)
 
     # Agent-Wall
 

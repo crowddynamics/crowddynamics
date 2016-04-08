@@ -1,12 +1,24 @@
 \section{Parameters}
+
 Vector norm and inner product
 \begin{align}
 \left\langle \mathbf{x}, \mathbf{x} \right\rangle &= \mathbf{x} \cdot \mathbf{x} = \left\| \mathbf{x}\right\|^{2}
 \end{align}
+
 Unit vector
 \begin{align}
 \hat{\mathbf{e}} = \frac{\mathbf{e}}{\left\|\mathbf{e}\right\|}
 \end{align}
+
+Rotation matrix to counterclockwise direction
+\begin{align}
+R(\theta) = \begin{bmatrix}\cos \theta & -\sin \theta \\\sin \theta & \cos \theta \\\end{bmatrix}
+\end{align}
+
+\begin{align}
+R(90^{\circ}) = \begin{bmatrix}0 & -1 \\ 1 & 0 \\\end{bmatrix}, \quad R(-90^{\circ}) = \begin{bmatrix}0 & 1 \\ -1 & 0 \\\end{bmatrix}. \\
+\end{align}
+
 Properties of an agent $ i $
 \begin{align}
 \mathbf{x}_{i} &= \text{Centre} \\
@@ -34,6 +46,6 @@ d &= \sqrt{b^{2} - a c} \\
 
 \begin{align}
 \hat{\mathbf{n}}_{ij} &= \frac{\mathbf{x}_{ij}}{d_{ij}} \\
-\hat{\mathbf{t}}_{ij} &= R(-45^{\circ}) \cdot \mathbf{n}_{ij}
+\hat{\mathbf{t}}_{ij} &= R(-90^{\circ}) \cdot \mathbf{n}_{ij}
 %\Delta \mathbf{v}_{ji}^{t} &= \mathbf{v}_{ji} \cdot \mathbf{t}_{ij}
 \end{align}

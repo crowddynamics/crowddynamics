@@ -14,7 +14,7 @@ try:
 except:
     pass
 
-from source.field import set_agents
+from source.field import set_agents, set_walls
 from source.core.core import update_positions
 
 
@@ -45,11 +45,20 @@ def init_simulation():
         'radii_range': 0.2,
     }
 
+    wall = {
+        'round_w': [],
+        'linear_w': [([0, 0], [0, 4]),
+                     ([0, 0], [4, 0]),
+                     ([0, 4], [4, 4])]
+    }
+
     field = {
         'amount': 100,
         'x_dims': (0, 4),
         'y_dims': (0, 4)
     }
+
+    walls = set_walls(**wall)
     agents = set_agents(**field)
     simulation = update_positions(agents, constants)
     return simulation, agents, field

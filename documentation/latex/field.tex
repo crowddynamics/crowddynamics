@@ -7,10 +7,6 @@ Properties
 \begin{align}
 l_{w} = \left\|\mathbf{p}_{1} - \mathbf{p}_{0}\right\|, && \hat{\mathbf{t}}_{w} = \frac{\mathbf{p}_{1} - \mathbf{p}_{0}}{l_{w}}, && \hat{\mathbf{n}}_{w} = R(90^{\circ}) \cdot \hat{\mathbf{t}}_{w}
 \end{align}
-where rotation matrix to counterclockwise direction is
-\begin{align}
-R(\theta) = \begin{bmatrix}\cos \theta & -\sin \theta \\\sin \theta & \cos \theta \\\end{bmatrix}, \quad R(90^{\circ}) = \begin{bmatrix}0 & -1 \\ 1 & 0 \\\end{bmatrix}.
-\end{align}
 
 Solving linear system of equations determining the position of the agent $ \mathbf{x}_{i} $ in relation to wall
 \begin{align}
@@ -35,26 +31,30 @@ In matrix form
 = \left[\begin{matrix}- t_{1} & - t_{0}\\t_{0} & - t_{1}\end{matrix}\right] \\
 \mathbf{A}^{-1} 
 &= \frac{1}{t_{0}^{2} + t_{1}^{2}} \left[\begin{matrix}- t_{1} & t_{0}\\- t_{0} & - t_{1}\end{matrix}\right]
-= \left[\begin{matrix}- t_{1} & t_{0}\\- t_{0} & - t_{1}\end{matrix}\right]
+= \left[\begin{matrix}- t_{1} & t_{0}\\- t_{0} & - t_{1}\end{matrix}\right] \\
+&= - \begin{bmatrix} \hat{\mathbf{t}}_{w} & \hat{\mathbf{n}}_{w} \end{bmatrix} = \mathbf{A}^{T}
 \end{align}
 
 \begin{align}
 h &= h_{1} - h_{0} \\
-v &= v_{0} \wedge v_{1},\quad (v_{0} = v_{1}) \\
+v &= v_{0} \wedge v_{1},\quad (v_{0} = v_{1})
+\end{align}
+
+\begin{align}
 d_{iw} &=
 \begin{cases}
-\left\|\mathbf{q}_{0}\right\| & h \geq l_{w} \\
+\left\|\mathbf{q}_{0}\right\| & h > l_{w} \\
 \left|v\right| & h = l_{w} \\
-\left\|\mathbf{q}_{1}\right\| & h \leq l_{w}
+\left\|\mathbf{q}_{1}\right\| & h < l_{w}
 \end{cases}
 \end{align}
 
 \begin{align}
 \hat{\mathbf{n}}_{iw} &=
 \begin{cases}
-\hat{\mathbf{q}}_{0} & h \geq l_{w} \\
+\hat{\mathbf{q}}_{0} & h > l_{w} \\
 \operatorname{sign}(v)\hat{\mathbf{n}}_{w} & h = l_{w} \\
-\hat{\mathbf{q}}_{1} & h \leq l_{w}
+\hat{\mathbf{q}}_{1} & h < l_{w}
 \end{cases}
 \end{align}
 
@@ -63,7 +63,6 @@ d_{iw} &=
 %d_{iw} &= \left\| \mathbf{p}_{0}-\mathbf{x}_{i} \right\| \\
 %d_{iw} &= \left\| \mathbf{p}_{1}-\mathbf{x}_{i} \right\|
 %\end{align}
-
 
 \subsection{Agents}
 \subsubsection{Round}
