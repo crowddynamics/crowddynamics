@@ -45,9 +45,9 @@
 \allowdisplaybreaks
 \renewcommand{\dateseparator}{--}
 
-% figures to input path
+% Input paths
 \makeatletter
-\def\input@path{{figures/}}
+\def\input@path{{figures/},{sections/}}
 \makeatother
 
 \makeatletter
@@ -56,11 +56,12 @@
 
 \begin{document}
 
-\begin{multicols}{2}
-\input{parameters}
-\input{social_force}
-\input{game_theory}
-\end{multicols}
+\begin{multicols*}{2}
+\input{sections/parameters}
+\input{sections/social_force}
+\input{sections/game_theory}
+\end{multicols*}
+
 % -- Linear wall figure --
 \begin{figure}[ht]
 \centering
@@ -69,8 +70,8 @@
 \end{figure}
 % ------------------------
 \begin{multicols*}{2}
-\input{field}
-\input{differential_system}
+\input{sections/field}
+\input{sections/differential_system}
 \end{multicols*}
 
 \end{document}
