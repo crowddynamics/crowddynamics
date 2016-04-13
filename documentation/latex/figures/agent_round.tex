@@ -5,15 +5,23 @@
 
 \input{./grid}
 
-\def \radius {4};
-\def \angle {30};
+\def \radius {2};
+\def \angle {-30};
 
-\coordinate[] (centre) at (0, 0);
-\node[above] (agent) at (centre) {$ \mathbf{x}_{i} $};
-\draw[dashed] (centre) circle (\radius);
+\coordinate[] (centre) at (-2, -2);
+\node[above=3pt] (agent) at (centre) {$ \mathbf{x}_{i} $};
+\draw[dotted] (centre) circle (\radius);
 \draw[<->] (centre) -- node[above] {$ r_{i} $}
            ($ (centre) + ({\radius * cos(\angle)}, {\radius * sin(\angle)} )$);
 
 
+\coordinate[] (centre2) at (3, 2);
+\node[above=3pt] (agent2) at (centre2) {$ \mathbf{x}_{j} $};
+\draw[dotted] (centre2) circle (\radius);
+\draw[<->] (centre2) -- node[above] {$ r_{j} $}
+           ($ (centre2) + ({\radius * cos(\angle)}, {\radius * sin(\angle)} )$);
+
+
+\draw[->, gray] (centre2) -- node[above=3pt] {$ \mathbf{x}_{ij} $} (centre);
 
 \end{tikzpicture}

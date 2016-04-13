@@ -81,8 +81,9 @@ def f_soc_ij(xi, xj, vi, vj, ri, rj, tau_0, sight, f_max):
     return force
 
 
-def f_c_ij(mu, kappa, h_ij, n_ij, v_ji, t_ij):
-    force = h_ij * (mu * n_ij - kappa * np.dot(v_ji, t_ij) * t_ij)
+@numba.jit(nopython=True, nogil=True)
+def f_c_ij(h_ij, n_ij, v_ij, t_ij, mu, kappa):
+    force = h_ij * (mu * n_ij - kappa * np.dot(v_ij, t_ij) * t_ij)
     return force
 
 
@@ -100,10 +101,23 @@ def f_soc_ij_tot(i, x, v, r, tau_0, sight, force_max):
 
 def f_ij(i, x, v, r, tau_0, sight, f_max, mu, kappa):
     force = np.zeros(2)
+    rot270 = np.array([[0, 1], [-1, 0]])
     for j in range(len(x)):
-        x_ij = x[i] - x[j]  # position
+        if i == j:
+            continue
+        x_ij = x[i] - x[j]
+        v_ij = v[i] - v[j]
         x_dot = np.dot(x_ij, x_ij)
         d_ij = np.sqrt(x_dot)
+        r_ij = r[i] + r[j]
+        h_ij = d_ij - r_ij
+        n_ij = x_ij / d_ij
+        t_ij = np.dot(rot270, n_ij)
+
+        force += f_soc_ij(x[i], x[j], v[i], v[j], r[i], r[j],
+                          tau_0, sight, f_max)
+
+        force += f_c_ij(h_ij, n_ij, v_ij, t_ij, mu, kappa)
     return force
 
 
@@ -130,27 +144,28 @@ def f_c_iw(h_iw, n_iw, v_i, t_iw, mu, kappa):
 
 
 @numba.jit(nopython=True, nogil=True)
-def f_iw_linear(x_i, v_i, r_i, p_0, p_1, inv_a, l_w, n_w, sight, a, b, mu, kappa):
+def f_iw_linear(x_i, v_i, r_i, p_0, p_1, t_w, n_w, l_w, sight, a, b, mu, kappa):
     force = np.zeros(2)
 
     q_0 = x_i - p_0
     q_1 = x_i - p_1
+
     q = np.zeros((2, 2))
     q[:, 0] = q_0
     q[:, 1] = q_1
-    pos = np.dot(inv_a, q)
-    h = pos[1, 1] - pos[1, 0]
+    l_t = np.dot(t_w, q)
+    l_t = l_t[1] - l_t[1]
 
-    if h > l_w:
+    if l_t > l_w:
         d_iw = np.sqrt(np.dot(q_0, q_0))
         n_iw = q_0
-    elif h < l_w:
+    elif l_t < l_w:
         d_iw = np.sqrt(np.dot(q_1, q_1))
         n_iw = q_1
     else:
-        v = pos[0, 0]
-        d_iw = np.abs(v)
-        n_iw = np.sign(v) * n_w
+        l_n = np.dot(n_w, q_0)
+        d_iw = np.abs(l_n)
+        n_iw = np.sign(l_n) * n_w
 
     if d_iw <= sight:
         force += f_soc_iw(r_i, d_iw, n_iw, a, b)
@@ -169,11 +184,31 @@ def f_iw_tot(i, x, v, r, w, f_max, sight, mu, kappa, a, b):
 
     for i in range(len(w)):
         # TODO: wall object unpacking
-        p_0, p_1, inv_a, l_w, n_w = w[i]
-        force += f_iw_linear(x[i], v[i], r[i], p_0, p_1, inv_a, l_w, n_w,
+        p_0, p_1, t_w, n_w, l_w = w[i]
+        force += f_iw_linear(x[i], v[i], r[i], p_0, p_1, t_w, n_w, l_w,
                              sight, a, b, mu, kappa)
 
     return force
+
+
+@numba.jit(nopython=True, nogil=True)
+def f_random_fluctuation():
+    """
+
+    :return: Uniformly distributed random force.
+    """
+    force = np.zeros(2)
+    for i in range(len(force)):
+        # for loop so compilation can be done with numba
+        force[i] = np.random.uniform(-1, 1)
+    return force
+
+
+def e_i_0(e_i, p_i):
+    """
+    Update goal direction.
+    """
+    pass
 
 
 @numba.jit(nopython=True, nogil=True)
@@ -189,19 +224,6 @@ def f_adjust_i(v_0_i, v_i, mass_i, tau_i):
     """
     # TODO: v_0 = v_0 * e_i
     force = (v_0_i - v_i) * mass_i / tau_i
-    return force
-
-
-@numba.jit(nopython=True, nogil=True)
-def f_random_fluctuation():
-    """
-
-    :return: Uniformly distributed random force.
-    """
-    force = np.zeros(2)
-    for i in range(len(force)):
-        # for loop so compilation can be done with numba
-        force[i] = np.random.uniform(-1, 1)
     return force
 
 
@@ -246,16 +268,9 @@ def acceleration(goal_velocity, velocity, position, radius, mass,
     """
     # TODO: AOT complilation
     # TODO: Adaptive Euler Method
-    # acc_max = 0
     acc = np.zeros_like(velocity)
     for i in range(len(position)):
-        # TODO: Acceleration
         f = f_tot_i(i, goal_velocity[i], velocity, position, radius, mass[i],
                     tau_adj, tau_0, sight, f_max, mu, kappa, a, b)
-        acc_ = f / mass[i]
-        # TODO: Norm
-        # acc_norm = np.sqrt(np.dot(acc, acc))
-        # if acc_norm > acc_max:
-        #     acc_max = acc_norm
-        acc[i] = acc_
+        acc[i] = f / mass[i]
     return acc

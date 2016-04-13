@@ -1,28 +1,33 @@
 % Start - End - Mid - nodes
+% -----------------------------
 \coordinate[] (p0)  at (-4, 0);  % Start
 \coordinate[] (p1)  at ( 4, 0);  % End
 \coordinate[] (off) at ( 0, 3);
 
 % Vertical Lines
+% -----------------------------
 \draw[dashed, gray] ($ (p0) + (off) $) -- ($ (p1) + (off) $);
 \draw[dashed, gray] ($ (p0) - (off) $) -- ($ (p1) - (off) $);
 
 % Arcs
+% -----------------------------
 \draw[dashed, brown] ($ (p0) + (off) $) arc (90:270:3);
 \draw[dashed, brown] ($ (p1) - (off) $) arc (-90:90:3);
 
 % Horizontal Line - Separator
+% -----------------------------
 \coordinate[] (sep00) at ($ (p0) - (off) - (0, 1) $);
 \coordinate[] (sep01) at ($ (p0) + (off) + (0, 1) $);
 \draw[dashed, red, ->] (sep00) -- (sep01) ;
-\node[anchor=west] () at (sep01) {$ \mathbf{p}_{0} + v \hat{\mathbf{n}}_{w} $};
+\node[anchor=west] () at (sep01) {$ \mathbf{p}_{0} + l_{n} \hat{\mathbf{n}}_{w} $};
 
 \coordinate[] (sep10) at ($ (p1) - (off) - (0, 1) $);
 \coordinate[] (sep11) at ($ (p1) + (off) + (0, 1) $);
 \draw[dashed, red, ->] (sep10) -- (sep11) ;
-\node[anchor=west] () at (sep11) {$ \mathbf{p}_{1} + v \hat{\mathbf{n}}_{w} $};
+\node[anchor=west] () at (sep11) {$ \mathbf{p}_{1} + l_{n} \hat{\mathbf{n}}_{w} $};
 
 % Linear wall
+% -----------------------------
 \node[point] (start) at (p0) {$ \mathbf{p}_{0} $};
 \node[point] (end)   at (p1) {$ \mathbf{p}_{1} $};
 \coordinate[] (mid) at ($ (p0) + (p1) $);  % / 2
@@ -30,41 +35,47 @@
         edge[<->] node[below=4pt, midway]{Linear Wall} 
         (end);
 
-% Normal
+% Normal Vector
+% -----------------------------
 \path[] (mid)
         edge[->, thick] node[left, midway]{$ \hat{\mathbf{n}}_{w} $} 
         ($ (mid) + (0, 1) $);
 
-% Tangent
+% Tangent Vector
+% -----------------------------
 \path[] ($ (mid) + (0, 0) $) 
         edge[->, thick] node[above, midway]{$ \hat{\mathbf{t}}_{w} $} 
         ($ (mid) + (1, 0) $);
 
+% -----------------------------
 % Pedestrians
+% -----------------------------
+
 % Inside of red separator lines
-% https://en.wikipedia.org/wiki/Distance_from_a_point_to_a_line
+% -----------------------------
 \def \radius {3};
 \node[point] (x1) at ($ (start) + (2, \radius) $) {$ \mathbf{x}_{i} $};
 \path[] (start)
-        edge[<->, gray, dotted] node[right, midway]{}
+        edge[->, gray] node[right, midway]{$ \mathbf{q}_{0} $}
         (x1);
 
-\path[] (x1)
-        edge[<->, gray, dotted] node[right, midway]{}
-        (end);
+\path[] (end)
+        edge[->, gray] node[right, midway]{$ \mathbf{q}_{1} $}
+        (x1);
 
 \path[] (x1)
         edge[<->, gray] node[right, midway]{$ d_{iw} $}
         ($ (start) + (2, 0) $);
 
 \coordinate[] (xvec) at ($ (x1) + (1, 0) $);
-\node[anchor=south] () at (xvec) {$ \mathbf{x}_{i} + h \hat{\mathbf{t}}_{w} $};
+\node[anchor=south] () at (xvec) {$ \mathbf{x}_{i} + l_{t} \hat{\mathbf{t}}_{iw} $};
 \draw[->] (x1) -- (xvec);
 
 \draw[->] (x1) -- ($ (x1) + (0, 1) $) node[anchor=south] 
           {$ \hat{\mathbf{n}}_{iw} $};
 
 % Left of red separator line
+% -----------------------------
 \def \angle {45};
 \node[point] (x2) at ($ (start) + ({\radius * cos(90+\angle)}, {\radius * sin(90+\angle)}) $) 
              {$ \mathbf{x}_{i} $};
@@ -79,6 +90,7 @@
           node[anchor=south] {$ \hat{\mathbf{n}}_{iw} $};
 
 % Right of red separator line
+% -----------------------------
 \node[point] (x3) at ($ (end) + ({\radius * cos(\angle)}, {\radius * sin(\angle)}) $) 
              {$ \mathbf{x}_{i} $};
 \path[] (end)

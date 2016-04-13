@@ -1,11 +1,38 @@
 \begin{tikzpicture}
   [
-    point/.style = {draw, circle, fill=white, inner sep=1.4pt}
+    point/.style = {<-, draw, circle, fill=white, inner sep=1.4pt},
+    level/.style = {sibling distance = 2cm/#1, level distance = 1.5cm}
   ]
 
 \input{./grid}
 
-\node[] () at (0, 0) {$ \mathbf{f}_{i}(t) = \mathbf{f}_{i}^{adj} + \sum_{j\neq i}^{} \left(\mathbf{f}_{ij}^{soc} + \mathbf{f}_{ij}^{c}\right) + \sum_{w}^{} \left(\mathbf{f}_{iw}^{soc} + \mathbf{f}_{iw}^{c}\right) + \boldsymbol{\xi}_{i} $};
+%\node[] () at (0, 0) {$ \mathbf{f}_{i}(t) = \mathbf{f}_{i}^{adj} + \sum_{j\neq i}^{} \left(\mathbf{f}_{ij}^{soc} + \mathbf{f}_{ij}^{c}\right) + \sum_{w}^{} \left(\mathbf{f}_{iw}^{soc} + \mathbf{f}_{iw}^{c}\right) + \boldsymbol{\xi}_{i} $};
+
+\node[point] () at (0, 0) {$ \mathbf{f}_{i}(t) $}
+    child {node[point] {$ \mathbf{f}_{i}^{adj} $} }
+    child {node[point] {$ \sum \mathbf{f}_{ij} $} 
+        child { node[point] {$ \mathbf{f}_{ij}^{soc} $} }
+        child { node[point] {$ \mathbf{f}_{ij}^{c} $} }
+    }
+    child {node[point] {$ \sum \mathbf{f}_{iw} $} 
+        child { node[point] {$ \mathbf{f}_{iw}^{soc} $} }
+        child { node[point] {$ \mathbf{f}_{iw}^{c} $} }
+    }
+    child {node[point] {$ \boldsymbol{\xi}_{i} $} }
+;
+
+\node[] (core) at (0, 4) {System} 
+    child {node[] {Force} }
+    child {node[] {Game} }
+;
+
+\node[] (field) at (2, 4) {Field};
+\node[] () at (-2, 4) {Simulation};
+\node[] () at (-4, 4) {Visualization};
+
+\path[] (core) 
+        edge[->] node[] { }
+        (field);
 
 \end{tikzpicture}
 

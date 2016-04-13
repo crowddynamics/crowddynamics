@@ -11,18 +11,19 @@ l_{w} = \left\|\mathbf{p}_{1} - \mathbf{p}_{0}\right\|, && \hat{\mathbf{t}}_{w} 
 Solving linear system of equations determining the position of the agent $ \mathbf{x}_{i} $ in relation to wall
 \begin{align}
 \begin{cases}
-\mathbf{p}_{0} + v_{0} \hat{\mathbf{n}}_{w} = \mathbf{x}_{i} + h_{0} \hat{\mathbf{t}}_{w} \\
-\mathbf{p}_{1} + v_{1} \hat{\mathbf{n}}_{w} = \mathbf{x}_{i} + h_{1} \hat{\mathbf{t}}_{w}
+\mathbf{p}_{0} + l_{n_0} \hat{\mathbf{n}}_{w} = \mathbf{x}_{i} + l_{t_0} \hat{\mathbf{t}}_{w} \\
+\mathbf{p}_{1} + l_{n_1} \hat{\mathbf{n}}_{w} = \mathbf{x}_{i} + l_{t_1} \hat{\mathbf{t}}_{w}
 \end{cases} 
 \\
 \begin{cases}
-v_{0} \hat{\mathbf{n}}_{w} - h_{0} \hat{\mathbf{t}}_{w} = \mathbf{x}_{i} - \mathbf{p}_{0} =  \mathbf{q}_{0} \\
-v_{1} \hat{\mathbf{n}}_{w} - h_{1} \hat{\mathbf{t}}_{w} = \mathbf{x}_{i} - \mathbf{p}_{1} = \mathbf{q}_{1}
+l_{n_0} \hat{\mathbf{n}}_{w} - l_{t_0} \hat{\mathbf{t}}_{w} = \mathbf{x}_{i} - \mathbf{p}_{0} =  \mathbf{q}_{0} \\
+l_{n_1} \hat{\mathbf{n}}_{w} - l_{t_1} \hat{\mathbf{t}}_{w} = \mathbf{x}_{i} - \mathbf{p}_{1} = \mathbf{q}_{1}
 \end{cases}
 \end{align}
+
 In matrix form
 \begin{align}
-\begin{bmatrix} v_{0} & v_{1} \\ h_{0} & h_{1} \end{bmatrix} &= \mathbf{A}^{-1} \begin{bmatrix} \mathbf{q}_{0} & \mathbf{q}_{1} \end{bmatrix}
+\begin{bmatrix} l_{n_0} & l_{n_1} \\ l_{t_0} & l_{t_1} \end{bmatrix} &= \mathbf{A}^{-1} \begin{bmatrix} \mathbf{q}_{0} & \mathbf{q}_{1} \end{bmatrix}
 \end{align}
 
 \begin{align}
@@ -32,12 +33,12 @@ In matrix form
 \mathbf{A}^{-1} 
 &= \frac{1}{t_{0}^{2} + t_{1}^{2}} \left[\begin{matrix}- t_{1} & t_{0}\\- t_{0} & - t_{1}\end{matrix}\right]
 = \left[\begin{matrix}- t_{1} & t_{0}\\- t_{0} & - t_{1}\end{matrix}\right] \\
-&= - \begin{bmatrix} \hat{\mathbf{t}}_{w} & \hat{\mathbf{n}}_{w} \end{bmatrix} = \mathbf{A}^{T}
+&= \begin{bmatrix} \hat{\mathbf{n}}_{w} \\ -\hat{\mathbf{t}}_{w} \end{bmatrix} = \mathbf{A}^{T}
 \end{align}
 
 \begin{align}
-h &= h_{1} - h_{0} \\
-v &= v_{0} \wedge v_{1},\quad (v_{0} = v_{1})
+v &= v_{0} \wedge v_{1},\quad (v_{0} = v_{1}) \\
+h &= h_{1} - h_{0}
 \end{align}
 
 \begin{align}

@@ -33,6 +33,14 @@ Motivation
 ----------
 To better understand and predict how people move in emergency situations for improving building design and preventing [tragedies](https://en.wikipedia.org/wiki/List_of_human_crushes).
 
+Python Dependencies
+-------------------
+- Numpy
+
+- Matplotlib
+
+- Numba
+
 TODO
 ----
 - [Python Packaging](https://python-packaging-user-guide.readthedocs.org/en/latest/)

@@ -5,7 +5,7 @@ from __future__ import unicode_literals
 
 from timeit import default_timer as timer
 
-from source.core.social_force import acceleration
+from source.core.force import acceleration
 
 
 def timeit(f):
@@ -13,7 +13,7 @@ def timeit(f):
         start = timer()
         ret = f(*args, **kwargs)
         end = timer()
-        print('Function time:', round(end - start, 4))
+        print('Wall time:', round(end - start, 4))
         return ret
     return wrapper
 
@@ -29,12 +29,12 @@ def system(agents, walls, constants, t_delta):
     ------
     :param agents:
     :param constants:
-    :param t_delta:
+    :param t_delta: Timestep
     :return:
 
     Resources
     ---------
-    https://en.wikipedia.org/wiki/Euler_method
+    - https://en.wikipedia.org/wiki/Euler_method
     """
     @timeit
     def update(i):

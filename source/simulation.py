@@ -42,7 +42,7 @@ def init_simulation():
         'x_dims': (0, 4),
         'y_dims': (0, 4),
         'mass': (1, 1),
-        'radii': (0.2, 0.2),
+        'radius': (0.2, 0.2),
     }
 
     system_params = {
