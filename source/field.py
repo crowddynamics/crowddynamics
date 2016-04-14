@@ -1,9 +1,6 @@
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-from __future__ import unicode_literals
-
 import numpy as np
+
+from source.core.positions import set_positions
 
 
 def round_wall(p_0, r):
@@ -12,7 +9,8 @@ def round_wall(p_0, r):
     return p_0, r
 
 
-def linear_wall(p_0, p_1):
+def linear_wall(p):
+    p_0, p_1 = p
     if p_0 == p_1:
         raise ValueError("{} must not be equal to {}".format(p_0, p_1))
     rot90 = np.array([[0, -1], [1,  0]])  # 90 degree counterclockwise rotation
@@ -27,44 +25,51 @@ def linear_wall(p_0, p_1):
 
 def set_walls(round_params, linear_params):
     wall = {
-        'round': map(round_wall, round_params),
-        'linear': map(linear_wall, linear_params)
+        'round': list(map(round_wall, round_params)),
+        'linear': list(map(linear_wall, linear_params))
     }
     return wall
 
 
-def populate_agents(amount, walls):
+def set_velocities(amount):
     """
-    Populate the positions of the agents in to the field so that they don't
-    overlap each others or the walls.
+    Set velocities.
     """
-    pass
-
-
-def set_agents(amount, x_dims, y_dims, mass, radius):
-    agent = {
-        'mass': np.random.uniform(*mass, size=amount),
-        'radius': np.random.uniform(*radius, size=amount),
-        'position': None,
-        'velocity': None,
-        'goal_velocity': None
-    }
-
-    # Variables
     orientation = np.random.uniform(0, 2 * np.pi, amount)
-    position = np.stack((np.random.uniform(*x_dims, size=amount),
-                         np.random.uniform(*y_dims, size=amount)), axis=1)
     velocity = np.stack((np.cos(orientation), np.sin(orientation)), axis=1)
+    return velocity
 
-    agent['position'] = position
-    agent['velocity'] = velocity
-    agent['goal_velocity'] = 1.5 * np.copy(velocity)
+
+def set_uniform(arg, amount):
+    if isinstance(arg, (list, tuple)):
+        if len(arg) == 1:
+            return float(arg[0])
+        elif len(arg) == 2:
+            return np.random.uniform(arg[0], arg[1], size=amount)
+        else:
+            raise ValueError("Too many elements in iterable.")
+    elif isinstance(arg, (int, float)):
+        return float(arg)
+    elif isinstance(arg, np.ndarray):
+        return arg
+    else:
+        raise ValueError("Argument is wrong type.")
+
+
+def set_agents(mass, radius, goal_velocity, amount, x_dims, y_dims, walls=None):
+    agent = dict()
+    agent['mass'] = set_uniform(mass, amount)
+    agent['radius'] = set_uniform(radius, amount)
+    agent['position'] = set_positions(amount, x_dims, y_dims, radius, walls)
+    agent['velocity'] = set_velocities(amount)
+    agent['goal_velocity'] = goal_velocity
     return agent
 
 
-def set_field():
+def set_field(amount, x_dims, y_dims, agent_params, wall_params, seed=None):
     """
     Set Walls and agents.
     """
-    np.random.seed()
-    pass
+    np.random.seed(seed)
+    wall = set_walls()
+    agent = set_agents()

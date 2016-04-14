@@ -37,33 +37,27 @@ In matrix form
 \end{align}
 
 \begin{align}
-v &= v_{0} \wedge v_{1},\quad (v_{0} = v_{1}) \\
-h &= h_{1} - h_{0}
+l_{n} &= l_ {n_0} \wedge l_{n_1} \\
+l_{t} &= l_{t_1} - l_{t_0}
 \end{align}
 
 \begin{align}
 d_{iw} &=
 \begin{cases}
-\left\|\mathbf{q}_{0}\right\| & h > l_{w} \\
-\left|v\right| & h = l_{w} \\
-\left\|\mathbf{q}_{1}\right\| & h < l_{w}
+\left\|\mathbf{q}_{0}\right\| & l_{t} > l_{w} \\
+\left|l_{n}\right| & l_{t} = l_{w} \\
+\left\|\mathbf{q}_{1}\right\| & l_{t} < l_{w}
 \end{cases}
 \end{align}
 
 \begin{align}
 \hat{\mathbf{n}}_{iw} &=
 \begin{cases}
-\hat{\mathbf{q}}_{0} & h > l_{w} \\
-\operatorname{sign}(v)\hat{\mathbf{n}}_{w} & h = l_{w} \\
-\hat{\mathbf{q}}_{1} & h < l_{w}
+\hat{\mathbf{q}}_{0} & l_{t} > l_{w} \\
+\operatorname{sign}(l_{n})\hat{\mathbf{n}}_{w} & l_{t} = l_{w} \\
+\hat{\mathbf{q}}_{1} & l_{t} < l_{w}
 \end{cases}
 \end{align}
-
-%\begin{align}
-%d_{iw} &= \| (\mathbf{p}_{0}-\mathbf{x}_{i}) - ((\mathbf{p}_{0}-\mathbf{x}_{i}) \cdot \hat{\mathbf{t}}_{w}) \hat{\mathbf{t}}_{w} \| \\
-%d_{iw} &= \left\| \mathbf{p}_{0}-\mathbf{x}_{i} \right\| \\
-%d_{iw} &= \left\| \mathbf{p}_{1}-\mathbf{x}_{i} \right\|
-%\end{align}
 
 \subsection{Agents}
 \subsubsection{Round}

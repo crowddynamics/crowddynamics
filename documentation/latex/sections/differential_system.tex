@@ -6,12 +6,12 @@ a_{i}(t) = \frac{\mathbf{f}_{i}(t)}{m_{i}}
 
 Updating velocity using discrete time step $ \Delta t $
 \begin{align}
-\Delta \mathbf{v} &= a_{i}(t_{k}) \Delta t \\
-\mathbf{v}_{i}(t_{k+1}) &= \mathbf{v}_{i}(t_{k}) + \Delta \mathbf{v}
+\Delta \mathbf{v} &= a(t_{k}) \Delta t \\
+\mathbf{v}(t_{k+1}) &= \mathbf{v}(t_{k}) + \Delta \mathbf{v}
 \end{align}
 
 Updating position
 \begin{align}
-\Delta \mathbf{x} &= \mathbf{v}_{i}(t_{k+1}) \Delta t \\
-\mathbf{x}_{i}(t_{k+1}) &= \mathbf{x}_{i}(t_{k}) + \Delta \mathbf{x}_{i}
+\Delta \mathbf{x} &= \mathbf{v}(t_{k+1}) \Delta t \\
+\mathbf{x}(t_{k+1}) &= \mathbf{x}(t_{k}) + \Delta \mathbf{x}
 \end{align}
