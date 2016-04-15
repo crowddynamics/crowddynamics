@@ -35,10 +35,9 @@ To better understand and predict how people move in emergency situations for imp
 
 Python Dependencies
 -------------------
+- Python 3
 - Numpy
-
 - Matplotlib
-
 - Numba
 
 TODO

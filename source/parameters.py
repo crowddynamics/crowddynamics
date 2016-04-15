@@ -1,4 +1,3 @@
-
 constants = {
     'tau_adj': 0.5,
     'tau_0': 3.0,
@@ -14,27 +13,30 @@ system_params = {
     't_delta': 0.01,
 }
 
-field_params = {
+simulation_params = {
     'seed': None,
-    'amount': 100,
-    'x_dims': (0, 4),
-    'y_dims': (0, 4),
+}
+
+field_params = {
+    'amount': 10,
+    'x_dims': (0, 10),
+    'y_dims': (0, 10),
 }
 
 agent_params = {
-    'mass': (1, 1),
-    'radius': (0.2, 0.2),
-    'position': None,
-    'velocity': None,
+    'mass': 1,
+    'radius': (0.2, 0.3),
+    # 'position': None,
+    # 'velocity': None,
     'goal_velocity': 1.5
 }
 
 wall_params = {
-    'round_wall':
-        [],
-    'linear_wall':
-        [[[0, 0], [0, 4]],
-         [[0, 0], [4, 0]],
-         [[0, 4], [4, 4]]]
+    'round_params':
+        (),
+    'linear_params': (
+        ((0, 0), (0, 4)),
+        ((0, 0), (4, 0)),
+        ((0, 4), (4, 4))
+    )
 }
-

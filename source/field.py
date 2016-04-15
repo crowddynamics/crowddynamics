@@ -3,30 +3,54 @@ import numpy as np
 from source.core.positions import set_positions
 
 
-def round_wall(p_0, r):
-    # TODO: Arc
-    p_0 = np.array(p_0)
-    return p_0, r
+def construct_round_wall(round_params):
+    """
+
+    :param round_params: Iterable of center point and radius.
+    :return: Round wall parameters in array.
+    """
+    # TODO: Arc, start - end angles
+    rows = len(round_params)
+    cols = 3
+    wall = np.zeros((rows, cols), dtype=np.float64)
+    for i, (p_0, r_0) in enumerate(round_params):
+        p_0 = np.array(p_0)
+        r_0 = np.array(r_0)
+        wall[i, :] = np.hstack([p_0, r_0])
+    return wall
 
 
-def linear_wall(p):
-    p_0, p_1 = p
-    if p_0 == p_1:
-        raise ValueError("{} must not be equal to {}".format(p_0, p_1))
-    rot90 = np.array([[0, -1], [1,  0]])  # 90 degree counterclockwise rotation
-    p_0 = np.array(p_0)
-    p_1 = np.array(p_1)
-    d = p_1 - p_0
-    l_w = np.sqrt(np.dot(d, d))  # Length of the wall
-    t_w = d / l_w                # Tangential (unit)vector
-    n_w = np.dot(rot90, t_w)     # Normal (unit)vector
-    return p_0, p_1, t_w, n_w, l_w
+def construct_linear_wall(linear_params):
+    """
+
+    :param linear_params: Iterable of start and end points.
+    :return: Linear wall parameters in array.
+    """
+    # 90 degree counterclockwise rotation
+    rot90 = np.array([[0, -1], [1,  0]])
+
+    rows = len(linear_params)
+    cols = 9
+
+    wall = np.zeros((rows, cols), dtype=np.float64)
+    for i, p in enumerate(linear_params):
+        p = np.array(p)
+        d = p[1] - p[0]
+        l_w = np.hypot(d[1], d[0])  # Length of the wall
+        if l_w == 0:
+            raise ValueError(
+                "P_0 = {} must not be equal to P-1 = {}".format(p[0], p[1]))
+        t_w = d / l_w                # Tangential (unit)vector
+        n_w = np.dot(rot90, t_w)     # Normal (unit)vector
+        l_w = np.array([l_w])
+        wall[i, :] = np.hstack([p[0], p[1], t_w, n_w, l_w])
+    return wall
 
 
 def set_walls(round_params, linear_params):
     wall = {
-        'round': list(map(round_wall, round_params)),
-        'linear': list(map(linear_wall, linear_params))
+        'round_wall': construct_round_wall(round_params),
+        'linear_wall': construct_linear_wall(linear_params)
     }
     return wall
 
@@ -56,20 +80,23 @@ def set_uniform(arg, amount):
         raise ValueError("Argument is wrong type.")
 
 
-def set_agents(mass, radius, goal_velocity, amount, x_dims, y_dims, walls=None):
+def set_agents(mass, radius, goal_velocity, amount, x_dims, y_dims, walls):
     agent = dict()
     agent['mass'] = set_uniform(mass, amount)
     agent['radius'] = set_uniform(radius, amount)
-    agent['position'] = set_positions(amount, x_dims, y_dims, radius, walls)
+    agent['position'] = set_positions(amount, x_dims, y_dims, agent['radius'],
+                                      walls)
     agent['velocity'] = set_velocities(amount)
     agent['goal_velocity'] = goal_velocity
+    agent['goal_direction'] = set_velocities(amount)
     return agent
 
 
-def set_field(amount, x_dims, y_dims, agent_params, wall_params, seed=None):
+def set_field(field_params, wall_params, agent_params):
     """
     Set Walls and agents.
     """
-    np.random.seed(seed)
-    wall = set_walls()
-    agent = set_agents()
+    walls = set_walls(**wall_params)
+    kwargs = dict(agent_params, **field_params)
+    agents = set_agents(walls=walls, **kwargs)
+    return agents, walls

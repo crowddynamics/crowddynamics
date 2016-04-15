@@ -31,9 +31,14 @@ def system(agents, walls, constants, t_delta):
     ---------
     - https://en.wikipedia.org/wiki/Euler_method
     """
+    # round_wall = walls['round_wall']
+    # linear_wall = walls['linear_wall']
+
     @timeit
     def update(i):
         kwargs = dict(agents, **constants)
+        # kwargs = dict(kwargs, **walls)
+        kwargs['linear_wall'] = walls['linear_wall']
         acc = acceleration(**kwargs)
         agents['velocity'] += acc * t_delta
         agents['position'] += agents['velocity'] * t_delta

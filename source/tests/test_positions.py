@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from source.core.positions import set_positions
-from source.field import linear_wall
+from source.field import construct_linear_wall
 
 
 lws = [[[0, 0], [0, 10]],
@@ -13,7 +13,7 @@ params = dict(
     x_dims=(0, 10),
     y_dims=(0, 10),
     radius=0.2,
-    linear_walls=list(map(linear_wall, lws)),
+    linear_walls=list(map(construct_linear_wall, lws)),
     seed=None
 )
 
