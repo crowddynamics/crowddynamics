@@ -37,16 +37,16 @@ In matrix form
 \end{align}
 
 \begin{align}
-l_{n} &= l_ {n_0} \wedge l_{n_1} \\
-l_{t} &= l_{t_1} - l_{t_0}
+l_{n} &= l_ {n_0} \vee l_{n_1} = \hat{\mathbf{n}}_{w} \cdot \mathbf{q}_{0} \vee \hat{\mathbf{n}}_{w} \cdot \mathbf{q}_{1} \\
+l_{t} &= l_{t_1} + l_{t_0} = \hat{\mathbf{t}}_{w} \cdot \mathbf{q}_{1} + \hat{\mathbf{t}}_{w} \cdot \mathbf{q}_{0}
 \end{align}
 
 \begin{align}
 d_{iw} &=
 \begin{cases}
 \left\|\mathbf{q}_{0}\right\| & l_{t} > l_{w} \\
-\left|l_{n}\right| & l_{t} = l_{w} \\
-\left\|\mathbf{q}_{1}\right\| & l_{t} < l_{w}
+\left|l_{n}\right| & \text{otherwise} \\
+\left\|\mathbf{q}_{1}\right\| & l_{t} < -l_{w}
 \end{cases}
 \end{align}
 
@@ -54,8 +54,8 @@ d_{iw} &=
 \hat{\mathbf{n}}_{iw} &=
 \begin{cases}
 \hat{\mathbf{q}}_{0} & l_{t} > l_{w} \\
-\operatorname{sign}(l_{n})\hat{\mathbf{n}}_{w} & l_{t} = l_{w} \\
-\hat{\mathbf{q}}_{1} & l_{t} < l_{w}
+\operatorname{sign}(l_{n})\hat{\mathbf{n}}_{w} & \text{otherwise} \\
+\hat{\mathbf{q}}_{1} & l_{t} < -l_{w}
 \end{cases}
 \end{align}
 
