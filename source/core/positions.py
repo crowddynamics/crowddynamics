@@ -13,8 +13,7 @@ def distance_from_linear_wall(x_i, r_i, linear_wall):
     q_0 = x_i - p_0
     q_1 = x_i - p_1
 
-    l_t = np.dot(t_w, q_1) + np.dot(t_w, q_0)
-    l_t *= -1
+    l_t = - np.dot(t_w, q_1) - np.dot(t_w, q_0)
 
     if l_t > l_w:
         d_iw = np.hypot(q_0[0], q_0[1])

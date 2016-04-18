@@ -5,6 +5,7 @@ import numpy as np
 @numba.jit(nopython=True, nogil=True)
 def f_soc_iw(r_i, d_iw, n_iw, a_i, b_i):
     """
+
     Params
     ------
     :param a_i: Coefficient
@@ -19,7 +20,7 @@ def f_soc_iw(r_i, d_iw, n_iw, a_i, b_i):
 
 
 @numba.jit(nopython=True, nogil=True)
-def f_c_iw(h_iw, n_iw, v_i, t_iw, mu, kappa):
+def f_c_iw(v_i, t_iw, n_iw, h_iw, mu, kappa):
     """
 
     :param h_iw:
@@ -34,7 +35,7 @@ def f_c_iw(h_iw, n_iw, v_i, t_iw, mu, kappa):
     return force
 
 
-# @numba.jit(nopython=True, nogil=True)
+@numba.jit(nopython=True, nogil=True)
 def f_iw_linear(x_i, v_i, r_i, p_0, p_1, t_w, n_w, l_w, sight, a, b, mu, kappa):
     """
 
@@ -53,13 +54,13 @@ def f_iw_linear(x_i, v_i, r_i, p_0, p_1, t_w, n_w, l_w, sight, a, b, mu, kappa):
     :param kappa:
     :return:
     """
+    rot270 = np.array(((0, 1), (-1, 0)), dtype=np.float64)
     force = np.zeros(2)
 
     q_0 = x_i - p_0
     q_1 = x_i - p_1
 
-    l_t = np.dot(t_w, q_1) + np.dot(t_w, q_0)
-    l_t *= -1
+    l_t = - np.dot(t_w, q_1) - np.dot(t_w, q_0)
 
     if l_t > l_w:
         d_iw = np.hypot(q_0[0], q_0[1])
@@ -77,9 +78,8 @@ def f_iw_linear(x_i, v_i, r_i, p_0, p_1, t_w, n_w, l_w, sight, a, b, mu, kappa):
 
     h_iw = r_i - d_iw
     if h_iw > 0:
-        rot270 = np.array(((0, 1), (-1, 0)), dtype=np.float64)
         t_iw = np.dot(rot270, n_iw)
-        force += f_c_iw(h_iw, n_iw, v_i, t_iw, mu, kappa)
+        force += f_c_iw(v_i, t_iw, n_iw, h_iw, mu, kappa)
 
     return force
 
@@ -94,7 +94,7 @@ def deconstruct_linear_wall(w):
     return p_0, p_1, t_w, n_w, l_w
 
 
-# @numba.jit(nopython=True, nogil=True)
+@numba.jit(nopython=True, nogil=True)
 def f_iw_linear_tot(i, x, v, r, linear_wall, f_max, sight, mu, kappa, a, b):
     force = np.zeros(2)
 

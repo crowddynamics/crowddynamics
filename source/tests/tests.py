@@ -26,7 +26,7 @@ tau_adj = 0.5
 tau_0 = 3.0
 sight = 7.0
 f_max = 5.0
-mu = 1.2e5,
+mu = 1.2e5
 kappa = 2.4e5
 a = 2e3
 b = 0.08
@@ -54,6 +54,19 @@ wall_params = {
         ((0, 0), (0, 10))
     )
 }
+
+np.random.seed(seed)
+agents, walls = set_field(field_params, wall_params, agent_params)
+
+linear_wall = wall_params['linear_params']
+round_wall = wall_params['round_params']
+
+m = agents['mass']
+r = agents['radius']
+x = agents['position']
+v = agents['velocity']
+v_0 = agents['goal_velocity']
+e = agents['goal_direction']
 
 
 def printing():
@@ -112,20 +125,23 @@ def plot_field(x, r, linear_wall, force=None):
     plt.savefig(fname + '.pdf')
 
 
-def test_force_wall(x, v, r, linear_wall,
-                    f_max, sight, mu, kappa, a, b):
+def test_force_wall():
     from source.core.force_walls import f_iw_linear_tot
 
     f = np.zeros_like(x)
     for i in range(len(x)):
-        f[i] = f_iw_linear_tot(i, x, v, r, linear_wall,
+        f[i] = f_iw_linear_tot(i, x, v, r, walls['linear_wall'],
                                f_max, sight, mu, kappa, a, b)
     return f
 
 
 def test_force_agent():
     from source.core.force_agents import f_ij
-    pass
+
+    f = np.zeros_like(x)
+    for i in range(len(x)):
+        f[i] = f_ij(i, x, v, r, tau_0, sight, f_max, mu, kappa)
+    return f
 
 
 def test_force_adjust():
@@ -134,19 +150,6 @@ def test_force_adjust():
 
 
 if __name__ == '__main__':
-    np.random.seed(seed)
-    agents, walls = set_field(field_params, wall_params, agent_params)
-
-    linear_wall = wall_params['linear_params']
-    round_wall = wall_params['round_params']
-
-    m = agents['mass']
-    r = agents['radius']
-    x = agents['position']
-    v = agents['velocity']
-    v_0 = agents['goal_velocity']
-    e = agents['goal_direction']
-
-    force = test_force_wall(x, v, r, walls['linear_wall'],
-                            f_max, sight, mu, kappa, a, b)
-    plot_field(x, r, linear_wall, force)
+    force = test_force_agent()
+    force = test_force_wall()
+    # plot_field(x, r, linear_wall, force)
