@@ -1,5 +1,6 @@
 constants = {
     'tau_adj': 0.5,
+    'k': 1.5,
     'tau_0': 3.0,
     'sight': 7.0,
     'f_max': 5.0,
@@ -24,10 +25,8 @@ field_params = {
 }
 
 agent_params = {
-    'mass': 1,
+    'mass': (1, 1),
     'radius': (0.2, 0.3),
-    # 'position': None,
-    # 'velocity': None,
     'goal_velocity': 1.5
 }
 

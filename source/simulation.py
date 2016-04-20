@@ -28,6 +28,6 @@ if __name__ == '__main__':
     np.random.seed(simulation_params['seed'])
     agents, walls = set_field(field_params, wall_params, agent_params)
     simulation = system(agents, walls, constants, **system_params)
-    # TODO: goal_direction
     next(simulation)
-    # visualization.func_plot(*simulation)
+    next(simulation)
+    # visualization.plot_animation(*simulation)

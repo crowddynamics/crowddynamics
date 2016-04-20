@@ -3,7 +3,7 @@ import numpy as np
 
 
 @numba.jit(nopython=True, nogil=True)
-def f_soc_iw(r_i, d_iw, n_iw, a_i, b_i):
+def f_soc_iw(h_iw, n_iw, a_i, b_i):
     """
 
     Params
@@ -15,7 +15,7 @@ def f_soc_iw(r_i, d_iw, n_iw, a_i, b_i):
     :param n_iw: Unit vector that is perpendicular to the agent and the wall
     :return:
     """
-    force = a_i * np.exp((r_i - d_iw) / b_i) * n_iw
+    force = a_i * np.exp(h_iw / b_i) * n_iw
     return force
 
 
@@ -73,10 +73,11 @@ def f_iw_linear(x_i, v_i, r_i, p_0, p_1, t_w, n_w, l_w, sight, a, b, mu, kappa):
         d_iw = np.abs(l_n)
         n_iw = np.sign(l_n) * n_w
 
-    if d_iw <= sight:
-        force += f_soc_iw(r_i, d_iw, n_iw, a, b)
-
     h_iw = r_i - d_iw
+
+    if d_iw <= sight:
+        force += f_soc_iw(h_iw, n_iw, a, b)
+
     if h_iw > 0:
         t_iw = np.dot(rot270, n_iw)
         force += f_c_iw(v_i, t_iw, n_iw, h_iw, mu, kappa)
@@ -86,11 +87,7 @@ def f_iw_linear(x_i, v_i, r_i, p_0, p_1, t_w, n_w, l_w, sight, a, b, mu, kappa):
 
 @numba.jit(nopython=True, nogil=True)
 def deconstruct_linear_wall(w):
-    p_0 = w[0:2]
-    p_1 = w[2:4]
-    t_w = w[4:6]
-    n_w = w[6:8]
-    l_w = w[8]
+    p_0, p_1, t_w, n_w, l_w = w[0:2], w[2:4], w[4:6], w[6:8], w[8]
     return p_0, p_1, t_w, n_w, l_w
 
 

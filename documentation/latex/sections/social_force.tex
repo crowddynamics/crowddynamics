@@ -82,8 +82,13 @@ Interaction force between agents
 &= - \left(\frac{k}{a \tau^{2}}\right) 
 \left(\frac{2}{\tau} + \frac{1}{\tau_{0}}\right) 
 \exp\left (-\frac{\tau}{\tau_{0}}\right )
-\left(\mathbf{v}_{ij} -\frac{a \mathbf{x}_{ij} + b \mathbf{v}_{ij}}{d} \right) 
+\left(\mathbf{v}_{ij} -\frac{a \mathbf{x}_{ij} + b \mathbf{v}_{ij}}{d} \right),
 \end{align}
-
-
-
+where
+\begin{align}
+a &= \mathbf{v}_{ij} \cdot \mathbf{v}_{ij} \\
+b &= -\mathbf{x}_{ij} \cdot \mathbf{v}_{ij} \\
+c &= \mathbf{x}_{ij} \cdot \mathbf{x}_{ij} - r_{ij}^{2} \\
+d &= \sqrt{b^{2} - a c} \\
+\tau &= \frac{b - d}{a} > 0.
+\end{align}

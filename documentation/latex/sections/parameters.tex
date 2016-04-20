@@ -19,6 +19,8 @@ R(\theta) = \begin{bmatrix}\cos \theta & -\sin \theta \\\sin \theta & \cos \thet
 R(90^{\circ}) = \begin{bmatrix}0 & -1 \\ 1 & 0 \\\end{bmatrix}, \quad R(-90^{\circ}) = \begin{bmatrix}0 & 1 \\ -1 & 0 \\\end{bmatrix}. \\
 \end{align}
 
+
+
 \section{Parameters}
 
 Properties of an agent $ i $
@@ -39,34 +41,8 @@ h_{iw} &= r_{i} - d_{iw}
 \end{align}
 
 \begin{align}
-a &= \mathbf{v}_{ij} \cdot \mathbf{v}_{ij} \\
-b &= -\mathbf{x}_{ij} \cdot \mathbf{v}_{ij} \\
-c &= \mathbf{x}_{ij} \cdot \mathbf{x}_{ij} - r_{ij}^{2} \\
-d &= \sqrt{b^{2} - a c} \\
-\tau &= \frac{b - \sqrt{d}}{a} > 0
-\end{align}
-
-\begin{align}
 \hat{\mathbf{n}}_{ij} &= \frac{\mathbf{x}_{ij}}{d_{ij}} \\
 \hat{\mathbf{t}}_{ij} &= R(-90^{\circ}) \cdot \mathbf{n}_{ij}
 \end{align}
 
-%tau_adj: 0.5   [s] Characteristic time in which agent adjusts its movement
-%tau_0:   3.0   [s] Max interaction range 2 - 4, aka interaction time horizon
-%sight:   7.0   [m] Max distance between agents for interaction to occur
-%f_max:   5.0   [N] Forces that are greater will be truncated to max force
-%mu:      1.2e5 [kg s^-2] Compression counteraction Friction constant
-%kappa:   2.4e5 [kg (m s)^-1)] Sliding friction constant
-%a:       2e3   [N] Scaling coefficient for social force between wall and agent
-%b:       0.08  [m] Coefficient for social force between wall and agent
 
-\begin{align}
-\tau^{adj} &= 0.5 \\
-\tau_{0} &= 3.0 \\
-\text{sight} & = 7 \\
-\mathbf{f}_{max} &= 5.0 \\
-\mu &= 1.2 \cdot 10^{5} \\
-\kappa &= 2.4 \cdot 10^{5} \\
-A &= 2\cdot 10^{3} \\
-B &= 0.08
-\end{align}

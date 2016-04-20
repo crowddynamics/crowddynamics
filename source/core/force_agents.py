@@ -3,7 +3,7 @@ import numpy as np
 
 
 @numba.jit(nopython=True, nogil=True)
-def f_soc_ij(x_ij, v_ij, r_ij, tau_0, f_max):
+def f_soc_ij(x_ij, v_ij, r_ij, k, tau_0, f_max):
     r"""
     About
     -----
@@ -14,6 +14,7 @@ def f_soc_ij(x_ij, v_ij, r_ij, tau_0, f_max):
     :param x_ij:
     :param v_ij:
     :param r_ij:
+    :param k: Constant for setting units for interaction force. Scale with mass
     :param tau_0: Max interaction range 2 - 4, aka interaction time horizon
     :param sight: Max distance between agents for interaction to occur
     :param f_max: Maximum magnitude of force. Forces greater than this are scaled to force max.
@@ -44,7 +45,6 @@ def f_soc_ij(x_ij, v_ij, r_ij, tau_0, f_max):
         return force
 
     # Force is returned negative as repulsive force
-    k = 1.5  # Constant for setting units for interaction force. Scale with mass
     m = 2.0  # Exponent in power law
     force -= k / (a * tau ** m) * np.exp(-tau / tau_0) * \
              (m / tau + 1 / tau_0) * (v_ij - (v_ij * b + x_ij * a) / d)
@@ -66,13 +66,13 @@ def f_c_ij(h_ij, n_ij, v_ij, t_ij, mu, kappa):
 
 
 @numba.jit(nopython=True, nogil=True)
-def f_ij(i, x, v, r, tau_0, sight, f_max, mu, kappa):
+def f_ij(i, x, v, r, k, tau_0, sight, f_max, mu, kappa):
     """
-
     :param i:
     :param x:
     :param v:
     :param r:
+    :param k:
     :param tau_0:
     :param sight:
     :param f_max:
@@ -93,7 +93,7 @@ def f_ij(i, x, v, r, tau_0, sight, f_max, mu, kappa):
 
         # No force if another agent is not in range of sight
         if d_ij < sight:
-            force += f_soc_ij(x_ij, v_ij, r_ij, tau_0, f_max)
+            force += f_soc_ij(x_ij, v_ij, r_ij, k, tau_0, f_max)
 
         # Agents are overlapping. Friction force.
         h_ij = r_ij - d_ij
