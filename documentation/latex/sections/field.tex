@@ -3,11 +3,6 @@
 \subsubsection{Round}
 
 \subsubsection{Linear}
-Properties
-\begin{align}
-l_{w} = \left\|\mathbf{p}_{1} - \mathbf{p}_{0}\right\|, && \hat{\mathbf{t}}_{w} = \frac{\mathbf{p}_{1} - \mathbf{p}_{0}}{l_{w}}, && \hat{\mathbf{n}}_{w} = R(90^{\circ}) \cdot \hat{\mathbf{t}}_{w}
-\end{align}
-
 Solving linear system of equations determining the position of the agent $ \mathbf{x}_{i} $ in relation to wall
 \begin{align}
 \begin{cases}
@@ -36,11 +31,12 @@ In matrix form
 &= \begin{bmatrix} \hat{\mathbf{n}}_{w} \\ -\hat{\mathbf{t}}_{w} \end{bmatrix} = \mathbf{A}^{T}
 \end{align}
 
+Conditions
 \begin{align}
 l_{n} &= l_ {n_0} \vee l_{n_1} = \hat{\mathbf{n}}_{w} \cdot \mathbf{q}_{0} \vee \hat{\mathbf{n}}_{w} \cdot \mathbf{q}_{1} \\
 l_{t} &= l_{t_1} + l_{t_0} = - \hat{\mathbf{t}}_{w} \cdot \mathbf{q}_{1} - \hat{\mathbf{t}}_{w} \cdot \mathbf{q}_{0}
 \end{align}
-
+Distance between agent and linear wall
 \begin{align}
 d_{iw} &=
 \begin{cases}
@@ -49,7 +45,7 @@ d_{iw} &=
 \left\|\mathbf{q}_{1}\right\| & l_{t} < -l_{w}
 \end{cases}
 \end{align}
-
+Normal vector away from the wall
 \begin{align}
 \hat{\mathbf{n}}_{iw} &=
 \begin{cases}

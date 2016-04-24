@@ -1,7 +1,7 @@
-/material
-/animations/
-/docs/
-/figures
+/documentation/material
+/documentation/animations/
+/doc/
+/documentation/figures
 documentation/latex/examples/
 
 # Created by .ignore support plugin (hsz.mobi)
@@ -60,7 +60,7 @@ coverage.xml
 *.log
 
 # Sphinx documentation
-docs/_build/
+doc/_build/
 
 # PyBuilder
 target/

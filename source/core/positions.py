@@ -108,3 +108,4 @@ def set_positions(amount, x_dims, y_dims, radius, walls, seed=None):
         position[i, :] = agent
         i += 1
     return position
+

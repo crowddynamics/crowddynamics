@@ -35,14 +35,12 @@ def construct_linear_wall(linear_params):
     wall = np.zeros((rows, cols), dtype=np.float64)
     for i, p in enumerate(linear_params):
         p = np.array(p)
-        d = p[1] - p[0]
+        d = p[1] - p[0]             # Vector from p_0 to p_1
         l_w = np.hypot(d[1], d[0])  # Length of the wall
-        if l_w == 0:
-            raise ValueError(
-                "P_0 = {} must not be equal to P-1 = {}".format(p[0], p[1]))
-        t_w = d / l_w                # Tangential (unit)vector
-        n_w = np.dot(rot90, t_w)     # Normal (unit)vector
+        t_w = d / l_w               # Tangential (unit)vector
+        n_w = np.dot(rot90, t_w)    # Normal (unit)vector
         l_w = np.array([l_w])
+        # Stack value horizontally
         wall[i, :] = np.hstack([p[0], p[1], t_w, n_w, l_w])
     return wall
 

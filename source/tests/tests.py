@@ -2,7 +2,8 @@ from pprint import pprint
 
 import numpy as np
 
-from source.core.force import f_tot_i, acceleration
+from source.core.force import f_tot_i
+from source.core.system import acceleration
 from source.field import set_field
 from source.visualization import plot_field
 

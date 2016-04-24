@@ -1,48 +1,46 @@
-\section{Definitions}
-
-Vector norm and inner product
-\begin{align}
-\left\langle \mathbf{x}, \mathbf{x} \right\rangle &= \mathbf{x} \cdot \mathbf{x} = \left\| \mathbf{x}\right\|^{2}
-\end{align}
-
-Unit vector
-\begin{align}
-\hat{\mathbf{e}} = \frac{\mathbf{e}}{\left\|\mathbf{e}\right\|}
-\end{align}
-
-Rotation matrix to counterclockwise direction
-\begin{align}
-R(\theta) = \begin{bmatrix}\cos \theta & -\sin \theta \\\sin \theta & \cos \theta \\\end{bmatrix}
-\end{align}
-
-\begin{align}
-R(90^{\circ}) = \begin{bmatrix}0 & -1 \\ 1 & 0 \\\end{bmatrix}, \quad R(-90^{\circ}) = \begin{bmatrix}0 & 1 \\ -1 & 0 \\\end{bmatrix}. \\
-\end{align}
-
-
-
 \section{Parameters}
-
+\subsection{Agent}
 Properties of an agent $ i $
-\begin{align}
-\mathbf{x}_{i} &= \text{Centre} \\
-\mathbf{v}_{i} &= \text{Velocity} \\
-r_{i} &= \text{Radius} \\
-m_{i} &= \text{Mass}
-\end{align}
+\begin{table}[H]
+\begin{tabular}{ll}
+$ \mathbf{x}_{i} $ & Position   \\ 
+$ \mathbf{v}_{i} $ & Velocity  \\ 
+$ \hat{\mathbf{e}}_{i} $ & Goal direction \\
+$ v_0 $            & Goal velocity \\
+$ p_i $            & Herding tendency \\
+$ r_{i} $          & Radius  \\ 
+$ m_{i} $          & Mass  \\ 
+\end{tabular} 
+\end{table}
 
-\begin{align}
-\mathbf{x}_{ij} &= \mathbf{x}_{i} - \mathbf{x}_{j} \\
-\mathbf{v}_{ij} &= \mathbf{v}_{i} - \mathbf{v}_{j} \\
-r_{ij} &= r_{i} + r_{j} \\
-d_{ij} &= \left\|\mathbf{x}_{ij}\right\| \\
-h_{ij} &= r_{ij} - d_{ij} \\
-h_{iw} &= r_{i} - d_{iw}
-\end{align}
+Relative parameters
+\begin{table}[H]
+\begin{tabular}{ll}
+$ \mathbf{x}_{ij} = \mathbf{x}_{i} - \mathbf{x}_{j} $ & Relative position between two agents \\
+$ \mathbf{v}_{ij} = \mathbf{v}_{i} - \mathbf{v}_{j} $ & Relative velocity between two agents \\ 
+$ r_{ij} = r_{i} + r_{j} $ & Total radius \\ 
+$ d_{ij} = \left\|\mathbf{x}_{ij}\right\| $ & Distance between agents \\
+$ h_{ij} = r_{ij} - d_{ij} $ &  \\
+$ \hat{\mathbf{n}}_{ij} = \mathbf{x}_{ij} / d_{ij} $ &  \\ 
+$ \hat{\mathbf{t}}_{ij} = R(-90^{\circ}) \cdot \hat{\mathbf{n}}_{ij} $ &  \\ 
+\end{tabular} 
+\end{table}
 
-\begin{align}
-\hat{\mathbf{n}}_{ij} &= \frac{\mathbf{x}_{ij}}{d_{ij}} \\
-\hat{\mathbf{t}}_{ij} &= R(-90^{\circ}) \cdot \mathbf{n}_{ij}
-\end{align}
+\subsection{Wall}
+Properties of linear wall $ w $
+\begin{table}[H]
+\begin{tabular}{ll}
+$ \mathbf{p}_{0} $ & Starting point of linear wall \\
+$ \mathbf{p}_{1} $ & End point of linear wall \\
+\end{tabular}
+\end{table}
 
-
+Relative
+\begin{table}[H]
+\begin{tabular}{ll}
+$ h_{iw} = r_{i} - d_{iw} $ & \\
+$ l_{w} = \left\|\mathbf{p}_{1} - \mathbf{p}_{0}\right\| $ & \\
+$ \hat{\mathbf{t}}_{w} = \left(\mathbf{p}_{1} - \mathbf{p}_{0}\right) / l_{w} $ & \\
+$ \hat{\mathbf{n}}_{w} = R(90^{\circ}) \cdot \hat{\mathbf{t}}_{w} $ & \\
+\end{tabular}
+\end{table}

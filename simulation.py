@@ -1,17 +1,8 @@
-import sys
-
 import numpy as np
 
-try:
-    # Find "Source" module to perform import
-    module_path = '/home/jaan/Dropbox/Projects/Crowd-Dynamics/'
-    sys.path.append(module_path)
-    from source.parameters import *
-    from source.field import set_field
-    from source import visualization
-    from source.core.system import system
-except:
-    pass
+from source.core.system import system
+from source.field import set_field
+from source.parameters import *
 
 
 if __name__ == '__main__':

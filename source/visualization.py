@@ -10,6 +10,8 @@ import matplotlib.pyplot as plt
 import seaborn
 from matplotlib import animation as animation
 
+from source.io.path import default_path
+
 
 def consume(iterator, n=None):
     """Advance the iterator n-steps ahead. If n is none, consume entirely."""
@@ -66,15 +68,8 @@ def plot_field(position, radius, x_dims, y_dims,
     if force is not None:
         add_patches(ax, force_patches(position, force, alpha=0.8, width=0.15))
 
-    # Save figure to figures/field.pdf
     if save:
-        root = '/home/jaan/Dropbox/Projects/Crowd-Dynamics'
-        folder = 'figures'
-        folder = os.path.join(root, folder)
-        if not os.path.exists(folder):
-            os.mkdir(folder)
-        fname = 'field'
-        fname = os.path.join(folder, fname)
+        fname = default_path('field', 'documentation', 'figures')
         plt.savefig(fname + '.pdf')
     else:
         plt.show()
