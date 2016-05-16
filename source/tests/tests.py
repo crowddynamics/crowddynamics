@@ -51,11 +51,11 @@ def test_force_adjust():
 
 
 def test_force_tot_i():
-    from source.core.system import acceleration
+    from source.core.system import f_tot
     a = np.zeros_like(x)
     kwargs = dict(agents, **constant)
     kwargs['linear_wall'] = walls['linear_wall']
-    a = acceleration(**kwargs)
+    a = f_tot(**kwargs)
     return a
 
 

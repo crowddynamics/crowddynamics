@@ -1,17 +1,5 @@
-import numpy as np
-
-import seaborn
-
-from source import visualization
 from source.core.system import system
-from source.field.field import set_field
-
-import source.parameters as params
-
-
-seaborn.set()
-np.random.seed(params.simulation_params['seed'])
-
+from source.parameters import constant, linear_wall, agent
 
 """
 1. Parameters
@@ -31,18 +19,13 @@ np.random.seed(params.simulation_params['seed'])
 """
 
 if __name__ == '__main__':
-    agents, walls = set_field(params.field_params,
-                              params.wall_params,
-                              params.agent_params)
+    simulation = system(constant, agent, linear_wall)
+    i = 0
+    for _ in simulation:
+        i += 1
+        if i > 1000:
+            break
 
-    # constants = params.Constants
-    simulation = system(agents,
-                        walls,
-                        params.constant,
-                        # constants
-                        **params.system_params)
-
-    visualization.plot_animation(simulation,
-                                 agents,
-                                 params.wall_params,
-                                 params.field_params)
+    """
+    visualization.plot_animation()
+    """

@@ -31,13 +31,12 @@ def f_c_iw(v_i, t_iw, n_iw, h_iw, mu, kappa):
 
 # @numba.jit(nopython=True, nogil=True)
 def f_iw_round():
-    force = np.zeros(2)
-    return NotImplemented
+    pass
 
 
 @numba.jit(nopython=True, nogil=True)
-def f_iw_linear(x_i, v_i, r_i, p_0, p_1, t_w, n_w, l_w, sight, a, b, mu, kappa):
-    rot270 = np.array(((0, 1), (-1, 0)), dtype=np.float64)
+def f_iw_linear(x_i, v_i, r_i, p_0, p_1, t_w, n_w, l_w, constant):
+    rot270 = np.array(((0.0, 1.0), (-1.0, 0.0)))
     force = np.zeros(2)
 
     q_0 = x_i - p_0
@@ -58,30 +57,28 @@ def f_iw_linear(x_i, v_i, r_i, p_0, p_1, t_w, n_w, l_w, sight, a, b, mu, kappa):
 
     h_iw = r_i - d_iw
 
-    if d_iw <= sight:
-        force += f_soc_iw(h_iw, n_iw, a, b)
+    if d_iw <= constant.sight:
+        force += f_soc_iw(h_iw, n_iw, constant.a, constant.b)
 
     if h_iw > 0:
         t_iw = np.dot(rot270, n_iw)
-        force += f_c_iw(v_i, t_iw, n_iw, h_iw, mu, kappa)
+        force += f_c_iw(v_i, t_iw, n_iw, h_iw, constant.mu, constant.kappa)
 
     return force
 
 
 @numba.jit(nopython=True, nogil=True)
-def deconstruct_linear_wall(w):
-    p_0, p_1, t_w, n_w, l_w = w[0:2], w[2:4], w[4:6], w[6:8], w[8]
-    return p_0, p_1, t_w, n_w, l_w
+def f_iw_linear_tot(constant, agent, linear_wall):
+    force = np.zeros((agent.size, 2))
+    x = agent.position
+    v = agent.velocity
+    # TODO: Fix scalar vs array
+    r = agent.radius.flatten()
 
-
-@numba.jit(nopython=True, nogil=True)
-def f_iw_linear_tot(i, x, v, r, linear_wall, f_max, sight, mu, kappa, a, b):
-    force = np.zeros(2)
-
-    for row in range(len(linear_wall)):
-        w = linear_wall[row]
-        p_0, p_1, t_w, n_w, l_w = deconstruct_linear_wall(w)
-        force += f_iw_linear(x[i], v[i], r[i], p_0, p_1, t_w, n_w, l_w,
-                             sight, a, b, mu, kappa)
+    for i in range(agent.size):
+        for j in range(linear_wall.size):
+            p_0, p_1, t_w, n_w, l_w = linear_wall.deconstruct(j)
+            force += f_iw_linear(x[i], v[i], r[i], p_0, p_1, t_w, n_w, l_w,
+                                 constant)
 
     return force

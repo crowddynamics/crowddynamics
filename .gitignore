@@ -2,6 +2,8 @@
 /documentation/animations/
 /doc/
 /documentation/figures
+/source/field/field.py
+/source/field/position.py
 documentation/latex/examples/
 
 # Created by .ignore support plugin (hsz.mobi)

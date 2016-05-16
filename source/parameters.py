@@ -1,7 +1,12 @@
+import numpy as np
+from collections import OrderedDict
 from numba import jitclass, float64
 
+from source.field.agent import agent_struct, initial_position, initial_velocity
+from source.field.wall import LinearWall
 
-spec_constant = dict(
+
+spec_constant = OrderedDict(
     tau_adj=float64,
     k=float64,
     tau_0=float64,
@@ -28,48 +33,26 @@ class Constant(object):
         self.b = 0.08
 
 
-constant = {
-    'tau_adj': 0.5,
-    'k': 1.5 * 70,
-    'tau_0': 3.0,
-    'sight': 7.0,
-    'f_max': 1e3,
-    'mu': 1.2e5,
-    'kappa': 2.4e5,
-    'a': 2e3,
-    'b': 0.08
-}
+constant = Constant()
 
-bounds = {
-    'acceleration_max': None,
-}
+x_dims = (0, 10)
+y_dims = (0, 10)
 
-system_params = {
-    't_delta': 0.01,
-}
+linear_params = np.array((((0, 0), (0, 10)),
+                          ((0, 0), (10, 0)),
+                          ((0, 10), (10, 10))), dtype=np.float64
+                         )
 
-simulation_params = {
-    'seed': None,
-}
+linear_wall = LinearWall(linear_params)
 
-field_params = {
-    'amount': 100,
-    'x_dims': (0, 10),
-    'y_dims': (0, 10),
-}
+amount = 100
+mass = np.random.uniform(60.0, 80.0, amount)
+radius = np.random.uniform(0.2, 0.3, amount)
+goal_velocity = 2.5
 
-agent_params = {
-    'mass': (60, 80),
-    'radius': (0.2, 0.3),
-    'goal_velocity': 2.5
-}
+position = initial_position(amount, x_dims, y_dims, radius, linear_wall)
+velocity = initial_velocity(amount)
+goal_direction = velocity
 
-wall_params = {
-    'round_params':
-        (),
-    'linear_params': (
-        ((0, 0), (0, 10)),
-        ((0, 0), (10, 0)),
-        ((0, 10), (10, 10))
-    )
-}
+agent = agent_struct(mass, radius, position, velocity, goal_velocity,
+                     goal_direction)

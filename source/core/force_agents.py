@@ -4,7 +4,7 @@ import numpy as np
 
 @numba.jit(nopython=True, nogil=True)
 def f_soc_ij(x_ij, v_ij, r_ij, k, tau_0, f_max):
-    r"""
+    """
     About
     -----
     Social interaction force between two agents `i` and `j`. [1]
@@ -66,39 +66,37 @@ def f_c_ij(h_ij, n_ij, v_ij, t_ij, mu, kappa):
 
 
 @numba.jit(nopython=True, nogil=True)
-def f_ij(i, x, v, r, k, tau_0, sight, f_max, mu, kappa):
-    """
-    :param i:
-    :param x:
-    :param v:
-    :param r:
-    :param k:
-    :param tau_0:
-    :param sight:
-    :param f_max:
-    :param mu:
-    :param kappa:
-    :return:
-    """
-    rot270 = np.array(((0, 1), (-1, 0)), dtype=np.float64)
-    force = np.zeros(2)
+def f_ij(constant, agent):
+    rot270 = np.array(((0.0, 1.0), (-1.0, 0.0)))
+    force = np.zeros((agent.size, 2))
 
-    for j in range(len(x)):
-        if i == j:
-            continue
-        x_ij = x[i] - x[j]  # position
-        v_ij = v[i] - v[j]  # velocity
-        r_ij = r[i] + r[j]  # radius
-        d_ij = np.hypot(x_ij[0], x_ij[1])  # Distance between agents
+    x = agent.position
+    v = agent.velocity
+    # TODO: Fix scalar vs array
+    r = agent.radius.flatten()
 
-        # No force if another agent is not in range of sight
-        if d_ij < sight:
-            force += f_soc_ij(x_ij, v_ij, r_ij, k, tau_0, f_max)
+    for i in range(agent.size):
+        for j in range(agent.size):
+            if i == j:
+                continue
+            x_ij = x[i] - x[j]  # position
+            v_ij = v[i] - v[j]  # velocity
+            r_ij = r[i] + r[j]  # radius
+            d_ij = np.hypot(x_ij[0], x_ij[1])  # Distance between agents
 
-        # Agents are overlapping. Friction force.
-        h_ij = r_ij - d_ij
-        if h_ij > 0:
-            n_ij = x_ij / d_ij
-            t_ij = np.dot(rot270, n_ij)
-            force += f_c_ij(h_ij, n_ij, v_ij, t_ij, mu, kappa)
+            # No force if another agent is not in range of sight
+            if d_ij < constant.sight:
+                force[i] += f_soc_ij(x_ij, v_ij, r_ij,
+                                     constant.k,
+                                     constant.tau_0,
+                                     constant.f_max)
+
+            # Agents are overlapping. Friction force.
+            h_ij = r_ij - d_ij
+            if h_ij > 0:
+                n_ij = x_ij / d_ij
+                t_ij = np.dot(rot270, n_ij)
+                force[i] += f_c_ij(h_ij, n_ij, v_ij, t_ij,
+                                   constant.mu,
+                                   constant.kappa)
     return force

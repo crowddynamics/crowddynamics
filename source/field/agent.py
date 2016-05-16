@@ -46,16 +46,18 @@ def agent_struct(mass,
             value = float(value)
             t = float64
         elif isinstance(value, np.ndarray):
-            value = np.float64(value)
-            t = float64[:]
+            value = np.array(value, dtype=np.float64)
+            value = value.reshape((len(value), 1))
+            t = float64[:, :]
         else:
             raise ValueError("Wrong type.")
         spec_agents[key] = t
+        return value
 
     # Init spec_agents
-    spec('mass', mass)
-    spec('radius', radius)
-    spec('goal_velocity', goal_velocity)
+    mass = spec('mass', mass)
+    radius = spec('radius', radius)
+    goal_velocity = spec('goal_velocity', goal_velocity)
     # Jitclass of Agents
     agent = jitclass(spec_agents)(Agent)
     # Set parameters
@@ -95,12 +97,13 @@ def initial_position(amount, x_dims, y_dims, radius, linear_wall=None):
                 continue
 
         # Test overlapping with walls
-        cond = 1
-        for i in range(linear_wall.size):
-            d = linear_wall.distance(i, pos) - rad
-            cond *= d > 0
-        if not cond:
-            continue
+        if linear_wall is not None:
+            cond = 1
+            for j in range(linear_wall.size):
+                d = linear_wall.distance(j, pos) - rad
+                cond *= d > 0
+            if not cond:
+                continue
 
         # If succesfull
         position[i, :] = pos

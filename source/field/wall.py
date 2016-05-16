@@ -8,7 +8,7 @@ spec_round = OrderedDict(
     round_params=float64[:, :],
     cols=int64,
     rows=int64,
-    length=int64,
+    size=int64,
     wall=float64[:, :],
 )
 
@@ -46,7 +46,7 @@ spec_linear = OrderedDict(
     linear_params=float64[:, :, :],
     cols=int64,
     rows=int64,
-    length=int64,
+    size=int64,
     wall=float64[:, :],
 )
 
@@ -101,3 +101,5 @@ class LinearWall(object):
             d_iw = np.abs(l_n)
 
         return d_iw
+
+    # TODO: distance with direction

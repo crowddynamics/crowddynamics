@@ -81,6 +81,11 @@ def plot_animation(simulation, agents, wall_params, field, frames=None,
     http://matplotlib.org/1.4.1/examples/animation/index.html
     http://matplotlib.org/examples/api/patch_collection.html
     """
+    try:
+        import seaborn
+        seaborn.set()
+    except ImportError():
+        pass
     fig, ax = plt.subplots(figsize=(12, 12))
     ax.set(xlim=field['x_dims'],
            ylim=field['y_dims'],

@@ -38,20 +38,33 @@ class MyTestCase(unittest.TestCase):
             lw.deconstruct(2)
 
     def test_agent(self):
-        from source.field.agent import agent_struct
+        from source.field.agent import agent_struct, initial_position
+        from source.field.wall import LinearWall
+
+        amount = 10
+        x_dims = (0, 100)
+        y_dims = (0, 100)
+        radii = (1, 0.5 * np.linspace(1, 11, amount))
+
+        lp = np.array((((0.0, 0.0), (100.0, 0.0)),
+                       ((0.0, 0.0), (0, 100.0))))
+        lw = LinearWall(lp)
+
         num = 1.0
-        arr1d = np.ones(10, np.float64)
-        arr2d = np.ones(20, np.float64).reshape(10, 2)
+        arr1d = np.ones(amount, np.float64)
+        arr2d = np.ones(2 * amount, np.float64).reshape(10, 2)
+
         for var in (num, arr1d):
-            # Should not raise errors
+            # Test agent struct initialization
             agent = agent_struct(var, var, arr2d, arr2d, var, arr2d)
-            # agent.mass
-            # agent.radius
-            # agent.position
-            # agent.velocity
-            # agent.goal_velocity
-            # agent.goal_direction
-            # agent.size
+
+        for radius in radii:
+            # Without walls
+            position = initial_position(amount, x_dims, y_dims, radius)
+
+        for radius in radii:
+            # With walls
+            position = initial_position(amount, x_dims, y_dims, radius, lw)
 
     def test_forces(self):
         pass
