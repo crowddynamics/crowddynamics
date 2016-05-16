@@ -34,6 +34,7 @@ def f_soc_ij(x_ij, v_ij, r_ij, k, tau_0, f_max):
     d = b ** 2 - a * c
 
     # TODO: Explanation
+    # d < 0 - No interaction if tau cannot be defined.
     if (d < 0) or (- 0.001 < a < 0.001):
         return force
 
@@ -60,8 +61,7 @@ def f_soc_ij(x_ij, v_ij, r_ij, k, tau_0, f_max):
 
 @numba.jit(nopython=True, nogil=True)
 def f_c_ij(h_ij, n_ij, v_ij, t_ij, mu, kappa):
-    force = np.zeros(2)
-    force += h_ij * (mu * n_ij - kappa * np.dot(v_ij, t_ij) * t_ij)
+    force = h_ij * (mu * n_ij - kappa * np.dot(v_ij, t_ij) * t_ij)
     return force
 
 

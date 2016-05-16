@@ -3,7 +3,9 @@ from timeit import default_timer as timer
 import numba
 import numpy as np
 
-from source.core.force import f_tot_i
+from source.core.force_adjust import f_adjust_i, f_random_fluctuation
+from source.core.force_agents import f_ij
+from source.core.force_walls import f_iw_linear_tot
 
 
 def timeit(f):
@@ -14,6 +16,35 @@ def timeit(f):
         print('Wall time:', round(end - start, 4))
         return ret
     return wrapper
+
+
+@numba.jit(nopython=True, nogil=True)
+def f_tot_i(i, v_0, e_i, v, x, r, mass, linear_wall,
+            tau_adj, tau_0, k, sight, f_max, mu, kappa, a, b):
+    """
+    Total force on individual agent i.
+
+    :return: Vector of length 2 containing `x` and `y` components of force on agent i.
+    """
+
+    # Initialize
+    force = np.zeros(2)
+
+    # Adjusting Force
+    # TODO: Target direction updating algorithm
+    force += f_adjust_i(v_0, e_i, v[i], mass, tau_adj)
+
+    # Agent - Agent Forces
+    force += f_ij(i, x, v, r, k, tau_0, sight, f_max, mu, kappa)
+
+    # Agent - Wall Forces
+    force += f_iw_linear_tot(i, x, v, r, linear_wall, f_max, sight, mu, kappa,
+                             a, b)
+
+    # Random Fluctuation
+    force += f_random_fluctuation()
+
+    return force
 
 
 @numba.jit(nopython=True, nogil=True)
@@ -35,9 +66,6 @@ def acceleration(goal_velocity, goal_direction, velocity, position, radius,
     [1] http://www.nature.com/nature/journal/v407/n6803/full/407487a0.html \n
     [2] http://motion.cs.umn.edu/PowerLaw/
     """
-    # TODO: AOT complilation
-    # TODO: Adaptive Euler Method
-    # TODO: Mass & radius -> scalar & vector inputs
     acc = np.zeros_like(velocity)
     for i in range(len(position)):
         f = f_tot_i(i, goal_velocity, goal_direction[i], velocity, position,
@@ -47,7 +75,21 @@ def acceleration(goal_velocity, goal_direction, velocity, position, radius,
     return acc
 
 
-def system(agents, walls, constants, t_delta):
+@numba.jit(nopython=True, nogil=True)
+def euler_method(agent, force, dt):
+    """
+    Updates agent's velocity and position using euler method.
+
+    Resources
+    ---------
+    - https://en.wikipedia.org/wiki/Euler_method
+    """
+    acc = force / agent.mass
+    agent.velocity += acc * dt
+    agent.position += agent.velocity * dt
+
+
+def system(agent, wall, constant, t_delta):
     """
     About
     -----
@@ -56,30 +98,27 @@ def system(agents, walls, constants, t_delta):
 
     Params
     ------
-    :param agents:
-    :param constants:
+    :param agent:
+    :param constant:
     :param t_delta: Timestep
     :return:
 
-    Resources
-    ---------
-    - https://en.wikipedia.org/wiki/Euler_method
     """
-    # round_wall = walls['round_wall']
-    # linear_wall = walls['linear_wall']
+    # TODO: AOT complilation
+    # TODO: Adaptive Euler method
 
     @timeit
     def update(i):
-        kwargs = dict(agents, **constants)
-        # kwargs = dict(kwargs, **walls)
-        kwargs['linear_wall'] = walls['linear_wall']
+        kwargs = dict(agent, **constant)
+        kwargs['linear_wall'] = wall['linear_wall']
         acc = acceleration(**kwargs)
-        agents['velocity'] += acc * t_delta
-        agents['position'] += agents['velocity'] * t_delta
+        agent['velocity'] += acc * t_delta
+        agent['position'] += agent['velocity'] * t_delta
+
         print('Simulation Time:', round(i * t_delta, 4), end=' ')
 
     iteration = 0
     while True:
         update(iteration)
         iteration += 1
-        yield agents
+        yield agent

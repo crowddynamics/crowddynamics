@@ -15,3 +15,12 @@ def default_path(fname, *folder_names):
     os.makedirs(folder, exist_ok=True)
     filepath = os.path.join(folder, fname)
     return filepath
+
+
+def save_figure():
+    pass
+
+
+def save_animation():
+    pass
+

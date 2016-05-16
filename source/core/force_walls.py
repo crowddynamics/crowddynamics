@@ -15,45 +15,28 @@ def f_soc_iw(h_iw, n_iw, a_i, b_i):
     :param n_iw: Unit vector that is perpendicular to the agent and the wall
     :return:
     """
-    force = a_i * np.exp(h_iw / b_i) * n_iw
+    magnitude = a_i * np.exp(h_iw / b_i)
+    f_max = 1 * a_i
+    if magnitude > f_max:
+        magnitude = f_max
+    force = magnitude * n_iw
     return force
 
 
 @numba.jit(nopython=True, nogil=True)
 def f_c_iw(v_i, t_iw, n_iw, h_iw, mu, kappa):
-    """
-
-    :param h_iw:
-    :param n_iw:
-    :param v_i:
-    :param t_iw:
-    :param mu:
-    :param kappa:
-    :return:
-    """
     force = h_iw * (mu * n_iw - kappa * np.dot(v_i, t_iw) * t_iw)
     return force
 
 
+# @numba.jit(nopython=True, nogil=True)
+def f_iw_round():
+    force = np.zeros(2)
+    return NotImplemented
+
+
 @numba.jit(nopython=True, nogil=True)
 def f_iw_linear(x_i, v_i, r_i, p_0, p_1, t_w, n_w, l_w, sight, a, b, mu, kappa):
-    """
-
-    :param x_i:
-    :param v_i:
-    :param r_i:
-    :param p_0:
-    :param p_1:
-    :param t_w:
-    :param n_w:
-    :param l_w:
-    :param sight:
-    :param a:
-    :param b:
-    :param mu:
-    :param kappa:
-    :return:
-    """
     rot270 = np.array(((0, 1), (-1, 0)), dtype=np.float64)
     force = np.zeros(2)
 

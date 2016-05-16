@@ -1,14 +1,14 @@
-import os
 from collections import Iterable, deque
 from itertools import repeat, islice
 
-import numpy as np
-
-import matplotlib.lines as lines
-import matplotlib.patches as mpatches
+import matplotlib
+from matplotlib.lines import Line2D
+from matplotlib.patches import Arrow, Circle
 import matplotlib.pyplot as plt
-import seaborn
+import numpy as np
 from matplotlib import animation as animation
+from matplotlib.collections import CircleCollection
+import matplotlib.transforms as transforms
 
 from source.io.path import default_path
 
@@ -28,7 +28,7 @@ def agent_patches(x, r, **kwargs):
     if not isinstance(r, Iterable):
         # If all agents have same radius
         r = repeat(r)
-    patch = lambda *args: mpatches.Circle(*args, **kwargs)
+    patch = lambda *args: Circle(*args, **kwargs)
     patches = map(patch, x, r)
     return patches
 
@@ -36,17 +36,17 @@ def agent_patches(x, r, **kwargs):
 def linear_wall_patches(p, **kwargs):
     f = lambda arg: tuple(zip(*arg))
     data = tuple(map(f, p))
-    patch = lambda args: lines.Line2D(*args, **kwargs)
+    patch = lambda args: Line2D(*args, **kwargs)
     patches = map(patch, data)
     return patches
 
 
-def force_patches(x, f, tol=0.0001, **kwargs):
+def vector_patches(x, f, tol=0.0001, **kwargs):
     mag = np.hypot(f[:, 0], f[:, 1])
     mask = mag > tol
     x = x[mask]
     f = f[mask]
-    patch = lambda *args: mpatches.Arrow(*args, **kwargs)
+    patch = lambda *args: Arrow(*args, **kwargs)
     patches = map(patch, x[:, 0], x[:, 1], f[:, 0], f[:, 1])
     return patches
 
@@ -57,26 +57,30 @@ def add_patches(ax, patches):
 
 def plot_field(position, radius, x_dims, y_dims,
                linear_wall=None, force=None, save=True):
-    seaborn.set()
     fig, ax = plt.subplots(figsize=(12, 12))
     ax.set(xlim=x_dims, ylim=y_dims, xlabel=r'$ x $', ylabel=r'$ y $')
+
     add_patches(ax, agent_patches(position, radius, alpha=0.5))
 
-    if linear_wall is not None:
-        add_patches(ax, linear_wall_patches(linear_wall, color='black'))
-
-    if force is not None:
-        add_patches(ax, force_patches(position, force, alpha=0.8, width=0.15))
+    # if linear_wall is not None:
+    #     add_patches(ax, linear_wall_patches(linear_wall, color='black'))
+    #
+    # if force is not None:
+    #     add_patches(ax, vector_patches(position, force, alpha=0.8, width=0.15))
 
     if save:
-        fname = default_path('field', 'documentation', 'figures')
-        plt.savefig(fname + '.pdf')
+        fname = default_path('field.pdf', 'documentation', 'figures')
+        plt.savefig(fname)
     else:
         plt.show()
 
 
-def plot_animation(simulation, agents, field, frames=None, save=False):
-    # TODO: cmap
+def plot_animation(simulation, agents, wall_params, field, frames=None,
+                   save=False):
+    """
+    http://matplotlib.org/1.4.1/examples/animation/index.html
+    http://matplotlib.org/examples/api/patch_collection.html
+    """
     fig, ax = plt.subplots(figsize=(12, 12))
     ax.set(xlim=field['x_dims'],
            ylim=field['y_dims'],
@@ -84,15 +88,19 @@ def plot_animation(simulation, agents, field, frames=None, save=False):
            ylabel=r'$ y $')
 
     line, = ax.plot([], [], marker='o', lw=0, alpha=0.5)
+    scatter = ax.scatter([], [])
 
     def init_lines():
         positions = agents['position']
         line.set_data(positions.T)
+        linear_wall = wall_params['linear_params']
+        if linear_wall is not None:
+            add_patches(ax, linear_wall_patches(linear_wall, color='black'))
         return line,
 
     def update_lines(i):
-        agents = next(simulation)
-        line.set_data(agents['position'].T)
+        simu = next(simulation)
+        line.set_data(simu['position'].T)
         return line,
 
     anim = animation.FuncAnimation(fig, update_lines,
@@ -102,9 +110,8 @@ def plot_animation(simulation, agents, field, frames=None, save=False):
                                    blit=True)
 
     if save:
-        writer = animation.writers['ffmpeg']
-        writer = writer(fps=30, bitrate=1800)
-        path = '/home/jaan/Dropbox/Projects/Crowd-Dynamics/animations/'
-        anim.save(path + 'power_law.mp4', writer=writer)
-
-    plt.show()
+        writer = animation.FFMpegWriter(fps=30, bitrate=1800)
+        fname = default_path('anim.mkv', 'documentation', 'animations')
+        anim.save(fname, writer=writer)
+    else:
+        plt.show()

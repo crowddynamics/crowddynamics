@@ -1,0 +1,28 @@
+---
+# Simulation structure
+
+Simulation:
+  Parameters:
+    Constants:
+    Params:
+
+  Field:
+    Walls:
+      Round:
+      Linear:
+    Agents:
+      Positions:
+
+  Core:
+    Force:
+      Adjust:
+      Agents:
+        Goal direction:
+      Walls:
+    Game:
+    System:
+
+
+  Vizualization:
+
+...

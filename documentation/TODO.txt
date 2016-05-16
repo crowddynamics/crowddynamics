@@ -1,0 +1,28 @@
+Compute target direction
+Compute forces
+Game Theoretical model for agent behaviour
+
+Update positions and velocities using Eulers method
+
+Real vs Optimal Moving
+- Optimal algorithm eq. God mode. Agents see through walls, know all exits etc
+
+Game design?
+
+---
+
+Youtube Channel
+
+---
+Numba:
+https://www.youtube.com/watch?v=-5NUMvkYBNY
+    Vectorize decorator
+    Parallel
+    generated_jit
+    jit classes
+    - Parameters
+    - Walls
+    - Agents
+---
+
+Julia Lang

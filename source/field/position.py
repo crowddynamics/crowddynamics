@@ -1,14 +1,10 @@
 import numpy as np
 
+from source.core.force_walls import deconstruct_linear_wall
 
-def distance_from_linear_wall(x_i, r_i, linear_wall):
-    # p_0, p_1, t_w, n_w, l_w = linear_wall
-    w = linear_wall
-    p_0 = w[0:2]
-    p_1 = w[2:4]
-    t_w = w[4:6]
-    n_w = w[6:8]
-    l_w = w[8]
+
+def distance_from_linear_wall(x_i, r_i, w):
+    p_0, p_1, t_w, n_w, l_w = deconstruct_linear_wall(w)
 
     q_0 = x_i - p_0
     q_1 = x_i - p_1
@@ -28,10 +24,6 @@ def distance_from_linear_wall(x_i, r_i, linear_wall):
 
 def distance_from_linear_walls(x_i, r_i, linear_wall):
     """
-
-    :param x_i:
-    :param r_i:
-    :param linear_wall:
     :return: True if agent is not overlapping with walls otherwise false.
     """
     cond = 1
@@ -46,10 +38,6 @@ def distance_from_linear_walls(x_i, r_i, linear_wall):
 def distance_from_agents(agent: np.ndarray, others: np.ndarray,
                          radius: np.ndarray, radii: np.ndarray):
     """
-    :param agent:
-    :param others:
-    :param radius:
-    :param radii:
     :return: True if agent is not overlapping with others otherwise false.
     """
     if len(others) == 0:
@@ -60,18 +48,13 @@ def distance_from_agents(agent: np.ndarray, others: np.ndarray,
     return np.all(d > 0)
 
 
-def set_positions(amount, x_dims, y_dims, radius, walls, seed=None):
+def set_positions(amount, x_dims, y_dims, radius, walls):
     """
     Populate the positions of the agents in to the field so that they don't
     overlap each others or the walls.
 
     Monte Carlo method.
     """
-    print("Agent positions.")
-    print("")
-    print()
-
-    # np.random.seed(seed)
     position = np.zeros((amount, 2))
     i = 0
 
@@ -104,7 +87,6 @@ def set_positions(amount, x_dims, y_dims, radius, walls, seed=None):
         if not c:
             continue
 
-        # print(i)
         position[i, :] = agent
         i += 1
     return position

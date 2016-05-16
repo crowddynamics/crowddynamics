@@ -1,6 +1,6 @@
 import numpy as np
 
-from source.core.positions import set_positions
+from source.field.position import set_positions
 
 
 def construct_round_wall(round_params):

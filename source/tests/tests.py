@@ -1,60 +1,14 @@
-from pprint import pprint
-
 import numpy as np
 
-from source.core.force import f_tot_i
-from source.core.system import acceleration
-from source.field import set_field
+from source.field.field import set_field
+from source.parameters import *
 from source.visualization import plot_field
 
 
 seed = None
-
-tau_adj = 0.5
-k = 1.5
-tau_0 = 3.0
-sight = 7.0
-f_max = 5.0
-mu = 1.2e5
-kappa = 2.4e5
-a = 2e3
-b = 0.08
-
-constants = {
-    'tau_adj': 0.5,
-    'k': 1.5,
-    'tau_0': 3.0,
-    'sight': 7.0,
-    'f_max': 5.0,
-    'mu': 1.2e5,
-    'kappa': 2.4e5,
-    'a': 2e3,
-    'b': 0.08
-}
-
-field_params = {
-    'amount': 100,
-    'x_dims': (0, 30),
-    'y_dims': (0, 30),
-}
-
-agent_params = {
-    'mass': (1, 1),
-    'radius': (0.2, 0.3),
-    'goal_velocity': 1.5
-}
-
-wall_params = {
-    'round_params':
-        (),
-    'linear_params': (
-        ((0, 30), (4, 30)),
-        ((0, 0), (4, 0)),
-        ((0, 0), (0, 30))
-    )
-}
-
 np.random.seed(seed)
+
+
 agents, walls = set_field(field_params, wall_params, agent_params)
 
 linear_wall = wall_params['linear_params']
@@ -70,14 +24,7 @@ v = agents['velocity']
 v_0 = agents['goal_velocity']
 e = agents['goal_direction']
 
-
-def printing():
-    np.set_printoptions()
-    print("Params:")
-    print(80 * "=")
-    pprint(agents)
-    pprint(walls)
-    print()
+globals().update(constant)
 
 
 def test_force_wall():
@@ -104,9 +51,9 @@ def test_force_adjust():
 
 
 def test_force_tot_i():
+    from source.core.system import acceleration
     a = np.zeros_like(x)
-    kwargs = dict(agents, **constants)
-    # kwargs = dict(kwargs, **walls)
+    kwargs = dict(agents, **constant)
     kwargs['linear_wall'] = walls['linear_wall']
     a = acceleration(**kwargs)
     return a
@@ -116,5 +63,5 @@ if __name__ == '__main__':
     force = None
     # force = test_force_agent()
     # force = test_force_wall()
-    force = test_force_tot_i()
-    plot_field(x, r, x_dims, y_dims, linear_wall, force, save=True)
+    # force = test_force_tot_i()
+    plot_field(x, r, x_dims, y_dims, linear_wall, force, save=False)
