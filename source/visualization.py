@@ -55,8 +55,7 @@ def add_patches(ax, patches):
     consume(map(ax.add_artist, patches))
 
 
-def plot_field(agent, x_dims, y_dims,
-               linear_wall=None, force=None, save=True):
+def plot_field(agent, x_dims, y_dims, linear_wall=None, force=None, save=True):
     fig, ax = plt.subplots(figsize=(12, 12))
     ax.set(xlim=x_dims, ylim=y_dims, xlabel=r'$ x $', ylabel=r'$ y $')
 
@@ -107,7 +106,7 @@ def plot_animation(simulation, agent, linear_wall, x_dims, y_dims,
     anim = animation.FuncAnimation(fig, update_lines,
                                    init_func=init_lines,
                                    frames=frames,
-                                   interval=10,
+                                   interval=1,
                                    blit=True)
 
     if save:

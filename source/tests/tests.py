@@ -28,12 +28,12 @@ globals().update(constant)
 
 
 def test_force_wall():
-    from source.core.force_walls import f_iw_linear_tot
+    from source.core.force_walls import f_iw_tot
 
     f = np.zeros_like(x)
     for i in range(len(x)):
-        f[i] = f_iw_linear_tot(i, x, v, r, walls['linear_wall'],
-                               f_max, sight, mu, kappa, a, b)
+        f[i] = f_iw_tot(i, x, v, r, walls['linear_wall'],
+                        f_max, sight, mu, kappa, a, b)
     return f
 
 

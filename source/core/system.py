@@ -5,7 +5,7 @@ import numpy as np
 
 from source.core.force_adjust import f_adjust, f_random_fluctuation
 from source.core.force_agents import f_ij
-from source.core.force_walls import f_iw_linear_tot
+from source.core.force_walls import f_iw_tot
 
 
 class MethodStats(object):
@@ -64,7 +64,7 @@ def f_tot(constant, agent, linear_wall):
     force += f_ij(constant, agent)
 
     # Agent - Wall Forces
-    force += f_iw_linear_tot(constant, agent, linear_wall)
+    force += f_iw_tot(constant, agent, linear_wall)
 
     return force
 

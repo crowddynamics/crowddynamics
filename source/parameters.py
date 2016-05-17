@@ -1,10 +1,10 @@
-import numpy as np
 from collections import OrderedDict
-from numba import jitclass, float64, int64
+
+import numpy as np
+from numba import jitclass, float64
 
 from source.field.agent import agent_struct, initial_position, initial_velocity
 from source.field.wall import LinearWall
-
 
 spec_constant = OrderedDict(
     tau_adj=float64,
@@ -38,17 +38,17 @@ class Constant(object):
 
 constant = Constant()
 
-x_dims = (0, 10)
-y_dims = (0, 10)
+x_dims = (-0.1, 100.1)
+y_dims = (-0.1, 100.1)
 
-linear_params = np.array((((0, 0), (0, 10)),
-                          ((0, 0), (10, 0)),
-                          ((0, 10), (10, 10))), dtype=np.float64
+linear_params = np.array((((0, 0), (0, 100)),
+                          ((0, 0), (100, 0)),
+                          ((0, 100), (100, 100))), dtype=np.float64
                          )
 
 linear_wall = LinearWall(linear_params)
 
-amount = 20
+amount = 100
 mass = np.random.uniform(60.0, 80.0, amount)
 radius = np.random.uniform(0.2, 0.3, amount)
 goal_velocity = 1.0
