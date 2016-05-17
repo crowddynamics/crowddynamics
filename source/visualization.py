@@ -55,16 +55,17 @@ def add_patches(ax, patches):
     consume(map(ax.add_artist, patches))
 
 
-def plot_field(position, radius, x_dims, y_dims,
+def plot_field(agent, x_dims, y_dims,
                linear_wall=None, force=None, save=True):
     fig, ax = plt.subplots(figsize=(12, 12))
     ax.set(xlim=x_dims, ylim=y_dims, xlabel=r'$ x $', ylabel=r'$ y $')
 
-    add_patches(ax, agent_patches(position, radius, alpha=0.5))
+    add_patches(ax, agent_patches(agent.position, agent.radius, alpha=0.5))
 
-    # if linear_wall is not None:
-    #     add_patches(ax, linear_wall_patches(linear_wall, color='black'))
-    #
+    if linear_wall is not None:
+        add_patches(ax, linear_wall_patches(linear_wall.linear_params,
+                                            color='black'))
+
     # if force is not None:
     #     add_patches(ax, vector_patches(position, force, alpha=0.8, width=0.15))
 
@@ -75,8 +76,8 @@ def plot_field(position, radius, x_dims, y_dims,
         plt.show()
 
 
-def plot_animation(simulation, agents, wall_params, field, frames=None,
-                   save=False):
+def plot_animation(simulation, agent, linear_wall, x_dims, y_dims,
+                   frames=None, save=False):
     """
     http://matplotlib.org/1.4.1/examples/animation/index.html
     http://matplotlib.org/examples/api/patch_collection.html
@@ -86,32 +87,27 @@ def plot_animation(simulation, agents, wall_params, field, frames=None,
         seaborn.set()
     except ImportError():
         pass
-    fig, ax = plt.subplots(figsize=(12, 12))
-    ax.set(xlim=field['x_dims'],
-           ylim=field['y_dims'],
-           xlabel=r'$ x $',
-           ylabel=r'$ y $')
 
+    fig, ax = plt.subplots(figsize=(12, 12))
+    ax.set(xlim=x_dims, ylim=y_dims, xlabel=r'$ x $', ylabel=r'$ y $')
     line, = ax.plot([], [], marker='o', lw=0, alpha=0.5)
-    scatter = ax.scatter([], [])
 
     def init_lines():
-        positions = agents['position']
-        line.set_data(positions.T)
-        linear_wall = wall_params['linear_params']
+        line.set_data(agent.position.T)
         if linear_wall is not None:
-            add_patches(ax, linear_wall_patches(linear_wall, color='black'))
+            add_patches(ax, linear_wall_patches(linear_wall.linear_params,
+                                                color='black'))
         return line,
 
     def update_lines(i):
-        simu = next(simulation)
-        line.set_data(simu['position'].T)
+        next(simulation)
+        line.set_data(agent.position.T)
         return line,
 
     anim = animation.FuncAnimation(fig, update_lines,
                                    init_func=init_lines,
                                    frames=frames,
-                                   interval=1,
+                                   interval=10,
                                    blit=True)
 
     if save:

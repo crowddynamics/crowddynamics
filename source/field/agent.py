@@ -20,6 +20,10 @@ class Agent(object):
         # Arrays can be iterated over range(size)
         self.size = len(self.position)
 
+    @property
+    def shape(self):
+        return self.position.shape
+
 
 def agent_struct(mass,
                  radius,
@@ -31,7 +35,7 @@ def agent_struct(mass,
     Makes jitclass from agents. Handles spec definition so that mass, radius and
     goal_velocity can be scalar of array.
     """
-    spec_agents = OrderedDict(
+    spec_agent = OrderedDict(
         mass=float64,
         radius=float64,
         goal_velocity=float64,
@@ -51,15 +55,15 @@ def agent_struct(mass,
             t = float64[:, :]
         else:
             raise ValueError("Wrong type.")
-        spec_agents[key] = t
+        spec_agent[key] = t
         return value
 
-    # Init spec_agents
+    # Init spec_agent
     mass = spec('mass', mass)
     radius = spec('radius', radius)
     goal_velocity = spec('goal_velocity', goal_velocity)
     # Jitclass of Agents
-    agent = jitclass(spec_agents)(Agent)
+    agent = jitclass(spec_agent)(Agent)
     # Set parameters
     args = (mass, radius, position, velocity, goal_velocity, goal_direction)
     return agent(*args)

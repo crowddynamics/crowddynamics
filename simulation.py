@@ -1,5 +1,6 @@
+from source import visualization
 from source.core.system import system
-from source.parameters import constant, linear_wall, agent
+from source.parameters import constant, linear_wall, agent, x_dims, y_dims
 
 """
 1. Parameters
@@ -20,12 +21,5 @@ from source.parameters import constant, linear_wall, agent
 
 if __name__ == '__main__':
     simulation = system(constant, agent, linear_wall)
-    i = 0
-    for _ in simulation:
-        i += 1
-        if i > 1000:
-            break
-
-    """
-    visualization.plot_animation()
-    """
+    # visualization.plot_field(agent, x_dims, y_dims, linear_wall)
+    visualization.plot_animation(simulation, agent, linear_wall, x_dims, y_dims)

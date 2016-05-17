@@ -69,7 +69,7 @@ def f_iw_linear(x_i, v_i, r_i, p_0, p_1, t_w, n_w, l_w, constant):
 
 @numba.jit(nopython=True, nogil=True)
 def f_iw_linear_tot(constant, agent, linear_wall):
-    force = np.zeros((agent.size, 2))
+    force = np.zeros(agent.shape)
     x = agent.position
     v = agent.velocity
     # TODO: Fix scalar vs array
@@ -78,7 +78,7 @@ def f_iw_linear_tot(constant, agent, linear_wall):
     for i in range(agent.size):
         for j in range(linear_wall.size):
             p_0, p_1, t_w, n_w, l_w = linear_wall.deconstruct(j)
-            force += f_iw_linear(x[i], v[i], r[i], p_0, p_1, t_w, n_w, l_w,
-                                 constant)
+            force[i] += f_iw_linear(x[i], v[i], r[i], p_0, p_1, t_w, n_w, l_w,
+                                    constant)
 
     return force

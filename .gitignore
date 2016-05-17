@@ -1,9 +1,12 @@
+/source/printing
 /documentation/material
 /documentation/animations/
 /doc/
 /documentation/figures
 /source/field/field.py
 /source/field/position.py
+/source/core/game.py
+/source/core/goal_direction.py
 documentation/latex/examples/
 
 # Created by .ignore support plugin (hsz.mobi)

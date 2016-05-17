@@ -2,22 +2,36 @@ from timeit import default_timer as timer
 
 import numba
 import numpy as np
-from sympy.abc import kappa
 
 from source.core.force_adjust import f_adjust, f_random_fluctuation
 from source.core.force_agents import f_ij
 from source.core.force_walls import f_iw_linear_tot
 
 
-def timeit(f):
-    def wrapper(*args, **kwargs):
-        start = timer()
-        ret = f(*args, **kwargs)
-        end = timer()
-        print('Wall time:', round(end - start, 7))
-        return ret
+class MethodStats(object):
+    def __init__(self):
+        self._calls = []
 
-    return wrapper
+    def _append(self, value):
+        self._calls.append(value)
+
+    def __str__(self):
+        arr = np.array(self._calls)[1:]
+        return "Number of calls: {} \n" \
+               "Min call time: {} \n" \
+               "Max call time: {} \n" \
+               "Avg call time: {} \n" \
+               "Variance: {} \n".format(arr.size+1, arr.min(), arr.max(),
+                                        arr.mean(), arr.var())
+
+    def __call__(self, f):
+        def wrapper(*args, **kwargs):
+            start = timer()
+            ret = f(*args, **kwargs)
+            end = timer()
+            self._append(end - start)
+            return ret
+        return wrapper
 
 
 @numba.jit(nopython=True, nogil=True)
@@ -37,10 +51,10 @@ def f_tot(constant, agent, linear_wall):
     [1] http://www.nature.com/nature/journal/v407/n6803/full/407487a0.html \n
     [2] http://motion.cs.umn.edu/PowerLaw/
     """
-    force = np.zeros((agent.size, 2))
+    force = np.zeros(agent.shape)
 
     # Random Fluctuation
-    force += f_random_fluctuation(agent.size)
+    force += f_random_fluctuation(agent)
 
     # Adjusting Force
     # TODO: Target direction updating algorithm
@@ -56,7 +70,7 @@ def f_tot(constant, agent, linear_wall):
 
 
 @numba.jit(nopython=True, nogil=True)
-def euler_method(agent, force, dt):
+def euler_method(constant, agent, linear_wall, dt):
     """
     Updates agent's velocity and position using euler method.
 
@@ -64,12 +78,13 @@ def euler_method(agent, force, dt):
     ---------
     - https://en.wikipedia.org/wiki/Euler_method
     """
-    acc = force / agent.mass
-    agent.velocity += acc * dt
+    force = f_tot(constant, agent, linear_wall)
+    acceleration = force / agent.mass
+    agent.velocity += acceleration * dt
     agent.position += agent.velocity * dt
 
 
-def system(constant, agent, linear_wall, t_delta=0.01):
+def system(constant, agent, linear_wall, dt=0.01):
     """
     About
     -----
@@ -81,22 +96,21 @@ def system(constant, agent, linear_wall, t_delta=0.01):
     :param linear_wall:
     :param agent:
     :param constant:
-    :param t_delta: Timestep
+    :param dt: Timestep
     :return:
 
     """
-
     # TODO: AOT complilation
     # TODO: Adaptive Euler method
-
-    @timeit
-    def update(i):
-        forces = f_tot(constant, agent, linear_wall)
-        euler_method(agent, forces, t_delta)
-        print('Simulation Time:', round(i * t_delta, 4), end=' ')
-
+    # TODO: Optional walls
+    # TODO: Round walls
+    # TODO: Gather stats
+    stats = MethodStats()
     iteration = 0
+    method = stats(euler_method)
     while True:
-        update(iteration)
+        method(constant, agent, linear_wall, dt)
         iteration += 1
+        if iteration % 100 == 0:
+            print(stats)
         yield agent
