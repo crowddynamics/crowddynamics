@@ -18,11 +18,7 @@ class MethodStats(object):
     def __str__(self):
         arr = np.array(self._calls)[1:]
         return "Number of calls: {} \n" \
-               "Min call time: {} \n" \
-               "Max call time: {} \n" \
-               "Avg call time: {} \n" \
-               "Variance: {} \n".format(arr.size+1, arr.min(), arr.max(),
-                                        arr.mean(), arr.var())
+               "Avg call time: {} \n".format(arr.size+1, arr.mean())
 
     def __call__(self, f):
         def wrapper(*args, **kwargs):
@@ -35,7 +31,7 @@ class MethodStats(object):
 
 
 @numba.jit(nopython=True, nogil=True)
-def f_tot(constant, agent, linear_wall):
+def f_tot(constant, agent, wall):
     """
     About
     -----
@@ -52,25 +48,16 @@ def f_tot(constant, agent, linear_wall):
     [2] http://motion.cs.umn.edu/PowerLaw/
     """
     force = np.zeros(agent.shape)
-
-    # Random Fluctuation
-    force += f_random_fluctuation(agent)
-
-    # Adjusting Force
     # TODO: Target direction updating algorithm
     force += f_adjust(constant, agent)
-
-    # Agent - Agent Forces
     force += f_ij(constant, agent)
-
-    # Agent - Wall Forces
-    force += f_iw_tot(constant, agent, linear_wall)
-
+    force += f_iw_tot(constant, agent, wall)
+    force += f_random_fluctuation(agent)
     return force
 
 
 @numba.jit(nopython=True, nogil=True)
-def euler_method(constant, agent, linear_wall, dt):
+def euler_method(constant, agent, wall, dt):
     """
     Updates agent's velocity and position using euler method.
 
@@ -78,13 +65,13 @@ def euler_method(constant, agent, linear_wall, dt):
     ---------
     - https://en.wikipedia.org/wiki/Euler_method
     """
-    force = f_tot(constant, agent, linear_wall)
+    force = f_tot(constant, agent, wall)
     acceleration = force / agent.mass
     agent.velocity += acceleration * dt
     agent.position += agent.velocity * dt
 
 
-def system(constant, agent, linear_wall, dt=0.01):
+def system(constant, agent, wall, dt=0.01):
     """
     About
     -----
@@ -93,7 +80,7 @@ def system(constant, agent, linear_wall, dt=0.01):
 
     Params
     ------
-    :param linear_wall:
+    :param wall:
     :param agent:
     :param constant:
     :param dt: Timestep
@@ -109,7 +96,7 @@ def system(constant, agent, linear_wall, dt=0.01):
     iteration = 0
     method = stats(euler_method)
     while True:
-        method(constant, agent, linear_wall, dt)
+        method(constant, agent, wall, dt)
         iteration += 1
         if iteration % 100 == 0:
             print(stats)

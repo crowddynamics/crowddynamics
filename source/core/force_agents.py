@@ -50,7 +50,6 @@ def f_soc_ij(x_ij, v_ij, r_ij, k, tau_0, f_max):
     force -= k / (a * tau ** m) * np.exp(-tau / tau_0) * \
              (m / tau + 1 / tau_0) * (v_ij - (v_ij * b + x_ij * a) / d)
 
-    # mag = np.sqrt(np.dot(force, force))
     mag = np.hypot(force[0], force[1])
     if mag > f_max:
         # Scales magnitude of force to force max
@@ -75,28 +74,27 @@ def f_ij(constant, agent):
     # TODO: Fix scalar vs array
     r = agent.radius.flatten()
 
-    for i in range(agent.size):
-        for j in range(agent.size):
-            if i == j:
-                continue
-            x_ij = x[i] - x[j]  # position
-            v_ij = v[i] - v[j]  # velocity
-            r_ij = r[i] + r[j]  # radius
+    for i in range(agent.size - 1):
+        for j in range(i + 1, agent.size):
+            x_ij = x[i] - x[j]
+            v_ij = v[i] - v[j]
+            r_ij = r[i] + r[j]
             d_ij = np.hypot(x_ij[0], x_ij[1])  # Distance between agents
+            h_ij = r_ij - d_ij
 
-            # No force if another agent is not in range of sight
+            # If another agent is in range of sight.
             if d_ij < constant.sight:
                 force[i] += f_soc_ij(x_ij, v_ij, r_ij,
-                                     constant.k,
-                                     constant.tau_0,
-                                     constant.f_max)
+                                     constant.k, constant.tau_0, constant.f_max)
+                force[j] += f_soc_ij(-x_ij, -v_ij, r_ij,
+                                     constant.k, constant.tau_0, constant.f_max)
 
-            # Agents are overlapping. Friction force.
-            h_ij = r_ij - d_ij
+            # If agents are overlapping.
             if h_ij > 0:
                 n_ij = x_ij / d_ij
                 t_ij = np.dot(rot270, n_ij)
                 force[i] += f_c_ij(h_ij, n_ij, v_ij, t_ij,
-                                   constant.mu,
-                                   constant.kappa)
+                                   constant.mu, constant.kappa)
+                force[j] += f_c_ij(h_ij, -n_ij, -v_ij, -t_ij,
+                                   constant.mu, constant.kappa)
     return force

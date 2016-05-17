@@ -24,6 +24,8 @@ class Agent(object):
     def shape(self):
         return self.position.shape
 
+    # TODO: Target direction
+
 
 def agent_struct(mass,
                  radius,

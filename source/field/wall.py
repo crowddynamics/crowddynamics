@@ -38,11 +38,17 @@ class RoundWall(object):
     def distance(self, i, x):
         p, r = self.deconstruct(i)
         q = x - p
-        d_iw = np.hypot(q[0], q[1]) - r
+        d_iw = np.hypot(q[0], q[1])
+        d_iw -= r
         return d_iw
 
     def distance_with_normal(self, i, x):
-        pass
+        p, r = self.deconstruct(i)
+        q = x - p
+        d_iw = np.hypot(q[0], q[1])
+        n_iw = q / d_iw
+        d_iw -= r
+        return d_iw, n_iw
 
 
 spec_linear = OrderedDict(
