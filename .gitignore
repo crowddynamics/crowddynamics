@@ -1,13 +1,14 @@
+### Crowd Dynamics
+/doc/
 /source/printing
 /documentation/material
 /documentation/animations/
-/doc/
 /documentation/figures
-/source/field/field.py
-/source/field/position.py
-/source/core/game.py
 /source/core/goal_direction.py
-documentation/latex/examples/
+/documentation/latex/examples/
+/documentation/TODO.txt
+/documentation/structure.yaml
+*.lprof
 
 # Created by .ignore support plugin (hsz.mobi)
 ### Python template

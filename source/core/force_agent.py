@@ -63,9 +63,9 @@ def f_c_ij(h_ij, n_ij, v_ij, t_ij, mu, kappa):
 
 
 @numba.jit(nopython=True, nogil=True)
-def f_ij(constant, agent):
+def f_agent_agent(constant, agent):
     rot270 = np.array(((0.0, 1.0), (-1.0, 0.0)))
-    force = np.zeros(agent.shape)
+    force = agent.force
 
     x = agent.position
     v = agent.velocity
@@ -92,4 +92,3 @@ def f_ij(constant, agent):
                 f = f_c_ij(h_ij, n_ij, v_ij, t_ij, constant.mu, constant.kappa)
                 force[i] += f
                 force[j] -= f
-    return force

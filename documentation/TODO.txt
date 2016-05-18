@@ -14,15 +14,8 @@ Game design?
 Youtube Channel
 
 ---
-Numba:
-https://www.youtube.com/watch?v=-5NUMvkYBNY
-    Vectorize decorator
-    Parallel
-    generated_jit
-    jit classes
-    - Parameters
-    - Walls
-    - Agents
----
-
+Numba
+Parallel
+https://docs.python.org/3/library/concurrent.futures.html
 Julia Lang
+---

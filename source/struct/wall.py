@@ -1,14 +1,16 @@
 from collections import OrderedDict
 
 import numpy as np
-from numba import jitclass, float64, int64
+from numba import jitclass
+from numba import float64 as float_, int64
+
 
 spec_round = OrderedDict(
-    round_params=float64[:, :],
+    round_params=float_[:, :],
     cols=int64,
     rows=int64,
     size=int64,
-    wall=float64[:, :],
+    wall=float_[:, :],
 )
 
 
@@ -51,11 +53,11 @@ class RoundWall(object):
 
 
 spec_linear = OrderedDict(
-    linear_params=float64[:, :, :],
+    linear_params=float_[:, :, :],
     cols=int64,
     rows=int64,
     size=int64,
-    wall=float64[:, :],
+    wall=float_[:, :],
 )
 
 

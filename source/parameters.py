@@ -1,21 +1,23 @@
 from collections import OrderedDict
 
 import numpy as np
-from numba import jitclass, float64
+from numba import jitclass
+from numba import float64 as float_
 
-from source.field.agent import agent_struct, initial_position, initial_velocity
-from source.field.wall import LinearWall
+
+from source.struct.agent import agent_struct, initial_position, initial_velocity
+from source.struct.wall import LinearWall
 
 spec_constant = OrderedDict(
-    tau_adj=float64,
-    k=float64,
-    tau_0=float64,
-    sight=float64,
-    f_max=float64,
-    mu=float64,
-    kappa=float64,
-    a=float64,
-    b=float64,
+    tau_adj=float_,
+    k=float_,
+    tau_0=float_,
+    sight=float_,
+    f_max=float_,
+    mu=float_,
+    kappa=float_,
+    a=float_,
+    b=float_,
 )
 
 
@@ -38,7 +40,7 @@ class Constant(object):
         self.f_max = 1e3
 
 
-np.random.seed(seed=1111)
+# np.random.seed(seed=1111)
 
 constant = Constant()
 

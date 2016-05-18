@@ -1,7 +1,8 @@
 from collections import OrderedDict
 
 import numpy as np
-from numba import jitclass, float64, int64, generated_jit, types
+from numba import jitclass, generated_jit, types
+from numba import float64 as float_, int64
 
 
 @generated_jit(nopython=True)
@@ -35,14 +36,25 @@ class Agent(object):
         self.size = len(self.position)  # Number of rows in position
 
         # TODO: Vectors for gathering forces for debugging
-        # self.force = np.zeros(self.shape)
+        self.force = np.zeros(self.shape)
+        # self.force_adjust = np.zeros(self.shape)
+        # self.force_agent = np.zeros(self.shape)
+        # self.force_wall = np.zeros(self.shape)
 
     @property
     def shape(self):
         return self.position.shape
 
     def get_radius(self, i):
+        """
+
+        :param i: Index.
+        :return: Returns radius if scalar or radius[i, 0] if an vector.
+        """
         return get_radius_gen(self.radius, i)
+
+    def reset_force(self):
+        self.force *= 0
 
     # TODO: Target direction
 
@@ -58,23 +70,24 @@ def agent_struct(mass,
     goal_velocity can be scalar of array.
     """
     spec_agent = OrderedDict(
-        mass=float64,
-        radius=float64,
-        goal_velocity=float64,
-        position=float64[:, :],
-        velocity=float64[:, :],
-        goal_direction=float64[:, :],
+        mass=float_,
+        radius=float_,
+        goal_velocity=float_,
+        position=float_[:, :],
+        velocity=float_[:, :],
+        goal_direction=float_[:, :],
+        force=float_[:, :],
         size=int64,
     )
 
     def spec(key, value):
         if isinstance(value, (int, float)):
             value = float(value)
-            t = float64
+            t = float_
         elif isinstance(value, np.ndarray):
             value = np.array(value, dtype=np.float64)
             value = value.reshape((len(value), 1))
-            t = float64[:, :]
+            t = float_[:, :]
         else:
             raise ValueError("Wrong type.")
         spec_agent[key] = t

@@ -16,30 +16,30 @@ class MyTestCase(unittest.TestCase):
         self.assertIsInstance(c.b, float)
 
     def test_round_wall(self):
-        from source.field.wall import RoundWall
+        from source.struct.wall import RoundWall
         rp = np.array(((0.0, 0.0, 1.0),
                        (0.0, 0.0, 1.0)))
-        rw = RoundWall(rp)
+        round_wall = RoundWall(rp)
 
         # self.assertEqual(rw.deconstruct(0))
         # self.assertEqual(rw.deconstruct(1))
         with self.assertRaises(IndexError):
-            rw.deconstruct(2)
+            round_wall.deconstruct(2)
 
     def test_linear_wall(self):
-        from source.field.wall import LinearWall
+        from source.struct.wall import LinearWall
         lp = np.array((((0.0, 0.0), (1.0, 2.0)),
                        ((0.0, 0.0), (2.0, 0.0))))
-        lw = LinearWall(lp)
+        linear_wall = LinearWall(lp)
 
         # self.assertEqual(lw.deconstruct(0))
         # self.assertEqual(lw.deconstruct(1))
         with self.assertRaises(IndexError):
-            lw.deconstruct(2)
+            linear_wall.deconstruct(2)
 
     def test_agent(self):
-        from source.field.agent import agent_struct, initial_position
-        from source.field.wall import LinearWall
+        from source.struct.agent import agent_struct, initial_position
+        from source.struct.wall import LinearWall
 
         amount = 10
         x_dims = (0, 100)

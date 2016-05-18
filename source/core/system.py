@@ -4,8 +4,8 @@ import numba
 import numpy as np
 
 from source.core.force_adjust import f_adjust, f_random_fluctuation
-from source.core.force_agent import f_ij
-from source.core.force_wall import f_iw_tot
+from source.core.force_agent import f_agent_agent
+from source.core.force_wall import f_agent_wall
 
 
 class MethodStats(object):
@@ -47,13 +47,10 @@ def f_tot(constant, agent, wall):
     [1] http://www.nature.com/nature/journal/v407/n6803/full/407487a0.html \n
     [2] http://motion.cs.umn.edu/PowerLaw/
     """
-    # TODO: Target direction updating algorithm
-    force = np.zeros(agent.shape)
-    force += f_adjust(constant, agent)
-    force += f_ij(constant, agent)
-    force += f_iw_tot(constant, agent, wall)
-    force += f_random_fluctuation(agent)
-    return force
+    f_adjust(constant, agent)            # _4.3 %
+    f_agent_agent(constant, agent)       # 53.4 %
+    f_agent_wall(constant, agent, wall)  # 33.7 %
+    f_random_fluctuation(agent)          # _2.2 % of runtime
 
 
 @numba.jit(nopython=True, nogil=True)
@@ -65,10 +62,12 @@ def euler_method(constant, agent, wall, dt):
     ---------
     - https://en.wikipedia.org/wiki/Euler_method
     """
-    force = f_tot(constant, agent, wall)
-    acceleration = force / agent.mass
+    # TODO: Target direction updating algorithm
+    f_tot(constant, agent, wall)
+    acceleration = agent.force / agent.mass
     agent.velocity += acceleration * dt
     agent.position += agent.velocity * dt
+    agent.reset_force()
 
 
 def system(constant, agent, wall, dt=0.01):
@@ -90,15 +89,13 @@ def system(constant, agent, wall, dt=0.01):
     # TODO: AOT complilation
     # TODO: Adaptive Euler method
     # TODO: Optional walls
-    # TODO: Round walls
-    # TODO: Gather stats
 
     stats = MethodStats()
-    iteration = 0
     method = stats(euler_method)
+    iteration = 0
     while True:
         method(constant, agent, wall, dt)
         iteration += 1
         if iteration % 100 == 0:
             print(stats)
-        yield agent
+        yield

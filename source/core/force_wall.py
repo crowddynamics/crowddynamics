@@ -4,17 +4,6 @@ import numpy as np
 
 @numba.jit(nopython=True, nogil=True)
 def f_soc_iw(h_iw, n_iw, a, b):
-    """
-
-    Params
-    ------
-    :param a: Coefficient
-    :param b: Coefficient
-    :param r_i: Radius of the agent
-    :param d_iw: Distance to the wall
-    :param n_iw: Unit vector that is perpendicular to the agent and the wall
-    :return:
-    """
     return min(1.0, np.exp(h_iw / b)) * a * n_iw
 
 
@@ -24,9 +13,9 @@ def f_c_iw(v_i, t_iw, n_iw, h_iw, mu, kappa):
 
 
 @numba.jit(nopython=True, nogil=True)
-def f_iw_tot(constant, agent, wall):
+def f_agent_wall(constant, agent, wall):
     rot270 = np.array(((0.0, 1.0), (-1.0, 0.0)))
-    force = np.zeros(agent.shape)
+    force = agent.force
 
     for j in range(wall.size):
         for i in range(agent.size):
@@ -40,5 +29,3 @@ def f_iw_tot(constant, agent, wall):
                 t_iw = np.dot(rot270, n_iw)
                 force[i] += f_c_iw(agent.velocity[i], t_iw, n_iw, h_iw,
                                    constant.mu, constant.kappa)
-
-    return force
