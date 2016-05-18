@@ -20,6 +20,6 @@ from source.parameters import constant, linear_wall, agent, x_dims, y_dims
 """
 
 if __name__ == '__main__':
-    simulation = system(constant, agent, linear_wall)
     # visualization.plot_field(agent, x_dims, y_dims, linear_wall)
+    simulation = system(constant, agent, linear_wall)
     visualization.plot_animation(simulation, agent, linear_wall, x_dims, y_dims)

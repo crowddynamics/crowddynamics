@@ -3,7 +3,6 @@ from collections import OrderedDict
 import numpy as np
 from numba import jitclass, float64, int64
 
-
 spec_round = OrderedDict(
     round_params=float64[:, :],
     cols=int64,
@@ -118,7 +117,6 @@ class LinearWall(object):
         q_1 = x - p_1
 
         l_t = - np.dot(t_w, q_1) - np.dot(t_w, q_0)
-
         if l_t > l_w:
             d_iw = np.hypot(q_0[0], q_0[1])
             n_iw = q_0 / d_iw

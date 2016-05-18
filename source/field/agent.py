@@ -1,7 +1,17 @@
 from collections import OrderedDict
 
 import numpy as np
-from numba import jitclass, float64, int64
+from numba import jitclass, float64, int64, generated_jit, types
+
+
+@generated_jit(nopython=True)
+def get_radius_gen(radius, i):
+    if isinstance(radius, types.Float):
+        return lambda radius, i: radius
+    elif isinstance(radius, types.Array):
+        return lambda radius, i: radius[i, 0]
+    else:
+        raise ValueError()
 
 
 class Agent(object):
@@ -11,18 +21,28 @@ class Agent(object):
 
     def __init__(self, mass, radius, position, velocity, goal_velocity,
                  goal_direction):
+        # Scalars or vectors of shape=(size, 1)
         self.mass = mass
         self.radius = radius
+        self.goal_velocity = goal_velocity
+
+        # Vectors of shape=(size, 2)
         self.position = position
         self.velocity = velocity
-        self.goal_velocity = goal_velocity
         self.goal_direction = goal_direction
+
         # Arrays can be iterated over range(size)
-        self.size = len(self.position)
+        self.size = len(self.position)  # Number of rows in position
+
+        # TODO: Vectors for gathering forces for debugging
+        # self.force = np.zeros(self.shape)
 
     @property
     def shape(self):
         return self.position.shape
+
+    def get_radius(self, i):
+        return get_radius_gen(self.radius, i)
 
     # TODO: Target direction
 
@@ -111,7 +131,6 @@ def initial_position(amount, x_dims, y_dims, radius, linear_wall=None):
             if not cond:
                 continue
 
-        # If succesfull
         position[i, :] = pos
         i += 1
     return position

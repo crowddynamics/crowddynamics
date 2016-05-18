@@ -4,8 +4,8 @@ import numba
 import numpy as np
 
 from source.core.force_adjust import f_adjust, f_random_fluctuation
-from source.core.force_agents import f_ij
-from source.core.force_walls import f_iw_tot
+from source.core.force_agent import f_ij
+from source.core.force_wall import f_iw_tot
 
 
 class MethodStats(object):
@@ -47,8 +47,8 @@ def f_tot(constant, agent, wall):
     [1] http://www.nature.com/nature/journal/v407/n6803/full/407487a0.html \n
     [2] http://motion.cs.umn.edu/PowerLaw/
     """
-    force = np.zeros(agent.shape)
     # TODO: Target direction updating algorithm
+    force = np.zeros(agent.shape)
     force += f_adjust(constant, agent)
     force += f_ij(constant, agent)
     force += f_iw_tot(constant, agent, wall)
@@ -92,6 +92,7 @@ def system(constant, agent, wall, dt=0.01):
     # TODO: Optional walls
     # TODO: Round walls
     # TODO: Gather stats
+
     stats = MethodStats()
     iteration = 0
     method = stats(euler_method)

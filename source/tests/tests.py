@@ -28,7 +28,7 @@ globals().update(constant)
 
 
 def test_force_wall():
-    from source.core.force_walls import f_iw_tot
+    from source.core.force_wall import f_iw_tot
 
     f = np.zeros_like(x)
     for i in range(len(x)):
@@ -38,7 +38,7 @@ def test_force_wall():
 
 
 def test_force_agent():
-    from source.core.force_agents import f_ij
+    from source.core.force_agent import f_ij
 
     f = np.zeros_like(x)
     for i in range(len(x)):

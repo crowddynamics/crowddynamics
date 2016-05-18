@@ -58,9 +58,11 @@ round_wall = None
 
 # Agents
 amount = 100
-mass = np.random.uniform(60.0, 80.0, amount)
+# mass = np.random.uniform(60.0, 80.0, amount)
 radius = np.random.uniform(0.2, 0.3, amount)
-# mass = 70
+# mass = np.random.normal(70.0, 10.0, amount)
+# radius = np.random.normal(0.25, 0.05, amount)
+mass = 70
 # radius = 0.25
 goal_velocity = 2.5
 

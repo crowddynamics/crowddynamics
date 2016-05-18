@@ -25,7 +25,6 @@ def f_soc_ij(x_ij, v_ij, r_ij, k, tau_0, f_max):
     ----------
     [1] http://motion.cs.umn.edu/PowerLaw/
     """
-    # Init output values.
     force = np.zeros(2)
 
     a = np.dot(v_ij, v_ij)
@@ -35,7 +34,7 @@ def f_soc_ij(x_ij, v_ij, r_ij, k, tau_0, f_max):
 
     # TODO: Explanation
     # d < 0 - No interaction if tau cannot be defined.
-    if (d < 0) or (- 0.001 < a < 0.001):
+    if d < 0 or (- 0.001 < a < 0.001):
         return force
 
     d = np.sqrt(d)
@@ -60,8 +59,7 @@ def f_soc_ij(x_ij, v_ij, r_ij, k, tau_0, f_max):
 
 @numba.jit(nopython=True, nogil=True)
 def f_c_ij(h_ij, n_ij, v_ij, t_ij, mu, kappa):
-    force = h_ij * (mu * n_ij - kappa * np.dot(v_ij, t_ij) * t_ij)
-    return force
+    return h_ij * (mu * n_ij - kappa * np.dot(v_ij, t_ij) * t_ij)
 
 
 @numba.jit(nopython=True, nogil=True)
@@ -71,30 +69,27 @@ def f_ij(constant, agent):
 
     x = agent.position
     v = agent.velocity
-    # TODO: Fix scalar vs array
-    r = agent.radius.flatten()
 
     for i in range(agent.size - 1):
         for j in range(i + 1, agent.size):
             x_ij = x[i] - x[j]
             v_ij = v[i] - v[j]
-            r_ij = r[i] + r[j]
+            r_ij = agent.get_radius(i) + agent.get_radius(j)
             d_ij = np.hypot(x_ij[0], x_ij[1])  # Distance between agents
             h_ij = r_ij - d_ij
 
             # If another agent is in range of sight.
             if d_ij < constant.sight:
-                force[i] += f_soc_ij(x_ij, v_ij, r_ij,
-                                     constant.k, constant.tau_0, constant.f_max)
-                force[j] += f_soc_ij(-x_ij, -v_ij, r_ij,
-                                     constant.k, constant.tau_0, constant.f_max)
+                f = f_soc_ij(x_ij, v_ij, r_ij, constant.k, constant.tau_0,
+                             constant.f_max)
+                force[i] += f
+                force[j] -= f
 
             # If agents are overlapping.
             if h_ij > 0:
                 n_ij = x_ij / d_ij
                 t_ij = np.dot(rot270, n_ij)
-                force[i] += f_c_ij(h_ij, n_ij, v_ij, t_ij,
-                                   constant.mu, constant.kappa)
-                force[j] += f_c_ij(h_ij, -n_ij, -v_ij, -t_ij,
-                                   constant.mu, constant.kappa)
+                f = f_c_ij(h_ij, n_ij, v_ij, t_ij, constant.mu, constant.kappa)
+                force[i] += f
+                force[j] -= f
     return force
