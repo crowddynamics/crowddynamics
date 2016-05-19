@@ -1,16 +1,16 @@
 from collections import OrderedDict
 
 import numpy as np
+from numba import float64
 from numba import jitclass, generated_jit, types
-from numba import float64 as float_, int64
 
 
 @generated_jit(nopython=True)
-def get_radius_gen(radius, i):
-    if isinstance(radius, types.Float):
-        return lambda radius, i: radius
-    elif isinstance(radius, types.Array):
-        return lambda radius, i: radius[i, 0]
+def get_scalar_or_array(value, i):
+    if isinstance(value, types.Float):
+        return lambda value, i: value
+    elif isinstance(value, types.Array):
+        return lambda value, i: value[i, 0]
     else:
         raise ValueError()
 
@@ -31,19 +31,41 @@ class Agent(object):
         self.position = position
         self.velocity = velocity
         self.goal_direction = goal_direction
-
-        # Arrays can be iterated over range(size)
-        self.size = len(self.position)  # Number of rows in position
+        self.force = np.zeros(self.shape)
 
         # TODO: Vectors for gathering forces for debugging
-        self.force = np.zeros(self.shape)
         # self.force_adjust = np.zeros(self.shape)
         # self.force_agent = np.zeros(self.shape)
         # self.force_wall = np.zeros(self.shape)
 
+        # Distances for reacting to other objects
+        self.sight_soc = 7.0
+        self.sight_wall = 7.0
+        self.sight_herding = 12.0
+
+        # TODO: Target direction
+        # self.target_direction = np.zeros(self.shape)
+        # Herding
+        # self.herding_flag = 0
+        # self.herding_tendency = np.zeros(self.size)
+        # self.neighbor_direction = np.zeros(self.shape)
+        # self.neighbors = np.zeros(self.size)
+
     @property
     def shape(self):
         return self.position.shape
+
+    @property
+    def size(self):
+        return self.shape[0]
+
+    def herding_behaviour(self):
+        # for i in range(self.size):
+        #     p = self.herding_tendency[i]
+        #     neighbor_mean = self.neighbor_direction[i] / self.neighbors[i]
+        #     self.target_direction[i] = (1 - p) * self.goal_direction[i] + \
+        #                                p * neighbor_mean
+        pass
 
     def get_radius(self, i):
         """
@@ -51,43 +73,38 @@ class Agent(object):
         :param i: Index.
         :return: Returns radius if scalar or radius[i, 0] if an vector.
         """
-        return get_radius_gen(self.radius, i)
+        return get_scalar_or_array(self.radius, i)
 
     def reset_force(self):
         self.force *= 0
 
-    # TODO: Target direction
 
-
-def agent_struct(mass,
-                 radius,
-                 position,
-                 velocity,
-                 goal_velocity,
-                 goal_direction):
+def agent_struct(mass, radius, position, velocity, goal_velocity, goal_direction):
     """
     Makes jitclass from agents. Handles spec definition so that mass, radius and
     goal_velocity can be scalar of array.
     """
     spec_agent = OrderedDict(
-        mass=float_,
-        radius=float_,
-        goal_velocity=float_,
-        position=float_[:, :],
-        velocity=float_[:, :],
-        goal_direction=float_[:, :],
-        force=float_[:, :],
-        size=int64,
+        mass=float64,
+        radius=float64,
+        goal_velocity=float64,
+        position=float64[:, :],
+        velocity=float64[:, :],
+        goal_direction=float64[:, :],
+        force=float64[:, :],
+        sight_soc=float64,
+        sight_wall=float64,
+        sight_herding=float64,
     )
 
     def spec(key, value):
         if isinstance(value, (int, float)):
             value = float(value)
-            t = float_
+            t = float64
         elif isinstance(value, np.ndarray):
             value = np.array(value, dtype=np.float64)
             value = value.reshape((len(value), 1))
-            t = float_[:, :]
+            t = float64[:, :]
         else:
             raise ValueError("Wrong type.")
         spec_agent[key] = t

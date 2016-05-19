@@ -13,9 +13,10 @@ Game design?
 
 Youtube Channel
 
----
+
 Numba
-Parallel
 https://docs.python.org/3/library/concurrent.futures.html
+Parallel
+CUDA, Gpu processing
 Julia Lang
----
+https://en.wikipedia.org/wiki/Molecular_dynamics

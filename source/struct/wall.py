@@ -2,15 +2,16 @@ from collections import OrderedDict
 
 import numpy as np
 from numba import jitclass
-from numba import float64 as float_, int64
+from numba import float64, int64
 
+from source.core.functions import rotate90
 
 spec_round = OrderedDict(
-    round_params=float_[:, :],
+    round_params=float64[:, :],
     cols=int64,
     rows=int64,
     size=int64,
-    wall=float_[:, :],
+    wall=float64[:, :],
 )
 
 
@@ -53,11 +54,11 @@ class RoundWall(object):
 
 
 spec_linear = OrderedDict(
-    linear_params=float_[:, :, :],
+    linear_params=float64[:, :, :],
     cols=int64,
     rows=int64,
     size=int64,
-    wall=float_[:, :],
+    wall=float64[:, :],
 )
 
 
@@ -72,14 +73,12 @@ class LinearWall(object):
         self.construct()
 
     def construct(self):
-        # 90 degree counterclockwise rotation
-        rot90 = np.array(((0.0, -1.0), (1.0, 0.0)))
         for i in range(self.size):
             p = self.linear_params[i]
             d = p[1] - p[0]             # Vector from p_0 to p_1
             l_w = np.hypot(d[1], d[0])  # Length of the wall
             t_w = d / l_w               # Tangential unit-vector
-            n_w = np.dot(rot90, t_w)    # Normal unit-vector
+            n_w = rotate90(t_w)         # Normal unit-vector
             w = self.wall[i]            # Set values to wall array
             w[0:2], w[2:4], w[4:6], w[6:8], w[8] = p[0], p[1], t_w, n_w, l_w
 

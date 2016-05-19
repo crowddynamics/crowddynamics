@@ -5,7 +5,7 @@ import numpy as np
 
 class MyTestCase(unittest.TestCase):
     def test_constants(self):
-        from source.parameters import Constant
+        from source.struct.constant import Constant
         c = Constant()
         self.assertIsInstance(c.tau_adj, float)
         self.assertIsInstance(c.k, float)
