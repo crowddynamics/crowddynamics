@@ -31,3 +31,12 @@ def rotate270(vec2d):
     rot[1] = -vec2d[0]
     return rot
 
+
+@numba.jit(nopython=True, nogil=True)
+def normalize(vec2d):
+    return vec2d / np.hypot(vec2d[0], vec2d[1])
+
+
+@numba.jit(nopython=True, nogil=True)
+def normalize_vec(vec2d):
+    return vec2d / np.hypot(vec2d[:, 0], vec2d[:, 1]).reshape((len(vec2d), 1))

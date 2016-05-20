@@ -15,4 +15,4 @@ def f_random_fluctuation(agent, f_max=1):
 @numba.jit(nopython=True, nogil=True)
 def f_adjust(constant, agent):
     agent.force += (agent.mass / constant.tau_adj) * \
-                   (agent.goal_velocity * agent.goal_direction - agent.velocity)
+                   (agent.goal_velocity * agent.target_direction - agent.velocity)

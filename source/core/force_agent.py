@@ -1,7 +1,7 @@
 import numba
 from numpy import sqrt, hypot, dot, exp, zeros_like, isnan, abs
 
-from source.core.functions import rotate270
+from source.core.functions import rotate270, normalize
 
 
 @numba.jit(nopython=True, nogil=True)
@@ -84,5 +84,8 @@ def f_agent_agent(constant, agent):
                 agent.force[i] += force
                 agent.force[j] -= force
 
-            if distance <= agent.sight_herding:
-                pass
+            if agent.herding_flag and distance <= agent.sight_herding:
+                agent.neighbor_direction[i] += normalize(agent.velocity[j])
+                agent.neighbor_direction[j] += normalize(agent.velocity[i])
+                agent.neighbors[i] += 1
+                agent.neighbors[j] += 1

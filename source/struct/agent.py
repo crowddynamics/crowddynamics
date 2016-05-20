@@ -1,7 +1,7 @@
 from collections import OrderedDict
 
 import numpy as np
-from numba import float64
+from numba import float64, int64
 from numba import jitclass, generated_jit, types
 
 
@@ -21,7 +21,7 @@ class Agent(object):
     """
 
     def __init__(self, mass, radius, position, velocity, goal_velocity,
-                 goal_direction):
+                 goal_direction, herding_tendency):
         # Scalars or vectors of shape=(size, 1)
         self.mass = mass
         self.radius = radius
@@ -31,25 +31,24 @@ class Agent(object):
         self.position = position
         self.velocity = velocity
         self.goal_direction = goal_direction
+        self.target_direction = self.goal_direction.copy()
         self.force = np.zeros(self.shape)
 
         # TODO: Vectors for gathering forces for debugging
-        # self.force_adjust = np.zeros(self.shape)
-        # self.force_agent = np.zeros(self.shape)
-        # self.force_wall = np.zeros(self.shape)
+        self.force_adjust = np.zeros(self.shape)
+        self.force_agent = np.zeros(self.shape)
+        self.force_wall = np.zeros(self.shape)
 
         # Distances for reacting to other objects
         self.sight_soc = 7.0
         self.sight_wall = 7.0
-        self.sight_herding = 12.0
+        self.sight_herding = 20.0
 
-        # TODO: Target direction
-        # self.target_direction = np.zeros(self.shape)
         # Herding
-        # self.herding_flag = 0
-        # self.herding_tendency = np.zeros(self.size)
-        # self.neighbor_direction = np.zeros(self.shape)
-        # self.neighbors = np.zeros(self.size)
+        self.herding_flag = 0
+        self.herding_tendency = herding_tendency
+        self.neighbor_direction = np.zeros(self.shape)
+        self.neighbors = np.zeros(self.size)
 
     @property
     def shape(self):
@@ -59,13 +58,26 @@ class Agent(object):
     def size(self):
         return self.shape[0]
 
+    def reset_force(self):
+        self.force *= 0
+
+    def reset_herding(self):
+        self.neighbor_direction *= 0
+        self.neighbors *= 0
+
     def herding_behaviour(self):
-        # for i in range(self.size):
-        #     p = self.herding_tendency[i]
-        #     neighbor_mean = self.neighbor_direction[i] / self.neighbors[i]
-        #     self.target_direction[i] = (1 - p) * self.goal_direction[i] + \
-        #                                p * neighbor_mean
-        pass
+        """
+        Modifies target direction.
+        """
+        if self.herding_flag:
+            for i in range(self.size):
+                p = self.herding_tendency[i]
+                neighbor_mean = self.neighbor_direction[i] / self.neighbors[i]
+                self.target_direction[i] = (1 - p) * self.goal_direction[i] + \
+                                           p * neighbor_mean
+            self.reset_herding()
+        else:
+            self.herding_flag = 1
 
     def get_radius(self, i):
         """
@@ -75,11 +87,9 @@ class Agent(object):
         """
         return get_scalar_or_array(self.radius, i)
 
-    def reset_force(self):
-        self.force *= 0
 
-
-def agent_struct(mass, radius, position, velocity, goal_velocity, goal_direction):
+def agent_struct(mass, radius, position, velocity, goal_velocity,
+                 goal_direction, herding_tendency):
     """
     Makes jitclass from agents. Handles spec definition so that mass, radius and
     goal_velocity can be scalar of array.
@@ -91,10 +101,18 @@ def agent_struct(mass, radius, position, velocity, goal_velocity, goal_direction
         position=float64[:, :],
         velocity=float64[:, :],
         goal_direction=float64[:, :],
+        target_direction=float64[:, :],
         force=float64[:, :],
+        force_adjust=float64[:, :],
+        force_agent=float64[:, :],
+        force_wall=float64[:, :],
         sight_soc=float64,
         sight_wall=float64,
         sight_herding=float64,
+        herding_flag=int64,
+        herding_tendency=float64[:],
+        neighbor_direction=float64[:, :],
+        neighbors=float64[:],
     )
 
     def spec(key, value):
@@ -117,7 +135,8 @@ def agent_struct(mass, radius, position, velocity, goal_velocity, goal_direction
     # Jitclass of Agents
     agent = jitclass(spec_agent)(Agent)
     # Set parameters
-    args = (mass, radius, position, velocity, goal_velocity, goal_direction)
+    args = (mass, radius, position, velocity, goal_velocity, goal_direction,
+            herding_tendency)
     return agent(*args)
 
 

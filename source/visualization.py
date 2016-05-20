@@ -1,14 +1,11 @@
 from collections import Iterable, deque
 from itertools import repeat, islice
 
-import matplotlib
-from matplotlib.lines import Line2D
-from matplotlib.patches import Arrow, Circle
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib import animation as animation
-from matplotlib.collections import CircleCollection
-import matplotlib.transforms as transforms
+from matplotlib.lines import Line2D
+from matplotlib.patches import Arrow, Circle
 
 from source.io.path import default_path
 
@@ -111,7 +108,7 @@ def plot_animation(simulation, agent, linear_wall, x_dims, y_dims,
                                    blit=True)
 
     if save:
-        writer = animation.FFMpegWriter(fps=30, bitrate=1800)
+        writer = animation.FFMpegWriter(fps=100, bitrate=1800)
         fname = default_path('anim.mkv', 'documentation', 'animations')
         anim.save(fname, writer=writer)
     else:
