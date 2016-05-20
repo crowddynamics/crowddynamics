@@ -1,12 +1,12 @@
 import numba
 from numpy import dot, exp
 
-from source.core.functions import rotate270
+from source.core.functions import rotate270, force_limit
 
 
 @numba.jit(nopython=True, nogil=True)
 def f_soc_iw(h_iw, n_iw, a, b):
-    return min(1.0, exp(h_iw / b)) * a * n_iw
+    return exp(h_iw / b) * a * n_iw
 
 
 @numba.jit(nopython=True, nogil=True)
@@ -22,9 +22,13 @@ def f_agent_wall(constant, agent, wall):
             h_iw = agent.get_radius(i) - d_iw
 
             if d_iw <= agent.sight_wall:
-                agent.force[i] += f_soc_iw(h_iw, n_iw, constant.a, constant.b)
+                force = f_soc_iw(h_iw, n_iw, constant.a, constant.b)
+                force_limit(force, constant.f_soc_iw_max)
+                agent.force[i] += force
 
             if h_iw > 0:
                 t_iw = rotate270(n_iw)
-                agent.force[i] += f_c_iw(agent.velocity[i], t_iw, n_iw, h_iw,
-                                         constant.mu, constant.kappa)
+                force = f_c_iw(agent.velocity[i], t_iw, n_iw, h_iw,
+                               constant.mu, constant.kappa)
+                force_limit(force, constant.f_c_iw_max)
+                agent.force[i] += force

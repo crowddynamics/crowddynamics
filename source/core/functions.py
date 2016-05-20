@@ -40,3 +40,10 @@ def normalize(vec2d):
 @numba.jit(nopython=True, nogil=True)
 def normalize_vec(vec2d):
     return vec2d / np.hypot(vec2d[:, 0], vec2d[:, 1]).reshape((len(vec2d), 1))
+
+
+@numba.jit(nopython=True, nogil=True)
+def force_limit(force, f_max):
+    f_mag = np.hypot(force[0], force[1])
+    if f_mag > f_max:
+        force *= f_max / f_mag

@@ -11,7 +11,12 @@ spec_constant = OrderedDict(
     kappa=float64,
     a=float64,
     b=float64,
-    f_max=float64,
+    f_random_fluctuation_max=float64,
+    f_adjust_max=float64,
+    f_soc_ij_max=float64,
+    f_c_ij_max=float64,
+    f_soc_iw_max=float64,
+    f_c_iw_max=float64,
 )
 
 
@@ -30,5 +35,10 @@ class Constant(object):
         self.kappa = 2.4e5
         self.a = 2e3
         self.b = 0.08
-        # Limits
-        self.f_max = 1e3
+        # Force limits
+        self.f_random_fluctuation_max = 1
+        self.f_adjust_max = 1e3
+        self.f_soc_ij_max = 2e3
+        self.f_c_ij_max = 10e3
+        self.f_soc_iw_max = 2e3
+        self.f_c_iw_max = 10e3

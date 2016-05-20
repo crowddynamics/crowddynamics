@@ -60,10 +60,10 @@ def f_tot(constant, agent, wall):
     [1] http://www.nature.com/nature/journal/v407/n6803/full/407487a0.html \n
     [2] http://motion.cs.umn.edu/PowerLaw/
     """
-    f_adjust(constant, agent)            # _4.3 %
-    f_agent_agent(constant, agent)       # 53.4 %
-    f_agent_wall(constant, agent, wall)  # 33.7 %
-    f_random_fluctuation(agent)          # _2.2 % of runtime
+    f_agent_agent(constant, agent)         # 53.4 %
+    f_agent_wall(constant, agent, wall)    # 33.7 %
+    f_adjust(constant, agent)              # 4.3 %  of runtime
+    f_random_fluctuation(constant, agent)  # 2.2 %
 
 
 @numba.jit(nopython=True, nogil=True)
@@ -76,7 +76,6 @@ def euler_method(constant, agent, wall, dt):
     - https://en.wikipedia.org/wiki/Euler_method
     """
     while True:
-        # TODO: Target direction updating algorithm
         # agent.herding_behaviour()
         f_tot(constant, agent, wall)
         acceleration = agent.force / agent.mass

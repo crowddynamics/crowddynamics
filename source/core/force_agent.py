@@ -1,11 +1,11 @@
 import numba
 from numpy import sqrt, hypot, dot, exp, zeros_like, isnan, abs
 
-from source.core.functions import rotate270, normalize
+from source.core.functions import rotate270, normalize, force_limit
 
 
 @numba.jit(nopython=True, nogil=True)
-def f_soc_ij(x_ij, v_ij, r_ij, k, tau_0, f_max):
+def f_soc_ij(x_ij, v_ij, r_ij, k, tau_0):
     """
     About
     -----
@@ -38,11 +38,6 @@ def f_soc_ij(x_ij, v_ij, r_ij, k, tau_0, f_max):
     force -= k / (a * tau ** m) * exp(-tau / tau_0) * \
              (m / tau + 1 / tau_0) * (v_ij - (v_ij * b + x_ij * a) / d)
 
-    mag = hypot(force[0], force[1])
-    if mag > f_max:
-        # Scales magnitude of force to force max
-        force *= f_max / mag
-
     return force
 
 
@@ -67,8 +62,8 @@ def f_agent_agent(constant, agent):
                                  relative_velocity,
                                  total_radius,
                                  constant.k,
-                                 constant.tau_0,
-                                 constant.f_max)
+                                 constant.tau_0)
+                force_limit(force, constant.f_soc_ij_max)
                 agent.force[i] += force
                 agent.force[j] -= force
 
@@ -80,7 +75,9 @@ def f_agent_agent(constant, agent):
                                normal,
                                relative_velocity,
                                tangent,
-                               constant.mu, constant.kappa)
+                               constant.mu,
+                               constant.kappa)
+                force_limit(force, constant.f_c_ij_max)
                 agent.force[i] += force
                 agent.force[j] -= force
 
