@@ -9,6 +9,13 @@ from matplotlib.patches import Arrow, Circle
 
 from source.io.path import default_path
 
+try:
+    import seaborn
+
+    seaborn.set()
+except ImportError():
+    pass
+
 
 def consume(iterator, n=None):
     """Advance the iterator n-steps ahead. If n is none, consume entirely."""
@@ -79,11 +86,6 @@ def plot_animation(simulation, agent, linear_wall, x_dims, y_dims,
     http://matplotlib.org/1.4.1/examples/animation/index.html
     http://matplotlib.org/examples/api/patch_collection.html
     """
-    try:
-        import seaborn
-        seaborn.set()
-    except ImportError():
-        pass
 
     fig, ax = plt.subplots(figsize=(12, 12))
     ax.set(xlim=x_dims, ylim=y_dims, xlabel=r'$ x $', ylabel=r'$ y $')
