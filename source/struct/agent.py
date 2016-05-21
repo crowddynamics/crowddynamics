@@ -4,6 +4,8 @@ import numpy as np
 from numba import float64, int64
 from numba import jitclass, generated_jit, types
 
+from source.core.functions import normalize_vec
+
 
 @generated_jit(nopython=True)
 def get_scalar_or_array(value, i):
@@ -20,8 +22,7 @@ class Agent(object):
     Structure for agent parameters and variables.
     """
 
-    def __init__(self, mass, radius, position, velocity, goal_velocity,
-                 goal_direction, herding_tendency):
+    def __init__(self, mass, radius, position, goal_velocity):
         # Scalars or vectors of shape=(size, 1)
         self.mass = mass
         self.radius = radius
@@ -29,9 +30,9 @@ class Agent(object):
 
         # Vectors of shape=(size, 2)
         self.position = position
-        self.velocity = velocity
-        self.goal_direction = goal_direction
-        self.target_direction = self.goal_direction.copy()
+        self.velocity = np.zeros(self.shape)
+        self.goal_direction = np.zeros(self.shape)
+        self.target_direction = np.zeros(self.shape)
         self.force = np.zeros(self.shape)
 
         # TODO: Vectors for gathering forces for debugging
@@ -40,15 +41,18 @@ class Agent(object):
         self.force_wall = np.zeros(self.shape)
 
         # Distances for reacting to other objects
+        # TODO: Not see through walls
         self.sight_soc = 7.0
         self.sight_wall = 7.0
         self.sight_herding = 20.0
 
         # Herding
         self.herding_flag = 0
-        self.herding_tendency = herding_tendency
+        self.herding_tendency = np.zeros(self.size)
         self.neighbor_direction = np.zeros(self.shape)
         self.neighbors = np.zeros(self.size)
+
+        # TODO: Path finder
 
     @property
     def shape(self):
@@ -65,19 +69,20 @@ class Agent(object):
         self.neighbor_direction *= 0
         self.neighbors *= 0
 
-    def herding_behaviour(self):
+    def update_target_direction(self):
         """
         Modifies target direction.
         """
         if self.herding_flag:
+            # Herding behaviour
             for i in range(self.size):
                 p = self.herding_tendency[i]
-                neighbor_mean = self.neighbor_direction[i] / self.neighbors[i]
+                mean = self.neighbor_direction[i] / self.neighbors[i]
                 self.target_direction[i] = (1 - p) * self.goal_direction[i] + \
-                                           p * neighbor_mean
+                                           p * mean
             self.reset_herding()
         else:
-            self.herding_flag = 1
+            self.target_direction = self.goal_direction
 
     def get_radius(self, i):
         """
@@ -87,9 +92,11 @@ class Agent(object):
         """
         return get_scalar_or_array(self.radius, i)
 
+    def set_goal_direction(self, goal):
+        self.goal_direction = normalize_vec(goal - self.position)
 
-def agent_struct(mass, radius, position, velocity, goal_velocity,
-                 goal_direction, herding_tendency):
+
+def agent_struct(mass, radius, position, goal_velocity):
     """
     Makes jitclass from agents. Handles spec definition so that mass, radius and
     goal_velocity can be scalar of array.
@@ -134,10 +141,7 @@ def agent_struct(mass, radius, position, velocity, goal_velocity,
     goal_velocity = spec('goal_velocity', goal_velocity)
     # Jitclass of Agents
     agent = jitclass(spec_agent)(Agent)
-    # Set parameters
-    args = (mass, radius, position, velocity, goal_velocity, goal_direction,
-            herding_tendency)
-    return agent(*args)
+    return agent(mass, radius, position, goal_velocity)
 
 
 def initial_position(amount, x_dims, y_dims, radius, linear_wall=None):

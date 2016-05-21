@@ -1,17 +1,16 @@
-import moviepy.editor
-import numpy as np
 import gizeh
+from moviepy.editor import VideoClip
 
 from source.io.path import default_path
-from source.struct.agent import Agent
 
 
-def make_frame(t, agent: Agent = None):
-    surface = gizeh.Surface(width=400, height=400)
-
+def make_frame(t):
+    surface = gizeh.Surface(width=800, height=800, bg_color=(1, 1, 1))
+    circle = gizeh.circle(100, xy=(400, 400), fill=(1, 0, 0))
+    circle.draw(surface)
     return surface.get_npimage()
 
 
-clip = moviepy.editor.VideoClip(make_frame, duration=10)
-clip.write_gif(default_path('crowd.gif', 'documentation', 'animations'),
-               fps=30)
+clip = VideoClip(make_frame, duration=1)
+clip.write_videofile(default_path('crowd.mp4', 'documentation', 'animations'),
+                     fps=24)

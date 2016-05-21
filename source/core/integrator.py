@@ -29,7 +29,7 @@ def f_tot(constant, agent, wall):
 
 
 @numba.jit(nopython=True, nogil=True)
-def euler_method(constant, agent, wall, dt):
+def euler_method(result, constant, agent, wall, dt):
     """
     Updates agent's velocity and position using euler method.
 
@@ -38,10 +38,14 @@ def euler_method(constant, agent, wall, dt):
     - https://en.wikipedia.org/wiki/Euler_method
     """
     while True:
-        # agent.herding_behaviour()
+        # Update agent
+        # agent.set_goal_direction()
+        agent.update_target_direction()
         f_tot(constant, agent, wall)
         acceleration = agent.force / agent.mass
         agent.velocity += acceleration * dt
         agent.position += agent.velocity * dt
         agent.reset_force()
+        # Save
+        result.increment(dt)
         yield

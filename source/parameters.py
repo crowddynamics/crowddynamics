@@ -1,6 +1,6 @@
 import numpy as np
 
-from source.struct.agent import agent_struct, initial_position, initial_velocity
+from source.struct.agent import agent_struct, initial_position
 from source.struct.constant import Constant
 from source.struct.wall import LinearWall
 
@@ -9,15 +9,18 @@ from source.struct.wall import LinearWall
 constant = Constant()
 
 # Field
-x_dims = (-0.1, 100.1)
-y_dims = (-0.1, 100.1)
+x_dims = (0, 50)
+y_dims = (0, 50)
 
 # Walls
 linear_params = np.array(
-    (((0, 0), (0, 100)),
-     ((0, 0), (100, 0)),
-     ((100, 0), (100, 100)),
-     ((0, 100), (100, 100))),
+    (
+        ((0, 0), (0, 50)),
+        ((0, 0), (50, 0)),
+        ((0, 50), (50, 50)),
+        ((50, 0), (50, 24)),
+        ((50, 26), (50, 50)),
+    ),
     dtype=np.float64
 )
 
@@ -27,18 +30,15 @@ round_wall = None
 # Agents
 amount = 200
 goal_velocity = 5.0
+goal_point = np.array((53, 25))
 
-mass = np.random.uniform(60.0, 80.0, amount)
-radius = np.random.uniform(0.2, 0.3, amount)
-# mass = 70
-# radius = 0.25
-
-
+mass = np.random.normal(loc=70.0, scale=10.0, size=amount)
+radius = np.random.normal(loc=0.22, scale=0.01, size=amount)
 position = initial_position(amount, x_dims, y_dims, radius, linear_wall)
-velocity = initial_velocity(amount)
-goal_direction = np.copy(velocity)
+mass.sort()
+radius.sort()
 
-herding_tendency = 0.7 * np.ones(amount)
+agent = agent_struct(mass, radius, position, goal_velocity)
 
-agent = agent_struct(mass, radius, position, velocity, goal_velocity,
-                     goal_direction, herding_tendency)
+agent.herding_flag = 0
+agent.herding_tendency = 0.7 * np.ones(amount)

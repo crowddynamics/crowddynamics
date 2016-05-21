@@ -89,7 +89,9 @@ def plot_animation(simulation, agent, linear_wall, x_dims, y_dims,
 
     fig, ax = plt.subplots(figsize=(12, 12))
     ax.set(xlim=x_dims, ylim=y_dims, xlabel=r'$ x $', ylabel=r'$ y $')
+
     line, = ax.plot([], [], marker='o', lw=0, alpha=0.5)
+    line2, = ax.plot([], [], marker='o', lw=0, alpha=0.5)
 
     def init_lines():
         line.set_data(agent.position.T)
