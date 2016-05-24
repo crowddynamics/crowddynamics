@@ -4,6 +4,7 @@ from numba import float64, jitclass
 
 
 spec_constant = OrderedDict(
+    dt=float64,
     tau_adj=float64,
     k=float64,
     tau_0=float64,
@@ -27,6 +28,7 @@ class Constant(object):
     """
 
     def __init__(self):
+        self.dt = 0.01
         # Force related constants
         self.tau_adj = 0.5
         self.k = 1.5 * 70

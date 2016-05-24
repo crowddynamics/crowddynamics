@@ -6,9 +6,10 @@
 /documentation/figures
 /source/core/goal_direction.py
 /documentation/latex/examples/
-/documentation/TODO.txt
+/documentation/TODO.yaml
 /documentation/structure.yaml
 *.lprof
+
 
 # Created by .ignore support plugin (hsz.mobi)
 ### Python template

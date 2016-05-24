@@ -22,14 +22,14 @@ def f_tot(constant, agent, wall):
     [1] http://www.nature.com/nature/journal/v407/n6803/full/407487a0.html \n
     [2] http://motion.cs.umn.edu/PowerLaw/
     """
-    f_agent_agent(constant, agent)         # 53.4 %
-    f_agent_wall(constant, agent, wall)    # 33.7 %
-    f_adjust(constant, agent)              # 4.3 %  of runtime
+    f_agent_agent(constant, agent)        # 53.4 %
+    f_agent_wall(constant, agent, wall)   # 33.7 %
+    f_adjust(constant, agent)              # 4.3 %
     f_random_fluctuation(constant, agent)  # 2.2 %
 
 
 @numba.jit(nopython=True, nogil=True)
-def euler_method(result, constant, agent, wall, dt):
+def euler_method(result, constant, agent, wall):
     """
     Updates agent's velocity and position using euler method.
 
@@ -38,14 +38,14 @@ def euler_method(result, constant, agent, wall, dt):
     - https://en.wikipedia.org/wiki/Euler_method
     """
     while True:
-        # Update agent
-        # agent.set_goal_direction()
-        agent.update_target_direction()
+        # Target direction
+        agent.goal_to_target_direction()
+        # Update  position
         f_tot(constant, agent, wall)
         acceleration = agent.force / agent.mass
-        agent.velocity += acceleration * dt
-        agent.position += agent.velocity * dt
+        agent.velocity += acceleration * constant.dt
+        agent.position += agent.velocity * constant.dt
         agent.reset_force()
         # Save
-        result.increment(dt)
+        result.increment_simu_time(constant.dt)
         yield

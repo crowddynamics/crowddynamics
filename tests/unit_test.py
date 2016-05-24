@@ -16,7 +16,7 @@ class MyTestCase(unittest.TestCase):
         self.assertIsInstance(c.b, float)
 
     def test_round_wall(self):
-        from source.struct.wall import RoundWall
+        from source.struct.obstacle import RoundWall
         rp = np.array(((0.0, 0.0, 1.0),
                        (0.0, 0.0, 1.0)))
         round_wall = RoundWall(rp)
@@ -27,7 +27,7 @@ class MyTestCase(unittest.TestCase):
             round_wall.deconstruct(2)
 
     def test_linear_wall(self):
-        from source.struct.wall import LinearWall
+        from source.struct.obstacle import LinearWall
         lp = np.array((((0.0, 0.0), (1.0, 2.0)),
                        ((0.0, 0.0), (2.0, 0.0))))
         linear_wall = LinearWall(lp)
@@ -38,8 +38,8 @@ class MyTestCase(unittest.TestCase):
             linear_wall.deconstruct(2)
 
     def test_agent(self):
-        from source.struct.agent import agent_struct, initial_position
-        from source.struct.wall import LinearWall
+        from source.struct.agent import agent_struct, random_position
+        from source.struct.obstacle import LinearWall
 
         amount = 10
         x_dims = (0, 100)
@@ -60,11 +60,11 @@ class MyTestCase(unittest.TestCase):
 
         for radius in radii:
             # Without walls
-            position = initial_position(amount, x_dims, y_dims, radius)
+            position = random_position(amount, x_dims, y_dims, radius)
 
         for radius in radii:
             # With walls
-            position = initial_position(amount, x_dims, y_dims, radius, lw)
+            position = random_position(amount, x_dims, y_dims, radius, lw)
 
     def test_forces(self):
         pass

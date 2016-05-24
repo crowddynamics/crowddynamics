@@ -1,28 +1,30 @@
 ---
-# Simulation structure
-
-Simulation:
+## Source
+System:
+  # Initialize
   Parameters:
-    Constants:
-    Params:
+    ## Struct
+    Constant:
+    Agent:
+    Wall:
+    Result:
 
-  Field:
-    Walls:
-      Round:
-      Linear:
-    Agents:
-      Positions:
-
-  Core:
-    Force:
+  ## Core
+  # Main loop
+  Goal Direction:
+  Integrator:
+    Target Direction:
+    Force Total:  # TODO: force -> interaction
       Adjust:
-      Agents:
-        Goal direction:
-      Walls:
-    Game:
-    System:
-
-
-  Vizualization:
+      Agent - Agent:
+        f_soc_ij:
+        f_c_ij:
+        Herding:
+      Agent - Wall:
+        f_soc_iw:
+        f_c_iw:
+      Random Fluctuation:
+  Check if agent in goal:
+  Update result:
 
 ...

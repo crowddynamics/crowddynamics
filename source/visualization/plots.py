@@ -73,7 +73,7 @@ def plot_field(agent, x_dims, y_dims, linear_wall=None, save=True):
     #     add_patches(ax, vector_patches(position, force, alpha=0.8, width=0.15))
 
     if save:
-        fname = default_path('field.pdf', 'documentation', 'figures')
+        fname = default_path('field.pdf', 'simulations', 'figures')
         plt.savefig(fname)
         del fig, ax
     else:
@@ -89,19 +89,21 @@ def plot_animation(simulation, agent, linear_wall, x_dims, y_dims,
 
     fig, ax = plt.subplots(figsize=(12, 12))
     ax.set(xlim=x_dims, ylim=y_dims, xlabel=r'$ x $', ylabel=r'$ y $')
-
     line, = ax.plot([], [], marker='o', lw=0, alpha=0.5)
-    line2, = ax.plot([], [], marker='o', lw=0, alpha=0.5)
+
+    if linear_wall is not None:
+        add_patches(ax, linear_wall_patches(linear_wall.linear_params,
+                                            color='black'))
 
     def init_lines():
         line.set_data(agent.position.T)
-        if linear_wall is not None:
-            add_patches(ax, linear_wall_patches(linear_wall.linear_params,
-                                                color='black'))
         return line,
 
     def update_lines(i):
-        next(simulation)
+        try:
+            next(simulation)
+        except StopIteration:
+            exit(1)
         line.set_data(agent.position.T)
         return line,
 
@@ -113,7 +115,7 @@ def plot_animation(simulation, agent, linear_wall, x_dims, y_dims,
 
     if save:
         writer = animation.FFMpegWriter(fps=100, bitrate=1800)
-        fname = default_path('anim.mkv', 'documentation', 'animations')
+        fname = default_path('anim.mkv', 'simulations', 'animations')
         anim.save(fname, writer=writer)
     else:
         plt.show()

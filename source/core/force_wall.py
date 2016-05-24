@@ -10,8 +10,8 @@ def f_soc_iw(h_iw, n_iw, a, b):
 
 
 @numba.jit(nopython=True, nogil=True)
-def f_c_iw(v_i, t_iw, n_iw, h_iw, mu, kappa):
-    return h_iw * (mu * n_iw - kappa * dot(v_i, t_iw) * t_iw)
+def f_c_iw(v_iw, t_iw, n_iw, h_iw, mu, kappa):
+    return h_iw * (mu * n_iw - kappa * dot(v_iw, t_iw) * t_iw)
 
 
 @numba.jit(nopython=True, nogil=True)

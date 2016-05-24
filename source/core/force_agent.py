@@ -35,8 +35,8 @@ def f_soc_ij(x_ij, v_ij, r_ij, k, tau_0):
 
     # Force is returned negative as repulsive force
     m = 2.0  # Exponent in power law
-    force -= k / (a * tau ** m) * exp(-tau / tau_0) * \
-             (m / tau + 1 / tau_0) * (v_ij - (v_ij * b + x_ij * a) / d)
+    force -= k / (a * tau ** m) * exp(-tau / tau_0) * (m / tau + 1 / tau_0) * \
+             (v_ij - (v_ij * b + x_ij * a) / d)
 
     return force
 
@@ -81,6 +81,7 @@ def f_agent_agent(constant, agent):
                 agent.force[i] += force
                 agent.force[j] -= force
 
+            # Herding
             if agent.herding_flag and distance <= agent.sight_herding:
                 agent.neighbor_direction[i] += normalize(agent.velocity[j])
                 agent.neighbor_direction[j] += normalize(agent.velocity[i])
