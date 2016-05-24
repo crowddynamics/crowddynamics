@@ -95,7 +95,7 @@ class System:
                 for _ in range(num):
                     if self.result.increment_agent_in_goal():
                         self.print_stats()
-                        raise StopIteration
+                        # raise StopIteration
 
             return ret
         except GeneratorExit:

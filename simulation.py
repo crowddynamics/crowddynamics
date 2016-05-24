@@ -5,4 +5,4 @@ from source.visualization import plots
 
 if __name__ == '__main__':
     simulation = System(constant, agent, linear_wall, goal)
-    plots.plot_animation(simulation, agent, linear_wall, (0, 55), (0, 50))
+    plots.plot_animation(simulation, (0, 55), (0, 50))
