@@ -1,16 +1,3 @@
-### Crowd Dynamics
-/docs/
-/source/printing
-/research
-/documentation/animations/
-/documentation/figures
-/source/core/goal_direction.py
-/documentation/latex/examples/
-/documentation/TODO.yaml
-/documentation/structure.yaml
-*.lprof
-
-
 # Created by .ignore support plugin (hsz.mobi)
 ### Python template
 # Byte-compiled / optimized / DLL files
@@ -259,4 +246,17 @@ sympy-plots-for-*.tex/
 # WinEdt
 *.bak
 *.sav
+
+### Crowd Dynamics
+# Files
+*.lprof
+*.mp4
+
+# Folders
+/docs/
+/research
+/documentation/latex/examples/
+/documentation/TODO.yaml
+/documentation/structure.yaml
+/simulations/animations/
 

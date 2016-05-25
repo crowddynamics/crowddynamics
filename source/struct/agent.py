@@ -96,7 +96,8 @@ class Agent(object):
 
     def set_goal_direction(self, goal):
         mask = self.goal_reached ^ True
-        self.goal_direction[mask] = normalize_vec(goal - self.position[mask])
+        if np.sum(mask):
+            self.goal_direction[mask] = normalize_vec(goal - self.position[mask])
 
 
 def agent_struct(size, mass, radius, goal_velocity):

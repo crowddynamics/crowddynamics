@@ -43,4 +43,4 @@ class Constant(object):
         self.f_soc_ij_max = 2e3
         self.f_c_ij_max = 10e3
         self.f_soc_iw_max = 2e3
-        self.f_c_iw_max = 10e3
+        self.f_c_iw_max = 100e3
