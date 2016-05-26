@@ -7,7 +7,7 @@ from numba import float64, int64
 from source.core.functions import rotate90
 
 spec_round = OrderedDict(
-    round_params=float64[:, :],
+    params=float64[:, :],
     cols=int64,
     rows=int64,
     size=int64,
@@ -18,16 +18,16 @@ spec_round = OrderedDict(
 @jitclass(spec_round)
 class RoundWall(object):
     def __init__(self, round_params):
-        self.round_params = round_params
+        self.params = round_params
         self.cols = 3
-        self.rows = len(self.round_params)
+        self.rows = len(self.params)
         self.wall = np.zeros((self.rows, self.cols))
         self.size = self.rows
         self.construct()
 
     def construct(self):
         for i in range(self.size):
-            self.wall[i] = self.round_params[i]
+            self.wall[i] = self.params[i]
 
     def deconstruct(self, index):
         if index < 0 or index >= self.size:
@@ -54,7 +54,7 @@ class RoundWall(object):
 
 
 spec_linear = OrderedDict(
-    linear_params=float64[:, :, :],
+    params=float64[:, :, :],
     cols=int64,
     rows=int64,
     size=int64,
@@ -65,16 +65,16 @@ spec_linear = OrderedDict(
 @jitclass(spec_linear)
 class LinearWall(object):
     def __init__(self, linear_params):
-        self.linear_params = linear_params
+        self.params = linear_params
         self.cols = 9
-        self.rows = len(self.linear_params)
+        self.rows = len(self.params)
         self.wall = np.zeros(shape=(self.rows, self.cols))
         self.size = self.rows
         self.construct()
 
     def construct(self):
         for i in range(self.size):
-            p = self.linear_params[i]
+            p = self.params[i]
             d = p[1] - p[0]             # Vector from p_0 to p_1
             l_w = np.hypot(d[1], d[0])  # Length of the wall
             t_w = d / l_w               # Tangential unit-vector

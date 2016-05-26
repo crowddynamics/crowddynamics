@@ -9,6 +9,7 @@ from source.struct.result import Result
 class System:
     def __init__(self, constant, agent, wall, goal_area=None):
         # TODO: Multiple Optional walls
+        # TODO: Multiple Goal areas
         self.constant = constant
         self.agent = agent
         self.wall = wall
