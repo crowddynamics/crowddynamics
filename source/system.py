@@ -14,7 +14,6 @@ class System:
         self.wall = wall
         self.goal_area = goal_area
 
-        # Results
         self.result = Result(agent.size)
 
         # System
