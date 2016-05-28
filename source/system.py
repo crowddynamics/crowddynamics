@@ -1,5 +1,7 @@
 from timeit import default_timer as timer
 
+from collections import Iterable
+
 from simulations.bottleneck.config import goal_point
 from source.core.integrator import euler_method
 from source.display import format_time
@@ -7,13 +9,18 @@ from source.struct.result import Result
 
 
 class System:
-    def __init__(self, constant, agent, wall, goal_area=None):
+    def __init__(self, constant, agent, wall, goals=None):
         # TODO: Multiple Optional walls
-        # TODO: Multiple Goal areas
         self.constant = constant
         self.agent = agent
         self.wall = wall
-        self.goal_area = goal_area
+        self.goals = goals
+
+        if not isinstance(self.goals, Iterable):
+            self.goals = (self.goals, )
+
+        if isinstance(self.wall, Iterable):
+            raise NotImplementedError()
 
         self.result = Result(agent.size)
 
@@ -29,6 +36,13 @@ class System:
             format_time(self.result.wall_time_tot),
         )
         print(out)
+
+    def goal_reached(self, goal):
+        num = goal.is_reached_by(self.agent)
+        for _ in range(num):
+            if self.result.increment_agent_in_goal():
+                self.print_stats()
+                raise GeneratorExit()
 
     def __iter__(self):
         return self
@@ -52,12 +66,10 @@ class System:
                 self.print_stats()
 
             # Check goal
-            if self.goal_area is not None:
-                num = self.goal_area.is_reached_by(self.agent)
-                for _ in range(num):
-                    if self.result.increment_agent_in_goal():
-                        self.print_stats()
-                        raise GeneratorExit()
+            for goal in self.goals:
+                if goal is not None:
+                    self.goal_reached(goal)
+
             return ret
         except GeneratorExit:
             raise StopIteration()

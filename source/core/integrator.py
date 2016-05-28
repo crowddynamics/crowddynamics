@@ -6,7 +6,7 @@ from source.core.force_wall import f_agent_wall
 
 
 @numba.jit(nopython=True, nogil=True)
-def f_tot(constant, agent, wall):
+def _f_tot(constant, agent, wall):
     """
     About
     -----
@@ -41,7 +41,7 @@ def euler_method(result, constant, agent, wall):
         # Target direction
         agent.goal_to_target_direction()
         # Update  position
-        f_tot(constant, agent, wall)
+        _f_tot(constant, agent, wall)
         acceleration = agent.force / agent.mass
         agent.velocity += acceleration * constant.dt
         agent.position += agent.velocity * constant.dt

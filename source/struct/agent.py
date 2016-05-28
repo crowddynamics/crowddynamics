@@ -1,4 +1,4 @@
-from collections import OrderedDict
+from collections import OrderedDict, Iterable
 
 import numpy as np
 from numba.types import UniTuple
@@ -153,7 +153,7 @@ def agent_struct(size, mass, radius, goal_velocity):
     return agent(size, mass, radius, goal_velocity, goal_reached)
 
 
-def random_position(agent, x_dims, y_dims, wall=None):
+def random_position(agent, x_dims, y_dims, walls=None):
     """
     Generate uniformly distributed random positions inside x_dims and y_dims for
     the agents without overlapping each others or the walls with Monte Carlo
@@ -162,6 +162,9 @@ def random_position(agent, x_dims, y_dims, wall=None):
     # TODO: agent argument
     # TODO: define area more accurately
     # TODO: check if area can be filled
+    if not isinstance(walls, Iterable):
+        walls = (walls,)
+        walls = tuple(filter(None, walls))
 
     i = 0
     iterations = 0
@@ -194,13 +197,13 @@ def random_position(agent, x_dims, y_dims, wall=None):
                 continue
 
         # Test overlapping with walls
-        if wall is not None:
-            cond = 1
+        cond = 1
+        for wall in walls:
             for j in range(wall.size):
                 d = wall.distance(j, pos) - rad
                 cond *= d > 0
-            if not cond:
-                continue
+        if not cond:
+            continue
 
         agent.position[i, :] = pos
         i += 1

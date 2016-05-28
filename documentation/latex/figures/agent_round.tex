@@ -5,23 +5,27 @@
 
 \input{./grid}
 
-\def \radius {2};
+
+\def \radius {5};
 \def \angle {-30};
 
-\coordinate[] (centre) at (-2, -2);
-\node[above=3pt] (agent) at (centre) {$ \mathbf{x}_{i} $};
-\draw[dotted] (centre) circle (\radius);
-\draw[<->] (centre) -- node[above] {$ r_{i} $}
-           ($ (centre) + ({\radius * cos(\angle)}, {\radius * sin(\angle)} )$);
+% Centre
+\coordinate[] (centre) at (0, 0);
+\node[below=3pt] (agent) at (centre) {$ \mathbf{x}_{i} $};
 
+% Circle
+\draw[gray] (centre) circle (\radius);
 
-\coordinate[] (centre2) at (3, 2);
-\node[above=3pt] (agent2) at (centre2) {$ \mathbf{x}_{j} $};
-\draw[dotted] (centre2) circle (\radius);
-\draw[<->] (centre2) -- node[above] {$ r_{j} $}
-           ($ (centre2) + ({\radius * cos(\angle)}, {\radius * sin(\angle)} )$);
+% Ellipse
+\draw[] (centre) ellipse (5 and 3);
 
+% Axis
+\draw[dashed, ->] (centre) -- node[above] {$ a $} ($ (centre) + (5, 0) $);
+\draw[dashed, ->
+] (centre) -- node[right] {$ b $} ($ (centre) + (0, 3) $);
 
-\draw[->, gray] (centre2) -- node[above=3pt] {$ \mathbf{x}_{ij} $} (centre);
+%\draw[<->] (centre) -- node[above] {$ r_{i} $}
+%           ($ (centre) + ({\radius * cos(\angle)}, {\radius * sin(\angle)} )$);
+
 
 \end{tikzpicture}

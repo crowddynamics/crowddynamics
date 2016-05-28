@@ -34,9 +34,9 @@ def initialize():
          ((50, 26.5), (50, 50)),), dtype=np.float64
     )
 
+    # TODO: walls
     linear_wall = LinearWall(linear_params)
     round_wall = None
-    # TODO: walls
     walls = linear_wall
 
     # Agents
@@ -45,7 +45,7 @@ def initialize():
     radius = np.random.normal(loc=0.22, scale=0.01, size=size)
     goal_velocity = 5.0
     agent = agent_struct(size, mass, radius, goal_velocity)
-    random_position(agent, x, y, linear_wall)
+    random_position(agent, x, y, walls)
 
     # agent.herding_flag = False
     # agent.herding_tendency = np.ones(size)

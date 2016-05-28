@@ -27,7 +27,7 @@ if __name__ == '__main__':
     result_path = path.result("{}.csv".format(name))
     results = None
 
-    for num in range(60):
+    for num in range(1):
         simulation = System(*initialize())
         run(simulation)
 
