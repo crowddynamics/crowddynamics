@@ -164,7 +164,7 @@ def random_position(agent, x_dims, y_dims, walls=None):
     # TODO: check if area can be filled
     if not isinstance(walls, Iterable):
         walls = (walls,)
-        walls = tuple(filter(None, walls))
+    walls = tuple(filter(None, walls))
 
     i = 0
     iterations = 0

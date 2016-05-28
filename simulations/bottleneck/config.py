@@ -6,7 +6,7 @@ import numpy as np
 from source.struct.agent import agent_struct, random_position
 from source.struct.area import GoalRectangle
 from source.struct.constant import Constant
-from source.struct.wall import LinearWall
+from source.struct.wall import LinearWall, RoundWall
 
 # Path to this folder
 dirpath = os.path.abspath(__file__)
@@ -30,14 +30,18 @@ def initialize():
         (((0, 0), (0, 50)),
          ((0, 0), (50, 0)),
          ((0, 50), (50, 50)),
-         ((50, 0), (50, 24.5)),
-         ((50, 26.5), (50, 50)),), dtype=np.float64
+         ((50, 0), (50, 24)),
+         ((50, 26), (50, 50)),), dtype=np.float64
+    )
+
+    round_params = np.array(
+        ((48, 25, 1),), dtype=np.float64
     )
 
     # TODO: walls
     linear_wall = LinearWall(linear_params)
     round_wall = None
-    walls = linear_wall
+    walls = (linear_wall, round_wall)
 
     # Agents
     size = 200
@@ -47,13 +51,9 @@ def initialize():
     agent = agent_struct(size, mass, radius, goal_velocity)
     random_position(agent, x, y, walls)
 
-    # agent.herding_flag = False
-    # agent.herding_tendency = np.ones(size)
-
     # Goal
     goal = GoalRectangle(center=np.array((52.5, 25.0)),
                          radius=np.array((2.5, 5.0)))
-    # TODO: goals
     goals = goal
 
     return constant, agent, walls, goals

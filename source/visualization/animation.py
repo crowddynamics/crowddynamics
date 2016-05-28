@@ -60,10 +60,10 @@ def plot_animation(simulation, x_dims, y_dims, save=False, frames=None,
         else:
             return None
 
-    if isinstance(simulation.goal_area, Iterable):
-        areas = map(_area, simulation.goal_area)
+    if isinstance(simulation.goals, Iterable):
+        areas = map(_area, simulation.goals)
     else:
-        areas = (_area(simulation.goal_area),)
+        areas = (_area(simulation.goals),)
 
     args += (ax.add_collection(PatchCollection(tuple(filter(None, areas)), alpha=0.2)), )
 

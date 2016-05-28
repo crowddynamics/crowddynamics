@@ -4,6 +4,7 @@ import pandas as pd
 from simulations.bottleneck.config import dirpath, name, initialize
 from source.io.path import SimulationPath
 from source.system import System
+from source.visualization import animation
 
 
 # if False:
@@ -29,7 +30,10 @@ if __name__ == '__main__':
 
     for num in range(1):
         simulation = System(*initialize())
-        run(simulation)
+        if True:
+            animation.plot_animation(simulation, (0, 55), (0, 50))
+        else:
+            run(simulation)
 
         a = simulation.result.agents_in_goal_times
         a = a.reshape((1, a.size))

@@ -3,30 +3,45 @@ from timeit import default_timer as timer
 from collections import Iterable
 
 from simulations.bottleneck.config import goal_point
-from source.core.integrator import euler_method
+from source.core.integrator import euler_method, euler_method2, euler_method0
 from source.display import format_time
 from source.struct.result import Result
 
 
 class System:
     def __init__(self, constant, agent, wall, goals=None):
-        # TODO: Multiple Optional walls
         self.constant = constant
         self.agent = agent
         self.wall = wall
         self.goals = goals
 
-        if not isinstance(self.goals, Iterable):
-            self.goals = (self.goals, )
+        if not isinstance(self.wall, Iterable):
+            self.wall = (self.wall,)
+        self.wall = tuple(filter(None, self.wall))
 
-        if isinstance(self.wall, Iterable):
-            raise NotImplementedError()
+        if not isinstance(self.goals, Iterable):
+            self.goals = (self.goals,)
+        self.goals = tuple(filter(None, self.goals))
 
         self.result = Result(agent.size)
 
         # System
-        self.integrator = euler_method(self.result, self.constant, self.agent,
-                                       self.wall)
+        if len(self.wall) == 0:
+            self.integrator = euler_method0(self.result,
+                                            self.constant,
+                                            self.agent)
+        if len(self.wall) == 1:
+            self.integrator = euler_method(self.result,
+                                           self.constant,
+                                           self.agent,
+                                           *self.wall)
+        elif len(self.wall) == 2:
+            self.integrator = euler_method2(self.result,
+                                            self.constant,
+                                            self.agent,
+                                            *self.wall)
+        else:
+            raise ValueError()
 
     def print_stats(self):
         out = "i: {:06d} | {:04d} | {} | {}".format(
@@ -67,8 +82,7 @@ class System:
 
             # Check goal
             for goal in self.goals:
-                if goal is not None:
-                    self.goal_reached(goal)
+                self.goal_reached(goal)
 
             return ret
         except GeneratorExit:
