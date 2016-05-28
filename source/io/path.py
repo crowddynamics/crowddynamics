@@ -1,26 +1,30 @@
 import os
-
-project_root = '/home/jaan/Dropbox/Projects/Crowd-Dynamics'
-
-
-def default_path(fname, *folder_names):
-    """
-
-    :param root:
-    :param folder_names:
-    :return:
-    """
-
-    folder = os.path.join(project_root, *folder_names)
-    os.makedirs(folder, exist_ok=True)
-    filepath = os.path.join(folder, fname)
-    return filepath
+import pandas as pd
 
 
-def save_figure():
-    pass
+class SimulationPath(object):
+    def __init__(self, dirpath):
+        self.root = dirpath
 
+    def generic(self, *folders, fname=None, exists_ok=True):
+        folder_path = os.path.join(self.root, *folders)
+        os.makedirs(folder_path, exist_ok=True)
+        if fname is None:
+            fname = str(pd.Timestamp)
+        file_path = os.path.join(folder_path, fname)
+        if not exists_ok and os.path.exists(file_path):
+            raise FileExistsError("File: {}".format(file_path))
+        else:
+            return file_path
 
-def save_animation():
-    pass
+    def result(self, fname=None):
+        folder = "results"
+        return self.generic(folder, fname=fname, exists_ok=True)
 
+    def animation(self, fname=None):
+        folder = "animations"
+        return self.generic(folder, fname=fname, exists_ok=True)
+
+    def figure(self, fname=None):
+        folder = "figures"
+        return self.generic(folder, fname=fname, exists_ok=True)

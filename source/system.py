@@ -34,6 +34,9 @@ class System:
         return self
 
     def __next__(self):
+        """
+        Generator exits when all agents have reached their goals.
+        """
         try:
             # TODO: Goal direction updating
             self.agent.set_goal_direction(goal_point)
@@ -54,8 +57,7 @@ class System:
                 for _ in range(num):
                     if self.result.increment_agent_in_goal():
                         self.print_stats()
-                        # raise StopIteration
-
+                        raise GeneratorExit()
             return ret
         except GeneratorExit:
             raise StopIteration()

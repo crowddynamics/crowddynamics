@@ -3,7 +3,7 @@ import numpy as np
 
 from source.struct.agent import agent_struct, random_position
 from source.struct.constant import Constant
-from source.struct.obstacle import LinearWall
+from source.struct.wall import LinearWall
 from source.struct.area import GoalRectangle
 
 # Path to this folder

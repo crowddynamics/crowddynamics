@@ -1,14 +1,13 @@
-import matplotlib.pyplot as plt
 from collections import Iterable
 
+import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 from matplotlib.collections import LineCollection, PatchCollection
 from matplotlib.patches import Circle, Rectangle
 
 from source.display import format_time
-from source.io.path import default_path
 from source.struct.area import GoalRectangle
-from source.struct.obstacle import LinearWall, RoundWall
+from source.struct.wall import LinearWall, RoundWall
 
 try:
     import seaborn
@@ -18,7 +17,8 @@ except ImportError():
     pass
 
 
-def plot_animation(simulation, x_dims, y_dims, save=False, frames=None):
+def plot_animation(simulation, x_dims, y_dims, save=False, frames=None,
+                   filepath=None):
     agent = simulation.agent
     constant = simulation.constant
     result = simulation.result
@@ -93,12 +93,13 @@ def plot_animation(simulation, x_dims, y_dims, save=False, frames=None):
         _agent()
         return args
 
+    # try:
     anim = FuncAnimation(fig, animate, init_func=init, interval=10, blit=True,
                          frames=frames, save_count=frames)
-
     if save:
         fps = round(1 / constant.dt)
-        fname = default_path('animation.mp4', 'simulations', 'animations')
-        anim.save(fname, fps=fps, extra_args=['-vcodec', 'libx264'])
+        anim.save(filepath, fps=fps, extra_args=['-vcodec', 'libx264'])
     else:
         plt.show()
+    # except:
+    #     print("End of simulation")

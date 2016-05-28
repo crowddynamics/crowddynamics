@@ -29,6 +29,7 @@ class Agent(object):
 
         # Scalars or vectors of shape=(size, 1)
         # TODO: Elliptical Agents, Orientation, Major- & Minor axis
+        # TODO: Collection of average human dimensions and properties
         self.mass = mass
         self.radius = radius
         self.goal_velocity = goal_velocity
@@ -56,7 +57,7 @@ class Agent(object):
         self.sight_herding = 20.0
 
         # Herding
-        self.herding_flag = 0                           # 0 | 1 = on | off
+        self.herding_flag = False                       #
         self.herding_tendency = np.zeros(self.size)     #
         self.neighbor_direction = np.zeros(self.shape)  #
         self.neighbors = np.zeros(self.size)            #
