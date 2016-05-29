@@ -258,6 +258,3 @@ sympy-plots-for-*.tex/
 /documentation/latex/examples/
 /documentation/TODO.yaml
 /documentation/structure.yaml
-/simulation.ipynb
-/simulation.py
-/simulations/
