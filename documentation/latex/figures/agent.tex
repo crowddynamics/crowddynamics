@@ -5,6 +5,7 @@
 
 \input{./grid}
 
+% FDS + EVAC page 19
 
 \def \radius {5};
 \def \angle {-30};
@@ -17,7 +18,12 @@
 \draw[gray] (centre) circle (\radius);
 
 % Ellipse
-\draw[] (centre) ellipse (5 and 3);
+\draw[darkgray] (centre) ellipse (5 and 3);
+
+% Three circles
+\draw[] (centre) circle (3);
+\draw[] ($ (centre) - (3, 0) $) circle (2);
+\draw[] ($ (centre) + (3, 0) $) circle (2);
 
 % Axis
 \draw[dashed, ->] (centre) -- node[above] {$ a $} ($ (centre) + (5, 0) $);
