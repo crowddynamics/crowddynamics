@@ -5,7 +5,7 @@ import numpy as np
 
 class MyTestCase(unittest.TestCase):
     def test_constants(self):
-        from source.struct.constant import Constant
+        from src.struct.constant import Constant
         c = Constant()
         self.assertIsInstance(c.tau_adj, float)
         self.assertIsInstance(c.k, float)
@@ -16,7 +16,7 @@ class MyTestCase(unittest.TestCase):
         self.assertIsInstance(c.b, float)
 
     def test_round_wall(self):
-        from source.struct.wall import RoundWall
+        from src.struct.wall import RoundWall
         rp = np.array(((0.0, 0.0, 1.0),
                        (0.0, 0.0, 1.0)))
         round_wall = RoundWall(rp)
@@ -27,7 +27,7 @@ class MyTestCase(unittest.TestCase):
             round_wall.deconstruct(2)
 
     def test_linear_wall(self):
-        from source.struct.wall import LinearWall
+        from src.struct.wall import LinearWall
         lp = np.array((((0.0, 0.0), (1.0, 2.0)),
                        ((0.0, 0.0), (2.0, 0.0))))
         linear_wall = LinearWall(lp)
@@ -38,8 +38,8 @@ class MyTestCase(unittest.TestCase):
             linear_wall.deconstruct(2)
 
     def test_agent(self):
-        from source.struct.agent import agent_struct, random_position
-        from source.struct.wall import LinearWall
+        from src.struct.agent import agent_struct, random_position
+        from src.struct.wall import LinearWall
 
         amount = 10
         x_dims = (0, 100)

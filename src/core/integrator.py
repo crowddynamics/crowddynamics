@@ -1,8 +1,8 @@
 import numba
 
-from source.core.force_adjust import f_adjust, f_random_fluctuation
-from source.core.force_agent import f_agent_agent
-from source.core.force_wall import f_agent_wall
+from src.core.force_adjust import f_adjust, f_random_fluctuation
+from src.core.force_agent import f_agent_agent
+from src.core.force_wall import f_agent_wall
 
 
 @numba.jit(nopython=True, nogil=True)

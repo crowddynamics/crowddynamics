@@ -1,7 +1,7 @@
 import numba
 from numpy import sqrt, hypot, dot, exp, zeros_like, isnan, abs
 
-from source.core.functions import rotate270, normalize, force_limit
+from src.core.functions import rotate270, normalize, force_limit
 
 
 @numba.jit(nopython=True, nogil=True)

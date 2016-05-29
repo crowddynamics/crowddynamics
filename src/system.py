@@ -6,11 +6,11 @@ from matplotlib.animation import FuncAnimation
 from matplotlib.collections import LineCollection, PatchCollection
 from matplotlib.patches import Circle, Rectangle
 
-from source.core.integrator import euler_method, euler_method2, euler_method0
-from source.display import format_time
-from source.struct.area import GoalRectangle
-from source.struct.result import Result
-from source.struct.wall import LinearWall, RoundWall
+from src.core.integrator import euler_method, euler_method2, euler_method0
+from src.display import format_time
+from src.struct.area import GoalRectangle
+from src.struct.result import Result
+from src.struct.wall import LinearWall, RoundWall
 
 
 class System:

@@ -1,7 +1,7 @@
 import numba
 from numpy import dot, exp
 
-from source.core.functions import rotate270, force_limit
+from src.core.functions import rotate270, force_limit
 
 
 @numba.jit(nopython=True, nogil=True)

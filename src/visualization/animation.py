@@ -5,9 +5,9 @@ from matplotlib.animation import FuncAnimation
 from matplotlib.collections import LineCollection, PatchCollection
 from matplotlib.patches import Circle, Rectangle
 
-from source.display import format_time
-from source.struct.area import GoalRectangle
-from source.struct.wall import LinearWall, RoundWall
+from src.display import format_time
+from src.struct.area import GoalRectangle
+from src.struct.wall import LinearWall, RoundWall
 
 try:
     import seaborn
