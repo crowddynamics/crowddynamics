@@ -22,9 +22,9 @@ def _f_tot0(constant, agent):
     [1] http://www.nature.com/nature/journal/v407/n6803/full/407487a0.html \n
     [2] http://motion.cs.umn.edu/PowerLaw/
     """
-    f_agent_agent(constant, agent)        # 53.4 %
-    f_adjust(constant, agent)              # 4.3 %
-    f_random_fluctuation(constant, agent)  # 2.2 %
+    f_agent_agent(constant, agent)
+    f_adjust(constant, agent)
+    f_random_fluctuation(constant, agent)
 
 
 @numba.jit(nopython=True, nogil=True)
@@ -113,11 +113,11 @@ def _f_tot2(constant, agent, wall1, wall2):
     [1] http://www.nature.com/nature/journal/v407/n6803/full/407487a0.html \n
     [2] http://motion.cs.umn.edu/PowerLaw/
     """
-    f_agent_agent(constant, agent)        # 53.4 %
-    f_agent_wall(constant, agent, wall1)   # 33.7 %
+    f_agent_agent(constant, agent)
+    f_agent_wall(constant, agent, wall1)
     f_agent_wall(constant, agent, wall2)
-    f_adjust(constant, agent)              # 4.3 %
-    f_random_fluctuation(constant, agent)  # 2.2 %
+    f_adjust(constant, agent)
+    f_random_fluctuation(constant, agent)
 
 
 @numba.jit(nopython=True, nogil=True)

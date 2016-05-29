@@ -94,13 +94,14 @@ def animation(simulation, x_dims, y_dims, save=False, frames=None,
         _agent()
         return args
 
-    # try:
     anim = FuncAnimation(fig, animate, init_func=init, interval=10, blit=True,
                          frames=frames, save_count=frames)
+
     if save:
         fps = round(1 / constant.dt)
-        anim.save(filepath, fps=fps, extra_args=['-vcodec', 'libx264'])
+        try:
+            anim.save(filepath, fps=fps, extra_args=['-vcodec', 'libx264'])
+        except:
+            pass
     else:
         plt.show()
-    # except:
-    #     print("End of simulation")
