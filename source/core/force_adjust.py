@@ -17,3 +17,4 @@ def f_adjust(constant, agent):
     force = (agent.mass / constant.tau_adj) * \
             (agent.goal_velocity * agent.target_direction - agent.velocity)
     agent.force += force
+    # agent.force_adjust += force

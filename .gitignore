@@ -258,7 +258,6 @@ sympy-plots-for-*.tex/
 /documentation/latex/examples/
 /documentation/TODO.yaml
 /documentation/structure.yaml
-/simulations/animations/
-/simulations/bottleneck/results/
-/simulations/bottleneck/analysis/
-/simulations/bottleneck/animations/
+/simulation.ipynb
+/simulation.py
+/simulations/

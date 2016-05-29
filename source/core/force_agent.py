@@ -48,6 +48,7 @@ def f_c_ij(h_ij, n_ij, v_ij, t_ij, mu, kappa):
 
 @numba.jit(nopython=True, nogil=True)
 def f_agent_agent(constant, agent):
+    # n - 1 + n - 2 + ... + 1 = n^2 / 2
     for i in range(agent.size - 1):
         for j in range(i + 1, agent.size):
             relative_position = agent.position[i] - agent.position[j]
@@ -66,6 +67,8 @@ def f_agent_agent(constant, agent):
                 force_limit(force, constant.f_soc_ij_max)
                 agent.force[i] += force
                 agent.force[j] -= force
+                # agent.force_agent[i] += force
+                # agent.force_agent[j] -= force
 
             # If agents are overlapping.
             if relative_distance > 0:
@@ -80,6 +83,8 @@ def f_agent_agent(constant, agent):
                 force_limit(force, constant.f_c_ij_max)
                 agent.force[i] += force
                 agent.force[j] -= force
+                # agent.force_agent[i] += force
+                # agent.force_agent[j] -= force
 
             # Herding
             if agent.herding_flag and distance <= agent.sight_herding:

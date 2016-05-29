@@ -25,6 +25,7 @@ def f_agent_wall(constant, agent, wall):
                 force = f_soc_iw(h_iw, n_iw, constant.a, constant.b)
                 force_limit(force, constant.f_soc_iw_max)
                 agent.force[i] += force
+                # agent.force_wall[i] += force
 
             if h_iw > 0:
                 t_iw = rotate270(n_iw)
@@ -32,3 +33,4 @@ def f_agent_wall(constant, agent, wall):
                                constant.mu, constant.kappa)
                 force_limit(force, constant.f_c_iw_max)
                 agent.force[i] += force
+                # agent.force_wall[i] += force

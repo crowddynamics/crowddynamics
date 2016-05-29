@@ -68,6 +68,11 @@ class Agent(object):
     def reset_force(self):
         self.force *= 0
 
+    def reset_force_debug(self):
+        self.force_adjust *= 0
+        self.force_agent *= 0
+        self.force_wall *= 0
+
     def reset_herding(self):
         self.neighbor_direction *= 0
         self.neighbors *= 0
@@ -153,13 +158,12 @@ def agent_struct(size, mass, radius, goal_velocity):
     return agent(size, mass, radius, goal_velocity, goal_reached)
 
 
-def random_position(agent, x_dims, y_dims, walls=None):
+def random_position(position, radius, x_dims, y_dims, walls=None):
     """
     Generate uniformly distributed random positions inside x_dims and y_dims for
     the agents without overlapping each others or the walls with Monte Carlo
     method.
     """
-    # TODO: agent argument
     # TODO: define area more accurately
     # TODO: check if area can be filled
     if not isinstance(walls, Iterable):
@@ -167,9 +171,10 @@ def random_position(agent, x_dims, y_dims, walls=None):
     walls = tuple(filter(None, walls))
 
     i = 0
+
     iterations = 0
-    max_iterations = 100 * agent.size
-    while i < agent.size:
+    max_iterations = 100 * len(position)
+    while i < len(position):
         if iterations >= max_iterations:
             raise Exception("Iteration limit if {} reached.".format(
                 max_iterations))
@@ -180,7 +185,6 @@ def random_position(agent, x_dims, y_dims, walls=None):
         pos[0] = np.random.uniform(x_dims[0], x_dims[1])
         pos[1] = np.random.uniform(y_dims[0], y_dims[1])
 
-        radius = agent.radius
         if isinstance(radius, np.ndarray):
             rad = radius[i]
             radii = radius[:i]
@@ -190,7 +194,7 @@ def random_position(agent, x_dims, y_dims, walls=None):
 
         # Test overlapping with other agents
         if i > 0:
-            d = pos - agent.position[:i]
+            d = pos - position[:i]
             d = np.hypot(d[:, 0], d[:, 1]) - (rad + radii)
             cond = np.all(d > 0)
             if not cond:
@@ -205,7 +209,7 @@ def random_position(agent, x_dims, y_dims, walls=None):
         if not cond:
             continue
 
-        agent.position[i, :] = pos
+        position[i, :] = pos
         i += 1
 
 

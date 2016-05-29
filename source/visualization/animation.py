@@ -17,14 +17,15 @@ except ImportError():
     pass
 
 
-def plot_animation(simulation, x_dims, y_dims, save=False, frames=None,
-                   filepath=None):
+def animation(simulation, x_dims, y_dims, save=False, frames=None,
+              filepath=None):
     agent = simulation.agent
     constant = simulation.constant
     result = simulation.result
 
     fig, ax = plt.subplots(figsize=(12, 12))
     ax.set(xlim=x_dims, ylim=y_dims, xlabel=r'$ x $', ylabel=r'$ y $')
+    ax.set_aspect("equal")
 
     # Text
     simu_time = ax.text(0.02, 0.95, '', transform=ax.transAxes)
