@@ -251,6 +251,7 @@ sympy-plots-for-*.tex/
 # Files
 *.lprof
 *.mp4
+*.hdf5
 
 # Folders
 /docs/

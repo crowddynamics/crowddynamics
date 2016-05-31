@@ -22,27 +22,30 @@ class Result(object):
     """
 
     def __init__(self, size):
-        self.iterations = 0
-        self.t_init = 0
-        self.t_tot = 0
-        self.wall_time_tot = 0
+        # Properties
         self.size = size
+        # Wall time (Time spent computing)
+        self.wall_time_init = 0
+        self.wall_time_tot = 0
+        # Simulation data
+        self.iterations = 0
+        self.simu_time_tot = 0
         self.agents_in_goal = 0
         self.agents_in_goal_times = np.zeros(self.size)
 
     def increment_simu_time(self, dt):
-        self.t_tot += dt
+        self.simu_time_tot += dt
         self.iterations += 1
 
     def increment_wall_time(self, t_diff):
         if self.iterations == 0:
             # Initial time difference is higher because jit compilation
-            self.t_init = t_diff
+            self.wall_time_init = t_diff
         else:
             self.wall_time_tot += t_diff
 
     def increment_agent_in_goal(self):
-        self.agents_in_goal_times[self.agents_in_goal] = self.t_tot
+        self.agents_in_goal_times[self.agents_in_goal] = self.simu_time_tot
         self.agents_in_goal += 1
         if self.agents_in_goal != self.size:
             return 0

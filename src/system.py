@@ -51,9 +51,6 @@ class System:
         for _ in self:
             pass
 
-    def save_results(self):
-        pass
-
     def print_stats(self):
         out = "i: {:06d} | {:04d} | {} | {}".format(
             self.result.iterations,
