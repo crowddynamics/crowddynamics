@@ -14,6 +14,9 @@ spec_round = OrderedDict(
     wall=float64[:, :],
 )
 
+# Same for round and linear
+wall_attr_names = [key for key in spec_round.keys()]
+
 
 @jitclass(spec_round)
 class RoundWall(object):

@@ -3,6 +3,7 @@ from timeit import default_timer as timer
 from src.struct.constant import constant_attr_names
 from src.struct.result import result_attr_names
 from src.struct.agent import agent_attr_names
+from src.struct.wall import wall_attr_names
 
 
 class Attr:
@@ -65,10 +66,11 @@ class Intervals:
                                            interval=self.interval)
 
 
-constant_attrs = Attrs(constant_attr_names)
-result_attrs = Attrs(result_attr_names)
-agent_attrs = Attrs(agent_attr_names)
+attrs_constant = Attrs(constant_attr_names)
+attrs_result = Attrs(result_attr_names)
+attrs_agent = Attrs(agent_attr_names)
+attrs_wall = Attrs(wall_attr_names)
 
-agent_attrs["position"] = Attr("position", True, Intervals(5))
-agent_attrs["velocity"] = Attr("velocity", True, Intervals(5))
-# agent_attrs["force"] = Attr("force", True, Intervals(5))
+attrs_agent["position"] = Attr("position", True, Intervals(5))
+attrs_agent["velocity"] = Attr("velocity", True, Intervals(5))
+# attrs_agent["force"] = Attr("force", True, Intervals(5))
