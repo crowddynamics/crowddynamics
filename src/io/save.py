@@ -24,13 +24,15 @@ class Save(object):
             # Group Name
             groups = (int(name) for name in file if name.isdigit())
             try:
-                self.group_name = "{:04d}".format(max(groups) + 1)
+                num = max(groups) + 1
             except ValueError:
                 # If generator is empty
-                self.group_name = '0'
+                num = 0
+            self.group_name = "{:04d}".format(num)
             # Create Group
             group = file.create_group(self.group_name)
             # Metadata
+            # TODO: start/end time, simulation length
             group.attrs["timestamp"] = str(datetime.datetime.now())
 
         # TODO: Bytes saved, memory consumption

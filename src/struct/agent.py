@@ -18,6 +18,33 @@ def get_scalar_or_array(value, i):
         raise ValueError()
 
 
+spec_agent = OrderedDict(
+    size=int64,
+    shape=UniTuple(int64, 2),
+    mass=float64,
+    radius=float64,
+    goal_velocity=float64,
+    position=float64[:, :],
+    velocity=float64[:, :],
+    goal_direction=float64[:, :],
+    target_direction=float64[:, :],
+    force=float64[:, :],
+    goal_reached=boolean[:],
+    force_adjust=float64[:, :],
+    force_agent=float64[:, :],
+    force_wall=float64[:, :],
+    sight_soc=float64,
+    sight_wall=float64,
+    sight_herding=float64,
+    herding_flag=boolean,
+    herding_tendency=float64[:],
+    neighbor_direction=float64[:, :],
+    neighbors=float64[:],
+)
+
+agent_attr_names = [key for key in spec_agent.keys()]
+
+
 class Agent(object):
     """
     Structure for agent parameters and variables.
@@ -110,31 +137,31 @@ class Agent(object):
 def agent_struct(size, mass, radius, goal_velocity):
     """
     Makes jitclass from agents. Handles spec definition so that mass, radius and
-    goal_velocity can be scalar of array.
+    goal_velocity can be scalar or array.
     """
-    spec_agent = OrderedDict(
-        size=int64,
-        shape=UniTuple(int64, 2),
-        mass=float64,
-        radius=float64,
-        goal_velocity=float64,
-        position=float64[:, :],
-        velocity=float64[:, :],
-        goal_direction=float64[:, :],
-        target_direction=float64[:, :],
-        force=float64[:, :],
-        goal_reached=boolean[:],
-        force_adjust=float64[:, :],
-        force_agent=float64[:, :],
-        force_wall=float64[:, :],
-        sight_soc=float64,
-        sight_wall=float64,
-        sight_herding=float64,
-        herding_flag=boolean,
-        herding_tendency=float64[:],
-        neighbor_direction=float64[:, :],
-        neighbors=float64[:],
-    )
+    # spec_agent = OrderedDict(
+    #     size=int64,
+    #     shape=UniTuple(int64, 2),
+    #     mass=float64,
+    #     radius=float64,
+    #     goal_velocity=float64,
+    #     position=float64[:, :],
+    #     velocity=float64[:, :],
+    #     goal_direction=float64[:, :],
+    #     target_direction=float64[:, :],
+    #     force=float64[:, :],
+    #     goal_reached=boolean[:],
+    #     force_adjust=float64[:, :],
+    #     force_agent=float64[:, :],
+    #     force_wall=float64[:, :],
+    #     sight_soc=float64,
+    #     sight_wall=float64,
+    #     sight_herding=float64,
+    #     herding_flag=boolean,
+    #     herding_tendency=float64[:],
+    #     neighbor_direction=float64[:, :],
+    #     neighbors=float64[:],
+    # )
 
     def spec(key, value):
         if isinstance(value, (int, float)):

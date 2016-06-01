@@ -3,39 +3,11 @@ from timeit import default_timer as timer
 
 from src.core.integrator import euler_method, euler_method2, euler_method0
 from src.display import format_time
+from src.io.attributes import Intervals, constant_attrs, agent_attrs, \
+    result_attrs
 from src.io.save import Save
-from src.struct.constant import constant_attr_names
-from src.struct.result import Result, result_attr_names
+from src.struct.result import Result
 from src.visualization.animation import animation
-
-
-class Attr:
-    def __init__(self, name, is_resizable=False, save_func=None):
-        self.name = name
-        self.is_resizable = is_resizable
-        self.save_func = save_func
-
-    def __str__(self):
-        return self.name
-
-
-class Intervals:
-    def __init__(self, interval):
-        self.interval = interval
-        if self.interval < 0:
-            raise ValueError("Interval should be > 0")
-        self.prev = timer()
-
-    def __call__(self, *args, **kwargs):
-        if self.interval == 0:
-            return True
-        else:
-            current = timer()
-            diff = current - self.prev
-            ret = diff >= self.interval
-            if ret:
-                self.prev = current
-            return ret
 
 
 class System:
@@ -81,16 +53,9 @@ class System:
         # Object for saving simulation data
         self.interval = Intervals(1.0)
         self.save = Save(dirpath, name)
-        constant_attrs = [Attr(name) for name in constant_attr_names]
-        agent_attrs = [
-            Attr("mass", False, None),
-            Attr("radius", False, None),
-            Attr("position", True, Intervals(5)),
-        ]
         self.hdf = tuple(filter(None, [
             self.save.to_hdf(self.constant, constant_attrs),
             self.save.to_hdf(self.agent, agent_attrs),
-            # self.save.to_hdf(self.result),
         ]))
 
     def animation(self, x_dims, y_dims, fname=None, save=False, frames=None):
@@ -150,6 +115,6 @@ class System:
 
             return ret
         except GeneratorExit:
-            result_attrs = [Attr(name) for name in result_attr_names]
+
             self.save.to_hdf(self.result, result_attrs)
             raise StopIteration()

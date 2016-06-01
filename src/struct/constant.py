@@ -30,6 +30,7 @@ class Constant(object):
     """
 
     def __init__(self):
+        # TODO: Constants -> Constraints (Limits)
         self.dt = 0.01
         # Force related constants
         self.tau_adj = 0.5
