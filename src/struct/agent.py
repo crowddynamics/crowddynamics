@@ -29,6 +29,7 @@ class Agent(object):
 
         # Scalars or vectors of shape=(size, 1)
         # TODO: Elliptical Agents, Orientation, Major- & Minor axis
+        # TODO: Three circles representation
         # TODO: Collection of average human dimensions and properties
         self.mass = mass
         self.radius = radius

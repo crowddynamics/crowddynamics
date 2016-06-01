@@ -5,7 +5,7 @@ from src.core.integrator import euler_method, euler_method2, euler_method0
 from src.display import format_time
 from src.io.save import Save
 from src.struct.constant import constant_attr_names
-from src.struct.result import Result
+from src.struct.result import Result, result_attr_names
 from src.visualization.animation import animation
 
 
@@ -93,8 +93,6 @@ class System:
             # self.save.to_hdf(self.result),
         ]))
 
-        print("HDF: ", self.hdf)
-
     def animation(self, x_dims, y_dims, fname=None, save=False, frames=None):
         if save:
             filepath = self.save.animation(fname)
@@ -152,4 +150,6 @@ class System:
 
             return ret
         except GeneratorExit:
+            result_attrs = [Attr(name) for name in result_attr_names]
+            self.save.to_hdf(self.result, result_attrs)
             raise StopIteration()

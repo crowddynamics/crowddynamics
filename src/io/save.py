@@ -10,8 +10,10 @@ class Save(object):
     HDF5 = ".hdf5"
 
     def __init__(self, dirpath, name):
+        # Path to root directory and filename
         self.root = dirpath
         self.name = name
+
         os.makedirs(self.root, exist_ok=True)
 
         # HDF5
@@ -22,7 +24,7 @@ class Save(object):
             # Group Name
             groups = (int(name) for name in file if name.isdigit())
             try:
-                self.group_name = str(max(groups) + 1)
+                self.group_name = "{:04d}".format(max(groups) + 1)
             except ValueError:
                 # If generator is empty
                 self.group_name = '0'
@@ -30,6 +32,8 @@ class Save(object):
             group = file.create_group(self.group_name)
             # Metadata
             group.attrs["timestamp"] = str(datetime.datetime.now())
+
+        # TODO: Bytes saved, memory consumption
 
     def to_hdf(self, struct, attrs):
         """
@@ -51,7 +55,6 @@ class Save(object):
 
         # HDF5 File
         # TODO: Attributes for new group?
-        # resizables = []
         with h5py.File(self.hdf_filepath, mode='a') as file:
             base = file[self.group_name]
             # New group for struct
@@ -61,7 +64,6 @@ class Save(object):
                 value = np.copy(getattr(struct, attr.name))
                 if attr.is_resizable:  # Resizable?
                     # Resizable
-                    # resizables.append(attr)
                     value = np.array(value)
                     maxshape = (None,) + value.shape
                     value = np.expand_dims(value, axis=0)
@@ -83,7 +85,6 @@ class Save(object):
                         # Append value to buffer
                         value = np.copy(getattr(struct, attr.name))
                         buffer[attr.name].append(value)
-
                         # Save values to hdf
                         if True:  # TODO: Fix attr.save_func()
                             values = np.array(buffer[attr.name])

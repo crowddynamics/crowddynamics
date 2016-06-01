@@ -14,6 +14,8 @@ spec_result = OrderedDict(
     size=int64,
 )
 
+result_attr_names = [key for key in spec_result.keys()]
+
 
 @jitclass(spec_result)
 class Result(object):
