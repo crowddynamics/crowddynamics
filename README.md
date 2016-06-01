@@ -1,9 +1,9 @@
-Crowd Dynamics Simulation
-=========================
+Multi-Agent Simulation
+======================
 
 ## About
 
-Crowd dynamics simulation using _Helbing's social force model_ [1], _power law for pedestrian interactions_ [3] and _game theoretical model_ [2] for modelling agents exiting a building in emergency situations. 
+Multi-Agent simulation of crowd dynamics using _Helbing's social force model_ [1], _power law for pedestrian interactions_ [3] and _game theoretical model_ [2] for modelling agents exiting a building in emergency situations. 
 
 ## Research papers
 

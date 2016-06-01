@@ -20,6 +20,8 @@ spec_constant = OrderedDict(
     f_c_iw_max=float64,
 )
 
+constant_attr_names = [key for key in spec_constant.keys()]
+
 
 @jitclass(spec_constant)
 class Constant(object):
@@ -38,7 +40,7 @@ class Constant(object):
         self.a = 2e3
         self.b = 0.08
         # Force limits
-        self.f_random_fluctuation_max = 1
+        self.f_random_fluctuation_max = 1.0
         self.f_adjust_max = 1e3
         self.f_soc_ij_max = 2e3
         self.f_c_ij_max = 10e3

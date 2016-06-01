@@ -69,7 +69,7 @@ def animation(simulation, x_dims, y_dims, save=False, frames=None,
     args += (ax.add_collection(PatchCollection(tuple(filter(None, areas)), alpha=0.2)), )
 
     def _text():
-        txt1 = "Simu Time = {:f}".format(result.t_tot)
+        txt1 = "Simu Time = {:f}".format(result.simu_time_tot)
         txt2 = "Goal = {:d} / {:d}".format(result.agents_in_goal, result.size)
         txt3 = "Real Time = " + format_time(result.wall_time_tot)
 

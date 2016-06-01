@@ -6,9 +6,9 @@ from numba import float64, jitclass, int64
 
 spec_result = OrderedDict(
     iterations=int64,
-    t_init=float64,
-    t_tot=float64,
+    wall_time_init=float64,
     wall_time_tot=float64,
+    simu_time_tot=float64,
     agents_in_goal=int64,
     agents_in_goal_times=float64[:],
     size=int64,
