@@ -20,6 +20,7 @@ class Save(object):
         # HDF5
         self.hdf_filepath = os.path.join(self.root, self.name + self.HDF5)
         self.group_name = None
+        self.hdf_savers = None
         # New HDF5 File
         with h5py.File(self.hdf_filepath, mode='a') as file:
             # Group Name
@@ -38,12 +39,12 @@ class Save(object):
 
         # TODO: Bytes saved, memory consumption
 
-    def to_hdf(self, struct, attrs: Attrs):
+    def new_hdf_saver(self, struct, attrs: Attrs):
         """
 
         :param struct: numba.jitclass
         :param attrs: attributes of the jitclass
-        :return: Generator that saves records and dumps
+        :return: Generator that saves records and dumps data into hdf5
         """
         struct_name = struct.__class__.__name__.lower()
         attrs.check_hasattr(struct)

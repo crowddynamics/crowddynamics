@@ -44,10 +44,11 @@ class System:
         self.attrs_agent["position"] = Attr("position", True, True)
         self.attrs_agent["velocity"] = Attr("velocity", True, True)
         self.attrs_agent["force"] = Attr("force", True, True)
+
         self.hdf = _filter(
-            [self.save.to_hdf(self.constant, self.attrs_constant),
-             self.save.to_hdf(self.agent, self.attrs_agent)] +
-            [self.save.to_hdf(w, self.attrs_wall) for w in self.wall]
+            [self.save.new_hdf_saver(self.constant, self.attrs_constant),
+             self.save.new_hdf_saver(self.agent, self.attrs_agent)] +
+            [self.save.new_hdf_saver(w, self.attrs_wall) for w in self.wall]
         )
 
     def animation(self, x_dims, y_dims, fname=None, save=False, frames=None):
@@ -104,7 +105,7 @@ class System:
 
             return ret
         except GeneratorExit:
-            self.save.to_hdf(self.result, self.attrs_result)
+            self.save.new_hdf_saver(self.result, self.attrs_result)
             raise StopIteration()
 
     def __iter__(self):
