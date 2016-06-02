@@ -40,11 +40,11 @@ def euler_method0(result, constant, agent):
         # Target direction
         agent.goal_to_target_direction()
         # Update  position
+        agent.reset_force()
         _f_tot0(constant, agent)
         acceleration = agent.force / agent.mass
         agent.velocity += acceleration * constant.dt
         agent.position += agent.velocity * constant.dt
-        agent.reset_force()
         # Save
         result.increment_simu_time(constant.dt)
         yield
@@ -86,11 +86,11 @@ def euler_method(result, constant, agent, wall):
         # Target direction
         agent.goal_to_target_direction()
         # Update  position
+        agent.reset_force()
         _f_tot(constant, agent, wall)
         acceleration = agent.force / agent.mass
         agent.velocity += acceleration * constant.dt
         agent.position += agent.velocity * constant.dt
-        agent.reset_force()
         # Save
         result.increment_simu_time(constant.dt)
         yield
@@ -133,11 +133,11 @@ def euler_method2(result, constant, agent, wall1, wall2):
         # Target direction
         agent.goal_to_target_direction()
         # Update  position
+        agent.reset_force()
         _f_tot2(constant, agent, wall1, wall2)
         acceleration = agent.force / agent.mass
         agent.velocity += acceleration * constant.dt
         agent.position += agent.velocity * constant.dt
-        agent.reset_force()
         # Save
         result.increment_simu_time(constant.dt)
         yield

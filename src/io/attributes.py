@@ -7,20 +7,22 @@ from src.struct.wall import wall_attr_names
 
 
 class Attr:
-    def __init__(self, name, is_resizable=False, save_func=None):
+    def __init__(self, name, is_resizable=False, is_recordable=False):
         self.name = name
         self.is_resizable = is_resizable
-        self.save_func = save_func
+        self.is_recordable = is_recordable
 
     def __str__(self):
-        return "Attr({name}, is_resizable={is_resizable}, " \
-               "save_func={save_func})"\
-            .format(name=self.name, is_resizable=self.is_resizable,
-                    save_func=self.save_func)
+        return "Attr({name}, " \
+               "is_resizable={is_resizable}, " \
+               "is_recordable={is_recordable})" \
+            .format(name=self.name,
+                    is_resizable=self.is_resizable,
+                    is_recordable=self.is_recordable)
 
 
 class Attrs(dict):
-    def __init__(self, names_or_attrs):
+    def __init__(self, names_or_attrs, save_func=None):
         super().__init__()
         for value in names_or_attrs:
             if isinstance(value, Attr):
@@ -31,12 +33,21 @@ class Attrs(dict):
                 raise ValueError("Value: {value} of type {type} not valid "
                                  "type for names_or_attrs."
                                  .format(value=value, type=type(value)))
+        self.save_func = save_func
+
+    def check_hasattr(self, struct):
+        for key, attr in self.items():
+            if not hasattr(struct, attr.name):
+                del self[key]
+        if len(self) == 0:
+            raise ValueError("Struct \"{}\" doesn't contain any of given "
+                             "attributes.".format(struct))
 
     def __iter__(self):
         return iter(self.values())
 
     def __str__(self):
-        return "[\n\t" + ",\n\t".join((str(i) for i in self)) + "\n]"
+        return "Attrs(\n\t" + ",\n\t".join((str(i) for i in self)) + "\n)"
 
 
 class Intervals:
@@ -68,9 +79,9 @@ class Intervals:
 
 attrs_constant = Attrs(constant_attr_names)
 attrs_result = Attrs(result_attr_names)
-attrs_agent = Attrs(agent_attr_names)
+attrs_agent = Attrs(agent_attr_names, Intervals(1.0))
 attrs_wall = Attrs(wall_attr_names)
 
-attrs_agent["position"] = Attr("position", True, Intervals(5))
-attrs_agent["velocity"] = Attr("velocity", True, Intervals(5))
-# attrs_agent["force"] = Attr("force", True, Intervals(5))
+attrs_agent["position"] = Attr("position", True, True)
+attrs_agent["velocity"] = Attr("velocity", True, True)
+attrs_agent["force"] = Attr("force", True, True)

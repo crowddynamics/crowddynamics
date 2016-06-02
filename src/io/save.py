@@ -1,9 +1,10 @@
 import datetime
 import os
-from collections import Iterable
 
 import h5py
 import numpy as np
+
+from src.io.attributes import Attrs
 
 
 class Save(object):
@@ -37,7 +38,7 @@ class Save(object):
 
         # TODO: Bytes saved, memory consumption
 
-    def to_hdf(self, struct, attrs):
+    def to_hdf(self, struct, attrs: Attrs):
         """
 
         :param struct: numba.jitclass
@@ -45,15 +46,7 @@ class Save(object):
         :return: Generator that saves records and dumps
         """
         struct_name = struct.__class__.__name__.lower()
-
-        if isinstance(attrs, Iterable):
-            attrs = tuple(attr for attr in attrs if hasattr(struct, attr.name))
-        else:
-            attrs = tuple(attr for attr in (attrs,) if hasattr(struct, attr.name))
-
-        if len(attrs) == 0:
-            raise ValueError("Struct \"{}\" doesn't contain any of given "
-                             "attributes.".format(struct_name))
+        attrs.check_hasattr(struct)
 
         # HDF5 File
         # TODO: Attributes for new group?
@@ -76,28 +69,32 @@ class Save(object):
                     group.create_dataset(attr.name, data=value)
 
         # TODO: Saving when finished
-        recordable = list(filter(lambda attr: attr.save_func is not None, attrs))
-        if len(recordable):
+        recordable = Attrs(filter(lambda attr: attr.is_recordable, attrs),
+                           attrs.save_func)
+        if len(recordable) and recordable.save_func is not None:
             def gen():
                 buffer = {attr.name: [] for attr in recordable}
-                i = 1
-                j = 1
+                end = 1
+                start = 0
                 while True:
+                    is_save = recordable.save_func()
+                    # is_save = True
                     for attr in recordable:
                         # Append value to buffer
                         value = np.copy(getattr(struct, attr.name))
                         buffer[attr.name].append(value)
                         # Save values to hdf
-                        if True:  # TODO: Fix attr.save_func()
+                        if is_save:
                             values = np.array(buffer[attr.name])
                             with h5py.File(self.hdf_filepath, mode='a') as file:
                                 dset = file[self.group_name][struct_name][attr.name]
-                                new_shape = (i+1,) + values.shape[1:]
+                                new_shape = (end+1,) + values.shape[1:]
                                 dset.resize(new_shape)
-                                dset[j:] = values
+                                dset[start+1:] = values
                             buffer[attr.name].clear()
-                            j = i
-                    i += 1
+                    if is_save:
+                        start = end
+                    end += 1
                     yield
             return gen()
         else:

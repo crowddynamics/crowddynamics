@@ -26,7 +26,7 @@ def format_time(timespan, precision=3):
     # See bug: https://bugs.launchpad.net/ipython/+bug/348466
     # Try to prevent crashes by being more secure than it needs to
     # E.g. eclipse is able to print a µ, but has no sys.stdout.encoding set.
-    units = [u"s", u"ms", u'us', "ns"]  # the save value
+    units = [u"s", u"ms", u'us', "ns"]  # the recordable value
     if hasattr(sys.stdout, 'encoding') and sys.stdout.encoding:
         try:
             u'\xb5'.encode(sys.stdout.encoding)

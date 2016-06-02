@@ -13,52 +13,31 @@ from src.visualization.animation import animation
 class System:
     def __init__(self, constant, agent, wall=None, goals=None, dirpath=None,
                  name=None):
-        # TODO: Limit iterations
+        # Make iterables and filter None values
+        def _filter(arg):
+            if not isinstance(arg, Iterable):
+                arg = (arg,)
+            return tuple(filter(None, arg))
 
         # Struct
         self.constant = constant
         self.agent = agent
-        self.wall = wall
-        self.goals = goals
-
-        # Make iterables from wall and goal and filter None values
-        if not isinstance(self.wall, Iterable):
-            self.wall = (self.wall,)
-        self.wall = tuple(filter(None, self.wall))
-
-        if not isinstance(self.goals, Iterable):
-            self.goals = (self.goals,)
-        self.goals = tuple(filter(None, self.goals))
-
-        # Result struct
+        self.wall = _filter(wall)
+        self.goals = _filter(goals)
         self.result = Result(agent.size)
 
+        # TODO: Limit iterations
         # Integrator for updating multi-agent system
-        self.integrator = None
-        if len(self.wall) == 0:
-            self.integrator = euler_method0(self.result,
-                                            self.constant,
-                                            self.agent)
-        elif len(self.wall) == 1:
-            self.integrator = euler_method(self.result,
-                                           self.constant,
-                                           self.agent,
-                                           *self.wall)
-        elif len(self.wall) == 2:
-            self.integrator = euler_method2(self.result,
-                                            self.constant,
-                                            self.agent,
-                                            *self.wall)
-        else:
-            raise ValueError()
+        method = (euler_method0, euler_method, euler_method2)[len(self.wall)]
+        self.integrator = method(self.result, self.constant, self.agent,
+                                 *self.wall)
 
         # Object for saving simulation data
         self.interval = Intervals(1.0)
         self.save = Save(dirpath, name)
-        self.hdf = tuple(filter(None, [
-            self.save.to_hdf(self.constant, attrs_constant),
-            self.save.to_hdf(self.agent, attrs_agent),
-        ] + [self.save.to_hdf(w, attrs_wall) for w in self.wall]))
+        self.hdf = _filter([self.save.to_hdf(self.constant, attrs_constant),
+                            self.save.to_hdf(self.agent, attrs_agent)] +
+                           [self.save.to_hdf(w, attrs_wall) for w in self.wall])
 
     def animation(self, x_dims, y_dims, fname=None, save=False, frames=None):
         if save:
@@ -87,9 +66,6 @@ class System:
                 self.print_stats()
                 raise GeneratorExit()
 
-    def __iter__(self):
-        return self
-
     def __next__(self):
         """
         Generator exits when all agents have reached their goals.
@@ -117,6 +93,8 @@ class System:
 
             return ret
         except GeneratorExit:
-
             self.save.to_hdf(self.result, attrs_result)
             raise StopIteration()
+
+    def __iter__(self):
+        return self

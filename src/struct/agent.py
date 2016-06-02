@@ -1,4 +1,5 @@
 from collections import OrderedDict, Iterable
+from copy import deepcopy
 
 import numpy as np
 from numba.types import UniTuple
@@ -139,29 +140,7 @@ def agent_struct(size, mass, radius, goal_velocity):
     Makes jitclass from agents. Handles spec definition so that mass, radius and
     goal_velocity can be scalar or array.
     """
-    # spec_agent = OrderedDict(
-    #     size=int64,
-    #     shape=UniTuple(int64, 2),
-    #     mass=float64,
-    #     radius=float64,
-    #     goal_velocity=float64,
-    #     position=float64[:, :],
-    #     velocity=float64[:, :],
-    #     goal_direction=float64[:, :],
-    #     target_direction=float64[:, :],
-    #     force=float64[:, :],
-    #     goal_reached=boolean[:],
-    #     force_adjust=float64[:, :],
-    #     force_agent=float64[:, :],
-    #     force_wall=float64[:, :],
-    #     sight_soc=float64,
-    #     sight_wall=float64,
-    #     sight_herding=float64,
-    #     herding_flag=boolean,
-    #     herding_tendency=float64[:],
-    #     neighbor_direction=float64[:, :],
-    #     neighbors=float64[:],
-    # )
+    _spec_agent = deepcopy(spec_agent)
 
     def spec(key, value):
         if isinstance(value, (int, float)):
@@ -173,7 +152,7 @@ def agent_struct(size, mass, radius, goal_velocity):
             t = float64[:, :]
         else:
             raise ValueError("Wrong type.")
-        spec_agent[key] = t
+        _spec_agent[key] = t
         return value
 
     # Init spec_agent
@@ -182,7 +161,7 @@ def agent_struct(size, mass, radius, goal_velocity):
     goal_velocity = spec('goal_velocity', goal_velocity)
     goal_reached = np.zeros(size, dtype=np.bool_)
     # Jitclass of Agents
-    agent = jitclass(spec_agent)(Agent)
+    agent = jitclass(_spec_agent)(Agent)
     return agent(size, mass, radius, goal_velocity, goal_reached)
 
 
