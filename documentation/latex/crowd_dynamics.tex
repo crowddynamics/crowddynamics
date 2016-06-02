@@ -69,15 +69,31 @@
 \end{multicols*}
 
 % -- Linear wall figure --
-\begin{figure}[ht]
+\begin{figure}[H]
 \centering
 \input{figures/linear_wall}
 \caption{Linear wall}
 \end{figure}
 % ------------------------
 \begin{multicols*}{2}
-\input{sections/field}
+\input{sections/wall}
+\end{multicols*}
+
+\newpage
+
+% -- Agent figure --
+\begin{figure}[H]
+\centering
+\input{figures/agent}
+\caption{Circle, Ellipse and Three circle representations of an agent.}
+\end{figure}
+% ------------------
+
+\input{sections/agent}
+
+\begin{multicols*}{2}
 \input{sections/differential_system}
 \end{multicols*}
+
 
 \end{document}

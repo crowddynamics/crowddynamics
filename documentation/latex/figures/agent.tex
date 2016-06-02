@@ -1,37 +1,54 @@
 \begin{tikzpicture}
   [
-    point/.style = {draw, circle, fill=white, inner sep=1.4pt}
+    point/.style = {draw, circle, fill=white, inner sep=0.1pt}
   ]
 
 \input{./grid}
 
 % FDS + EVAC page 19
+% http://www.vtt.fi/inf/pdf/workingpapers/2009/W119.pdf
 
 \def \radius {5};
-\def \angle {-30};
 
 % Centre
 \coordinate[] (centre) at (0, 0);
-\node[below=3pt] (agent) at (centre) {$ \mathbf{x}_{i} $};
 
-% Circle
-\draw[gray] (centre) circle (\radius);
+%% Circle
+\draw[fill=gray, opacity=0.2] (centre) circle (\radius);
+\draw[dashed, ->] (centre) -- node[above] {$ r $} ($ (centre) + (3, 4) $);
 
-% Ellipse
-\draw[darkgray] (centre) ellipse (5 and 3);
+%% Ellipse
+\pgfmathparse{0.59 * \radius}
+\draw[black, fill=darkgray, opacity=0.2] (centre) ellipse (5 and 2.96);
 
-% Three circles
-\draw[] (centre) circle (3);
-\draw[] ($ (centre) - (3, 0) $) circle (2);
-\draw[] ($ (centre) + (3, 0) $) circle (2);
+\draw[dashed, ->] (centre) -- node[right] {$ r_{\text{torso}} $} ($ (centre) + (0, \pgfmathresult) $);
+
+%% Three circles
+% Torso
+\draw[fill=black, opacity=0.2] (centre) circle (\pgfmathresult);
+% 
+\pgfmathparse{0.37 * \radius}
+\coordinate[] (centreLeft) at ($ (centre) - (\radius-\pgfmathresult, 0) $);
+\coordinate[] (centreRigth) at ($ (centre) + (\radius-\pgfmathresult, 0) $);
+% Shoulders
+\draw[fill=black, opacity=0.2] (centreLeft)  circle (\pgfmathresult);
+\draw[fill=black, opacity=0.2] (centreRigth) circle (\pgfmathresult);
+
+\draw[dashed, ->] (centreLeft) -- node[above] {$ r_{\text{shoulder}} $} ($ (centreLeft) - (\pgfmathresult, 0) $);
+\draw[dashed, ->] (centreRigth) -- node[above] {$ r_{\text{shoulder}} $} ($ (centreRigth) + (\pgfmathresult, 0) $);
+
+
 
 % Axis
-\draw[dashed, ->] (centre) -- node[above] {$ a $} ($ (centre) + (5, 0) $);
-\draw[dashed, ->
-] (centre) -- node[right] {$ b $} ($ (centre) + (0, 3) $);
+\draw[thick, ->] (centre) -- node[left] {$ \hat{\mathbf{n}}_{i} $} ($ (centre) + (0, 1) $);
+\draw[thick, ->] (centre) -- node[below] {$ \hat{\mathbf{t}}_{i} $} ($ (centre) + (1, 0) $);
 
-%\draw[<->] (centre) -- node[above] {$ r_{i} $}
-%           ($ (centre) + ({\radius * cos(\angle)}, {\radius * sin(\angle)} )$);
+% Agent
+\node[point] (agent) at (centre) {$ \mathbf{x}_{i} $};
+\node[point] (shoulderLeft) at (centreLeft) {$ \mathbf{c}_{0} $};
+\node[point] (shoulderRigth) at (centreRigth) {$ \mathbf{c}_{1} $};
 
+\draw[<->] (agent) -- node[below] {$ d $} (shoulderLeft);
+%\draw[<->] (agent) -- node[below] {$ d $} (shoulderRigth);
 
 \end{tikzpicture}
