@@ -1,17 +1,7 @@
 import numba
-from numpy import dot, exp
 
+from src.core.force import f_soc_iw, f_c_iw
 from src.core.functions import rotate270, force_limit
-
-
-@numba.jit(nopython=True, nogil=True)
-def f_soc_iw(h_iw, n_iw, a, b):
-    return exp(h_iw / b) * a * n_iw
-
-
-@numba.jit(nopython=True, nogil=True)
-def f_c_iw(v_iw, t_iw, n_iw, h_iw, mu, kappa):
-    return h_iw * (mu * n_iw - kappa * dot(v_iw, t_iw) * t_iw)
 
 
 @numba.jit(nopython=True, nogil=True)

@@ -1,6 +1,6 @@
 import numba
 
-from src.core.force_adjust import f_adjust, f_random_fluctuation
+from src.core.force import f_adjust, f_random_fluctuation
 from src.core.force_agent import f_agent_agent
 from src.core.force_wall import f_agent_wall
 
