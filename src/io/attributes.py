@@ -1,10 +1,5 @@
 from timeit import default_timer as timer
 
-from src.struct.constant import constant_attr_names
-from src.struct.result import result_attr_names
-from src.struct.agent import agent_attr_names
-from src.struct.wall import wall_attr_names
-
 
 class Attr:
     def __init__(self, name, is_resizable=False, is_recordable=False):
@@ -75,14 +70,3 @@ class Intervals:
     def __str__(self):
         return "{name}({interval})".format(name=self.name,
                                            interval=self.interval)
-
-
-# TODO: Move
-attrs_constant = Attrs(constant_attr_names)
-attrs_result = Attrs(result_attr_names)
-attrs_agent = Attrs(agent_attr_names, Intervals(1.0))
-attrs_wall = Attrs(wall_attr_names)
-
-attrs_agent["position"] = Attr("position", True, True)
-attrs_agent["velocity"] = Attr("velocity", True, True)
-attrs_agent["force"] = Attr("force", True, True)

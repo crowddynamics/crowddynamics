@@ -3,10 +3,12 @@ from timeit import default_timer as timer
 
 from src.core.integrator import euler_method, euler_method2, euler_method0
 from src.display import format_time
-from src.io.attributes import Intervals, attrs_constant, attrs_agent, \
-    attrs_result, attrs_wall
+from src.io.attributes import Intervals, Attrs, Attr
 from src.io.save import Save
-from src.struct.result import Result
+from src.struct.agent import agent_attr_names
+from src.struct.constant import constant_attr_names
+from src.struct.result import Result, result_attr_names
+from src.struct.wall import wall_attr_names
 from src.visualization.animation import animation
 
 
@@ -35,9 +37,18 @@ class System:
         # Object for saving simulation data
         self.interval = Intervals(1.0)
         self.save = Save(dirpath, name)
-        self.hdf = _filter([self.save.to_hdf(self.constant, attrs_constant),
-                            self.save.to_hdf(self.agent, attrs_agent)] +
-                           [self.save.to_hdf(w, attrs_wall) for w in self.wall])
+        self.attrs_constant = Attrs(constant_attr_names)
+        self.attrs_result = Attrs(result_attr_names)
+        self.attrs_agent = Attrs(agent_attr_names, Intervals(1.0))
+        self.attrs_wall = Attrs(wall_attr_names)
+        self.attrs_agent["position"] = Attr("position", True, True)
+        self.attrs_agent["velocity"] = Attr("velocity", True, True)
+        self.attrs_agent["force"] = Attr("force", True, True)
+        self.hdf = _filter(
+            [self.save.to_hdf(self.constant, self.attrs_constant),
+             self.save.to_hdf(self.agent, self.attrs_agent)] +
+            [self.save.to_hdf(w, self.attrs_wall) for w in self.wall]
+        )
 
     def animation(self, x_dims, y_dims, fname=None, save=False, frames=None):
         if save:
@@ -93,7 +104,7 @@ class System:
 
             return ret
         except GeneratorExit:
-            self.save.to_hdf(self.result, attrs_result)
+            self.save.to_hdf(self.result, self.attrs_result)
             raise StopIteration()
 
     def __iter__(self):
