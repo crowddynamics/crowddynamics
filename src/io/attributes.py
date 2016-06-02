@@ -77,6 +77,7 @@ class Intervals:
                                            interval=self.interval)
 
 
+# TODO: Move
 attrs_constant = Attrs(constant_attr_names)
 attrs_result = Attrs(result_attr_names)
 attrs_agent = Attrs(agent_attr_names, Intervals(1.0))

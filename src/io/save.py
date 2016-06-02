@@ -68,17 +68,18 @@ class Save(object):
                     # Not Resizable
                     group.create_dataset(attr.name, data=value)
 
-        # TODO: Saving when finished
         recordable = Attrs(filter(lambda attr: attr.is_recordable, attrs),
                            attrs.save_func)
         if len(recordable) and recordable.save_func is not None:
+            # TODO: Force save
             def gen():
                 buffer = {attr.name: [] for attr in recordable}
                 end = 1
                 start = 0
                 while True:
-                    is_save = recordable.save_func()
-                    # is_save = True
+                    is_save = recordable.save_func
+                    if callable(is_save):
+                        is_save = is_save()
                     for attr in recordable:
                         # Append value to buffer
                         value = np.copy(getattr(struct, attr.name))
