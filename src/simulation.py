@@ -12,7 +12,7 @@ from src.struct.wall import wall_attr_names
 from src.visualization.animation import animation
 
 
-class System:
+class Simulation:
     def __init__(self, constant, agent, wall=None, goals=None, dirpath=None,
                  name=None):
         # Make iterables and filter None values

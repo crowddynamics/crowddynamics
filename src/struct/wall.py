@@ -55,6 +55,9 @@ class RoundWall(object):
         d_iw -= r
         return d_iw, n_iw
 
+    def relative_position(self, i, x):
+        pass
+
 
 spec_linear = OrderedDict(
     params=float64[:, :, :],
@@ -133,3 +136,6 @@ class LinearWall(object):
             n_iw = np.sign(l_n) * n_w
 
         return d_iw, n_iw
+
+    def relative_position(self, i, x):
+        pass
