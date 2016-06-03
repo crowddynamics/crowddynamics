@@ -1,6 +1,6 @@
 import numba
 
-from src.core.force import f_soc_iw, f_c_iw
+from src.core.force import f_soc_iw, f_contact
 from src.core.functions import rotate270, force_limit
 
 
@@ -19,8 +19,12 @@ def f_agent_wall(constant, agent, wall):
 
             if h_iw > 0:
                 t_iw = rotate270(n_iw)
-                force = f_c_iw(agent.velocity[i], t_iw, n_iw, h_iw,
-                               constant.mu, constant.kappa)
+                force = f_contact(h_iw,
+                                  n_iw,
+                                  agent.velocity[i],
+                                  t_iw,
+                                  constant.mu,
+                                  constant.kappa)
                 force_limit(force, constant.f_c_iw_max)
                 agent.force[i] += force
                 # agent.force_wall[i] += force

@@ -21,6 +21,16 @@ class System:
                 arg = (arg,)
             return tuple(filter(None, arg))
 
+        # List of thing to implement
+        # TODO: Saving to hdf5
+        # TODO: Social force wall
+        # TODO: Better Visualization and movie writing
+        # TODO: Elliptical/Three circle Agent model and orientation
+        # TODO: Pathfinding/Exit selection algorithm
+        # TODO: Game theoretical exit congestion algorithm
+        # TODO: Result Analysis
+        # TODO: New simulations
+
         # Struct
         self.constant = constant
         self.agent = agent

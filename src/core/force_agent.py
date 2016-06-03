@@ -1,7 +1,7 @@
 import numba
 from numpy import hypot
 
-from src.core.force import f_soc_ij, f_c_ij
+from src.core.force import f_social_ij, f_contact
 from src.core.functions import rotate270, normalize, force_limit
 
 
@@ -18,11 +18,11 @@ def f_agent_agent(constant, agent):
 
             # If another agent is in range of sight_soc.
             if distance <= agent.sight_soc:
-                force = f_soc_ij(relative_position,
-                                 relative_velocity,
-                                 total_radius,
-                                 constant.k,
-                                 constant.tau_0)
+                force = f_social_ij(relative_position,
+                                    relative_velocity,
+                                    total_radius,
+                                    constant.k,
+                                    constant.tau_0)
                 force_limit(force, constant.f_soc_ij_max)
                 agent.force[i] += force
                 agent.force[j] -= force
@@ -33,12 +33,12 @@ def f_agent_agent(constant, agent):
             if relative_distance > 0:
                 normal = relative_position / distance
                 tangent = rotate270(normal)
-                force = f_c_ij(relative_distance,
-                               normal,
-                               relative_velocity,
-                               tangent,
-                               constant.mu,
-                               constant.kappa)
+                force = f_contact(relative_distance,
+                                  normal,
+                                  relative_velocity,
+                                  tangent,
+                                  constant.mu,
+                                  constant.kappa)
                 force_limit(force, constant.f_c_ij_max)
                 agent.force[i] += force
                 agent.force[j] -= force

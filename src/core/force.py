@@ -4,7 +4,7 @@ from numpy.core.umath import exp, sqrt, isnan
 
 
 @numba.jit(nopython=True, nogil=True)
-def f_random_fluctuation(constant, agent):
+def force_random_fluctuation(constant, agent):
     for i in range(agent.size):
         angle = random.uniform(0, 2 * pi)
         magnitude = random.uniform(0, constant.f_random_fluctuation_max)
@@ -13,7 +13,10 @@ def f_random_fluctuation(constant, agent):
 
 
 @numba.jit(nopython=True, nogil=True)
-def f_adjust(constant, agent):
+def force_adjust(constant, agent):
+    """
+    Force that adjust movement towards target direction.
+    """
     force = (agent.mass / constant.tau_adj) * \
             (agent.goal_velocity * agent.target_direction - agent.velocity)
     agent.force += force
@@ -22,21 +25,22 @@ def f_adjust(constant, agent):
 
 @numba.jit(nopython=True, nogil=True)
 def f_soc_iw(h_iw, n_iw, a, b):
+    """
+    Naive velocity independent social force.
+    """
     return exp(h_iw / b) * a * n_iw
 
 
 @numba.jit(nopython=True, nogil=True)
-def f_c_iw(v_iw, t_iw, n_iw, h_iw, mu, kappa):
-    return h_iw * (mu * n_iw - kappa * dot(v_iw, t_iw) * t_iw)
+def f_contact(h, n, v, t, mu, kappa):
+    """
+    Frictional contact force.
+    """
+    return h * (mu * n - kappa * dot(v, t) * t)
 
 
 @numba.jit(nopython=True, nogil=True)
-def f_c_ij(h_ij, n_ij, v_ij, t_ij, mu, kappa):
-    return h_ij * (mu * n_ij - kappa * dot(v_ij, t_ij) * t_ij)
-
-
-@numba.jit(nopython=True, nogil=True)
-def f_soc_ij(x_ij, v_ij, r_ij, k, tau_0):
+def f_social_ij(x_ij, v_ij, r_ij, k, tau_0):
     """
     About
     -----

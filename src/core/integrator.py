@@ -1,6 +1,6 @@
 import numba
 
-from src.core.force import f_adjust, f_random_fluctuation
+from src.core.force import force_adjust, force_random_fluctuation
 from src.core.force_agent import f_agent_agent
 from src.core.force_wall import f_agent_wall
 
@@ -23,8 +23,8 @@ def _f_tot0(constant, agent):
     [2] http://motion.cs.umn.edu/PowerLaw/
     """
     f_agent_agent(constant, agent)
-    f_adjust(constant, agent)
-    f_random_fluctuation(constant, agent)
+    force_adjust(constant, agent)
+    force_random_fluctuation(constant, agent)
 
 
 @numba.jit(nopython=True, nogil=True)
@@ -69,8 +69,8 @@ def _f_tot(constant, agent, wall):
     """
     f_agent_agent(constant, agent)        # 53.4 %
     f_agent_wall(constant, agent, wall)   # 33.7 %
-    f_adjust(constant, agent)              # 4.3 %
-    f_random_fluctuation(constant, agent)  # 2.2 %
+    force_adjust(constant, agent)              # 4.3 %
+    force_random_fluctuation(constant, agent)  # 2.2 %
 
 
 @numba.jit(nopython=True, nogil=True)
@@ -116,8 +116,8 @@ def _f_tot2(constant, agent, wall1, wall2):
     f_agent_agent(constant, agent)
     f_agent_wall(constant, agent, wall1)
     f_agent_wall(constant, agent, wall2)
-    f_adjust(constant, agent)
-    f_random_fluctuation(constant, agent)
+    force_adjust(constant, agent)
+    force_random_fluctuation(constant, agent)
 
 
 @numba.jit(nopython=True, nogil=True)
