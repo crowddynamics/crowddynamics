@@ -24,7 +24,7 @@ def force_adjust(constant, agent):
 
 
 @numba.jit(nopython=True, nogil=True)
-def f_soc_iw(h_iw, n_iw, a, b):
+def force_social_naive(h_iw, n_iw, a, b):
     """
     Naive velocity independent social force.
     """
@@ -32,7 +32,7 @@ def f_soc_iw(h_iw, n_iw, a, b):
 
 
 @numba.jit(nopython=True, nogil=True)
-def f_contact(h, n, v, t, mu, kappa):
+def force_contact(h, n, v, t, mu, kappa):
     """
     Frictional contact force.
     """
@@ -40,11 +40,9 @@ def f_contact(h, n, v, t, mu, kappa):
 
 
 @numba.jit(nopython=True, nogil=True)
-def f_social_ij(x_ij, v_ij, r_ij, k, tau_0):
+def force_social(x_ij, v_ij, r_ij, k, tau_0):
     """
-    About
-    -----
-    Social interaction force between two agents `i` and `j`. [1]
+    Velocity dependent social force. [1]
 
     References
     ----------
