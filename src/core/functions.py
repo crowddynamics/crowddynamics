@@ -47,3 +47,23 @@ def force_limit(force, f_max):
     f_mag = np.hypot(force[0], force[1])
     if f_mag > f_max:
         force *= f_max / f_mag
+
+
+@numba.jit(nopython=True, nogil=True)
+def vector_angle(vec0, vec1):
+    return np.arccos(np.dot(vec0, vec1) / (np.hypot(vec0[0], vec0[1]) *
+                                           np.hypot(vec1[0], vec1[1])))
+
+
+@numba.jit(nopython=True, nogil=True)
+def wrap_to_pi(ang):
+    """
+    Wraps angle between (-pi, pi]
+    """
+    ang %= 2 * np.pi
+    if ang > np.pi:
+        return ang - 2 * np.pi
+    elif ang <= -np.pi:
+        return ang + 2 * np.pi
+    else:
+        return ang

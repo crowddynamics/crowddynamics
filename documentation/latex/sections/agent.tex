@@ -1,16 +1,63 @@
 \section{Agents}
+\begin{table}[H]
+\centering
+\begin{tabular}{ll}
+$ r_{i} $                    & Radius            \\
+$ m_{i} $                    & Mass              \\
+$ v_{i}^{0} $                & Goal velocity     \\  
+$ \mathbf{x}_{i} $           & Position          \\
+$ \mathbf{v}_{i} $           & Velocity          \\
+$ \hat{\mathbf{e}}_{i}^{0} $ & Goal direction    \\
+$ \hat{\mathbf{e}}_{i} $     & Target direction  \\
+$ \mathbf{p}_i $             & Herding tendency  \\
+$ I_{i}^{z} $                & Moment of inertia  \\
+$ \omega_{i}^{0} $           & max target angular velocity  \\
+$ \omega_{i} $               & current angular velocity  \\
+$ \varphi_{i} $              & current body angle  \\
+$ \varphi_{i}^{0} $          & target angle  \\
+$ \tilde{\omega}_{i}^{0} $   & target angular speed \\
+\end{tabular}
+\end{table}
 
 \begin{table}[H]
-\begin{tabular}{c|ccccccc}
-& $ r $ $ (\mathrm{m}) $ & $ \pm $ & $ r_{\text{torso}} / r $ & $ r_{\text{shoulder}} / r $ & $ d / r $ & speed $ (\mathrm{m} / \mathrm{s}) $ & $ \pm $ \\
-\hline\hline
-adult & $ 0.255 $ & $ 0.035 $ & $ 0.5882 $ & $ 0.3725 $ & $ 0.6275 $ & $ 1.25 $ & $ 0.3 $ \\
-child & $ 0.21 $ & $ 0.015 $ & $ 0.5714 $ & $ 0.3333 $ & $ 0.6667 $ & $ 0.9 $ & $ 0.3 $ \\
-eldery & $ 0.25 $ & $ 0.02 $ & $ 0.6 $ & $ 0.36 $ & $ 0.64 $ & $ 0.8 $ & $ 0.3 $ \\
-female & $ 0.24 $ & $ 0.02 $ & $ 0.5833 $ & $ 0.375 $ & $ 0.625 $ & $ 1.15 $ & $ 0.2 $ \\
-male & $ 0.27 $ & $ 0.02 $ & $ 0.5926 $ & $ 0.3704 $ & $ 0.6296 $ & $ 1.35 $ & $ 0.2 $ \\
-\end{tabular} 
-\caption{Agent body properties}
-\end{table} 
+\centering
+\begin{tabular}{ll}
+$ \mathbf{x}_{ij} = \mathbf{x}_{i} - \mathbf{x}_{j} $ & Relative position between two agents \\
+$ \mathbf{v}_{ij} = \mathbf{v}_{i} - \mathbf{v}_{j} $ & Relative velocity between two agents \\
+$ r_{ij} = r_{i} + r_{j} $ & Total radius \\
+$ d_{ij} = \left\|\mathbf{x}_{ij}\right\| $ & Distance between agents \\
+$ h_{ij} = r_{ij} - d_{ij} $ & Relative distance between agents \\
+$ \hat{\mathbf{n}}_{ij} = \mathbf{x}_{ij} / d_{ij} $ & Normal vector \\
+$ \hat{\mathbf{t}}_{ij} = R(-90^{\circ}) \cdot \hat{\mathbf{n}}_{ij} $ & Tangent vector \\
+\end{tabular}
+\end{table}
+
+
+%TODO: Moment and torque.
+% FDS evac manual pages: 20 - 21
+
+Rotational equation of motion 
+\begin{align}
+I_{i}^{z} \frac{d^{2} \varphi_{i}(t)}{d t^{2}} = M_{i}^{z}(t) + \eta_{i}^{z}(t),
+\end{align}
+where $ \varphi_{i}(t) $ is the angle of the agent i, $ I_{i}^{z} $ is moment of inertia, $ \eta_{i}^{z}(t) $ is small random fluctuation torque, and $ M_{i}^{z}(t) $ is total torque, which is the sum of contact, social and motivational torque
+\begin{align}
+M_{i}^{z}(t) = M_{i}^{c} + M_{i}^{soc} + M_{i}^{\tau}
+\end{align}
+
+Torque from contact forces
+\begin{align}
+\mathbf{M}_{i}^{c} = \sum_{j\neq i}^{} \left(\mathbf{R}_{i}^{c} \times \mathbf{f}_{ij}^{c}\right)
+\end{align}
+and from social forces
+\begin{align}
+\mathbf{M}_{i}^{soc} = \sum_{j\neq i}^{} \left(\mathbf{R}_{i}^{soc} \times \mathbf{f}_{ij}^{soc}\right)
+\end{align}
+
+Motivational torque
+\begin{align}
+M_{i}^{\tau} &= \frac{I_{i}^{z}}{\tau_{i}^{z}} \left((\varphi_{i}(t) - \varphi_{i}^{0}) \omega^{0} - \omega(t)\right) \\
+&= \frac{I_{i}^{z}}{\tau_{i}^{z}} \left(\tilde{\omega}_{i}^{0} - \omega(t)\right)
+\end{align}
 
 

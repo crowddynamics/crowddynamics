@@ -1,16 +1,13 @@
 \section{Constants}
 
 \begin{table}[H]
-\begin{tabular}{ llll }
+\begin{tabular}{ lll|l }
 \hline
 Symbol         & Unit & Value & Explanation \\
 \hline
 \hline
-\multicolumn{4}{c}{System} \\
-\hline
 $ dt $ & $ \mathrm{s} $ &  & Discrete timestep used to update the differential system \\
 \hline
-\multicolumn{4}{c}{Constants} \\
 \hline
 $ \tau_{adj} $ & $ \mathrm{s} $ & $ 0.5 $ & Characteristic time in which agent adjusts its movement \\
 $ k $          & $ \mathrm{N} $ & $ 1.5 $ & Social force scaling constant \\
@@ -21,10 +18,23 @@ $ \kappa $     & $ \mathrm{\frac{kg}{m\,s}} $ & $ 2.4e+05 $ & Sliding friction c
 $ A $          & $ \mathrm{N} $ & $ 2.0e+03 $ & Scaling coefficient for social force between wall and agent \\
 $ B $          & $ \mathrm{m} $ & $ 0.08 $ & Coefficient for social force between wall and agent \\
 \hline
-\multicolumn{4}{c}{Limits} \\
 \hline
 $ f_{max} $    & $ \mathrm{N} $ &  & Forces that are greater will be truncated to max force \\
 \hline
 \end{tabular} 
-\caption{}
+\caption{Constants and limits}
 \end{table}
+
+\begin{table}[H]
+\begin{tabular}{l|lllllll}
+& $ r $ $ (\mathrm{m}) $ & $ \pm $ & $ r_{\text{torso}} / r $ & $ r_{\text{shoulder}} / r $ & $ d / r $ & $ v $ $ (\mathrm{m} / \mathrm{s}) $ & $ \pm $ \\
+\hline\hline
+adult & $ 0.255 $ & $ 0.035 $ & $ 0.5882 $ & $ 0.3725 $ & $ 0.6275 $ & $ 1.25 $ & $ 0.3 $ \\
+child & $ 0.210 $ & $ 0.015 $ & $ 0.5714 $ & $ 0.3333 $ & $ 0.6667 $ & $ 0.90 $ & $ 0.3 $ \\
+eldery & $ 0.250 $ & $ 0.020 $ & $ 0.6000 $ & $ 0.3600 $ & $ 0.6400 $ & $ 0.80 $ & $ 0.3 $ \\
+female & $ 0.240 $ & $ 0.020 $ & $ 0.5833 $ & $ 0.3750 $ & $ 0.6250 $ & $ 1.15 $ & $ 0.2 $ \\
+male & $ 0.270 $ & $ 0.020 $ & $ 0.5926 $ & $ 0.3704 $ & $ 0.6296 $ & $ 1.35 $ & $ 0.2 $ \\
+\hline
+\end{tabular} 
+\caption{Agent body properties}
+\end{table} 

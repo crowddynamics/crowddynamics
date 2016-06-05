@@ -55,7 +55,7 @@ def force_social(x_ij, v_ij, r_ij, k, tau_0):
     c = dot(x_ij, x_ij) - r_ij ** 2
     d = sqrt(b ** 2 - a * c)
 
-    # Avoid zero division zero divisions.
+    # Avoid zero division.
     # No interaction if tau cannot be defined.
     if isnan(d) or d < 1.49e-08 or abs(a) < 1.49e-08:
         return force

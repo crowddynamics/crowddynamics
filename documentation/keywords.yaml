@@ -1,6 +1,9 @@
 keywords:
-- crowd dynamics
-- human motion
-- crowd simulation
+- 2D continuous
+- Finite difference method
 - multi-agent system
+- crowd dynamics
+- simulation
+- human motion
 - egress congestion
+- egress flow

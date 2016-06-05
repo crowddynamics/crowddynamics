@@ -20,7 +20,7 @@
 \usepackage{wrapfig}
 \usepackage{floatrow}
 \usepackage{multicol}
-\usepackage{enumerate}
+\usepackage{enumerate} 
 \usepackage[inline]{enumitem}
 \usepackage{url}
 \usepackage{marvosym}
@@ -55,46 +55,51 @@
 \makeatother
 
 \begin{document}
-
-%\input{sections/definitions}
 \input{sections/constants}
-\begin{multicols*}{2}
-\input{sections/parameters}
-\end{multicols*}
-%\newpage
+
+% -- Agent figure --
+\begin{figure}[h]
+\centering
+\input{figures/agent}
+\caption{Circle, ellipse and three circle representations of an agent.}
+\end{figure}
+% ------------------
 
 \begin{multicols*}{2}
-\input{sections/social_force}
-\input{sections/game_theory}
+\input{sections/agent}
 \end{multicols*}
+
+
+\newpage
+
 
 % -- Linear wall figure --
-\begin{figure}[H]
+\begin{figure}[h]
 \centering
 \input{figures/linear_wall}
-\caption{Linear wall}
+\caption{Absolute distance from a linear wall.}
 \end{figure}
+
+\begin{figure}[h]
+\centering
+\input{figures/linear_wall2}
+\caption{Velocity dependent distance from a linear wall.}
+\end{figure}
+
 % ------------------------
 \begin{multicols*}{2}
 \input{sections/wall}
 \end{multicols*}
 
+
 \newpage
 
-% -- Agent figure --
-\begin{figure}[H]
-\centering
-\input{figures/agent}
-\caption{Circle, Ellipse and Three circle representations of an agent.}
-\end{figure}
-% ------------------
-
-\input{sections/agent}
 
 \begin{multicols*}{2}
+\input{sections/social_force}
 \input{sections/differential_system}
 \end{multicols*}
 
-
+%TODO: Bibliographies
 
 \end{document}

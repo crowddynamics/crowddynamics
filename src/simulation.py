@@ -30,6 +30,7 @@ class Simulation:
         # TODO: Game theoretical exit congestion algorithm
         # TODO: Result Analysis
         # TODO: New simulations
+        # TODO: np.dot 
 
         # Struct
         self.constant = constant

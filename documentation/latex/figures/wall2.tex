@@ -36,38 +36,57 @@
 % Normal Vector
 % -----------------------------
 \path[] (mid)
-        edge[->, thick] node[left, midway]{$ \hat{\mathbf{n}}_{w} $} 
+        edge[->, thick, opacity=0.5] node[left, midway]{$ \hat{\mathbf{n}}_{w} $} 
         ($ (mid) + (0, 1) $);
 
 % Tangent Vector
 % -----------------------------
 \path[] ($ (mid) + (0, 0) $) 
-        edge[->, thick] node[above, midway]{$ \hat{\mathbf{t}}_{w} $} 
+        edge[->, thick, opacity=0.5] node[above, midway]{$ \hat{\mathbf{t}}_{w} $} 
         ($ (mid) + (1, 0) $);
 
 % -----------------------------
 % Pedestrians
 % -----------------------------
 
-% Inside of red separator lines
+% Above
 % -----------------------------
 \def \radius {3};
 \node[point] (x1) at ($ (start) + (2, \radius) $) {$ \mathbf{x}_{i} $};
-\path[] (start) edge[->, gray] node[right]{$ \mathbf{q}_{0} $} (x1);
-\path[] (end)   edge[->, gray] node[right]{$ \mathbf{q}_{1} $} (x1);
+\path[] (start) edge[->, darkgray] node[right]{} (x1);
+\path[] (end)   edge[->, darkgray] node[right]{} (x1);
 
-% Left of red separator line
+\draw[dashed, ->] (x1) -- ($ (x1) + (0, 1) $);
+\draw[] (x1) circle (1);
+
+% Left
 % -----------------------------
 \def \angle {45};
 \node[point] (x2) at ($ (start) + ({\radius * cos(90+\angle)}, {\radius * sin(90+\angle)}) $) 
              {$ \mathbf{x}_{i} $};
-\path[] (start) edge[<->, gray] node[above]{$ \mathbf{q}_{0} $} (x2);
-\path[] (end)   edge[<->, gray] node[above]{$ \mathbf{q}_{1} $} (x2);
+\path[] (start) edge[<->, gray] node[above]{} (x2);
+\path[] (end)   edge[<->, gray] node[above]{} (x2);
 
-% Right of red separator line
+\draw[dashed, ->] (x2) -- ($ (x2) + (0, 1) $);
+\draw[] (x2) circle (1);
+
+% Below
 % -----------------------------
-\node[point] (x3) at ($ (end) + ({\radius * cos(\angle)}, {\radius * sin(\angle)}) $) 
-             {$ \mathbf{x}_{i} $};
+\node[point] (x3) at (0, -3) {$ \mathbf{x}_{i} $};
 
-\path[] (start) edge[->, gray] node[below]{$ \mathbf{q}_{0} $} (x3);
-\path[] (end)   edge[->, gray] node[below]{$ \mathbf{q}_{1} $} (x3);
+\path[] (start) edge[->] node[below]{} (x3);
+\path[] (end)   edge[->] node[below]{ } (x3);
+
+\draw[dashed, ->] (x3) -- ($ (x3) + (0, -1) $);
+\draw[] (x3) circle (1);
+
+
+% On line
+% -----------------------------
+%\node[point] (x4) at (7, 0) {$ \mathbf{x}_{i} $};
+%
+%\path[] (start) edge[->] node[below]{} (x4);
+%\path[] (end)   edge[->] node[below]{ } (x4);
+%
+%%\draw[dashed, ->] (x4) -- ($ (x4) + (0, -1) $);
+%\draw[] (x4) circle (1);

@@ -18,6 +18,8 @@ def f_agent_wall(constant, agent, wall):
                                            constant.a,
                                            constant.b)
                 # TODO: Relative position
+                # relative_position = wall.relative_position(w, agent.position[i],
+                #                                            agent.velocity[i])
                 # force = force_social(relative_position,
                 #                      agent.velocity[i],
                 #                      radius,

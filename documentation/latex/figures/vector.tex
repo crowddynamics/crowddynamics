@@ -1,0 +1,31 @@
+\begin{tikzpicture}
+  [
+    point/.style = {draw, circle, fill=white, inner sep=1.4pt}
+  ]
+
+\input{./grid}
+
+%\path[opacity=0.5] (-7, 0) edge[gray, ->] node[] {} (7, 0);
+%\draw[gray, ->] (0, -5) -- (0, 5);
+
+\coordinate[] (center) at (0, 0);
+\draw[dashed, opacity=0.4] (center) circle (5);
+
+\path[] (center) 
+        edge[thick, ->] node[right]{$ \mathbf{a} $} 
+        ($ (center) + (0, 5) $);
+
+\path[] (center) 
+        edge[thick, ->] node[above]{$ \mathbf{b} $} 
+        ($ (center) - (4, 3) $);
+
+\path[] (center) 
+        edge[thick, ->] node[above]{$ \mathbf{c} $} 
+        ($ (center) - (-4, 3) $);
+
+\path[] (center) 
+        edge[thick, ->] node[above]{$ \mathbf{v} $} 
+        ($ (center) + (1, 1) $);
+
+
+\end{tikzpicture}

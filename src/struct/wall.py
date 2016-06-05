@@ -1,8 +1,8 @@
 from collections import OrderedDict
 
 import numpy as np
-from numba import jitclass
 from numba import float64, int64
+from numba import jitclass
 
 from src.core.functions import rotate90
 
@@ -55,7 +55,7 @@ class RoundWall(object):
         d_iw -= r
         return d_iw, n_iw
 
-    def relative_position(self, i, x):
+    def relative_position(self, i, x, v):
         pass
 
 
@@ -81,11 +81,11 @@ class LinearWall(object):
     def construct(self):
         for i in range(self.size):
             p = self.params[i]
-            d = p[1] - p[0]             # Vector from p_0 to p_1
+            d = p[1] - p[0]  # Vector from p_0 to p_1
             l_w = np.hypot(d[1], d[0])  # Length of the wall
-            t_w = d / l_w               # Tangential unit-vector
-            n_w = rotate90(t_w)         # Normal unit-vector
-            w = self.wall[i]            # Set values to wall array
+            t_w = d / l_w  # Tangential unit-vector
+            n_w = rotate90(t_w)  # Normal unit-vector
+            w = self.wall[i]  # Set values to wall array
             w[0:2], w[2:4], w[4:6], w[6:8], w[8] = p[0], p[1], t_w, n_w, l_w
 
     def deconstruct(self, index):
@@ -137,5 +137,36 @@ class LinearWall(object):
 
         return d_iw, n_iw
 
-    def relative_position(self, i, x):
-        pass
+    def relative_position(self, i, x, v):
+        p_0, p_1, t_w, n_w, l_w = self.deconstruct(i)
+
+        q_0 = p_0 - x
+        q_1 = p_1 - x
+
+        l_n = np.dot(n_w, -q_0)
+        n_iw = np.sign(l_n) * n_w
+
+        angle = np.array((np.arctan2(q_0[0], q_0[1]),
+                          np.arctan2(q_1[0], q_1[1]),
+                          np.arctan2(n_iw[0], n_iw[1])))
+
+        if angle[0] == angle[1]:
+            if np.hypot(q_0[0], q_0[1]) < np.hypot(q_1[0], q_1[1]):
+                return q_0
+            else:
+                return q_1
+
+        angle -= np.arctan2(v[0], v[1])  # Angle of velocity vector
+        angle %= 2 * np.pi
+
+        args = (np.argmin(angle), np.argmax(angle))
+
+        if 2 in args:
+            if 0 in args:
+                return q_0
+            else:
+                return q_1
+        else:
+            arr = np.linalg.inv((v, p_0 - p_1))
+            a, _ = np.dot(arr, q_0)
+            return a * v

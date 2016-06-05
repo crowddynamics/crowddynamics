@@ -11,16 +11,11 @@ Force adjusting agent's movement towards desired in some characteristic time \be
 \mathbf{f}_{i}^{adj} &= \frac{m_{i}}{\tau_{i}^{adj}} (v_{i}^{0} \cdot \hat{\mathbf{e}}_{i} - \mathbf{v}_{i}) 
 \end{align}
 
-Herding behavior
-\begin{align}
-\mathbf{e}_{i} &= (1 - p_{i}) \hat{\mathbf{e}}_{i}^{0} + p_{i} \left\langle \hat{\mathbf{e}}_{j}^{0} \right\rangle_{i}
-\end{align}
-
 
 \subsection{Agent-Agent}
 Psychological tendency to keep a certain distance to other agents
 \begin{align}
-\mathbf{f}_{ij}^{soc} &= \mathbf{f}_{ij}^{pow}, \quad  d_{ij} \leq \text{sight} 
+\mathbf{f}_{ij}^{soc}, \quad  d_{ij} \leq \text{sight} 
 \end{align}
 
 Physical contact forces with other agents 
@@ -44,7 +39,7 @@ Physical contact forces with walls
 \subsection{Random Fluctuation}
 Uniformly distributed random fluctuation force
 \begin{align}
-\boldsymbol{\xi}_{i} &= \boldsymbol{\mathcal{U}}(-1, 1).
+\boldsymbol{\xi}_{i} &= c \cdot \begin{bmatrix} \cos(\varphi) & \sin(\varphi) \end{bmatrix}, \quad c \in [0, f_{max}], \varphi \in [0, 2 \pi)
 \end{align}
 
 
@@ -52,7 +47,7 @@ Uniformly distributed random fluctuation force
 \subsection{Universal power law governing pedestrian interactions}
 Interaction force between agents
 \begin{align}
-\mathbf{f}_{ij}^{pow} &= -\nabla_{\mathbf{x}_{ij}} E(\tau)  \\
+\mathbf{f}_{ij}^{soc} &= -\nabla_{\mathbf{x}_{ij}} E(\tau)  \\
 &= -\nabla_{\mathbf{x}_{ij}} \left(\frac{k}{\tau^{2}} \exp \left( -\frac{\tau}{\tau_{0}} \right) \right) \\
 %\\
 %&= - \left[\frac{k}{\left\|\mathbf{v}_{ij}\right\|^{2} \tau^{2}} \exp \left( -\frac{\tau}{\tau_{0}} \right) \left(\frac{2}{\tau} + \frac{1}{\tau_{0}}\right) \right] 
@@ -70,4 +65,11 @@ b &= -\mathbf{x}_{ij} \cdot \mathbf{v}_{ij} \\
 c &= \mathbf{x}_{ij} \cdot \mathbf{x}_{ij} - r_{ij}^{2} \\
 d &= \sqrt{b^{2} - a c} \\
 \tau &= \frac{b - d}{a} > 0.
+\end{align}
+
+
+\subsection{Target direction}
+Herding behavior
+\begin{align}
+\mathbf{e}_{i} &= (1 - p_{i}) \hat{\mathbf{e}}_{i}^{0} + p_{i} \left\langle \hat{\mathbf{e}}_{j}^{0} \right\rangle_{i}
 \end{align}
