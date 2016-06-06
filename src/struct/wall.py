@@ -167,6 +167,6 @@ class LinearWall(object):
             else:
                 return q_1
         else:
-            arr = np.linalg.inv((v, p_0 - p_1))
+            arr = np.linalg.inv(np.array((v, p_0 - p_1)).T)
             a, _ = np.dot(arr, q_0)
             return a * v

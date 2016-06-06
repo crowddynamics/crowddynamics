@@ -5,15 +5,10 @@ import numpy as np
 
 class MyTestCase(unittest.TestCase):
     def test_constants(self):
-        from src.struct.constant import Constant
-        c = Constant()
-        self.assertIsInstance(c.tau_adj, float)
-        self.assertIsInstance(c.k, float)
-        self.assertIsInstance(c.tau_0, float)
-        self.assertIsInstance(c.mu, float)
-        self.assertIsInstance(c.kappa, float)
-        self.assertIsInstance(c.a, float)
-        self.assertIsInstance(c.b, float)
+        from src.struct.constant import Constant, constant_attr_names
+        constant = Constant()
+        for name in constant_attr_names:
+            self.assertTrue(hasattr(constant, name))
 
     def test_round_wall(self):
         from src.struct.wall import RoundWall

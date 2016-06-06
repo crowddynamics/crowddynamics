@@ -1,17 +1,18 @@
 \section{Differential system}
-Acceleration on an agent $ i $
+Acceleration on an agent
 \begin{align}
-a_{i}(t) = \frac{\mathbf{f}_{i}(t)}{m_{i}}
+a(t) = \frac{\mathbf{f}(t)}{m}
 \end{align}
 
 Updating velocity using discrete time step $ \Delta t $
 \begin{align}
-\Delta \mathbf{v} &= a(t_{k}) \Delta t \\
-\mathbf{v}(t_{k+1}) &= \mathbf{v}(t_{k}) + \Delta \mathbf{v}
+t_{0} &= 0 \\
+t_{1} &= t_{0} + \Delta t \\
+t_{2} &= t_{1} + \Delta t \\
+\ldots
 \end{align}
 
-Updating position
 \begin{align}
-\Delta \mathbf{x} &= \mathbf{v}(t_{k+1}) \Delta t \\
-\mathbf{x}(t_{k+1}) &= \mathbf{x}(t_{k}) + \Delta \mathbf{x}
+\mathbf{v}_{k+1} &= \mathbf{v}_{k} + \Delta \mathbf{v}, \quad \Delta \mathbf{v} = a_{k} \Delta t \\
+\mathbf{x}_{k+1} &= \mathbf{x}_{k} + \Delta \mathbf{x}, \quad \Delta \mathbf{x} = \mathbf{v}_{k+1} \Delta t
 \end{align}

@@ -1,6 +1,6 @@
 \begin{tikzpicture}
   [
-    point/.style = {draw, circle, fill=white, inner sep=0.1pt}
+    point/.style = {draw, circle, fill=white, inner sep=0.5pt}
   ]
 
 \input{./grid}
@@ -10,18 +10,25 @@
 
 \def \radius {5};
 
-% Centre
+% Centre (Origin)
 \coordinate[] (centre) at (0, 0);
+
+% Arc
+\filldraw[opacity=0.2] (centre) -- ($ (centre) + (0.5, 0) $) arc (0:90:0.5) -- cycle;
+\node[] () at ($ (centre) + (0.5, 0.5) $) {$ \varphi $};
+
+\draw[->, opacity=0.8] ($ (centre) + (0.3, 0) $) arc (0:270:0.3) node[below] {$ \omega $};
 
 %% Circle
 \draw[fill=gray, opacity=0.2] (centre) circle (\radius);
-\draw[dashed, ->] (centre) -- node[above] {$ r $} ($ (centre) + (3, 4) $);
+\draw[dashed, ->] (centre) -- node[above] {$ r $} ($ (centre) + (-3, 4) $);
 
 %% Ellipse
 \pgfmathparse{0.59 * \radius}
 \draw[black, fill=darkgray, opacity=0.2] (centre) ellipse (5 and 2.96);
 
-\draw[dashed, ->] (centre) -- node[right] {$ r_{\text{torso}} $} ($ (centre) + (0, \pgfmathresult) $);
+\draw[dashed, ->] (centre) -- node[right] {$ r_{\text{t}} $} 
+                  ($ (centre) + (0, \pgfmathresult) $);
 
 %% Three circles
 % Torso
@@ -34,21 +41,21 @@
 \draw[fill=black, opacity=0.2] (centreLeft)  circle (\pgfmathresult);
 \draw[fill=black, opacity=0.2] (centreRigth) circle (\pgfmathresult);
 
-\draw[dashed, ->] (centreLeft) -- node[above] {$ r_{\text{shoulder}} $} ($ (centreLeft) - (\pgfmathresult, 0) $);
-\draw[dashed, ->] (centreRigth) -- node[above] {$ r_{\text{shoulder}} $} ($ (centreRigth) + (\pgfmathresult, 0) $);
+\draw[dashed, ->] (centreLeft) -- node[above] {$ r_{\text{s}} $} ($ (centreLeft) - (\pgfmathresult, 0) $);
+\draw[dashed, ->] (centreRigth) -- node[above] {$ r_{\text{s}} $} ($ (centreRigth) + (\pgfmathresult, 0) $);
 
 
 
 % Axis
-\draw[thick, ->] (centre) -- node[left] {$ \hat{\mathbf{n}}_{i} $} ($ (centre) + (0, 1) $);
-\draw[thick, ->] (centre) -- node[below] {$ \hat{\mathbf{t}}_{i} $} ($ (centre) + (1, 0) $);
+\draw[thick, ->] (centre) -- node[left] {$ \hat{\mathbf{n}} $} ($ (centre) + (0, 1) $);
+\draw[thick, ->] (centre) -- node[below] {$ \hat{\mathbf{t}} $} ($ (centre) + (1, 0) $);
 
 % Agent
-\node[point] (agent) at (centre) {$ \mathbf{x}_{i} $};
-\node[point] (shoulderLeft) at (centreLeft) {$ \mathbf{c}_{0} $};
-\node[point] (shoulderRigth) at (centreRigth) {$ \mathbf{c}_{1} $};
+\node[point] (agent) at (centre) {$ \mathbf{x} $};
+\node[point] (shoulderLeft) at (centreLeft) {$ \mathbf{c}_{l} $};
+\node[point] (shoulderRigth) at (centreRigth) {$ \mathbf{c}_{r} $};
 
-\draw[<->] (agent) -- node[below] {$ d $} (shoulderLeft);
+\draw[dashed, ->] (agent) -- node[below] {$ r_{t-s} $} (shoulderLeft);
 %\draw[<->] (agent) -- node[below] {$ d $} (shoulderRigth);
 
 \end{tikzpicture}

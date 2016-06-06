@@ -1,51 +1,28 @@
 \section{Crowd dynamics}
 \subsection{Social force model}
-Total force on the agent $ i $
+Total force exerted on the agent is the sum of movement adjusting, social and contact forces between other agents and wall.
 \begin{align}
 \mathbf{f}_{i}(t) = \mathbf{f}_{i}^{adj} + \sum_{j\neq i}^{} \left(\mathbf{f}_{ij}^{soc} + \mathbf{f}_{ij}^{c}\right) + \sum_{w}^{} \left(\mathbf{f}_{iw}^{soc} + \mathbf{f}_{iw}^{c}\right) + \boldsymbol{\xi}_{i}
 \end{align}
 
 
-\subsection{Adjusting Force}
+\subsection{Adjusting force}
 Force adjusting agent's movement towards desired in some characteristic time \begin{align}
-\mathbf{f}_{i}^{adj} &= \frac{m_{i}}{\tau_{i}^{adj}} (v_{i}^{0} \cdot \hat{\mathbf{e}}_{i} - \mathbf{v}_{i}) 
+\mathbf{f}^{adj} &= \frac{m}{\tau^{adj}} (v_{0} \cdot \hat{\mathbf{e}} - \mathbf{v}) 
 \end{align}
 
 
-\subsection{Agent-Agent}
-Psychological tendency to keep a certain distance to other agents
-\begin{align}
-\mathbf{f}_{ij}^{soc}, \quad  d_{ij} \leq \text{sight} 
-\end{align}
+\subsection{Social force}
+Psychological force for collision avoidance
 
-Physical contact forces with other agents 
+\subsubsection{Velocity independent}
 \begin{align}
-\mathbf{f}_{ij}^{c} &= h_{ij} \cdot \left(\mu \cdot \hat{\mathbf{n}}_{ij} - \kappa \cdot \left(\mathbf{v}_{ji} \cdot \hat{\mathbf{t}}_{ij}\right) \hat{\mathbf{t}}_{ij}\right), \quad h_{ij} > 0
+\mathbf{f}^{soc} &= A \exp\left(\frac{h}{B}\right) \hat{\mathbf{n}}
 \end{align}
 
 
-\subsection{Agent-Wall}
-Psychological tendency to keep a certain distance to walls
-\begin{align}
-\mathbf{f}_{iw}^{soc} &= A_{i} \exp\left(\frac{h_{iw}}{B_{i}}\right) \hat{\mathbf{n}}_{iw}, \quad  d_{iw} \leq \text{sight}
-\end{align} 
-
-Physical contact forces with walls
-\begin{align}
-\mathbf{f}_{iw}^{c} &= h_{iw} \cdot \left(\mu \cdot \hat{\mathbf{n}}_{iw} - \kappa \cdot (\mathbf{v}_{i} \cdot \hat{\mathbf{t}}_{iw}) \hat{\mathbf{t}}_{iw}\right), \quad h_{iw} > 0
-\end{align}
-
-
-\subsection{Random Fluctuation}
-Uniformly distributed random fluctuation force
-\begin{align}
-\boldsymbol{\xi}_{i} &= c \cdot \begin{bmatrix} \cos(\varphi) & \sin(\varphi) \end{bmatrix}, \quad c \in [0, f_{max}], \varphi \in [0, 2 \pi)
-\end{align}
-
-
-
-\subsection{Universal power law governing pedestrian interactions}
-Interaction force between agents
+\subsubsection{Velocity dependent}
+%Universal power law governing pedestrian interactions
 \begin{align}
 \mathbf{f}_{ij}^{soc} &= -\nabla_{\mathbf{x}_{ij}} E(\tau)  \\
 &= -\nabla_{\mathbf{x}_{ij}} \left(\frac{k}{\tau^{2}} \exp \left( -\frac{\tau}{\tau_{0}} \right) \right) \\
@@ -65,6 +42,24 @@ b &= -\mathbf{x}_{ij} \cdot \mathbf{v}_{ij} \\
 c &= \mathbf{x}_{ij} \cdot \mathbf{x}_{ij} - r_{ij}^{2} \\
 d &= \sqrt{b^{2} - a c} \\
 \tau &= \frac{b - d}{a} > 0.
+\end{align}
+
+
+\subsection{Contact force}
+Physical contact force
+\begin{align}
+\mathbf{f}^{c} &= h \cdot \left(\mu \cdot \hat{\mathbf{n}} - \kappa \cdot (\mathbf{v} \cdot \hat{\mathbf{t}}) \hat{\mathbf{t}}\right), \quad h > 0
+\end{align}
+
+
+\subsection{Random Fluctuation}
+Uniformly distributed random fluctuation force
+\begin{align}
+\boldsymbol{\xi} &= f \cdot \begin{bmatrix} \cos(\varphi), & \sin(\varphi) \end{bmatrix},
+\end{align}
+where
+\begin{align}
+f \in [0, f_{max}],\quad \varphi \in [0, 2 \pi)
 \end{align}
 
 

@@ -2,20 +2,20 @@
 \begin{table}[H]
 \centering
 \begin{tabular}{ll}
-$ r_{i} $                    & Radius            \\
-$ m_{i} $                    & Mass              \\
-$ v_{i}^{0} $                & Goal velocity     \\  
-$ \mathbf{x}_{i} $           & Position          \\
-$ \mathbf{v}_{i} $           & Velocity          \\
-$ \hat{\mathbf{e}}_{i}^{0} $ & Goal direction    \\
-$ \hat{\mathbf{e}}_{i} $     & Target direction  \\
-$ \mathbf{p}_i $             & Herding tendency  \\
-$ I_{i}^{z} $                & Moment of inertia  \\
-$ \omega_{i}^{0} $           & max target angular velocity  \\
-$ \omega_{i} $               & current angular velocity  \\
-$ \varphi_{i} $              & current body angle  \\
-$ \varphi_{i}^{0} $          & target angle  \\
-$ \tilde{\omega}_{i}^{0} $   & target angular speed \\
+$ r $                    & Radius \\
+$ m $                    & Mass \\
+$ v_{0} $                & Goal velocity \\  
+$ \mathbf{x} $           & Position \\
+$ \mathbf{v} $           & Velocity \\
+$ \hat{\mathbf{e}}_{0} $ & Goal direction \\
+$ \hat{\mathbf{e}} $     & Target direction \\
+$ p $                    & Herding tendency \\
+$ I_{z} $                & Moment of inertia \\
+$ \omega $               & current angular velocity \\
+$ \varphi $              & current body angle \\
+$ \omega_{0} $           & max angular velocity \\
+$ \varphi_{0} $          & target angle \\
+$ \tilde{\omega}_{0} $   & target angular velocity \\
 \end{tabular}
 \end{table}
 
@@ -38,7 +38,7 @@ $ \hat{\mathbf{t}}_{ij} = R(-90^{\circ}) \cdot \hat{\mathbf{n}}_{ij} $ & Tangent
 
 Rotational equation of motion 
 \begin{align}
-I_{i}^{z} \frac{d^{2} \varphi_{i}(t)}{d t^{2}} = M_{i}^{z}(t) + \eta_{i}^{z}(t),
+I_{i}^{z} \frac{d^{2}}{d t^{2}} \varphi_{i}(t) = M_{i}^{z}(t) + \eta_{i}^{z}(t),
 \end{align}
 where $ \varphi_{i}(t) $ is the angle of the agent i, $ I_{i}^{z} $ is moment of inertia, $ \eta_{i}^{z}(t) $ is small random fluctuation torque, and $ M_{i}^{z}(t) $ is total torque, which is the sum of contact, social and motivational torque
 \begin{align}

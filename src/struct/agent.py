@@ -220,10 +220,10 @@ def random_position(position, radius, x_dims, y_dims, walls=None):
         i += 1
 
 
-def random_velocity(amount):
+def random_unit_vector(size):
     """
     Set velocities.
     """
-    orientation = np.random.uniform(0, 2 * np.pi, amount)
+    orientation = np.random.uniform(0, 2 * np.pi, size)
     velocity = np.stack((np.cos(orientation), np.sin(orientation)), axis=1)
     return velocity

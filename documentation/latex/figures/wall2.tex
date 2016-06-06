@@ -16,13 +16,13 @@
 
 % Horizontal Line - Separator
 % -----------------------------
-\coordinate[] (sep00) at ($ (p0) - (off) - (0, 1) $);
-\coordinate[] (sep01) at ($ (p0) + (off) + (0, 1) $);
-\draw[dashed, red, ->] (sep00) -- (sep01) ;
-
-\coordinate[] (sep10) at ($ (p1) - (off) - (0, 1) $);
-\coordinate[] (sep11) at ($ (p1) + (off) + (0, 1) $);
-\draw[dashed, red, ->] (sep10) -- (sep11) ;
+%\coordinate[] (sep00) at ($ (p0) - (off) - (0, 1) $);
+%\coordinate[] (sep01) at ($ (p0) + (off) + (0, 1) $);
+%\draw[dashed, red, ->] (sep00) -- (sep01) ;
+%
+%\coordinate[] (sep10) at ($ (p1) - (off) - (0, 1) $);
+%\coordinate[] (sep11) at ($ (p1) + (off) + (0, 1) $);
+%\draw[dashed, red, ->] (sep10) -- (sep11) ;
 
 % Linear wall
 % -----------------------------
@@ -49,44 +49,52 @@
 % Pedestrians
 % -----------------------------
 
+\def \radius {1};
+
 % Above
 % -----------------------------
-\def \radius {3};
-\node[point] (x1) at ($ (start) + (2, \radius) $) {$ \mathbf{x}_{i} $};
-\path[] (start) edge[->, darkgray] node[right]{} (x1);
-\path[] (end)   edge[->, darkgray] node[right]{} (x1);
+%\coordinate[] (y1) at ($ (start) + (2, 3) $);
+%\filldraw[opacity=0.2] (y1) -- ($ (y1) + (1, 0) $) arc (0:330:1) -- cycle;
 
-\draw[dashed, ->] (x1) -- ($ (x1) + (0, 1) $);
-\draw[] (x1) circle (1);
+\node[point] (x1) at ($ (start) + (2, 3) $) {$ \mathbf{x}_{i} $};
+\path[] (x1) edge[darkgray, dashed, ->] node[above]{$ \mathbf{q}_{0} $} (start);
+\path[] (x1) edge[darkgray, dashed, ->] node[above]{$ \mathbf{q}_{1} $} (end);
+\path[] (x1) edge[darkgray, dashed, ->] node[right]{$ \mathbf{n}_{iw} $} ($ (x1) + (0, 1) $);
+\draw[] (x1) circle (\radius);
+
+\path[] (x1) 
+        edge[thick, ->] node[above]{$ \mathbf{v}_{0} $} 
+        ($ (x1) + (1, 0) $);
+
+\path[] (x1) 
+        edge[thick, ->] node[left]{$ \mathbf{v}_{1} $} 
+        ($ (x1) + ({cos(125)}, {sin(125)}) $);
+
+\path[] (x1) 
+        edge[thick, ->] 
+        node[right]{$ \mathbf{v}_{2} $} (-1, 1);
 
 % Left
 % -----------------------------
 \def \angle {45};
-\node[point] (x2) at ($ (start) + ({\radius * cos(90+\angle)}, {\radius * sin(90+\angle)}) $) 
-             {$ \mathbf{x}_{i} $};
-\path[] (start) edge[<->, gray] node[above]{} (x2);
-\path[] (end)   edge[<->, gray] node[above]{} (x2);
-
-\draw[dashed, ->] (x2) -- ($ (x2) + (0, 1) $);
-\draw[] (x2) circle (1);
+\node[point] (x2) at ($ (start) + (-2, 3) $) {$ \mathbf{x}_{i} $};
+\path[] (x2) edge[darkgray, dashed, ->] node[]{} (start);
+\path[] (x2) edge[darkgray, dashed, ->] node[]{} (end);
+\path[] (x2) edge[darkgray, dashed, ->] node[]{} ($ (x2) + (0, 1) $);
+\draw[] (x2) circle (\radius);
 
 % Below
 % -----------------------------
 \node[point] (x3) at (0, -3) {$ \mathbf{x}_{i} $};
-
-\path[] (start) edge[->] node[below]{} (x3);
-\path[] (end)   edge[->] node[below]{ } (x3);
-
-\draw[dashed, ->] (x3) -- ($ (x3) + (0, -1) $);
-\draw[] (x3) circle (1);
-
+\path[] (x3) edge[darkgray, dashed, ->] node[]{} (start);
+\path[] (x3) edge[darkgray, dashed, ->] node[]{} (end);
+\path[] (x3) edge[darkgray, dashed, ->] node[]{} ($ (x3) + (0, -1) $);
+\draw[] (x3) circle (\radius);
 
 % On line
 % -----------------------------
-%\node[point] (x4) at (7, 0) {$ \mathbf{x}_{i} $};
-%
-%\path[] (start) edge[->] node[below]{} (x4);
-%\path[] (end)   edge[->] node[below]{ } (x4);
-%
-%%\draw[dashed, ->] (x4) -- ($ (x4) + (0, -1) $);
-%\draw[] (x4) circle (1);
+\node[point] (x4) at (-6, 0) {$ \mathbf{x}_{i} $};
+\path[] (x4) edge[darkgray, dashed, ->] node[]{} (start);
+%\path[] (x4) edge[darkgray, dashed, ->] node[]{} (end);
+%\path[] (x4) edge[darkgray, dashed, ->] node[]{} ($ (x4) + (0, -1) $);
+\draw[] (x4) circle (\radius);
