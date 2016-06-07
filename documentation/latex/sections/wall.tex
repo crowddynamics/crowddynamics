@@ -70,10 +70,6 @@ Normal vector away from the wall
 \end{align}
 
 \subsection{Velocity relative distance}
-%Angle between two vectors
-%\begin{align}
-%\cos(\sphericalangle(\mathbf{v}, \mathbf{u})) = \frac{\mathbf{v} \cdot \mathbf{u}}{\left\|\mathbf{v}\right\| \left\|\mathbf{u}\right\|} \in [0, \pi) 
-%\end{align}
 
 \begin{table}[H]
 \centering
@@ -87,3 +83,21 @@ $ h = \tilde{r} - d $ & Relative distance \\
 %$ \hat{\mathbf{t}} = R(-90^{\circ}) \cdot \hat{\mathbf{n}} $ & Tangent vector \\
 \end{tabular}
 \end{table}
+
+Dividing vectors
+\begin{align}
+\mathbf{q}_{0} &= \mathbf{p}_{0} - \mathbf{x} \\
+\mathbf{q}_{1} &= \mathbf{p}_{1} - \mathbf{x} \\
+\hat{\mathbf{n}}_{iw} &= - \operatorname{sign}(\hat{\mathbf{n}}_{w} \cdot \mathbf{q}_{0}) \hat{\mathbf{n}}_{w}
+\end{align}
+
+Angle of 2D vector is found using \url{https://en.wikipedia.org/wiki/Atan2} where angle is between $ [-\pi, \pi] $
+\newcommand{\atan}{\ensuremath{\operatorname{angle}}}
+\begin{align}
+\boldsymbol{\alpha} = [\atan(\mathbf{q}_{0}), \atan(\mathbf{q}_{1}), \atan(\hat{\mathbf{n}}_{iw})]
+\end{align}
+
+\begin{align}
+\varphi = \atan(\mathbf{v})
+\end{align}
+

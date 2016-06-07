@@ -34,7 +34,8 @@ class Params:
         velocity = np.stack((np.cos(orientation), np.sin(orientation)), axis=1)
         return velocity
 
-    def random_position(self, position, radius, walls=None):
+    def random_position(self, position, radius, x_dims=None, y_dims=None,
+                        walls=None):
         """
         Generate uniformly distributed random positions inside x_dims and y_dims for
         the agents without overlapping each others or the walls with Monte Carlo
@@ -48,6 +49,11 @@ class Params:
 
         i = 0
 
+        if x_dims is None:
+            x_dims = self.x
+        if y_dims is None:
+            y_dims = self.y
+
         iterations = 0
         max_iterations = 100 * len(position)
         while i < len(position):
@@ -58,8 +64,9 @@ class Params:
 
             # Random uniform position inside x and y dimensions
             pos = np.zeros(2)
-            pos[0] = np.random.uniform(self.x.min, self.x.max)
-            pos[1] = np.random.uniform(self.y.min, self.y.max)
+
+            pos[0] = np.random.uniform(*x_dims)
+            pos[1] = np.random.uniform(*y_dims)
 
             if isinstance(radius, np.ndarray):
                 rad = radius[i]
@@ -88,18 +95,18 @@ class Params:
             position[i, :] = pos
             i += 1
 
-    def agent(self, size=10):
+    def agent(self, size):
         """Arguments for constructing agent."""
         mass = self.truncnorm(loc=70.0, scale=10.0, size=size)
         radius = self.truncnorm(loc=0.255, scale=0.035, size=size)
         goal_velocity = 5.0
         return size, mass, radius, goal_velocity
 
-    def round_wall(self, size, radius=0.3):
+    def round_wall(self, size, r_min, r_max):
         """Arguments for constructing round wall."""
         return np.stack((np.random.uniform(self.x.min, self.x.max, size),
                          np.random.uniform(self.y.min, self.y.max, size),
-                         np.random.uniform(high=radius, size=size)), axis=1)
+                         np.random.uniform(r_min, r_max, size=size)), axis=1)
 
     def linear_wall(self, size):
         """Arguments for constructing linear wall."""

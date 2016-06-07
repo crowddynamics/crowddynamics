@@ -260,5 +260,6 @@ sympy-plots-for-*.tex/
 /documentation/TODO.yaml
 /documentation/structure.yaml
 /documentation/keywords.yaml
-/documentation/agent_body.yaml
+/documentation/data/agent_body.yaml
 /research/sheets/davechild_regular-expressions.pdf
+/documentation/data/anthropometric_data.pdf

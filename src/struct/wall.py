@@ -147,14 +147,13 @@ class LinearWall(object):
         q_0 = p_0 - x
         q_1 = p_1 - x
 
-        l_n = -np.dot(n_w, q_0)
-        n_iw = np.sign(l_n) * n_w
+        n_iw = -np.sign(np.dot(n_w, q_0)) * n_w
 
         angle = np.array((np.arctan2(q_0[0], q_0[1]),
                           np.arctan2(q_1[0], q_1[1]),
                           np.arctan2(n_iw[0], n_iw[1])))
 
-        if angle[0] == angle[1]:
+        if abs(angle[0] - angle[1]) < 1.48e-08:  # Almost equal
             if np.hypot(q_0[0], q_0[1]) < np.hypot(q_1[0], q_1[1]):
                 return q_0
             else:

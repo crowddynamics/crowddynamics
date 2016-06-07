@@ -39,7 +39,7 @@ class Save(object):
 
         # TODO: Bytes saved, memory consumption
 
-    def new_hdf_saver(self, struct, attrs: Attrs):
+    def hdf(self, struct, attrs: Attrs):
         """
 
         :param struct: numba.jitclass

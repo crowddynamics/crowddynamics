@@ -24,7 +24,7 @@ Psychological force for collision avoidance
 \subsubsection{Velocity dependent}
 %Universal power law governing pedestrian interactions
 \begin{align}
-\mathbf{f}_{ij}^{soc} &= -\nabla_{\tilde{\mathbf{x}}} E(\tau)  \\
+\mathbf{f}^{soc} &= -\nabla_{\tilde{\mathbf{x}}} E(\tau)  \\
 &= -\nabla_{\tilde{\mathbf{x}}} \left(\frac{k}{\tau^{2}} \exp \left( -\frac{\tau}{\tau_{0}} \right) \right) \\
 %\\
 %&= - \left[\frac{k}{\left\|\mathbf{v}_{ij}\right\|^{2} \tau^{2}} \exp \left( -\frac{\tau}{\tau_{0}} \right) \left(\frac{2}{\tau} + \frac{1}{\tau_{0}}\right) \right] 
@@ -40,7 +40,7 @@ where
 a &= \tilde{\mathbf{v}} \cdot \tilde{\mathbf{v}} \\
 b &= -\tilde{\mathbf{x}} \cdot \tilde{\mathbf{v}} \\
 c &= \tilde{\mathbf{x}} \cdot \tilde{\mathbf{x}} - \tilde{r}^{2} \\
-d &= \sqrt{b^{2} - a c} \\
+d &= \sqrt{b^{2} - a c}, \quad b^{2} - a c > 0 \\
 \tau &= \frac{b - d}{a} > 0.
 \end{align}
 

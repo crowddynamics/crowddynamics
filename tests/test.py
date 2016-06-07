@@ -20,9 +20,9 @@ constant = Constant()
 agent = agent_struct(*params.agent(size))
 
 linear_wall = LinearWall(params.linear_wall(10))
-round_wall = RoundWall(params.round_wall(10))
+round_wall = RoundWall(params.round_wall(10, 0.1, 0.3))
 
-params.random_position(agent.position, agent.radius, linear_wall)
+params.random_position(agent.position, agent.radius, walls=linear_wall)
 agent.velocity = params.random_unit_vector(agent.size)
 
 

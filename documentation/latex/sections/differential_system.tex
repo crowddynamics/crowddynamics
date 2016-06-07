@@ -1,16 +1,27 @@
-\section{Differential system}
+\section{Integrators}
+\subsection{Differential systems}
+Angle and angular velocity
+\begin{align}
+I \frac{d^{2}}{d t^{2}} \varphi(t) = M(t)
+\end{align}
+
+Position and velocity
+\begin{align}
+m \frac{d^{2}}{d t^{2}} \mathbf{x}(t) = \mathbf{f}(t)
+\end{align}
+
+\subsection{Numerical methods}
 Updating using discrete time step $ \Delta t $
 \begin{align}
 t_{0} &= 0 \\
 t_{1} &= t_{0} + \Delta t \\
-t_{2} &= t_{1} + \Delta t \\
 \vdots \\
 t_{k} &= t_{k-1} + \Delta t
 \end{align}
 
 %https://en.wikipedia.org/wiki/Verlet_integration
 
-\subsubsection{Angle and angular velocity}
+\subsection{Excplicit Euler Method}
 Angular acceleration
 \begin{align}
 \alpha_{k} &= M_{k} / I \\
@@ -18,8 +29,6 @@ Angular acceleration
 \varphi_{k+1} &= \varphi_{k} + \omega_{k+1} \Delta t
 \end{align}
 
-
-\subsubsection{Position and velocity}
 Acceleration on an agent
 \begin{align}
 a_{k} &= \mathbf{f}_{k} / m \\
@@ -27,3 +36,16 @@ a_{k} &= \mathbf{f}_{k} / m \\
 \mathbf{x}_{k+1} &= \mathbf{x}_{k} + \mathbf{v}_{k+1} \Delta t
 \end{align}
 
+
+\subsection{Velocity verlet}
+Velocity verlet algorithm
+\begin{align}
+\mathbf{v}_{k+\frac{1}{2}} &= \mathbf{v}_{k} + \frac{1}{2} a_{k} \Delta t \\
+\mathbf{x}_{k+1} &= \mathbf{x}_{k} + \mathbf{v}_{k+\frac{1}{2}} \Delta t \\
+\mathbf{v}_{k+1} &= \mathbf{v}_{k+\frac{1}{2}} + \frac{1}{2} a_{k+1} \Delta t
+\end{align}
+or more simply
+\begin{align}
+\mathbf{x}_{k+1} &= \mathbf{x}_{k} + \mathbf{v}_{k} \Delta t + \frac{1}{2} a_{k} \Delta t^{2} \\
+\mathbf{v}_{k+1} &= \mathbf{v}_{k} + \frac{1}{2} \left(a_{k} + a_{k+1}\right) \Delta t \\
+\end{align}

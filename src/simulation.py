@@ -32,6 +32,7 @@ class Simulation:
         # TODO: New simulations
         # TODO: np.dot -> check performance and gil
         # TODO: check continuity -> numpy.ascontiguousarray
+        # TODO: Tables of anthropometric data
 
         # Struct
         self.constant = constant
@@ -58,9 +59,9 @@ class Simulation:
         self.attrs_agent["force"] = Attr("force", True, True)
 
         self.hdf = _filter(
-            [self.save.new_hdf_saver(self.constant, self.attrs_constant),
-             self.save.new_hdf_saver(self.agent, self.attrs_agent)] +
-            [self.save.new_hdf_saver(w, self.attrs_wall) for w in self.wall]
+            [self.save.hdf(self.constant, self.attrs_constant),
+             self.save.hdf(self.agent, self.attrs_agent)] +
+            [self.save.hdf(w, self.attrs_wall) for w in self.wall]
         )
 
     def animation(self, x_dims, y_dims, fname=None, save=False, frames=None):
@@ -90,34 +91,38 @@ class Simulation:
                 self.print_stats()
                 raise GeneratorExit()
 
+    def timed_execution(self, gen):
+        start = timer()
+        ret = next(gen)
+        t_diff = timer() - start
+        self.result.increment_wall_time(t_diff)
+        return ret
+
     def __next__(self):
         """
         Generator exits when all agents have reached their goals.
         """
         try:
-            # TODO: Goal direction updating
+            # TODO: Goal direction updating / Pathfinding
             # self.agent.set_goal_direction(goal_point)
 
-            # Execution timing
-            start = timer()
-            ret = next(self.integrator)
-            t_diff = timer() - start
-            self.result.increment_wall_time(t_diff)
-
-            # Printing
-            if self.interval():
-                self.print_stats()
-
-            for s in self.hdf:
-                next(s)
+            ret = self.timed_execution(self.integrator)
 
             # Check goal
             for goal in self.goals:
                 self.goal_reached(goal)
 
+            for hdf in self.hdf:
+                next(hdf)
+
+            # Printing
+            if self.interval():
+                self.print_stats()
+
             return ret
         except GeneratorExit:
-            self.save.new_hdf_saver(self.result, self.attrs_result)
+            # Finally save results
+            self.save.hdf(self.result, self.attrs_result)
             raise StopIteration()
 
     def __iter__(self):
