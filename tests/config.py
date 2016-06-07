@@ -49,5 +49,6 @@ class Params:
 
     def linear_wall(self, size):
         """Arguments for constructing linear wall."""
-        return np.array((self.random_2D_coordinates(size),
-                         self.random_2D_coordinates(size)))
+        args = zip(self.random_2D_coordinates(size),
+                   self.random_2D_coordinates(size))
+        return np.array(tuple(args))

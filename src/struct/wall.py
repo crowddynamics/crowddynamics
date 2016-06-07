@@ -140,6 +140,10 @@ class LinearWall(object):
     def relative_position(self, i, x, v):
         p_0, p_1, t_w, n_w, l_w = self.deconstruct(i)
 
+        if np.all(v == 0.0):
+            # v is zero vector
+            return np.zeros(2)
+
         q_0 = p_0 - x
         q_1 = p_1 - x
 
@@ -170,6 +174,7 @@ class LinearWall(object):
             arr = np.zeros((2, 2))
             arr[:, 0] = v
             arr[:, 1] = p_0 - p_1
+            # TODO: Is matrix invertable?
             arr = np.linalg.inv(arr)
             a, _ = np.dot(arr, q_0)
             return a * v

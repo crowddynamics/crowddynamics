@@ -1,6 +1,6 @@
 import numba
 
-from src.core.force import force_social_naive, force_contact, force_social
+from src.core.force import force_contact, force_social
 from src.core.functions import rotate270, force_limit
 
 
@@ -13,19 +13,14 @@ def f_agent_wall(constant, agent, wall):
             relative_distance = radius - distance
 
             if distance <= agent.sight_wall:
-                force = force_social_naive(relative_distance,
-                                           normal,
-                                           constant.a,
-                                           constant.b)
-
-                # relative_position = wall.relative_position(w, agent.position[i],
-                #                                            agent.velocity[i])
-                # force = force_social(relative_position,
-                #                      agent.velocity[i],
-                #                      radius,
-                #                      constant.k,
-                #                      constant.tau_0)
-                # force_limit(force, constant.f_soc_iw_max)
+                relative_position = wall.relative_position(w, agent.position[i],
+                                                           agent.velocity[i])
+                force = force_social(relative_position,
+                                     agent.velocity[i],
+                                     radius,
+                                     constant.k,
+                                     constant.tau_0)
+                force_limit(force, constant.f_soc_iw_max)
 
                 agent.force[i] += force
                 # agent.force_wall[i] += force

@@ -30,7 +30,8 @@ class Simulation:
         # TODO: Game theoretical exit congestion algorithm
         # TODO: Result Analysis
         # TODO: New simulations
-        # TODO: np.dot 
+        # TODO: np.dot -> check performance and gil
+        # TODO: check continuity -> numpy.ascontiguousarray
 
         # Struct
         self.constant = constant
