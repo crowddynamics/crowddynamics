@@ -1,7 +1,7 @@
 import unittest
 
 from src.params import Params
-from src.struct.agent import agent_struct, random_position
+from src.struct.agent import agent_struct
 from src.struct.constant import Constant, constant_attr_names
 from src.struct.wall import LinearWall
 from src.struct.wall import RoundWall
@@ -27,9 +27,6 @@ class MyTestCase(unittest.TestCase):
         agent = agent_struct(*self.params.agent())
         round_wall = RoundWall(self.params.round_wall(5))
         linear_wall = LinearWall(self.params.linear_wall(5))
-        random_position(agent.position, agent.radius,
-                        self.params.x, self.params.y,
-                        (round_wall, linear_wall))
         # self.assertTrue(True)
 
     def test_forces(self):
