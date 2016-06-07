@@ -1,65 +1,36 @@
 import unittest
 
-import numpy as np
+from src.struct.agent import agent_struct, random_position
+from src.struct.constant import Constant, constant_attr_names
+from src.struct.wall import LinearWall
+from src.struct.wall import RoundWall
+from .config import Params
 
 
 class MyTestCase(unittest.TestCase):
+    params = Params(100, 100)
+
     def test_constants(self):
-        from src.struct.constant import Constant, constant_attr_names
         constant = Constant()
         for name in constant_attr_names:
             self.assertTrue(hasattr(constant, name))
 
     def test_round_wall(self):
-        from src.struct.wall import RoundWall
-        rp = np.array(((0.0, 0.0, 1.0),
-                       (0.0, 0.0, 1.0)))
-        round_wall = RoundWall(rp)
-
-        # self.assertEqual(rw.deconstruct(0))
-        # self.assertEqual(rw.deconstruct(1))
-        with self.assertRaises(IndexError):
-            round_wall.deconstruct(2)
+        round_wall = RoundWall(self.params.round_wall(10))
+        # self.assertTrue(True)
 
     def test_linear_wall(self):
-        from src.struct.wall import LinearWall
-        lp = np.array((((0.0, 0.0), (1.0, 2.0)),
-                       ((0.0, 0.0), (2.0, 0.0))))
-        linear_wall = LinearWall(lp)
-
-        # self.assertEqual(lw.deconstruct(0))
-        # self.assertEqual(lw.deconstruct(1))
-        with self.assertRaises(IndexError):
-            linear_wall.deconstruct(2)
+        linear_wall = LinearWall(self.params.linear_wall(10))
+        # self.assertTrue(True)
 
     def test_agent(self):
-        from src.struct.agent import agent_struct, random_position
-        from src.struct.wall import LinearWall
-
-        amount = 10
-        x_dims = (0, 100)
-        y_dims = (0, 100)
-        radii = (1, 0.5 * np.linspace(1, 11, amount))
-
-        lp = np.array((((0.0, 0.0), (100.0, 0.0)),
-                       ((0.0, 0.0), (0, 100.0))))
-        lw = LinearWall(lp)
-
-        num = 1.0
-        arr1d = np.ones(amount, np.float64)
-        arr2d = np.ones(2 * amount, np.float64).reshape(10, 2)
-
-        for var in (num, arr1d):
-            # Test agent struct initialization
-            agent = agent_struct(var, var, arr2d, arr2d, var, arr2d)
-
-        for radius in radii:
-            # Without walls
-            position = random_position(amount, x_dims, y_dims, radius)
-
-        for radius in radii:
-            # With walls
-            position = random_position(amount, x_dims, y_dims, radius, lw)
+        agent = agent_struct(*self.params.agent())
+        round_wall = RoundWall(self.params.round_wall(5))
+        linear_wall = LinearWall(self.params.linear_wall(5))
+        random_position(agent.position, agent.radius,
+                        self.params.x, self.params.y,
+                        (round_wall, linear_wall))
+        # self.assertTrue(True)
 
     def test_forces(self):
         pass

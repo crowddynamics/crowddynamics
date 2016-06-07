@@ -160,7 +160,8 @@ def agent_struct(size, mass, radius, goal_velocity):
     radius = spec('radius', radius)
     goal_velocity = spec('goal_velocity', goal_velocity)
     goal_reached = np.zeros(size, dtype=np.bool_)
-    # Jitclass of Agents
+
+    # Return jitclass of Agents
     agent = jitclass(_spec_agent)(Agent)
     return agent(size, mass, radius, goal_velocity, goal_reached)
 

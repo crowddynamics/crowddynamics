@@ -1,48 +1,64 @@
 \section{Agents}
+\subsection{Properties}
 \begin{table}[H]
 \centering
-\begin{tabular}{ll}
-$ r $                    & Radius \\
-$ m $                    & Mass \\
-$ v_{0} $                & Goal velocity \\  
-$ \mathbf{x} $           & Position \\
-$ \mathbf{v} $           & Velocity \\
-$ \hat{\mathbf{e}}_{0} $ & Goal direction \\
-$ \hat{\mathbf{e}} $     & Target direction \\
-$ p $                    & Herding tendency \\
-$ I_{z} $                & Moment of inertia \\
-$ \omega $               & current angular velocity \\
-$ \varphi $              & current body angle \\
-$ \omega_{0} $           & max angular velocity \\
-$ \varphi_{0} $          & target angle \\
-$ \tilde{\omega}_{0} $   & target angular velocity \\
+\begin{tabular}{llll}
+\hline
+\hline
+$ r $                    & $ \mathrm{m} $ &  & Radius \\
+$ m $                    & $ \mathrm{kg} $ & $ 80 $ & Mass \\
+$ I $                    & $ \mathrm{kg \ m^{2}} $ & $ 4.0 $ & Moment of inertia \\
+\hline
+\hline
+$ \mathbf{x} $           &  &  & Position \\
+$ \mathbf{v} $           &  &  & Velocity \\
+$ v_{0} $                &  &  & Goal velocity \\  
+$ \hat{\mathbf{e}}_{0} $ &  &  & Goal direction \\
+$ \hat{\mathbf{e}} $     &  &  & Target direction \\
+\hline
+\hline
+$ \varphi $              &  &  & Body angle \\
+$ \omega $               &  &  & Angular velocity \\
+$ \varphi_{0} $          &  &  & Target angle \\
+$ \omega_{0} $           & $ \mathrm{s^{-1}} $ & $ 4\pi $ & Max angular velocity \\
+%$ \tilde{\omega}_{0} $   &  &  & Target angular velocity \\
+\hline
+\hline
+$ p $                    &  & $ 0 - 1 $ & Herding tendency \\
 \end{tabular}
 \end{table}
 
 \begin{table}[H]
 \centering
 \begin{tabular}{ll}
-$ \mathbf{x}_{ij} = \mathbf{x}_{i} - \mathbf{x}_{j} $ & Relative position between two agents \\
-$ \mathbf{v}_{ij} = \mathbf{v}_{i} - \mathbf{v}_{j} $ & Relative velocity between two agents \\
-$ r_{ij} = r_{i} + r_{j} $ & Total radius \\
-$ d_{ij} = \left\|\mathbf{x}_{ij}\right\| $ & Distance between agents \\
-$ h_{ij} = r_{ij} - d_{ij} $ & Relative distance between agents \\
-$ \hat{\mathbf{n}}_{ij} = \mathbf{x}_{ij} / d_{ij} $ & Normal vector \\
-$ \hat{\mathbf{t}}_{ij} = R(-90^{\circ}) \cdot \hat{\mathbf{n}}_{ij} $ & Tangent vector \\
+$ \tilde{\mathbf{x}} = \mathbf{x}_{i} - \mathbf{x}_{j} $ & Relative position \\
+$ \tilde{\mathbf{v}} = \mathbf{v}_{i} - \mathbf{v}_{j} $ & Relative velocity \\
+$ d = \left\|\tilde{\mathbf{x}}\right\| $ & Distance\\
+$ \hat{\mathbf{n}} = \tilde{\mathbf{x}} / d $ & Normal vector \\
+$ \hat{\mathbf{t}} = R(-90^{\circ}) \cdot \hat{\mathbf{n}} $ & Tangent vector \\
 \end{tabular}
 \end{table}
 
+\subsection{Circular agent}
+Total radius and relative distance
+\begin{align}
+\tilde{r} &= r_{i} + r_{j} \\
+h &= \tilde{r} - d
+\end{align}
+
+\subsection{Three circles}
 
 %TODO: Moment and torque.
 % FDS evac manual pages: 20 - 21
 
+\subsection{Rotational equation}
 Rotational equation of motion 
 \begin{align}
-I_{i}^{z} \frac{d^{2}}{d t^{2}} \varphi_{i}(t) = M_{i}^{z}(t) + \eta_{i}^{z}(t),
+I \frac{d^{2}}{d t^{2}} \varphi(t) = M(t) + \eta(t),
 \end{align}
-where $ \varphi_{i}(t) $ is the angle of the agent i, $ I_{i}^{z} $ is moment of inertia, $ \eta_{i}^{z}(t) $ is small random fluctuation torque, and $ M_{i}^{z}(t) $ is total torque, which is the sum of contact, social and motivational torque
+where $ \eta(t) $ is small random fluctuation torque, and $ M(t) $ is total torque, which is the sum of contact, social and motivational torque
 \begin{align}
-M_{i}^{z}(t) = M_{i}^{c} + M_{i}^{soc} + M_{i}^{\tau}
+M_{i}(t) = M_{i}^{c} + M_{i}^{soc} + M_{i}^{\tau}
 \end{align}
 
 Torque from contact forces
@@ -51,13 +67,13 @@ Torque from contact forces
 \end{align}
 and from social forces
 \begin{align}
-\mathbf{M}_{i}^{soc} = \sum_{j\neq i}^{} \left(\mathbf{R}_{i}^{soc} \times \mathbf{f}_{ij}^{soc}\right)
+%\mathbf{M}_{i}^{soc} = \sum_{j\neq i}^{} \left(\mathbf{R}_{i}^{soc} \times \mathbf{f}_{ij}^{soc}\right)
 \end{align}
 
 Motivational torque
 \begin{align}
-M_{i}^{\tau} &= \frac{I_{i}^{z}}{\tau_{i}^{z}} \left((\varphi_{i}(t) - \varphi_{i}^{0}) \omega^{0} - \omega(t)\right) \\
-&= \frac{I_{i}^{z}}{\tau_{i}^{z}} \left(\tilde{\omega}_{i}^{0} - \omega(t)\right)
+M_{i}^{\tau} &= \frac{I_{i}}{\tau_{i}} \left((\varphi_{i}(t) - \varphi_{i}^{0}) \omega^{0} - \omega(t)\right) \\
+%&= \frac{I_{i}}{\tau_{i}} \left(\tilde{\omega}_{i}^{0} - \omega(t)\right)
 \end{align}
 
 

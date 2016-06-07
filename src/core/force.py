@@ -67,8 +67,7 @@ def force_social(x_ij, v_ij, r_ij, k, tau_0):
         return force
 
     # Force is returned negative as repulsive force
-    m = 2.0  # Exponent in power law
-    force -= k / (a * tau ** m) * exp(-tau / tau_0) * (m / tau + 1 / tau_0) * \
+    force -= k / (a * tau ** 2.0) * exp(-tau / tau_0) * (2.0 / tau + 1.0 / tau_0) * \
              (v_ij - (v_ij * b + x_ij * a) / d)
 
     return force

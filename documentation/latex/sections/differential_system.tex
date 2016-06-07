@@ -1,18 +1,29 @@
 \section{Differential system}
-Acceleration on an agent
-\begin{align}
-a(t) = \frac{\mathbf{f}(t)}{m}
-\end{align}
-
-Updating velocity using discrete time step $ \Delta t $
+Updating using discrete time step $ \Delta t $
 \begin{align}
 t_{0} &= 0 \\
 t_{1} &= t_{0} + \Delta t \\
 t_{2} &= t_{1} + \Delta t \\
-\ldots
+\vdots \\
+t_{k} &= t_{k-1} + \Delta t
 \end{align}
 
+%https://en.wikipedia.org/wiki/Verlet_integration
+
+\subsubsection{Angle and angular velocity}
+Angular acceleration
 \begin{align}
-\mathbf{v}_{k+1} &= \mathbf{v}_{k} + \Delta \mathbf{v}, \quad \Delta \mathbf{v} = a_{k} \Delta t \\
-\mathbf{x}_{k+1} &= \mathbf{x}_{k} + \Delta \mathbf{x}, \quad \Delta \mathbf{x} = \mathbf{v}_{k+1} \Delta t
+\alpha_{k} &= M_{k} / I \\
+\omega_{k+1} &= \omega_{k} + \alpha_{k} \Delta t \\
+\varphi_{k+1} &= \varphi_{k} + \omega_{k+1} \Delta t
 \end{align}
+
+
+\subsubsection{Position and velocity}
+Acceleration on an agent
+\begin{align}
+a_{k} &= \mathbf{f}_{k} / m \\
+\mathbf{v}_{k+1} &= \mathbf{v}_{k} + a_{k} \Delta t \\
+\mathbf{x}_{k+1} &= \mathbf{x}_{k} + \mathbf{v}_{k+1} \Delta t
+\end{align}
+

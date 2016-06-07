@@ -143,7 +143,7 @@ class LinearWall(object):
         q_0 = p_0 - x
         q_1 = p_1 - x
 
-        l_n = np.dot(n_w, -q_0)
+        l_n = -np.dot(n_w, q_0)
         n_iw = np.sign(l_n) * n_w
 
         angle = np.array((np.arctan2(q_0[0], q_0[1]),
@@ -167,6 +167,9 @@ class LinearWall(object):
             else:
                 return q_1
         else:
-            arr = np.linalg.inv(np.array((v, p_0 - p_1)).T)
+            arr = np.zeros((2, 2))
+            arr[:, 0] = v
+            arr[:, 1] = p_0 - p_1
+            arr = np.linalg.inv(arr)
             a, _ = np.dot(arr, q_0)
             return a * v

@@ -6,21 +6,21 @@
 Symbol         & Unit & Value & Explanation \\
 \hline
 \hline
-$ dt $ & $ \mathrm{s} $ &  & Discrete timestep used to update the differential system \\
+$ \Delta t $ & $ \mathrm{s} $ & $ 0.01-0.001 $ & Timestep \\
 \hline
 \hline
-$ \tau_{adj} $ & $ \mathrm{s} $ & $ 0.5 $ & Characteristic time in which agent adjusts its movement \\
-$ k $          & $ \mathrm{N} $ & $ 1.5 $ & Social force scaling constant \\
-$ \tau_{0} $   & $ \mathrm{s} $ & $ 3.0 $ & Max interaction range 2 - 4, aka interaction time horizon \\
+$ \tau_{adj} $ & $ \mathrm{s} $ & $ 0.5 $ & Characteristic time in which agent adjusts its movement. \\
+$ k $          & $ \mathrm{N} $ & $ 1.5 $ & Social force scaling constant. \\
+$ \tau_{0} $   & $ \mathrm{s} $ & $ 3.0 $ & Interaction time horizon. \\
+$ \mu $        & $ \mathrm{kg \ s^{-2}} $ & $ 1.2e+05 $ & Compression counteraction constant. \\
+$ \kappa $     & $ \mathrm{kg \ m^{-1}\,s^{-1}} $ & $ 2.4e+05 $ & Sliding friction constant. \\
+$ A $          & $ \mathrm{N} $ & $ 2.0e+03 $ & Scaling coefficient for social force. \\
+$ B $          & $ \mathrm{m} $ & $ 0.08 $ & Coefficient for social force. \\
+\hline
+\hline
+$ \left\|\mathbf{f}_{max}\right\| $    & $ \mathrm{N} $ &  & Force magnitude limit. \\
+\hline
 %$ \text{sight} $      & $ \mathrm{m} $ & $ 7.0 $ & Max distance between agents for interaction to occur \\
-$ \mu $        & $ \mathrm{\frac{kg}{s^{2}}} $ & $ 1.2e+05 $ & Compression counteraction constant \\
-$ \kappa $     & $ \mathrm{\frac{kg}{m\,s}} $ & $ 2.4e+05 $ & Sliding friction constant \\
-$ A $          & $ \mathrm{N} $ & $ 2.0e+03 $ & Scaling coefficient for social force between wall and agent \\
-$ B $          & $ \mathrm{m} $ & $ 0.08 $ & Coefficient for social force between wall and agent \\
-\hline
-\hline
-$ f_{max} $    & $ \mathrm{N} $ &  & Forces that are greater will be truncated to max force \\
-\hline
 \end{tabular} 
 \caption{Constants and limits}
 \end{table}
