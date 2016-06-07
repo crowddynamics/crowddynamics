@@ -1,10 +1,10 @@
 import unittest
 
+from src.params import Params
 from src.struct.agent import agent_struct, random_position
 from src.struct.constant import Constant, constant_attr_names
 from src.struct.wall import LinearWall
 from src.struct.wall import RoundWall
-from .config import Params
 
 
 class MyTestCase(unittest.TestCase):

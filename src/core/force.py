@@ -40,7 +40,7 @@ def force_contact(h, n, v, t, mu, kappa):
 
 
 @numba.jit(nopython=True, nogil=True)
-def force_social(x_ij, v_ij, r_ij, k, tau_0):
+def force_social(x_rel, v_rel, r_tot, k, tau_0):
     """
     Velocity dependent social force. [1]
 
@@ -48,11 +48,11 @@ def force_social(x_ij, v_ij, r_ij, k, tau_0):
     ----------
     [1] http://motion.cs.umn.edu/PowerLaw/
     """
-    force = zeros_like(x_ij)
+    force = zeros_like(x_rel)
 
-    a = dot(v_ij, v_ij)
-    b = - dot(x_ij, v_ij)
-    c = dot(x_ij, x_ij) - r_ij ** 2
+    a = dot(v_rel, v_rel)
+    b = - dot(x_rel, v_rel)
+    c = dot(x_rel, x_rel) - r_tot ** 2
     d = sqrt(b ** 2 - a * c)
 
     # Avoid zero division.
@@ -67,7 +67,8 @@ def force_social(x_ij, v_ij, r_ij, k, tau_0):
         return force
 
     # Force is returned negative as repulsive force
-    force -= k / (a * tau ** 2.0) * exp(-tau / tau_0) * (2.0 / tau + 1.0 / tau_0) * \
-             (v_ij - (v_ij * b + x_ij * a) / d)
+    force -= k / (a * tau ** 2.0) * exp(-tau / tau_0) * \
+             (2.0 / tau + 1.0 / tau_0) * \
+             (v_rel - (v_rel * b + x_rel * a) / d)
 
     return force
