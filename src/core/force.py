@@ -3,7 +3,7 @@ import numpy as np
 
 
 @numba.jit(nopython=True, nogil=True)
-def force_random_fluctuation(constant, agent):
+def force_random(constant, agent):
     """
     Random force
     """
