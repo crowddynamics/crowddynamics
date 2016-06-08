@@ -94,7 +94,7 @@ def animation(simulation, x_dims, y_dims, save=False, frames=None,
         _agent()
         return args
 
-    anim = FuncAnimation(fig, animate, init_func=init, interval=10, blit=True,
+    anim = FuncAnimation(fig, animate, init_func=init, interval=1, blit=True,
                          frames=frames, save_count=frames)
 
     if save:

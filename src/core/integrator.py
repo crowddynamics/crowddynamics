@@ -5,7 +5,7 @@ from src.core.force_agent import f_agent_agent
 from src.core.force_wall import f_agent_wall
 
 
-@numba.jit(nopython=True, nogil=True)
+# @numba.jit(nopython=True, nogil=True)
 def explicit_euler_method(result, constant, agent, wall1=None, wall2=None):
     while True:
         # Target direction

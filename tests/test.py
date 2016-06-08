@@ -7,6 +7,7 @@ from src.struct.agent import Agent
 from src.struct.constant import Constant
 from src.struct.result import Result
 from src.struct.wall import LinearWall, RoundWall
+from src.simulation import Simulation
 
 
 np.set_printoptions(precision=5, threshold=100, edgeitems=3, linewidth=75,
@@ -54,4 +55,6 @@ def test_integrator():
     next(gen)
 
 
-test_force_social()
+def test_simulation():
+    simulation = Simulation(constant, agent, linear_wall)
+
