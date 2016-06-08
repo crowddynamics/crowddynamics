@@ -58,11 +58,16 @@ class Agent(object):
 
         # TODO: Three circles, Orientation
         # TODO: Collection of average human dimensions and properties
-
         # Vectors of shape=(size, 1)
         self.radius = radius
         self.mass = mass
         self.goal_velocity = goal_velocity
+
+        # self.moment_of_inertia = np.zeros(size)
+        # self.angle = np.zeros(size)
+        # self.angular_velocity = np.zeros(size)
+        # self.target_angle = np.zeros(size)
+        # self.target_angular_velocity = np.zeros(size)
 
         # Vectors of shape=(size, 2)
         self.position = np.zeros(self.shape)          # Center of mass

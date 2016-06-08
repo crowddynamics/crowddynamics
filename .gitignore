@@ -256,10 +256,10 @@ sympy-plots-for-*.tex/
 # Folders
 /docs/
 /research/
-/documentation/latex/examples/
-/documentation/TODO.yaml
-/documentation/structure.yaml
-/documentation/keywords.yaml
-/documentation/data/agent_body.yaml
+/manual/latex/examples/
+/manual/TODO.yaml
+/manual/structure.yaml
+/manual/keywords.yaml
+/manual/data/agent_body.yaml
 /research/sheets/davechild_regular-expressions.pdf
-/documentation/data/anthropometric_data.pdf
+/manual/data/anthropometric_data.pdf
