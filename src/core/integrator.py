@@ -1,8 +1,7 @@
 import numba
 
 from src.core.force import force_adjust, force_random_fluctuation
-from src.core.force_agent import f_agent_agent
-from src.core.force_wall import f_agent_wall
+from src.core.interactions import force_agent_agent, force_agent_wall
 
 
 # @numba.jit(nopython=True, nogil=True)
@@ -13,13 +12,13 @@ def explicit_euler_method(result, constant, agent, wall1=None, wall2=None):
 
         # Forces
         agent.reset_force()
-        f_agent_agent(constant, agent)
         force_adjust(constant, agent)
         force_random_fluctuation(constant, agent)
+        force_agent_agent(constant, agent)
         if wall1 is not None:
-            f_agent_wall(constant, agent, wall1)
+            force_agent_wall(constant, agent, wall1)
         if wall2 is not None:
-            f_agent_wall(constant, agent, wall2)
+            force_agent_wall(constant, agent, wall2)
 
         # Integration
         acceleration = agent.force / agent.mass
@@ -33,7 +32,7 @@ def explicit_euler_method(result, constant, agent, wall1=None, wall2=None):
 
 @numba.jit(nopython=True, nogil=True)
 def _f_tot0(constant, agent):
-    f_agent_agent(constant, agent)
+    force_agent_agent(constant, agent)
     force_adjust(constant, agent)
     force_random_fluctuation(constant, agent)
 
@@ -56,8 +55,8 @@ def euler_method0(result, constant, agent):
 
 @numba.jit(nopython=True, nogil=True)
 def _f_tot(constant, agent, wall):
-    f_agent_agent(constant, agent)        # 53.4 %
-    f_agent_wall(constant, agent, wall)   # 33.7 %
+    force_agent_agent(constant, agent)        # 53.4 %
+    force_agent_wall(constant, agent, wall)   # 33.7 %
     force_adjust(constant, agent)              # 4.3 %
     force_random_fluctuation(constant, agent)  # 2.2 %
 
@@ -80,9 +79,9 @@ def euler_method(result, constant, agent, wall):
 
 @numba.jit(nopython=True, nogil=True)
 def _f_tot2(constant, agent, wall1, wall2):
-    f_agent_agent(constant, agent)
-    f_agent_wall(constant, agent, wall1)
-    f_agent_wall(constant, agent, wall2)
+    force_agent_agent(constant, agent)
+    force_agent_wall(constant, agent, wall1)
+    force_agent_wall(constant, agent, wall2)
     force_adjust(constant, agent)
     force_random_fluctuation(constant, agent)
 

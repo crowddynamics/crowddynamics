@@ -56,12 +56,11 @@ class Agent(object):
         self.size = size
         self.shape = (size, 2)
 
-        # Scalars or vectors of shape=(size, 1)
-        # TODO: Elliptical Agents, Orientation, Major- & Minor axis
-        # TODO: Three circles representation
+        # TODO: Three circles, Orientation
         # TODO: Collection of average human dimensions and properties
-        self.radius = radius
 
+        # Vectors of shape=(size, 1)
+        self.radius = radius
         self.mass = mass
         self.goal_velocity = goal_velocity
 
@@ -69,11 +68,12 @@ class Agent(object):
         self.position = np.zeros(self.shape)          # Center of mass
         self.velocity = np.zeros(self.shape)          # Current velocity
 
+        # TODO: Path finding
+        # TODO: Goal reached? Handle reached goals.
         # self.goal_position = np.zeros(self.shape)
         self.goal_direction = np.zeros(self.shape)    # Unit vector
         self.target_direction = np.zeros(self.shape)  # Unit vector
         self.force = np.zeros(self.shape)             # Total Force
-        # TODO: Goal reached? When target reached do something?
         self.goal_reached = goal_reached
 
         # TODO: Gathering other forces for debugging and plotting
@@ -81,8 +81,8 @@ class Agent(object):
         self.force_agent = np.zeros(self.shape)
         self.force_wall = np.zeros(self.shape)
 
-        # Distances for reacting to other objects
         # TODO: Not see through walls?
+        # Distances for reacting to other objects
         self.sight_soc = 7.0
         self.sight_wall = 7.0
         self.sight_herding = 20.0
@@ -92,9 +92,6 @@ class Agent(object):
         self.herding_tendency = np.zeros(self.size)     #
         self.neighbor_direction = np.zeros(self.shape)  #
         self.neighbors = np.zeros(self.size)            #
-
-        # TODO: Path finding
-        # https://en.wikipedia.org/wiki/Pathfinding
 
     def reset_force(self):
         self.force *= 0

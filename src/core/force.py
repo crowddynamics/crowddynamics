@@ -4,6 +4,9 @@ import numpy as np
 
 @numba.jit(nopython=True, nogil=True)
 def force_random_fluctuation(constant, agent):
+    """
+    Random force
+    """
     for i in range(agent.size):
         angle = np.random.uniform(0, 2 * np.pi)
         magnitude = np.random.uniform(0, constant.f_random_fluctuation_max)

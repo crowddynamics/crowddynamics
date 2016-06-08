@@ -1,19 +1,19 @@
 import numba
-from numpy import hypot
+import numpy as np
 
 from src.core.force import force_social, force_contact
-from src.core.functions import rotate270, normalize, force_limit
+from src.core.functions import force_limit, rotate270, normalize
 
 
 @numba.jit(nopython=True, nogil=True)
-def f_agent_agent(constant, agent):
+def force_agent_agent(constant, agent):
     # n - 1 + n - 2 + ... + 1 = n^2 / 2
     for i in range(agent.size - 1):
         for j in range(i + 1, agent.size):
             relative_position = agent.position[i] - agent.position[j]
             relative_velocity = agent.velocity[i] - agent.velocity[j]
             total_radius = agent.radius[i, 0] + agent.radius[j, 0]
-            distance = hypot(relative_position[0], relative_position[1])
+            distance = np.hypot(relative_position[0], relative_position[1])
             relative_distance = total_radius - distance
 
             # If another agent is in range of sight_soc.
@@ -51,3 +51,37 @@ def f_agent_agent(constant, agent):
                 agent.neighbor_direction[j] += normalize(agent.velocity[i])
                 agent.neighbors[i] += 1
                 agent.neighbors[j] += 1
+
+
+@numba.jit(nopython=True, nogil=True)
+def force_agent_wall(constant, agent, wall):
+    for w in range(wall.size):
+        for i in range(agent.size):
+            distance, normal = wall.distance_with_normal(w, agent.position[i])
+            radius = agent.radius[i, 0]
+            relative_distance = radius - distance
+
+            if distance <= agent.sight_wall:
+                relative_position = wall.relative_position(w, agent.position[i],
+                                                           agent.velocity[i])
+                force = force_social(relative_position,
+                                     agent.velocity[i],
+                                     radius,
+                                     constant.k,
+                                     constant.tau_0)
+                force_limit(force, constant.f_soc_iw_max)
+
+                agent.force[i] += force
+                # agent.force_wall[i] += force
+
+            if relative_distance > 0:
+                t_iw = rotate270(normal)
+                force = force_contact(relative_distance,
+                                      normal,
+                                      agent.velocity[i],
+                                      t_iw,
+                                      constant.mu,
+                                      constant.kappa)
+                force_limit(force, constant.f_c_iw_max)
+                agent.force[i] += force
+                # agent.force_wall[i] += force
