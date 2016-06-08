@@ -6,6 +6,32 @@ from src.core.force_wall import f_agent_wall
 
 
 @numba.jit(nopython=True, nogil=True)
+def explicit_euler_method(result, constant, agent, wall1=None, wall2=None):
+    while True:
+        # Target direction
+        agent.goal_to_target_direction()
+
+        # Forces
+        agent.reset_force()
+        f_agent_agent(constant, agent)
+        force_adjust(constant, agent)
+        force_random_fluctuation(constant, agent)
+        if wall1 is not None:
+            f_agent_wall(constant, agent, wall1)
+        if wall2 is not None:
+            f_agent_wall(constant, agent, wall2)
+
+        # Integration
+        acceleration = agent.force / agent.mass
+        agent.velocity += acceleration * constant.dt
+        agent.position += agent.velocity * constant.dt
+
+        # Save
+        result.increment_simu_time(constant.dt)
+        yield
+
+
+@numba.jit(nopython=True, nogil=True)
 def _f_tot0(constant, agent):
     f_agent_agent(constant, agent)
     force_adjust(constant, agent)

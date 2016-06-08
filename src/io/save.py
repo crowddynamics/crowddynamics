@@ -8,10 +8,10 @@ from src.io.attributes import Attrs
 
 
 class Saver:
-    def __init__(self, struct, recordable, hdf_filepath, group_name):
+    def __init__(self, struct, struct_name, recordable, hdf_filepath, group_name):
         self.hdf_filepath = hdf_filepath
         self.group_name = group_name
-        self.struct_name = struct.__class__.__name__.lower()
+        self.struct_name = struct_name
         self.struct = struct
         self.recordable = recordable
         self.buffer = {attr.name: [] for attr in self.recordable}
@@ -82,7 +82,7 @@ class Save(object):
 
         :param struct: numba.jitclass
         :param attrs: attributes of the jitclass
-        :return: Generator that saves records and dumps data into hdf5
+        :return: Function that saves records and dumps data into hdf5
         """
         struct_name = struct.__class__.__name__.lower()
         attrs.check_hasattr(struct)
@@ -110,8 +110,8 @@ class Save(object):
         recordable = Attrs(filter(lambda attr: attr.is_recordable, attrs),
                            attrs.save_func)
         if len(recordable) and recordable.save_func is not None:
-            saver = Saver(struct, recordable, self.hdf_filepath, self.group_name)
-            return saver
+            return Saver(struct, struct_name, recordable, self.hdf_filepath,
+                         self.group_name)
         else:
             return None
 

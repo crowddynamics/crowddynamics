@@ -1,6 +1,7 @@
 from collections import OrderedDict
 
-from numba import float64, jitclass
+import numba
+from numba import float64
 
 
 spec_constant = OrderedDict(
@@ -23,7 +24,7 @@ spec_constant = OrderedDict(
 constant_attr_names = [key for key in spec_constant.keys()]
 
 
-@jitclass(spec_constant)
+@numba.jitclass(spec_constant)
 class Constant(object):
     """
     Structure for constants.

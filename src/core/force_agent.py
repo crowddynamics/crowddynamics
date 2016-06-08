@@ -12,7 +12,7 @@ def f_agent_agent(constant, agent):
         for j in range(i + 1, agent.size):
             relative_position = agent.position[i] - agent.position[j]
             relative_velocity = agent.velocity[i] - agent.velocity[j]
-            total_radius = agent.get_radius(i) + agent.get_radius(j)
+            total_radius = agent.radius[i, 0] + agent.radius[j, 0]
             distance = hypot(relative_position[0], relative_position[1])
             relative_distance = total_radius - distance
 

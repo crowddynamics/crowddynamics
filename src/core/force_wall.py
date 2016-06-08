@@ -9,7 +9,7 @@ def f_agent_wall(constant, agent, wall):
     for w in range(wall.size):
         for i in range(agent.size):
             distance, normal = wall.distance_with_normal(w, agent.position[i])
-            radius = agent.get_radius(i)
+            radius = agent.radius[i, 0]
             relative_distance = radius - distance
 
             if distance <= agent.sight_wall:

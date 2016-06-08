@@ -19,7 +19,8 @@ class Params:
     @staticmethod
     def truncnorm(loc, scale, size):
         tn = truncnorm(-3.0, 3.0)
-        return tn.rvs(size) * scale / 3.0 + loc
+        values = np.array(tn.rvs(size) * scale / 3.0 + loc)
+        return values
 
     def random_2D_coordinates(self, size):
         """Random x and y coordinates inside dims."""
@@ -33,6 +34,10 @@ class Params:
         orientation = np.random.uniform(0, 2 * np.pi, size)
         velocity = np.stack((np.cos(orientation), np.sin(orientation)), axis=1)
         return velocity
+
+    @staticmethod
+    def to_col_vector(arr):
+        return arr.reshape((len(arr), 1))
 
     def random_position(self, position, radius, x_dims=None, y_dims=None,
                         walls=None):
@@ -99,8 +104,12 @@ class Params:
         """Arguments for constructing agent."""
         mass = self.truncnorm(loc=70.0, scale=10.0, size=size)
         radius = self.truncnorm(loc=0.255, scale=0.035, size=size)
-        goal_velocity = 5.0
-        return size, mass, radius, goal_velocity
+        goal_velocity = 5.0 * np.ones(size)
+        goal_reached = np.zeros(size, dtype=np.bool_)
+        mass = self.to_col_vector(mass)
+        radius = self.to_col_vector(radius)
+        goal_velocity = self.to_col_vector(goal_velocity)
+        return size, mass, radius, goal_velocity, goal_reached
 
     def round_wall(self, size, r_min, r_max):
         """Arguments for constructing round wall."""

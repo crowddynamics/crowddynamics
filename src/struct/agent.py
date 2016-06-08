@@ -2,6 +2,7 @@ from collections import OrderedDict, Iterable
 from copy import deepcopy
 
 import numpy as np
+import numba
 from numba.types import UniTuple
 from numba import float64, int64, boolean
 from numba import jitclass, generated_jit, types
@@ -9,22 +10,12 @@ from numba import jitclass, generated_jit, types
 from src.core.functions import normalize_vec, normalize
 
 
-@generated_jit(nopython=True)
-def get_scalar_or_array(value, i):
-    if isinstance(value, types.Float):
-        return lambda value, i: value
-    elif isinstance(value, types.Array):
-        return lambda value, i: value[i, 0]
-    else:
-        raise ValueError()
-
-
 spec_agent = OrderedDict(
     size=int64,
     shape=UniTuple(int64, 2),
-    mass=float64,
-    radius=float64,
-    goal_velocity=float64,
+    mass=float64[:, :],
+    radius=float64[:, :],
+    goal_velocity=float64[:, :],
     position=float64[:, :],
     velocity=float64[:, :],
     goal_direction=float64[:, :],
@@ -46,12 +37,22 @@ spec_agent = OrderedDict(
 agent_attr_names = [key for key in spec_agent.keys()]
 
 
+@numba.jitclass(spec_agent)
 class Agent(object):
     """
     Structure for agent parameters and variables.
     """
 
     def __init__(self, size, mass, radius, goal_velocity, goal_reached):
+        """
+
+        :param size: Integer. Size of the arrays.
+        :param mass: Array of masses of agents.
+        :param radius: Array of radii of agents.
+        :param goal_velocity: Array of goal_velocities of agents.
+        :param goal_reached: Array of boolean values of agents that have reached
+        their goals. Should be initialized to all false.
+        """
         self.size = size
         self.shape = (size, 2)
 
@@ -59,8 +60,9 @@ class Agent(object):
         # TODO: Elliptical Agents, Orientation, Major- & Minor axis
         # TODO: Three circles representation
         # TODO: Collection of average human dimensions and properties
-        self.mass = mass
         self.radius = radius
+
+        self.mass = mass
         self.goal_velocity = goal_velocity
 
         # Vectors of shape=(size, 2)
@@ -121,47 +123,7 @@ class Agent(object):
         else:
             self.target_direction = self.goal_direction
 
-    def get_radius(self, i):
-        """
-
-        :param i: Index.
-        :return: Returns radius if scalar or radius[i, 0] if an vector.
-        """
-        return get_scalar_or_array(self.radius, i)
-
     def set_goal_direction(self, goal):
         mask = self.goal_reached ^ True
         if np.sum(mask):
             self.goal_direction[mask] = normalize_vec(goal - self.position[mask])
-
-
-def agent_struct(size, mass, radius, goal_velocity):
-    """
-    Makes jitclass from agents. Handles spec definition so that mass, radius and
-    goal_velocity can be scalar or array.
-    """
-    _spec_agent = deepcopy(spec_agent)
-
-    def spec(key, value):
-        if isinstance(value, (int, float)):
-            value = float(value)
-            t = float64
-        elif isinstance(value, np.ndarray):
-            value = np.array(value, dtype=np.float64)
-            value = value.reshape((len(value), 1))
-            t = float64[:, :]
-        else:
-            raise ValueError("Wrong type.")
-        _spec_agent[key] = t
-        return value
-
-    # Init spec_agent
-    mass = spec('mass', mass)
-    radius = spec('radius', radius)
-    goal_velocity = spec('goal_velocity', goal_velocity)
-    goal_reached = np.zeros(size, dtype=np.bool_)
-
-    # Return jitclass of Agents
-    agent = jitclass(_spec_agent)(Agent)
-    return agent(size, mass, radius, goal_velocity, goal_reached)
-

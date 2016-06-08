@@ -16,7 +16,7 @@ class Simulation:
     def __init__(self, constant, agent, wall=None, goals=None, dirpath=None,
                  name=None):
         # Make iterables and filter None values
-        def _filter(arg):
+        def _filter_none(arg):
             if not isinstance(arg, Iterable):
                 arg = (arg,)
             return tuple(filter(None, arg))
@@ -37,8 +37,8 @@ class Simulation:
         # Struct
         self.constant = constant
         self.agent = agent
-        self.wall = _filter(wall)
-        self.goals = _filter(goals)
+        self.wall = _filter_none(wall)
+        self.goals = _filter_none(goals)
         self.result = Result(agent.size)
 
         # TODO: Limit iterations
@@ -58,7 +58,7 @@ class Simulation:
         self.attrs_agent["velocity"] = Attr("velocity", True, True)
         self.attrs_agent["force"] = Attr("force", True, True)
 
-        self.hdf = _filter(
+        self.savers = _filter_none(
             [self.save.hdf(self.constant, self.attrs_constant),
              self.save.hdf(self.agent, self.attrs_agent)] +
             [self.save.hdf(w, self.attrs_wall) for w in self.wall]
@@ -112,8 +112,8 @@ class Simulation:
             for goal in self.goals:
                 self.goal_reached(goal)
 
-            for hdf in self.hdf:
-                next(hdf)
+            for saver in self.savers:
+                saver()
 
             # Printing
             if self.interval():
@@ -123,6 +123,8 @@ class Simulation:
         except GeneratorExit:
             # Finally save results
             self.save.hdf(self.result, self.attrs_result)
+            for saver in self.savers:
+                saver(brute=True)
             raise StopIteration()
 
     def __iter__(self):
