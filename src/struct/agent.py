@@ -78,8 +78,8 @@ class Agent(object):
         # TODO: Not see through walls?
 
         # Agent properties
-        self.radius = radius
-        self.mass = mass
+        self.radius = radius.reshape(size, 1)
+        self.mass = mass.reshape(size, 1)
         self.rotational_moment = np.zeros(self.size)
 
         # Rotational movement
@@ -93,7 +93,7 @@ class Agent(object):
         self.position = np.zeros(self.shape)
         self.velocity = np.zeros(self.shape)
         self.goal_direction = np.zeros(self.shape)
-        self.goal_velocity = goal_velocity
+        self.goal_velocity = goal_velocity.reshape(size, 1)
         self.target_direction = np.zeros(self.shape)
         self.force = np.zeros(self.shape)
 

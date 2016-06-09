@@ -35,10 +35,6 @@ class Params:
         velocity = np.stack((np.cos(orientation), np.sin(orientation)), axis=1)
         return velocity
 
-    @staticmethod
-    def to_col_vector(arr):
-        return arr.reshape((len(arr), 1))
-
     def random_position(self, position, radius, x_dims=None, y_dims=None,
                         walls=None):
         """
@@ -108,10 +104,6 @@ class Params:
 
         goal_velocity = 5.0 * np.ones(size)
         goal_reached = np.zeros(size, dtype=np.bool_)
-
-        mass = self.to_col_vector(mass)
-        radius = self.to_col_vector(radius)
-        goal_velocity = self.to_col_vector(goal_velocity)
 
         return size, mass, radius, goal_velocity, goal_reached
 
