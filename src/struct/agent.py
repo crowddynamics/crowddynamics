@@ -16,9 +16,12 @@ spec_agent = OrderedDict(
 
     mass=float64[:, :],
     radius=float64[:, :],
+    radius_torso=float64[:],
+    radius_shoulder=float64[:],
+    radius_torso_shoulder=float64[:],
     goal_velocity=float64[:, :],
 
-    moment_rot=float64[:],
+    inertia_rot=float64[:],
     angle=float64[:],
     angular_velocity=float64[:],
     target_angle=float64[:],
@@ -55,7 +58,16 @@ class Agent(object):
     Structure for agent parameters and variables.
     """
 
-    def __init__(self, size, mass, radius, moment_rot, goal_velocity, goal_reached):
+    def __init__(self,
+                 size,
+                 mass,
+                 radius,
+                 radius_torso,
+                 radius_shoulder,
+                 radius_torso_shoulder,
+                 inertia_rot,
+                 goal_velocity,
+                 goal_reached):
         """
 
         :param size: Integer. Size of the arrays.
@@ -66,10 +78,6 @@ class Agent(object):
         their goals. Should be initialized to all false.
         """
 
-        # Array properties
-        self.size = size
-        self.shape = (size, 2)
-
         # TODO: Three circles, Orientation
         # TODO: Collection of average human dimensions and properties
         # TODO: Path finding
@@ -77,10 +85,17 @@ class Agent(object):
         # TODO: Gathering other forces for debugging and plotting
         # TODO: Not see through walls?
 
+        # Array properties
+        self.size = size
+        self.shape = (size, 2)
+
         # Agent properties
-        self.radius = radius.reshape(size, 1)
+        self.radius = radius.reshape(size, 1)  # TODO: shape?
+        self.radius_torso = radius_torso
+        self.radius_shoulder = radius_shoulder
+        self.radius_torso_shoulder = radius_torso_shoulder
         self.mass = mass.reshape(size, 1)
-        self.moment_rot = moment_rot
+        self.inertia_rot = inertia_rot
 
         # Rotational movement
         self.angle = np.zeros(self.size)

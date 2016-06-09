@@ -6,7 +6,7 @@ from src.core.functions import force_limit, rotate270, normalize
 
 
 @numba.jit(nopython=True, nogil=True)
-def force_agent_agent(constant, agent):
+def agent_agent(constant, agent):
     # n - 1 + n - 2 + ... + 1 = n^2 / 2
     for i in range(agent.size - 1):
         for j in range(i + 1, agent.size):
@@ -54,7 +54,7 @@ def force_agent_agent(constant, agent):
 
 
 @numba.jit(nopython=True, nogil=True)
-def force_agent_wall(constant, agent, wall):
+def agent_wall(constant, agent, wall):
     for w in range(wall.size):
         for i in range(agent.size):
             distance, normal = wall.distance_with_normal(w, agent.position[i])

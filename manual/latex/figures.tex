@@ -20,10 +20,31 @@
 \makeatother
 
 \begin{document}
-%\input{figures/source}
+
+\begin{tikzpicture}
+  [
+    point/.style = {draw, circle, fill=white, inner sep=0.5pt}
+  ]
+\input{figures/grid}
 \input{figures/agent}
-\input{figures/linear_wall}
-\input{figures/linear_wall2}
-\input{figures/vector}
-%\input{figures/linear_wall_rotated}
+\end{tikzpicture}
+
+
+\begin{tikzpicture}
+  [
+    point/.style = {draw, circle, fill=white, inner sep=1.4pt}
+  ]
+\input{figures/grid}
+\input{figures/wall}
+\end{tikzpicture}
+
+
+\begin{tikzpicture}
+  [
+    point/.style = {draw, circle, fill=white, inner sep=1.4pt}
+  ]
+\input{figures/grid}
+\input{figures/wall2}
+\end{tikzpicture}
+
 \end{document}

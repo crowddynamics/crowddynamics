@@ -1,10 +1,3 @@
-\begin{tikzpicture}
-  [
-    point/.style = {draw, circle, fill=white, inner sep=0.5pt}
-  ]
-
-\input{./grid}
-
 % FDS + EVAC page 19
 % http://www.vtt.fi/inf/pdf/workingpapers/2009/W119.pdf
 
@@ -55,7 +48,5 @@
 \node[point] (shoulderLeft) at (centreLeft) {$ \mathbf{c}_{l} $};
 \node[point] (shoulderRigth) at (centreRigth) {$ \mathbf{c}_{r} $};
 
-\draw[dashed, ->] (agent) -- node[below] {$ r_{t-s} $} (shoulderLeft);
+\draw[dashed, ->] (agent) -- node[below] {$ r_{ts} $} (shoulderLeft);
 %\draw[<->] (agent) -- node[below] {$ d $} (shoulderRigth);
-
-\end{tikzpicture}

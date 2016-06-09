@@ -40,7 +40,7 @@
 \begin{tikzpicture}
 [
     x=1cm, y=1cm,
-    mynode/.style={rectangle,rounded corners,draw=black, top color=white, bottom color=white!50, inner sep=1em, minimum size=3em, text centered}
+    point/.style = {draw, circle, fill=white, inner sep=0.5pt}
 ]
 % Origin centered grid
 % ------------------------------------------------------------------------------
@@ -51,11 +51,13 @@
 ($ (origin) - (offset) $) grid ($ (origin) + (offset) $);
 % ------------------------------------------------------------------------------
 
-\node[mynode] () at (origin) {Simulation};
+\begin{scope}[xshift=3cm, yshift=3cm, scale=0.6, rotate=20]
+\input{figures/agent}
+\end{scope}
 
-\node[mynode] () at ($ (origin) + (-3, -1) $) {Params};
-
-\node[mynode] () at ($ (origin) + ( 3, -1) $) {Analysis};
+\begin{scope}[xshift=-2cm, yshift=-2cm, scale=0.6, rotate=-20]
+\input{figures/agent}
+\end{scope}
 
 \end{tikzpicture}
 \end{document}

@@ -6,7 +6,7 @@ Shoulder, torso and total radii.
 \begin{tabularx}{1.0\linewidth}{ l l l l l l}
 & Total && Torso & Shoulder & \\
 \hline
-& $ r $ $ (\mathrm{m}) $ & $ \pm $ & $ r_{\text{t}} / r $ & $ r_{\text{s}} / r $ & $ r_{t-s} / r $ \\
+& $ r $ & $ \pm $ & $ r_{\text{t}} / r $ & $ r_{\text{s}} / r $ & $ r_{ts} / r $ \\
 \hline\hline
 adult & $ 0.255 $ & $ 0.035 $ & $ 0.5882 $ & $ 0.3725 $ & $ 0.6275 $ \\
 child & $ 0.210 $ & $ 0.015 $ & $ 0.5714 $ & $ 0.3333 $ & $ 0.6667 $ \\
@@ -61,8 +61,6 @@ $ \hat{\mathbf{t}} = R(-90^{\circ}) \cdot \hat{\mathbf{n}} $ & Tangent vector \\
 
 
 
-
-
 \subsection{Circular agent}
 Total radius and relative distance
 \begin{align}
@@ -70,14 +68,14 @@ Total radius and relative distance
 h &= \tilde{r} - d
 \end{align}
 
+
 \subsection{Three circles}
 
 
 
-%TODO: Moment and torque.
+\subsection{Rotational equation}
 % FDS evac manual pages: 20 - 21
 
-\subsection{Rotational equation}
 Rotational equation of motion 
 \begin{align}
 I \frac{d^{2}}{d t^{2}} \varphi(t) = M(t) + \eta(t),
@@ -89,11 +87,11 @@ M_{i}(t) = M_{i}^{c} + M_{i}^{soc} + M_{i}^{\tau}
 
 Torque from contact forces
 \begin{align}
-\mathbf{M}_{i}^{c} = \sum_{j\neq i}^{} \left(\mathbf{R}_{i}^{c} \times \mathbf{f}_{ij}^{c}\right)
+\mathbf{M}_{i}^{c} = \sum_{j\neq i}^{} \left(\mathbf{r}_{i}^{c} \times \mathbf{f}_{ij}^{c}\right)
 \end{align}
 and from social forces
 \begin{align}
-\mathbf{M}_{i}^{soc} = \sum_{j\neq i}^{} \left(\mathbf{R}_{i}^{soc} \times \mathbf{f}_{ij}^{soc}\right)
+\mathbf{M}_{i}^{soc} = \sum_{j\neq i}^{} \left(\mathbf{r}_{i}^{soc} \times \mathbf{f}_{ij}^{soc}\right)
 \end{align}
 
 Motivational torque
@@ -104,7 +102,7 @@ M_{i}^{\tau} &= \frac{I_{i}}{\tau_{i}} \left((\varphi_{i}(t) - \varphi_{i}^{0}) 
 
 As vector
 \begin{align}
-\mathbf{R} \times \mathbf{f} =  \begin{vmatrix} \mathbf{i} & \mathbf{j} & \mathbf{k} \\ R_{1} & R_{2} & R_{3} \\ f_{1} & f_{2} & f_{3} \\ \end{vmatrix} 
+\mathbf{r} \times \mathbf{f} =  \begin{vmatrix} \mathbf{i} & \mathbf{j} & \mathbf{k} \\ R_{1} & R_{2} & R_{3} \\ f_{1} & f_{2} & f_{3} \\ \end{vmatrix} 
 \end{align}
 
 In two dimensions

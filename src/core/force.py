@@ -4,9 +4,7 @@ import numpy as np
 
 @numba.jit(nopython=True, nogil=True)
 def force_random(constant, agent):
-    """
-    Random force
-    """
+    """Random force"""
     for i in range(agent.size):
         angle = np.random.uniform(0, 2 * np.pi)
         magnitude = np.random.uniform(0, constant.f_random_fluctuation_max)
@@ -16,9 +14,7 @@ def force_random(constant, agent):
 
 @numba.jit(nopython=True, nogil=True)
 def force_adjust(constant, agent):
-    """
-    Force that adjust movement towards target direction.
-    """
+    """Force that adjust movement towards target direction."""
     force = (agent.mass / constant.tau_adj) * \
             (agent.goal_velocity * agent.target_direction - agent.velocity)
     agent.force += force
@@ -27,17 +23,13 @@ def force_adjust(constant, agent):
 
 @numba.jit(nopython=True, nogil=True)
 def force_social_naive(h_iw, n_iw, a, b):
-    """
-    Naive velocity independent social force.
-    """
+    """Naive velocity independent social force."""
     return np.exp(h_iw / b) * a * n_iw
 
 
 @numba.jit(nopython=True, nogil=True)
 def force_contact(h, n, v, t, mu, kappa):
-    """
-    Frictional contact force.
-    """
+    """Frictional contact force."""
     return h * (mu * n - kappa * np.dot(v, t) * t)
 
 

@@ -4,6 +4,20 @@ import numpy as np
 from scipy.stats import truncnorm
 
 
+# column = namedtuple("column", ("adult", "male", "female", "child", "eldery"))
+# radius, dr, torso, shoulder, shoulder distance, walking speed, dv
+# TODO: Body mass and rotational moment values table
+index = namedtuple("index", ("r", "dr", "k_t", "k_s", "k_ts", "v", "dv", "mass",
+                             "mass_scale"))
+body_types = dict(
+    adult=index(0.255, 0.035, 0.5882, 0.3725, 0.6275, 1.25, 0.30, 80, 10),
+    male=index(0.270, 0.020, 0.5926, 0.3704, 0.6296, 1.35, 0.20, None, None),
+    female=index(0.240, 0.020, 0.5833, 0.3750, 0.6250, 1.15, 0.20, None, None),
+    child=index(0.210, 0.015, 0.5714, 0.3333, 0.6667, 0.90, 0.30, None, None),
+    eldery=index(0.250, 0.020, 0.6000, 0.3600, 0.6400, 0.80, 0.30, None, None),
+)
+
+
 class Params:
     """
     Generates random parameters for simulations and testing.
@@ -96,15 +110,24 @@ class Params:
             position[i, :] = pos
             i += 1
 
-    def agent(self, size):
+    def agent(self, size, body_type="adult"):
         """Arguments for constructing agent."""
-        mass = self.truncnorm(loc=70.0, scale=10.0, size=size)
-        radius = self.truncnorm(loc=0.255, scale=0.035, size=size)
-        moment_rot = 4.0 * np.ones(size)  # TODO: Depend on mass and radius
+
+        # TODO: Values from tables
+        body = body_types[body_type]
+
+        mass = self.truncnorm(loc=body.mass, scale=body.mass_scale, size=size)
+        radius = self.truncnorm(loc=body.r, scale=body.dr, size=size)
+        r_t = body.k_t * radius
+        r_s = body.k_s * radius
+        r_ts = body.k_ts * radius
+        inertia_rot_scale = 4.0 / (80.0 * 0.255 ** 2)
+        inertia_rot = inertia_rot_scale * mass * radius ** 2  # I = mr^2
         goal_velocity = 5.0 * np.ones(size)
         goal_reached = np.zeros(size, dtype=np.bool_)
 
-        return size, mass, radius, moment_rot, goal_velocity, goal_reached
+        return size, mass, radius, r_t, r_s, r_ts, inertia_rot, goal_velocity, \
+               goal_reached
 
     def round_wall(self, size, r_min, r_max):
         """Arguments for constructing round wall."""
