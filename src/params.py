@@ -100,12 +100,11 @@ class Params:
         """Arguments for constructing agent."""
         mass = self.truncnorm(loc=70.0, scale=10.0, size=size)
         radius = self.truncnorm(loc=0.255, scale=0.035, size=size)
-        # TODO: Rotational moment
-
+        moment_rot = 4.0 * np.ones(size)  # TODO: Depend on mass and radius
         goal_velocity = 5.0 * np.ones(size)
         goal_reached = np.zeros(size, dtype=np.bool_)
 
-        return size, mass, radius, goal_velocity, goal_reached
+        return size, mass, radius, moment_rot, goal_velocity, goal_reached
 
     def round_wall(self, size, r_min, r_max):
         """Arguments for constructing round wall."""

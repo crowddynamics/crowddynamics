@@ -18,7 +18,7 @@ spec_agent = OrderedDict(
     radius=float64[:, :],
     goal_velocity=float64[:, :],
 
-    rotational_moment=float64[:],
+    moment_rot=float64[:],
     angle=float64[:],
     angular_velocity=float64[:],
     target_angle=float64[:],
@@ -55,7 +55,7 @@ class Agent(object):
     Structure for agent parameters and variables.
     """
 
-    def __init__(self, size, mass, radius, goal_velocity, goal_reached):
+    def __init__(self, size, mass, radius, moment_rot, goal_velocity, goal_reached):
         """
 
         :param size: Integer. Size of the arrays.
@@ -80,7 +80,7 @@ class Agent(object):
         # Agent properties
         self.radius = radius.reshape(size, 1)
         self.mass = mass.reshape(size, 1)
-        self.rotational_moment = np.zeros(self.size)
+        self.moment_rot = moment_rot
 
         # Rotational movement
         self.angle = np.zeros(self.size)
