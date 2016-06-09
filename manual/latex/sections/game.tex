@@ -1,26 +1,15 @@
-\section{Game}
+\section{Spatial game}
+\subsection{Game matrix}
+\begin{tabularx}{1.0\linewidth}{ l R }
+$ T_{i} = \lambda_{i} / \beta $ &  Estimated evacuation time \\
+$ \lambda_{i} $ & Number of other agents closer to the exit \\
+$ \beta $ & Capacity of the exit \\
+$ T_{ij} = \left(T_{i} + T_{j}\right) / 2 $ & Average evacuation time \\
+$ T_{ASET} $ & Available safe egress time \\
+$ T_{0} $ & Time difference between $ T_{ASET} $ and $ T_{i} $ before agents start playing the game \\
+$ C > 0 $ & Cost of conflict \\
+\end{tabularx}
 
-Estimated evacuation time
-\begin{align}
-T_{i} = \frac{\lambda_{i}}{\beta},
-\end{align}
-where $ \lambda_{i} $ is the number of other agents closer to the exit and $ \beta $
-is the capacity of the exit.
-
-Average evacuation time
-\begin{align}
-T_{ij} = \frac{T_{i} + T_{j}}{2}
-\end{align}
-
-Available safe egress time
-\begin{align}
-T_{ASET}
-\end{align}
-
-Time difference between $ T_{ASET} $ and $ T_{i} $ before agents start playing the game
-\begin{align}
-T_{0}
-\end{align}
 
 Cost function
 \begin{align}
@@ -31,13 +20,6 @@ Increase/decrease in cost
 \begin{align}
 \Delta u(T_{ij}) = u(T_{ij}) - u(T_{ij} - \Delta T) \approxeq u^{\prime}(T_{ij}) \Delta T
 \end{align}
-
-Cost of conflict 
-\begin{align}
-C > 0
-\end{align}
-
-
 
 
 \begin{tabularx}{1.0\linewidth}{ c | C | C }
@@ -80,3 +62,50 @@ Patient & $ 1, -1 $ & $ 0, 0 $ \\
 \end{align}
 
 \end{enumerate}
+
+Assumptions
+\begin{enumerate}
+\item Game is not played
+\begin{align}
+T_{ij} \leq T_{ASET} - T_{0}
+\end{align}
+
+\item Cost function starts to increase quadratically
+\begin{align}
+T_{ij} > T_{ASET} - T_{0}
+\end{align}
+
+\item Game turns into prisoner's dilemma
+\begin{align}
+u^{\prime}(T_{ASET}) = C, \quad T_{ij} \geq T_{ASET}
+\end{align}
+
+\end{enumerate}
+
+Cost function that meets the assumptions
+\begin{align}
+u(T_{ij}) = \begin{cases}
+0 & T_{ij} \leq T_{ASET} - T_{0} \\
+\frac{C}{2 T_{0}} \left(T_{ij} - T_{ASET} + T_{0}\right)^{2} & T_{ij} > T_{ASET} - T_{0} \\
+\end{cases}
+\end{align}
+Derivative
+\begin{align}
+u^{\prime}(T_{ij}) = \begin{cases}
+0 & T_{ij} \leq T_{ASET} - T_{0} \\
+\frac{C}{T_{0}} \left(T_{ij} - T_{ASET} + T_{0}\right) & T_{ij} > T_{ASET} - T_{0} \\
+\end{cases}
+\end{align}
+
+Loss/gain of overtaking
+\begin{align}
+\Delta u(T_{ij}) \approxeq u^{\prime}(T_{ij}) \Delta T = \frac{C}{T_{0}} \left(T_{i} - T_{ASET} + T_{0}\right) \Delta T
+\end{align}
+
+Value parameter of the game matrix
+\begin{align}
+\frac{C}{\Delta u(T_{ij})} \approxeq \frac{T_{0}}{T_{ij} - T_{ASET} + T_{0}}
+\end{align}
+
+\subsection{Settings and best-response dynamics}
+

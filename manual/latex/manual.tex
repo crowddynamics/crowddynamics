@@ -57,6 +57,8 @@
 \g@addto@macro{\UrlBreaks}{\UrlOrds}
 \makeatother
 
+\newcolumntype{R}{>{\raggedright\arraybackslash}X}%
+\newcolumntype{L}{>{\raggedleft\arraybackslash}X}%
 \newcolumntype{C}{>{\centering\arraybackslash}X}%
 
 \begin{document}
@@ -69,6 +71,8 @@
 \caption{Circle, ellipse and three circle representations of an agent.}
 \end{figure}
 % ------------------
+
+\newpage
 
 \begin{multicols*}{2}
 \input{sections/agent}

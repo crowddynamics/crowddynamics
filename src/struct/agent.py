@@ -89,7 +89,7 @@ class Agent(object):
         self.target_angular_velocity = np.zeros(self.size)
         self.torque = np.zeros(self.size)
 
-        # Movement along axis
+        # Movement along x and y axis
         self.position = np.zeros(self.shape)
         self.velocity = np.zeros(self.shape)
         self.goal_direction = np.zeros(self.shape)
