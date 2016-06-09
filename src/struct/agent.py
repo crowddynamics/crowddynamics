@@ -13,21 +13,33 @@ from src.core.functions import normalize_vec, normalize
 spec_agent = OrderedDict(
     size=int64,
     shape=UniTuple(int64, 2),
+
     mass=float64[:, :],
     radius=float64[:, :],
     goal_velocity=float64[:, :],
+
+    rotational_moment=float64[:],
+    angle=float64[:],
+    angular_velocity=float64[:],
+    target_angle=float64[:],
+    target_angular_velocity=float64[:],
+    torque=float64[:],
+
     position=float64[:, :],
     velocity=float64[:, :],
     goal_direction=float64[:, :],
     target_direction=float64[:, :],
     force=float64[:, :],
     goal_reached=boolean[:],
+
     force_adjust=float64[:, :],
     force_agent=float64[:, :],
     force_wall=float64[:, :],
+
     sight_soc=float64,
     sight_wall=float64,
     sight_herding=float64,
+
     herding_flag=boolean,
     herding_tendency=float64[:],
     neighbor_direction=float64[:, :],
@@ -53,50 +65,55 @@ class Agent(object):
         :param goal_reached: Array of boolean values of agents that have reached
         their goals. Should be initialized to all false.
         """
+
+        # Array properties
         self.size = size
         self.shape = (size, 2)
 
         # TODO: Three circles, Orientation
         # TODO: Collection of average human dimensions and properties
-        # Vectors of shape=(size, 1)
-        self.radius = radius
-        self.mass = mass
-        self.goal_velocity = goal_velocity
-
-        # self.moment_of_inertia = np.zeros(size)
-        # self.angle = np.zeros(size)
-        # self.angular_velocity = np.zeros(size)
-        # self.target_angle = np.zeros(size)
-        # self.target_angular_velocity = np.zeros(size)
-
-        # Vectors of shape=(size, 2)
-        self.position = np.zeros(self.shape)          # Center of mass
-        self.velocity = np.zeros(self.shape)          # Current velocity
-
         # TODO: Path finding
         # TODO: Goal reached? Handle reached goals.
+        # TODO: Gathering other forces for debugging and plotting
+        # TODO: Not see through walls?
+
+        # Agent properties
+        self.radius = radius
+        self.mass = mass
+        self.rotational_moment = np.zeros(self.size)
+
+        # Rotational movement
+        self.angle = np.zeros(self.size)
+        self.angular_velocity = np.zeros(self.size)
+        self.target_angle = np.zeros(self.size)
+        self.target_angular_velocity = np.zeros(self.size)
+        self.torque = np.zeros(self.size)
+
+        # Movement along axis
+        self.position = np.zeros(self.shape)
+        self.velocity = np.zeros(self.shape)
+        self.goal_direction = np.zeros(self.shape)
+        self.goal_velocity = goal_velocity
+        self.target_direction = np.zeros(self.shape)
+        self.force = np.zeros(self.shape)
+
         # self.goal_position = np.zeros(self.shape)
-        self.goal_direction = np.zeros(self.shape)    # Unit vector
-        self.target_direction = np.zeros(self.shape)  # Unit vector
-        self.force = np.zeros(self.shape)             # Total Force
         self.goal_reached = goal_reached
 
-        # TODO: Gathering other forces for debugging and plotting
         self.force_adjust = np.zeros(self.shape)
         self.force_agent = np.zeros(self.shape)
         self.force_wall = np.zeros(self.shape)
 
-        # TODO: Not see through walls?
         # Distances for reacting to other objects
         self.sight_soc = 7.0
         self.sight_wall = 7.0
         self.sight_herding = 20.0
 
         # Herding
-        self.herding_flag = False                       #
-        self.herding_tendency = np.zeros(self.size)     #
-        self.neighbor_direction = np.zeros(self.shape)  #
-        self.neighbors = np.zeros(self.size)            #
+        self.herding_flag = False
+        self.herding_tendency = np.zeros(self.size)
+        self.neighbor_direction = np.zeros(self.shape)
+        self.neighbors = np.zeros(self.size)
 
     def reset_force(self):
         self.force *= 0

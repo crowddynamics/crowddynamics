@@ -20,6 +20,7 @@
 \usepackage{wrapfig}
 \usepackage{floatrow}
 \usepackage{tabularx}
+\usepackage{tabulary}
 \usepackage{multicol}
 \usepackage{longtable}
 \usepackage{enumerate} 
@@ -55,6 +56,8 @@
 \makeatletter
 \g@addto@macro{\UrlBreaks}{\UrlOrds}
 \makeatother
+
+\newcolumntype{C}{>{\centering\arraybackslash}X}%
 
 \begin{document}
 \input{sections/constants}
@@ -101,6 +104,7 @@
 \begin{multicols*}{2}
 \input{sections/social_force}
 \input{sections/differential_system}
+\input{sections/game}
 \end{multicols*}
 
 %TODO: Bibliographies

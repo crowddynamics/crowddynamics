@@ -6,20 +6,20 @@
 \hline
 $ r $                    & $ \mathrm{m} $ &  & Radius \\
 $ m $                    & $ \mathrm{kg} $ & $ 80 $ & Mass \\
-$ I $                    & $ \mathrm{kg \ m^{2}} $ & $ 4.0 $ & Moment of inertia \\
+$ I $                    & $ \mathrm{kg \cdot m^{2}} $ & $ 4.0 $ & Rotational moment \\
 \hline
 \hline
-$ \mathbf{x} $           &  &  & Position \\
-$ \mathbf{v} $           &  &  & Velocity \\
-$ v_{0} $                &  &  & Goal velocity \\  
+$ \mathbf{x} $           & $ \mathrm{m} $ &  & Position \\
+$ \mathbf{v} $           & $ \mathrm{m} / \mathrm{s} $ &  & Velocity \\
+$ v_{0} $                & $ \mathrm{m} / \mathrm{s} $ &  & Goal velocity \\  
 $ \hat{\mathbf{e}}_{0} $ &  &  & Goal direction \\
 $ \hat{\mathbf{e}} $     &  &  & Target direction \\
 \hline
 \hline
-$ \varphi $              &  &  & Body angle \\
-$ \omega $               &  &  & Angular velocity \\
-$ \varphi_{0} $          &  &  & Target angle \\
-$ \omega_{0} $           & $ \mathrm{s^{-1}} $ & $ 4\pi $ & Max angular velocity \\
+$ \varphi $              & $ \mathrm{rad} $ &  & Body angle \\
+$ \omega $               & $ \mathrm{rad} / \mathrm{s} $ &  & Angular velocity \\
+$ \varphi_{0} $          & $ \mathrm{rad} $ &  & Target angle \\
+$ \omega_{0} $           & $ \mathrm{rad} / \mathrm{s} $ & $ 4\pi $ & Max angular velocity \\
 %$ \tilde{\omega}_{0} $   &  &  & Target angular velocity \\
 \hline
 \hline
@@ -82,4 +82,12 @@ M_{i}^{\tau} &= \frac{I_{i}}{\tau_{i}} \left((\varphi_{i}(t) - \varphi_{i}^{0}) 
 %&= \frac{I_{i}}{\tau_{i}} \left(\tilde{\omega}_{i}^{0} - \omega(t)\right)
 \end{align}
 
+As vector
+\begin{align}
+\mathbf{R} \times \mathbf{f} =  \begin{vmatrix} \mathbf{i} & \mathbf{j} & \mathbf{k} \\ R_{1} & R_{2} & R_{3} \\ f_{1} & f_{2} & f_{3} \\ \end{vmatrix} 
+\end{align}
 
+In two dimensions
+\begin{align}
+\begin{vmatrix} R_{1} & R_{2} \\ f_{1} & f_{2} \\ \end{vmatrix} = R_{1} \cdot f_{2} - R_{2} \cdot f_{1}
+\end{align}

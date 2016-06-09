@@ -1,0 +1,82 @@
+\section{Game}
+
+Estimated evacuation time
+\begin{align}
+T_{i} = \frac{\lambda_{i}}{\beta},
+\end{align}
+where $ \lambda_{i} $ is the number of other agents closer to the exit and $ \beta $
+is the capacity of the exit.
+
+Average evacuation time
+\begin{align}
+T_{ij} = \frac{T_{i} + T_{j}}{2}
+\end{align}
+
+Available safe egress time
+\begin{align}
+T_{ASET}
+\end{align}
+
+Time difference between $ T_{ASET} $ and $ T_{i} $ before agents start playing the game
+\begin{align}
+T_{0}
+\end{align}
+
+Cost function
+\begin{align}
+u(T_{i}, T_{ASET}), \quad u^{\prime}(T_{i}) \geq 0, \quad u^{\prime\prime}(T_{i}) \geq 0
+\end{align}
+
+Increase/decrease in cost
+\begin{align}
+\Delta u(T_{ij}) = u(T_{ij}) - u(T_{ij} - \Delta T) \approxeq u^{\prime}(T_{ij}) \Delta T
+\end{align}
+
+Cost of conflict 
+\begin{align}
+C > 0
+\end{align}
+
+
+
+
+\begin{tabularx}{1.0\linewidth}{ c | C | C }
+& Impatient & Patient \\
+\hline
+&& \\
+Impatient & $ C, C $ & $ -\Delta u(T_{ij}), \Delta u(T_{ij}) $ \\
+&& \\
+\hline
+&& \\
+Patient & $ \Delta u(T_{ij}), -\Delta u(T_{ij}) $ & $ 0, 0 $ \\
+&& \\
+\end{tabularx}
+
+\vspace{1.0cm}
+
+\begin{tabularx}{1.0\linewidth}{ c | C | C }
+& Impatient & Patient \\
+\hline
+&& \\
+Impatient & $ \frac{C}{\Delta u(T_{ij})}, \frac{C}{\Delta u(T_{ij})} $ & $ -1, 1 $ \\
+&& \\
+\hline
+&& \\
+Patient & $ 1, -1 $ & $ 0, 0 $ \\
+&& \\
+\end{tabularx}
+
+\vspace{1.0cm}
+
+\begin{enumerate}[label=\roman{enumi})]
+\item Prisoner's dilemma (PD)
+\begin{align}
+0 < \frac{C}{\Delta u(T_{ij})} \leq 1
+\end{align}
+
+\item Hawk-dove (HD)
+\begin{align}
+\frac{C}{\Delta u(T_{ij})} > 1
+\end{align}
+
+\end{enumerate}
