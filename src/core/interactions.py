@@ -16,6 +16,12 @@ def agent_agent(constant, agent):
             distance = np.hypot(relative_position[0], relative_position[1])
             relative_distance = total_radius - distance
 
+            # If agent is orientable
+            # TODO: threshold distance
+            if agent.orientable:
+                # Update distance and calculate torque
+                pass
+
             # If another agent is in range of sight_soc.
             if distance <= agent.sight_soc:
                 force = force_social(relative_position,

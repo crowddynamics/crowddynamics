@@ -36,12 +36,14 @@
 \pgfmathsetmacro{\xoffset}{\width / 2}
 \pgfmathsetmacro{\yoffset}{\height / 2}
 
+\tikzset{
+    x=1cm, 
+    y=1cm,
+    mynode/.style={rectangle,rounded corners,draw=black, top color=white, bottom color=white!50, inner sep=1em, minimum size=3em, text centered}
+}
+
 \begin{document}
 \begin{tikzpicture}
-[
-    x=1cm, y=1cm,
-    mynode/.style={rectangle,rounded corners,draw=black, top color=white, bottom color=white!50, inner sep=1em, minimum size=3em, text centered}
-]
 % Origin centered grid
 % ------------------------------------------------------------------------------
 \coordinate[] (origin) at (0, 0);
@@ -50,12 +52,57 @@
 \draw[step=1cm, line width=0.1mm, black!10!white] 
 ($ (origin) - (offset) $) grid ($ (origin) + (offset) $);
 % ------------------------------------------------------------------------------
+% Main nodes
+% ------------------------------------------------------------------------------
+\node[mynode] (simulation) at ($ (origin) - (0, 2) $) {Simulation};
+\node[above=1 cm of simulation] (loop) {Main Loop};
 
-\node[mynode] () at (origin) {Simulation};
+\node[below=1.0 cm of simulation] (dummy) {}; 
+\node[mynode, left =2.0 cm of dummy] (parameters) {Parameters};
+\node[mynode, right=2.0 cm of dummy] (analysis) {Analysis};
 
-\node[mynode] () at ($ (origin) + (-3, -1) $) {Params};
+\path[->] (parameters) edge[bend left = 30] (simulation);
+\path[->] (simulation) edge[bend left = 30] (analysis);
 
-\node[mynode] () at ($ (origin) + ( 3, -1) $) {Analysis};
+% ------------------------------------------------------------------------------
+% Params
+% ------------------------------------------------------------------------------
+
+\node[mynode, left=1.0 cm of parameters] (wall) {Wall};
+\node[mynode, below left=1.0 cm of parameters] (agent) {Agent};
+\node[mynode, below =1.0 cm of parameters] (goal) {Goal};
+\node[mynode, below right=1.0 cm of parameters] (constant) {Constant};
+
+\path[->] (wall) edge[] (parameters);
+\path[->] (agent) edge[] (parameters);
+\path[->] (goal) edge[] (parameters);
+\path[->] (constant) edge[] (parameters);
+
+% ------------------------------------------------------------------------------
+% Simulation
+% ------------------------------------------------------------------------------
+\node[mynode, above left=1.0 cm of simulation] (pathfinding) {Path finding};
+\node[mynode, above=1.0 cm of pathfinding] (game) {Game};
+\node[mynode, above=1.0 cm of game] (integrator) {Integrator};
+\node[mynode, above=7.0 cm of simulation] (result) {Result};
+
+\node[mynode, above right=1.0 cm of simulation] (visualize) {Visualize};
+\node[mynode, above=1.0 cm of visualize] (print) {Print};
+\node[mynode, above=1.0 cm of print] (save) {Save};
+
+\path[->] (simulation) edge[bend left=30] (pathfinding);
+\path[->] (pathfinding) edge[] (game);
+\path[->] (game) edge[] (integrator);
+\path[->] (integrator) edge[bend left=30] (result);
+\path[->] (result) edge[bend left=30] (save);
+\path[->] (save) edge[] (print);
+\path[->] (print) edge[] (visualize);
+\path[->] (visualize) edge[bend left=30] (simulation);
+
+% ------------------------------------------------------------------------------
+% Core
+% ------------------------------------------------------------------------------
+
 
 \end{tikzpicture}
 \end{document}

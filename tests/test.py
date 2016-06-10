@@ -2,7 +2,7 @@ import numpy as np
 
 from src.core.force import force_social_naive, force_social
 from src.core.integrator import explicit_euler_method
-from src.params import Params
+from src.parameters import Parameters
 from src.struct.agent import Agent
 from src.struct.constant import Constant
 from src.struct.result import Result
@@ -16,7 +16,7 @@ np.set_printoptions(precision=5, threshold=100, edgeitems=3, linewidth=75,
 
 
 size = 300
-params = Params(50, 50)
+params = Parameters(50, 50)
 
 result = Result(size)
 constant = Constant()

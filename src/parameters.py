@@ -18,7 +18,7 @@ body_types = dict(
 )
 
 
-class Params:
+class Parameters:
     """
     Generates random parameters for simulations and testing.
     """
