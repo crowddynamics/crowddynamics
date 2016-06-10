@@ -108,4 +108,25 @@ Value parameter of the game matrix
 \end{align}
 
 \subsection{Settings and best-response dynamics}
+\begin{table}[H]
+\begin{tabularx}{1.0\linewidth}{ r r r R }
+ & Unit & Value &  \\
+\hline
+\hline
+ & & 4 & von Neumann neighborhood \\
+ & & 8 & Moore neighborhood \\
+$ r_{n} $ & $ \mathrm{m} $ & 0.40 & Distance to agent that is considered as neighbor \\
+$ v_{i} $ & & & Loss defined by game matrix \\
+$ S $ &&& Set of strategies $ \{\mathrm{Patient}, \mathrm{Impatient}\} $ \\
+$ s $ &&& Strategy $ \in \{\mathrm{Patient}, \mathrm{Impatient}\} $ \\
+\end{tabularx}
+\end{table}
+
+The best-response strategy
+\begin{align}
+s_{i}^{(t)} = \arg\min_{s_{i}^{\prime}\in S} \sum_{j\in N_{i}} v_{i} \left(s_{i}^{\prime}, s_{j}^{(t-1)} ; T_{ij} \right)
+\end{align}
+
+$ s_{j}^{(t-1)} $ strategy neighbor played on period $ t-1 $
+
 

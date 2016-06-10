@@ -55,7 +55,7 @@ class Result(object):
             return 1
 
     def avg_wall_time(self):
-        if self.iterations > 0:
+        if self.iterations > 1:
             return self.wall_time_tot / (self.iterations - 1)
         else:
             return 0

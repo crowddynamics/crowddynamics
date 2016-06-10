@@ -12,7 +12,7 @@ def agent_agent(constant, agent):
         for j in range(i + 1, agent.size):
             relative_position = agent.position[i] - agent.position[j]
             relative_velocity = agent.velocity[i] - agent.velocity[j]
-            total_radius = agent.radius[i, 0] + agent.radius[j, 0]
+            total_radius = agent.radius[i] + agent.radius[j]
             distance = np.hypot(relative_position[0], relative_position[1])
             relative_distance = total_radius - distance
 
@@ -58,15 +58,14 @@ def agent_wall(constant, agent, wall):
     for w in range(wall.size):
         for i in range(agent.size):
             distance, normal = wall.distance_with_normal(w, agent.position[i])
-            radius = agent.radius[i, 0]
-            relative_distance = radius - distance
+            relative_distance = agent.radius[i] - distance
 
             if distance <= agent.sight_wall:
                 relative_position = wall.relative_position(w, agent.position[i],
                                                            agent.velocity[i])
                 force = force_social(relative_position,
                                      agent.velocity[i],
-                                     radius,
+                                     agent.radius[i],
                                      constant.k,
                                      constant.tau_0)
                 force_limit(force, constant.f_soc_iw_max)

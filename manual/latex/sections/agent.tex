@@ -1,8 +1,7 @@
 \section{Agents}
 \subsection{Properties}
 
-Shoulder, torso and total radii.
-
+\begin{table}[H]
 \begin{tabularx}{1.0\linewidth}{ l l l l l l}
 & Total && Torso & Shoulder & \\
 \hline
@@ -15,13 +14,15 @@ female & $ 0.240 $ & $ 0.020 $ & $ 0.5833 $ & $ 0.3750 $ & $ 0.6250 $ \\
 male & $ 0.270 $ & $ 0.020 $ & $ 0.5926 $ & $ 0.3704 $ & $ 0.6296 $ \\
 \hline
 \end{tabularx} 
+\caption{Shoulder, torso and total radii.}
+\end{table}
 
-Properties
 
+\begin{table}[H]
 \begin{tabularx}{1.0\linewidth}{ l l l l }
 \hline
 \hline
-$ r $                    & $ \mathrm{m} $ &  & Radius \\
+$ r $                    & $ \mathrm{m} $ &  & Total radius \\
 $ m $                    & $ \mathrm{kg} $ & $ 80 $ & Mass \\
 $ I $                    & $ \mathrm{kg \cdot m^{2}} $ & $ 4.0 $ & Rotational moment \\
 \hline
@@ -33,7 +34,7 @@ $ \hat{\mathbf{e}}_{0} $ &  &  & Goal direction \\
 $ \hat{\mathbf{e}} $     &  &  & Target direction \\
 \hline
 \hline
-$ \varphi $              & $ \mathrm{rad} $ &  & Body angle \\
+$ \varphi $              & $ \mathrm{rad} $ & $ [0, 2 \pi] $ & Body angle \\
 $ \omega $               & $ \mathrm{rad} / \mathrm{s} $ &  & Angular velocity \\
 $ \varphi_{0} $          & $ \mathrm{rad} $ &  & Target angle \\
 $ \omega_{0} $           & $ \mathrm{rad} / \mathrm{s} $ & $ 4\pi $ & Max angular velocity \\
@@ -44,24 +45,37 @@ $ p $                    &  & $ 0 - 1 $ & Herding tendency \\
 \hline
 \hline
 \end{tabularx}
+\caption{Properties}
+\end{table}
 
-Relative
 
+\begin{table}[H]
 \begin{tabularx}{1.0\linewidth}{ll}
 \hline
 \hline
 $ \tilde{\mathbf{x}} = \mathbf{x}_{i} - \mathbf{x}_{j} $ & Relative position \\
 $ \tilde{\mathbf{v}} = \mathbf{v}_{i} - \mathbf{v}_{j} $ & Relative velocity \\
+\hline
+\hline
+\end{tabularx}
+\caption{Relative}
+\end{table}
+
+
+\subsection{Circular agent}
+
+\begin{table}[H]
+\begin{tabularx}{1.0\linewidth}{ll}
+\hline
+\hline
 $ d = \left\|\tilde{\mathbf{x}}\right\| $ & Distance\\
 $ \hat{\mathbf{n}} = \tilde{\mathbf{x}} / d $ & Normal vector \\
 $ \hat{\mathbf{t}} = R(-90^{\circ}) \cdot \hat{\mathbf{n}} $ & Tangent vector \\
 \hline
 \hline
 \end{tabularx}
+\end{table}
 
-
-
-\subsection{Circular agent}
 Total radius and relative distance
 \begin{align}
 \tilde{r} &= r_{i} + r_{j} \\
@@ -71,7 +85,37 @@ h &= \tilde{r} - d
 
 \subsection{Three circles}
 
+\begin{align}
+\mathbf{c}_{r} &= \hat{\mathbf{t}} r_{ts} + \mathbf{x}\\
+\mathbf{c}_{l} &= - \hat{\mathbf{t}} r_{ts} + \mathbf{x} \\
+\hat{\mathbf{t}} &= \begin{bmatrix}
+-\sin(\varphi), \cos(\varphi)
+\end{bmatrix}
+\end{align}
 
+\begin{align}
+\mathbf{h} = \left(\begin{bmatrix} r_{t} & r_{s} & r_{s} \end{bmatrix}_{i} + \begin{bmatrix} r_{t} \\ r_{s} \\ r_{s} \end{bmatrix}_{j}\right) - \left\|\begin{bmatrix} \mathbf{x} & \mathbf{c}_{r} & \mathbf{c}_{l} \end{bmatrix}_{i} - \begin{bmatrix} \mathbf{x} \\ \mathbf{c}_{r} \\ \mathbf{c}_{l} \end{bmatrix}_{j}\right\|
+\end{align}
+
+\begin{align}
+\left\|\begin{bmatrix} 0 & \hat{\mathbf{t}} r_{ts} & -\hat{\mathbf{t}} r_{ts} \end{bmatrix}_{i} - \begin{bmatrix} 0 \\ \hat{\mathbf{t}} r_{ts} \\ -\hat{\mathbf{t}} r_{ts} \end{bmatrix}_{j}  + (\mathbf{x}_{i} - \mathbf{x}_{j}) \right\|
+\end{align}
+
+\begin{align}
+\left\|\begin{bmatrix} 0 & 1 & -1 \end{bmatrix} \left(\hat{\mathbf{t}} r_{ts}\right)_{i} - \begin{bmatrix} 0 \\ 1 \\ -1 \end{bmatrix} \left(\hat{\mathbf{t}} r_{ts}\right)_{j}  + \tilde{\mathbf{x}} \right\|
+\end{align}
+
+\begin{enumerate}
+\item Find $ h_{max} = \max(\mathbf{h}) $ and keep tract of the circles that maximizes this distance.
+
+\item Two circles found $ (\mathbf{p}_{0}, r_{0}) $ and $ (\mathbf{p}_{1}, r_{1}) $
+
+\item Compute $ \mathbf{r}_{i}^{soc} $
+
+\item If $ h > 0 $ compute $ \mathbf{r}_{i}^{c} $ else $ \mathbf{0} $
+
+\item Return $ (h_{max}, \mathbf{r}_{i}^{soc}, \mathbf{r}_{i}^{c}) $
+\end{enumerate}
 
 \subsection{Rotational equation}
 % FDS evac manual pages: 20 - 21

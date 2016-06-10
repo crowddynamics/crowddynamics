@@ -14,8 +14,11 @@ spec_agent = OrderedDict(
     size=int64,
     shape=UniTuple(int64, 2),
 
+    three_circles_flag=boolean,
+    herding_flag=boolean,
+
     mass=float64[:, :],
-    radius=float64[:, :],
+    radius=float64[:],
     radius_torso=float64[:],
     radius_shoulder=float64[:],
     radius_torso_shoulder=float64[:],
@@ -43,7 +46,6 @@ spec_agent = OrderedDict(
     sight_wall=float64,
     sight_herding=float64,
 
-    herding_flag=boolean,
     herding_tendency=float64[:],
     neighbor_direction=float64[:, :],
     neighbors=float64[:],
@@ -89,8 +91,12 @@ class Agent(object):
         self.size = size
         self.shape = (size, 2)
 
+        # Flags - Which features are active.
+        self.three_circles_flag = False
+        self.herding_flag = False
+
         # Agent properties
-        self.radius = radius.reshape(size, 1)  # TODO: shape?
+        self.radius = radius
         self.radius_torso = radius_torso
         self.radius_shoulder = radius_shoulder
         self.radius_torso_shoulder = radius_torso_shoulder
@@ -125,7 +131,6 @@ class Agent(object):
         self.sight_herding = 20.0
 
         # Herding
-        self.herding_flag = False
         self.herding_tendency = np.zeros(self.size)
         self.neighbor_direction = np.zeros(self.shape)
         self.neighbors = np.zeros(self.size)
