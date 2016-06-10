@@ -4,7 +4,7 @@ import numpy as np
 from numba import float64, int64
 from numba import jitclass
 
-from src.core.functions import rotate90
+from crowd_dynamics.core.functions import rotate90
 
 spec_round = OrderedDict(
     params=float64[:, :],

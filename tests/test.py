@@ -1,13 +1,13 @@
 import numpy as np
 
-from src.core.force import force_social_naive, force_social
-from src.core.integrator import explicit_euler_method
-from src.parameters import Parameters
-from src.struct.agent import Agent
-from src.struct.constant import Constant
-from src.struct.result import Result
-from src.struct.wall import LinearWall, RoundWall
-from src.simulation import Simulation
+from crowd_dynamics.core.force import force_social_naive, force_social
+from crowd_dynamics.core.integrator import explicit_euler_method
+from crowd_dynamics.parameters import Parameters
+from crowd_dynamics.struct.agent import Agent
+from crowd_dynamics.struct.constant import Constant
+from crowd_dynamics.struct.result import Result
+from crowd_dynamics.struct.wall import LinearWall, RoundWall
+from crowd_dynamics.simulation import Simulation
 
 
 np.set_printoptions(precision=5, threshold=100, edgeitems=3, linewidth=75,

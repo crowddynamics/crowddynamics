@@ -1,9 +1,9 @@
 import unittest
 
-from src.parameters import Parameters
-from src.struct.agent import Agent, agent_attr_names
-from src.struct.constant import Constant, constant_attr_names
-from src.struct.wall import LinearWall, RoundWall, wall_attr_names
+from crowd_dynamics.parameters import Parameters
+from crowd_dynamics.struct.agent import Agent, agent_attr_names
+from crowd_dynamics.struct.constant import Constant, constant_attr_names
+from crowd_dynamics.struct.wall import LinearWall, RoundWall, wall_attr_names
 
 
 class MyTestCase(unittest.TestCase):

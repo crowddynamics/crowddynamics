@@ -1,7 +1,7 @@
 import numba
 
-from src.core.force import force_adjust, force_random
-from src.core.interactions import agent_agent, agent_wall
+from crowd_dynamics.core.force import force_adjust, force_random
+from crowd_dynamics.core.interactions import agent_agent, agent_wall
 
 
 # @numba.jit(nopython=True, nogil=True)

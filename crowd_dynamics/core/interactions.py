@@ -1,8 +1,8 @@
 import numba
 import numpy as np
 
-from src.core.force import force_social, force_contact
-from src.core.functions import force_limit, rotate270, normalize
+from crowd_dynamics.core.force import force_social, force_contact
+from crowd_dynamics.core.functions import force_limit, rotate270, normalize
 
 
 @numba.jit(nopython=True, nogil=True)

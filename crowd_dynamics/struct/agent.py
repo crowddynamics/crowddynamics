@@ -7,7 +7,7 @@ from numba.types import UniTuple
 from numba import float64, int64, boolean
 from numba import jitclass, generated_jit, types
 
-from src.core.functions import normalize_vec, normalize
+from crowd_dynamics.core.functions import normalize_vec, normalize
 
 
 spec_agent = OrderedDict(
