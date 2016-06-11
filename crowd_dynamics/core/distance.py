@@ -44,7 +44,7 @@ def agent_distance(agent, i, j, x_tilde, d_ij):
     r_moment_i = agent.position[i] + c[0] + r[0] * e_ij
     r_moment_j = agent.position[j] + c[1] - r[1] * e_ij
 
-    return h_min, r_moment_i, r_moment_j, x_rel, r_tot
+    return x_rel, r_tot, h_min, r_moment_i, r_moment_j
 
 
 def agent_wall_distance():

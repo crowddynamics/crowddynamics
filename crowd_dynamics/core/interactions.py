@@ -19,7 +19,8 @@ def agent_agent(constant, agent):
 
             # If agent is orientable
             if agent.orientable_flag:
-                # Update distance, total radius and radius vector for torque
+                # Update relative position, relative distance, total radius
+                # and radius vectors for torque
                 # Three circles model
                 pass
 
