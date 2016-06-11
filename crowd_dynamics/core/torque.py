@@ -10,9 +10,9 @@ def torque_random(agent):
 
 
 @numba.jit(nopython=True, nogil=True)
-def torque_adjust(moment_rot, phi, omega, phi_0, omega_0, tau):
+def torque_adjust(inertia_rot, phi, omega, phi_0, omega_0, tau):
     """Adjusting torque."""
-    return moment_rot / tau * ((phi - phi_0) * omega_0 - omega)
+    return inertia_rot / tau * ((phi - phi_0) * omega_0 - omega)
 
 
 @numba.jit(nopython=True, nogil=True)

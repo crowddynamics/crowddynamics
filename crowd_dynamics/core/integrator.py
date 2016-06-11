@@ -12,6 +12,8 @@ def explicit_euler_method(result, constant, agent, wall1=None, wall2=None):
 
         # Forces
         agent.reset_force()
+        agent.reset_force_debug()
+
         force_adjust(constant, agent)
         force_random(constant, agent)
         agent_agent(constant, agent)
@@ -44,6 +46,7 @@ def euler_method0(result, constant, agent):
         agent.goal_to_target_direction()
         # Update  position
         agent.reset_force()
+        agent.reset_force_debug()
         _f_tot0(constant, agent)
         acceleration = agent.force / agent.mass
         agent.velocity += acceleration * constant.dt
@@ -68,6 +71,7 @@ def euler_method(result, constant, agent, wall):
         agent.goal_to_target_direction()
         # Update  position
         agent.reset_force()
+        agent.reset_force_debug()
         _f_tot(constant, agent, wall)
         acceleration = agent.force / agent.mass
         agent.velocity += acceleration * constant.dt
@@ -93,6 +97,7 @@ def euler_method2(result, constant, agent, wall1, wall2):
         agent.goal_to_target_direction()
         # Update  position
         agent.reset_force()
+        agent.reset_force_debug()
         _f_tot2(constant, agent, wall1, wall2)
         acceleration = agent.force / agent.mass
         agent.velocity += acceleration * constant.dt

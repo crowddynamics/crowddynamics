@@ -15,7 +15,7 @@ spec_agent = OrderedDict(
     shape=UniTuple(int64, 2),
 
     three_circles_flag=boolean,
-    orientable=boolean,
+    orientable_flag=boolean,
     herding_flag=boolean,
 
     mass=float64[:, :],
@@ -94,7 +94,7 @@ class Agent(object):
 
         # Flags - Which features are active.
         self.three_circles_flag = False
-        self.orientable = self.three_circles_flag
+        self.orientable_flag = self.three_circles_flag
         self.herding_flag = False
 
         # Agent properties
@@ -102,6 +102,7 @@ class Agent(object):
         self.radius_torso = radius_torso
         self.radius_shoulder = radius_shoulder
         self.radius_torso_shoulder = radius_torso_shoulder
+
         self.mass = mass.reshape(size, 1)
         self.inertia_rot = inertia_rot
 

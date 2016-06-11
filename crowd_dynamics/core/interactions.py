@@ -14,42 +14,42 @@ def agent_agent(constant, agent):
             relative_velocity = agent.velocity[i] - agent.velocity[j]
             total_radius = agent.radius[i] + agent.radius[j]
             distance = np.hypot(relative_position[0], relative_position[1])
-            relative_distance = total_radius - distance
+            relative_distance = distance - total_radius
 
             # If agent is orientable
             # TODO: threshold distance
-            if agent.orientable:
-                # Update distance and calculate torque
+            if agent.orientable_flag:
+                # Update distance and calculate radii for torque
                 pass
 
             # If another agent is in range of sight_soc.
             if distance <= agent.sight_soc:
-                force = force_social(relative_position,
-                                     relative_velocity,
-                                     total_radius,
-                                     constant.k,
-                                     constant.tau_0)
-                force_limit(force, constant.f_soc_ij_max)
-                agent.force[i] += force
-                agent.force[j] -= force
-                # agent.force_agent[i] += force
-                # agent.force_agent[j] -= force
+                force_soc = force_social(relative_position,
+                                         relative_velocity,
+                                         total_radius,
+                                         constant.k,
+                                         constant.tau_0)
+                force_limit(force_soc, constant.f_soc_ij_max)
+                agent.force[i] += force_soc
+                agent.force[j] -= force_soc
+                agent.force_agent[i] += force_soc
+                agent.force_agent[j] -= force_soc
 
             # If agents are overlapping.
-            if relative_distance > 0:
+            if relative_distance < 0:
                 normal = relative_position / distance
                 tangent = rotate270(normal)
-                force = force_contact(relative_distance,
-                                      normal,
-                                      relative_velocity,
-                                      tangent,
-                                      constant.mu,
-                                      constant.kappa)
-                force_limit(force, constant.f_c_ij_max)
-                agent.force[i] += force
-                agent.force[j] -= force
-                # agent.force_agent[i] += force
-                # agent.force_agent[j] -= force
+                force_c = force_contact(relative_distance,
+                                        normal,
+                                        relative_velocity,
+                                        tangent,
+                                        constant.mu,
+                                        constant.kappa)
+                force_limit(force_c, constant.f_c_ij_max)
+                agent.force[i] += force_c
+                agent.force[j] -= force_c
+                agent.force_agent[i] += force_c
+                agent.force_agent[j] -= force_c
 
             # Herding
             if agent.herding_flag and distance <= agent.sight_herding:
@@ -64,7 +64,7 @@ def agent_wall(constant, agent, wall):
     for w in range(wall.size):
         for i in range(agent.size):
             distance, normal = wall.distance_with_normal(w, agent.position[i])
-            relative_distance = agent.radius[i] - distance
+            relative_distance = distance - agent.radius[i]
 
             if distance <= agent.sight_wall:
                 relative_position = wall.relative_position(w, agent.position[i],
@@ -75,11 +75,10 @@ def agent_wall(constant, agent, wall):
                                      constant.k,
                                      constant.tau_0)
                 force_limit(force, constant.f_soc_iw_max)
-
                 agent.force[i] += force
-                # agent.force_wall[i] += force
+                agent.force_wall[i] += force
 
-            if relative_distance > 0:
+            if relative_distance < 0:
                 t_iw = rotate270(normal)
                 force = force_contact(relative_distance,
                                       normal,
@@ -89,4 +88,4 @@ def agent_wall(constant, agent, wall):
                                       constant.kappa)
                 force_limit(force, constant.f_c_iw_max)
                 agent.force[i] += force
-                # agent.force_wall[i] += force
+                agent.force_wall[i] += force

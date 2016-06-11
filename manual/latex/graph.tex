@@ -33,8 +33,8 @@
 \def\width{18}
 \def\height{13}
 
-\pgfmathsetmacro{\xoffset}{\width / 2}
-\pgfmathsetmacro{\yoffset}{\height / 2}
+\pgfmathsetmacro{\xoffset}{\width / 2 + 2}
+\pgfmathsetmacro{\yoffset}{\height / 2 + 2}
 
 \tikzset{
     x=1cm, 
@@ -57,9 +57,9 @@
 \node[mynode] (simulation) at ($ (origin) - (0, 2) $) {Simulation};
 \node[above=1 cm of simulation] (loop) {Main Loop};
 
-\node[below=1.0 cm of simulation] (dummy) {}; 
-\node[mynode, left =2.0 cm of dummy] (parameters) {Parameters};
-\node[mynode, right=2.0 cm of dummy] (analysis) {Analysis};
+%\node[below=1.0 cm of simulation] (dummy) {}; 
+\node[mynode, below left=2.0 cm of simulation] (parameters) {Parameters};
+\node[mynode, below right=2.0 cm of simulation] (analysis) {Analysis};
 
 \path[->] (parameters) edge[bend left = 30] (simulation);
 \path[->] (simulation) edge[bend left = 30] (analysis);
@@ -81,8 +81,8 @@
 % ------------------------------------------------------------------------------
 % Simulation
 % ------------------------------------------------------------------------------
-\node[mynode, above left=1.0 cm of simulation] (pathfinding) {Path finding};
-\node[mynode, above=1.0 cm of pathfinding] (game) {Game};
+\node[mynode, above left=1.0 cm of simulation] (navigation) {Navigation};
+\node[mynode, above=1.0 cm of navigation] (game) {Game};
 \node[mynode, above=1.0 cm of game] (integrator) {Integrator};
 \node[mynode, above=7.0 cm of simulation] (result) {Result};
 
@@ -90,8 +90,8 @@
 \node[mynode, above=1.0 cm of visualize] (print) {Print};
 \node[mynode, above=1.0 cm of print] (save) {Save};
 
-\path[->] (simulation) edge[bend left=30] (pathfinding);
-\path[->] (pathfinding) edge[] (game);
+\path[->] (simulation) edge[bend left=30] (navigation);
+\path[->] (navigation) edge[] (game);
 \path[->] (game) edge[] (integrator);
 \path[->] (integrator) edge[bend left=30] (result);
 \path[->] (result) edge[bend left=30] (save);
@@ -102,6 +102,36 @@
 % ------------------------------------------------------------------------------
 % Core
 % ------------------------------------------------------------------------------
+
+\node[mynode, left = 1.0 cm of integrator] (rotational) {Rotational};
+\node[mynode, above left = 1.0 cm of integrator] (forces) {Forces};
+
+\path[->] (rotational) edge[] (integrator);
+\path[->] (forces) edge[bend left] (integrator);
+
+% ------------------------------------------------------------------------------
+% Game
+% ------------------------------------------------------------------------------
+
+\node[mynode, left=1.0 cm of game] (strategy) {Strategy};
+
+\path[->] (strategy) edge[] (game);
+
+% ------------------------------------------------------------------------------
+% Navigation
+% ------------------------------------------------------------------------------
+
+\node[mynode, left=0.5 cm of navigation] (astar) {$ A^{*} $};
+\node[mynode, below left=0.5 cm of navigation] (potentialfied) {Potential Field};
+
+\path[->] (astar) edge[] (navigation);
+\path[->] (potentialfied) edge[bend right] (navigation); 
+
+% ------------------------------------------------------------------------------
+% Analysis
+% ------------------------------------------------------------------------------
+
+
 
 
 \end{tikzpicture}

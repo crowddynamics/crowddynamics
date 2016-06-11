@@ -1,9 +1,12 @@
 import numba
 import numpy as np
 
+from crowd_dynamics.core.functions import normalize
+
 
 @numba.jit(nopython=True, nogil=True)
 def agent_distance(agent, i, j, x_rel, dist_rel):
+    """Three circles model"""
     t_i = np.array((-np.sin(agent.angle[i]), np.cos(agent.angle[i])))
     t_j = np.array((-np.sin(agent.angle[j]), np.cos(agent.angle[j])))
 
@@ -34,11 +37,13 @@ def agent_distance(agent, i, j, x_rel, dist_rel):
                 h_min = d
                 r_min = ri, rj
                 c_min = ci, cj
-                direction = vec / hypot
+                direction = normalize(vec / hypot)
 
-    # Torque
-    if h_min < 0:
-        # Physical contact
-        pass
+    r_moment = (c_min[0] + r_min[0] * direction + x_rel,
+                c_min[1] - r_min[1] * direction + x_rel)
 
-    return h_min
+    return h_min, r_moment
+
+
+def agent_wall_distance():
+    pass
