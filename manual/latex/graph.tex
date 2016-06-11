@@ -30,17 +30,20 @@
 \makeatother
 
 % Dimensions
-\def\width{18}
-\def\height{13}
+% Ratio of a4paper 210 x 297 mm
+\def\width{29.7}
+\def\height{21.0}
 
-\pgfmathsetmacro{\xoffset}{\width / 2 + 2}
-\pgfmathsetmacro{\yoffset}{\height / 2 + 2}
+\pgfmathsetmacro{\xoffset}{\width / 2}
+\pgfmathsetmacro{\yoffset}{\height / 2}
 
 \tikzset{
     x=1cm, 
     y=1cm,
     mynode/.style={rectangle,rounded corners,draw=black, top color=white, bottom color=white!50, inner sep=1em, minimum size=3em, text centered}
 }
+
+% http://tex.stackexchange.com/questions/69439/how-can-i-achieve-relative-positioning-in-tikz
 
 \begin{document}
 \begin{tikzpicture}

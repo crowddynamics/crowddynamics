@@ -17,7 +17,7 @@ Psychological force for collision avoidance
 
 \subsubsection{Velocity independent}
 \begin{align}
-\mathbf{f}^{soc} &= A \exp\left(\frac{h}{B}\right) \hat{\mathbf{n}}
+\mathbf{f}^{soc} &= A \exp\left(-\frac{h}{B}\right) \hat{\mathbf{n}}
 \end{align}
 
 
@@ -48,14 +48,14 @@ d &= \sqrt{b^{2} - a c}, \quad b^{2} - a c > 0 \\
 \subsection{Contact force}
 Physical contact force
 \begin{align}
-\mathbf{f}^{c} &= h \cdot \left(\mu \cdot \hat{\mathbf{n}} - \kappa \cdot (\mathbf{v} \cdot \hat{\mathbf{t}}) \hat{\mathbf{t}}\right), \quad h > 0
+\mathbf{f}^{c} &= - h \cdot \left(\mu \cdot \hat{\mathbf{n}} - \kappa \cdot (\mathbf{v} \cdot \hat{\mathbf{t}}) \hat{\mathbf{t}}\right), \quad h > 0
 \end{align}
 
 
 \subsection{Random Fluctuation}
 Uniformly distributed random fluctuation force
 \begin{align}
-\boldsymbol{\xi} &= f \cdot \begin{bmatrix} \cos(\varphi), & \sin(\varphi) \end{bmatrix},
+\boldsymbol{\xi} &= f \cdot \begin{bmatrix} \cos(\varphi) & \sin(\varphi) \end{bmatrix},
 \end{align}
 where
 \begin{align}

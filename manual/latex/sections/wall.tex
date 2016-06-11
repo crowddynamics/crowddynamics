@@ -8,7 +8,7 @@ $ \mathbf{p}_{0} $ & Start point \\
 $ \mathbf{p}_{1} $ & End point \\
 \hline
 \hline
-$ h_{iw} = r_{i} - d_{iw} $ & \\
+$ h_{iw} = d_{iw} - r_{i} $ & \\
 $ l_{w} = \left\|\mathbf{p}_{1} - \mathbf{p}_{0}\right\| $ & Length \\
 $ \hat{\mathbf{t}}_{w} = \left(\mathbf{p}_{1} - \mathbf{p}_{0}\right) / l_{w} $ & \\
 $ \hat{\mathbf{n}}_{w} = R(90^{\circ}) \cdot \hat{\mathbf{t}}_{w} $ & \\
@@ -74,15 +74,19 @@ Normal vector away from the wall
 
 \begin{table}[H]
 \centering
-\begin{tabular}{ll}
+\begin{tabularx}{1.0\linewidth}{ R R }
+\hline
+\hline
 $ \tilde{\mathbf{x}} = \mathbf{x}_{iw} $ & Relative position \\
 $ \tilde{\mathbf{v}} = \mathbf{v}_{iw} = \mathbf{v}_{i} $ & Relative velocity \\
 $ \tilde{r} = r_{iw} $ & Total radius \\
 $ d = \left\|\tilde{\mathbf{x}}\right\| $ & Distance\\
-$ h = \tilde{r} - d $ & Relative distance \\
+$ h = d - \tilde{r} $ & Relative distance \\
 %$ \hat{\mathbf{n}} = \tilde{\mathbf{x}} / d $ & Normal vector \\
 %$ \hat{\mathbf{t}} = R(-90^{\circ}) \cdot \hat{\mathbf{n}} $ & Tangent vector \\
-\end{tabular}
+\hline
+\hline
+\end{tabularx}
 \end{table}
 
 Dividing vectors

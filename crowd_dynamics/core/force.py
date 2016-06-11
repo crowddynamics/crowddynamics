@@ -49,9 +49,6 @@ def force_social(x_rel, v_rel, r_tot, k, tau_0):
     """
     force = np.zeros_like(x_rel)
 
-    # a = np.dot(v_rel, v_rel)
-    # b = - np.dot(x_rel, v_rel)
-    # c = np.dot(x_rel, x_rel) - r_tot ** 2
     a = dot2d(v_rel, v_rel)
     b = - dot2d(x_rel, v_rel)
     c = dot2d(x_rel, x_rel) - r_tot ** 2

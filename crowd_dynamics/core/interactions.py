@@ -10,6 +10,7 @@ def agent_agent(constant, agent):
     # n - 1 + n - 2 + ... + 1 = n^2 / 2
     for i in range(agent.size - 1):
         for j in range(i + 1, agent.size):
+            # Function params
             relative_position = agent.position[i] - agent.position[j]
             relative_velocity = agent.velocity[i] - agent.velocity[j]
             total_radius = agent.radius[i] + agent.radius[j]
@@ -17,13 +18,13 @@ def agent_agent(constant, agent):
             relative_distance = distance - total_radius
 
             # If agent is orientable
-            # TODO: threshold distance
             if agent.orientable_flag:
-                # Update distance and calculate radii for torque
+                # Update distance, total radius and radius vector for torque
+                # Three circles model
                 pass
 
-            # If another agent is in range of sight_soc.
-            if distance <= agent.sight_soc:
+            # Agent sees the other agent
+            if relative_distance <= agent.sight_soc:
                 force_soc = force_social(relative_position,
                                          relative_velocity,
                                          total_radius,
@@ -35,7 +36,7 @@ def agent_agent(constant, agent):
                 agent.force_agent[i] += force_soc
                 agent.force_agent[j] -= force_soc
 
-            # If agents are overlapping.
+            # Physical contact
             if relative_distance < 0:
                 normal = relative_position / distance
                 tangent = rotate270(normal)
@@ -63,10 +64,11 @@ def agent_agent(constant, agent):
 def agent_wall(constant, agent, wall):
     for w in range(wall.size):
         for i in range(agent.size):
+            # Function params
             distance, normal = wall.distance_with_normal(w, agent.position[i])
             relative_distance = distance - agent.radius[i]
 
-            if distance <= agent.sight_wall:
+            if relative_distance <= agent.sight_wall:
                 relative_position = wall.relative_position(w, agent.position[i],
                                                            agent.velocity[i])
                 force = force_social(relative_position,

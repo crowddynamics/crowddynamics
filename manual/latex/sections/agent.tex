@@ -2,10 +2,10 @@
 \subsection{Properties}
 
 \begin{table}[H]
-\begin{tabularx}{1.0\linewidth}{ l l l l l l}
+\begin{tabularx}{1.0\linewidth}{ l r r r r r}
 & Total && Torso & Shoulder & \\
 \hline
-& $ r $ & $ \pm $ & $ r_{\text{t}} / r $ & $ r_{\text{s}} / r $ & $ r_{ts} / r $ \\
+& $ r $ & $ \pm $ & $ k_{t} = \frac{r_{t}}{r} $ & $ k_{s} = \frac{r_{s}}{r} $ & $ k_{ts} = \frac{r_{ts}}{r} $ \\
 \hline\hline
 adult & $ 0.255 $ & $ 0.035 $ & $ 0.5882 $ & $ 0.3725 $ & $ 0.6275 $ \\
 child & $ 0.210 $ & $ 0.015 $ & $ 0.5714 $ & $ 0.3333 $ & $ 0.6667 $ \\
@@ -62,7 +62,8 @@ $ \tilde{\mathbf{v}} = \mathbf{v}_{i} - \mathbf{v}_{j} $ & Relative velocity \\
 \end{table}
 
 
-\subsection{Circular agent}
+\subsection{Models}
+\subsubsection{Circular}
 
 \begin{table}[H]
 \begin{tabularx}{1.0\linewidth}{ll}
@@ -79,48 +80,65 @@ $ \hat{\mathbf{t}} = R(-90^{\circ}) \cdot \hat{\mathbf{n}} $ & Tangent vector \\
 Total radius and relative distance
 \begin{align}
 \tilde{r} &= r_{i} + r_{j} \\
-h &= \tilde{r} - d
+h &= d - \tilde{r}
 \end{align}
 
 
-\subsection{Three circles}
+\subsubsection{Three circles}
 
 \begin{align}
-\mathbf{c}_{r} &= \hat{\mathbf{t}} r_{ts} + \mathbf{x}\\
-\mathbf{c}_{l} &= - \hat{\mathbf{t}} r_{ts} + \mathbf{x} \\
-\hat{\mathbf{t}} &= \begin{bmatrix}
--\sin(\varphi), \cos(\varphi)
-\end{bmatrix}
+\mathbf{x}_{r} &= \mathbf{x}_{c} + \hat{\mathbf{t}} r_{ts}  \\
+\mathbf{x}_{l} &= \mathbf{x}_{c} - \hat{\mathbf{t}} r_{ts} \\
+\hat{\mathbf{t}} &= \begin{bmatrix} -\sin(\varphi) & \cos(\varphi) \end{bmatrix}
 \end{align}
 
 \begin{align}
-\mathbf{h} = \left(\begin{bmatrix} r_{t} & r_{s} & r_{s} \end{bmatrix}_{i} + \begin{bmatrix} r_{t} \\ r_{s} \\ r_{s} \end{bmatrix}_{j}\right) - \left\|\begin{bmatrix} \mathbf{x} & \mathbf{c}_{r} & \mathbf{c}_{l} \end{bmatrix}_{i} - \begin{bmatrix} \mathbf{x} \\ \mathbf{c}_{r} \\ \mathbf{c}_{l} \end{bmatrix}_{j}\right\|
+\mathbf{r}_{tot} = \begin{bmatrix} r_{t} & r_{s} & r_{s} \end{bmatrix}_{i} + \begin{bmatrix} r_{t} \\ r_{s} \\ r_{s} \end{bmatrix}_{j}
 \end{align}
 
 \begin{align}
-\left\|\begin{bmatrix} 0 & \hat{\mathbf{t}} r_{ts} & -\hat{\mathbf{t}} r_{ts} \end{bmatrix}_{i} - \begin{bmatrix} 0 \\ \hat{\mathbf{t}} r_{ts} \\ -\hat{\mathbf{t}} r_{ts} \end{bmatrix}_{j}  + (\mathbf{x}_{i} - \mathbf{x}_{j}) \right\|
+\mathbf{d} &= \left\|\begin{bmatrix} \mathbf{x}_{c} & \mathbf{x}_{r} & \mathbf{x}_{l} \end{bmatrix}_{i} - \begin{bmatrix} \mathbf{x}_{c} \\ \mathbf{x}_{r} \\ \mathbf{x}_{l} \end{bmatrix}_{j}\right\|
+\\
+&= \left\|\begin{bmatrix} 0 & \hat{\mathbf{t}} r_{ts} & -\hat{\mathbf{t}} r_{ts} \end{bmatrix}_{i} - \begin{bmatrix} 0 \\ \hat{\mathbf{t}} r_{ts} \\ -\hat{\mathbf{t}} r_{ts} \end{bmatrix}_{j}  + (\mathbf{x}_{i} - \mathbf{x}_{j}) \right\|
+\\
+&= \left\|\begin{bmatrix} 0 & 1 & -1 \end{bmatrix} \left(\hat{\mathbf{t}} r_{ts}\right)_{i} - \begin{bmatrix} 0 \\ 1 \\ -1 \end{bmatrix} \left(\hat{\mathbf{t}} r_{ts}\right)_{j}  + \tilde{\mathbf{x}} \right\|
+\\
+&= \left\| \mathbf{k} \left(\hat{\mathbf{t}} r_{ts}\right)_{i} - \mathbf{k}^{T} \left(\hat{\mathbf{t}} r_{ts}\right)_{j}  + \tilde{\mathbf{x}} \right\|
+\\
+&= \left\| \mathbf{c}_{i} - \mathbf{c}_{j}^{T}  + \tilde{\mathbf{x}} \right\|
 \end{align}
 
 \begin{align}
-\left\|\begin{bmatrix} 0 & 1 & -1 \end{bmatrix} \left(\hat{\mathbf{t}} r_{ts}\right)_{i} - \begin{bmatrix} 0 \\ 1 \\ -1 \end{bmatrix} \left(\hat{\mathbf{t}} r_{ts}\right)_{j}  + \tilde{\mathbf{x}} \right\|
+\mathbf{h} = \mathbf{d} - \mathbf{r}_{tot}
 \end{align}
 
 \begin{enumerate}
-\item Find $ h_{max} = \max(\mathbf{h}) $ and keep tract of the circles that maximizes this distance.
+\item Find 
+\begin{align}
+h = \min(\mathbf{h})
+\end{align}
+and track minimizing values
+\begin{align}
+\hat{\mathbf{e}}_{ij}, k_{i}, k_{j}, r_{i}, _{j}
+\end{align}
 
-\item Two circles found $ (\mathbf{p}_{0}, r_{0}) $ and $ (\mathbf{p}_{1}, r_{1}) $
+\item 
 
-\item Compute $ \mathbf{r}_{i}^{soc} $
+\begin{align}
+\mathbf{r}_{i}^{moment} &= \mathbf{x}_{i}^{c} + k_{i} \cdot \hat{\mathbf{t}}_{i} r_{i}^{ts} + r_{i} \hat{\mathbf{e}}_{ij} \\
+\mathbf{r}_{j}^{moment} &= \mathbf{x}_{j}^{c} + k_{j} \cdot \hat{\mathbf{t}}_{j} r_{j}^{ts} - r_{j} \hat{\mathbf{e}}_{ij}
+\end{align}
 
-\item If $ h > 0 $ compute $ \mathbf{r}_{i}^{c} $ else $ \mathbf{0} $
+\item Return $ (h, \mathbf{r}_{i}^{moment}, \mathbf{r}_{j}^{moment}) $
 
-\item Return $ (h_{max}, \mathbf{r}_{i}^{soc}, \mathbf{r}_{i}^{c}) $
 \end{enumerate}
+
+
 
 \subsection{Rotational equation}
 % FDS evac manual pages: 20 - 21
 
-Rotational equation of motion 
+For orientable agent models we have rotational equation of motion
 \begin{align}
 I \frac{d^{2}}{d t^{2}} \varphi(t) = M(t) + \eta(t),
 \end{align}

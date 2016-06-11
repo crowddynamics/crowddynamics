@@ -1,6 +1,10 @@
 % FDS + EVAC page 19
 % http://www.vtt.fi/inf/pdf/workingpapers/2009/W119.pdf
 
+\tikzset{
+    point/.style = {draw, circle, fill=white, inner sep=0.8pt}
+}
+
 \def \radius {5};
 
 % Centre (Origin)
@@ -44,9 +48,9 @@
 \draw[thick, ->] (centre) -- node[below] {$ \hat{\mathbf{t}} $} ($ (centre) + (1, 0) $);
 
 % Agent
-\node[point] (agent) at (centre) {$ \mathbf{x} $};
-\node[point] (shoulderLeft) at (centreLeft) {$ \mathbf{c}_{l} $};
-\node[point] (shoulderRigth) at (centreRigth) {$ \mathbf{c}_{r} $};
+\node[point] (agent) at (centre) {$ \mathbf{x}_{c} $};
+\node[point] (shoulderLeft) at (centreLeft) {$ \mathbf{x}_{l} $};
+\node[point] (shoulderRigth) at (centreRigth) {$ \mathbf{x}_{r} $};
 
 \draw[dashed, ->] (agent) -- node[below] {$ r_{ts} $} (shoulderLeft);
 %\draw[<->] (agent) -- node[below] {$ d $} (shoulderRigth);

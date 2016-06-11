@@ -1,12 +1,11 @@
 import numba
 import numpy as np
 
-from crowd_dynamics.core.functions import normalize
-
 
 @numba.jit(nopython=True, nogil=True)
-def agent_distance(agent, i, j, x_rel, dist_rel):
+def agent_distance(agent, i, j, x_tilde, d_ij):
     """Three circles model"""
+    # TODO: Pre-compute tangents
     t_i = np.array((-np.sin(agent.angle[i]), np.cos(agent.angle[i])))
     t_j = np.array((-np.sin(agent.angle[j]), np.cos(agent.angle[j])))
 
@@ -20,29 +19,32 @@ def agent_distance(agent, i, j, x_rel, dist_rel):
            agent.radius_shoulder[j],
            agent.radius_shoulder[j])
 
-    coeffs = (0, 1, -1)
-    h_min = dist_rel
-    r_min = (0.0, 0.0)
-    c_min = (np.zeros(2), np.zeros(2))
-    direction = np.zeros(2)
+    k = (0.0, 1.0, -1.0)
+    r = (0.0, 0.0)
+    c = (np.zeros(2), np.zeros(2))
+    x_rel = np.zeros(2)
+    e_ij = np.zeros(2)
 
-    for ri, k in zip(r_i, coeffs):
-        for rj, k2 in zip(r_j, coeffs):
-            ci = k * tr_i
-            cj = k2 * tr_j
-            vec = ci - cj + x_rel
-            hypot = np.hypot(vec[0], vec[1])
-            d = hypot - (ri + rj)
-            if d < h_min:
-                h_min = d
-                r_min = ri, rj
-                c_min = ci, cj
-                direction = normalize(vec / hypot)
+    h_min = d_ij
+    for ri, k_i in zip(r_i, k):
+        for rj, k_j in zip(r_j, k):
+            c_i = k_i * tr_i
+            c_j = k_j * tr_j
+            x = c_i - c_j + x_tilde
+            d = np.hypot(x[0], x[1])
+            h = d - (ri + rj)
+            if h < h_min:
+                h_min = h
+                r = ri, rj
+                c = c_i, c_j
+                x_rel = x
+                e_ij = x / d
 
-    r_moment = (c_min[0] + r_min[0] * direction + x_rel,
-                c_min[1] - r_min[1] * direction + x_rel)
+    r_tot = r[0] + r[1]
+    r_moment_i = agent.position[i] + c[0] + r[0] * e_ij
+    r_moment_j = agent.position[j] + c[1] - r[1] * e_ij
 
-    return h_min, r_moment
+    return h_min, r_moment_i, r_moment_j, x_rel, r_tot
 
 
 def agent_wall_distance():

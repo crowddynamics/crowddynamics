@@ -62,15 +62,13 @@
 \newcolumntype{C}{>{\centering\arraybackslash}X}%
 
 \begin{document}
+\input{sections/description}
 \input{sections/constants}
 
 % -- Agent figure --
 \begin{figure}[H]
 \centering
 \begin{tikzpicture}
-  [
-    point/.style = {draw, circle, fill=white, inner sep=0.5pt}
-  ]
 \input{figures/grid}
 \input{figures/agent}
 \end{tikzpicture}
@@ -92,9 +90,6 @@
 \begin{figure}[H]
 \centering
 \begin{tikzpicture}
-  [
-    point/.style = {draw, circle, fill=white, inner sep=1.4pt}
-  ]
 \input{figures/grid}
 \input{figures/wall}
 \end{tikzpicture}
@@ -104,9 +99,6 @@
 \begin{figure}[H]
 \centering
 \begin{tikzpicture}
-  [
-    point/.style = {draw, circle, fill=white, inner sep=1.4pt}
-  ]
 \input{figures/grid}
 \input{figures/wall2}
 \end{tikzpicture}

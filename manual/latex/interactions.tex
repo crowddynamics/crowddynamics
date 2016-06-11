@@ -30,32 +30,36 @@
 \makeatother
 
 % Dimensions
-\def\width{18}
-\def\height{13}
+\def\width{29.7}
+\def\height{21.0}
 
 \pgfmathsetmacro{\xoffset}{\width / 2}
 \pgfmathsetmacro{\yoffset}{\height / 2}
 
+\tikzset{
+    x = 1.0 cm, 
+    y = 1.0 cm,
+}
+
 \begin{document}
 \begin{tikzpicture}
-[
-    x=1cm, y=1cm,
-    point/.style = {draw, circle, fill=white, inner sep=0.5pt}
-]
+% ------------------------------------------------------------------------------
 % Origin centered grid
 % ------------------------------------------------------------------------------
 \coordinate[] (origin) at (0, 0);
 \coordinate[] (offset) at (\xoffset, \yoffset);
-
 \draw[step=1cm, line width=0.1mm, black!10!white] 
 ($ (origin) - (offset) $) grid ($ (origin) + (offset) $);
 % ------------------------------------------------------------------------------
-
-\begin{scope}[xshift=3cm, yshift=3cm, scale=0.6, rotate=20]
+% Agent i
+% ------------------------------------------------------------------------------
+\begin{scope}[xshift=5cm, yshift=4cm, rotate=20]
 \input{figures/agent}
 \end{scope}
-
-\begin{scope}[xshift=-2cm, yshift=-2cm, scale=0.6, rotate=-20]
+% ------------------------------------------------------------------------------
+% Agent j
+% ------------------------------------------------------------------------------
+\begin{scope}[xshift=-5cm, yshift=-2cm, rotate=-20]
 \input{figures/agent}
 \end{scope}
 
