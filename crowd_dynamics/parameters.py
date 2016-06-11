@@ -7,8 +7,8 @@ from scipy.stats import truncnorm
 # column = namedtuple("column", ("adult", "male", "female", "child", "eldery"))
 # radius, dr, torso, shoulder, shoulder distance, walking speed, dv
 # TODO: Body mass and rotational moment values table
-index = namedtuple("index", ("r", "dr", "k_t", "k_s", "k_ts", "v", "dv", "mass",
-                             "mass_scale"))
+index = namedtuple(
+    "index", ("r", "dr", "k_t", "k_s", "k_ts", "v", "dv", "mass", "mass_scale"))
 body_types = dict(
     adult=index(0.255, 0.035, 0.5882, 0.3725, 0.6275, 1.25, 0.30, 80, 10),
     male=index(0.270, 0.020, 0.5926, 0.3704, 0.6296, 1.35, 0.20, None, None),
@@ -52,9 +52,9 @@ class Parameters:
     def random_position(self, position, radius, x_dims=None, y_dims=None,
                         walls=None):
         """
-        Generate uniformly distributed random positions inside x_dims and y_dims for
-        the agents without overlapping each others or the walls with Monte Carlo
-        method.
+        Generate uniformly distributed random positions inside x_dims and y_dims
+        for the agents without overlapping each others or the walls with Monte
+        Carlo method.
         """
         # TODO: define area more accurately
         # TODO: check if area can be filled
