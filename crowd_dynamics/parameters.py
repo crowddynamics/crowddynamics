@@ -10,10 +10,10 @@ from scipy.stats import truncnorm
 index = namedtuple(
     "index", ("r", "dr", "k_t", "k_s", "k_ts", "v", "dv", "mass", "mass_scale"))
 body_types = dict(
-    adult=index(0.255, 0.035, 0.5882, 0.3725, 0.6275, 1.25, 0.30, 80, 10),
-    male=index(0.270, 0.020, 0.5926, 0.3704, 0.6296, 1.35, 0.20, None, None),
-    female=index(0.240, 0.020, 0.5833, 0.3750, 0.6250, 1.15, 0.20, None, None),
-    child=index(0.210, 0.015, 0.5714, 0.3333, 0.6667, 0.90, 0.30, None, None),
+    adult=index(0.255, 0.035, 0.5882, 0.3725, 0.6275, 1.25, 0.30, 75, 7),
+    male=index(0.270, 0.020, 0.5926, 0.3704, 0.6296, 1.35, 0.20, 82, 10),
+    female=index(0.240, 0.020, 0.5833, 0.3750, 0.6250, 1.15, 0.20, 67, 5),
+    child=index(0.210, 0.015, 0.5714, 0.3333, 0.6667, 0.90, 0.30, 57, 5),
     eldery=index(0.250, 0.020, 0.6000, 0.3600, 0.6400, 0.80, 0.30, None, None),
 )
 
@@ -32,8 +32,9 @@ class Parameters:
 
     @staticmethod
     def truncnorm(loc, scale, size):
-        tn = truncnorm(-3.0, 3.0)
-        values = np.array(tn.rvs(size) * scale / 3.0 + loc)
+        std = 3.0
+        tn = truncnorm(-std, std)
+        values = np.array(tn.rvs(size) * scale + loc)
         return values
 
     def random_2D_coordinates(self, size):

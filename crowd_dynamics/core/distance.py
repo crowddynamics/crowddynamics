@@ -24,7 +24,6 @@ def agent_distance(agent, i, j, x_tilde, d_ij):
     c = (np.zeros(2), np.zeros(2))
     x_rel = np.zeros(2)
     e_ij = np.zeros(2)
-
     h_min = d_ij
     for ri, k_i in zip(r_i, k):
         for rj, k_j in zip(r_j, k):

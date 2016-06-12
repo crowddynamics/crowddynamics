@@ -6,13 +6,15 @@ import numba
 def torque_random(agent):
     """Random torque."""
     for i in range(agent.size):
-        return np.random.uniform(-1, 1)
+        agent.torque += np.random.uniform(-1, 1)
 
 
 @numba.jit(nopython=True, nogil=True)
-def torque_adjust(inertia_rot, phi, omega, phi_0, omega_0, tau):
+def torque_adjust_(agent, constant):
     """Adjusting torque."""
-    return inertia_rot / tau * ((phi - phi_0) * omega_0 - omega)
+    agent.torque += agent.inertia_rot / constant.tau_adj_torque * (
+        (agent.angle - agent.target_angle) *
+        agent.target_angular_velocity - agent.angular_velocity)
 
 
 @numba.jit(nopython=True, nogil=True)

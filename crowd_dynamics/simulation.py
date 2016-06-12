@@ -22,7 +22,6 @@ class Simulation:
             return tuple(filter(None, arg))
 
         # List of thing to implement
-        # TODO: Saving to hdf5
         # TODO: Social force wall
         # TODO: Better Visualization and movie writing
         # TODO: Elliptical/Three circle Agent model and orientation
@@ -54,6 +53,7 @@ class Simulation:
         self.attrs_result = Attrs(result_attr_names)
         self.attrs_agent = Attrs(agent_attr_names, Intervals(1.0))
         self.attrs_wall = Attrs(wall_attr_names)
+
         self.attrs_agent["position"] = Attr("position", True, True)
         self.attrs_agent["velocity"] = Attr("velocity", True, True)
         self.attrs_agent["force"] = Attr("force", True, True)
@@ -103,19 +103,21 @@ class Simulation:
         Generator exits when all agents have reached their goals.
         """
         try:
-            # TODO: Goal direction updating / Pathfinding
+            # TODO: Navigation
             # self.agent.set_goal_direction(goal_point)
 
+            # Integrator
             ret = self.timed_execution(self.integrator)
 
-            # Check goal
+            # Goals
             for goal in self.goals:
                 self.goal_reached(goal)
 
+            # Save
             for saver in self.savers:
                 saver()
 
-            # Printing
+            # Display
             if self.interval():
                 self.print_stats()
 
@@ -125,6 +127,7 @@ class Simulation:
             self.save.hdf(self.result, self.attrs_result)
             for saver in self.savers:
                 saver(brute=True)
+
             raise StopIteration()
 
     def __iter__(self):

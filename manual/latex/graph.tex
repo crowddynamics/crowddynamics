@@ -64,8 +64,8 @@
 \node[mynode, below left=2.0 cm of simulation] (parameters) {Parameters};
 \node[mynode, below right=2.0 cm of simulation] (analysis) {Analysis};
 
-\path[->] (parameters) edge[bend left = 30] (simulation);
-\path[->] (simulation) edge[bend left = 30] (analysis);
+\path[->] (parameters) edge[bend right = 30] (simulation);
+\path[->] (simulation) edge[bend right = 30] (analysis);
 
 % ------------------------------------------------------------------------------
 % Params
@@ -87,17 +87,22 @@
 \node[mynode, above left=1.0 cm of simulation] (navigation) {Navigation};
 \node[mynode, above=1.0 cm of navigation] (game) {Game};
 \node[mynode, above=1.0 cm of game] (integrator) {Integrator};
-\node[mynode, above=7.0 cm of simulation] (result) {Result};
+\node[mynode, above right=1.0 cm and 0.0 cm of integrator] (goals) {Goals};
 
 \node[mynode, above right=1.0 cm of simulation] (visualize) {Visualize};
 \node[mynode, above=1.0 cm of visualize] (print) {Print};
 \node[mynode, above=1.0 cm of print] (save) {Save};
 
+\node[mynode, above left= 1.0 cm and 0.0 cm of save] (result) {Result};
+
 \path[->] (simulation) edge[bend left=30] (navigation);
 \path[->] (navigation) edge[] (game);
 \path[->] (game) edge[] (integrator);
-\path[->] (integrator) edge[bend left=30] (result);
+\path[->] (integrator) edge[bend left=30] (goals);
+
+\path[->] (goals) edge[] (result);
 \path[->] (result) edge[bend left=30] (save);
+
 \path[->] (save) edge[] (print);
 \path[->] (print) edge[] (visualize);
 \path[->] (visualize) edge[bend left=30] (simulation);

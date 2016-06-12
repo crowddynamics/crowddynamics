@@ -129,45 +129,10 @@ and track minimizing values
 \mathbf{r}_{j}^{moment} &= \mathbf{x}_{j}^{c} + k_{j} \cdot \hat{\mathbf{t}}_{j} r_{j}^{ts} - r_{j} \hat{\mathbf{e}}_{ij}
 \end{align}
 
-\item Return $ (h, \mathbf{r}_{i}^{moment}, \mathbf{r}_{j}^{moment}) $
+\item Return $ (\tilde{\mathbf{x}}, r_{tot}, h, \mathbf{r}_{i}^{moment}, \mathbf{r}_{j}^{moment}) $
 
 \end{enumerate}
 
 
 
-\subsection{Rotational equation}
-% FDS evac manual pages: 20 - 21
 
-For orientable agent models we have rotational equation of motion
-\begin{align}
-I \frac{d^{2}}{d t^{2}} \varphi(t) = M(t) + \eta(t),
-\end{align}
-where $ \eta(t) $ is small random fluctuation torque, and $ M(t) $ is total torque, which is the sum of contact, social and motivational torque
-\begin{align}
-M_{i}(t) = M_{i}^{c} + M_{i}^{soc} + M_{i}^{\tau}
-\end{align}
-
-Torque from contact forces
-\begin{align}
-\mathbf{M}_{i}^{c} = \sum_{j\neq i}^{} \left(\mathbf{r}_{i}^{c} \times \mathbf{f}_{ij}^{c}\right)
-\end{align}
-and from social forces
-\begin{align}
-\mathbf{M}_{i}^{soc} = \sum_{j\neq i}^{} \left(\mathbf{r}_{i}^{soc} \times \mathbf{f}_{ij}^{soc}\right)
-\end{align}
-
-Motivational torque
-\begin{align}
-M_{i}^{\tau} &= \frac{I_{i}}{\tau_{i}} \left((\varphi_{i}(t) - \varphi_{i}^{0}) \omega^{0} - \omega(t)\right) \\
-%&= \frac{I_{i}}{\tau_{i}} \left(\tilde{\omega}_{i}^{0} - \omega(t)\right)
-\end{align}
-
-As vector
-\begin{align}
-\mathbf{M} = \mathbf{r} \times \mathbf{f} =  \begin{vmatrix} \mathbf{i} & \mathbf{j} & \mathbf{k} \\ R_{1} & R_{2} & R_{3} \\ f_{1} & f_{2} & f_{3} \\ \end{vmatrix} 
-\end{align}
-
-In two dimensions
-\begin{align}
-M = \begin{vmatrix} R_{1} & R_{2} \\ f_{1} & f_{2} \\ \end{vmatrix} = R_{1} \cdot f_{2} - R_{2} \cdot f_{1}
-\end{align}

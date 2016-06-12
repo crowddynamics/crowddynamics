@@ -1,7 +1,8 @@
 import numba
 
-from crowd_dynamics.core.force import force_adjust, force_random
-from crowd_dynamics.core.interactions import agent_agent, agent_wall
+from .force import force_adjust, force_random
+from .interactions import agent_agent, agent_wall
+from .torque import torque_adjust
 
 
 # @numba.jit(nopython=True, nogil=True)
@@ -14,13 +15,17 @@ def explicit_euler_method(result, constant, agent, wall1=None, wall2=None):
         agent.reset_force()
         agent.reset_force_debug()
 
+        # force_random(constant, agent)
         force_adjust(constant, agent)
-        force_random(constant, agent)
         agent_agent(constant, agent)
         if wall1 is not None:
             agent_wall(constant, agent, wall1)
         if wall2 is not None:
             agent_wall(constant, agent, wall2)
+
+        if agent.orientable_flag:
+            # torque_adjust()
+            pass
 
         # Integration
         acceleration = agent.force / agent.mass
