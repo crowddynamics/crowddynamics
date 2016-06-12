@@ -2,7 +2,6 @@ import numba
 
 from .force import force_adjust, force_random
 from .interactions import agent_agent, agent_wall
-from .torque import torque_adjust
 
 
 # @numba.jit(nopython=True, nogil=True)

@@ -5,9 +5,9 @@ from matplotlib.animation import FuncAnimation
 from matplotlib.collections import LineCollection, PatchCollection
 from matplotlib.patches import Circle, Rectangle
 
-from crowd_dynamics.display import format_time
-from crowd_dynamics.struct.area import GoalRectangle
-from crowd_dynamics.struct.wall import LinearWall, RoundWall
+from ..display import format_time
+from ..struct.area import GoalRectangle
+from ..struct.wall import LinearWall, RoundWall
 
 try:
     import seaborn

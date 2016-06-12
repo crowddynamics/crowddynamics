@@ -10,7 +10,7 @@ def torque_random(agent):
 
 
 @numba.jit(nopython=True, nogil=True)
-def torque_adjust_(agent, constant):
+def torque_adjust(agent, constant):
     """Adjusting torque."""
     agent.torque += agent.inertia_rot / constant.tau_adj_torque * (
         (agent.angle - agent.target_angle) *

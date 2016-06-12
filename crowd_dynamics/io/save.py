@@ -4,7 +4,7 @@ import os
 import h5py
 import numpy as np
 
-from crowd_dynamics.io.attributes import Attrs
+from .attributes import Attrs
 
 
 class Saver:

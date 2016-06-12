@@ -1,13 +1,11 @@
-from collections import OrderedDict, Iterable
-from copy import deepcopy
+from collections import OrderedDict
 
-import numpy as np
 import numba
-from numba.types import UniTuple
+import numpy as np
 from numba import float64, int64, boolean
-from numba import jitclass, generated_jit, types
+from numba.types import UniTuple
 
-from crowd_dynamics.core.functions import normalize_vec, normalize
+from ..core.functions import normalize_vec, normalize
 
 
 spec_agent = OrderedDict(

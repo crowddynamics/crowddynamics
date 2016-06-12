@@ -1,7 +1,8 @@
 import numpy as np
 from collections import OrderedDict
 
-from numba import float64, jitclass, int64
+import numba
+from numba import float64, int64
 
 
 spec_result = OrderedDict(
@@ -17,7 +18,7 @@ spec_result = OrderedDict(
 result_attr_names = [key for key in spec_result.keys()]
 
 
-@jitclass(spec_result)
+@numba.jitclass(spec_result)
 class Result(object):
     """
     Struct for simulation results.

@@ -1,15 +1,15 @@
 from collections import Iterable
 from timeit import default_timer as timer
 
-from crowd_dynamics.core.integrator import euler_method, euler_method2, euler_method0
-from crowd_dynamics.display import format_time
-from crowd_dynamics.io.attributes import Intervals, Attrs, Attr
-from crowd_dynamics.io.save import Save
-from crowd_dynamics.struct.agent import agent_attr_names
-from crowd_dynamics.struct.constant import constant_attr_names
-from crowd_dynamics.struct.result import Result, result_attr_names
-from crowd_dynamics.struct.wall import wall_attr_names
-from crowd_dynamics.visualization.animation import animation
+from .core.integrator import euler_method, euler_method2, euler_method0
+from .display import format_time
+from .io.attributes import Intervals, Attrs, Attr
+from .io.save import Save
+from .struct.agent import agent_attr_names
+from .struct.constant import constant_attr_names
+from .struct.result import Result, result_attr_names
+from .struct.wall import wall_attr_names
+from .visualization.animation import animation
 
 
 class Simulation:
