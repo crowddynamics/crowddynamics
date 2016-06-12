@@ -9,6 +9,7 @@ from ..display import format_time
 from ..struct.area import GoalRectangle
 from ..struct.wall import LinearWall, RoundWall
 
+
 try:
     import seaborn
 

@@ -256,5 +256,4 @@ sympy-plots-for-*.tex/
 # Folders
 /docs/
 /research/
-/manual/latex/examples/
-/manual/data/agent_body.yaml
+/manual/examples/
