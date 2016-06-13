@@ -34,7 +34,7 @@ class Constant(object):
     def __init__(self):
         # TODO: Constants -> Constraints (Limits)
         self.dt = 0.01
-        # Force related constants
+         # Force related constants
         self.tau_adj = 0.5
         self.k = 1.5 * 70
         self.tau_0 = 3.0
@@ -48,6 +48,6 @@ class Constant(object):
         self.f_random_fluctuation_max = 1.0
         self.f_adjust_max = 1e3
         self.f_soc_ij_max = 2e3
-        self.f_c_ij_max = 1e5
+        self.f_c_ij_max = 2e5
         self.f_soc_iw_max = 2e3
-        self.f_c_iw_max = 1e6
+        self.f_c_iw_max = 2e5

@@ -4,7 +4,7 @@ import numpy as np
 from numba import float64, int64
 from numba import jitclass
 
-from ..core.functions import rotate90
+from ..core.vector2d import rotate90, dot2d
 
 spec_round = OrderedDict(
     params=float64[:, :],
@@ -105,14 +105,14 @@ class LinearWall(object):
         q_0 = x - p_0
         q_1 = x - p_1
 
-        l_t = - np.dot(t_w, q_1) - np.dot(t_w, q_0)
+        l_t = - dot2d(t_w, q_1) - dot2d(t_w, q_0)
 
         if l_t > l_w:
             d_iw = np.hypot(q_0[0], q_0[1])
         elif l_t < -l_w:
             d_iw = np.hypot(q_1[0], q_1[1])
         else:
-            l_n = np.dot(n_w, q_0)
+            l_n = dot2d(n_w, q_0)
             d_iw = np.abs(l_n)
 
         return d_iw
@@ -123,7 +123,8 @@ class LinearWall(object):
         q_0 = x - p_0
         q_1 = x - p_1
 
-        l_t = - np.dot(t_w, q_1) - np.dot(t_w, q_0)
+        l_t = - dot2d(t_w, q_1) - dot2d(t_w, q_0)
+
         if l_t > l_w:
             d_iw = np.hypot(q_0[0], q_0[1])
             n_iw = q_0 / d_iw
@@ -131,7 +132,7 @@ class LinearWall(object):
             d_iw = np.hypot(q_1[0], q_1[1])
             n_iw = q_1 / d_iw
         else:
-            l_n = np.dot(n_w, q_0)
+            l_n = dot2d(n_w, q_0)
             d_iw = np.abs(l_n)
             n_iw = np.sign(l_n) * n_w
 
@@ -140,14 +141,14 @@ class LinearWall(object):
     def relative_position(self, i, x, v):
         p_0, p_1, t_w, n_w, l_w = self.deconstruct(i)
 
+        # v is zero vector
         if np.all(v == 0.0):
-            # v is zero vector
             return np.zeros(2)
 
         q_0 = p_0 - x
         q_1 = p_1 - x
 
-        n_iw = -np.sign(np.dot(n_w, q_0)) * n_w
+        n_iw = -np.sign(dot2d(n_w, q_0)) * n_w
 
         angle = np.array((np.arctan2(q_0[0], q_0[1]),
                           np.arctan2(q_1[0], q_1[1]),

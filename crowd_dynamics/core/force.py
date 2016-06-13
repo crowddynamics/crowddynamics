@@ -1,10 +1,7 @@
 import numba
 import numpy as np
 
-
-@numba.jit(nopython=True, nogil=True)
-def dot2d(v0, v1):
-    return np.sum(v0 * v1)
+from .vector2d import dot2d
 
 
 @numba.jit(nopython=True, nogil=True)

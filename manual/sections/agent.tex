@@ -23,6 +23,9 @@ male & $ 0.270 $ & $ 0.020 $ & $ 0.5926 $ & $ 0.3704 $ & $ 0.6296 $ \\
 \hline
 \hline
 $ r $                    & $ \mathrm{m} $ &  & Total radius \\
+$ r_{t} $                & $ \mathrm{m} $ &  & Torso radius \\
+$ r_{s} $                & $ \mathrm{m} $ &  & Shoulder radius \\
+$ r_{ts} $                & $ \mathrm{m} $ &  & Distance from torso to shoulder \\
 $ m $                    & $ \mathrm{kg} $ & $ 80 $ & Mass \\
 $ I $                    & $ \mathrm{kg \cdot m^{2}} $ & $ 4.0 $ & Rotational moment \\
 \hline
@@ -49,6 +52,9 @@ $ p $                    &  & $ 0 - 1 $ & Herding tendency \\
 \end{table}
 
 
+\subsection{Models}
+\subsubsection{Circular}
+
 \begin{table}[H]
 \begin{tabularx}{1.0\linewidth}{ll}
 \hline
@@ -60,10 +66,6 @@ $ \tilde{\mathbf{v}} = \mathbf{v}_{i} - \mathbf{v}_{j} $ & Relative velocity \\
 \end{tabularx}
 \caption{Relative}
 \end{table}
-
-
-\subsection{Models}
-\subsubsection{Circular}
 
 \begin{table}[H]
 \begin{tabularx}{1.0\linewidth}{ll}
@@ -119,7 +121,7 @@ h = \min(\mathbf{h})
 \end{align}
 and track minimizing values
 \begin{align}
-\hat{\mathbf{e}}_{ij}, k_{i}, k_{j}, r_{i}, _{j}
+\hat{\mathbf{e}}_{ij}, k_{i}, k_{j}, r_{i}, r_{j}
 \end{align}
 
 \item 
@@ -132,7 +134,5 @@ and track minimizing values
 \item Return $ (\tilde{\mathbf{x}}, r_{tot}, h, \mathbf{r}_{i}^{moment}, \mathbf{r}_{j}^{moment}) $
 
 \end{enumerate}
-
-
 
 

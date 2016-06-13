@@ -5,7 +5,7 @@ import numpy as np
 from numba import float64, int64, boolean
 from numba.types import UniTuple
 
-from ..core.functions import normalize_vec, normalize
+from ..core.vector2d import normalize_vec, normalize
 
 
 spec_agent = OrderedDict(

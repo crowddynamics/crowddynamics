@@ -89,20 +89,28 @@ $ h = d - \tilde{r} $ & Relative distance \\
 \end{tabularx}
 \end{table}
 
-Dividing vectors
+
 \begin{align}
 \mathbf{q}_{0} &= \mathbf{p}_{0} - \mathbf{x} \\
 \mathbf{q}_{1} &= \mathbf{p}_{1} - \mathbf{x} \\
 \hat{\mathbf{n}}_{iw} &= - \operatorname{sign}(\hat{\mathbf{n}}_{w} \cdot \mathbf{q}_{0}) \hat{\mathbf{n}}_{w}
 \end{align}
 
-Angle of 2D vector is found using \url{https://en.wikipedia.org/wiki/Atan2} where angle is between $ [-\pi, \pi] $
-\newcommand{\atan}{\ensuremath{\operatorname{angle}}}
+
 \begin{align}
-\boldsymbol{\alpha} = [\atan(\mathbf{q}_{0}), \atan(\mathbf{q}_{1}), \atan(\hat{\mathbf{n}}_{iw})]
+\boldsymbol{\alpha} &= [\atan(\mathbf{q}_{0}), \atan(\mathbf{q}_{1}), \atan(\hat{\mathbf{n}}_{iw})] \\
+\varphi &= \atan(\mathbf{v}) \\
+\boldsymbol{\alpha}_{2} &= \boldsymbol{\alpha} - \varphi \mod{2 \pi}
 \end{align}
 
 \begin{align}
-\varphi = \atan(\mathbf{v})
+i = (\arg\min(\boldsymbol{\alpha}_{2}), \arg\max(\boldsymbol{\alpha}_{2}))
+\end{align}
+
+Intersection
+\begin{align}
+\mathbf{x} + a \mathbf{v} &= \mathbf{p}_0 + b (\mathbf{p}_1 - \mathbf{p}_0),\quad a \in \mathbb{R}^{+}, \quad b \in [0, 1]
+\\
+[\mathbf{v}, -\mathbf{p}] \cdot [a,  b] &= \mathbf{q}_0, \quad  \mathbf{p} = \mathbf{p}_1 - \mathbf{p}_0
 \end{align}
 

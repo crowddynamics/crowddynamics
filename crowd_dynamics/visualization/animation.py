@@ -20,10 +20,12 @@ except ImportError():
 
 def animation(simulation, x_dims, y_dims, save=False, frames=None,
               filepath=None):
+
     agent = simulation.agent
     constant = simulation.constant
     result = simulation.result
 
+    # Figure
     fig, ax = plt.subplots(figsize=(12, 12))
     ax.set(xlim=x_dims, ylim=y_dims, xlabel=r'$ x $', ylabel=r'$ y $')
     ax.set_aspect("equal")
@@ -34,7 +36,13 @@ def animation(simulation, x_dims, y_dims, save=False, frames=None,
     wall_time = ax.text(0.02, 0.91, '', transform=ax.transAxes)
 
     # Agents
-    agents, = ax.plot([], [], marker='o', lw=0, alpha=0.5)
+    agents = ax.scatter(agent.position[:, 0],
+                        agent.position[:, 1],
+                        s=400 * agent.radius**2,
+                        alpha=0.8,)
+
+    # agents = [Circle(xy, rad) for xy, rad in zip(agent.position, agent.radius)]
+    # agents = ax.add_collection(PatchCollection(agents))
 
     args = (simu_time, goal_text, wall_time, agents)
 
@@ -79,10 +87,7 @@ def animation(simulation, x_dims, y_dims, save=False, frames=None,
         wall_time.set_text(txt3)
 
     def _agent():
-        # c = PatchCollection((Circle(x, r) for r, x in zip(agent.radius,
-        #                                                   agent.position)))
-        # return ax.add_collection(c)
-        agents.set_data(agent.position.T)
+        agents.set_offsets(agent.position)
 
     def init():
         _text()

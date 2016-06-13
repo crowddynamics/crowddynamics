@@ -68,7 +68,7 @@
 \path[->] (simulation) edge[bend right = 30] (analysis);
 
 % ------------------------------------------------------------------------------
-% Params
+% Parameters
 % ------------------------------------------------------------------------------
 
 \node[mynode, left=1.0 cm of parameters] (wall) {Wall};
@@ -77,9 +77,9 @@
 \node[mynode, below right=1.0 cm of parameters] (constant) {Constant};
 
 \path[->] (wall) edge[] (parameters);
-\path[->] (agent) edge[] (parameters);
+\path[->] (agent) edge[bend right] (parameters);
 \path[->] (goal) edge[] (parameters);
-\path[->] (constant) edge[] (parameters);
+\path[->] (constant) edge[bend left] (parameters);
 
 % ------------------------------------------------------------------------------
 % Simulation
@@ -136,11 +136,24 @@
 \path[->] (potentialfied) edge[bend right] (navigation); 
 
 % ------------------------------------------------------------------------------
+% Save
+% ------------------------------------------------------------------------------
+
+\node[mynode, right=1.0 cm of save] (hdf5) {HDF5};
+
+\path[->] (save) edge[] (hdf5);
+
+
+% ------------------------------------------------------------------------------
 % Analysis
 % ------------------------------------------------------------------------------
 
+\node[mynode, above right=2.0 cm of analysis] (animation) {Animation};
+\node[mynode, below right=2.0 cm of analysis] (notebook) {Notebook};
 
-
+\path[->] (analysis) edge[bend right] (animation);
+\path[->, dashed] (visualize) edge[bend right] node[below, sloped] {interactive}  (animation);
+\path[->] (analysis) edge[] (notebook);
 
 \end{tikzpicture}
 \end{document}

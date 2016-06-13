@@ -39,9 +39,13 @@
 \usetikzlibrary{calc}
 \usetikzlibrary{arrows}
 %\usetikzlibrary{positioning}
+%\usepackage{algorithm2e}
+\usepackage{algorithmic}
+%\usepackage{algorithmicx}
 
 %\usepackage{attachfile}
 %\usepackage{minted}
+%\usepackage[]{algorithm2e}
 
 \graphicspath{{figures/}}
 \floatsetup[table]{capposition=top}
@@ -57,9 +61,13 @@
 \g@addto@macro{\UrlBreaks}{\UrlOrds}
 \makeatother
 
+% New column types
 \newcolumntype{R}{>{\raggedright\arraybackslash}X}%
 \newcolumntype{L}{>{\raggedleft\arraybackslash}X}%
 \newcolumntype{C}{>{\centering\arraybackslash}X}%
+
+% Math commands
+\newcommand{\atan}{\ensuremath{\operatorname{angle}}}
 
 \begin{document}
 \begin{multicols*}{2}
@@ -115,7 +123,6 @@
 \begin{multicols*}{2}
 \input{sections/wall}
 \end{multicols*}
-
 
 \newpage
 

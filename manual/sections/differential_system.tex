@@ -1,13 +1,13 @@
 \section{Integrators}
 \subsection{Differential systems}
-Rotational motion
-\begin{align}
-I \frac{d^{2}}{d t^{2}} \varphi(t) = M(t)
-\end{align}
-
 Position and velocity
 \begin{align}
 m \frac{d^{2}}{d t^{2}} \mathbf{x}(t) = \mathbf{f}(t)
+\end{align}
+
+Rotational motion
+\begin{align}
+I \frac{d^{2}}{d t^{2}} \varphi(t) = M(t)
 \end{align}
 
 \subsection{Numerical methods}
@@ -22,13 +22,6 @@ t_{k} &= t_{k-1} + \Delta t
 %https://en.wikipedia.org/wiki/Verlet_integration
 
 \subsection{Excplicit Euler Method}
-Angular acceleration
-\begin{align}
-\alpha_{k} &= M_{k} / I \\
-\omega_{k+1} &= \omega_{k} + \alpha_{k} \Delta t \\
-\varphi_{k+1} &= \varphi_{k} + \omega_{k+1} \Delta t
-\end{align}
-
 Acceleration on an agent
 \begin{align}
 a_{k} &= \mathbf{f}_{k} / m \\
@@ -37,15 +30,24 @@ a_{k} &= \mathbf{f}_{k} / m \\
 \end{align}
 
 
-\subsection{Velocity verlet}
-Velocity verlet algorithm
+Angular acceleration
 \begin{align}
-\mathbf{v}_{k+\frac{1}{2}} &= \mathbf{v}_{k} + \frac{1}{2} a_{k} \Delta t \\
-\mathbf{x}_{k+1} &= \mathbf{x}_{k} + \mathbf{v}_{k+\frac{1}{2}} \Delta t \\
-\mathbf{v}_{k+1} &= \mathbf{v}_{k+\frac{1}{2}} + \frac{1}{2} a_{k+1} \Delta t
+\alpha_{k} &= M_{k} / I \\
+\omega_{k+1} &= \omega_{k} + \alpha_{k} \Delta t \\
+\varphi_{k+1} &= \varphi_{k} + \omega_{k+1} \Delta t
 \end{align}
-or more simply
-\begin{align}
-\mathbf{x}_{k+1} &= \mathbf{x}_{k} + \mathbf{v}_{k} \Delta t + \frac{1}{2} a_{k} \Delta t^{2} \\
-\mathbf{v}_{k+1} &= \mathbf{v}_{k} + \frac{1}{2} \left(a_{k} + a_{k+1}\right) \Delta t \\
-\end{align}
+
+
+
+%\subsection{Velocity verlet}
+%Velocity verlet algorithm
+%\begin{align}
+%\mathbf{v}_{k+\frac{1}{2}} &= \mathbf{v}_{k} + \frac{1}{2} a_{k} \Delta t \\
+%\mathbf{x}_{k+1} &= \mathbf{x}_{k} + \mathbf{v}_{k+\frac{1}{2}} \Delta t \\
+%\mathbf{v}_{k+1} &= \mathbf{v}_{k+\frac{1}{2}} + \frac{1}{2} a_{k+1} \Delta t
+%\end{align}
+%or more simply
+%\begin{align}
+%\mathbf{x}_{k+1} &= \mathbf{x}_{k} + \mathbf{v}_{k} \Delta t + \frac{1}{2} a_{k} \Delta t^{2} \\
+%\mathbf{v}_{k+1} &= \mathbf{v}_{k} + \frac{1}{2} \left(a_{k} + a_{k+1}\right) \Delta t \\
+%\end{align}
