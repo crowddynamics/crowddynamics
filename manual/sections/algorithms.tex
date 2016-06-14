@@ -1,0 +1,53 @@
+\section{Algorithms}
+% https://en.wikibooks.org/wiki/LaTeX/Algorithms
+\algsetup{indent=2em}
+
+\subsection{Circular agent - agent}
+\begin{algorithmic}[1]
+\ENSURE $ i,j \in N, \quad i \neq j $
+\STATE $ \tilde{\mathbf{x}} = \mathbf{x}_{i} - \mathbf{x}_{j} $
+\STATE $ \tilde{\mathbf{v}} = \mathbf{v}_{i} - \mathbf{v}_{j} $
+\STATE $ r_{tot} = r_{i} + r_{j} $ 
+\STATE $ d = \left\|\tilde{\mathbf{x}}\right\| $
+\STATE $ h = d - r_{tot} $
+\STATE
+\IF{$ h \leq sight $}
+\STATE $ \mathbf{f}_{soc}(\tilde{\mathbf{x}}, \tilde{\mathbf{v}}, r_{tot}, k, \tau_{0}) $
+\ENDIF
+\STATE
+\IF{$ h < 0 $}
+\STATE $ \hat{\mathbf{n}} = \tilde{\mathbf{x}} / d $
+\STATE $ \hat{\mathbf{t}} = R(-90^{\circ}) \hat{\mathbf{n}} $
+\STATE $ \mathbf{f}_{c}(\tilde{\mathbf{v}}, h, \hat{\mathbf{n}}, \hat{\mathbf{t}}, \mu, \kappa) $
+\ENDIF
+\STATE $  $
+\end{algorithmic}
+
+\subsection{Orientable agent - agent}
+\begin{algorithmic}[1]
+\ENSURE $ i,j \in N, \quad i \neq j $
+\STATE $ \tilde{\mathbf{x}} = \mathbf{x}_{i} - \mathbf{x}_{j} $
+\STATE $ \tilde{\mathbf{v}} = \mathbf{v}_{i} - \mathbf{v}_{j} $
+\STATE $ r_{max} = r_{i} + r_{j} $ 
+\STATE $ d = \left\|\tilde{\mathbf{x}}\right\| $
+\STATE $ h_{min} = d - r_{tot} $
+\STATE 
+\IF{$ h_{min} \leq sight $}
+\STATE $ \tilde{\mathbf{x}}, r_{tot}, h, r_{i,j}^{moment} = \operatorname{distance}(\mathrm{agent}, i, j, \tilde{\mathbf{x}}, d) $
+\STATE
+\IF{$ h \leq sight $}
+\STATE $ \mathbf{f}_{soc}(\tilde{\mathbf{x}}, \tilde{\mathbf{v}}, r_{tot}, k, \tau_{0}) $
+\STATE $ M_{i}^{soc}(\mathbf{r}_{i}^{moment}, \mathbf{f}_{soc}) $
+\STATE $ M_{j}^{soc}(\mathbf{r}_{j}^{moment}, \mathbf{f}_{soc}) $
+\ENDIF
+\STATE
+\IF{$ h < 0 $}
+\STATE $ \hat{\mathbf{n}} = \tilde{\mathbf{x}} / d $
+\STATE $ \hat{\mathbf{t}} = R(-90^{\circ}) \hat{\mathbf{n}} $
+\STATE $ \mathbf{f}_{c}(\tilde{\mathbf{v}}, h, \hat{\mathbf{n}}, \hat{\mathbf{t}}, \mu, \kappa) $
+\STATE $ M_{i}^{c}(\mathbf{r}_{i}^{moment}, \mathbf{f}_{c}) $
+\STATE $ M_{j}^{c}(\mathbf{r}_{j}^{moment}, \mathbf{f}_{c}) $
+\ENDIF
+\ENDIF
+\STATE $  $
+\end{algorithmic}

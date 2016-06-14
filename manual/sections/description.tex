@@ -17,25 +17,4 @@ $ R(-90^{\circ}) \cdot \mathbf{x} $  &  & $ (y, -x) $ \\
 \end{tabularx}
 \end{table}
 
-Agent - Agent interaction
 
-\algsetup{indent=2em}
-\begin{algorithmic}[1]
-\ENSURE $ i,j \in N, \quad i \neq j $
-\STATE $ \tilde{\mathbf{x}} = \mathbf{x}_{i} - \mathbf{x}_{j} $
-\STATE $ \tilde{\mathbf{v}} = \mathbf{v}_{i} - \mathbf{v}_{j} $
-\STATE $ r_{tot} = r_{i} + r_{j} $ 
-\STATE $ d = \left\|\tilde{\mathbf{x}}\right\| $
-\STATE $ h = d - r_{tot} $
-\STATE
-\IF{$ h \leq sight $}
-\STATE $ \mathbf{f}_{soc}(\tilde{\mathbf{x}}, \tilde{\mathbf{v}}, r_{tot}, k, \tau_{0}) $
-\ENDIF
-\STATE
-\IF{$ h < 0 $}
-\STATE $ \hat{\mathbf{n}} = \tilde{\mathbf{x}} / d $
-\STATE $ \hat{\mathbf{t}} = R(-90^{\circ}) \hat{\mathbf{n}} $
-\STATE $ \mathbf{f}_{c}(\tilde{\mathbf{v}}, h, \hat{\mathbf{n}}, \hat{\mathbf{t}}, \mu, \kappa) $
-\ENDIF
-\STATE $  $
-\end{algorithmic}

@@ -126,6 +126,7 @@ class Parameters:
         inertia_rot = inertia_rot_scale * mass * radius ** 2  # I = mr^2
         goal_velocity = 5.0 * np.ones(size)
         goal_reached = np.zeros(size, dtype=np.bool_)
+        # target_angular_velocity = 4 * np.pi * np.ones(size)
 
         return size, mass, radius, r_t, r_s, r_ts, inertia_rot, goal_velocity, \
                goal_reached

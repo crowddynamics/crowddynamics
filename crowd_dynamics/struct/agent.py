@@ -136,10 +136,9 @@ class Agent(object):
         self.neighbor_direction = np.zeros(self.shape)
         self.neighbors = np.zeros(self.size)
 
-    def reset_force(self):
+    def reset(self):
         self.force *= 0
-
-    def reset_force_debug(self):
+        self.torque *= 0
         self.force_adjust *= 0
         self.force_agent *= 0
         self.force_wall *= 0
@@ -149,9 +148,7 @@ class Agent(object):
         self.neighbors *= 0
 
     def goal_to_target_direction(self):
-        """
-        Modifies target direction from goal direction.
-        """
+        """Modifies target direction from goal direction."""
         if self.herding_flag:
             # Herding behaviour
             for i in range(self.size):
@@ -163,7 +160,12 @@ class Agent(object):
         else:
             self.target_direction = self.goal_direction
 
+    def velocity_to_target_angle(self):
+        # TODO: If velocity (0, 0)
+        self.target_angle = np.arctan2(self.velocity[:, 0], self.velocity[:, 1])
+
     def set_goal_direction(self, goal):
+        """Update goal direction for agent that have not reached their goals"""
         mask = self.goal_reached ^ True
         if np.sum(mask):
             self.goal_direction[mask] = normalize_vec(goal - self.position[mask])

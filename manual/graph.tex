@@ -40,10 +40,14 @@
 \tikzset{
     x=1cm, 
     y=1cm,
-    mynode/.style={rectangle,rounded corners,draw=black, top color=white, bottom color=white!50, inner sep=1em, minimum size=3em, text centered}
+    mynode/.style={rectangle,rounded corners,draw=black, top color=white, bottom color=white!50, inner sep=1em, minimum size=3em, text centered},
+    mynode2/.style={rectangle,rounded corners,draw=black, top color=white, bottom color=white!50, inner sep=0.5em, minimum size=1em, text centered},
+    inactive/.style={rectangle,rounded corners,draw=black, top color=white, bottom color=white!50, inner sep=1em, minimum size=3em, text centered, opacity=0.5}
 }
 
-% http://tex.stackexchange.com/questions/69439/how-can-i-achieve-relative-positioning-in-tikz
+%http://tex.stackexchange.com/questions/69439/how-can-i-achieve-relative-positioning-in-tikz
+
+%http://tex.stackexchange.com/questions/160918/circular-graph-with-many-nodes
 
 \begin{document}
 \begin{tikzpicture}
@@ -55,64 +59,68 @@
 \draw[step=1cm, line width=0.1mm, black!10!white] 
 ($ (origin) - (offset) $) grid ($ (origin) + (offset) $);
 % ------------------------------------------------------------------------------
-% Main nodes
+% Struct
 % ------------------------------------------------------------------------------
-\node[mynode] (simulation) at ($ (origin) - (0, 2) $) {Simulation};
-\node[above=1 cm of simulation] (loop) {Main Loop};
+\node[circle, minimum size=1em, draw=black] (struct)   at (origin) {};
 
-%\node[below=1.0 cm of simulation] (dummy) {}; 
-\node[mynode, below left=2.0 cm of simulation] (parameters) {Parameters};
-\node[mynode, below right=2.0 cm of simulation] (analysis) {Analysis};
+\def\N{4}:
+\def\r{2.0};
 
-\path[->] (parameters) edge[bend right = 30] (simulation);
-\path[->] (simulation) edge[bend right = 30] (analysis);
+\node[mynode2] (result)   at ({-180/\N*0-180:\r}) {Result};
+\node[mynode2] (wall)     at ({-180/\N*1-180:\r}) {Wall};
+\node[mynode2] (agent)    at ({-180/\N*2-180:\r}) {Agent};
+\node[mynode2] (goal)     at ({-180/\N*3-180:\r}) {Goal};
+\node[mynode2] (constant) at ({-180/\N*4-180:\r}) {Constant};
 
-% ------------------------------------------------------------------------------
-% Parameters
-% ------------------------------------------------------------------------------
+\node[mynode2] (parameters) at ({-90:\r}) {Parameters};
 
-\node[mynode, left=1.0 cm of parameters] (wall) {Wall};
-\node[mynode, below left=1.0 cm of parameters] (agent) {Agent};
-\node[mynode, below =1.0 cm of parameters] (goal) {Goal};
-\node[mynode, below right=1.0 cm of parameters] (constant) {Constant};
 
-\path[->] (wall) edge[] (parameters);
-\path[->] (agent) edge[bend right] (parameters);
-\path[->] (goal) edge[] (parameters);
-\path[->] (constant) edge[bend left] (parameters);
+\path[->] (result)   edge[] (struct);
+\path[->] (wall)     edge[] (struct);
+\path[->] (agent)    edge[] (struct);
+\path[->] (goal)     edge[] (struct);
+\path[->] (constant) edge[] (struct);
 
 % ------------------------------------------------------------------------------
 % Simulation
 % ------------------------------------------------------------------------------
-\node[mynode, above left=1.0 cm of simulation] (navigation) {Navigation};
-\node[mynode, above=1.0 cm of navigation] (game) {Game};
-\node[mynode, above=1.0 cm of game] (integrator) {Integrator};
-\node[mynode, above right=1.0 cm and 0.0 cm of integrator] (goals) {Goals};
+\def\N{6};
+\def\r{5.0};
 
-\node[mynode, above right=1.0 cm of simulation] (visualize) {Visualize};
-\node[mynode, above=1.0 cm of visualize] (print) {Print};
-\node[mynode, above=1.0 cm of print] (save) {Save};
+\node[inactive] (navigation) at ({-180/\N*0-180:\r}) {Navigation};
+\node[inactive] (game)       at ({-180/\N*1-180:\r}) {Game};
+\node[mynode] (integrator)   at ({-180/\N*2-180:\r}) {Integrator};
+\node[mynode] (goals)        at ({-180/\N*3-180:\r}) {Goals};
+\node[mynode] (save)         at ({-180/\N*4-180:\r}) {Save};
+\node[mynode] (print)        at ({-180/\N*5-180:\r}) {Print};
+\node[mynode] (visualize)    at ({-180/\N*6-180:\r}) {Visualize};
 
-\node[mynode, above left= 1.0 cm and 0.0 cm of save] (result) {Result};
 
-\path[->] (simulation) edge[bend left=30] (navigation);
-\path[->] (navigation) edge[] (game);
-\path[->] (game) edge[] (integrator);
-\path[->] (integrator) edge[bend left=30] (goals);
+\path[->] (navigation) edge[bend left=15] (game);
+\path[->] (game)       edge[bend left=15] (integrator);
+\path[->] (integrator) edge[bend left=15] (goals);
+\path[->] (goals)      edge[bend left=15] (save);
+\path[->] (save)       edge[bend left=15] (print);
+\path[->] (print)      edge[bend left=15] (visualize);
 
-\path[->] (goals) edge[] (result);
-\path[->] (result) edge[bend left=30] (save);
 
-\path[->] (save) edge[] (print);
-\path[->] (print) edge[] (visualize);
-\path[->] (visualize) edge[bend left=30] (simulation);
+%\path[<->, dashed] (navigation) edge[] (agent);
+%\path[<->, dashed] (game)       edge[] (agent);
+%\path[<->, dashed] (integrator) edge[] (agent);
+%\path[<->, dashed] (goal)       edge[] (goals);
+%
+%\path[->, dashed] (struct) edge[] (save);
+%\path[->, dashed] (struct) edge[] (print);
+%\path[->, dashed] (struct) edge[] (visualize);
+%
+%\path[->, dashed] (struct) edge[] (simulation);
 
 % ------------------------------------------------------------------------------
 % Core
 % ------------------------------------------------------------------------------
 
-\node[mynode, left = 1.0 cm of integrator] (rotational) {Rotational};
-\node[mynode, above left = 1.0 cm of integrator] (forces) {Forces};
+\node[mynode, left = 1.0 of integrator] (rotational) {Rotational};
+\node[mynode, above left = 1.0 of integrator] (forces) {Forces};
 
 \path[->] (rotational) edge[] (integrator);
 \path[->] (forces) edge[bend left] (integrator);
@@ -121,7 +129,7 @@
 % Game
 % ------------------------------------------------------------------------------
 
-\node[mynode, left=1.0 cm of game] (strategy) {Strategy};
+\node[inactive, left=1.0 of game] (strategy) {Strategy};
 
 \path[->] (strategy) edge[] (game);
 
@@ -129,8 +137,8 @@
 % Navigation
 % ------------------------------------------------------------------------------
 
-\node[mynode, left=0.5 cm of navigation] (astar) {$ A^{*} $};
-\node[mynode, below left=0.5 cm of navigation] (potentialfied) {Potential Field};
+\node[inactive, left=0.5 of navigation] (astar) {$ A^{*} $};
+\node[inactive, below left=0.5 of navigation] (potentialfied) {Potential Field};
 
 \path[->] (astar) edge[] (navigation);
 \path[->] (potentialfied) edge[bend right] (navigation); 
@@ -139,21 +147,19 @@
 % Save
 % ------------------------------------------------------------------------------
 
-\node[mynode, right=1.0 cm of save] (hdf5) {HDF5};
-
-\path[->] (save) edge[] (hdf5);
-
+\node[mynode] (file) at ({-45:5.0}) {HDF5 File};
+%\path[->, dashed] (save) edge[bend left] (file);
 
 % ------------------------------------------------------------------------------
 % Analysis
 % ------------------------------------------------------------------------------
 
-\node[mynode, above right=2.0 cm of analysis] (animation) {Animation};
-\node[mynode, below right=2.0 cm of analysis] (notebook) {Notebook};
+\node[mynode, above right=2.0 of file] (animation) {Animation};
+\node[mynode, below right=2.0 of file] (notebook) {Notebook};
 
-\path[->] (analysis) edge[bend right] (animation);
-\path[->, dashed] (visualize) edge[bend right] node[below, sloped] {interactive}  (animation);
-\path[->] (analysis) edge[] (notebook);
+\path[->] (file) edge[bend right] node[below, sloped] {MoviePy} (animation);
+%\path[->, dashed] (visualize) edge[bend left] node[above, sloped] {FuncAnimation}  (animation);
+\path[->] (file) edge[] (notebook);
 
 \end{tikzpicture}
 \end{document}

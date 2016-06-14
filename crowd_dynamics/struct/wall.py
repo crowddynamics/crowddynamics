@@ -6,6 +6,11 @@ from numba import jitclass
 
 from ..core.vector2d import rotate90, dot2d
 
+
+"""
+Static obstacles
+"""
+
 spec_round = OrderedDict(
     params=float64[:, :],
     cols=int64,
@@ -56,7 +61,8 @@ class RoundWall(object):
         return d_iw, n_iw
 
     def relative_position(self, i, x, v):
-        pass
+        p, r = self.deconstruct(i)
+        return p - x, r
 
 
 spec_linear = OrderedDict(
@@ -140,10 +146,11 @@ class LinearWall(object):
 
     def relative_position(self, i, x, v):
         p_0, p_1, t_w, n_w, l_w = self.deconstruct(i)
+        r = 0.0
 
         # v is zero vector
         if np.all(v == 0.0):
-            return np.zeros(2)
+            return np.zeros(2), r
 
         q_0 = p_0 - x
         q_1 = p_1 - x
@@ -156,9 +163,9 @@ class LinearWall(object):
 
         if abs(angle[0] - angle[1]) < 1.48e-08:  # Almost equal
             if np.hypot(q_0[0], q_0[1]) < np.hypot(q_1[0], q_1[1]):
-                return q_0
+                return q_0, r
             else:
-                return q_1
+                return q_1, r
 
         angle -= np.arctan2(v[0], v[1])  # Angle of velocity vector
         angle %= 2 * np.pi
@@ -167,9 +174,9 @@ class LinearWall(object):
 
         if 2 in args:
             if 0 in args:
-                return q_0
+                return q_0, r
             else:
-                return q_1
+                return q_1, r
         else:
             arr = np.zeros((2, 2))
             arr[:, 0] = v
@@ -177,4 +184,4 @@ class LinearWall(object):
             # TODO: Is matrix invertable?
             arr = np.linalg.inv(arr)
             a, _ = np.dot(arr, q_0)
-            return a * v
+            return a * v, r
