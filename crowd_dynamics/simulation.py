@@ -40,7 +40,6 @@ class Simulation:
         self.goals = _filter_none(goals)
         self.result = Result(agent.size)
 
-        # TODO: Limit iterations
         # Integrator for updating multi-agent system
         method = (euler_method0, euler_method, euler_method2)[len(self.wall)]
         self.integrator = method(self.result, self.constant, self.agent,
@@ -98,6 +97,7 @@ class Simulation:
         self.result.increment_wall_time(t_diff)
         return ret
 
+    # TODO: generator -> callable
     def __next__(self):
         """
         Generator exits when all agents have reached their goals.

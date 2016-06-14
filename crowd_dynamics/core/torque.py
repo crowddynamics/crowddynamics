@@ -6,7 +6,7 @@ import numba
 def torque_random(agent):
     """Random torque."""
     for i in range(agent.size):
-        agent.torque += np.random.uniform(-1, 1)
+        agent.torque[i] += np.random.uniform(-1, 1)
 
 
 @numba.jit(nopython=True, nogil=True)

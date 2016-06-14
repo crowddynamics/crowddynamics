@@ -1,31 +1,37 @@
 import numba
 
 from .force import force_adjust, force_random
+from .torque import torque_adjust, torque_random
 from .interactions import agent_agent, agent_wall
 
 
-# @numba.jit(nopython=True, nogil=True)
-def explicit_euler_method(result, constant, agent, wall1, wall2):
+# @profile
+def motion(constant, agent, walls):
+    # Target direction and angle
+    agent.goal_to_target_direction()
+    if agent.orientable_flag:
+        agent.velocity_to_target_angle()
+
+    # Motion
+    agent.reset()
+
+    force_adjust(constant, agent)
+    force_random(constant, agent)
+
+    if agent.orientable_flag:
+        torque_adjust(constant, agent)
+        torque_random(agent)
+
+    agent_agent(constant, agent)
+
+    for wall in walls:
+        agent_wall(constant, agent, wall)
+
+
+# @profile
+def explicit_euler_method(result, constant, agent, walls):
     while True:
-        # Target direction
-        agent.goal_to_target_direction()
-        # Target angle
-        # agent.velocity_to_target_angle()
-
-        # Motion
-        agent.reset()
-        force_adjust(constant, agent)
-        # force_random(constant, agent)
-
-        if agent.orientable_flag:
-            # torque_adjust(constant, agent)
-            # torque_random(agent)
-            pass
-
-        # Interactions
-        agent_agent(constant, agent)
-        agent_wall(constant, agent, wall1)
-        agent_wall(constant, agent, wall2)
+        motion(constant, agent, walls)
 
         # Integration
         acceleration = agent.force / agent.mass

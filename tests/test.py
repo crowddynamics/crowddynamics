@@ -1,13 +1,15 @@
-import numpy as np
+import sys
+from timeit import default_timer as timer
 
-from crowd_dynamics.core.force import force_social_naive, force_social
+import numpy as np
+sys.path.append("/home/jaan/Dropbox/Projects/Crowd-Dynamics")
 from crowd_dynamics.core.integrator import explicit_euler_method
+from crowd_dynamics.display import format_time
 from crowd_dynamics.parameters import Parameters
 from crowd_dynamics.struct.agent import Agent
 from crowd_dynamics.struct.constant import Constant
 from crowd_dynamics.struct.result import Result
 from crowd_dynamics.struct.wall import LinearWall, RoundWall
-from crowd_dynamics.simulation import Simulation
 
 
 np.set_printoptions(precision=5, threshold=100, edgeitems=3, linewidth=75,
@@ -15,7 +17,7 @@ np.set_printoptions(precision=5, threshold=100, edgeitems=3, linewidth=75,
                     formatter=None)
 
 
-size = 300
+size = 200
 params = Parameters(50, 50)
 
 result = Result(size)
@@ -24,6 +26,7 @@ constant = Constant()
 """Walls"""
 linear_wall = LinearWall(params.linear_wall(10))
 round_wall = RoundWall(params.round_wall(10, 0.1, 0.3))
+walls = (linear_wall, )
 
 """Agent"""
 agent = Agent(*params.agent(size))
@@ -31,30 +34,20 @@ params.random_position(agent.position, agent.radius, walls=linear_wall)
 agent.velocity = params.random_unit_vector(agent.size)
 
 
-def test_force_social():
-    for i in range(agent.size):
-        for w in range(linear_wall.size):
-            x = agent.position[i]
-            v = agent.velocity[i]
-            radius = agent.radius[i, 0]
-
-            distance, normal = linear_wall.distance_with_normal(w, agent.position[i])
-            relative_distance = radius - distance
-            relative_position = linear_wall.relative_position(w, x, v)
-
-            f0 = force_social_naive(relative_distance, normal, constant.a, constant.b)
-            f1 = force_social(relative_position, v, radius, constant.k, constant.tau_0)
-
-            if np.hypot(f1[0], f1[1]) > 0:
-                print("distance:", abs(relative_distance), f0, f1)
+def timed_execution(gen):
+    start = timer()
+    ret = next(gen)
+    t_diff = timer() - start
+    print(format_time(t_diff))
+    return ret
 
 
 def test_integrator():
-    gen = explicit_euler_method(result, constant, agent, linear_wall)
-    next(gen)
-    next(gen)
+    integrator = explicit_euler_method(result, constant, agent, walls)
+    i = 0
+    while i < 100:
+        timed_execution(integrator)
+        i += 1
 
 
-def test_simulation():
-    simulation = Simulation(constant, agent, linear_wall)
-
+test_integrator()

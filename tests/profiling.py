@@ -2,9 +2,9 @@
 Profiling and Benchmarks
 ========================
 
-kernprof -l simulation.py
+kernprof -l test.py
 
-python -m line_profiler simulation.py.lprof
+python -m line_profiler test.py.lprof
 
 
 Optimizing code

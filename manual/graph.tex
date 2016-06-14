@@ -66,11 +66,11 @@
 \def\N{4}:
 \def\r{2.0};
 
-\node[mynode2] (result)   at ({-180/\N*0-180:\r}) {Result};
-\node[mynode2] (wall)     at ({-180/\N*1-180:\r}) {Wall};
-\node[mynode2] (agent)    at ({-180/\N*2-180:\r}) {Agent};
-\node[mynode2] (goal)     at ({-180/\N*3-180:\r}) {Goal};
-\node[mynode2] (constant) at ({-180/\N*4-180:\r}) {Constant};
+\node[mynode2] (wall)     at ({-180/\N*0-180:2.5}) {Wall};
+\node[mynode2] (agent)    at ({-180/\N*1-165:1.5}) {Agent};
+\node[mynode2] (constant) at ({-180/\N*2-180:1.5}) {Constant};
+\node[mynode2] (goal)     at ({-180/\N*3-195:1.5}) {Goal};
+\node[mynode2] (result)   at ({-180/\N*4-180:2.5}) {Result};
 
 \node[mynode2] (parameters) at ({-90:\r}) {Parameters};
 
@@ -85,7 +85,7 @@
 % Simulation
 % ------------------------------------------------------------------------------
 \def\N{6};
-\def\r{5.0};
+\def\r{5.5};
 
 \node[inactive] (navigation) at ({-180/\N*0-180:\r}) {Navigation};
 \node[inactive] (game)       at ({-180/\N*1-180:\r}) {Game};
@@ -96,19 +96,28 @@
 \node[mynode] (visualize)    at ({-180/\N*6-180:\r}) {Visualize};
 
 
-\path[->] (navigation) edge[bend left=15] (game);
-\path[->] (game)       edge[bend left=15] (integrator);
-\path[->] (integrator) edge[bend left=15] (goals);
-\path[->] (goals)      edge[bend left=15] (save);
-\path[->] (save)       edge[bend left=15] (print);
-\path[->] (print)      edge[bend left=15] (visualize);
+\path[->] (navigation) edge[bend left=10] (game);
+\path[->] (game)       edge[bend left=10] (integrator);
+\path[->] (integrator) edge[bend left=10] (goals);
+\path[->] (goals)      edge[bend left=10] (save);
+\path[->] (save)       edge[bend left=10] (print);
+\path[->] (print)      edge[bend left=10] (visualize);
 
 
-%\path[<->, dashed] (navigation) edge[] (agent);
-%\path[<->, dashed] (game)       edge[] (agent);
-%\path[<->, dashed] (integrator) edge[] (agent);
-%\path[<->, dashed] (goal)       edge[] (goals);
-%
+\path[<->, dashed] (navigation) edge[] (agent);
+\path[<->, dashed] (navigation) edge[] (wall);
+
+\path[<->, dashed] (game)       edge[] (agent);
+
+\path[<->, dashed] (integrator) edge[] (agent);
+\path[<->, dashed] (integrator) edge[] (wall);
+\path[<->, dashed] (integrator) edge[] (constant);
+
+\path[<->, dashed] (goals)      edge[] (goal);
+\path[<->, dashed] (goals)      edge[] (agent);
+
+
+
 %\path[->, dashed] (struct) edge[] (save);
 %\path[->, dashed] (struct) edge[] (print);
 %\path[->, dashed] (struct) edge[] (visualize);
@@ -154,10 +163,10 @@
 % Analysis
 % ------------------------------------------------------------------------------
 
-\node[mynode, above right=2.0 of file] (animation) {Animation};
+\node[mynode, right=2.0 of file] (animation) {Animation};
 \node[mynode, below right=2.0 of file] (notebook) {Notebook};
 
-\path[->] (file) edge[bend right] node[below, sloped] {MoviePy} (animation);
+\path[->] (file) edge[bend left] node[above, sloped] {MoviePy} (animation);
 %\path[->, dashed] (visualize) edge[bend left] node[above, sloped] {FuncAnimation}  (animation);
 \path[->] (file) edge[] (notebook);
 
