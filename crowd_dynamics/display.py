@@ -1,5 +1,7 @@
 import math
 import sys
+from functools import wraps
+from timeit import default_timer as timer
 
 
 def format_time(timespan, precision=3):
@@ -15,7 +17,7 @@ def format_time(timespan, precision=3):
         for suffix, length in parts:
             value = int(leftover / length)
             if value > 0:
-                leftover = leftover % length
+                leftover %= length
                 time.append(u'%s%s' % (str(value), suffix))
             if leftover < 1:
                 break
@@ -35,8 +37,22 @@ def format_time(timespan, precision=3):
             pass
     scaling = [1, 1e3, 1e6, 1e9]
 
-    if timespan > 0.0:
+    if timespan > 0:
         order = min(-int(math.floor(math.log10(timespan)) // 3), 3)
     else:
         order = 3
     return u"%.*g %s" % (precision, timespan * scaling[order], units[order])
+
+
+def timed_execution(func, tol):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        start = timer()
+        ret = func(*args, **kwargs)
+        dt = timer() - start
+        if dt > tol:
+            print("High time difference:", format_time(dt))
+        else:
+            print("Time:", format_time(dt))
+        return ret
+    return wrapper

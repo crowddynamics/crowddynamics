@@ -1,8 +1,6 @@
 from collections import Iterable
-from timeit import default_timer as timer
 
-from .core.integrator import euler_method, euler_method2, euler_method0
-from .display import format_time
+from .core.integrator import integrator
 from .io.attributes import Intervals, Attrs, Attr
 from .io.save import Save
 from .struct.agent import agent_attr_names
@@ -22,7 +20,6 @@ class Simulation:
             return tuple(filter(None, arg))
 
         # List of thing to implement
-        # TODO: Social force wall
         # TODO: Better Visualization and movie writing
         # TODO: Elliptical/Three circle Agent model and orientation
         # TODO: Pathfinding/Exit selection algorithm
@@ -32,18 +29,17 @@ class Simulation:
         # TODO: np.dot -> check performance and gil
         # TODO: check continuity -> numpy.ascontiguousarray
         # TODO: Tables of anthropometric data
+        # TODO: Egress flow to goal areas
 
         # Struct
         self.constant = constant
         self.agent = agent
         self.wall = _filter_none(wall)
         self.goals = _filter_none(goals)
-        self.result = Result(agent.size)
+        self.result = Result()
 
         # Integrator for updating multi-agent system
-        method = (euler_method0, euler_method, euler_method2)[len(self.wall)]
-        self.integrator = method(self.result, self.constant, self.agent,
-                                 *self.wall)
+        self.integrator = self.result.computation_timer(integrator)
 
         # Object for saving simulation data
         self.interval = Intervals(1.0)
@@ -70,65 +66,47 @@ class Simulation:
             filepath = None
         animation(self, x_dims, y_dims, save, frames, filepath)
 
-    def exhaust(self):
-        for _ in self:
-            pass
-
-    def print_stats(self):
-        out = "i: {:06d} | {:04d} | {} | {}".format(
-            self.result.iterations,
-            self.result.agents_in_goal,
-            format_time(self.result.avg_wall_time()),
-            format_time(self.result.wall_time_tot),
-        )
-        print(out)
-
-    def goal_reached(self, goal):
-        num = goal.is_reached_by(self.agent)
-        for _ in range(num):
-            if self.result.increment_agent_in_goal():
-                self.print_stats()
-                raise GeneratorExit()
-
-    def timed_execution(self, gen):
-        start = timer()
-        ret = next(gen)
-        t_diff = timer() - start
-        self.result.increment_wall_time(t_diff)
-        return ret
-
-    # TODO: generator -> callable
-    def __next__(self):
+    def advance(self):
         """
-        Generator exits when all agents have reached their goals.
+        :return: False is simulation ends otherwise True.
         """
-        try:
-            # TODO: Navigation
-            # self.agent.set_goal_direction(goal_point)
+        self.integrator(self.result, self.constant, self.agent, self.wall)
 
-            # Integrator
-            ret = self.timed_execution(self.integrator)
+        # Goals
+        for goal in self.goals:
+            num = goal.is_reached_by(self.agent)
+            for _ in range(num):
+                self.result.increment_in_goal_time()
 
-            # Goals
-            for goal in self.goals:
-                self.goal_reached(goal)
+        # Save
+        for saver in self.savers:
+            saver()
 
-            # Save
-            for saver in self.savers:
-                saver()
+        # Display
+        if self.interval():
+            print(self.result)
 
-            # Display
-            if self.interval():
-                self.print_stats()
-
-            return ret
-        except GeneratorExit:
+        # TODO: simulation exit
+        if len(self.result.in_goal_time) == self.agent.size:
             # Finally save results
+            print(self.result)
             self.save.hdf(self.result, self.attrs_result)
             for saver in self.savers:
                 saver(brute=True)
+            return False
 
-            raise StopIteration()
+        return True
 
-    def __iter__(self):
-        return self
+    def run(self, iterations=None):
+        """
+
+        :param iterations: Run simulation until number of iterations is reached
+        or if None run until simulation ends.
+        :return:
+        """
+        if iterations is None:
+            while self.advance():
+                pass
+        else:
+            while self.advance() and iterations > 0:
+                iterations -= 1

@@ -3,7 +3,7 @@ from timeit import default_timer as timer
 
 import numpy as np
 sys.path.append("/home/jaan/Dropbox/Projects/Crowd-Dynamics")
-from crowd_dynamics.core.integrator import explicit_euler_method
+from crowd_dynamics.core.integrator import integrator
 from crowd_dynamics.display import format_time
 from crowd_dynamics.parameters import Parameters
 from crowd_dynamics.struct.agent import Agent
@@ -43,10 +43,10 @@ def timed_execution(gen):
 
 
 def test_integrator():
-    integrator = explicit_euler_method(result, constant, agent, walls)
+    gen = integrator(result, constant, agent, walls)
     i = 0
     while i < 100:
-        timed_execution(integrator)
+        timed_execution(gen)
         i += 1
 
 
