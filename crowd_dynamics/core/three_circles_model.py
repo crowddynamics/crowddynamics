@@ -50,7 +50,7 @@ def agent_agent_distance(agent, i, j, x_rel_torso, d_ij):
     return x_rel, r_tot, h_min, r_moment_i, r_moment_j
 
 
-def agent_wall_distance():
+def agent_wall_distance(agent, wall, i, w):
     pass
 
 

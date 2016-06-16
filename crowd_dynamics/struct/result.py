@@ -22,10 +22,13 @@ class Result(object):
     """
 
     def __init__(self, deque_maxlen=100):
+        self.initial_flag = True
+
         # Simulation data
         self.iterations = 0
         self.simulation_time = 0
         self.simulation_times = []
+        self.in_goal = 0
         self.in_goal_time = []
 
         # Real time
@@ -34,6 +37,7 @@ class Result(object):
         self.computation_time = deque(maxlen=deque_maxlen)
 
     def increment_in_goal_time(self):
+        self.in_goal += 1
         self.in_goal_time.append(self.simulation_time)
 
     def increment_simulation_time(self, dt):
@@ -60,13 +64,16 @@ class Result(object):
         return wrapper
 
     def __str__(self):
-        num = len(self.in_goal_time)
         if self.computation_time:
             mean_time = np.mean(self.computation_time)
         else:
             mean_time = 0
         out = "i: {:6d} | {:4d} | {} | {}".format(
-            self.iterations, num, format_time(mean_time),
+            self.iterations, self.in_goal, format_time(mean_time),
             format_time(self.computation_time_tot),
         )
+        if self.initial_flag:
+            out = "Initial time: " + format_time(self.computation_time_high) + \
+                  "\n" + out
+            self.initial_flag = False
         return out

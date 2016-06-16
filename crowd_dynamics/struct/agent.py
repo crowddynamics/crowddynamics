@@ -16,6 +16,9 @@ spec_agent = OrderedDict(
     orientable_flag=boolean,
     herding_flag=boolean,
 
+    active=boolean[:],
+    goal_reached=boolean[:],
+
     mass=float64[:, :],
     radius=float64[:],
     radius_torso=float64[:],
@@ -35,8 +38,6 @@ spec_agent = OrderedDict(
     goal_direction=float64[:, :],
     target_direction=float64[:, :],
     force=float64[:, :],
-    goal_reached=boolean[:],
-
     force_adjust=float64[:, :],
     force_agent=float64[:, :],
     force_wall=float64[:, :],
@@ -67,15 +68,14 @@ class Agent(object):
                  radius_shoulder,
                  radius_torso_shoulder,
                  inertia_rot,
-                 goal_velocity,
-                 goal_reached):
+                 goal_velocity):
         """
 
         :param size: Integer. Size of the arrays.
         :param mass: Array of masses of agents.
         :param radius: Array of radii of agents.
         :param goal_velocity: Array of goal_velocities of agents.
-        :param goal_reached: Array of boolean values of agents that have reached
+        :param init_false: Array of boolean values of agents that have reached
         their goals. Should be initialized to all false.
         """
 
@@ -94,6 +94,10 @@ class Agent(object):
         self.three_circles_flag = False
         self.orientable_flag = self.three_circles_flag
         self.herding_flag = False
+
+        # Agent flags
+        self.active = np.ones(size, np.bool8)
+        self.goal_reached = np.zeros(size, np.bool8)
 
         # Agent properties
         self.radius = radius
@@ -118,10 +122,6 @@ class Agent(object):
         self.goal_velocity = goal_velocity.reshape(size, 1)
         self.target_direction = np.zeros(self.shape)
         self.force = np.zeros(self.shape)
-
-        # self.goal_position = np.zeros(self.shape)
-        self.goal_reached = goal_reached
-
         self.force_adjust = np.zeros(self.shape)
         self.force_agent = np.zeros(self.shape)
         self.force_wall = np.zeros(self.shape)

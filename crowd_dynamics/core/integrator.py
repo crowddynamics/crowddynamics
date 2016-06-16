@@ -8,7 +8,7 @@ def navigation(agent, goal_point):
     agent.set_goal_direction(goal_point)
 
 
-def goals():
+def is_goals_reached(agent, goals):
     pass
 
 

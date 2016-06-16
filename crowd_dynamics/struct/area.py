@@ -3,8 +3,6 @@ import numpy as np
 
 class GoalRectangle(object):
     def __init__(self, center, radius):
-        # Vectors of shape=(2,)
-        # self.angle = 0
         self.center = center  # (x, y)
         self.radius = radius  # (rx, ry)
 

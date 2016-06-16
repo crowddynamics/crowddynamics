@@ -1,3 +1,4 @@
+import operator
 from collections import Iterable
 
 from .core.integrator import integrator
@@ -12,7 +13,20 @@ from .visualization.animation import animation
 
 class Simulation:
     def __init__(self, constant, agent, wall=None, goals=None, dirpath=None,
-                 name=None):
+                 name=None, x=None, y=None):
+        width = x[1] - x[0]
+        height = y[1] - y[0]
+        self.x_dims = x
+        self.y_dims = y
+
+        offset = abs(width - height) / 2
+        if width > height:
+            self.y_dims = y[0] - offset, y[1] + offset
+        elif width < height:
+            self.x_dims = x[0] - offset, x[1] + offset
+        self.x_dims = tuple(map(operator.add, self.x_dims, (-5, 5)))
+        self.y_dims = tuple(map(operator.add, self.y_dims, (-5, 5)))
+
         # Make iterables and filter None values
         def _filter_none(arg):
             if not isinstance(arg, Iterable):
@@ -59,12 +73,12 @@ class Simulation:
             [self.save.hdf(w, self.attrs_wall) for w in self.wall]
         )
 
-    def animation(self, x_dims, y_dims, fname=None, save=False, frames=None):
+    def animation(self, fname=None, save=False, frames=None):
         if save:
             filepath = self.save.animation(fname)
         else:
             filepath = None
-        animation(self, x_dims, y_dims, save, frames, filepath)
+        animation(self, self.x_dims, self.y_dims, save, frames, filepath)
 
     def advance(self):
         """
@@ -86,9 +100,8 @@ class Simulation:
         if self.interval():
             print(self.result)
 
-        # TODO: simulation exit
         if len(self.result.in_goal_time) == self.agent.size:
-            # Finally save results
+            # Simulation exit
             print(self.result)
             self.save.hdf(self.result, self.attrs_result)
             for saver in self.savers:

@@ -75,12 +75,13 @@ def animation(simulation, x_dims, y_dims, save=False, frames=None,
     else:
         areas = (_area(simulation.goals),)
 
-    args += (ax.add_collection(PatchCollection(tuple(filter(None, areas)), alpha=0.2)), )
+    args += (ax.add_collection(PatchCollection(tuple(filter(None, areas)),
+                                               alpha=0.2)), )
 
     def _text():
-        txt1 = "Simu Time = {:f}".format(result.simu_time_tot)
-        txt2 = "Goal = {:d} / {:d}".format(result.agents_in_goal, result.size)
-        txt3 = "Real Time = " + format_time(result.wall_time_tot)
+        txt1 = "Simulation: " + format_time(result.simulation_time)
+        txt2 = "In goal: {:3d} / {:d}".format(result.in_goal, agent.size)
+        txt3 = "Computation: " + format_time(result.computation_time_tot)
 
         simu_time.set_text(txt1)
         goal_text.set_text(txt2)
@@ -95,7 +96,8 @@ def animation(simulation, x_dims, y_dims, save=False, frames=None,
         return args
 
     def animate(i):
-        next(simulation)
+        if not simulation.advance() and not save:
+            exit()
         _text()
         _agent()
         return args
@@ -105,9 +107,6 @@ def animation(simulation, x_dims, y_dims, save=False, frames=None,
 
     if save:
         fps = round(1 / constant.dt)
-        try:
-            anim.save(filepath, fps=fps, extra_args=['-vcodec', 'libx264'])
-        except:
-            pass
+        anim.save(filepath, fps=fps, extra_args=['-vcodec', 'libx264'])
     else:
         plt.show()
