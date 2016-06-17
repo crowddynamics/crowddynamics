@@ -7,47 +7,39 @@ from crowd_dynamics.core.vector2d import force_limit, rotate270, normalize
 
 
 @numba.jit(nopython=True, nogil=True)
-def agent_agent_distance(agent, i, j, x_rel_torso, d_ij):
+def agent_agent_distance(agent, i, j, d_ij):
     """Three circles model"""
-    # TODO: Pre-compute tangents
-    t_i = np.array((-np.sin(agent.angle[i]), np.cos(agent.angle[i])))
-    t_j = np.array((-np.sin(agent.angle[j]), np.cos(agent.angle[j])))
+    # Positions
+    x_i = (agent.position[i], agent.position_ls[i], agent.position_rs[i])
+    x_j = (agent.position[j], agent.position_ls[j], agent.position_rs[j])
 
-    tr_i = agent.radius_torso_shoulder[i] * t_i
-    tr_j = agent.radius_torso_shoulder[j] * t_j
+    # Radii of torso and shoulders
+    r_i = (agent.r_t[i], agent.r_s[i], agent.r_s[i])
+    r_j = (agent.r_t[j], agent.r_s[j], agent.r_s[j])
 
-    r_i = (agent.radius_torso[i],
-           agent.radius_shoulder[i],
-           agent.radius_shoulder[i])
-    r_j = (agent.radius_torso[j],
-           agent.radius_shoulder[j],
-           agent.radius_shoulder[j])
+    # Minimizing values
+    positions = np.zeros(2), np.zeros(2)  #
+    radius = (0.0, 0.0)                   # Radius
+    relative_position = np.zeros(2)       # Vector from agent i s/t to agent j s/t
+    relative_distance = d_ij              # Minimum relative distance distance
+    direction = np.zeros(2)               # Unit vector of x_rel
 
-    k = (0.0, 1.0, -1.0)
-    r = (0.0, 0.0)
-    c = (np.zeros(2), np.zeros(2))
-    x_rel = np.zeros(2)
-    e_ij = np.zeros(2)
-    h_min = d_ij
-    for ri, k_i in zip(r_i, k):
-        for rj, k_j in zip(r_j, k):
-            c_i = k_i * tr_i
-            c_j = k_j * tr_j
-            x = c_i - c_j + x_rel_torso
+    for xi, ri  in zip(x_i, r_i):
+        for xj, rj in zip(x_j, r_j):
+            x = xi - xj
             d = np.hypot(x[0], x[1])
             h = d - (ri + rj)
-            if h < h_min:
-                h_min = h
-                r = ri, rj
-                c = c_i, c_j
-                x_rel = x
-                e_ij = x / d
+            if h < relative_distance:
+                relative_distance = h
+                radius = ri, rj
+                relative_position = x
+                direction = x / d
+                positions = xi, xj
 
-    r_tot = r[0] + r[1]
-    r_moment_i = agent.position[i] + c[0] + r[0] * e_ij
-    r_moment_j = agent.position[j] + c[1] - r[1] * e_ij
+    r_moment_i = positions[0] + radius[0] * direction
+    r_moment_j = positions[1] - radius[1] * direction
 
-    return x_rel, r_tot, h_min, r_moment_i, r_moment_j
+    return relative_position, relative_distance, r_moment_i, r_moment_j
 
 
 def agent_wall_distance(agent, wall, i, w):
@@ -58,17 +50,21 @@ def agent_wall_distance(agent, wall, i, w):
 def agent_agent_interaction(i, j, constant, agent):
     # Function params
     x = agent.position[i] - agent.position[j]      # Relative positions
-    v = agent.velocity[i] - agent.velocity[j]      # Relative velocity
-    r_tot_max = agent.radius[i] + agent.radius[j]  # Total radius
+    r_tot = agent.radius[i] + agent.radius[j]  # Total radius
     d = np.hypot(x[0], x[1])                       # Distance
-    h_min = d - r_tot_max                          # Relative distance
-
-    x, r_tot, h, r_moment_i, r_moment_j = agent_agent_distance(agent, i, j, x, d)
+    h = d - r_tot                          # Relative distance
 
     # Agent sees the other agent
     if h <= agent.sight_soc:
+        v = agent.velocity[i] - agent.velocity[j]      # Relative velocity
+        r_moment_i, r_moment_j = np.zeros(2), np.zeros(2)
+
         force = force_social(x, v, r_tot, constant.k, constant.tau_0)
         force_limit(force, constant.f_soc_ij_max)
+
+        # TODO: Cutoff distance.
+        if h <= 2.0:
+            x, h, r_moment_i, r_moment_j = agent_agent_distance(agent, i, j, d)
 
         # Physical contact
         if h < 0:
@@ -81,7 +77,7 @@ def agent_agent_interaction(i, j, constant, agent):
         agent.force[i] += force
         agent.force[j] -= force
         agent.torque[i] += torque(r_moment_i, force)
-        agent.torque[j] += torque(r_moment_j, force)
+        agent.torque[j] += torque(r_moment_j, -force)
         agent.force_agent[i] += force
         agent.force_agent[j] -= force
 
@@ -104,13 +100,13 @@ def agent_wall_interaction(i, w, constant, agent, wall):
         force = force_social(x, agent.velocity[i], agent.radius[i] + r,
                              constant.k, constant.tau_0)
         force_limit(force, constant.f_soc_iw_max)
-        agent.force[i] += force
-        agent.force_wall[i] += force
 
-    if h < 0:
-        t = rotate270(n)  # Tangent
-        force = force_contact(h, n, agent.velocity[i], t, constant.mu,
-                              constant.kappa)
-        force_limit(force, constant.f_c_iw_max)
+        if h < 0:
+            t = rotate270(n)  # Tangent
+            force_c = force_contact(h, n, agent.velocity[i], t, constant.mu,
+                                    constant.kappa)
+            force_limit(force_c, constant.f_c_iw_max)
+            force += force_c
+
         agent.force[i] += force
         agent.force_wall[i] += force

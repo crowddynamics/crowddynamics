@@ -5,6 +5,9 @@ import numpy as np
 from .vector2d import dot2d
 
 
+# TODO: Limit forces / Cutoff
+
+
 @numba.jit(nopython=True, nogil=True)
 def force_random(constant, agent):
     """Random force"""

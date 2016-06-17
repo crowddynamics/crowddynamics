@@ -1,3 +1,4 @@
+import numpy as np
 from collections import Iterable
 
 import matplotlib.pyplot as plt
@@ -39,7 +40,9 @@ def animation(simulation, x_dims, y_dims, save=False, frames=None,
     agents = ax.scatter(agent.position[:, 0],
                         agent.position[:, 1],
                         s=400 * agent.radius**2,
-                        alpha=0.8,)
+                        alpha=0.8,
+                        marker='o',
+                        )
 
     # agents = [Circle(xy, rad) for xy, rad in zip(agent.position, agent.radius)]
     # agents = ax.add_collection(PatchCollection(agents))

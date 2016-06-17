@@ -52,5 +52,9 @@ def integrator(result, constant, agent, walls):
         agent.angular_velocity += angular_acceleration * dt
         agent.angle += agent.angular_velocity * dt
 
+    if agent.orientable_flag:
+        agent.update_shoulder_positions()
+
     # Save
     result.increment_simulation_time(dt)
+

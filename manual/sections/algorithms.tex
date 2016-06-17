@@ -40,12 +40,33 @@
 \IF{$ h < 0 $}
 \STATE $ \hat{\mathbf{n}} \gets \tilde{\mathbf{x}} / d $
 \STATE $ \hat{\mathbf{t}} \gets R(-90^{\circ}) \hat{\mathbf{n}} $
-\STATE $ \mathbf{f} \gets \mathbf{f}_{c}(\tilde{\mathbf{v}}, h, \hat{\mathbf{n}}, \hat{\mathbf{t}}, \mu, \kappa) $
+\STATE $ \mathbf{f} \gets +\mathbf{f}_{c}(\tilde{\mathbf{v}}, h, \hat{\mathbf{n}}, \hat{\mathbf{t}}, \mu, \kappa) $
 \ENDIF
+
+\STATE
+\STATE $ \mathbf{f}_{i} \gets +\mathbf{f} $
+\STATE $ \mathbf{f}_{j} \gets -\mathbf{f} $
 \ENDIF
-\STATE $  $
 \end{algorithmic}
 \caption{Interaction between circular agents.}
+\end{algorithm}
+
+
+\begin{algorithm}[H]
+\begin{algorithmic}[1]
+\REQUIRE $ i, j, \tilde{\mathbf{x}}, d $
+\ENSURE
+\STATE $ \hat{\mathbf{t}}_{i} $
+\STATE $ \hat{\mathbf{t}}_{j} $
+\STATE
+\STATE $ r_{ts} \hat{\mathbf{t}} $
+\STATE
+\FOR{}
+\STATE
+\ENDFOR
+\STATE
+\end{algorithmic}
+\caption{Distance between agent using three circles model.}
 \end{algorithm}
 
 
@@ -66,19 +87,21 @@
 \STATE
 
 \IF{$ h \leq sight $}
-\STATE $ \mathbf{f}_{soc}(\tilde{\mathbf{x}}, \tilde{\mathbf{v}}, r_{tot}, k, \tau_{0}) $
-\STATE $ M_{i}^{soc}(\mathbf{r}_{i}^{moment}, \mathbf{f}_{soc}) $
-\STATE $ M_{j}^{soc}(\mathbf{r}_{j}^{moment}, \mathbf{f}_{soc}) $
+\STATE $ \mathbf{f} \gets \mathbf{f}_{soc}(\tilde{\mathbf{x}}, \tilde{\mathbf{v}}, r_{tot}, k, \tau_{0}) $
 
 \STATE
 
 \IF{$ h < 0 $}
 \STATE $ \hat{\mathbf{n}} \gets \tilde{\mathbf{x}} / d $
 \STATE $ \hat{\mathbf{t}} \gets R(-90^{\circ}) \hat{\mathbf{n}} $
-\STATE $ \mathbf{f}_{c}(\tilde{\mathbf{v}}, h, \hat{\mathbf{n}}, \hat{\mathbf{t}}, \mu, \kappa) $
-\STATE $ M_{i}^{c}(\mathbf{r}_{i}^{moment}, \mathbf{f}_{c}) $
-\STATE $ M_{j}^{c}(\mathbf{r}_{j}^{moment}, \mathbf{f}_{c}) $
+\STATE $ \mathbf{f} \gets +\mathbf{f}_{c}(\tilde{\mathbf{v}}, h, \hat{\mathbf{n}}, \hat{\mathbf{t}}, \mu, \kappa) $
 \ENDIF
+\STATE
+\STATE $ \mathbf{f}_{i} \gets +\mathbf{f} $
+\STATE $ \mathbf{f}_{j} \gets -\mathbf{f} $
+\STATE
+\STATE $ M_{i} \gets M_{i}^{c}(\mathbf{r}_{i}^{moment}, \mathbf{f}) $
+\STATE $ M_{i} \gets M_{j}^{c}(\mathbf{r}_{j}^{moment}, -\mathbf{f}) $
 \ENDIF
 
 \ENDIF

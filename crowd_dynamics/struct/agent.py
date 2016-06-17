@@ -21,17 +21,10 @@ spec_agent = OrderedDict(
 
     mass=float64[:, :],
     radius=float64[:],
-    radius_torso=float64[:],
-    radius_shoulder=float64[:],
-    radius_torso_shoulder=float64[:],
+    r_t=float64[:],
+    r_s=float64[:],
+    r_ts=float64[:],
     goal_velocity=float64[:, :],
-
-    inertia_rot=float64[:],
-    angle=float64[:],
-    angular_velocity=float64[:],
-    target_angle=float64[:],
-    target_angular_velocity=float64[:],
-    torque=float64[:],
 
     position=float64[:, :],
     velocity=float64[:, :],
@@ -41,6 +34,15 @@ spec_agent = OrderedDict(
     force_adjust=float64[:, :],
     force_agent=float64[:, :],
     force_wall=float64[:, :],
+
+    inertia_rot=float64[:],
+    angle=float64[:],
+    angular_velocity=float64[:],
+    target_angle=float64[:],
+    target_angular_velocity=float64[:],
+    torque=float64[:],
+    position_ls=float64[:, :],
+    position_rs=float64[:, :],
 
     sight_soc=float64,
     sight_wall=float64,
@@ -91,19 +93,12 @@ class Agent(object):
         self.goal_reached = np.zeros(size, np.bool8)
 
         # Constant properties
-        self.radius = radius
-        self.radius_torso = radius_torso
-        self.radius_shoulder = radius_shoulder
-        self.radius_torso_shoulder = radius_torso_shoulder
+        self.radius = radius               # Total radius
+        self.r_t = radius_torso            # Radius of torso
+        self.r_s = radius_shoulder         # Radius of shoulders
+        self.r_ts = radius_torso_shoulder  # Distance from torso to shoulder
         self.mass = mass.reshape(size, 1)
         self.inertia_rot = inertia_rot
-
-        # Rotational movement
-        self.angle = np.zeros(self.size)
-        self.angular_velocity = np.zeros(self.size)
-        self.target_angle = np.zeros(self.size)
-        self.target_angular_velocity = target_angular_velocity
-        self.torque = np.zeros(self.size)
 
         # Movement along x and y axis
         self.position = np.zeros(self.shape)
@@ -115,6 +110,19 @@ class Agent(object):
         self.force_adjust = np.zeros(self.shape)
         self.force_agent = np.zeros(self.shape)
         self.force_wall = np.zeros(self.shape)
+
+        # Rotational movement
+        self.angle = np.zeros(self.size)
+        self.angular_velocity = np.zeros(self.size)
+        self.target_angle = np.zeros(self.size)
+        self.target_angular_velocity = target_angular_velocity
+        self.torque = np.zeros(self.size)
+
+        self.position_ls = np.zeros(self.shape)  # Left shoulder
+        self.position_rs = np.zeros(self.shape)  # Right shoulder
+
+        if self.orientable_flag:
+            self.update_shoulder_positions()
 
         # Distances for reacting to other objects
         self.sight_soc = 7.0
@@ -159,3 +167,10 @@ class Agent(object):
         mask = self.goal_reached ^ True
         if np.sum(mask):
             self.goal_direction[mask] = normalize_vec(goal - self.position[mask])
+
+    def update_shoulder_positions(self):
+        for i in range(self.size):
+            t = np.array((-np.sin(self.angle[i]), np.cos(self.angle[i])))
+            offset = t * self.r_ts
+            self.position_ls[i] = self.position[i] - offset
+            self.position_rs[i] = self.position[i] + offset
