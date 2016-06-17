@@ -37,6 +37,7 @@ def integrator(result, constant, agent, walls):
     acceleration = agent.force / agent.mass
 
     # Position change
+    # TODO:
     dv = agent.velocity + acceleration * constant.dt
     dt = constant.dx_max / np.max(np.hypot(dv[:, 0], dv[:, 1]))
     if dt > constant.dt:
