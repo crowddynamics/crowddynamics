@@ -111,7 +111,7 @@ class Parameters:
             position[i, :] = pos
             i += 1
 
-    def agent(self, size, body_type="adult"):
+    def agent(self, size, three_circles_flag=True, body_type="adult"):
         """Arguments for constructing agent."""
         body = body_types[body_type]
         mass = self.truncnorm(loc=body.mass, scale=body.mass_scale, size=size)
@@ -125,7 +125,7 @@ class Parameters:
         target_angular_velocity = 4 * np.pi * np.ones(size)
 
         return size, mass, radius, r_t, r_s, r_ts, inertia_rot, goal_velocity, \
-               target_angular_velocity
+               target_angular_velocity, three_circles_flag
 
     def round_wall(self, size, r_min, r_max):
         """Arguments for constructing round wall."""

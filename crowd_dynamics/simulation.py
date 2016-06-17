@@ -35,7 +35,6 @@ class Simulation:
 
         # List of thing to implement
         # TODO: Better Visualization and movie writing
-        # TODO: Elliptical/Three circle Agent model and orientation
         # TODO: Path finding / Navigation / Exit selection algorithm
         # TODO: Game theoretical exit congestion algorithm
         # TODO: Result Analysis

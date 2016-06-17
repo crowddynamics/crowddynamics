@@ -71,7 +71,8 @@ class Agent(object):
                  radius_torso_shoulder,
                  inertia_rot,
                  goal_velocity,
-                 target_angular_velocity):
+                 target_angular_velocity,
+                 three_circles_flag):
         """
 
         :param size: Integer. Size of the arrays.
@@ -84,7 +85,7 @@ class Agent(object):
         self.shape = (size, 2)
 
         # Flags - Which features are active.
-        self.three_circles_flag = False
+        self.three_circles_flag = three_circles_flag
         self.orientable_flag = self.three_circles_flag
         self.herding_flag = False
 
@@ -159,7 +160,6 @@ class Agent(object):
             self.target_direction = self.goal_direction
 
     def velocity_to_target_angle(self):
-        # TODO: If velocity (0, 0)
         self.target_angle = np.arctan2(self.velocity[:, 0], self.velocity[:, 1])
 
     def set_goal_direction(self, goal):
@@ -171,6 +171,6 @@ class Agent(object):
     def update_shoulder_positions(self):
         for i in range(self.size):
             t = np.array((-np.sin(self.angle[i]), np.cos(self.angle[i])))
-            offset = t * self.r_ts
+            offset = t * self.r_ts[i]
             self.position_ls[i] = self.position[i] - offset
             self.position_rs[i] = self.position[i] + offset

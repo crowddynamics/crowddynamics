@@ -50,4 +50,3 @@ def test_integrator():
         i += 1
 
 
-test_integrator()
