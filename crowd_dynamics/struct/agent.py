@@ -68,24 +68,15 @@ class Agent(object):
                  radius_shoulder,
                  radius_torso_shoulder,
                  inertia_rot,
-                 goal_velocity):
+                 goal_velocity,
+                 target_angular_velocity):
         """
 
         :param size: Integer. Size of the arrays.
         :param mass: Array of masses of agents.
         :param radius: Array of radii of agents.
         :param goal_velocity: Array of goal_velocities of agents.
-        :param init_false: Array of boolean values of agents that have reached
-        their goals. Should be initialized to all false.
         """
-
-        # TODO: Three circles, Orientation
-        # TODO: Collection of average human dimensions and properties
-        # TODO: Path finding
-        # TODO: Goal reached? Handle reached goals.
-        # TODO: Gathering other forces for debugging and plotting
-        # TODO: Not see through walls?
-
         # Array properties
         self.size = size
         self.shape = (size, 2)
@@ -99,12 +90,11 @@ class Agent(object):
         self.active = np.ones(size, np.bool8)
         self.goal_reached = np.zeros(size, np.bool8)
 
-        # Agent properties
+        # Constant properties
         self.radius = radius
         self.radius_torso = radius_torso
         self.radius_shoulder = radius_shoulder
         self.radius_torso_shoulder = radius_torso_shoulder
-
         self.mass = mass.reshape(size, 1)
         self.inertia_rot = inertia_rot
 
@@ -112,7 +102,7 @@ class Agent(object):
         self.angle = np.zeros(self.size)
         self.angular_velocity = np.zeros(self.size)
         self.target_angle = np.zeros(self.size)
-        self.target_angular_velocity = np.zeros(self.size)
+        self.target_angular_velocity = target_angular_velocity
         self.torque = np.zeros(self.size)
 
         # Movement along x and y axis

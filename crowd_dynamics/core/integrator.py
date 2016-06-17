@@ -1,15 +1,8 @@
+import numpy as np
+
 from .force import force_adjust, force_random
 from .interactions import agent_agent, agent_wall
 from .torque import torque_adjust, torque_random
-
-
-def navigation(agent, goal_point):
-    # TODO: Navigation
-    agent.set_goal_direction(goal_point)
-
-
-def is_goals_reached(agent, goals):
-    pass
 
 
 def motion(constant, agent, walls):
@@ -40,14 +33,24 @@ def integrator(result, constant, agent, walls):
 
     # TODO: Adaptive time step from maximum position change for agent.
     # Raise warning if using less than minimum step size
+    # Larger crowd densities requires smaller timestep
     acceleration = agent.force / agent.mass
-    agent.velocity += acceleration * constant.dt
-    agent.position += agent.velocity * constant.dt
+
+    # Position change
+    dv = agent.velocity + acceleration * constant.dt
+    dt = constant.dx_max / np.max(np.hypot(dv[:, 0], dv[:, 1]))
+    if dt > constant.dt:
+        dt = constant.dt
+    elif dt < constant.dt_min:
+        dt = constant.dt_min
+
+    agent.velocity += acceleration * dt
+    agent.position += agent.velocity * dt
 
     if agent.orientable_flag:
         angular_acceleration = agent.torque / agent.inertia_rot
-        agent.angular_velocity += angular_acceleration * constant.dt
-        agent.angle += agent.angular_velocity * constant.dt
+        agent.angular_velocity += angular_acceleration * dt
+        agent.angle += agent.angular_velocity * dt
 
     # Save
-    result.increment_simulation_time(constant.dt)
+    result.increment_simulation_time(dt)

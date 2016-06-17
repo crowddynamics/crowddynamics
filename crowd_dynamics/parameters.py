@@ -114,10 +114,6 @@ class Parameters:
     def agent(self, size, body_type="adult"):
         """Arguments for constructing agent."""
         body = body_types[body_type]
-
-        init_false = np.zeros(size, dtype=np.bool_)
-        init_true = np.ones(size, dtype=np.bool_)
-
         mass = self.truncnorm(loc=body.mass, scale=body.mass_scale, size=size)
         radius = self.truncnorm(loc=body.r, scale=body.dr, size=size)
         r_t = body.k_t * radius
@@ -126,9 +122,10 @@ class Parameters:
         inertia_rot_scale = 4.0 / (80.0 * 0.255 ** 2)
         inertia_rot = inertia_rot_scale * mass * radius ** 2  # I = mr^2
         goal_velocity = 5.0 * np.ones(size)
-        # target_angular_velocity = 4 * np.pi * np.ones(size)
+        target_angular_velocity = 4 * np.pi * np.ones(size)
 
-        return size, mass, radius, r_t, r_s, r_ts, inertia_rot, goal_velocity
+        return size, mass, radius, r_t, r_s, r_ts, inertia_rot, goal_velocity, \
+               target_angular_velocity
 
     def round_wall(self, size, r_min, r_max):
         """Arguments for constructing round wall."""

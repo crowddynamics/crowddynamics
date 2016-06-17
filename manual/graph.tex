@@ -103,24 +103,24 @@
 \def\N{6};
 \def\r{5.5};
 
-\node[inactive] (navigation) at ({-180/\N*0-180:\r}) {Navigation};
-\node[inactive] (game)       at ({-180/\N*1-180:\r}) {Game};
+\node[inactive] (game)       at ({-180/\N*0-180:\r}) {Game};
+\node[inactive] (navigation) at ({-180/\N*1-180:\r}) {Navigation};
 \node[largenode] (integrator)   at ({-180/\N*2-180:\r}) {Integrator};
-\node[largenode] (goals)        at ({-180/\N*3-180:\r}) {Goals};
+\node[largenode] (area)        at ({-180/\N*3-180:\r}) {Area};
 \node[largenode] (save)         at ({-180/\N*4-180:\r}) {Save};
 \node[largenode] (print)        at ({-180/\N*5-180:\r}) {Print};
 \node[largenode] (visualize)    at ({-180/\N*6-180:\r}) {Visualize};
 
 
-\path[simuarrow] (navigation) edge[bend left=10] (game);
-\path[simuarrow] (game)       edge[bend left=10] (integrator);
-\path[simuarrow] (integrator) edge[bend left=10] (goals);
-\path[simuarrow] (goals)      edge[bend left=10] (save);
+\path[simuarrow] (game)       edge[bend left=10] (navigation);
+\path[simuarrow] (navigation) edge[bend left=10] (integrator);
+\path[simuarrow] (integrator) edge[bend left=10] (area);
+\path[simuarrow] (area)      edge[bend left=10] (save);
 \path[simuarrow] (save)       edge[bend left=10] (print);
 \path[simuarrow] (print)      edge[bend left=10] (visualize);
 
-\path[simuarrow, dashed] (visualize)  edge[bend left=65] node[below] {Advance Simulation} (navigation);
-\path[simuarrow, dashed] (visualize)  edge[bend right] node[below, sloped] {End simulation} ($ (visualize) + (3, -3) $);
+\path[simuarrow, dashed] (visualize)  edge[bend left=65] node[below] {Advance Simulation} (game);
+\path[simuarrow, dashed] (visualize)  edge[bend right] node[below, sloped] {End simulation} ($ (visualize) + (5, -3) $);
 
 
 \path[interactionarrow] (navigation) edge[] (wall);
@@ -130,8 +130,8 @@
 \path[interactionarrow] (integrator) edge[] (agent);
 \path[interactionarrow] (integrator) edge[] (wall);
 \path[interactionarrow] (integrator) edge[] (constant);
-\path[interactionarrow] (goals)      edge[] (goal);
-\path[interactionarrow] (goals)      edge[] (agent);
+\path[interactionarrow] (area)      edge[] (goal);
+\path[interactionarrow] (area)      edge[] (agent);
 
 
 \path[inputarrow] (wall)     edge[bend left] (save);
@@ -147,12 +147,14 @@
 \path[inputarrow] (result)   edge[bend left=60] (visualize);
 
 % ------------------------------------------------------------------------------
-% Goals
+% Area
 % ------------------------------------------------------------------------------
 
-\node[inactive, above=1.0 of goals] (goalhandler) {If reached by agent};
+\node[largenode] (goalhandler) at ($ (area) + (125:3) $) {Goal};
+\node[inactive] (bounds)       at ($ (area) + (90:3) $) {Bounds};
 
-\path[->] (goalhandler) edge[] (goals);
+\path[->] (goalhandler) edge[] (area);
+\path[->] (bounds)      edge[] (area);
 
 % ------------------------------------------------------------------------------
 % Core / Integrator
@@ -160,17 +162,25 @@
 
 \node[largenode] (motion) at ($ (integrator) + (135:3) $) {Motion};
 
-\node[largenode] (adjust) at ($ (motion) + (90:4) $) {Adjust};
+\node[largenode] (adjust)      at ($ (motion) + (90:4) $) {Adjust};
 \node[largenode] (agent-agent) at ($ (motion) + (135:4) $) {Agent-Agent};
-\node[largenode] (agent-wall) at ($ (motion) + (155:4) $) {Agent-Wall};
-\node[largenode] (random) at ($ (motion) + (180:4) $) {Random};
+\node[largenode] (agent-wall)  at ($ (motion) + (155:4) $) {Agent-Wall};
+\node[largenode] (random)      at ($ (motion) + (180:4) $) {Random};
 
 \path[returnarrow] (motion) edge[] (integrator);
 
-\path[returnarrow] (adjust) edge[] (motion);
+\path[returnarrow] (adjust)      edge[] (motion);
 \path[returnarrow] (agent-agent) edge[] (motion);
-\path[returnarrow] (agent-wall) edge[] (motion);
-\path[returnarrow] (random) edge[] (motion);
+\path[returnarrow] (agent-wall)  edge[] (motion);
+\path[returnarrow] (random)      edge[] (motion);
+
+% ------------------------------------------------------------------------------
+% Navigation
+% ------------------------------------------------------------------------------
+
+\node[inactive, left=1.0 of navigation] (astar) {Potential Field or $ A^{*} $};
+
+\path[returnarrow] (astar) edge[] (navigation);
 
 % ------------------------------------------------------------------------------
 % Game
@@ -183,19 +193,11 @@
 \path[returnarrow] (clock) edge[] (strategy);
 
 % ------------------------------------------------------------------------------
-% Navigation
-% ------------------------------------------------------------------------------
-
-\node[inactive, left=1.0 of navigation] (astar) {Potential Field or $ A^{*} $};
-
-\path[returnarrow] (astar) edge[] (navigation);
-
-
-% ------------------------------------------------------------------------------
 % Save
 % ------------------------------------------------------------------------------
 
 \node[largenode, above right=of save] (file) {HDF5 File};
+
 \path[inputarrow] (save) edge[] (file);
 
 % ------------------------------------------------------------------------------
@@ -203,11 +205,8 @@
 % ------------------------------------------------------------------------------
 
 \node[largenode, right=1.0 of visualize] (animation) {Animation};
-%\node[largenode, below right=2.0 of file] (notebook) {Notebook};
 
 \path[->, dashed] (visualize) edge[] (animation);
-%\path[->, dashed] (visualize) edge[bend left] node[above, sloped] {FuncAnimation}  (animation);
-%\path[->] (file) edge[] (notebook);
 
 \end{tikzpicture}
 \end{document}

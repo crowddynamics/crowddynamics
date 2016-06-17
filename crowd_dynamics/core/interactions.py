@@ -1,6 +1,7 @@
 import numba
 
-from .circular_model import agent_agent_interaction, agent_wall_interaction
+from .models.circular import agent_agent_interaction, agent_wall_interaction
+# from .models.three_circles import agent_agent_interaction, agent_wall_interaction
 
 
 @numba.jit(nopython=True, nogil=True)

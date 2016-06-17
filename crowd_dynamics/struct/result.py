@@ -11,7 +11,7 @@ result_attr_names = (
     "computation_time_tot",
     "iterations",
     "simulation_time",
-    "simulation_times",
+    "time_steps",
     "in_goal_time",
 )
 
@@ -27,7 +27,7 @@ class Result(object):
         # Simulation data
         self.iterations = 0
         self.simulation_time = 0
-        self.simulation_times = []
+        self.time_steps = []
         self.in_goal = 0
         self.in_goal_time = []
 
@@ -43,7 +43,7 @@ class Result(object):
     def increment_simulation_time(self, dt):
         self.iterations += 1
         self.simulation_time += dt
-        self.simulation_times.append(dt)
+        self.time_steps.append(dt)
 
     def increment_computation_time(self, dt, tol=1.0):
         """Does not record times higher than tol."""
@@ -68,9 +68,16 @@ class Result(object):
             mean_time = np.mean(self.computation_time)
         else:
             mean_time = 0
-        out = "i: {:6d} | {:4d} | {} | {}".format(
+
+        if self.time_steps:
+            mean_dt = np.mean(self.time_steps[:100])
+        else:
+            mean_dt = 0
+
+        out = "i: {:6d} | {:4d} | {} | {} | {:4f}".format(
             self.iterations, self.in_goal, format_time(mean_time),
             format_time(self.computation_time_tot),
+            mean_dt
         )
         if self.initial_flag:
             out = "Initial time: " + format_time(self.computation_time_high) + \

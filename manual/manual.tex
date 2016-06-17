@@ -39,6 +39,8 @@
 \usetikzlibrary{calc}
 \usetikzlibrary{arrows}
 %\usetikzlibrary{positioning}
+
+\usepackage{algorithm}
 %\usepackage{algorithm2e}
 \usepackage{algorithmic}
 %\usepackage{algorithmicx}
@@ -70,6 +72,9 @@
 \newcommand{\atan}{\ensuremath{\operatorname{angle}}}
 
 \begin{document}
+\tableofcontents
+
+\input{sections/geometry}
 \input{sections/constants}
 
 % -- Agent figure --
@@ -125,8 +130,10 @@
 \input{sections/social_force}
 \input{sections/differential_system}
 \input{sections/navigation}
+\end{multicols*}
+
+\begin{multicols*}{2}
 \input{sections/game}
-%\input{sections/simulations}
 \end{multicols*}
 
 \begin{multicols*}{2}

@@ -10,7 +10,8 @@ Rotational motion
 I \frac{d^{2}}{d t^{2}} \varphi(t) = M(t)
 \end{align}
 
-\subsection{Numerical methods}
+
+\subsection{Excplicit Euler Method}
 Updating using discrete time step $ \Delta t $
 \begin{align}
 t_{0} &= 0 \\
@@ -19,9 +20,7 @@ t_{1} &= t_{0} + \Delta t \\
 t_{k} &= t_{k-1} + \Delta t
 \end{align}
 
-%https://en.wikipedia.org/wiki/Verlet_integration
 
-\subsection{Excplicit Euler Method}
 Acceleration on an agent
 \begin{align}
 a_{k} &= \mathbf{f}_{k} / m \\
@@ -39,15 +38,15 @@ Angular acceleration
 
 
 
-%\subsection{Velocity verlet}
-%Velocity verlet algorithm
-%\begin{align}
-%\mathbf{v}_{k+\frac{1}{2}} &= \mathbf{v}_{k} + \frac{1}{2} a_{k} \Delta t \\
-%\mathbf{x}_{k+1} &= \mathbf{x}_{k} + \mathbf{v}_{k+\frac{1}{2}} \Delta t \\
-%\mathbf{v}_{k+1} &= \mathbf{v}_{k+\frac{1}{2}} + \frac{1}{2} a_{k+1} \Delta t
-%\end{align}
-%or more simply
-%\begin{align}
-%\mathbf{x}_{k+1} &= \mathbf{x}_{k} + \mathbf{v}_{k} \Delta t + \frac{1}{2} a_{k} \Delta t^{2} \\
-%\mathbf{v}_{k+1} &= \mathbf{v}_{k} + \frac{1}{2} \left(a_{k} + a_{k+1}\right) \Delta t \\
-%\end{align}
+\subsection{Velocity verlet}
+Velocity verlet algorithm
+\begin{align}
+\mathbf{v}_{k+\frac{1}{2}} &= \mathbf{v}_{k} + \frac{1}{2} a_{k} \Delta t \\
+\mathbf{x}_{k+1} &= \mathbf{x}_{k} + \mathbf{v}_{k+\frac{1}{2}} \Delta t \\
+\mathbf{v}_{k+1} &= \mathbf{v}_{k+\frac{1}{2}} + \frac{1}{2} a_{k+1} \Delta t
+\end{align}
+or more simply
+\begin{align}
+\mathbf{x}_{k+1} &= \mathbf{x}_{k} + \mathbf{v}_{k} \Delta t + \frac{1}{2} a_{k} \Delta t^{2} \\
+\mathbf{v}_{k+1} &= \mathbf{v}_{k} + \frac{1}{2} \left(a_{k} + a_{k+1}\right) \Delta t \\
+\end{align}

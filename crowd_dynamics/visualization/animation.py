@@ -5,8 +5,8 @@ from matplotlib.animation import FuncAnimation
 from matplotlib.collections import LineCollection, PatchCollection
 from matplotlib.patches import Circle, Rectangle
 
+from crowd_dynamics.area import GoalRectangle
 from ..display import format_time
-from ..struct.area import GoalRectangle
 from ..struct.wall import LinearWall, RoundWall
 
 

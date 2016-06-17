@@ -8,11 +8,11 @@ from crowd_dynamics.struct.wall import LinearWall, RoundWall, wall_attr_names
 
 class MyTestCase(unittest.TestCase):
     def test_attributes(self):
-        params = Parameters(100, 100)
+        parameters = Parameters(100, 100)
         constant = Constant()
-        agent = Agent(*params.agent(100))
-        round_wall = RoundWall(params.round_wall(5, 0.1, 0.3))
-        linear_wall = LinearWall(params.linear_wall(5))
+        agent = Agent(*parameters.agent(100))
+        round_wall = RoundWall(parameters.round_wall(5, 0.1, 0.3))
+        linear_wall = LinearWall(parameters.linear_wall(5))
 
         for name in constant_attr_names:
             self.assertTrue(hasattr(constant, name))

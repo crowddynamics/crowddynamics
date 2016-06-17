@@ -6,6 +6,8 @@ from numba import float64
 
 spec_constant = OrderedDict(
     dt=float64,
+    dt_min=float64,
+    dx_max=float64,
     tau_adj=float64,
     k=float64,
     tau_0=float64,
@@ -34,6 +36,10 @@ class Constant(object):
     def __init__(self):
         # TODO: Constants -> Constraints (Limits)
         self.dt = 0.01
+        # TODO: Lower than this raises warning
+        self.dt_min = 0.001
+        # TODO: Relative to crowd density and goal_velocity * dt
+        self.dx_max = 0.05
          # Force related constants
         self.tau_adj = 0.5
         self.k = 1.5 * 70

@@ -1,4 +1,5 @@
 import numba
+from numba import f8
 import numpy as np
 
 from .vector2d import dot2d
@@ -23,19 +24,19 @@ def force_adjust(constant, agent):
     agent.force_adjust += force
 
 
-@numba.jit(nopython=True, nogil=True)
-def force_social_naive(h, n, a, b):
-    """Naive velocity independent social force."""
-    return np.exp(- h / b) * a * n
-
-
-@numba.jit(nopython=True, nogil=True)
+@numba.jit(f8[:](f8, f8[:], f8[:], f8[:], f8, f8), nopython=True, nogil=True)
 def force_contact(h, n, v, t, mu, kappa):
     """Frictional contact force."""
     return - h * (mu * n - kappa * dot2d(v, t) * t)
 
 
-@numba.jit(nopython=True, nogil=True)
+@numba.jit(f8[:](f8, f8[:], f8, f8), nopython=True, nogil=True)
+def force_social_naive(h, n, a, b):
+    """Naive velocity independent social force."""
+    return np.exp(- h / b) * a * n
+
+
+@numba.jit(f8[:](f8[:], f8[:], f8, f8, f8), nopython=True, nogil=True)
 def force_social(x_rel, v_rel, r_tot, k, tau_0):
     """
     Velocity dependent social force. [1]

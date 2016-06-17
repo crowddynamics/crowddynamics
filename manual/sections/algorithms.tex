@@ -1,73 +1,88 @@
 \section{Algorithms}
-
-Crowd dynamics simulation in 2-Dimensional continuous space.
-\begin{align}
-\mathbf{x} = (x, y) \in \mathbb{R}^{2}
-\end{align}
-
-Some operations for 2D geometry
-\begin{table}[H]
-\begin{tabularx}{1.0\linewidth}{ R R R }
-Notation & Name & Return \\
-\hline
-\hline
-$ \left\| \mathbf{x} \right\| $      & \texttt{hypot} & $ \in [0, \infty) $ \\
-$ \operatorname{angle}(\mathbf{x}) $ & \texttt{arctan2} & $ \in [-\pi, \pi] $ \\
-$ R(90^{\circ}) \cdot \mathbf{x} $   &  & $ (-y, x) $ \\
-$ R(-90^{\circ}) \cdot \mathbf{x} $  &  & $ (y, -x) $ \\
-\end{tabularx}
-\end{table}
-
-
 % https://en.wikibooks.org/wiki/LaTeX/Algorithms
-\algsetup{indent=2em}
+% \STATE <text>
+% \IF{<condition>} \STATE {<text>} \ELSE \STATE{<text>} \ENDIF
+% \IF{<condition>} \STATE {<text>} \ELSIF{<condition>} \STATE{<text>} \ENDIF
+% \FOR{<condition>} \STATE {<text>} \ENDFOR
+% \FOR{<condition> \TO <condition> } \STATE {<text>} \ENDFOR
+% \FORALL{<condition>} \STATE{<text>} \ENDFOR
+% \WHILE{<condition>} \STATE{<text>} \ENDWHILE
+% \REPEAT \STATE{<text>} \UNTIL{<condition>}
+% \LOOP \STATE{<text>} \ENDLOOP
+% \REQUIRE <text>
+% \ENSURE <text>
+% \RETURN <text>
+% \PRINT <text>
+% \COMMENT{<text>}
+% \AND, \OR, \XOR, \NOT, \TO, \TRUE, \FALSE
 
-\subsection{Circular agent - agent}
-\begin{algorithmic}[1]
-\ENSURE $ i,j \in N, \quad i \neq j $
-\STATE $ \tilde{\mathbf{x}} = \mathbf{x}_{i} - \mathbf{x}_{j} $
-\STATE $ \tilde{\mathbf{v}} = \mathbf{v}_{i} - \mathbf{v}_{j} $
-\STATE $ r_{tot} = r_{i} + r_{j} $ 
-\STATE $ d = \left\|\tilde{\mathbf{x}}\right\| $
-\STATE $ h = d - r_{tot} $
+% Customizations
+\algsetup{indent=2em}  % Indentation
+\renewcommand{\algorithmiccomment}[1]{{\hspace{1.0 em}\color{gray}\textit{// #1}}}  % Better commmet style
+
+\begin{algorithm}[H]
+\begin{algorithmic}[1]  % Line numbering
+\REQUIRE $ i,j \in N, \quad i \neq j $
+\ENSURE
+
+\STATE $ \tilde{\mathbf{x}} \gets \mathbf{x}_{i} - \mathbf{x}_{j} $
+\STATE $ \tilde{\mathbf{v}} \gets \mathbf{v}_{i} - \mathbf{v}_{j} $
+\STATE $ r_{tot} \gets r_{i} + r_{j} $ 
+\STATE $ d \gets \left\|\tilde{\mathbf{x}}\right\| $
+\STATE $ h \gets d - r_{tot} $
 \STATE
+
 \IF{$ h \leq sight $}
-\STATE $ \mathbf{f}_{soc}(\tilde{\mathbf{x}}, \tilde{\mathbf{v}}, r_{tot}, k, \tau_{0}) $
-\ENDIF
+\STATE $ \mathbf{f} \gets \mathbf{f}_{soc}(\tilde{\mathbf{x}}, \tilde{\mathbf{v}}, r_{tot}, k, \tau_{0}) $
+
 \STATE
+
 \IF{$ h < 0 $}
-\STATE $ \hat{\mathbf{n}} = \tilde{\mathbf{x}} / d $
-\STATE $ \hat{\mathbf{t}} = R(-90^{\circ}) \hat{\mathbf{n}} $
-\STATE $ \mathbf{f}_{c}(\tilde{\mathbf{v}}, h, \hat{\mathbf{n}}, \hat{\mathbf{t}}, \mu, \kappa) $
+\STATE $ \hat{\mathbf{n}} \gets \tilde{\mathbf{x}} / d $
+\STATE $ \hat{\mathbf{t}} \gets R(-90^{\circ}) \hat{\mathbf{n}} $
+\STATE $ \mathbf{f} \gets \mathbf{f}_{c}(\tilde{\mathbf{v}}, h, \hat{\mathbf{n}}, \hat{\mathbf{t}}, \mu, \kappa) $
+\ENDIF
 \ENDIF
 \STATE $  $
 \end{algorithmic}
+\caption{Interaction between circular agents.}
+\end{algorithm}
 
-\subsection{Orientable agent - agent}
+
+\begin{algorithm}[H]
 \begin{algorithmic}[1]
-\ENSURE $ i,j \in N, \quad i \neq j $
-\STATE $ \tilde{\mathbf{x}} = \mathbf{x}_{i} - \mathbf{x}_{j} $
-\STATE $ \tilde{\mathbf{v}} = \mathbf{v}_{i} - \mathbf{v}_{j} $
-\STATE $ r_{max} = r_{i} + r_{j} $ 
-\STATE $ d = \left\|\tilde{\mathbf{x}}\right\| $
-\STATE $ h_{min} = d - r_{tot} $
+\REQUIRE $ i,j \in N, \quad i \neq j $
+\ENSURE
+
+\STATE $ \tilde{\mathbf{x}} \gets \mathbf{x}_{i} - \mathbf{x}_{j} $
+\STATE $ \tilde{\mathbf{v}} \gets \mathbf{v}_{i} - \mathbf{v}_{j} $
+\STATE $ r_{max} \gets r_{i} + r_{j} $ 
+\STATE $ d \gets \left\|\tilde{\mathbf{x}}\right\| $
+\STATE $ h_{min} \gets d - r_{max} $
 \STATE 
+
 \IF{$ h_{min} \leq sight $}
-\STATE $ \tilde{\mathbf{x}}, r_{tot}, h, r_{i,j}^{moment} = \operatorname{distance}(\mathrm{agent}, i, j, \tilde{\mathbf{x}}, d) $
+\STATE $ \tilde{\mathbf{x}}, r_{tot}, h, r_{i,j}^{moment} \gets \operatorname{distance}(\mathrm{agent}, i, j, \tilde{\mathbf{x}}, d) $
 \STATE
+
 \IF{$ h \leq sight $}
 \STATE $ \mathbf{f}_{soc}(\tilde{\mathbf{x}}, \tilde{\mathbf{v}}, r_{tot}, k, \tau_{0}) $
 \STATE $ M_{i}^{soc}(\mathbf{r}_{i}^{moment}, \mathbf{f}_{soc}) $
 \STATE $ M_{j}^{soc}(\mathbf{r}_{j}^{moment}, \mathbf{f}_{soc}) $
-\ENDIF
+
 \STATE
+
 \IF{$ h < 0 $}
-\STATE $ \hat{\mathbf{n}} = \tilde{\mathbf{x}} / d $
-\STATE $ \hat{\mathbf{t}} = R(-90^{\circ}) \hat{\mathbf{n}} $
+\STATE $ \hat{\mathbf{n}} \gets \tilde{\mathbf{x}} / d $
+\STATE $ \hat{\mathbf{t}} \gets R(-90^{\circ}) \hat{\mathbf{n}} $
 \STATE $ \mathbf{f}_{c}(\tilde{\mathbf{v}}, h, \hat{\mathbf{n}}, \hat{\mathbf{t}}, \mu, \kappa) $
 \STATE $ M_{i}^{c}(\mathbf{r}_{i}^{moment}, \mathbf{f}_{c}) $
 \STATE $ M_{j}^{c}(\mathbf{r}_{j}^{moment}, \mathbf{f}_{c}) $
 \ENDIF
 \ENDIF
+
+\ENDIF
 \STATE $  $
 \end{algorithmic}
+\caption{Interaction between agents using three circles model.}
+\end{algorithm}

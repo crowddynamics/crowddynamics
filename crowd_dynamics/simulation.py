@@ -36,7 +36,7 @@ class Simulation:
         # List of thing to implement
         # TODO: Better Visualization and movie writing
         # TODO: Elliptical/Three circle Agent model and orientation
-        # TODO: Pathfinding/Exit selection algorithm
+        # TODO: Path finding / Navigation / Exit selection algorithm
         # TODO: Game theoretical exit congestion algorithm
         # TODO: Result Analysis
         # TODO: New simulations
@@ -44,6 +44,7 @@ class Simulation:
         # TODO: check continuity -> numpy.ascontiguousarray
         # TODO: Tables of anthropometric data
         # TODO: Egress flow to goal areas
+        # TODO: Should not see trough walls
 
         # Struct
         self.constant = constant

@@ -1,8 +1,8 @@
 import numba
 import numpy as np
 
-from .force import force_social, force_contact
-from .vector2d import force_limit, rotate270, normalize
+from crowd_dynamics.core.force import force_social, force_contact
+from crowd_dynamics.core.vector2d import force_limit, rotate270, normalize
 
 
 @numba.jit(nopython=True, nogil=True)
@@ -16,23 +16,21 @@ def agent_agent_interaction(i, j, constant, agent):
 
     # Agent sees the other agent
     if h <= agent.sight_soc:
-        force_soc = force_social(x, v, r_tot, constant.k, constant.tau_0)
-        force_limit(force_soc, constant.f_soc_ij_max)
-        agent.force[i] += force_soc
-        agent.force[j] -= force_soc
-        agent.force_agent[i] += force_soc
-        agent.force_agent[j] -= force_soc
+        force = force_social(x, v, r_tot, constant.k, constant.tau_0)
+        force_limit(force, constant.f_soc_ij_max)
 
-    # Physical contact
-    if h < 0:
-        n = x / d  # Normal vector
-        t = rotate270(n)  # Tangent vector
-        force_c = force_contact(h, n, v, t, constant.mu, constant.kappa)
-        force_limit(force_c, constant.f_c_ij_max)
-        agent.force[i] += force_c
-        agent.force[j] -= force_c
-        agent.force_agent[i] += force_c
-        agent.force_agent[j] -= force_c
+        # Physical contact
+        if h < 0:
+            n = x / d  # Normal vector
+            t = rotate270(n)  # Tangent vector
+            force_c = force_contact(h, n, v, t, constant.mu, constant.kappa)
+            force_limit(force_c, constant.f_c_ij_max)
+            force += force_c
+
+        agent.force[i] += force
+        agent.force[j] -= force
+        agent.force_agent[i] += force
+        agent.force_agent[j] -= force
 
     # Herding
     if agent.herding_flag and h <= agent.sight_herding:
