@@ -8,8 +8,7 @@ from crowd_dynamics.core.vector2d import force_limit, rotate270, normalize
 
 @numba.jit(nopython=True, nogil=True)
 def agent_agent_distance(agent, i, j):
-    """Three circles model"""
-    # Positions
+    # Positions: center, left, right
     x_i = (agent.position[i], agent.position_ls[i], agent.position_rs[i])
     x_j = (agent.position[j], agent.position_ls[j], agent.position_rs[j])
 
@@ -20,20 +19,19 @@ def agent_agent_distance(agent, i, j):
     # Minimizing values
     positions = np.zeros(2), np.zeros(2)  #
     radius = (0.0, 0.0)                   # Radius
-    # relative_position = np.zeros(2)       # Vector from agent i s/t to agent j s/t
     relative_distance = 0                 # Minimum relative distance distance
-    normal = np.zeros(2)               # Unit vector of x_rel
+    normal = np.zeros(2)                  # Unit vector of x_rel
 
     init = True
     for xi, ri in zip(x_i, r_i):
         for xj, rj in zip(x_j, r_j):
             x = xi - xj
             d = np.hypot(x[0], x[1])
-            h = d - (ri + rj)
+            r_tot = (ri + rj)
+            h = d - r_tot
             if h < relative_distance or init:
                 relative_distance = h
                 radius = ri, rj
-                # relative_position = x
                 normal = x / d
                 positions = xi, xj
                 init = False
@@ -72,10 +70,10 @@ def agent_wall_distance(agent, wall, i, w):
 @numba.jit(nopython=True, nogil=True)
 def agent_agent_interaction(i, j, constant, agent):
     # Function params
-    x = agent.position[i] - agent.position[j]      # Relative positions
+    x = agent.position[i] - agent.position[j]  # Relative positions
     r_tot = agent.radius[i] + agent.radius[j]  # Total radius
-    d = np.hypot(x[0], x[1])                       # Distance
-    h = d - r_tot                          # Relative distance
+    d = np.hypot(x[0], x[1])                   # Distance
+    h = d - r_tot                              # Relative distance
 
     # Agent sees the other agent
     if h <= agent.sight_soc:
@@ -86,7 +84,7 @@ def agent_agent_interaction(i, j, constant, agent):
         force_limit(force, constant.f_soc_ij_max)
 
         # TODO: Cutoff distance.
-        cutoff = 0.3 * agent.sight_soc
+        cutoff = 2.0
         if h <= cutoff:
             n, h, r_moment_i, r_moment_j = agent_agent_distance(agent, i, j)
 
@@ -101,23 +99,18 @@ def agent_agent_interaction(i, j, constant, agent):
         agent.force[i] += force
         agent.force[j] -= force
         agent.torque[i] += torque(r_moment_i, force)
-        agent.torque[j] += torque(r_moment_j, -force)
+        agent.torque[j] -= torque(r_moment_j, force)
         agent.force_agent[i] += force
         agent.force_agent[j] -= force
-
-    # Herding
-    if agent.herding_flag and h <= agent.sight_herding:
-        agent.neighbor_direction[i] += normalize(agent.velocity[j])
-        agent.neighbor_direction[j] += normalize(agent.velocity[i])
-        agent.neighbors[i] += 1
-        agent.neighbors[j] += 1
 
 
 @numba.jit(nopython=True, nogil=True)
 def agent_wall_interaction(i, w, constant, agent, wall):
     # Function params
-    d, n = wall.distance_with_normal(w, agent.position[i])
-    h = d - agent.radius[i]  # Relative distance
+    x = agent.position[i]
+    r_tot = agent.radius[i]
+    d, n = wall.distance_with_normal(w, x)
+    h = d - r_tot  # Relative distance
 
     if h <= agent.sight_wall:
         r_moment_i = np.zeros(2)
@@ -126,7 +119,7 @@ def agent_wall_interaction(i, w, constant, agent, wall):
                              constant.k, constant.tau_0)
         force_limit(force, constant.f_soc_iw_max)
 
-        if h <= 2:
+        if h <= 2.0:
             h, n, r_moment_i = agent_wall_distance(agent, wall, i, w)
 
             if h < 0:

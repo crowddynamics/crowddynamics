@@ -6,14 +6,16 @@ from .torque import torque_adjust, torque_random
 
 
 def motion(constant, agent, walls):
-    # Target direction and angle
-    agent.goal_to_target_direction()
+    # TODO: Navigation
+
+    # Target angle update policy
     if agent.orientable_flag:
         agent.velocity_to_target_angle()
 
-    # Motion
+    # Reset forces and torque
     agent.reset()
 
+    # Motion
     force_adjust(constant, agent)
     force_random(constant, agent)
 

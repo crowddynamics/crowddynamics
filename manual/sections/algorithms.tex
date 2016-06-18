@@ -16,23 +16,27 @@
 % \COMMENT{<text>}
 % \AND, \OR, \XOR, \NOT, \TO, \TRUE, \FALSE
 
+
 % Customizations
 \algsetup{indent=2em}  % Indentation
 \renewcommand{\algorithmiccomment}[1]{{\hspace{1.0 em}\color{gray}\textit{// #1}}}  % Better commmet style
 
+
+\subsection{Interactions}
+\subsubsection{Circular model}
 \begin{algorithm}[H]
 \begin{algorithmic}[1]  % Line numbering
 \REQUIRE $ i,j \in N, \quad i \neq j $
 \ENSURE
 
 \STATE $ \tilde{\mathbf{x}} \gets \mathbf{x}_{i} - \mathbf{x}_{j} $
-\STATE $ \tilde{\mathbf{v}} \gets \mathbf{v}_{i} - \mathbf{v}_{j} $
 \STATE $ r_{tot} \gets r_{i} + r_{j} $ 
 \STATE $ d \gets \left\|\tilde{\mathbf{x}}\right\| $
 \STATE $ h \gets d - r_{tot} $
 \STATE
 
 \IF{$ h \leq sight $}
+\STATE $ \tilde{\mathbf{v}} \gets \mathbf{v}_{i} - \mathbf{v}_{j} $
 \STATE $ \mathbf{f} \gets \mathbf{f}_{soc}(\tilde{\mathbf{x}}, \tilde{\mathbf{v}}, r_{tot}, k, \tau_{0}) $
 
 \STATE
@@ -52,19 +56,27 @@
 \end{algorithm}
 
 
+\subsubsection{Three circles model}
 \begin{algorithm}[H]
 \begin{algorithmic}[1]
-\REQUIRE $ i, j, \tilde{\mathbf{x}}, d $
+\REQUIRE $ i,j \in N, \quad i \neq j $
 \ENSURE
-\STATE $ \hat{\mathbf{t}}_{i} $
-\STATE $ \hat{\mathbf{t}}_{j} $
-\STATE
-\STATE $ r_{ts} \hat{\mathbf{t}} $
-\STATE
-\FOR{}
-\STATE
+\FOR{$ \mathbf{x}_{i}, r_{i} \gets (\mathbf{x}_{c}, \mathbf{x}_{l}, \mathbf{x}_{r})_{i}, (r_{t}, r_{s}, r_{s})_{i} $}
+\FOR{$ \mathbf{x}_{j}, r_{j} \gets (\mathbf{x}_{c}, \mathbf{x}_{l}, \mathbf{x}_{r})_{j}, (r_{t}, r_{s}, r_{s})_{j} $}
+\STATE $ \tilde{\mathbf{x}} \gets \mathbf{x}_{i} - \mathbf{x}_{j} $
+\STATE $ r_{tot} \gets r_{i} + r_{j} $ 
+\STATE $ d \gets \left\|\tilde{\mathbf{x}}\right\| $
+\STATE $ h \gets d - r_{tot} $
+\IF{$ h < h_{min} $}
+\STATE $ \hat{\mathbf{n}} \gets \tilde{\mathbf{x}} / d $
+\STATE $ \mathbf{x} \gets \mathbf{x}_{i}, \mathbf{x}_{j} $
+\STATE $ r \gets r_{i}, r_{j} $
+\ENDIF
 \ENDFOR
-\STATE
+\ENDFOR
+\STATE $ \mathbf{r}_{i}^{moment} = (\mathbf{x} + r \cdot \hat{\mathbf{n}} - \mathbf{x}_{c})_{i}  $
+\STATE $ \mathbf{r}_{i}^{moment} = (\mathbf{x} - r \cdot \hat{\mathbf{n}} - \mathbf{x}_{c})_{j}  $
+\RETURN $ \hat{\mathbf{n}}, h, \mathbf{r}_{i}^{moment}, \mathbf{r}_{j}^{moment} $
 \end{algorithmic}
 \caption{Distance between agent using three circles model.}
 \end{algorithm}
@@ -76,36 +88,31 @@
 \ENSURE
 
 \STATE $ \tilde{\mathbf{x}} \gets \mathbf{x}_{i} - \mathbf{x}_{j} $
-\STATE $ \tilde{\mathbf{v}} \gets \mathbf{v}_{i} - \mathbf{v}_{j} $
-\STATE $ r_{max} \gets r_{i} + r_{j} $ 
+\STATE $ r_{tot} \gets r_{i} + r_{j} $ 
 \STATE $ d \gets \left\|\tilde{\mathbf{x}}\right\| $
-\STATE $ h_{min} \gets d - r_{max} $
+\STATE $ h \gets d - r_{tot} $
 \STATE 
 
-\IF{$ h_{min} \leq sight $}
-\STATE $ \tilde{\mathbf{x}}, r_{tot}, h, r_{i,j}^{moment} \gets \operatorname{distance}(\mathrm{agent}, i, j, \tilde{\mathbf{x}}, d) $
-\STATE
-
 \IF{$ h \leq sight $}
+\STATE $ \tilde{\mathbf{v}} \gets \mathbf{v}_{i} - \mathbf{v}_{j} $
+
 \STATE $ \mathbf{f} \gets \mathbf{f}_{soc}(\tilde{\mathbf{x}}, \tilde{\mathbf{v}}, r_{tot}, k, \tau_{0}) $
 
-\STATE
+\IF{$ h \leq cutoff $}
+\STATE $ \hat{\mathbf{n}}, h, r_{i,j}^{moment} \gets \operatorname{distance}(\mathrm{agent}, i, j) $
 
 \IF{$ h < 0 $}
-\STATE $ \hat{\mathbf{n}} \gets \tilde{\mathbf{x}} / d $
+%\STATE $ \hat{\mathbf{n}} \gets \tilde{\mathbf{x}} / d $
 \STATE $ \hat{\mathbf{t}} \gets R(-90^{\circ}) \hat{\mathbf{n}} $
 \STATE $ \mathbf{f} \gets +\mathbf{f}_{c}(\tilde{\mathbf{v}}, h, \hat{\mathbf{n}}, \hat{\mathbf{t}}, \mu, \kappa) $
 \ENDIF
-\STATE
 \STATE $ \mathbf{f}_{i} \gets +\mathbf{f} $
 \STATE $ \mathbf{f}_{j} \gets -\mathbf{f} $
-\STATE
-\STATE $ M_{i} \gets M_{i}^{c}(\mathbf{r}_{i}^{moment}, \mathbf{f}) $
-\STATE $ M_{i} \gets M_{j}^{c}(\mathbf{r}_{j}^{moment}, -\mathbf{f}) $
+\STATE $ M_{i} \gets +M_{i}^{c}(\mathbf{r}_{i}^{moment}, \mathbf{f}) $
+\STATE $ M_{j} \gets -M_{j}^{c}(\mathbf{r}_{j}^{moment}, \mathbf{f}) $
 \ENDIF
 
 \ENDIF
-\STATE $  $
 \end{algorithmic}
 \caption{Interaction between agents using three circles model.}
 \end{algorithm}

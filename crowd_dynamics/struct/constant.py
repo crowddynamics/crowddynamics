@@ -36,7 +36,7 @@ class Constant(object):
     def __init__(self):
         # Integrator
         # TODO: Lower than this raises warning
-        # TODO: Relative to crowd density and goal_velocity * dt
+        # TODO: Relative to crowd density and target_velocity * dt
         self.dt = 0.01
         self.dt_min = 0.001
         self.dx_max = 0.05

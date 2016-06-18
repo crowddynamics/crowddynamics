@@ -33,13 +33,6 @@ def agent_agent_interaction(i, j, constant, agent):
         agent.force_agent[i] += force
         agent.force_agent[j] -= force
 
-    # Herding
-    if agent.herding_flag and h <= agent.sight_herding:
-        agent.neighbor_direction[i] += normalize(agent.velocity[j])
-        agent.neighbor_direction[j] += normalize(agent.velocity[i])
-        agent.neighbors[i] += 1
-        agent.neighbors[j] += 1
-
 
 @numba.jit(nopython=True, nogil=True)
 def agent_wall_interaction(i, w, constant, agent, wall):

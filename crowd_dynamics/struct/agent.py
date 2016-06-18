@@ -24,11 +24,10 @@ spec_agent = OrderedDict(
     r_t=float64[:],
     r_s=float64[:],
     r_ts=float64[:],
-    goal_velocity=float64[:, :],
 
     position=float64[:, :],
     velocity=float64[:, :],
-    goal_direction=float64[:, :],
+    target_velocity=float64[:, :],
     target_direction=float64[:, :],
     force=float64[:, :],
     force_adjust=float64[:, :],
@@ -46,11 +45,6 @@ spec_agent = OrderedDict(
 
     sight_soc=float64,
     sight_wall=float64,
-    sight_herding=float64,
-
-    herding_tendency=float64[:],
-    neighbor_direction=float64[:, :],
-    neighbors=float64[:],
 )
 
 agent_attr_names = [key for key in spec_agent.keys()]
@@ -70,7 +64,7 @@ class Agent(object):
                  radius_shoulder,
                  radius_torso_shoulder,
                  inertia_rot,
-                 goal_velocity,
+                 target_velocity,
                  target_angular_velocity,
                  three_circles_flag):
         """
@@ -78,7 +72,7 @@ class Agent(object):
         :param size: Integer. Size of the arrays.
         :param mass: Array of masses of agents.
         :param radius: Array of radii of agents.
-        :param goal_velocity: Array of goal_velocities of agents.
+        :param target_velocity: Array of goal_velocities of agents.
         """
         # Array properties
         self.size = size
@@ -98,21 +92,20 @@ class Agent(object):
         self.r_t = radius_torso            # Radius of torso
         self.r_s = radius_shoulder         # Radius of shoulders
         self.r_ts = radius_torso_shoulder  # Distance from torso to shoulder
-        self.mass = mass.reshape(size, 1)
-        self.inertia_rot = inertia_rot
+        self.mass = mass.reshape(size, 1)  # Mass
+        self.inertia_rot = inertia_rot     # Moment of inertia
 
-        # Movement along x and y axis
+        # Movement along x and y axis. Circular agent model
         self.position = np.zeros(self.shape)
         self.velocity = np.zeros(self.shape)
-        self.goal_direction = np.zeros(self.shape)
-        self.goal_velocity = goal_velocity.reshape(size, 1)
+        self.target_velocity = target_velocity.reshape(size, 1)
         self.target_direction = np.zeros(self.shape)
         self.force = np.zeros(self.shape)
         self.force_adjust = np.zeros(self.shape)
         self.force_agent = np.zeros(self.shape)
         self.force_wall = np.zeros(self.shape)
 
-        # Rotational movement
+        # Rotational movement. Three circles agent model
         self.angle = np.zeros(self.size)
         self.angular_velocity = np.zeros(self.size)
         self.target_angle = np.zeros(self.size)
@@ -128,12 +121,6 @@ class Agent(object):
         # Distances for reacting to other objects
         self.sight_soc = 7.0
         self.sight_wall = 7.0
-        self.sight_herding = 20.0
-
-        # Herding
-        self.herding_tendency = np.zeros(self.size)
-        self.neighbor_direction = np.zeros(self.shape)
-        self.neighbors = np.zeros(self.size)
 
     def reset(self):
         self.force *= 0
@@ -142,31 +129,8 @@ class Agent(object):
         self.force_agent *= 0
         self.force_wall *= 0
 
-    def reset_herding(self):
-        self.neighbor_direction *= 0
-        self.neighbors *= 0
-
-    def goal_to_target_direction(self):
-        """Modifies target direction from goal direction."""
-        if self.herding_flag:
-            # Herding behaviour
-            for i in range(self.size):
-                p = self.herding_tendency[i]
-                mean = self.neighbor_direction[i] / self.neighbors[i]
-                self.target_direction[i] = \
-                    normalize((1 - p) * self.goal_direction[i] + p * mean)
-            self.reset_herding()
-        else:
-            self.target_direction = self.goal_direction
-
     def velocity_to_target_angle(self):
         self.target_angle = np.arctan2(self.velocity[:, 0], self.velocity[:, 1])
-
-    def set_goal_direction(self, goal):
-        """Update goal direction for agent that have not reached their goals"""
-        mask = self.goal_reached ^ True
-        if np.sum(mask):
-            self.goal_direction[mask] = normalize_vec(goal - self.position[mask])
 
     def update_shoulder_positions(self):
         for i in range(self.size):

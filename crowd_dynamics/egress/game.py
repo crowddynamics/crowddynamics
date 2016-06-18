@@ -1,18 +1,5 @@
 import numpy as np
 
-"""
-Game theoretical model for egress congestion behaviour.
-
-+-----------+--------------------------+-----------+
-|           |                Impatient |   Patient |
-+===========+==========================+===========+
-| Impatient | T_ASET/T_ij, T_ASET/T_ij |     -1, 1 |
-+-----------+--------------------------+-----------+
-|   Patient |                    1, -1 |      0, 0 |
-+-----------+--------------------------+-----------+
-
-"""
-
 
 class EgressGame(object):
     def __init__(self,
@@ -21,6 +8,16 @@ class EgressGame(object):
                  neighbor_radius,
                  neighborhood_size=8):
         """
+        Patient and impatient pedestrians in a spatial game for egress congestion.
+
+        +-----------+--------------------------+-----------+
+        |           |                Impatient |   Patient |
+        +===========+==========================+===========+
+        | Impatient | T_ASET/T_ij, T_ASET/T_ij |     -1, 1 |
+        +-----------+--------------------------+-----------+
+        |   Patient |                    1, -1 |      0, 0 |
+        +-----------+--------------------------+-----------+
+
         :param agent_size:
         :param update_interval:
         :param neighbor_radius:

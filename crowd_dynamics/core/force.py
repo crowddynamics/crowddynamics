@@ -5,9 +5,6 @@ import numpy as np
 from .vector2d import dot2d
 
 
-# TODO: Limit forces / Cutoff
-
-
 @numba.jit(nopython=True, nogil=True)
 def force_random(constant, agent):
     """Random force"""
@@ -22,7 +19,7 @@ def force_random(constant, agent):
 def force_adjust(constant, agent):
     """Force that adjust movement towards target direction."""
     force = (agent.mass / constant.tau_adj) * \
-            (agent.goal_velocity * agent.target_direction - agent.velocity)
+            (agent.target_velocity * agent.target_direction - agent.velocity)
     agent.force += force
     agent.force_adjust += force
 
