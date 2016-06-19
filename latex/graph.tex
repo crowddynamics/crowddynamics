@@ -50,6 +50,7 @@
 %http://tex.stackexchange.com/questions/69439/how-can-i-achieve-relative-positioning-in-tikz
 %http://tex.stackexchange.com/questions/160918/circular-graph-with-many-nodes
 %http://tex.stackexchange.com/questions/172819/how-to-connect-relative-polar-coordinates-in-tikz
+%https://en.wikipedia.org/wiki/Graph_drawing
 
 \begin{document}
 \begin{tikzpicture}
@@ -119,8 +120,8 @@
 \path[simuarrow] (save)       edge[bend left=10] (print);
 \path[simuarrow] (print)      edge[bend left=10] (visualize);
 
-\path[simuarrow, dashed] (visualize)  edge[bend left=65] node[below] {Advance Simulation} (game);
-\path[simuarrow, dashed] (visualize)  edge[bend right] node[below, sloped] {End simulation} ($ (visualize) + (5, -3) $);
+\path[simuarrow] (visualize)  edge[dashed, bend left=65] node[largenode, below] {Advance Simulation} (game);
+%\path[simuarrow, dashed] (visualize)  edge[bend right] node[below, sloped] {End simulation} ($ (visualize) + (5, -3) $);
 
 
 \path[interactionarrow] (navigation) edge[] (wall);
@@ -201,12 +202,14 @@
 \path[inputarrow] (save) edge[] (file);
 
 % ------------------------------------------------------------------------------
-% Analysis
+% Visualize
 % ------------------------------------------------------------------------------
 
 \node[largenode, right=1.0 of visualize] (animation) {Animation};
+\node[inactive, above right=1.0 of visualize] (gui) {GUI};
 
-\path[->, dashed] (visualize) edge[] (animation);
+\path[inputarrow] (visualize) edge[] (animation);
+\path[inputarrow] (visualize) edge[] (gui);
 
 \end{tikzpicture}
 \end{document}

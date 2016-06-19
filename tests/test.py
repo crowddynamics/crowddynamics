@@ -1,10 +1,10 @@
-import sys
-from timeit import default_timer as timer
+# import sys
+# sys.path.append("/../Crowd-Dynamics")
 
 import numpy as np
-sys.path.append("/../Crowd-Dynamics")
+
 from crowd_dynamics.core.integrator import integrator
-from crowd_dynamics.display import format_time
+from crowd_dynamics.display import timed_execution
 from crowd_dynamics.parameters import Parameters
 from crowd_dynamics.struct.agent import Agent
 from crowd_dynamics.struct.constant import Constant
@@ -34,19 +34,7 @@ params.random_position(agent.position, agent.radius, walls=linear_wall)
 agent.velocity = params.random_unit_vector(agent.size)
 
 
-def timed_execution(gen):
-    start = timer()
-    ret = next(gen)
-    t_diff = timer() - start
-    print(format_time(t_diff))
-    return ret
-
-
 def test_integrator():
-    gen = integrator(result, constant, agent, walls)
-    i = 0
-    while i < 100:
-        timed_execution(gen)
-        i += 1
-
-
+    advance = timed_execution(integrator, 1.0)
+    for i in range(200):
+        advance(result, constant, agent, walls)

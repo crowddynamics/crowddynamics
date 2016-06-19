@@ -32,7 +32,7 @@
 \tikzset{
     x=1cm, 
     y=1cm,
-    dimension/.style={latex-latex, opacity=0.6},
+    dimension/.style={latex-latex, opacity=0.8},
 }
 
 \begin{document}
@@ -45,21 +45,29 @@
 \def\height{21.0}
 \coordinate[] (origin) at (0, 0);
 \coordinate[] (offset) at ({\width / 2}, {\height / 2});
-\draw[step=1cm, line width=0.1mm, black!10!white] ($ (origin) - (offset) $) grid ($ (origin) + (offset) $);
+\draw[step=1cm, line width=0.2mm, black!10!white] ($ (origin) - (offset) $) grid ($ (origin) + (offset) $);
 
-% Box
+% 
 % ------------------------------------------------------------------------------
 \coordinate[] (downleft) at (-8, -8);
 \coordinate[] (upright) at (8, 8);
-\filldraw[gray, opacity=0.1] ($ (downleft) - (1, 1) $) rectangle ++(21, 18);  % Area
-\draw[] (downleft) rectangle (upright);  % Box
-\draw[white] (8, 1) -- ++(0, -2);        % Door
-\filldraw[gray, opacity=0.2] (8, -2) rectangle ++(2, 4);  % Area
+
+% Bounds
+\filldraw[gray, opacity=0.1] ($ (downleft) - (1, 1) $) rectangle ++(19, 18);
+
+% Goal
+\filldraw[gray, opacity=0.4] (8, -2) rectangle ++(2, 4);  
+
+\draw[thick] (downleft) rectangle (upright);  % Box
+\draw[thick, white] (8, 1) -- ++(0, -2);        % Door
+
+
+
 
 % Dimensions
 % ------------------------------------------------------------------------------
-\draw[dimension] (-8, -9) -- node[below] {width} ++(16, 0);
-\draw[dimension] (-9, -8) -- node[left] {height} ++(0, 16);
-\draw[dimension] (10, -1) -- node[right] {Exit width} ++(0, 2);
+\draw[dimension] (-9.0, -9.5) -- node[below] {width} ++(19, 0);
+\draw[dimension] (-9.5, -9.0) -- node[left]  {height} ++(0, 18);
+\draw[dimension] (10.0, -1.0) -- node[right] {Exit width} ++(0, 2);
 \end{tikzpicture}
 \end{document}
