@@ -2,7 +2,7 @@ import sys
 from timeit import default_timer as timer
 
 import numpy as np
-sys.path.append("/home/jaan/Dropbox/Projects/Crowd-Dynamics")
+sys.path.append("/../Crowd-Dynamics")
 from crowd_dynamics.core.integrator import integrator
 from crowd_dynamics.display import format_time
 from crowd_dynamics.parameters import Parameters
