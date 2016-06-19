@@ -4,6 +4,9 @@ import numba
 from .models.three_circles import agent_agent_interaction, agent_wall_interaction
 
 
+# TODO: Merge three circles and circular models
+
+
 @numba.jit(nopython=True, nogil=True)
 def agent_agent(constant, agent):
     # n - 1 + n - 2 + ... + 1 = n^2 / 2

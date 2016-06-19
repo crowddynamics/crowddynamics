@@ -2,7 +2,7 @@ import numba
 import numpy as np
 
 from crowd_dynamics.core.force import force_social, force_contact
-from crowd_dynamics.core.vector2d import force_limit, rotate270, normalize
+from crowd_dynamics.core.vector2d import force_limit, rotate270
 
 
 @numba.jit(nopython=True, nogil=True)

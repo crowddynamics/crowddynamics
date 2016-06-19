@@ -254,7 +254,5 @@ sympy-plots-for-*.tex/
 *.hdf5
 
 # Folders
-/docs/
 /research/
 /manual/examples/
-/manual/guides/

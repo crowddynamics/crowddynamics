@@ -30,6 +30,8 @@ def motion(constant, agent, walls):
 
 
 def integrator(result, constant, agent, walls):
+    # TODO: Active/Inactive agents
+
     """Explicit euler method"""
     motion(constant, agent, walls)
 

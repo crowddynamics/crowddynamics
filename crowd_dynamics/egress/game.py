@@ -52,7 +52,7 @@ class EgressGame(object):
         Probabilistic clock with expected frequency of update interval.
         http://preshing.com/20111007/how-to-generate-random-timings-for-a-poisson-process/
 
-        :return: True if amount of time specified by update interval has elapsed else False.
+        :return: Boolean whether strategy should be updated of not.
         """
         prob = dt / self.update_interval  # Probability of updating
         return np.random.random() < prob

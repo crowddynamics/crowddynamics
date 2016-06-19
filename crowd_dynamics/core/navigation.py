@@ -2,6 +2,7 @@ import numpy as np
 
 from .vector2d import normalize_vec
 
+
 """
 Function that returns unit vector for agent.goal_direction
 
@@ -9,6 +10,11 @@ Vector field
 - Incompressible, irrotational and inviscosid fluid flow
 - Poisson equation, Heat equation, Navier-Stokes
 """
+
+
+def exit_selection():
+    """Exit selection policy."""
+    pass
 
 
 def set_goal_direction(agent, goal):
