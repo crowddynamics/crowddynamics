@@ -3,17 +3,17 @@ from collections import namedtuple
 
 import numpy as np
 
-sys.path.append("/home/jaan/Dropbox/Projects/Crowd-Dynamics")
 from crowd_dynamics.parameters import Parameters
 from crowd_dynamics.struct.agent import Agent
-from crowd_dynamics.struct.area import GoalRectangle
+from crowd_dynamics.area import GoalRectangle
 from crowd_dynamics.struct.constant import Constant
 from crowd_dynamics.struct.wall import LinearWall
 
 # Path to this folder
 filepath = os.path.abspath(__file__)
-dirpath, name = os.path.split(filepath)
-dirpath = os.path.join(os.path.dirname(dirpath), "results")
+name = os.path.basename(filepath)
+dirpath = os.path.join("/home/jaan/Dropbox/Projects/Crowd-Dynamics-Simulations",
+                       "results")
 name, _ = os.path.splitext(name)
 
 
@@ -44,7 +44,6 @@ def initialize():
     parameters.random_position(agent.position, agent.radius, x, y, walls)
 
     # Goal
-    goal_point = np.array((53.0, 25.0))
     goal = GoalRectangle(center=np.array((52.5, 25.0)),
                          radius=np.array((2.5, 5.0)))
     goals = goal

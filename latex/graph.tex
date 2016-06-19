@@ -206,10 +206,12 @@
 % ------------------------------------------------------------------------------
 
 \node[largenode, right=1.0 of visualize] (animation) {Animation};
-\node[inactive, above right=1.0 of visualize] (gui) {GUI};
+\node[inactive, above right=1.0 of visualize] (gui) {PyQt4 GUI};
+\node[inactive, right=of gui] (pyqtgraph) {pyqtgraph};
 
 \path[inputarrow] (visualize) edge[] (animation);
 \path[inputarrow] (visualize) edge[] (gui);
+\path[inputarrow] (pyqtgraph) edge[] (gui);
 
 \end{tikzpicture}
 \end{document}

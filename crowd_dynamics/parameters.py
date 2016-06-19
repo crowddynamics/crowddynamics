@@ -37,7 +37,7 @@ class Parameters:
         values = np.array(tn.rvs(size) * scale + loc)
         return values
 
-    def random_2D_coordinates(self, size):
+    def random_2d_coordinates(self, size):
         """Random x and y coordinates inside dims."""
         return np.stack((np.random.uniform(self.x.min, self.x.max, size),
                          np.random.uniform(self.y.min, self.y.max, size)),
@@ -135,6 +135,6 @@ class Parameters:
 
     def linear_wall(self, size):
         """Arguments for constructing linear wall."""
-        args = zip(self.random_2D_coordinates(size),
-                   self.random_2D_coordinates(size))
+        args = zip(self.random_2d_coordinates(size),
+                   self.random_2d_coordinates(size))
         return np.array(tuple(args))
