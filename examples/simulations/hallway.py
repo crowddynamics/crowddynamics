@@ -18,7 +18,7 @@ def initialize():
     # Field
     dim = namedtuple('dim', ['width', 'height'])
     lim = namedtuple('lim', ['min', 'max'])
-    d = dim(50.0, 5.0)
+    d = dim(30.0, 5.0)
     x = lim(0.0, d.width)
     y = lim(0.0, d.height)
 
@@ -33,7 +33,7 @@ def initialize():
     walls = linear_wall
 
     # Agents
-    size = 50
+    size = 100
     agent = Agent(*parameters.agent(size))
     first_half = slice(agent.size // 2)
     second_half = slice(agent.size // 2, None)
@@ -46,6 +46,8 @@ def initialize():
     # Goal
     agent.target_direction[first_half] += np.array((1, 0), dtype=np.float64)
     agent.target_direction[second_half] += np.array((-1, 0), dtype=np.float64)
+    agent.direction_to_angle()
+    agent.update_shoulder_positions()
 
     goal = GoalRectangle(center=np.array((x.max + 2.5, y.max / 2)),
                          radius=np.array((2.5, d.height / 2)))

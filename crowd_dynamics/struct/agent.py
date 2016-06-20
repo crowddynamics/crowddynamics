@@ -85,12 +85,12 @@ class Agent(object):
         self.goal_reached = np.zeros(size, np.bool8)
 
         # Constant properties
-        self.radius = radius               # Total radius
-        self.r_t = radius_torso            # Radius of torso
-        self.r_s = radius_shoulder         # Radius of shoulders
+        self.radius = radius  # Total radius
+        self.r_t = radius_torso  # Radius of torso
+        self.r_s = radius_shoulder  # Radius of shoulders
         self.r_ts = radius_torso_shoulder  # Distance from torso to shoulder
         self.mass = mass.reshape(size, 1)  # Mass
-        self.inertia_rot = inertia_rot     # Moment of inertia
+        self.inertia_rot = inertia_rot  # Moment of inertia
 
         # Movement along x and y axis. Circular agent model
         self.position = np.zeros(self.shape)
@@ -112,9 +112,6 @@ class Agent(object):
         self.position_ls = np.zeros(self.shape)  # Left shoulder
         self.position_rs = np.zeros(self.shape)  # Right shoulder
 
-        if self.orientable_flag:
-            self.update_shoulder_positions()
-
         # Distances for reacting to other objects
         self.sight_soc = 7.0
         self.sight_wall = 7.0
@@ -126,9 +123,14 @@ class Agent(object):
         self.force_agent *= 0
         self.force_wall *= 0
 
+    def direction_to_angle(self):
+        self.angle = np.arctan2(self.target_direction[:, 0],
+                                self.target_direction[:, 1])
+
     def update_shoulder_positions(self):
         for i in range(self.size):
-            t = np.array((-np.sin(self.angle[i]), np.cos(self.angle[i])))
+            # t = np.array((-np.sin(self.angle[i]), np.cos(self.angle[i])))
+            t = np.array((np.cos(self.angle[i]), np.sin(self.angle[i])))
             offset = t * self.r_ts[i]
             self.position_ls[i] = self.position[i] - offset
             self.position_rs[i] = self.position[i] + offset
