@@ -1,6 +1,19 @@
 import numpy as np
 
 
+class Area(object):
+    def __init__(self):
+        pass
+
+    def is_reached_by(self):
+        pass
+
+
+class Bounds:
+    def __init__(self):
+        pass
+
+
 class GoalRectangle(object):
     def __init__(self, center, radius):
         self.center = center  # (x, y)

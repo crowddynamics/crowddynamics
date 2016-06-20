@@ -1,7 +1,7 @@
 import numpy as np
 import numba
 
-from .vector2d import normalize_vec
+from .vector2d import normalize_nx2
 
 
 """
@@ -22,7 +22,7 @@ def set_goal_direction(agent, goal):
     """Update goal direction for agent that have not reached their goals."""
     mask = agent.goal_reached ^ True
     if np.sum(mask):
-        agent.goal_direction[mask] = normalize_vec(goal - agent.position[mask])
+        agent.goal_direction[mask] = normalize_nx2(goal - agent.position[mask])
 
 
 @numba.jit(nopython=True, nogil=True)

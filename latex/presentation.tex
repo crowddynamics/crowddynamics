@@ -1,0 +1,356 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Beamer Presentation
+% LaTeX Template
+% Version 1.0 (10/11/12)
+%
+% This template has been downloaded from:
+% http://www.LaTeXTemplates.com
+%
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND THEMES
+%----------------------------------------------------------------------------------------
+
+\documentclass{beamer}
+
+\mode<presentation> {
+
+% The Beamer class comes with a number of default slide themes
+% which change the colors and layouts of slides. Below this is a list
+% of all the themes, uncomment each in turn to see what they look like.
+
+%\usetheme{default}
+%\usetheme{AnnArbor}
+%\usetheme{Antibes}
+%\usetheme{Bergen}
+%\usetheme{Berkeley}
+%\usetheme{Berlin}
+%\usetheme{Boadilla}
+%\usetheme{CambridgeUS}
+%\usetheme{Copenhagen}
+%\usetheme{Darmstadt}
+%\usetheme{Dresden}
+%\usetheme{Frankfurt}
+%\usetheme{Goettingen}
+%\usetheme{Hannover}
+%\usetheme{Ilmenau}
+%\usetheme{JuanLesPins}
+%\usetheme{Luebeck}
+\usetheme{Madrid}
+%\usetheme{Malmoe}
+%\usetheme{Marburg}
+%\usetheme{Montpellier}
+%\usetheme{PaloAlto}
+%\usetheme{Pittsburgh}
+%\usetheme{Rochester}
+%\usetheme{Singapore}
+%\usetheme{Szeged}
+%\usetheme{Warsaw}
+
+% As well as themes, the Beamer class has a number of color themes
+% for any slide theme. Uncomment each of these in turn to see how it
+% changes the colors of your current slide theme.
+
+%\usecolortheme{albatross}
+%\usecolortheme{beaver}
+%\usecolortheme{beetle}
+%\usecolortheme{crane}
+%\usecolortheme{dolphin}
+%\usecolortheme{dove}
+%\usecolortheme{fly}
+%\usecolortheme{lily}
+%\usecolortheme{orchid}
+%\usecolortheme{rose}
+%\usecolortheme{seagull}
+%\usecolortheme{seahorse}
+%\usecolortheme{whale}
+%\usecolortheme{wolverine}
+
+%\setbeamertemplate{footline} % To remove the footer line in all slides uncomment this line
+%\setbeamertemplate{footline}[page number] % To replace the footer line in all slides with a simple slide count uncomment this line
+
+%\setbeamertemplate{navigation symbols}{} % To remove the navigation symbols from the bottom of all slides uncomment this line
+}
+
+\usepackage[yyyymmdd,hhmmss]{datetime}
+\usepackage{hyperref}
+\usepackage{cleveref}
+\usepackage{autonum}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{mathtools}
+\usepackage{parskip}
+\usepackage{microtype}
+\usepackage[margin=10pt,font=small,labelfont=bf,labelsep=colon]{caption}
+\usepackage[margin=10pt,font=small,labelfont=bf,labelsep=space]{subcaption}
+\usepackage{color}
+\usepackage{wrapfig}
+\usepackage{floatrow}
+\usepackage{tabularx}
+\usepackage{tabulary}
+%\usepackage{multicol}
+%\usepackage{longtable}
+%\usepackage{booktabs} % Allows the use of \toprule, \midrule and \bottomrule in tables
+\usepackage{enumerate} 
+\usepackage[inline]{enumitem}
+\usepackage{url}
+\usepackage{marvosym}
+\usepackage{wasysym}
+
+\usepackage{graphicx}
+\usepackage{epstopdf}
+
+%\usepackage{svg}
+%\setsvg{inkscape=inkscape -z -D}
+
+\usepackage{tikz}
+\usetikzlibrary{calc}
+\usetikzlibrary{arrows}
+%\usetikzlibrary{positioning}
+
+\usepackage{algorithm}
+%\usepackage{algorithm2e}
+\usepackage{algorithmic}
+%\usepackage{algorithmicx}
+
+%\usepackage{attachfile}
+%\usepackage{minted}
+%\usepackage[]{algorithm2e}
+
+\graphicspath{{figures/}}
+\floatsetup[table]{capposition=top}
+\allowdisplaybreaks
+\renewcommand{\dateseparator}{--}
+
+% Input paths
+\makeatletter
+\def\input@path{{figures/},{sections/}}
+\makeatother
+
+\makeatletter
+\g@addto@macro{\UrlBreaks}{\UrlOrds}
+\makeatother
+
+
+%-------------------------------------------------------------------------------
+% TITLE PAGE
+%-------------------------------------------------------------------------------
+\title[Short title]{Multi-agent simulation} % The short title appears at the bottom of every slide, the full title is only on the title page
+\author{Jaan Tollander de Balsch} % Your name
+% Your institution as it will appear on the bottom of every slide, may be shorthand to save space
+\institute[Aalto University] 
+{Aalto University \\ \medskip\textit{de.tollander@aalto.fi}}
+\date{\today} % Date, can be changed to a custom date
+
+\begin{document}
+
+\begin{frame}
+\titlepage % Print the title page as the first slide
+\end{frame}
+
+\begin{frame}
+\frametitle{Overview} % Table of contents slide, comment this block out to remove it
+\tableofcontents % Throughout your presentation, if you choose to use \section{} and \subsection{} commands, these will automatically be printed on this slide as an overview of your presentation
+\end{frame}
+
+%-------------------------------------------------------------------------------
+% PRESENTATION SLIDES
+%-------------------------------------------------------------------------------
+
+%------------------------------------------------
+\section{Introduction}
+%------------------------------------------------
+\begin{frame}
+\frametitle{Introduction}
+
+A force based simulation model for crowd dynamics. i.e movement of people (agents) is modeled by hypotetical social force. Reminds of particle simulation. 
+
+Game theoretical model is used to model agent behavior in egress congestion (eq. evacuation).
+
+\end{frame}
+
+
+%------------------------------------------------
+\section{Simulation model}
+%------------------------------------------------
+\subsection{Agent model}
+\begin{frame}
+\frametitle{Simulation model}
+\framesubtitle{Agent model}
+
+\resizebox{\linewidth}{!}{%
+\begin{tikzpicture}
+\input{figures/grid}
+\input{figures/agent}
+\end{tikzpicture}
+}
+
+\end{frame}
+
+\subsection{Social force model}
+\begin{frame}
+\frametitle{Simulation model}
+\framesubtitle{Social force model}
+
+Total force exerted on the agent is the sum of movement adjusting, social and contact forces between other agents and wall.
+\begin{align}
+\mathbf{f}_{i}(t) = \mathbf{f}_{i}^{adj} + \sum_{j\neq i}^{} \left(\mathbf{f}_{ij}^{soc} + \mathbf{f}_{ij}^{c}\right) + \sum_{w}^{} \left(\mathbf{f}_{iw}^{soc} + \mathbf{f}_{iw}^{c}\right) + \boldsymbol{\xi}_{i}
+\end{align}
+
+\pause
+
+Force adjusting agent's movement towards desired in some characteristic time \begin{align}
+\mathbf{f}^{adj} &= \frac{m}{\tau^{adj}} (v_{0} \cdot \hat{\mathbf{e}} - \mathbf{v}) 
+\end{align}
+
+\end{frame}
+
+
+\begin{frame}
+Velocity dependent algorithm
+\begin{align}
+\mathbf{f}^{soc} &= -\nabla_{\tilde{\mathbf{x}}} E(\tau)  \\
+&= -\nabla_{\tilde{\mathbf{x}}} \left(\frac{k}{\tau^{2}} \exp \left( -\frac{\tau}{\tau_{0}} \right) \right) \\
+\\
+&= - \left(\frac{k}{a \tau^{2}}\right) 
+\left(\frac{2}{\tau} + \frac{1}{\tau_{0}}\right) 
+\exp\left (-\frac{\tau}{\tau_{0}}\right )
+\left(\tilde{\mathbf{v}} -\frac{a \tilde{\mathbf{x}} + b \tilde{\mathbf{v}}}{d} \right),
+\end{align}
+where
+\begin{align}
+a &= \tilde{\mathbf{v}} \cdot \tilde{\mathbf{v}} \\
+b &= -\tilde{\mathbf{x}} \cdot \tilde{\mathbf{v}} \\
+c &= \tilde{\mathbf{x}} \cdot \tilde{\mathbf{x}} - \tilde{r}^{2} \\
+d &= \sqrt{b^{2} - a c}, \quad b^{2} - a c > 0 \\
+\tau &= \frac{b - d}{a} > 0.
+\end{align}
+\end{frame}
+
+
+\subsection{Rotational motion}
+\begin{frame}
+\frametitle{Simulation model}
+\framesubtitle{Rotational motion}
+
+\end{frame}
+
+
+\subsection{System of differential equations}
+\begin{frame}
+\frametitle{Simulation model}
+\framesubtitle{System of differential equations}
+
+\end{frame}
+
+
+\subsection{Game theoretical model}
+
+\begin{frame}
+\frametitle{Simulation model}
+\framesubtitle{Game theoretical model}
+
+\end{frame}
+
+
+
+%------------------------------------------------
+\section{Simulations}
+%------------------------------------------------
+\subsection{Egress congestion}
+\begin{frame}
+\frametitle{Simulations}
+\framesubtitle{Egress congestion}
+
+\end{frame}
+
+%------------------------------------------------
+
+
+\begin{frame}
+\frametitle{Simulations}
+
+\end{frame}
+
+%------------------------------------------------
+
+%\begin{frame}
+%\frametitle{Multiple Columns}
+%\begin{columns}[c] % The "c" option specifies centered vertical alignment while the "t" option is used for top vertical alignment
+%
+%\column{.45\textwidth} % Left column and width
+%\textbf{Heading}
+%\begin{enumerate}
+%\item Statement
+%\item Explanation
+%\item Example
+%\end{enumerate}
+%
+%\column{.5\textwidth} % Right column and width
+%Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer lectus nisl, ultricies in feugiat rutrum, porttitor sit amet augue. Aliquam ut tortor mauris. Sed volutpat ante purus, quis accumsan dolor.
+%
+%\end{columns}
+%\end{frame}
+
+
+
+%------------------------------------------------
+
+%\begin{frame}
+%\frametitle{Theorem}
+%\begin{theorem}[Mass--energy equivalence]
+%$E = mc^2$
+%\end{theorem}
+%\end{frame}
+
+%------------------------------------------------
+
+%\begin{frame}[fragile] % Need to use the fragile option when verbatim is used in the slide
+%\frametitle{Verbatim}
+%\begin{example}[Theorem Slide Code]
+%\begin{verbatim}
+%\begin{frame}
+%\frametitle{Theorem}
+%\begin{theorem}[Mass--energy equivalence]
+%$E = mc^2$
+%\end{theorem}
+%\end{frame}\end{verbatim}
+%\end{example}
+%\end{frame}
+
+%------------------------------------------------
+
+%\begin{frame}[fragile] % Need to use the fragile option when verbatim is used in the slide
+%\frametitle{Citation}
+%An example of the \verb|\cite| command to cite within the presentation:\\~
+%
+%This statement requires citation \cite{p1}.
+%\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{References}
+\footnotesize{
+\begin{thebibliography}{99} % Beamer does not support BibTeX so references must be inserted manually as below
+\bibitem[Smith, 2012]{p1} John Smith (2012)
+\newblock Title of the publication
+\newblock \emph{Journal Name} 12(3), 45 -- 678.
+\end{thebibliography}
+}
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}
+\Huge{\centerline{The End}}
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+
+\end{document} 

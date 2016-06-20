@@ -18,6 +18,7 @@ http://www.pyqtgraph.org/documentation/plotting.html
 http://stackoverflow.com/questions/24197910/live-data-monitor-pyqtgraph
 http://stackoverflow.com/questions/18080170/what-is-the-easiest-way-to-achieve-realtime-plotting-in-pyqtgraph
 http://www.pyqtgraph.org/documentation/graphicsItems/plotdataitem.html?highlight=plotdataitem#pyqtgraph.PlotDataItem
+http://www.pyqtgraph.org/documentation/graphicsItems/viewbox.html
 """
 
 
@@ -39,10 +40,15 @@ def gui(simulation: Simulation):
     # view.setCentralItem(rplt)
     # rplt.plot(data, clear=True, _callSync='off')
 
+    # Graphics window. Contains all the plots.
+    win = pg.GraphicsWindow(title="Crowd Dynamics", size=(1200, 800))
+
     # Figure
-    win = pg.GraphicsWindow(title="Crowd Dynamics", size=(800, 800))
     figure = win.addPlot(title="Simulation")
     pg.setConfigOptions(antialias=True)
+
+    # One to one scale for x and y coordinates
+    figure.setAspectLocked(lock=True, ratio=1)
 
     agent_c = figure.plot()
     agent_ls = figure.plot()
@@ -50,13 +56,13 @@ def gui(simulation: Simulation):
     walls = figure.plot()
     areas = figure.plot()
 
-    agent_c.setData(symbol='o', symbolSize=simulation.agent.r_t,
+    agent_c.setData(symbol='o', symbolSize=2 * simulation.agent.r_t,
                     connect=np.zeros(simulation.agent.size), pxMode=False)
 
-    agent_ls.setData(symbol='o', symbolSize=simulation.agent.r_s,
+    agent_ls.setData(symbol='o', symbolSize=2 * simulation.agent.r_s,
                      connect=np.zeros(simulation.agent.size), pxMode=False)
 
-    agent_rs.setData(symbol='o', symbolSize=simulation.agent.r_s,
+    agent_rs.setData(symbol='o', symbolSize=2 * simulation.agent.r_s,
                      connect=np.zeros(simulation.agent.size), pxMode=False)
 
     for wall in simulation.wall:
@@ -78,15 +84,18 @@ def gui(simulation: Simulation):
             # areas.setData()
             pass
 
+    timer = QtCore.QTimer()
+
     def update():
         if simulation.advance():
             agent_c.setData(simulation.agent.position)
             agent_ls.setData(simulation.agent.position_ls)
             agent_rs.setData(simulation.agent.position_rs)
         else:
-            exit()
+            timer.stop()
+            # exit()
 
-    timer = QtCore.QTimer()
+    # Start and Stop buttons
     timer.timeout.connect(update)
     timer.start(0)
 

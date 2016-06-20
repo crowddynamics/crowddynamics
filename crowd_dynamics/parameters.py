@@ -108,7 +108,7 @@ class Parameters:
         # inertia_rot = inertia_rot_scale * mass * radius ** 2  # I = mr^2
         inertia_rot = 4.0 * np.ones(size)
         goal_velocity = 5.0 * np.ones(size)
-        target_angular_velocity = 0.4 * np.pi * np.ones(size)
+        target_angular_velocity = 1.5 * np.ones(size)  # TODO: good value? 0.4?
 
         return size, mass, radius, r_t, r_s, r_ts, inertia_rot, goal_velocity, \
                target_angular_velocity, three_circles_flag

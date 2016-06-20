@@ -33,7 +33,7 @@ def initialize():
     walls = linear_wall
 
     # Agents
-    size = 100
+    size = 20
     agent = Agent(*parameters.agent(size))
     first_half = slice(agent.size // 2)
     second_half = slice(agent.size // 2, None)

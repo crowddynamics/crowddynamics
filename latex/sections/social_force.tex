@@ -13,11 +13,12 @@ Force adjusting agent's movement towards desired in some characteristic time \be
 
 
 \subsubsection{Social force}
-Psychological force for collision avoidance. Naive velocity independent algorithm
+Psychological force for collision avoidance. Naive velocity independent equation
 \begin{align}
 \mathbf{f}^{soc} &= A \exp\left(-\frac{h}{B}\right) \hat{\mathbf{n}}
 \end{align}
-and improved velocity dependent algorithm
+
+Improved velocity dependent algorithm
 \begin{align}
 \mathbf{f}^{soc} &= -\nabla_{\tilde{\mathbf{x}}} E(\tau)  \\
 &= -\nabla_{\tilde{\mathbf{x}}} \left(\frac{k}{\tau^{2}} \exp \left( -\frac{\tau}{\tau_{0}} \right) \right) \\
@@ -57,25 +58,28 @@ f \in [0, f_{max}],\quad \varphi \in [0, 2 \pi]
 
 \subsection{Rotational}
 % FDS evac manual pages: 20 - 21
-Total torque exerted on agent $ M(t) $, is the sum of contact, social and motivational torques
+Total torque exerted on agent, is the sum of adjusting contact and social torques
 \begin{align}
 M_{i}(t) = M_{i}^{adj} + \sum_{j\neq i}^{} \left(M_{ij}^{soc} + M_{ij}^{c}\right) + \sum_{w}^{} \left(M_{iw}^{soc} + M_{iw}^{c}\right) + \eta_{i}(t)
 \end{align}
 
 
 \subsubsection{Adjusting torque}
+Torque adjusting agent's rotational motion towards desired
 \begin{align}
-M_{i}^{adj} &= \frac{I_{i}}{\tau_{i}} \left((\varphi_{i}(t) - \varphi_{i}^{0}) \omega^{0} - \omega(t)\right) \\
+M_{}^{adj} &= \frac{I_{}}{\tau_{}} \left((\varphi_{}(t) - \varphi_{}^{0}) \omega_{}^{0} - \omega_{}(t)\right) \\
 \end{align}
 
 \subsubsection{Social torque}
+Torque from social forces acting with other agent or wall
 \begin{align}
-\mathbf{M}_{i}^{soc} = \mathbf{r}_{i}^{soc} \times \mathbf{f}_{ij}^{soc}
+\mathbf{M}_{}^{soc} = \mathbf{r}_{}^{soc} \times \mathbf{f}_{}^{soc}
 \end{align}
 
 \subsubsection{Contact torque}
+Torque from contact forces acting with other agent or wall
 \begin{align}
-\mathbf{M}_{i}^{c} = \mathbf{r}_{i}^{c} \times \mathbf{f}_{ij}^{c}
+\mathbf{M}_{}^{c} = \mathbf{r}_{}^{c} \times \mathbf{f}_{}^{c}
 \end{align}
 
 \subsubsection{Related equations}
