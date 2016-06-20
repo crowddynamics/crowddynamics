@@ -17,11 +17,11 @@ def motion(constant, agent, walls):
 
     # Motion
     force_adjust(constant, agent)
-    force_random(constant, agent)
+    # force_random(constant, agent)
 
     if agent.orientable_flag:
         torque_adjust(constant, agent)
-        torque_random(agent)
+        # torque_random(agent)
 
     agent_agent(constant, agent)
 

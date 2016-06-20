@@ -1,4 +1,3 @@
-import numpy as np
 from collections import Iterable
 
 import matplotlib.pyplot as plt

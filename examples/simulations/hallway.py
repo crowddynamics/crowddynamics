@@ -36,7 +36,7 @@ def initialize():
     walls = linear_wall
 
     # Agents
-    size = 150
+    size = 50
     agent = Agent(*parameters.agent(size))
     agent.three_circles_flag = True
 
