@@ -79,10 +79,10 @@ def gui(simulation: Simulation):
             pass
 
     def update():
-        simulation.advance()
-        agent_c.setData(simulation.agent.position)
-        agent_ls.setData(simulation.agent.position_ls)
-        agent_rs.setData(simulation.agent.position_rs)
+        if simulation.advance():
+            agent_c.setData(simulation.agent.position)
+            agent_ls.setData(simulation.agent.position_ls)
+            agent_rs.setData(simulation.agent.position_rs)
 
     timer = QtCore.QTimer()
     timer.timeout.connect(update)

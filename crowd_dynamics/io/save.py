@@ -48,34 +48,38 @@ class Saver:
 class Save(object):
     HDF5 = ".hdf5"
 
-    def __init__(self, dirpath, name):
-        # Path to root directory and filename
-        self.root = dirpath
+    def __init__(self, path='', name='simulation'):
+        """
+
+        :param path: Path to directory
+        :param name: Filename
+        """
+        self.path = path
         self.name = name
 
-        os.makedirs(self.root, exist_ok=True)
+        # Make the directory if it doesn't exist
+        os.makedirs(self.path, exist_ok=True)
 
-        # HDF5
-        self.hdf_filepath = os.path.join(self.root, self.name + self.HDF5)
+        # Path to the HDF5 file
+        self.hdf_filepath = os.path.join(self.path, self.name + self.HDF5)
         self.group_name = None
         self.hdf_savers = None
-        # New HDF5 File
+
+        # Make new HDF5 File
+        # TODO: start/end time, simulation length
+        # TODO: Bytes saved, memory consumption
         with h5py.File(self.hdf_filepath, mode='a') as file:
             # Group Name
             groups = (int(name) for name in file if name.isdigit())
             try:
                 num = max(groups) + 1
             except ValueError:
-                # If generator is empty
-                num = 0
+                num = 0  # If generator is empty
             self.group_name = "{:04d}".format(num)
             # Create Group
             group = file.create_group(self.group_name)
             # Metadata
-            # TODO: start/end time, simulation length
             group.attrs["timestamp"] = str(datetime.datetime.now())
-
-        # TODO: Bytes saved, memory consumption
 
     def hdf(self, struct, attrs: Attrs):
         """
@@ -116,7 +120,7 @@ class Save(object):
             return None
 
     def generic(self, *folders, fname=None, exists_ok=True):
-        folder_path = os.path.join(self.root, *folders)
+        folder_path = os.path.join(self.path, *folders)
         os.makedirs(folder_path, exist_ok=True)
         if fname is None:
             fname = str(datetime.datetime.now()).replace(" ", "_")

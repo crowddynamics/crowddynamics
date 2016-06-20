@@ -1,21 +1,9 @@
 from collections import namedtuple, Iterable
 
 import numpy as np
-from scipy.stats import truncnorm
+from scipy.stats import truncnorm as tn
 
-
-# column = namedtuple("column", ("adult", "male", "female", "child", "eldery"))
-# radius, dr, torso, shoulder, shoulder distance, walking speed, dv
-# TODO: Body mass and rotational moment values table
-index = namedtuple(
-    "index", ("r", "dr", "k_t", "k_s", "k_ts", "v", "dv", "mass", "mass_scale"))
-body_types = dict(
-    adult=index(0.255, 0.035, 0.5882, 0.3725, 0.6275, 1.25, 0.30, 75, 7),
-    male=index(0.270, 0.020, 0.5926, 0.3704, 0.6296, 1.35, 0.20, 82, 10),
-    female=index(0.240, 0.020, 0.5833, 0.3750, 0.6250, 1.15, 0.20, 67, 5),
-    child=index(0.210, 0.015, 0.5714, 0.3333, 0.6667, 0.90, 0.30, 57, 5),
-    eldery=index(0.250, 0.020, 0.6000, 0.3600, 0.6400, 0.80, 0.30, None, None),
-)
+from crowd_dynamics.anthropometry import body_types, inertia_rot_scale
 
 
 class Parameters:
@@ -31,17 +19,9 @@ class Parameters:
         self.y = self.Lim(0.0, self.dims.height)
 
     @staticmethod
-    def truncnorm(loc, scale, size):
-        std = 3.0
-        tn = truncnorm(-std, std)
-        values = np.array(tn.rvs(size) * scale + loc)
-        return values
-
-    def random_2d_coordinates(self, size):
-        """Random x and y coordinates inside dims."""
-        return np.stack((np.random.uniform(self.x.min, self.x.max, size),
-                         np.random.uniform(self.y.min, self.y.max, size)),
-                        axis=1)
+    def truncnorm(loc, scale, size, std=3.0):
+        """Scaled symmetrical truncated normal distribution."""
+        return np.array(tn(-std, std).rvs(size) * scale + loc)
 
     @staticmethod
     def random_unit_vector(size):
@@ -49,6 +29,12 @@ class Parameters:
         orientation = np.random.uniform(0, 2 * np.pi, size)
         velocity = np.stack((np.cos(orientation), np.sin(orientation)), axis=1)
         return velocity
+
+    def random_2d_coordinates(self, size):
+        """Random x and y coordinates inside dims."""
+        return np.stack((np.random.uniform(self.x.min, self.x.max, size),
+                         np.random.uniform(self.y.min, self.y.max, size)),
+                        axis=1)
 
     def random_position(self, position, radius, x_dims=None, y_dims=None,
                         walls=None):
@@ -119,7 +105,6 @@ class Parameters:
         r_t = body.k_t * radius
         r_s = body.k_s * radius
         r_ts = body.k_ts * radius
-        inertia_rot_scale = 4.0 / (80.0 * 0.255 ** 2)
         inertia_rot = inertia_rot_scale * mass * radius ** 2  # I = mr^2
         goal_velocity = 5.0 * np.ones(size)
         target_angular_velocity = 4 * np.pi * np.ones(size)

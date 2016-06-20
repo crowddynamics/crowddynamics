@@ -1,4 +1,3 @@
-import os
 from collections import namedtuple
 
 import numpy as np
@@ -9,12 +8,10 @@ from crowd_dynamics.struct.agent import Agent
 from crowd_dynamics.struct.constant import Constant
 from crowd_dynamics.struct.wall import LinearWall
 
-# Path to this folder
-filepath = os.path.abspath(__file__)
-name = os.path.basename(filepath)
-dirpath = os.path.join("/home/jaan/Dropbox/Projects/Crowd-Dynamics-Simulations",
-                       "results")
-name, _ = os.path.splitext(name)
+
+# Path and name for saving simulation data
+name = "hallway"
+path = "/home/jaan/Dropbox/Projects/Crowd-Dynamics-Simulations/results"
 
 
 def initialize():
@@ -38,8 +35,6 @@ def initialize():
     # Agents
     size = 50
     agent = Agent(*parameters.agent(size))
-    agent.three_circles_flag = True
-
     first_half = slice(agent.size // 2)
     second_half = slice(agent.size // 2, None)
 
@@ -60,4 +55,4 @@ def initialize():
 
     goals = goal, goal2
 
-    return constant, agent, walls, goals, dirpath, name, x, y
+    return constant, agent, walls, goals, path, name

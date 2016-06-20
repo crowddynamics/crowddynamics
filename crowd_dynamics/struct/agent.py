@@ -5,9 +5,6 @@ import numpy as np
 from numba import float64, int64, boolean
 from numba.types import UniTuple
 
-from ..core.vector2d import normalize_vec, normalize
-
-
 spec_agent = OrderedDict(
     size=int64,
     shape=UniTuple(int64, 2),

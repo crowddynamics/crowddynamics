@@ -1,4 +1,3 @@
-import operator
 from collections import Iterable
 
 from .core.integrator import integrator
@@ -8,42 +7,19 @@ from .struct.agent import agent_attr_names
 from .struct.constant import constant_attr_names
 from .struct.result import Result, result_attr_names
 from .struct.wall import wall_attr_names
-from .visualization.animation import animation
 
 
 class Simulation:
-    def __init__(self, constant, agent, wall=None, goals=None, dirpath=None,
-                 name=None, x=None, y=None):
-        width = x[1] - x[0]
-        height = y[1] - y[0]
-        self.x_dims = x
-        self.y_dims = y
-
-        offset = abs(width - height) / 2
-        if width > height:
-            self.y_dims = y[0] - offset, y[1] + offset
-        elif width < height:
-            self.x_dims = x[0] - offset, x[1] + offset
-        self.x_dims = tuple(map(operator.add, self.x_dims, (-5, 5)))
-        self.y_dims = tuple(map(operator.add, self.y_dims, (-5, 5)))
-
+    """
+    Class for initialising and running a crowd simulation.
+    """
+    def __init__(self, constant, agent, wall=None, goals=None,
+                 dirpath=None, name=None):
         # Make iterables and filter None values
         def _filter_none(arg):
             if not isinstance(arg, Iterable):
                 arg = (arg,)
             return tuple(filter(None, arg))
-
-        # List of thing to implement
-        # TODO: Better Visualization and movie writing
-        # TODO: Path finding / Navigation / Exit selection algorithm
-        # TODO: Game theoretical exit congestion algorithm
-        # TODO: Result Analysis
-        # TODO: New simulations
-        # TODO: np.dot -> check performance and gil
-        # TODO: check continuity -> numpy.ascontiguousarray
-        # TODO: Tables of anthropometric data
-        # TODO: Egress flow to goal areas
-        # TODO: Should not see trough walls
 
         # Struct
         self.constant = constant
@@ -52,11 +28,14 @@ class Simulation:
         self.goals = _filter_none(goals)
         self.result = Result()
 
-        # Integrator for updating multi-agent system
+        # Integrator for rotational and spatial motion.
         self.integrator = self.result.computation_timer(integrator)
 
-        # Object for saving simulation data
+        # Interval for printing the values in result during the simulation.
         self.interval = Intervals(1.0)
+
+        # Simulation IO for saving generated data to HDF5 file for analysis
+        # and resuming a simulation.
         self.save = Save(dirpath, name)
         self.attrs_constant = Attrs(constant_attr_names)
         self.attrs_result = Attrs(result_attr_names)
@@ -73,18 +52,14 @@ class Simulation:
             [self.save.hdf(w, self.attrs_wall) for w in self.wall]
         )
 
-    def animation(self, fname=None, save=False, frames=None):
-        if save:
-            filepath = self.save.animation(fname)
-        else:
-            filepath = None
-        animation(self, self.x_dims, self.y_dims, save, frames, filepath)
-
     def advance(self):
         """
         :return: False is simulation ends otherwise True.
         """
         self.integrator(self.result, self.constant, self.agent, self.wall)
+
+        # Check if agent are inside of bounds
+        # TODO: Implementation
 
         # Goals
         for goal in self.goals:
@@ -113,9 +88,8 @@ class Simulation:
     def run(self, iterations=None):
         """
 
-        :param iterations: Run simulation until number of iterations is reached
-        or if None run until simulation ends.
-        :return:
+        :param iterations: Execute simulation until number of iterations has been reached or if None run until simulation ends.
+        :return: None
         """
         if iterations is None:
             while self.advance():
