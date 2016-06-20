@@ -126,9 +126,6 @@ class Agent(object):
         self.force_agent *= 0
         self.force_wall *= 0
 
-    def velocity_to_target_angle(self):
-        self.target_angle = np.arctan2(self.velocity[:, 0], self.velocity[:, 1])
-
     def update_shoulder_positions(self):
         for i in range(self.size):
             t = np.array((-np.sin(self.angle[i]), np.cos(self.angle[i])))

@@ -52,3 +52,11 @@ def force_limit(force, f_max):
     f_mag = np.hypot(force[0], force[1])
     if f_mag > f_max:
         force *= f_max / f_mag
+
+
+@numba.vectorize()
+def wrap_to_pi(angle):
+    angle %= 2 * np.pi
+    if angle > np.pi:
+        angle -= 2 * np.pi
+    return angle

@@ -110,7 +110,9 @@
 \node[largenode] (area)        at ({-180/\N*3-180:\r}) {Area};
 \node[largenode] (save)         at ({-180/\N*4-180:\r}) {Save};
 \node[largenode] (print)        at ({-180/\N*5-180:\r}) {Print};
-\node[largenode] (visualize)    at ({-180/\N*6-180:\r}) {Visualize};
+\node[largenode] (placeholder)    at ({-180/\N*6-180:\r}) {};
+
+\node[largenode, below=of parameters] (gui) {GUI};
 
 
 \path[simuarrow] (game)       edge[bend left=10] (navigation);
@@ -118,10 +120,12 @@
 \path[simuarrow] (integrator) edge[bend left=10] (area);
 \path[simuarrow] (area)      edge[bend left=10] (save);
 \path[simuarrow] (save)       edge[bend left=10] (print);
-\path[simuarrow] (print)      edge[bend left=10] (visualize);
+\path[simuarrow] (print)      edge[bend left=10] (placeholder);
 
-\path[simuarrow] (visualize)  edge[dashed, bend left=65] node[largenode, below] {Advance Simulation} (game);
-%\path[simuarrow, dashed] (visualize)  edge[bend right] node[below, sloped] {End simulation} ($ (visualize) + (5, -3) $);
+
+\path[simuarrow] (placeholder)  edge[dashed, bend left] node[below, sloped] {} (gui);
+\path[simuarrow] (gui)  edge[dashed, bend left] node[above=0.5, sloped] {Advance Simulation} (game);
+%\path[simuarrow, dashed] (placeholder)  edge[bend right] node[below, sloped] {End simulation} ($ (placeholder) + (5, -3) $);
 
 
 \path[interactionarrow] (navigation) edge[] (wall);
@@ -141,11 +145,11 @@
 \path[inputarrow] (goal)     edge[bend right=10] (save);
 \path[inputarrow] (result)   edge[bend right=10] (save);
 \path[inputarrow] (agent)    edge[bend left=35] (print);
-\path[inputarrow] (wall)     edge[bend left=65] (visualize);
-\path[inputarrow] (agent)    edge[bend left=55] (visualize);
-\path[inputarrow] (constant) edge[bend left=50] (visualize);
-\path[inputarrow] (goal)     edge[bend left=50] (visualize);
-\path[inputarrow] (result)   edge[bend left=60] (visualize);
+\path[inputarrow] (wall)     edge[bend left=65] (placeholder);
+\path[inputarrow] (agent)    edge[bend left=55] (placeholder);
+\path[inputarrow] (constant) edge[bend left=50] (placeholder);
+\path[inputarrow] (goal)     edge[bend left=50] (placeholder);
+\path[inputarrow] (result)   edge[bend left=60] (placeholder);
 
 % ------------------------------------------------------------------------------
 % Area
@@ -188,7 +192,7 @@
 % ------------------------------------------------------------------------------
 
 \node[inactive, left=1.0 of game] (strategy) {Best response strategy};
-\node[inactive, left=1.0 of strategy] (clock) {Poisson clock};
+\node[inactive, below=1.0 of strategy] (clock) {Poisson clock};
 
 \path[returnarrow] (strategy) edge[] (game);
 \path[returnarrow] (clock) edge[] (strategy);
@@ -205,13 +209,13 @@
 % Visualize
 % ------------------------------------------------------------------------------
 
-\node[largenode, right=1.0 of visualize] (animation) {Animation};
-\node[inactive, above right=1.0 of visualize] (gui) {PyQt4 GUI};
-\node[inactive, right=of gui] (pyqtgraph) {pyqtgraph};
+\node[largenode, below left=1.0 of gui] (animation) {Animation};
+\node[largenode, below right=1.0 of gui] (pygt) {PyQt4};
+\node[largenode, right=of pygt] (pyqtgraph) {pyqtgraph};
 
-\path[inputarrow] (visualize) edge[] (animation);
-\path[inputarrow] (visualize) edge[] (gui);
-\path[inputarrow] (pyqtgraph) edge[] (gui);
+\path[inputarrow] (gui) edge[] (animation);
+\path[inputarrow] (gui) edge[] (pygt);
+\path[inputarrow] (pyqtgraph) edge[] (pygt);
 
 \end{tikzpicture}
 \end{document}

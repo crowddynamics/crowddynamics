@@ -1,4 +1,5 @@
 import numpy as np
+import numba
 
 from .vector2d import normalize_vec
 
@@ -22,6 +23,13 @@ def set_goal_direction(agent, goal):
     mask = agent.goal_reached ^ True
     if np.sum(mask):
         agent.goal_direction[mask] = normalize_vec(goal - agent.position[mask])
+
+
+@numba.jit(nopython=True, nogil=True)
+def velocity_to_target_angle(agent):
+    agent.target_angle = np.arctan2(agent.target_direction[:, 0],
+                                    agent.target_direction[:, 1])
+    # agent.target_angle %= 2 * np.pi
 
 
 def navigation(agent, goal_point):

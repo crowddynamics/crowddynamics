@@ -105,9 +105,10 @@ class Parameters:
         r_t = body.k_t * radius
         r_s = body.k_s * radius
         r_ts = body.k_ts * radius
-        inertia_rot = inertia_rot_scale * mass * radius ** 2  # I = mr^2
+        # inertia_rot = inertia_rot_scale * mass * radius ** 2  # I = mr^2
+        inertia_rot = 4.0 * np.ones(size)
         goal_velocity = 5.0 * np.ones(size)
-        target_angular_velocity = 4 * np.pi * np.ones(size)
+        target_angular_velocity = 0.4 * np.pi * np.ones(size)
 
         return size, mass, radius, r_t, r_s, r_ts, inertia_rot, goal_velocity, \
                target_angular_velocity, three_circles_flag

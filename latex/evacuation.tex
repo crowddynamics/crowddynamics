@@ -53,7 +53,7 @@
 \coordinate[] (upright) at (8, 8);
 
 % Bounds
-\filldraw[gray, opacity=0.1] ($ (downleft) - (1, 1) $) rectangle ++(19, 18);
+\filldraw[gray, opacity=0.1] ($ (downleft) $) rectangle ++(19, 16);
 
 % Goal
 \filldraw[gray, opacity=0.4] (8, -2) rectangle ++(2, 4);  
@@ -66,8 +66,8 @@
 
 % Dimensions
 % ------------------------------------------------------------------------------
-\draw[dimension] (-9.0, -9.5) -- node[below] {width} ++(19, 0);
-\draw[dimension] (-9.5, -9.0) -- node[left]  {height} ++(0, 18);
+\draw[dimension] (-8.0, -9.5) -- node[below] {width} ++(19, 0);
+\draw[dimension] (-9.5, -8.0) -- node[left]  {height} ++(0, 16);
 \draw[dimension] (10.0, -1.0) -- node[right] {Exit width} ++(0, 2);
 \end{tikzpicture}
 \end{document}

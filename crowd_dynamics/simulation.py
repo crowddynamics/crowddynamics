@@ -76,14 +76,16 @@ class Simulation:
             print(self.result)
 
         if len(self.result.in_goal_time) == self.agent.size:
-            # Simulation exit
-            print(self.result)
-            self.save.hdf(self.result, self.attrs_result)
-            for saver in self.savers:
-                saver(brute=True)
+            self.exit()
             return False
-
         return True
+
+    def exit(self):
+        # Simulation exit
+        print(self.result)
+        self.save.hdf(self.result, self.attrs_result)
+        for saver in self.savers:
+            saver(brute=True)
 
     def run(self, iterations=None):
         """

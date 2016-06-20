@@ -83,6 +83,8 @@ def gui(simulation: Simulation):
             agent_c.setData(simulation.agent.position)
             agent_ls.setData(simulation.agent.position_ls)
             agent_rs.setData(simulation.agent.position_rs)
+        else:
+            exit()
 
     timer = QtCore.QTimer()
     timer.timeout.connect(update)

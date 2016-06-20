@@ -51,7 +51,7 @@ class Constant(object):
         self.b = 0.08
 
         # Rotational constants
-        self.tau_adj_torque = 0.5
+        self.tau_adj_torque = 0.1
 
         # Limits
         self.f_random_fluctuation_max = 1.0
