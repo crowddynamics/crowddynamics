@@ -39,8 +39,10 @@ spec_agent = OrderedDict(
     target_angle=float64[:],
     target_angular_velocity=float64[:],
     torque=float64[:],
+
     position_ls=float64[:, :],
     position_rs=float64[:, :],
+    front=float64[:, :],
 
     sight_soc=float64,
     sight_wall=float64,
@@ -114,6 +116,8 @@ class Agent(object):
         self.position_ls = np.zeros(self.shape)  # Left shoulder
         self.position_rs = np.zeros(self.shape)  # Right shoulder
 
+        self.front = np.zeros(self.shape)  # Front of head
+
         # Distances for reacting to other objects
         self.sight_soc = 7.0
         self.sight_wall = 7.0
@@ -130,8 +134,9 @@ class Agent(object):
 
     def update_shoulder_positions(self):
         for i in range(self.size):
+            n = np.array((np.cos(self.angle[i]), np.sin(self.angle[i])))
             t = np.array((-np.sin(self.angle[i]), np.cos(self.angle[i])))
-            # t = np.array((np.cos(self.angle[i]), np.sin(self.angle[i])))
             offset = t * self.r_ts[i]
             self.position_ls[i] = self.position[i] - offset
             self.position_rs[i] = self.position[i] + offset
+            self.front[i] = self.position[i] + n * self.r_t[i]

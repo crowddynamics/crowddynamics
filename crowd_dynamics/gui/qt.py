@@ -73,7 +73,10 @@ def gui(simulation: Simulation):
                     symbolSize=2 * simulation.agent.r_t,
                     connect=np.zeros(simulation.agent.size),
                     pxMode=False)
-    # Agent direction indicator.
+    # Agent direction indicator
+    connect = np.ones(3 * simulation.agent.size)
+    connect[2::3] = np.zeros(simulation.agent.size)
+    direction.setData(connect=connect)
 
     # Walls as lines or circles
     for wall in simulation.wall:
@@ -102,6 +105,14 @@ def gui(simulation: Simulation):
             agent_c.setData(simulation.agent.position)
             agent_ls.setData(simulation.agent.position_ls)
             agent_rs.setData(simulation.agent.position_rs)
+
+            array = np.concatenate((simulation.agent.position_ls,
+                                    simulation.agent.front,
+                                    simulation.agent.position_rs),
+                                   axis=1).reshape(
+                3 * simulation.agent.shape[0],
+                simulation.agent.shape[1])
+            direction.setData(array)
         else:
             timer.stop()
             # exit()
