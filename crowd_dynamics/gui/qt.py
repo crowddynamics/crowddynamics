@@ -1,4 +1,5 @@
 import sys
+from time import sleep
 
 import numpy as np
 import pyqtgraph as pg
@@ -95,6 +96,7 @@ def gui(simulation: Simulation):
             timer.stop()
             # exit()
 
+    sleep(2.0)
     # Start and Stop buttons
     timer.timeout.connect(update)
     timer.start(0)

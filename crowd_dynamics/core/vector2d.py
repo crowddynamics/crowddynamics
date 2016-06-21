@@ -2,10 +2,29 @@ import numpy as np
 import numba
 from numba import f8, void
 
-
 """
 Functions operating on 2-Dimensional vectors.
 """
+
+
+@numba.vectorize([f8(f8)])
+def wrap_to_pi(rad):
+    """
+    Wraps angles in rad in radians, to the interval [−pi pi].
+
+    Pi maps to pi and −pi maps to −pi. (In general, odd, positive multiples of
+    pi map to pi and odd, negative multiples of pi map to −pi.)
+
+    [Matlab](http://se.mathworks.com/help/map/ref/wraptopi.html)
+    """
+    rad_ = rad % (2 * np.pi)
+    if rad < 0 and rad_ == np.pi:
+        # negative multiples of pi map to −pi
+        return -np.pi
+    elif rad_ > np.pi:
+        return rad_ - (2 * np.pi)
+    else:
+        return rad_
 
 
 @numba.jit(f8[:](f8[:]), nopython=True, nogil=True)
@@ -49,15 +68,7 @@ def normalize_nx2(vec2d):
 
 
 @numba.jit(void(f8[:], f8), nopython=True, nogil=True)
-def force_limit(force, f_max):
-    f_mag = np.hypot(force[0], force[1])
-    if f_mag > f_max:
-        force *= f_max / f_mag
-
-
-@numba.vectorize([f8(f8)])
-def wrap_to_pi(angle):
-    angle %= 2 * np.pi
-    if angle > np.pi:
-        angle -= 2 * np.pi
-    return angle
+def truncate(vec2d, limit):
+    hypot = np.hypot(vec2d[0], vec2d[1])
+    if hypot > limit:
+        vec2d *= limit / hypot
