@@ -1,13 +1,15 @@
 import numpy as np
+import numba
 
-from crowd_dynamics.core.navigation import direction_to_target_angle
-from crowd_dynamics.core.vector2d import wrap_to_pi
+from .navigation import direction_to_target_angle
+from .vector2d import wrap_to_pi
 from .force import force_adjust, force_random
 from .interactions import agent_agent, agent_wall
 from .torque import torque_adjust, torque_random
 
 
 def motion(constant, agent, walls):
+    # TODO: Active/Inactive agents
     # TODO: Navigation
 
     # Target angle update policy
@@ -31,13 +33,9 @@ def motion(constant, agent, walls):
         agent_wall(constant, agent, wall)
 
 
-# TODO: numba.jit()
-def integrator(result, constant, agent, walls):
-    # TODO: Active/Inactive agents
-
+@numba.jit(nopython=True)
+def integrator(constant, agent):
     """Explicit euler method"""
-    motion(constant, agent, walls)
-
     # TODO: Adaptive time step from maximum position change for agent.
     # Raise warning if using less than minimum step size
     # Larger crowd densities requires smaller timestep
@@ -45,13 +43,12 @@ def integrator(result, constant, agent, walls):
 
     # Position change
     # TODO:
-    # dv = agent.velocity + acceleration * constant.dt
-    # dt = constant.dx_max / np.max(np.hypot(dv[:, 0], dv[:, 1]))
-    # if dt > constant.dt:
-    #     dt = constant.dt
-    # elif dt < constant.dt_min:
-    #     dt = constant.dt_min
-    dt = constant.dt
+    dv = agent.velocity + acceleration * constant.dt
+    dt = constant.dx_max / np.max(np.hypot(dv[:, 0], dv[:, 1]))
+    if dt > constant.dt:
+        dt = constant.dt
+    elif dt < constant.dt_min:
+        dt = constant.dt_min
 
     agent.velocity += acceleration * dt
     agent.position += agent.velocity * dt
@@ -65,6 +62,5 @@ def integrator(result, constant, agent, walls):
     if agent.orientable_flag:
         agent.update_shoulder_positions()
 
-    # Save
-    result.increment_simulation_time(dt)
+    return dt
 

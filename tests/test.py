@@ -6,10 +6,10 @@ import numpy as np
 from crowd_dynamics.core.integrator import integrator
 from crowd_dynamics.display import timed_execution
 from crowd_dynamics.parameters import Parameters
-from crowd_dynamics.struct.agent import Agent
-from crowd_dynamics.struct.constant import Constant
-from crowd_dynamics.struct.result import Result
-from crowd_dynamics.struct.wall import LinearWall, RoundWall
+from crowd_dynamics.structure.agent import Agent
+from crowd_dynamics.structure.constant import Constant
+from crowd_dynamics.structure.result import Result
+from crowd_dynamics.structure.wall import LinearWall, RoundWall
 
 
 np.set_printoptions(precision=5, threshold=100, edgeitems=3, linewidth=75,

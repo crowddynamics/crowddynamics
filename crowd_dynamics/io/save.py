@@ -95,7 +95,7 @@ class Save(object):
         # TODO: Attributes for new group?
         with h5py.File(self.hdf_filepath, mode='a') as file:
             base = file[self.group_name]
-            # New group for struct
+            # New group for structure
             group = base.create_group(struct_name)
             # Create new datasets
             for attr in attrs:

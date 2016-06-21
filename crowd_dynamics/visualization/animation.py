@@ -7,7 +7,7 @@ from matplotlib.patches import Circle, Rectangle
 
 from crowd_dynamics.area import GoalRectangle
 from ..display import format_time
-from ..struct.wall import LinearWall, RoundWall
+from ..structure.wall import LinearWall, RoundWall
 
 
 try:

@@ -3,7 +3,8 @@ from collections import namedtuple, Iterable
 import numpy as np
 from scipy.stats import truncnorm as tn
 
-from crowd_dynamics.anthropometry import body_types, inertia_rot_scale
+from .anthropometry.load import body_types, inertia_rot_value, walking_speed_max, \
+    angular_velocity_max
 
 
 class Parameters:
@@ -21,7 +22,7 @@ class Parameters:
     @staticmethod
     def truncnorm(loc, scale, size, std=3.0):
         """Scaled symmetrical truncated normal distribution."""
-        return np.array(tn(-std, std).rvs(size) * scale + loc)
+        return np.array(tn(-std, std).rvs(size) * scale / std + loc)
 
     @staticmethod
     def random_unit_vector(size):
@@ -100,15 +101,20 @@ class Parameters:
     def agent(self, size, three_circles_flag=True, body_type="adult"):
         """Arguments for constructing agent."""
         body = body_types[body_type]
-        mass = self.truncnorm(loc=body.mass, scale=body.mass_scale, size=size)
-        radius = self.truncnorm(loc=body.r, scale=body.dr, size=size)
-        r_t = body.k_t * radius
-        r_s = body.k_s * radius
-        r_ts = body.k_ts * radius
+        mass = self.truncnorm(loc=body["mass"],
+                              scale=body["mass_scale"],
+                              size=size)
+        radius = self.truncnorm(loc=body["radius"],
+                                scale=body["dr"],
+                                size=size)
+        r_t = body["k_t"] * radius
+        r_s = body["k_s"] * radius
+        r_ts = body["k_ts"] * radius
+
         # inertia_rot = inertia_rot_scale * mass * radius ** 2  # I = mr^2
-        inertia_rot = 4.0 * np.ones(size)
-        goal_velocity = 5.0 * np.ones(size)
-        target_angular_velocity = 1.5 * np.ones(size)  # TODO: good value? 0.4?
+        inertia_rot = inertia_rot_value * np.ones(size)
+        goal_velocity = walking_speed_max * np.ones(size)
+        target_angular_velocity = angular_velocity_max * np.ones(size)
 
         return size, mass, radius, r_t, r_s, r_ts, inertia_rot, goal_velocity, \
                target_angular_velocity, three_circles_flag

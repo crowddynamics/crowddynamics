@@ -37,9 +37,10 @@ class Constant(object):
         # Integrator
         # TODO: Lower than this raises warning
         # TODO: Relative to crowd density and target_velocity * dt
+        self.dx_max = 0.05
+
         self.dt = 0.01
         self.dt_min = 0.001
-        self.dx_max = 0.05
 
         # Force related constants
         self.tau_adj = 0.5
@@ -51,7 +52,7 @@ class Constant(object):
         self.b = 0.08
 
         # Rotational constants
-        self.tau_adj_torque = 0.1
+        self.tau_adj_torque = 0.2
 
         # Limits
         self.f_random_fluctuation_max = 1.0

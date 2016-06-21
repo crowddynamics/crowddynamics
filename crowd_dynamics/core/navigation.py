@@ -13,11 +13,13 @@ Vector field
 """
 
 
+# @numba.jit(nopython=True, nogil=True)
 def exit_selection():
     """Exit selection policy."""
     pass
 
 
+@numba.jit(nopython=True, nogil=True)
 def set_goal_direction(agent, goal):
     """Update goal direction for agent that have not reached their goals."""
     mask = agent.goal_reached ^ True
@@ -31,6 +33,7 @@ def direction_to_target_angle(agent):
                                     agent.target_direction[:, 1])
 
 
+@numba.jit(nopython=True, nogil=True)
 def navigation(agent, goal_point):
     # TODO: Navigation
     set_goal_direction(agent, goal_point)

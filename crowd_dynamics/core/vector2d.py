@@ -43,7 +43,7 @@ def normalize(vec2d):
     return vec2d / np.hypot(vec2d[0], vec2d[1])
 
 
-@numba.jit(nopython=True, nogil=True)
+@numba.jit(f8[:, :](f8[:, :]), nopython=True, nogil=True)
 def normalize_nx2(vec2d):
     return vec2d / np.hypot(vec2d[:, 0], vec2d[:, 1]).reshape((len(vec2d), 1))
 
@@ -55,7 +55,7 @@ def force_limit(force, f_max):
         force *= f_max / f_mag
 
 
-@numba.vectorize()
+@numba.vectorize([f8(f8)])
 def wrap_to_pi(angle):
     angle %= 2 * np.pi
     if angle > np.pi:

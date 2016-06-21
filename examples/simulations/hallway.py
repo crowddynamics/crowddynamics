@@ -4,9 +4,9 @@ import numpy as np
 
 from crowd_dynamics.area import GoalRectangle
 from crowd_dynamics.parameters import Parameters
-from crowd_dynamics.struct.agent import Agent
-from crowd_dynamics.struct.constant import Constant
-from crowd_dynamics.struct.wall import LinearWall
+from crowd_dynamics.structure.agent import Agent
+from crowd_dynamics.structure.constant import Constant
+from crowd_dynamics.structure.wall import LinearWall
 
 
 # Path and name for saving simulation data
@@ -33,7 +33,7 @@ def initialize():
     walls = linear_wall
 
     # Agents
-    size = 20
+    size = 100
     agent = Agent(*parameters.agent(size))
     first_half = slice(agent.size // 2)
     second_half = slice(agent.size // 2, None)

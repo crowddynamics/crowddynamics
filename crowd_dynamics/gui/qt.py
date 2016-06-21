@@ -6,8 +6,8 @@ from PyQt4 import QtGui, QtCore
 
 from crowd_dynamics.area import GoalRectangle
 from crowd_dynamics.simulation import Simulation
-from crowd_dynamics.struct.wall import LinearWall
-from crowd_dynamics.struct.wall import RoundWall
+from crowd_dynamics.structure.wall import LinearWall
+from crowd_dynamics.structure.wall import RoundWall
 
 """
 arrowItem

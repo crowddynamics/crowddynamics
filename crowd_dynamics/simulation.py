@@ -1,12 +1,12 @@
 from collections import Iterable
 
-from .core.integrator import integrator
+from .core.integrator import integrator, motion
 from .io.attributes import Intervals, Attrs, Attr
 from .io.save import Save
-from .struct.agent import agent_attr_names
-from .struct.constant import constant_attr_names
-from .struct.result import Result, result_attr_names
-from .struct.wall import wall_attr_names
+from .structure.agent import agent_attr_names
+from .structure.constant import constant_attr_names
+from .structure.result import Result, result_attr_names
+from .structure.wall import wall_attr_names
 
 
 class Simulation:
@@ -56,7 +56,10 @@ class Simulation:
         """
         :return: False is simulation ends otherwise True.
         """
-        self.integrator(self.result, self.constant, self.agent, self.wall)
+
+        motion(self.constant, self.agent, self.wall)
+        dt = self.integrator(self.constant, self.agent)
+        self.result.increment_simulation_time(dt)
 
         # Check if agent are inside of bounds
         # TODO: Implementation

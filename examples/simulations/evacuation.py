@@ -4,10 +4,10 @@ from collections import namedtuple
 import numpy as np
 
 from crowd_dynamics.parameters import Parameters
-from crowd_dynamics.struct.agent import Agent
+from crowd_dynamics.structure.agent import Agent
 from crowd_dynamics.area import GoalRectangle
-from crowd_dynamics.struct.constant import Constant
-from crowd_dynamics.struct.wall import LinearWall
+from crowd_dynamics.structure.constant import Constant
+from crowd_dynamics.structure.wall import LinearWall
 
 # Path to this folder
 filepath = os.path.abspath(__file__)
