@@ -44,9 +44,13 @@ def initialize():
                                (x.max // 2, x.max), y, walls)
 
     # Goal
-    agent.target_direction[first_half] += np.array((1, 0), dtype=np.float64)
-    agent.target_direction[second_half] += np.array((-1, 0), dtype=np.float64)
-    agent.direction_to_angle()
+    direction1 = np.array((1.0, 0.0))
+    direction2 = np.array((-1.0, 0.0))
+    agent.target_direction[first_half] += direction1
+    agent.target_direction[second_half] += direction2
+    # agent.direction_to_angle()
+    agent.angle[first_half] += 0
+    agent.angle[second_half] += np.pi
     agent.update_shoulder_positions()
 
     goal = GoalRectangle(center=np.array((x.max + 2.5, y.max / 2)),

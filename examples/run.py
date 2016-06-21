@@ -4,7 +4,6 @@ from crowd_dynamics.gui.qt import gui
 from examples.simulations.hallway import initialize
 
 # List of thing to implement
-# TODO: np.dot -> check performance and gil
 # TODO: check continuity -> numpy.ascontiguousarray
 # TODO: Tables of anthropometric data
 # TODO: Egress flow magnitude

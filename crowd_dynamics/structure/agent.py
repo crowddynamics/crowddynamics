@@ -129,9 +129,6 @@ class Agent(object):
         self.force_agent *= 0
         self.force_wall *= 0
 
-    def direction_to_angle(self):
-        self.angle = angle_nx2(self.target_direction)
-
     def update_shoulder_positions(self):
         for i in range(self.size):
             n = np.array((np.cos(self.angle[i]), np.sin(self.angle[i])))

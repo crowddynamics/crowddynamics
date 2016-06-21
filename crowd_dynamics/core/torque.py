@@ -16,7 +16,7 @@ def torque_adjust(constant, agent):
     """Adjusting torque."""
     # TODO: Needs fixing
     agent.torque += agent.inertia_rot / constant.tau_adj_torque * (
-        wrap_to_pi(agent.angle - agent.target_angle) *
+        wrap_to_pi(agent.target_angle - agent.angle) *
         agent.target_angular_velocity - agent.angular_velocity)
 
 
