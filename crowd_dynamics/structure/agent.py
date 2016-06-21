@@ -4,6 +4,8 @@ import numba
 import numpy as np
 from numba import float64, int64, boolean
 from numba.types import UniTuple
+from ..core.vector2d import angle_nx2
+
 
 spec_agent = OrderedDict(
     size=int64,
@@ -124,13 +126,12 @@ class Agent(object):
         self.force_wall *= 0
 
     def direction_to_angle(self):
-        self.angle = np.arctan2(self.target_direction[:, 0],
-                                self.target_direction[:, 1])
+        self.angle = angle_nx2(self.target_direction)
 
     def update_shoulder_positions(self):
         for i in range(self.size):
-            # t = np.array((-np.sin(self.angle[i]), np.cos(self.angle[i])))
-            t = np.array((np.cos(self.angle[i]), np.sin(self.angle[i])))
+            t = np.array((-np.sin(self.angle[i]), np.cos(self.angle[i])))
+            # t = np.array((np.cos(self.angle[i]), np.sin(self.angle[i])))
             offset = t * self.r_ts[i]
             self.position_ls[i] = self.position[i] - offset
             self.position_rs[i] = self.position[i] + offset

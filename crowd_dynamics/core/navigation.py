@@ -1,7 +1,7 @@
 import numpy as np
 import numba
 
-from .vector2d import normalize_nx2
+from .vector2d import normalize_nx2, angle_nx2
 
 
 """
@@ -29,8 +29,7 @@ def set_goal_direction(agent, goal):
 
 @numba.jit(nopython=True, nogil=True)
 def direction_to_target_angle(agent):
-    agent.target_angle = np.arctan2(agent.target_direction[:, 0],
-                                    agent.target_direction[:, 1])
+    agent.target_angle = angle_nx2(agent.target_direction)
 
 
 @numba.jit(nopython=True, nogil=True)

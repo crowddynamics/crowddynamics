@@ -51,21 +51,31 @@ def gui(simulation: Simulation):
     # One to one scale for x and y coordinates
     figure.setAspectLocked(lock=True, ratio=1)
 
+    # PlotItems for plotting data
+    areas = figure.plot()
     agent_c = figure.plot()
     agent_ls = figure.plot()
     agent_rs = figure.plot()
+    direction = figure.plot()
     walls = figure.plot()
-    areas = figure.plot()
 
-    agent_c.setData(symbol='o', symbolSize=2 * simulation.agent.r_t,
-                    connect=np.zeros(simulation.agent.size), pxMode=False)
+    # Agents. Plotted as circles
+    # TODO: Orientable agent
+    agent_ls.setData(symbol='o',
+                     symbolSize=2 * simulation.agent.r_s,
+                     connect=np.zeros(simulation.agent.size),
+                     pxMode=False)
+    agent_rs.setData(symbol='o',
+                     symbolSize=2 * simulation.agent.r_s,
+                     connect=np.zeros(simulation.agent.size),
+                     pxMode=False)
+    agent_c.setData(symbol='o',
+                    symbolSize=2 * simulation.agent.r_t,
+                    connect=np.zeros(simulation.agent.size),
+                    pxMode=False)
+    # Agent direction indicator.
 
-    agent_ls.setData(symbol='o', symbolSize=2 * simulation.agent.r_s,
-                     connect=np.zeros(simulation.agent.size), pxMode=False)
-
-    agent_rs.setData(symbol='o', symbolSize=2 * simulation.agent.r_s,
-                     connect=np.zeros(simulation.agent.size), pxMode=False)
-
+    # Walls as lines or circles
     for wall in simulation.wall:
         if isinstance(wall, LinearWall):
             connect = np.zeros(2 * wall.size)
@@ -79,7 +89,7 @@ def gui(simulation: Simulation):
                           symbolSize=wall.params[:, 2],
                           connect=np.zeros(wall.size),
                           pxMode=False)
-
+    # Areas as
     for area in simulation.goals:
         if isinstance(area, GoalRectangle):
             # areas.setData()

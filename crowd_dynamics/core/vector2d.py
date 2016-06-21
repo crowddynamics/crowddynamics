@@ -45,6 +45,18 @@ def rotate270(vec2d):
     return rot
 
 
+@numba.jit(f8(f8[:]), nopython=True, nogil=True)
+def angle(vec2d):
+    """Angle of 2d vector in radians."""
+    return np.arctan2(vec2d[1], vec2d[0])
+
+
+@numba.jit(f8[:](f8[:, :]), nopython=True, nogil=True)
+def angle_nx2(vec2d):
+    """Angle of 2d vectors in radians."""
+    return np.arctan2(vec2d[:, 1], vec2d[:, 0])
+
+
 @numba.jit(f8(f8[:], f8[:]), nopython=True, nogil=True)
 def dot2d(v0, v1):
     """Dot product for 2D vectors."""

@@ -58,6 +58,6 @@ class Constant(object):
         self.f_random_fluctuation_max = 1.0
         self.f_adjust_max = 1e3
         self.f_soc_ij_max = 2e3
-        self.f_c_ij_max = 2e5
+        self.f_c_ij_max = 2e6
         self.f_soc_iw_max = 2e3
-        self.f_c_iw_max = 2e5
+        self.f_c_iw_max = 2e6

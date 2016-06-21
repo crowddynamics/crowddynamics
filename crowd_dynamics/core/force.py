@@ -41,9 +41,7 @@ def force_social(x_rel, v_rel, r_tot, k, tau_0):
     """
     Velocity dependent social force. [1]
 
-    References
-    ----------
-    [1] http://motion.cs.umn.edu/PowerLaw/
+    [1]: http://motion.cs.umn.edu/PowerLaw/
     """
     force = np.zeros_like(x_rel)
 
@@ -64,7 +62,7 @@ def force_social(x_rel, v_rel, r_tot, k, tau_0):
         return force
 
     # Force is returned negative as repulsive force
-    force -= k / (a * tau ** 2.0) * np.exp(-tau / tau_0) * \
+    force += - k / (a * tau ** 2.0) * np.exp(-tau / tau_0) * \
              (2.0 / tau + 1.0 / tau_0) * \
              (v_rel - (v_rel * b + x_rel * a) / d)
 
