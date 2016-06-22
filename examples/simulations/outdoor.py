@@ -5,7 +5,6 @@ from collections import namedtuple
 sys.path.append("/home/jaan/Dropbox/Projects/Crowd-Dynamics")
 from crowd_dynamics.parameters import Parameters
 from crowd_dynamics.structure.agent import Agent
-from crowd_dynamics.structure.constant import Constant
 
 # Path to this folder
 filepath = os.path.abspath(__file__)
@@ -24,7 +23,6 @@ def initialize():
     y = lim(0.0, d.height)
 
     params = Parameters(*d)
-    constant = Constant()
     walls = None
 
     # Agents
@@ -37,4 +35,4 @@ def initialize():
     goals = None
     agent.goal_direction += params.random_unit_vector(size)
 
-    return constant, agent, walls, goals
+    return agent, walls, goals

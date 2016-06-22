@@ -6,19 +6,19 @@ from .vector2d import dot2d
 
 
 @numba.jit(nopython=True, nogil=True)
-def force_random(constant, agent):
+def force_random(agent):
     """Random force"""
     for i in range(agent.size):
         angle = np.random.uniform(0, 2 * np.pi)
-        magnitude = np.random.uniform(0, constant.f_random_fluctuation_max)
+        magnitude = np.random.uniform(0, agent.f_random_fluctuation_max)
         agent.force[i][0] += magnitude * np.cos(angle)
         agent.force[i][1] += magnitude * np.sin(angle)
 
 
 @numba.jit(nopython=True, nogil=True)
-def force_adjust(constant, agent):
+def force_adjust(agent):
     """Force that adjust movement towards target direction."""
-    force = (agent.mass / constant.tau_adj) * \
+    force = (agent.mass / agent.tau_adj) * \
             (agent.target_velocity * agent.target_direction - agent.velocity)
     agent.force += force
     agent.force_adjust += force

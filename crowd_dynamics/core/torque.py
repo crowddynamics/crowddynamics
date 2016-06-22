@@ -1,7 +1,7 @@
 import numpy as np
 import numba
 
-from crowd_dynamics.core.vector2d import wrap_to_pi
+from .vector2d import wrap_to_pi
 
 
 @numba.jit(nopython=True, nogil=True)
@@ -12,10 +12,10 @@ def torque_random(agent):
 
 
 @numba.jit(nopython=True, nogil=True)
-def torque_adjust(constant, agent):
+def torque_adjust(agent):
     """Adjusting torque."""
     # TODO: Needs fixing
-    agent.torque += agent.inertia_rot / constant.tau_adj_torque * (
+    agent.torque += agent.inertia_rot / agent.tau_adj_rot * (
         wrap_to_pi(agent.target_angle - agent.angle) / np.pi *
         agent.target_angular_velocity - agent.angular_velocity)
 

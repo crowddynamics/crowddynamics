@@ -42,6 +42,19 @@ spec_agent = OrderedDict(
     position_rs=float64[:, :],
     front=float64[:, :],
 
+    tau_adj=float64,
+    tau_adj_rot=float64,
+    k=float64,
+    tau_0=float64,
+    mu=float64,
+    kappa=float64,
+    a=float64,
+    b=float64,
+
+    f_random_fluctuation_max=float64,
+    f_soc_ij_max=float64,
+    f_soc_iw_max=float64,
+
     sight_soc=float64,
     sight_wall=float64,
 )
@@ -116,7 +129,19 @@ class Agent(object):
 
         self.front = np.zeros(self.shape)  # Front of head
 
-        # Distances for reacting to other objects
+        # Force related parameters TODO: vectors?
+        self.tau_adj = 0.5
+        self.tau_adj_rot = 0.2
+        self.k = 1.5 * 70
+        self.tau_0 = 3.0
+        self.mu = 1.2e5
+        self.kappa = 2.4e5
+        self.a = 2e3
+        self.b = 0.04
+
+        self.f_random_fluctuation_max = 1.0
+        self.f_soc_ij_max = 2e3
+        self.f_soc_iw_max = 2e3
         self.sight_soc = 7.0
         self.sight_wall = 7.0
 

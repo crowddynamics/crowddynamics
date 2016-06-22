@@ -1,7 +1,6 @@
 import numpy as np
 
 from crowd_dynamics.parameters import Parameters
-from crowd_dynamics.structure.constant import Constant
 from crowd_dynamics.structure.agent import Agent
 from crowd_dynamics.structure.wall import LinearWall
 from crowd_dynamics.area import GoalRectangle
@@ -18,7 +17,6 @@ height = None
 
 # Parameters
 parameters = Parameters()
-constant = Constant()
 
 # Walls
 linear_wall = None

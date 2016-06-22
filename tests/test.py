@@ -7,7 +7,6 @@ from crowd_dynamics.core.integrator import integrator
 from crowd_dynamics.display import timed_execution
 from crowd_dynamics.parameters import Parameters
 from crowd_dynamics.structure.agent import Agent
-from crowd_dynamics.structure.constant import Constant
 from crowd_dynamics.structure.result import Result
 from crowd_dynamics.structure.wall import LinearWall, RoundWall
 
@@ -21,7 +20,6 @@ size = 200
 params = Parameters(50, 50)
 
 result = Result(size)
-constant = Constant()
 
 """Walls"""
 linear_wall = LinearWall(params.linear_wall(10))
@@ -37,4 +35,4 @@ agent.velocity = params.random_unit_vector(agent.size)
 def test_integrator():
     advance = timed_execution(integrator, 1.0)
     for i in range(200):
-        advance(result, constant, agent, walls)
+        advance(result, agent, walls)

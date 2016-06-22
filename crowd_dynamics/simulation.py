@@ -4,7 +4,6 @@ from .core.integrator import integrator, motion
 from .io.attributes import Intervals, Attrs, Attr
 from .io.save import Save
 from .structure.agent import agent_attr_names
-from .structure.constant import constant_attr_names
 from .structure.result import Result, result_attr_names
 from .structure.wall import wall_attr_names
 
@@ -13,8 +12,7 @@ class Simulation:
     """
     Class for initialising and running a crowd simulation.
     """
-    def __init__(self, constant, agent, wall=None, goals=None,
-                 dirpath=None, name=None):
+    def __init__(self, agent, wall=None, goals=None, dirpath=None, name=None):
         # Make iterables and filter None values
         def _filter_none(arg):
             if not isinstance(arg, Iterable):
@@ -22,7 +20,9 @@ class Simulation:
             return tuple(filter(None, arg))
 
         # Struct
-        self.constant = constant
+        self.dt_max = 0.01
+        self.dt_min = 0.001
+
         self.agent = agent
         self.wall = _filter_none(wall)
         self.goals = _filter_none(goals)
@@ -37,7 +37,6 @@ class Simulation:
         # Simulation IO for saving generated data to HDF5 file for analysis
         # and resuming a simulation.
         self.save = Save(dirpath, name)
-        self.attrs_constant = Attrs(constant_attr_names)
         self.attrs_result = Attrs(result_attr_names)
         self.attrs_agent = Attrs(agent_attr_names, Intervals(1.0))
         self.attrs_wall = Attrs(wall_attr_names)
@@ -47,8 +46,7 @@ class Simulation:
         self.attrs_agent["force"] = Attr("force", True, True)
 
         self.savers = _filter_none(
-            [self.save.hdf(self.constant, self.attrs_constant),
-             self.save.hdf(self.agent, self.attrs_agent)] +
+            [self.save.hdf(self.agent, self.attrs_agent)] +
             [self.save.hdf(w, self.attrs_wall) for w in self.wall]
         )
 
@@ -57,8 +55,8 @@ class Simulation:
         :return: False is simulation ends otherwise True.
         """
 
-        motion(self.constant, self.agent, self.wall)
-        dt = self.integrator(self.constant, self.agent)
+        motion(self.agent, self.wall)
+        dt = self.integrator(self.dt_min, self.dt_max, self.agent)
         self.result.increment_simulation_time(dt)
 
         # Check if agent are inside of bounds

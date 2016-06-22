@@ -8,7 +8,7 @@ from .interactions import agent_agent, agent_wall
 from .torque import torque_adjust, torque_random
 
 
-def motion(constant, agent, walls):
+def motion(agent, walls):
     # TODO: Active/Inactive agents
     # TODO: Navigation
 
@@ -20,21 +20,21 @@ def motion(constant, agent, walls):
     agent.reset()
 
     # Motion
-    force_adjust(constant, agent)
-    force_random(constant, agent)
+    force_adjust(agent)
+    force_random(agent)
 
     if agent.orientable_flag:
-        torque_adjust(constant, agent)
+        torque_adjust(agent)
         torque_random(agent)
 
-    agent_agent(constant, agent)
+    agent_agent(agent)
 
     for wall in walls:
-        agent_wall(constant, agent, wall)
+        agent_wall(agent, wall)
 
 
 @numba.jit(nopython=True)
-def integrator(constant, agent):
+def integrator(dt_min, dt_max, agent):
     """Explicit euler method"""
     # TODO: Adaptive time step from maximum position change for agent.
     # Raise warning if using less than minimum step size
@@ -43,12 +43,14 @@ def integrator(constant, agent):
 
     # Position change
     # TODO:
-    dv = agent.velocity + acceleration * constant.dt
-    dt = constant.dx_max / np.max(np.hypot(dv[:, 0], dv[:, 1]))
-    if dt > constant.dt:
-        dt = constant.dt
-    elif dt < constant.dt_min:
-        dt = constant.dt_min
+    dv = agent.velocity + acceleration * dt_max
+    dx_max = 5.0 * dt_max  # Max of agent.target_velocity = 5.0
+    dt = dx_max / np.max(np.hypot(dv[:, 0], dv[:, 1]))
+    # dt = dx_max / length_nx2(dv)
+    if dt > dt_max:
+        dt = dt_max
+    elif dt < dt_min:
+        dt = dt_min
 
     agent.velocity += acceleration * dt
     agent.position += agent.velocity * dt

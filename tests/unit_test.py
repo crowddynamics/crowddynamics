@@ -2,20 +2,15 @@ import unittest
 
 from crowd_dynamics.parameters import Parameters
 from crowd_dynamics.structure.agent import Agent, agent_attr_names
-from crowd_dynamics.structure.constant import Constant, constant_attr_names
 from crowd_dynamics.structure.wall import LinearWall, RoundWall, wall_attr_names
 
 
 class MyTestCase(unittest.TestCase):
     def test_attributes(self):
         parameters = Parameters(100, 100)
-        constant = Constant()
         agent = Agent(*parameters.agent(100))
         round_wall = RoundWall(parameters.round_wall(5, 0.1, 0.3))
         linear_wall = LinearWall(parameters.linear_wall(5))
-
-        for name in constant_attr_names:
-            self.assertTrue(hasattr(constant, name))
 
         for name in agent_attr_names:
             self.assertTrue(hasattr(agent, name))

@@ -68,7 +68,7 @@ def agent_wall_distance(agent, wall, i, w):
 
 
 @numba.jit(nopython=True, nogil=True)
-def agent_agent_interaction(i, j, constant, agent):
+def agent_agent_interaction(i, j, agent):
     # Function params
     x = agent.position[i] - agent.position[j]  # Relative positions
     r_tot = agent.radius[i] + agent.radius[j]  # Total radius
@@ -80,8 +80,8 @@ def agent_agent_interaction(i, j, constant, agent):
         v = agent.velocity[i] - agent.velocity[j]      # Relative velocity
         r_moment_i, r_moment_j = np.zeros(2), np.zeros(2)
 
-        force = force_social(x, v, r_tot, constant.k, constant.tau_0)
-        truncate(force, constant.f_soc_ij_max)
+        force = force_social(x, v, r_tot, agent.k, agent.tau_0)
+        truncate(force, agent.f_soc_ij_max)
 
         # TODO: Cutoff distance.
         cutoff = 2.0
@@ -92,8 +92,8 @@ def agent_agent_interaction(i, j, constant, agent):
             if h < 0:
                 # n = x / d  # Normal vector
                 t = rotate270(n)  # Tangent vector
-                force_c = force_contact(h, n, v, t, constant.mu, constant.kappa)
-                truncate(force_c, constant.f_c_ij_max)
+                force_c = force_contact(h, n, v, t, agent.mu, agent.kappa)
+                # truncate(force_c, agent.f_c_ij_max)
                 force += force_c
 
         agent.force[i] += force
@@ -105,7 +105,7 @@ def agent_agent_interaction(i, j, constant, agent):
 
 
 @numba.jit(nopython=True, nogil=True)
-def agent_wall_interaction(i, w, constant, agent, wall):
+def agent_wall_interaction(i, w, agent, wall):
     # Function params
     x = agent.position[i]
     r_tot = agent.radius[i]
@@ -114,23 +114,23 @@ def agent_wall_interaction(i, w, constant, agent, wall):
 
     if h <= agent.sight_wall:
         r_moment_i = np.zeros(2)
-        force = force_social_velocity_independent(h, n, constant.a, constant.b)
+        force = force_social_velocity_independent(h, n, agent.a, agent.b)
 
         # TODO: Velocity relative social force for agent-wall interaction
         # x, r = wall.relative_position(w, agent.position[i], agent.velocity[i])
         # force = force_social(x, agent.velocity[i], agent.radius[i] + r,
         #                      constant.k, constant.tau_0)
 
-        truncate(force, constant.f_soc_iw_max)
+        truncate(force, agent.f_soc_iw_max)
 
         if h <= 2.0:
             h, n, r_moment_i = agent_wall_distance(agent, wall, i, w)
 
             if h < 0:
                 t = rotate270(n)  # Tangent
-                force_c = force_contact(h, n, agent.velocity[i], t, constant.mu,
-                                        constant.kappa)
-                truncate(force_c, constant.f_c_iw_max)
+                force_c = force_contact(h, n, agent.velocity[i], t, agent.mu,
+                                        agent.kappa)
+                # truncate(force_c, constant.f_c_iw_max)
                 force += force_c
 
         agent.force[i] += force

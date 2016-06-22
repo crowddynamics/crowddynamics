@@ -5,7 +5,6 @@ import numpy as np
 from crowd_dynamics.area import GoalRectangle
 from crowd_dynamics.parameters import Parameters
 from crowd_dynamics.structure.agent import Agent
-from crowd_dynamics.structure.constant import Constant
 from crowd_dynamics.structure.wall import LinearWall
 
 
@@ -20,7 +19,6 @@ def initialize(size=100, width=30, height=5):
     y = lim(0.0, height)
 
     parameters = Parameters(width, height)
-    constant = Constant()
     linear_params = np.array((
         ((x.min - 5, y.min), (x.max + 5, y.min)),
         ((x.min - 5, y.max), (x.max + 5, y.max)),
@@ -58,4 +56,4 @@ def initialize(size=100, width=30, height=5):
     agent.angle[second_half] += np.pi
     agent.update_shoulder_positions()
 
-    return constant, agent, walls, goals, path, name
+    return agent, walls, goals, path, name

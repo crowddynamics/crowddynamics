@@ -3,7 +3,6 @@ import numpy as np
 from crowd_dynamics.area import GoalRectangle
 from crowd_dynamics.parameters import Parameters
 from crowd_dynamics.structure.agent import Agent
-from crowd_dynamics.structure.constant import Constant
 from crowd_dynamics.structure.wall import LinearWall
 
 
@@ -13,7 +12,6 @@ def initialize(size=200, width=10, height=10, door_width=2):
     path = "/home/jaan/Dropbox/Projects/Crowd-Dynamics-Simulations/results"
 
     parameters = Parameters(width, height)
-    constant = Constant()
 
     # Field
     x = (0.0, width)
@@ -40,4 +38,4 @@ def initialize(size=200, width=10, height=10, door_width=2):
     agent.target_direction += np.array((1.0, 0.0))
     agent.update_shoulder_positions()
 
-    return constant, agent, walls, goals, path, name
+    return agent, walls, goals, path, name

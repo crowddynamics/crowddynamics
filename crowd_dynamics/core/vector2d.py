@@ -5,6 +5,7 @@ from numba import f8, void
 """
 Functions operating on 2-Dimensional vectors.
 """
+# TODO: Normal, Tangent
 
 
 @numba.vectorize([f8(f8)])
