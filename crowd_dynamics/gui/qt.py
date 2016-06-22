@@ -11,9 +11,6 @@ from crowd_dynamics.structure.wall import LinearWall
 from crowd_dynamics.structure.wall import RoundWall
 
 """
-arrowItem
-scatterPlotItem
-PlotDataItem
 http://zetcode.com/gui/pyqt4/
 http://www.pyqtgraph.org/documentation/plotting.html
 http://stackoverflow.com/questions/24197910/live-data-monitor-pyqtgraph
@@ -45,7 +42,7 @@ def gui(simulation: Simulation):
     win = pg.GraphicsWindow(title="Crowd Dynamics", size=(1200, 800))
 
     # Figure
-    figure = win.addPlot(title="Simulation")
+    figure = win.addPlot(title="Simulation", row=0, col=0)
     pg.setConfigOptions(antialias=True)
 
     # One to one scale for x and y coordinates

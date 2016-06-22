@@ -6,7 +6,6 @@ import pandas
 Tables of anthropometric (human measure) data. These can be used to generate
 agents.
 
-
             adult    male    female    child    eldery
 ----------  -------  ------  --------  -------  --------
 radius      0.255    0.27    0.24      0.21     0.25
