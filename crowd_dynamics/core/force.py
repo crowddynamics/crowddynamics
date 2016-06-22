@@ -30,6 +30,12 @@ def force_contact(h, n, v, t, mu, kappa):
     return - h * (mu * n - kappa * dot2d(v, t) * t)
 
 
+@numba.jit(f8[:](f8, f8[:], f8[:], f8[:], f8, f8, f8), nopython=True, nogil=True)
+def force_contact_damped(h, n, v, t, mu, kappa, damping):
+    """Frictional contact force with damping."""
+    return - h * (mu * n - kappa * dot2d(v, t) * t) + damping * dot2d(v, t) * n
+
+
 @numba.jit(f8[:](f8, f8[:], f8, f8), nopython=True, nogil=True)
 def force_social_velocity_independent(h, n, a, b):
     """Naive velocity independent social force."""
@@ -39,9 +45,8 @@ def force_social_velocity_independent(h, n, a, b):
 @numba.jit(f8[:](f8[:], f8[:], f8, f8, f8), nopython=True, nogil=True)
 def force_social(x_rel, v_rel, r_tot, k, tau_0):
     """
-    Velocity dependent social force. [1]
-
-    [1]: http://motion.cs.umn.edu/PowerLaw/
+    Velocity dependent social force based on human anticipatory behaviour.
+    http://motion.cs.umn.edu/PowerLaw/
     """
     force = np.zeros_like(x_rel)
 

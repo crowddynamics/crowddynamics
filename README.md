@@ -9,7 +9,7 @@ Behaviour in evacuation situations is modeled with _game theoretical model_ for 
 ## Python code
 Simulation code is written with [_Python_][python] using version _3.4_. Code uses [_Numpy_][numpy] for efficient numerical arrays and [_Numba_][numba] to just-in-time compile Python functions into computationally efficient machine code. This keeps the source code readable and easily understandable. 
 
-The aim is to keep the code highly modular so that new crowd dynamical models can be easily integrated and tested.
+The aim is to keep the code highly modular and extendable so that new crowd dynamical models can be easily integrated and tested.
 
 [python]: https://www.python.org/
 [numpy]: http://www.numpy.org/
@@ -23,7 +23,7 @@ Timeline of research used for this simulation code.
 Pioneering research with crowd simulations.
 [Simulating dynamical features of escape panic](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.323.245&rep=rep1&type=pdf)
 
-### 2006
+### 2005
 Modeling agent with three circles.
 [Crowd dynamics discrete element multi-circle model](http://www.sciencedirect.com/science/article/pii/S0925753505001724)
 
@@ -32,11 +32,13 @@ Simulation model details.
 [Fire Dynamics Simulator with Evacuation: FDS+Evac](http://www.vtt.fi/inf/pdf/workingpapers/2009/W119.pdf)
 
 ### 2011
-Game theoretical approach for human behaviour in egress congestion.
-[Patient and impatient pedestrians in a spatial game for egress congestion](http://journals.aps.org/pre/abstract/10.1103/PhysRevE.87.012802)
 
 Model for counterflow situtations in crowd simulations.
 [Counterflow model for agent-based simulation of crowd dynamics](http://www.sciencedirect.com/science/article/pii/S0360132311002630) 
+
+### 2013
+Game theoretical approach for human behaviour in egress congestion.
+[Patient and impatient pedestrians in a spatial game for egress congestion](http://journals.aps.org/pre/abstract/10.1103/PhysRevE.87.012802)
 
 ### 2014
 Improved algorithm for social force based on human anticipatory behavior.
