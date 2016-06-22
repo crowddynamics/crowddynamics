@@ -50,9 +50,9 @@ def gui(simulation: Simulation):
 
     # PlotItems for plotting data
     areas = figure.plot()
-    agent_c = figure.plot()
     agent_ls = figure.plot()
     agent_rs = figure.plot()
+    agent_c = figure.plot()
     direction = figure.plot()
     walls = figure.plot()
 
