@@ -91,6 +91,6 @@ def normalize_nx2(vec2d):
 
 @numba.jit(void(f8[:], f8), nopython=True, nogil=True, cache=True)
 def truncate(vec2d, limit):
-    hypot = np.hypot(vec2d[0], vec2d[1])
-    if hypot > limit:
-        vec2d *= limit / hypot
+    l = length(vec2d)
+    if l > limit:
+        vec2d *= limit / l

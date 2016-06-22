@@ -1,10 +1,9 @@
 import numba
 import numpy as np
 
-from crowd_dynamics.core.force import force_social, force_contact, \
-    force_social_velocity_independent
-from crowd_dynamics.core.torque import torque
-from crowd_dynamics.core.vector2d import truncate, rotate270
+from ..force import force_social, force_contact, force_social_velocity_independent
+from ..torque import torque
+from ..vector2d import truncate, rotate270, length
 
 
 @numba.jit(nopython=True, nogil=True)
@@ -27,7 +26,7 @@ def agent_agent_distance(agent, i, j):
     for xi, ri in zip(x_i, r_i):
         for xj, rj in zip(x_j, r_j):
             x = xi - xj
-            d = np.hypot(x[0], x[1])
+            d = length(x)
             r_tot = (ri + rj)
             h = d - r_tot
             if h < relative_distance or init:
@@ -73,7 +72,7 @@ def agent_agent_interaction(i, j, constant, agent):
     # Function params
     x = agent.position[i] - agent.position[j]  # Relative positions
     r_tot = agent.radius[i] + agent.radius[j]  # Total radius
-    d = np.hypot(x[0], x[1])                   # Distance
+    d = length(x)                              # Distance
     h = d - r_tot                              # Relative distance
 
     # Agent sees the other agent
@@ -115,10 +114,13 @@ def agent_wall_interaction(i, w, constant, agent, wall):
 
     if h <= agent.sight_wall:
         r_moment_i = np.zeros(2)
+        force = force_social_velocity_independent(h, n, constant.a, constant.b)
+
+        # TODO: Velocity relative social force for agent-wall interaction
         # x, r = wall.relative_position(w, agent.position[i], agent.velocity[i])
         # force = force_social(x, agent.velocity[i], agent.radius[i] + r,
         #                      constant.k, constant.tau_0)
-        force = force_social_velocity_independent(h, n, constant.a, constant.b)
+
         truncate(force, constant.f_soc_iw_max)
 
         if h <= 2.0:

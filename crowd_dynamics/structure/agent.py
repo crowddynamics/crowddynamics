@@ -4,8 +4,6 @@ import numba
 import numpy as np
 from numba import float64, int64, boolean
 from numba.types import UniTuple
-from ..core.vector2d import angle_nx2
-
 
 spec_agent = OrderedDict(
     size=int64,
