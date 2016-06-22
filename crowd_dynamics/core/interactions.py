@@ -2,7 +2,7 @@ import numba
 import numpy as np
 
 from crowd_dynamics.core.force import force_social, force_contact, \
-    force_social_velocity_independent
+    force_social_velocity_independent, force_contact_damped
 from crowd_dynamics.core.torque import torque
 from crowd_dynamics.core.vector2d import length, truncate, rotate270
 
@@ -34,9 +34,9 @@ def agent_agent_distance(agent, i, j):
 
     # Minimizing values
     positions = np.zeros(2), np.zeros(2)  #
-    radius = (0.0, 0.0)                   # Radius
-    relative_distance = 0                 # Minimum relative distance distance
-    normal = np.zeros(2)                  # Unit vector of x_rel
+    radius = (0.0, 0.0)  # Radius
+    relative_distance = 0  # Minimum relative distance distance
+    normal = np.zeros(2)  # Unit vector of x_rel
 
     init = True
     for xi, ri in zip(x_i, r_i):
@@ -88,12 +88,12 @@ def agent_agent_interaction(i, j, agent):
     # Function params
     x = agent.position[i] - agent.position[j]  # Relative positions
     r_tot = agent.radius[i] + agent.radius[j]  # Total radius
-    d = length(x)                              # Distance
-    h = d - r_tot                              # Relative distance
+    d = length(x)  # Distance
+    h = d - r_tot  # Relative distance
 
     # Agent sees the other agent
     if h <= agent.sight_soc:
-        v = agent.velocity[i] - agent.velocity[j]      # Relative velocity
+        v = agent.velocity[i] - agent.velocity[j]  # Relative velocity
         r_moment_i, r_moment_j = np.zeros(2), np.zeros(2)
 
         force = force_social(x, v, r_tot, agent.k, agent.tau_0)
@@ -111,7 +111,10 @@ def agent_agent_interaction(i, j, agent):
             # Physical contact
             if h < 0:
                 t = rotate270(n)  # Tangent vector
-                force_c = force_contact(h, n, v, t, agent.mu, agent.kappa)
+                # force_c = force_contact(h, n, v, t, agent.mu, agent.kappa)
+                force_c = force_contact_damped(h, n, v, t, agent.mu,
+                                               agent.kappa,
+                                               agent.damping)
                 force += force_c
 
         agent.force[i] += force
@@ -148,8 +151,11 @@ def agent_wall_interaction(i, w, agent, wall):
 
             if h < 0:
                 t = rotate270(n)  # Tangent
-                force_c = force_contact(h, n, agent.velocity[i], t, agent.mu,
-                                        agent.kappa)
+                # force_c = force_contact(h, n, agent.velocity[i], t, agent.mu,
+                #                         agent.kappa)
+                force_c = force_contact_damped(h, n, agent.velocity[i], t,
+                                               agent.mu, agent.kappa,
+                                               agent.damping)
                 force += force_c
 
         agent.force[i] += force

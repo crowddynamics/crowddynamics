@@ -50,6 +50,7 @@ spec_agent = OrderedDict(
     kappa=float64,
     a=float64,
     b=float64,
+    damping=float64,
 
     f_random_fluctuation_max=float64,
     f_soc_ij_max=float64,
@@ -137,7 +138,8 @@ class Agent(object):
         self.mu = 1.2e5
         self.kappa = 2.4e5
         self.a = 2e3
-        self.b = 0.04
+        self.b = 0.08
+        self.damping = 2e3
 
         self.f_random_fluctuation_max = 1.0
         self.f_soc_ij_max = 2e3

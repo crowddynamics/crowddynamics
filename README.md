@@ -31,6 +31,8 @@ Modeling agent with three circles.
 Simulation model details.
 [Fire Dynamics Simulator with Evacuation: FDS+Evac](http://www.vtt.fi/inf/pdf/workingpapers/2009/W119.pdf)
 
+[Modelling subgroup behaviour in crowd dynamics DEM simulation](http://www.sciencedirect.com/science/article/pii/S0307904X09000808) 
+
 ### 2011
 
 Model for counterflow situtations in crowd simulations.
@@ -48,3 +50,6 @@ Improved algorithm for social force based on human anticipatory behavior.
 [Fire Dynamics Simulator and Smokeview](https://github.com/firemodels/fds-smv)
 
 [PedSim](http://pedsim.silmaril.org/)
+
+[Simulex](https://www.iesve.com/software/ve-for-engineers/module/Simulex/480) 
+
