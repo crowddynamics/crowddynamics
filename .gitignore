@@ -247,6 +247,13 @@ sympy-plots-for-*.tex/
 *.bak
 *.sav
 
+
+# Created by .ignore support plugin (hsz.mobi)
+### LibreOffice template
+# LibreOffice locks
+.~lock.*#
+
+
 ### Crowd Dynamics
 # Files
 *.lprof

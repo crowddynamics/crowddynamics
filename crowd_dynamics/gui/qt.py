@@ -112,9 +112,8 @@ def gui(simulation: Simulation):
             direction.setData(array)
         else:
             timer.stop()
-            # exit()
 
-    sleep(2.0)
+    sleep(1.0)
     # Start and Stop buttons
     timer.timeout.connect(update)
     timer.start(0)
