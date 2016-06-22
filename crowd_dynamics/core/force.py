@@ -31,7 +31,7 @@ def force_contact(h, n, v, t, mu, kappa):
 
 
 @numba.jit(f8[:](f8, f8[:], f8, f8), nopython=True, nogil=True)
-def force_social_naive(h, n, a, b):
+def force_social_velocity_independent(h, n, a, b):
     """Naive velocity independent social force."""
     return np.exp(- h / b) * a * n
 
@@ -52,11 +52,11 @@ def force_social(x_rel, v_rel, r_tot, k, tau_0):
 
     # Avoid zero division.
     # No interaction if tau cannot be defined.
-    if np.isnan(d) or d < 1.49e-08 or np.abs(a) < 1.49e-08:
+    if np.isnan(d) or d == 0 or a == 0:
         return force
 
-    tau = (b - d) / a  # Time-to-collision
-    tau_max = 999.0
+    tau = (b - d) / a  # Time-to-collision. In seconds
+    tau_max = 30.0     # Maximum time for interaction.
 
     if tau <= 0 or tau > tau_max:
         return force

@@ -4,7 +4,7 @@ import numpy as np
 from numba import float64, int64
 from numba import jitclass
 
-from ..core.vector2d import rotate90, dot2d
+from ..core.vector2d import rotate90, dot2d, angle
 
 
 """
@@ -157,20 +157,18 @@ class LinearWall(object):
 
         n_iw = -np.sign(dot2d(n_w, q_0)) * n_w
 
-        angle = np.array((np.arctan2(q_0[0], q_0[1]),
-                          np.arctan2(q_1[0], q_1[1]),
-                          np.arctan2(n_iw[0], n_iw[1])))
+        angles = np.array((angle(q_0), angle(q_1), angle(n_iw)))
 
-        if abs(angle[0] - angle[1]) < 1.48e-08:  # Almost equal
+        if angles[0] == angles[1]:
             if np.hypot(q_0[0], q_0[1]) < np.hypot(q_1[0], q_1[1]):
                 return q_0, r
             else:
                 return q_1, r
 
-        angle -= np.arctan2(v[0], v[1])  # Angle of velocity vector
-        angle %= 2 * np.pi
+        angles -= angle(v)  # Angle of velocity vector
+        angles %= 2 * np.pi
 
-        args = (np.argmin(angle), np.argmax(angle))
+        args = (np.argmin(angles), np.argmax(angles))
 
         if 2 in args:
             if 0 in args:

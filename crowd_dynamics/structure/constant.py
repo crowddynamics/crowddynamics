@@ -49,7 +49,7 @@ class Constant(object):
         self.mu = 1.2e5
         self.kappa = 2.4e5
         self.a = 2e3
-        self.b = 0.08
+        self.b = 0.04
 
         # Rotational constants
         self.tau_adj_torque = 0.2

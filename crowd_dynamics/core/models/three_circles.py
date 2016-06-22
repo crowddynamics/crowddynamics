@@ -1,7 +1,8 @@
 import numba
 import numpy as np
 
-from crowd_dynamics.core.force import force_social, force_contact
+from crowd_dynamics.core.force import force_social, force_contact, \
+    force_social_velocity_independent
 from crowd_dynamics.core.torque import torque
 from crowd_dynamics.core.vector2d import truncate, rotate270
 
@@ -114,9 +115,10 @@ def agent_wall_interaction(i, w, constant, agent, wall):
 
     if h <= agent.sight_wall:
         r_moment_i = np.zeros(2)
-        x, r = wall.relative_position(w, agent.position[i], agent.velocity[i])
-        force = force_social(x, agent.velocity[i], agent.radius[i] + r,
-                             constant.k, constant.tau_0)
+        # x, r = wall.relative_position(w, agent.position[i], agent.velocity[i])
+        # force = force_social(x, agent.velocity[i], agent.radius[i] + r,
+        #                      constant.k, constant.tau_0)
+        force = force_social_velocity_independent(h, n, constant.a, constant.b)
         truncate(force, constant.f_soc_iw_max)
 
         if h <= 2.0:
