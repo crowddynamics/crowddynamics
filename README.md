@@ -44,3 +44,5 @@ Improved algorithm for social force based on human anticipatory behavior.
 
 ### Simulation models
 [Fire Dynamics Simulator and Smokeview](https://github.com/firemodels/fds-smv)
+
+[PedSim](http://pedsim.silmaril.org/)
