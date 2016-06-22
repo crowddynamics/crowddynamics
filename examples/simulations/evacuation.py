@@ -1,51 +1,43 @@
-import os
-from collections import namedtuple
-
 import numpy as np
 
+from crowd_dynamics.area import GoalRectangle
 from crowd_dynamics.parameters import Parameters
 from crowd_dynamics.structure.agent import Agent
-from crowd_dynamics.area import GoalRectangle
 from crowd_dynamics.structure.constant import Constant
 from crowd_dynamics.structure.wall import LinearWall
 
-# Path to this folder
-filepath = os.path.abspath(__file__)
-name = os.path.basename(filepath)
-dirpath = os.path.join("/home/jaan/Dropbox/Projects/Crowd-Dynamics-Simulations",
-                       "results")
-name, _ = os.path.splitext(name)
 
+def initialize(size=200, width=10, height=10, door_width=2):
+    # Path and name for saving simulation data
+    name = "evacuation"
+    path = "/home/jaan/Dropbox/Projects/Crowd-Dynamics-Simulations/results"
 
-def initialize():
-    # Field
-    dim = namedtuple('dim', ['width', 'height'])
-    lim = namedtuple('lim', ['min', 'max'])
-    d = dim(50.0, 50.0)
-    x = lim(0.0, d.width)
-    y = lim(0.0, d.height)
-
+    parameters = Parameters(width, height)
     constant = Constant()
+
+    # Field
+    x = (0.0, width)
+    y = (0.0, height)
+
+    corner = ((0, 0), (0, height), (width, 0), (width, height))
+    door = ((width, (height - door_width) / 2),
+            (width, (height + door_width) / 2))
     linear_params = np.array(
-        (((0, 0), (0, 50)),
-         ((0, 0), (50, 0)),
-         ((0, 50), (50, 50)),
-         ((50, 0), (50, 24)),
-         ((50, 26), (50, 50)),), dtype=np.float64
+        ((corner[0], corner[1]),
+         (corner[0], corner[2]),
+         (corner[1], corner[3]),
+         (corner[2], door[0]),
+         (door[1], corner[3]),), dtype=np.float64
     )
-
-    linear_wall = LinearWall(linear_params)
-    walls = linear_wall
-
-    # Agents
-    size = 100
-    parameters = Parameters(*d)
-    agent = Agent(*parameters.agent(size))
-    parameters.random_position(agent.position, agent.radius, x, y, walls)
+    walls = LinearWall(linear_params)
 
     # Goal
-    goal = GoalRectangle(center=np.array((52.5, 25.0)),
-                         radius=np.array((2.5, 5.0)))
-    goals = goal
+    goals = GoalRectangle(center=(52.5, 25.0), radius=(2.5, 5.0))
 
-    return constant, agent, walls, goals
+    # Agents
+    agent = Agent(*parameters.agent(size))
+    parameters.random_position(agent.position, agent.radius, x, y, walls)
+    agent.target_direction += np.array((1.0, 0.0))
+    agent.update_shoulder_positions()
+
+    return constant, agent, walls, goals, path, name

@@ -71,6 +71,11 @@
 % Math commands
 \newcommand{\atan}{\ensuremath{\operatorname{angle}}}
 
+% Bibliography
+\usepackage[sorting=none,style=numeric,backend=biber]{biblatex}
+\addbibresource{bibliography/references.bib}
+\addbibresource{bibliography/python.bib}
+
 \begin{document}
 %\tableofcontents
 %\newpage
@@ -142,5 +147,5 @@
 \end{multicols*}
 
 %TODO: Bibliographies
-
+%\printbibliography
 \end{document}

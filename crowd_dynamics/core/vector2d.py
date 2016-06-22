@@ -57,6 +57,16 @@ def angle_nx2(vec2d):
     return np.arctan2(vec2d[:, 1], vec2d[:, 0])
 
 
+@numba.jit(f8(f8[:]), nopython=True, nogil=True, cache=True)
+def length(vec2d):
+    return np.hypot(vec2d[0], vec2d[1])
+
+
+@numba.jit(f8[:](f8[:, :]), nopython=True, nogil=True, cache=True)
+def length_nx2(vec2d):
+    return np.hypot(vec2d[:, 0], vec2d[:, 1])
+
+
 @numba.jit(f8(f8[:], f8[:]), nopython=True, nogil=True, cache=True)
 def dot2d(v0, v1):
     """Dot product for 2D vectors."""

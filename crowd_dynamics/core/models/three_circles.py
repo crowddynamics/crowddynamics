@@ -93,7 +93,7 @@ def agent_agent_interaction(i, j, constant, agent):
                 # n = x / d  # Normal vector
                 t = rotate270(n)  # Tangent vector
                 force_c = force_contact(h, n, v, t, constant.mu, constant.kappa)
-                # truncate(force_c, constant.f_c_ij_max)
+                truncate(force_c, constant.f_c_ij_max)
                 force += force_c
 
         agent.force[i] += force
@@ -126,7 +126,7 @@ def agent_wall_interaction(i, w, constant, agent, wall):
                 t = rotate270(n)  # Tangent
                 force_c = force_contact(h, n, agent.velocity[i], t, constant.mu,
                                         constant.kappa)
-                # truncate(force_c, constant.f_c_iw_max)
+                truncate(force_c, constant.f_c_iw_max)
                 force += force_c
 
         agent.force[i] += force

@@ -16,8 +16,8 @@ class Bounds:
 
 class GoalRectangle(object):
     def __init__(self, center, radius):
-        self.center = center  # (x, y)
-        self.radius = radius  # (rx, ry)
+        self.center = np.array(center, dtype=np.float64)
+        self.radius = np.array(radius, dtype=np.float64)
 
     def is_reached_by(self, agent):
         """Updates agent that have reached goal.

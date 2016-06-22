@@ -8,7 +8,9 @@ Behaviour in evacuation situations is modeled with _game theoretical model_ [3] 
 
 
 ## Python code
-Simulation code is written with _Python 3.4_. Code uses _Numpy_ for efficient numerical arrays and _Numba_ to just-in-time compile Python functions into computationally efficient machine code. This keeps the source code very readable. The aim is to keep the code highly modular so that new crowd dynamical models can be easily integrated and tested.
+Simulation code is written with [_Python_](https://www.python.org/) using version _3.4_. Code uses [_Numpy_](http://www.numpy.org/) for efficient numerical arrays and [_Numba_](http://numba.pydata.org/) to just-in-time compile Python functions into computationally efficient machine code. This keeps the source code readable and easily understandable. 
+
+The aim is to keep the code highly modular so that new crowd dynamical models can be easily integrated and tested.
 
 
 ## Resources
@@ -20,6 +22,7 @@ Simulation code is written with _Python 3.4_. Code uses _Numpy_ for efficient nu
 
 ### 2011
 - [Patient and impatient pedestrians in a spatial game for egress congestion](http://journals.aps.org/pre/abstract/10.1103/PhysRevE.87.012802)
+- [Counterflow model for agent-based simulation of crowd dynamics](http://www.sciencedirect.com/science/article/pii/S0360132311002630) 
 
 ### 2014
 - [Universal Power Law Governing Pedestrian Interactions](http://motion.cs.umn.edu/PowerLaw/)

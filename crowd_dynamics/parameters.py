@@ -71,12 +71,8 @@ class Parameters:
             pos[0] = np.random.uniform(*x_dims)
             pos[1] = np.random.uniform(*y_dims)
 
-            if isinstance(radius, np.ndarray):
-                rad = radius[i]
-                radii = radius[:i]
-            else:
-                rad = radius
-                radii = radius
+            rad = radius[i]
+            radii = radius[:i]
 
             # Test overlapping with other agents
             if i > 0:
