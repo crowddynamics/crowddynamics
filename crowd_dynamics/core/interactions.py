@@ -1,10 +1,9 @@
 import numba
 import numpy as np
 
-from crowd_dynamics.core.force import force_social, force_contact, \
-    force_social_velocity_independent, force_contact_damped
-from crowd_dynamics.core.torque import torque
-from crowd_dynamics.core.vector2d import length, truncate, rotate270
+from .motion import force_social, force_social_velocity_independent, \
+    force_contact_damped, torque
+from .vector2d import length, truncate, rotate270
 
 
 @numba.jit(nopython=True, nogil=True)
@@ -111,7 +110,6 @@ def agent_agent_interaction(i, j, agent):
             # Physical contact
             if h < 0:
                 t = rotate270(n)  # Tangent vector
-                # force_c = force_contact(h, n, v, t, agent.mu, agent.kappa)
                 force_c = force_contact_damped(h, n, v, t, agent.mu,
                                                agent.kappa,
                                                agent.damping)
@@ -151,8 +149,6 @@ def agent_wall_interaction(i, w, agent, wall):
 
             if h < 0:
                 t = rotate270(n)  # Tangent
-                # force_c = force_contact(h, n, agent.velocity[i], t, agent.mu,
-                #                         agent.kappa)
                 force_c = force_contact_damped(h, n, agent.velocity[i], t,
                                                agent.mu, agent.kappa,
                                                agent.damping)

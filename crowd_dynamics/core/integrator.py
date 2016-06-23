@@ -3,9 +3,8 @@ import numba
 
 from .navigation import direction_to_target_angle
 from .vector2d import wrap_to_pi
-from .force import force_adjust, force_random
+from .motion import force_adjust, force_random, torque_random, torque_adjust
 from .interactions import agent_agent, agent_wall
-from .torque import torque_adjust, torque_random
 
 
 def motion(agent, walls):

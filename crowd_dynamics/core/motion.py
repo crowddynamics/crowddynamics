@@ -2,7 +2,7 @@ import numba
 from numba import f8
 import numpy as np
 
-from .vector2d import dot2d
+from .vector2d import dot2d, wrap_to_pi
 
 
 @numba.jit(nopython=True, nogil=True)
@@ -72,3 +72,24 @@ def force_social(x_rel, v_rel, r_tot, k, tau_0):
              (v_rel - (v_rel * b + x_rel * a) / d)
 
     return force
+
+
+@numba.jit(nopython=True, nogil=True)
+def torque_random(agent):
+    """Random torque."""
+    for i in range(agent.size):
+        agent.torque[i] += np.random.uniform(-1, 1)
+
+
+@numba.jit(nopython=True, nogil=True)
+def torque_adjust(agent):
+    """Adjusting torque."""
+    agent.torque += agent.inertia_rot / agent.tau_adj_rot * (
+        wrap_to_pi(agent.target_angle - agent.angle) / np.pi *
+        agent.target_angular_velocity - agent.angular_velocity)
+
+
+@numba.jit(nopython=True, nogil=True)
+def torque(radius, force):
+    """Torque for 2D vectors. Right corner from cross product."""
+    return radius[0] * force[1] - radius[1] * force[0]

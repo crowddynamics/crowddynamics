@@ -11,7 +11,6 @@ spec_agent = OrderedDict(
 
     three_circles_flag=boolean,
     orientable_flag=boolean,
-    herding_flag=boolean,
 
     active=boolean[:],
     goal_reached=boolean[:],
@@ -91,12 +90,9 @@ class Agent(object):
         self.size = size
         self.shape = (size, 2)
 
-        # Flags - Which features are active.
+        # Flags
         self.three_circles_flag = three_circles_flag
         self.orientable_flag = self.three_circles_flag
-        self.herding_flag = False
-
-        # Agent flags
         self.active = np.ones(size, np.bool8)
         self.goal_reached = np.zeros(size, np.bool8)
 
@@ -127,10 +123,10 @@ class Agent(object):
 
         self.position_ls = np.zeros(self.shape)  # Left shoulder
         self.position_rs = np.zeros(self.shape)  # Right shoulder
+        self.front = np.zeros(self.shape)        # For plotting agents.
 
-        self.front = np.zeros(self.shape)  # Front of head
-
-        # Force related parameters TODO: vectors?
+        # TODO: vector form
+        # Force related parameters
         self.tau_adj = 0.5
         self.tau_adj_rot = 0.2
         self.k = 1.5 * 70

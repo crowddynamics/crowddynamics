@@ -75,7 +75,8 @@ class Result(object):
             mean_dt = 0
 
         out = "i: {:6d} | {:4d} | {} | {} | {:4f}".format(
-            self.iterations, self.in_goal, format_time(mean_time),
+            self.iterations,
+            self.in_goal, format_time(mean_time),
             format_time(self.computation_time_tot),
             mean_dt
         )

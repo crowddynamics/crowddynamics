@@ -8,17 +8,16 @@ from .structure.result import Result, result_attr_names
 from .structure.wall import wall_attr_names
 
 
-class Simulation:
-    """
-    Class for initialising and running a crowd simulation.
-    """
-    def __init__(self, agent, wall=None, goals=None, dirpath=None, name=None):
-        # Make iterables and filter None values
-        def _filter_none(arg):
-            if not isinstance(arg, Iterable):
-                arg = (arg,)
-            return tuple(filter(None, arg))
+# Make iterables and filter None values
+def _filter_none(arg):
+    if not isinstance(arg, Iterable):
+        arg = (arg,)
+    return tuple(filter(None, arg))
 
+
+class Simulation:
+    """Class for initialising and running a crowd simulation."""
+    def __init__(self, agent, wall=None, goals=None, name=None, dirpath=None):
         # Integrator timestep
         self.dt_max = 0.01
         self.dt_min = 0.001

@@ -1,5 +1,3 @@
-from collections import namedtuple
-
 import numpy as np
 
 from crowd_dynamics.area import GoalRectangle
@@ -11,23 +9,19 @@ from crowd_dynamics.structure.wall import LinearWall
 def initialize(size=100, width=30, height=5):
     name = "hallway"
 
-    # Field
-    lim = namedtuple('lim', ['min', 'max'])
-    x = lim(0.0, width)
-    y = lim(0.0, height)
-
     parameters = Parameters(width, height)
     linear_params = np.array((
-        ((x.min - 5, y.min), (x.max + 5, y.min)),
-        ((x.min - 5, y.max), (x.max + 5, y.max)),
+        ((0.0, 0.0), (width, 0.0)),
+        ((0.0, height), (width, height)),
     ))
 
     walls = LinearWall(linear_params)
 
     # Goal
+    height_ = height / 2
     goals = (
-        GoalRectangle(center=(x.max + 2.5, y.max / 2), radius=(2.5, height / 2)),
-        GoalRectangle(center=(x.min - 2.5, y.max / 2), radius=(2.5, height / 2))
+        GoalRectangle(center=(0.0, height_), radius=(1.0, height_)),
+        GoalRectangle(center=(width, height_), radius=(1.0, height_))
     )
 
     # Agents
@@ -37,13 +31,13 @@ def initialize(size=100, width=30, height=5):
 
     parameters.random_position(agent.position[first_half],
                                agent.radius[first_half],
-                               (x.min, x.max // 2),
-                               y,
+                               (1.0, width // 2),
+                               (0.0, height),
                                walls)
     parameters.random_position(agent.position[second_half],
                                agent.radius[second_half],
-                               (x.max // 2, x.max),
-                               y,
+                               (width // 2, width-1.0),
+                               (0.0, height),
                                walls)
 
     direction1 = np.array((1.0, 0.0))
