@@ -51,7 +51,9 @@ spec_agent = OrderedDict(
     b=float64,
     damping=float64,
 
-    f_random_fluctuation_max=float64,
+    std_rand_force=float64,
+    std_rand_torque=float64,
+
     f_soc_ij_max=float64,
     f_soc_iw_max=float64,
 
@@ -137,13 +139,17 @@ class Agent(object):
         self.b = 0.08
         self.damping = 500  # fds+evac
 
-        self.f_random_fluctuation_max = 1.0
+        # Standard deviation for truncated normal distribution
+        self.std_rand_force = 0.1   # force / mass
+        self.std_rand_torque = 0.1  # toque / inertia_rot
 
-        self.f_soc_ij_max = 2e3  # Cutoff value for social force
-        self.f_soc_iw_max = 2e3  # Cutoff value for social force
+        # Cutoff value for social force
+        self.f_soc_ij_max = 2e3
+        self.f_soc_iw_max = 2e3
 
-        self.sight_soc = 7.0   # Cutoff distance
-        self.sight_wall = 7.0  # Cutoff distance
+        # Cutoff distance
+        self.sight_soc = 7.0
+        self.sight_wall = 7.0
 
     def reset(self):
         self.force *= 0

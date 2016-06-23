@@ -22,7 +22,7 @@ class Parameters:
     @staticmethod
     def truncnorm(loc, scale, size, std=3.0):
         """Scaled symmetrical truncated normal distribution."""
-        return np.array(tn.rvs(-std, std, size=size) * scale / std + loc)
+        return np.array(tn.rvs(-std, std, loc=loc, scale=scale/std, size=size))
 
     @staticmethod
     def random_unit_vector(size):

@@ -8,11 +8,19 @@ from .vector2d import dot2d, wrap_to_pi
 @numba.jit(nopython=True, nogil=True)
 def force_random(agent):
     """Random force"""
+    f_max = 1
     for i in range(agent.size):
         angle = np.random.uniform(0, 2 * np.pi)
-        magnitude = np.random.uniform(0, agent.f_random_fluctuation_max)
+        magnitude = np.random.uniform(0, f_max)
         agent.force[i][0] += magnitude * np.cos(angle)
         agent.force[i][1] += magnitude * np.sin(angle)
+
+
+@numba.jit(nopython=True, nogil=True)
+def torque_random(agent):
+    """Random torque."""
+    for i in range(agent.size):
+        agent.torque[i] += np.random.uniform(-1, 1)
 
 
 @numba.jit(nopython=True, nogil=True)
@@ -72,13 +80,6 @@ def force_social(x_rel, v_rel, r_tot, k, tau_0):
              (v_rel - (v_rel * b + x_rel * a) / d)
 
     return force
-
-
-@numba.jit(nopython=True, nogil=True)
-def torque_random(agent):
-    """Random torque."""
-    for i in range(agent.size):
-        agent.torque[i] += np.random.uniform(-1, 1)
 
 
 @numba.jit(nopython=True, nogil=True)
