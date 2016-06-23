@@ -33,7 +33,7 @@ def force_contact(h, n, v, t, mu, kappa):
 @numba.jit(f8[:](f8, f8[:], f8[:], f8[:], f8, f8, f8), nopython=True, nogil=True)
 def force_contact_damped(h, n, v, t, mu, kappa, damping):
     """Frictional contact force with damping."""
-    return - h * (mu * n - kappa * dot2d(v, t) * t) + damping * dot2d(v, t) * n
+    return - h * (mu * n - kappa * dot2d(v, t) * t) + damping * dot2d(v, n) * n
 
 
 @numba.jit(f8[:](f8, f8[:], f8, f8), nopython=True, nogil=True)

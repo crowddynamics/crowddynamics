@@ -125,23 +125,25 @@ class Agent(object):
         self.position_rs = np.zeros(self.shape)  # Right shoulder
         self.front = np.zeros(self.shape)        # For plotting agents.
 
-        # TODO: vector form
+        # TODO: vector form, table of values
         # Force related parameters
         self.tau_adj = 0.5
         self.tau_adj_rot = 0.2
         self.k = 1.5 * 70
         self.tau_0 = 3.0
-        self.mu = 1.2e5
-        self.kappa = 2.4e5
-        self.a = 2e3
+        self.mu = 1.2e5   # fds+evac
+        self.kappa = 4e4  # fds+evac
+        self.a = 2000
         self.b = 0.08
-        self.damping = 2e3
+        self.damping = 500  # fds+evac
 
         self.f_random_fluctuation_max = 1.0
-        self.f_soc_ij_max = 2e3
-        self.f_soc_iw_max = 2e3
-        self.sight_soc = 7.0
-        self.sight_wall = 7.0
+
+        self.f_soc_ij_max = 2e3  # Cutoff value for social force
+        self.f_soc_iw_max = 2e3  # Cutoff value for social force
+
+        self.sight_soc = 7.0   # Cutoff distance
+        self.sight_wall = 7.0  # Cutoff distance
 
     def reset(self):
         self.force *= 0

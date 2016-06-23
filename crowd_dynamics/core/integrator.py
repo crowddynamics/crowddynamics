@@ -1,10 +1,18 @@
-import numpy as np
 import numba
+import numpy as np
+from scipy.stats import truncnorm
 
+from .interactions import agent_agent, agent_wall
+from .motion import force_adjust, torque_adjust
 from .navigation import direction_to_target_angle
 from .vector2d import wrap_to_pi
-from .motion import force_adjust, force_random, torque_random, torque_adjust
-from .interactions import agent_agent, agent_wall
+
+
+def random_force(agent):
+    # Truncated normal distribution with standard deviation of 3.
+    std = 3.0
+    magnitude = truncnorm.rvs(-std, std, size=agent.size)
+    angle = np.random.uniform(0, 2 * np.pi, size=agent.size)
 
 
 def motion(agent, walls):
@@ -20,11 +28,9 @@ def motion(agent, walls):
 
     # Motion
     force_adjust(agent)
-    force_random(agent)
 
     if agent.orientable_flag:
         torque_adjust(agent)
-        torque_random(agent)
 
     agent_agent(agent)
 
