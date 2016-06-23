@@ -1,26 +1,25 @@
 import numba
 from numba import f8
 import numpy as np
+from scipy.stats import truncnorm
 
 from .vector2d import dot2d, wrap_to_pi
 
 
-@numba.jit(nopython=True, nogil=True)
-def force_random(agent):
-    """Random force"""
-    f_max = 1
-    for i in range(agent.size):
-        angle = np.random.uniform(0, 2 * np.pi)
-        magnitude = np.random.uniform(0, f_max)
-        agent.force[i][0] += magnitude * np.cos(angle)
-        agent.force[i][1] += magnitude * np.sin(angle)
+def force_random_tn(agent, std_trunc=3.0):
+    # Truncated normal distribution with standard deviation of 3.
+    magnitude = truncnorm.rvs(0, std_trunc, loc=0, scale=agent.std_rand_force,
+                              size=agent.size)
+    angle = np.random.uniform(0, 2 * np.pi, size=agent.size)
+    force = magnitude * np.array((np.cos(angle), np.sin(angle)))
+    agent.force += force.T
 
 
-@numba.jit(nopython=True, nogil=True)
-def torque_random(agent):
+def torque_random(agent, std_trunc=3.0):
     """Random torque."""
-    for i in range(agent.size):
-        agent.torque[i] += np.random.uniform(-1, 1)
+    torq = truncnorm.rvs(std_trunc, std_trunc, loc=0,
+                         scale=agent.std_rand_force, size=agent.size)
+    agent.torque += torq
 
 
 @numba.jit(nopython=True, nogil=True)
@@ -38,7 +37,8 @@ def force_contact(h, n, v, t, mu, kappa):
     return - h * (mu * n - kappa * dot2d(v, t) * t)
 
 
-@numba.jit(f8[:](f8, f8[:], f8[:], f8[:], f8, f8, f8), nopython=True, nogil=True)
+@numba.jit(f8[:](f8, f8[:], f8[:], f8[:], f8, f8, f8), nopython=True,
+           nogil=True)
 def force_contact_damped(h, n, v, t, mu, kappa, damping):
     """Frictional contact force with damping."""
     return - h * (mu * n - kappa * dot2d(v, t) * t) + damping * dot2d(v, n) * n
@@ -69,7 +69,7 @@ def force_social(x_rel, v_rel, r_tot, k, tau_0):
         return force
 
     tau = (b - d) / a  # Time-to-collision. In seconds
-    tau_max = 30.0     # Maximum time for interaction.
+    tau_max = 30.0  # Maximum time for interaction.
 
     if tau <= 0 or tau > tau_max:
         return force

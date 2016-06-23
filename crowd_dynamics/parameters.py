@@ -20,16 +20,16 @@ class Parameters:
         self.y = self.Lim(0.0, self.dims.height)
 
     @staticmethod
-    def truncnorm(loc, scale, size, std=3.0):
+    def truncnorm(loc, abs_scale, size, std=3.0):
         """Scaled symmetrical truncated normal distribution."""
-        return np.array(tn.rvs(-std, std, loc=loc, scale=scale/std, size=size))
+        return np.array(tn.rvs(-std, std, loc=loc, scale=abs_scale / std, size=size))
 
     @staticmethod
     def random_unit_vector(size):
         """Random unit vector."""
         orientation = np.random.uniform(0, 2 * np.pi, size)
-        velocity = np.stack((np.cos(orientation), np.sin(orientation)), axis=1)
-        return velocity
+        unit_vector = np.stack((np.cos(orientation), np.sin(orientation)), axis=1)
+        return unit_vector
 
     def random_2d_coordinates(self, size):
         """Random x and y coordinates inside dims."""
@@ -98,10 +98,10 @@ class Parameters:
         """Arguments for constructing agent."""
         body = body_types[body_type]
         mass = self.truncnorm(loc=body["mass"],
-                              scale=body["mass_scale"],
+                              abs_scale=body["mass_scale"],
                               size=size)
         radius = self.truncnorm(loc=body["radius"],
-                                scale=body["dr"],
+                                abs_scale=body["dr"],
                                 size=size)
         r_t = body["k_t"] * radius
         r_s = body["k_s"] * radius
