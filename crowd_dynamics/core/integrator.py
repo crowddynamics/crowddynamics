@@ -3,7 +3,7 @@ import numpy as np
 
 
 from .interactions import agent_agent, agent_wall
-from .motion import force_adjust, torque_adjust
+from .motion import force_adjust, torque_adjust, force_random, torque_random
 from .navigation import direction_to_target_angle
 from .vector2d import wrap_to_pi
 
@@ -21,9 +21,11 @@ def motion(agent, walls):
 
     # Motion
     force_adjust(agent)
+    force_random(agent)
 
     if agent.orientable_flag:
         torque_adjust(agent)
+        torque_random(agent)
 
     agent_agent(agent)
 

@@ -6,20 +6,20 @@ from scipy.stats import truncnorm
 from .vector2d import dot2d, wrap_to_pi
 
 
-def force_random_tn(agent, std_trunc=3.0):
+def force_random(agent, std_trunc=3.0):
     # Truncated normal distribution with standard deviation of 3.
     magnitude = truncnorm.rvs(0, std_trunc, loc=0, scale=agent.std_rand_force,
                               size=agent.size)
     angle = np.random.uniform(0, 2 * np.pi, size=agent.size)
     force = magnitude * np.array((np.cos(angle), np.sin(angle)))
-    agent.force += force.T
+    agent.force += force.T * agent.mass
 
 
 def torque_random(agent, std_trunc=3.0):
     """Random torque."""
-    torq = truncnorm.rvs(std_trunc, std_trunc, loc=0,
+    torq = truncnorm.rvs(-std_trunc, std_trunc, loc=0,
                          scale=agent.std_rand_force, size=agent.size)
-    agent.torque += torq
+    agent.torque += torq * agent.inertia_rot
 
 
 @numba.jit(nopython=True, nogil=True)
