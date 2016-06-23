@@ -7,9 +7,7 @@ from crowd_dynamics.structure.wall import LinearWall
 
 
 def initialize(size=200, width=10, height=10, door_width=2):
-    # Path and name for saving simulation data
     name = "evacuation"
-    path = "/home/jaan/Dropbox/Projects/Crowd-Dynamics-Simulations/results"
 
     parameters = Parameters(width, height)
 
@@ -38,4 +36,4 @@ def initialize(size=200, width=10, height=10, door_width=2):
     agent.target_direction += np.array((1.0, 0.0))
     agent.update_shoulder_positions()
 
-    return agent, walls, goals, path, name
+    return agent, walls, goals, name

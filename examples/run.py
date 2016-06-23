@@ -9,6 +9,8 @@ from examples.simulations.hallway import initialize
 # TODO: Should not see trough walls
 
 
+path = "/home/jaan/Dropbox/Projects/Crowd-Dynamics-Simulations/results"
+
 if __name__ == '__main__':
-    simulation = Simulation(*initialize())
+    simulation = Simulation(*initialize(), dirpath=path)
     gui(simulation)

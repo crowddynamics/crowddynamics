@@ -19,10 +19,11 @@ class Simulation:
                 arg = (arg,)
             return tuple(filter(None, arg))
 
-        # Struct
+        # Integrator timestep
         self.dt_max = 0.01
         self.dt_min = 0.001
 
+        # Struct
         self.agent = agent
         self.wall = _filter_none(wall)
         self.goals = _filter_none(goals)

@@ -9,9 +9,7 @@ from crowd_dynamics.structure.wall import LinearWall
 
 
 def initialize(size=100, width=30, height=5):
-    # Path and name for saving simulation data
     name = "hallway"
-    path = "/home/jaan/Dropbox/Projects/Crowd-Dynamics-Simulations/results"
 
     # Field
     lim = namedtuple('lim', ['min', 'max'])
@@ -56,4 +54,4 @@ def initialize(size=100, width=30, height=5):
     agent.angle[second_half] += np.pi
     agent.update_shoulder_positions()
 
-    return agent, walls, goals, path, name
+    return agent, walls, goals, name
