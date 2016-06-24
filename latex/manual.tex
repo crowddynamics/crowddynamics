@@ -47,7 +47,6 @@
 
 %\usepackage{attachfile}
 %\usepackage{minted}
-%\usepackage[]{algorithm2e}
 
 \graphicspath{{figures/}}
 \floatsetup[table]{capposition=top}
@@ -77,21 +76,21 @@
 \addbibresource{bibliography/python.bib}
 
 \begin{document}
-%\tableofcontents
-%\newpage
-    
-\input{sections/geometry}
-\input{sections/constants}
+\tableofcontents
+\newpage
+
+%\input{sections/geometry}
+%\input{sections/constants}
 
 % -- Agent figure --
-\begin{figure}[H]
-\centering
-\begin{tikzpicture}
-\input{figures/grid}
-\input{figures/agent}
-\end{tikzpicture}
-\caption{Circle, ellipse and three circle representations of an agent.}
-\end{figure}
+%\begin{figure}[H]
+%\centering
+%\begin{tikzpicture}
+%\input{figures/grid}
+%\input{figures/agent}
+%\end{tikzpicture}
+%\caption{Circle, ellipse and three circle representations of an agent.}
+%\end{figure}
 % ------------------
 
 \newpage
@@ -105,23 +104,23 @@
 
 
 % -- Linear wall figure --
-\begin{figure}[H]
-\centering
-\begin{tikzpicture}
-\input{figures/grid}
-\input{figures/wall}
-\end{tikzpicture}
-\caption{Absolute distance from a linear wall.}
-\end{figure}
-
-\begin{figure}[H]
-\centering
-\begin{tikzpicture}
-\input{figures/grid}
-\input{figures/wall2}
-\end{tikzpicture}
-\caption{Velocity dependent distance from a linear wall.}
-\end{figure}
+%\begin{figure}[H]
+%\centering
+%\begin{tikzpicture}
+%\input{figures/grid}
+%\input{figures/wall}
+%\end{tikzpicture}
+%\caption{Absolute distance from a linear wall.}
+%\end{figure}
+%
+%\begin{figure}[H]
+%\centering
+%\begin{tikzpicture}
+%\input{figures/grid}
+%\input{figures/wall2}
+%\end{tikzpicture}
+%\caption{Velocity dependent distance from a linear wall.}
+%\end{figure}
 
 
 % ------------------------
@@ -140,10 +139,6 @@
 
 \begin{multicols*}{2}
 \input{sections/game}
-\end{multicols*}
-
-\begin{multicols*}{2}
-\input{sections/algorithms}
 \end{multicols*}
 
 %TODO: Bibliographies

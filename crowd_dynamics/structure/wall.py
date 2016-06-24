@@ -1,26 +1,23 @@
-from collections import OrderedDict
-
 import numpy as np
 from numba import float64, int64
 from numba import jitclass
 
 from ..core.vector2d import rotate90, dot2d, angle
 
-
 """
 Static obstacles
 """
 
-spec_round = OrderedDict(
-    params=float64[:, :],
-    cols=int64,
-    rows=int64,
-    size=int64,
-    wall=float64[:, :],
-)
+spec_round = [
+    ("params", float64[:, :]),
+    ("cols", int64),
+    ("rows", int64),
+    ("size", int64),
+    ("wall", float64[:, :]),
+]
 
 # Same for round and linear
-wall_attr_names = [key for key in spec_round.keys()]
+wall_attr_names = [item[0] for item in spec_round]
 
 
 @jitclass(spec_round)
@@ -65,12 +62,12 @@ class RoundWall(object):
         return p - x, r
 
 
-spec_linear = OrderedDict(
-    params=float64[:, :, :],
-    cols=int64,
-    rows=int64,
-    size=int64,
-    wall=float64[:, :],
+spec_linear = (
+    ("params", float64[:, :, :]),
+    ("cols", int64),
+    ("rows", int64),
+    ("size", int64),
+    ("wall", float64[:, :]),
 )
 
 

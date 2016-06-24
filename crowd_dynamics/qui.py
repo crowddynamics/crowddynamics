@@ -37,7 +37,9 @@ class CentralItem(pg.PlotItem):
         """
         Central plot.
         """
+        # TODO: Remote processing
         # TODO: Legend
+        # TODO: Coloring of agents (Forces, etc)
 
         super(CentralItem, self).__init__(name=self.name, title=self.title)
 
@@ -48,7 +50,7 @@ class CentralItem(pg.PlotItem):
         self.simulation = simulation
         self.agent = simulation.agent
 
-        # Areas
+        # Areas. TODO: Grid, XRange, YRange
         self.bounds = self.plot()
         self.goals = self.plot()
         self.addAreas()
@@ -66,7 +68,7 @@ class CentralItem(pg.PlotItem):
         self.addWalls()
 
     def addCircle(self, sizes):
-        return self.plot(symbol='o', symbolSize=sizes, pen=None, pxMode=False)
+        return self.plot(symbol='o', symbolSize=2 * sizes, pen=None, pxMode=False)
 
     def addWalls(self):
         for wall in self.simulation.wall:
@@ -104,12 +106,18 @@ class CentralItem(pg.PlotItem):
         self.direction.setData(array)
 
 
+class Controls:
+    def __init__(self):
+        pass
+
+
 def main(simulation: Simulation):
     # Qt application
     app = QtGui.QApplication(sys.argv)
 
-    # Graphics. Contains all the plots.
     pg.setConfigOptions(antialias=True)
+
+    # Graphics. Contains all the plots.
     layout = pg.GraphicsLayoutWidget()
     layout.setWindowTitle("Crowd Dynamics")
     layout.resize(*(1200, 800))

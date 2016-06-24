@@ -1,67 +1,55 @@
-from collections import OrderedDict
-
 import numba
 import numpy as np
 from numba import float64, int64, boolean
 from numba.types import UniTuple
 
-spec_agent = OrderedDict(
-    size=int64,
-    shape=UniTuple(int64, 2),
-
-    three_circles_flag=boolean,
-    orientable_flag=boolean,
-
-    active=boolean[:],
-    goal_reached=boolean[:],
-
-    mass=float64[:, :],
-    radius=float64[:],
-    r_t=float64[:],
-    r_s=float64[:],
-    r_ts=float64[:],
-
-    position=float64[:, :],
-    velocity=float64[:, :],
-    target_velocity=float64[:, :],
-    target_direction=float64[:, :],
-    force=float64[:, :],
-    force_adjust=float64[:, :],
-    force_agent=float64[:, :],
-    force_wall=float64[:, :],
-
-    inertia_rot=float64[:],
-    angle=float64[:],
-    angular_velocity=float64[:],
-    target_angle=float64[:],
-    target_angular_velocity=float64[:],
-    torque=float64[:],
-
-    position_ls=float64[:, :],
-    position_rs=float64[:, :],
-    front=float64[:, :],
-
-    tau_adj=float64,
-    tau_adj_rot=float64,
-    k=float64,
-    tau_0=float64,
-    mu=float64,
-    kappa=float64,
-    a=float64,
-    b=float64,
-    damping=float64,
-
-    std_rand_force=float64,
-    std_rand_torque=float64,
-
-    f_soc_ij_max=float64,
-    f_soc_iw_max=float64,
-
-    sight_soc=float64,
-    sight_wall=float64,
+spec_agent = (
+    ("size", int64),
+    ("shape", UniTuple(int64, 2)),
+    ("three_circles_flag", boolean),
+    ("orientable_flag", boolean),
+    ("active", boolean[:]),
+    ("goal_reached", boolean[:]),
+    ("mass", float64[:, :]),
+    ("radius", float64[:]),
+    ("r_t", float64[:]),
+    ("r_s", float64[:]),
+    ("r_ts", float64[:]),
+    ("position", float64[:, :]),
+    ("velocity", float64[:, :]),
+    ("target_velocity", float64[:, :]),
+    ("target_direction", float64[:, :]),
+    ("force", float64[:, :]),
+    ("force_adjust", float64[:, :]),
+    ("force_agent", float64[:, :]),
+    ("force_wall", float64[:, :]),
+    ("inertia_rot", float64[:]),
+    ("angle", float64[:]),
+    ("angular_velocity", float64[:]),
+    ("target_angle", float64[:]),
+    ("target_angular_velocity", float64[:]),
+    ("torque", float64[:]),
+    ("position_ls", float64[:, :]),
+    ("position_rs", float64[:, :]),
+    ("front", float64[:, :]),
+    ("tau_adj", float64),
+    ("tau_adj_rot", float64),
+    ("k", float64),
+    ("tau_0", float64),
+    ("mu", float64),
+    ("kappa", float64),
+    ("a", float64),
+    ("b", float64),
+    ("damping", float64),
+    ("std_rand_force", float64),
+    ("std_rand_torque", float64),
+    ("f_soc_ij_max", float64),
+    ("f_soc_iw_max", float64),
+    ("sight_soc", float64),
+    ("sight_wall", float64),
 )
 
-agent_attr_names = [key for key in spec_agent.keys()]
+agent_attr_names = [item[0] for item in spec_agent]
 
 
 @numba.jitclass(spec_agent)
@@ -81,13 +69,6 @@ class Agent(object):
                  target_velocity,
                  target_angular_velocity,
                  three_circles_flag):
-        """
-
-        :param size: Integer. Size of the arrays.
-        :param mass: Array of masses of agents.
-        :param radius: Array of radii of agents.
-        :param target_velocity: Array of goal_velocities of agents.
-        """
         # Array properties
         self.size = size
         self.shape = (size, 2)
@@ -125,7 +106,7 @@ class Agent(object):
 
         self.position_ls = np.zeros(self.shape)  # Left shoulder
         self.position_rs = np.zeros(self.shape)  # Right shoulder
-        self.front = np.zeros(self.shape)        # For plotting agents.
+        self.front = np.zeros(self.shape)  # For plotting agents.
 
         # TODO: vector form, table of values
         # Force related parameters
@@ -133,14 +114,14 @@ class Agent(object):
         self.tau_adj_rot = 0.2
         self.k = 1.5 * 70
         self.tau_0 = 3.0
-        self.mu = 1.2e5   # fds+evac
+        self.mu = 1.2e5  # fds+evac
         self.kappa = 4e4  # fds+evac
         self.a = 2000
         self.b = 0.08
         self.damping = 500  # fds+evac
 
         # Standard deviation for truncated normal distribution
-        self.std_rand_force = 0.1   # force / mass
+        self.std_rand_force = 0.1  # force / mass
         self.std_rand_torque = 0.1  # toque / inertia_rot
 
         # Cutoff value for social force

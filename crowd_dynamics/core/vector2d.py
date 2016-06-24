@@ -17,6 +17,9 @@ def wrap_to_pi(rad):
     pi map to pi and odd, negative multiples of pi map to −pi.)
 
     [Matlab](http://se.mathworks.com/help/map/ref/wraptopi.html)
+
+    :param rad: Angle in radians.
+    :return: Angle in [-pi, pi].
     """
     rad_ = rad % (2 * np.pi)
     if rad < 0 and rad_ == np.pi:
@@ -48,7 +51,10 @@ def rotate270(vec2d):
 
 @numba.jit(f8(f8[:]), nopython=True, nogil=True, cache=True)
 def angle(vec2d):
-    """Angle of 2d vector in radians."""
+    """Angle of 2d vector in radians.
+    :param vec2d: 2D vector
+    :return: Angle in [-pi, pi]
+    """
     return np.arctan2(vec2d[1], vec2d[0])
 
 
@@ -60,6 +66,10 @@ def angle_nx2(vec2d):
 
 @numba.jit(f8(f8[:]), nopython=True, nogil=True, cache=True)
 def length(vec2d):
+    """
+    :param vec2d: 2D vector
+    :return: Length of the vector in [0, infty)
+    """
     return np.hypot(vec2d[0], vec2d[1])
 
 
