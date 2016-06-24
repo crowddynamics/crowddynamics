@@ -34,7 +34,7 @@ a &= \tilde{\mathbf{v}} \cdot \tilde{\mathbf{v}} \\
 b &= -\tilde{\mathbf{x}} \cdot \tilde{\mathbf{v}} \\
 c &= \tilde{\mathbf{x}} \cdot \tilde{\mathbf{x}} - \tilde{r}^{2} \\
 d &= \sqrt{b^{2} - a c}, \quad b^{2} - a c > 0 \\
-\tau &= \frac{b - d}{a} > 0.
+\tau &= \frac{b - d}{a}.
 \end{align}
 
 
@@ -42,6 +42,11 @@ d &= \sqrt{b^{2} - a c}, \quad b^{2} - a c > 0 \\
 Physical contact force
 \begin{align}
 \mathbf{f}^{c} &= - h \cdot \left(\mu \cdot \hat{\mathbf{n}} - \kappa \cdot (\mathbf{v} \cdot \hat{\mathbf{t}}) \hat{\mathbf{t}}\right), \quad h < 0
+\end{align}
+
+with damping
+\begin{align}
+\mathbf{f}^{c} &= - h \cdot \left(\mu \cdot \hat{\mathbf{n}} - \kappa \cdot (\mathbf{v} \cdot \hat{\mathbf{t}}) \hat{\mathbf{t}}\right) + c_{n} \cdot (\mathbf{v} \cdot \hat{\mathbf{n}}) \hat{\mathbf{n}} , \quad h < 0
 \end{align}
 
 

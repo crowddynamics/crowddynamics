@@ -1,5 +1,5 @@
+from crowd_dynamics.qui import main
 from crowd_dynamics.simulation import Simulation
-from crowd_dynamics.gui.qt import gui
 from examples.simulations.hallway import initialize
 
 # List of thing to implement
@@ -13,4 +13,4 @@ path = "/home/jaan/Dropbox/Projects/Crowd-Dynamics-Simulations/results"
 
 if __name__ == '__main__':
     simulation = Simulation(*initialize(), dirpath=path)
-    gui(simulation)
+    main(simulation)
