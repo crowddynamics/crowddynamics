@@ -38,9 +38,9 @@ spec_agent = (
     ("tau_0", float64),
     ("mu", float64),
     ("kappa", float64),
+    ("damping", float64),
     ("a", float64),
     ("b", float64),
-    ("damping", float64),
     ("std_rand_force", float64),
     ("std_rand_torque", float64),
     ("f_soc_ij_max", float64),
@@ -112,17 +112,17 @@ class Agent(object):
         # Force related parameters
         self.tau_adj = 0.5
         self.tau_adj_rot = 0.2
-        self.k = 1.5 * 70
+        self.k = 1.5 * 70  # 1.5 * mass?
         self.tau_0 = 3.0
-        self.mu = 1.2e5  # fds+evac
-        self.kappa = 4e4  # fds+evac
+        self.mu = 1.2e5
+        self.kappa = 4e4
+        self.damping = 500
         self.a = 2000
         self.b = 0.08
-        self.damping = 500  # fds+evac
 
         # Standard deviation for truncated normal distribution
-        self.std_rand_force = 0.1  # force / mass
-        self.std_rand_torque = 0.1  # toque / inertia_rot
+        self.std_rand_force = 0.1
+        self.std_rand_torque = 0.1
 
         # Cutoff value for social force
         self.f_soc_ij_max = 2e3

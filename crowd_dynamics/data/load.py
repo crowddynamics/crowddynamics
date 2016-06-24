@@ -30,7 +30,7 @@ path, _ = os.path.split(path)
 path = os.path.join(path, "body_types.csv")
 body_types = pandas.read_csv(path, index_col=[0])
 
-# Moment of inertial scale for human
+# Moment of inertial scale for human. TODO: from csv
 inertia_rot_value = 4.0
 walking_speed_max = 5.0
 angular_velocity_max = 4.0 * np.pi

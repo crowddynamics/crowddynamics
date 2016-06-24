@@ -1,0 +1,44 @@
+name,symbol,value,unit,type,source,explanation
+size,,N,1,int,,Number of agents
+shape,,"(N, 2)",1,"(int, int)",,Shape for arrays
+three_circles_flag,,,1,boolean,,Boolean indicating if agent is modeled with three circle model
+orientable_flag,,,1,boolean,,Boolean indicating if agent is orientable 
+active,,,1,boolean,,Boolean indicating if agent is active
+goal_reached,,,1,boolean,,Boolean indicating if goal is reahed
+mass,m,,kg,float,,Mass
+radius,r,,m,float,fds+evac,Radius
+r_t,r_t,,m,float,fds+evac,Radius of torso
+r_s,r_s,,m,float,fds+evac,Radius of shoulder
+r_ts,r_ts,,m,float,fds+evac,Distance from torso to shoulder
+position,x,,m,float,,Position
+velocity,v,,m/s,float,,Velocity
+target_velocity,v_0,5,m/s,float,,Target velocity
+target_direction,e,,1,float,,Target direction
+force,f,,N,float,,Force
+force_adjust,f_{adj},,N,float,,Adjusting force
+force_agent,f_{agent},,N,float,,Agent to agent force
+force_wall,f_{wall},,N,float,,Agent to wall force
+inertia_rot,I,4,kg m^2,float,fds+evac,Rotational moment
+angle,\varphi,"[-\pi, \pi]",rad,float,,Angle
+angular_velocity,\omega,,rad / s,float,,Angular velocity
+target_angle,\varphi_{0},"[-\pi, \pi]",rad,float,,Target angle
+target_angular_velocity,\omega_{0},4 \pi,rad / s,float,fds+evac,Target angular velocity
+torque,M,,N m,float,,Torque
+position_ls,x_{ls},,m,float,,Position of the left shoulder
+position_rs,x_{rs},,m,float,,Position of the right shoulder
+front,x_{front},,m,float,,Position of the front
+tau_adj,\tau_{adj},0.5,s,float,fds+evac,Characteristic time for agent adjusting its  movement
+tau_adj_rot,\tau_{adjrot},0.2,s,float,fds+evac,Characteristic time for agent adjusting its  rotational movement
+k,k,1.5,N,float,power law,Social force scaling constant
+tau_0,\tau_{0},3,s,float,power law,Interaction time horizon
+mu,\mu,12000,kg / s^2,float,fds+evac,Compression counteraction constant
+kappa,\kappa,40000,Kg / (m s),float,fds+evac,Sliding friction constant
+damping,c_{d},500,N,float,fds+evac,Damping coefficient for contact force
+a,A,2000,N,float,helbing,Scaling coefficient for social force
+b,B,0.08,m,float,helbing,Coefficient for social force
+std_rand_force,\xi / m,0.1,,float,fds+evac,
+std_rand_torque,\eta / I,0.1,,float,fds+evac,
+f_soc_ij_max,,2000,n,float,,
+f_soc_iw_max,,2000,n,float,,
+sight_soc,,7,m,float,,
+sight_wall,,7,m,float,,

@@ -3,7 +3,7 @@ from collections import namedtuple, Iterable
 import numpy as np
 from scipy.stats import truncnorm as tn
 
-from .anthropometry.load import body_types, inertia_rot_value, walking_speed_max, \
+from crowd_dynamics.data.load import body_types, inertia_rot_value, walking_speed_max, \
     angular_velocity_max
 
 
