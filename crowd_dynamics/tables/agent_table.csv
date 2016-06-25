@@ -18,10 +18,10 @@ force,f,,N,float,,Force
 force_adjust,f_adj,,N,float,,Adjusting force
 force_agent,f_agent,,N,float,,Agent to agent force
 force_wall,f_wall,,N,float,,Agent to wall force
-inertia_rot,I,4,kg * m^2,float,fds+evac,Rotational moment
-angle,varphi,"[-pi, pi]",rad,float,,Angle
+inertia_rot,I_rot,4,kg * m^2,float,fds+evac,Rotational moment for agent of weight 80 kg and radius 0.27
+angle,varphi,"Interval(-pi, pi)",rad,float,,Angle
 angular_velocity,omega,,rad / s,float,,Angular velocity
-target_angle,varphi_0,"[-pi, pi]",rad,float,,Target angle
+target_angle,varphi_0,"Interval(-pi, pi)",rad,float,,Target angle
 target_angular_velocity,omega_0,4 * pi,rad / s,float,fds+evac,Target angular velocity
 torque,M,,N * m,float,,Torque
 position_ls,x_ls,,m,float,,Position of the left shoulder
@@ -37,7 +37,7 @@ damping,c_d,500,N,float,fds+evac,Damping coefficient for contact force
 a,A,2000,N,float,helbing,Scaling coefficient for social force
 b,B,0.08,m,float,helbing,Coefficient for social force
 std_rand_force,xi / m,0.1,,float,fds+evac,Standard deviation for random force from truncated normal distribution
-std_rand_torque,eta / I,0.1,,float,fds+evac,Standard deviation for random torque from truncated normal distribution
+std_rand_torque,eta / I_rot,0.1,,float,fds+evac,Standard deviation for random torque from truncated normal distribution
 f_soc_ij_max,,2000,N,float,,Truncation for social force with agent to agent interaction
 f_soc_iw_max,,2000,N,float,,Truncation for social force with agent to wall interaction
 sight_soc,,7,m,float,,Maximum distance for social force to effect

@@ -1,0 +1,49 @@
+\begin{tabular}{lllllll}
+\toprule
+{} &                            name &            symbol &                      value &                         unit &     source &                                                              explanation \\
+\midrule
+0  &  \verb|size| &   &   &   &   &  Number of agents \\
+1  &  \verb|shape| &   &   &   &   &  Shape for arrays \\
+2  &  \verb|three_circles_flag| &   &   &   &   &  Boolean indicating if agent is modeled with three circle model \\
+3  &  \verb|orientable_flag| &   &   &   &   &  Boolean indicating if agent is orientable  \\
+4  &  \verb|active| &   &   &   &   &  Boolean indicating if agent is active \\
+5  &  \verb|goal_reached| &   &   &   &   &  Boolean indicating if goal is reahed \\
+6  &  \verb|mass| &  $m$ &   &  $\mathrm{kg}$ &  fds+evac &  Mass \\
+7  &  \verb|radius| &  $r$ &   &  $\mathrm{m}$ &  fds+evac &  Radius \\
+8  &  \verb|r_t| &  $r_{t}$ &   &  $\mathrm{m}$ &  fds+evac &  Radius of torso \\
+9  &  \verb|r_s| &  $r_{s}$ &   &  $\mathrm{m}$ &  fds+evac &  Radius of shoulder \\
+10 &  \verb|r_ts| &  $r_{ts}$ &   &  $\mathrm{m}$ &  fds+evac &  Distance from torso to shoulder \\
+11 &  \verb|position| &  $x$ &   &  $\mathrm{m}$ &   &  Position \\
+12 &  \verb|velocity| &  $v$ &   &  $\mathrm{\frac{m}{s}}$ &   &  Velocity \\
+13 &  \verb|target_velocity| &  $v_{0}$ &  $5$ &  $\mathrm{\frac{m}{s}}$ &   &  Target velocity \\
+14 &  \verb|target_direction| &  $e$ &   &   &   &  Target direction \\
+15 &  \verb|force| &  $f$ &   &  $\mathrm{N}$ &   &  Force \\
+16 &  \verb|force_adjust| &  $f_{adj}$ &   &  $\mathrm{N}$ &   &  Adjusting force \\
+17 &  \verb|force_agent| &  $f_{agent}$ &   &  $\mathrm{N}$ &   &  Agent to agent force \\
+18 &  \verb|force_wall| &  $f_{wall}$ &   &  $\mathrm{N}$ &   &  Agent to wall force \\
+19 &  \verb|inertia_rot| &  $I_{rot}$ &  $4$ &  $\mathrm{m^{2}\,kg}$ &  fds+evac &  Rotational moment \\
+20 &  \verb|angle| &  $\varphi$ &  $\left[- \pi, \pi\right]$ &  $\mathrm{rad}$ &   &  Angle \\
+21 &  \verb|angular_velocity| &  $\omega$ &   &  $\mathrm{\frac{rad}{s}}$ &   &  Angular velocity \\
+22 &  \verb|target_angle| &  $\varphi_{0}$ &  $\left[- \pi, \pi\right]$ &  $\mathrm{rad}$ &   &  Target angle \\
+23 &  \verb|target_angular_velocity| &  $\omega_{0}$ &  $4 \pi$ &  $\mathrm{\frac{rad}{s}}$ &  fds+evac &  Target angular velocity \\
+24 &  \verb|torque| &  $M$ &   &  $\mathrm{N\,m}$ &   &  Torque \\
+25 &  \verb|position_ls| &  $x_{ls}$ &   &  $\mathrm{m}$ &   &  Position of the left shoulder \\
+26 &  \verb|position_rs| &  $x_{rs}$ &   &  $\mathrm{m}$ &   &  Position of the right shoulder \\
+27 &  \verb|front| &  $x_{front}$ &   &  $\mathrm{m}$ &   &  Position of the front \\
+28 &  \verb|tau_adj| &  $\tau_{adj}$ &  $0.5$ &  $\mathrm{s}$ &  fds+evac &  Characteristic time for agent adjusting its  movement \\
+29 &  \verb|tau_adj_rot| &  $\tau_{adjrot}$ &  $0.2$ &  $\mathrm{s}$ &  fds+evac &  Characteristic time for agent adjusting its  rotational movement \\
+30 &  \verb|k| &  $k$ &  $1.5$ &  $\mathrm{N}$ &  power law &  Social force scaling constant \\
+31 &  \verb|tau_0| &  $\tau_{0}$ &  $3$ &  $\mathrm{s}$ &  power law &  Interaction time horizon \\
+32 &  \verb|mu| &  $\mu$ &  $12000$ &  $\mathrm{\frac{kg}{s^{2}}}$ &  fds+evac &  Compression counteraction constant \\
+33 &  \verb|kappa| &  $\kappa$ &  $40000$ &  $\mathrm{\frac{kg}{m\,s}}$ &  fds+evac &  Sliding friction constant \\
+34 &  \verb|damping| &  $c_{d}$ &  $500$ &  $\mathrm{N}$ &  fds+evac &  Damping coefficient for contact force \\
+35 &  \verb|a| &  $A$ &  $2000$ &  $\mathrm{N}$ &  helbing &  Scaling coefficient for social force \\
+36 &  \verb|b| &  $B$ &  $0.08$ &  $\mathrm{m}$ &  helbing &  Coefficient for social force \\
+37 &  \verb|std_rand_force| &  $\xi / m$ &  $0.1$ &   &  fds+evac &  Standard deviation for random force from truncated normal distribution \\
+38 &  \verb|std_rand_torque| &  $\eta / I_{rot}$ &  $0.1$ &   &  fds+evac &  Standard deviation for random torque from truncated normal distribution \\
+39 &  \verb|f_soc_ij_max| &   &  $2000$ &  $\mathrm{N}$ &   &  Truncation for social force with agent to agent interaction \\
+40 &  \verb|f_soc_iw_max| &   &  $2000$ &  $\mathrm{N}$ &   &  Truncation for social force with agent to wall interaction \\
+41 &  \verb|sight_soc| &   &  $7$ &  $\mathrm{m}$ &   &  Maximum distance for social force to effect \\
+42 &  \verb|sight_wall| &   &  $7$ &  $\mathrm{m}$ &   &  Maximum distance for social force to effect \\
+\bottomrule
+\end{tabular}

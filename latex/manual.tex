@@ -19,11 +19,14 @@
 \usepackage{color}
 \usepackage{wrapfig}
 \usepackage{floatrow}
+
+\usepackage{longtable}
 \usepackage{booktabs}
 \usepackage{tabularx}
 \usepackage{tabulary}
+
 \usepackage{multicol}
-\usepackage{longtable}
+
 \usepackage{enumerate} 
 \usepackage[inline]{enumitem}
 \usepackage{url}
@@ -56,7 +59,7 @@
 
 % Input paths
 \makeatletter
-\def\input@path{{figures/},{sections/}}
+\def\input@path{{figures/},{sections/}, {table/}}
 \makeatother
 
 \makeatletter
@@ -81,7 +84,8 @@
 \newpage
 
 %\input{sections/geometry}
-\input{sections/constants}
+\input{tables/agent_table}
+\input{tables/body_types}
 
 % -- Agent figure --
 %\begin{figure}[H]

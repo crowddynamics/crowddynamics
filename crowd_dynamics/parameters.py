@@ -3,21 +3,20 @@ from collections import namedtuple, Iterable
 import numpy as np
 from scipy.stats import truncnorm as tn
 
-from crowd_dynamics.data.load import body_types, inertia_rot_value, walking_speed_max, \
-    angular_velocity_max
+from .tables.load import body_types, agent_table
 
 
 class Parameters:
     """
     Generates random parameters for simulations and testing.
     """
-    Dim = namedtuple('Dim', ['width', 'height'])
     Lim = namedtuple('Lim', ['min', 'max'])
 
     def __init__(self, width, height):
-        self.dims = self.Dim(width, height)
-        self.x = self.Lim(0.0, self.dims.width)
-        self.y = self.Lim(0.0, self.dims.height)
+        self.width = width
+        self.height = height
+        self.x = self.Lim(0.0, self.width)
+        self.y = self.Lim(0.0, self.height)
 
     @staticmethod
     def truncnorm(loc, abs_scale, size, std=3.0):
@@ -27,15 +26,14 @@ class Parameters:
     @staticmethod
     def random_unit_vector(size):
         """Random unit vector."""
-        orientation = np.random.uniform(0, 2 * np.pi, size)
+        orientation = np.random.uniform(0, 2 * np.pi, size=size)
         unit_vector = np.stack((np.cos(orientation), np.sin(orientation)), axis=1)
         return unit_vector
 
     def random_2d_coordinates(self, size):
         """Random x and y coordinates inside dims."""
-        return np.stack((np.random.uniform(self.x.min, self.x.max, size),
-                         np.random.uniform(self.y.min, self.y.max, size)),
-                        axis=1)
+        return np.stack((np.random.uniform(*self.x, size=size),
+                         np.random.uniform(*self.y, size=size)), axis=1)
 
     def random_position(self, position, radius, x_dims=None, y_dims=None,
                         walls=None):
@@ -97,28 +95,29 @@ class Parameters:
     def agent(self, size, three_circles_flag=True, body_type="adult"):
         """Arguments for constructing agent."""
         body = body_types[body_type]
-        mass = self.truncnorm(loc=body["mass"],
-                              abs_scale=body["mass_scale"],
+        values = agent_table["value"]
+
+        mass = self.truncnorm(loc=body["mass"], abs_scale=body["mass_scale"],
                               size=size)
-        radius = self.truncnorm(loc=body["radius"],
-                                abs_scale=body["dr"],
+        radius = self.truncnorm(loc=body["radius"], abs_scale=body["dr"],
                                 size=size)
-        r_t = body["k_t"] * radius
-        r_s = body["k_s"] * radius
-        r_ts = body["k_ts"] * radius
+        r_t = body["k_t"] * radius    # radius_torso
+        r_s = body["k_s"] * radius    # radius_shoulder
+        r_ts = body["k_ts"] * radius  # distance_torso_shoulder
 
-        # inertia_rot = inertia_rot_scale * mass * radius ** 2  # I = mr^2
-        inertia_rot = inertia_rot_value * np.ones(size)
-        goal_velocity = walking_speed_max * np.ones(size)
-        target_angular_velocity = angular_velocity_max * np.ones(size)
+        # TODO: converters. Eval to values.
+        pi = np.pi  # For eval
+        inertia_rot = eval(values["inertia_rot"]) * np.ones(size)
+        target_velocity = eval(values["target_velocity"]) * np.ones(size)
+        target_angular_velocity = eval(values["target_angular_velocity"]) * np.ones(size)
 
-        return size, mass, radius, r_t, r_s, r_ts, inertia_rot, goal_velocity, \
-               target_angular_velocity, three_circles_flag
+        return size, mass, radius, r_t, r_s, r_ts, inertia_rot, \
+               target_velocity, target_angular_velocity, three_circles_flag
 
     def round_wall(self, size, r_min, r_max):
         """Arguments for constructing round wall."""
-        return np.stack((np.random.uniform(self.x.min, self.x.max, size),
-                         np.random.uniform(self.y.min, self.y.max, size),
+        return np.stack((np.random.uniform(*self.x, size=size),
+                         np.random.uniform(*self.y, size=size),
                          np.random.uniform(r_min, r_max, size=size)), axis=1)
 
     def linear_wall(self, size):

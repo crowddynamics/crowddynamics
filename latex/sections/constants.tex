@@ -1,8 +1,15 @@
-\section{Constants}
-
-\begin{table}[H]
-\begin{tabularx}{1.0\linewidth}{rllllllR}
+\begin{tabularx}{1.0\linewidth}{llllllll}
+\toprule
 {} &                            name &           symbol &                               value &                         unit &        type &     source &                                        explanation \\
+\midrule
+\endhead
+\midrule
+\multicolumn{3}{r}{{Continued on next page}} \\
+\midrule
+\endfoot
+
+\bottomrule
+\endlastfoot
 0  &                     \verb|size| &                  &                                     &                              &         int &            &                                   Number of agents \\
 1  &                    \verb|shape| &                  &                                     &                              &  (int, int) &            &                                   Shape for arrays \\
 2  &       \verb|three_circles_flag| &                  &                                     &                              &     boolean &            &  Boolean indicating if agent is modeled with th... \\
@@ -46,5 +53,4 @@
 40 &             \verb|f_soc_iw_max| &                  &                              $2000$ &                 $\mathrm{N}$ &       float &            &  Truncation for social force with agent to wall... \\
 41 &                \verb|sight_soc| &                  &                                 $7$ &                 $\mathrm{m}$ &       float &            &        Maximum distance for social force to effect \\
 42 &               \verb|sight_wall| &                  &                                 $7$ &                 $\mathrm{m}$ &       float &            &        Maximum distance for social force to effect \\
-\end{tabularx} 
-\end{table}
+\end{tabularx}
