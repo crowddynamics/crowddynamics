@@ -4,10 +4,11 @@ import numpy as np
 import pyqtgraph as pg
 from PyQt4 import QtGui, QtCore
 
-from crowd_dynamics.area import GoalRectangle, Bounds
-from crowd_dynamics.simulation import Simulation
-from crowd_dynamics.structure.wall import LinearWall
-from crowd_dynamics.structure.wall import RoundWall
+from .area import GoalRectangle, Bounds
+from .simulation import Simulation
+from .structure.wall import LinearWall
+from .structure.wall import RoundWall
+
 
 """
 http://zetcode.com/gui/pyqt4/
@@ -17,15 +18,6 @@ http://stackoverflow.com/questions/18080170/what-is-the-easiest-way-to-achieve-r
 http://www.pyqtgraph.org/documentation/graphicsItems/plotdataitem.html?highlight=plotdataitem#pyqtgraph.PlotDataItem
 http://www.pyqtgraph.org/documentation/graphicsItems/viewbox.html
 http://www.pyqtgraph.org/documentation/plotting.html#organization-of-plotting-classes
-
-Remote processing for graphics. Speeds up plotting.
-import pyqtgraph.widgets.RemoteGraphicsView
-view = pg.widgets.RemoteGraphicsView.RemoteGraphicsView()
-view.pg.setConfigOptions(antialias=True)
-rplt = view.pg.PlotItem()
-rplt._setProxyOptions(deferGetattr=True)
-view.setCentralItem(rplt)
-rplt.plot(data, clear=True, _callSync='off')
 
 """
 
@@ -57,12 +49,13 @@ class CentralItem(pg.PlotItem):
         self.addAreas()
 
         # Agent. TODO: Orientable vs circular
-        connect = np.ones(3 * self.agent.size)
-        connect[2::3] = np.zeros(self.agent.size)
+        connect = np.ones(3 * self.agent.size, dtype=np.int32)
+        connect[2::3] = np.zeros(self.agent.size, dtype=np.int32)
         self.left_shoulder = self.addCircle(self.agent.r_s)
         self.right_shoulder = self.addCircle(self.agent.r_s)
         self.center = self.addCircle(self.agent.r_t)
         self.direction = self.plot(connect=connect)
+        self.updateData()
 
         # Walls
         self.walls = self.plot()
@@ -74,8 +67,8 @@ class CentralItem(pg.PlotItem):
     def addWalls(self):
         for wall in self.simulation.wall:
             if isinstance(wall, LinearWall):
-                connect = np.zeros(2 * wall.size)
-                connect[::2] = np.ones(wall.size)
+                connect = np.zeros(2 * wall.size, dtype=np.int32)
+                connect[::2] = np.ones(wall.size, dtype=np.int32)
                 self.walls.setData(wall.params[:, :, 0].flatten(),
                                    wall.params[:, :, 1].flatten(),
                                    connect=connect)

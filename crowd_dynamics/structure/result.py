@@ -4,7 +4,7 @@ from timeit import default_timer as timer
 
 import numpy as np
 
-from ..display import format_time
+from ..functions import format_time
 
 result_attr_names = (
     "computation_time_high",
@@ -20,21 +20,20 @@ class Result(object):
     """
     Struct for simulation results.
     """
-
     def __init__(self, deque_maxlen=100):
         self.initial_flag = True
 
         # Simulation data
         self.iterations = 0
         self.simulation_time = 0
-        self.time_steps = []
+        self.time_steps = [0]
         self.in_goal = 0
         self.in_goal_time = []
 
         # Real time
         self.computation_time_high = 0
         self.computation_time_tot = 0
-        self.computation_time = deque(maxlen=deque_maxlen)
+        self.computation_time = deque((0,), maxlen=deque_maxlen)
 
     def increment_in_goal_time(self):
         self.in_goal += 1
@@ -64,24 +63,17 @@ class Result(object):
         return wrapper
 
     def __str__(self):
-        if self.computation_time:
-            mean_time = np.mean(self.computation_time)
-        else:
-            mean_time = 0
-
-        if self.time_steps:
-            mean_dt = np.mean(self.time_steps[:100])
-        else:
-            mean_dt = 0
-
+        mean_time = np.mean(self.computation_time)
+        mean_dt = np.mean(self.time_steps[:100])
         out = "i: {:6d} | {:4d} | {} | {} | {:4f}".format(
             self.iterations,
-            self.in_goal, format_time(mean_time),
+            self.in_goal,
+            format_time(mean_time),
             format_time(self.computation_time_tot),
             mean_dt
         )
-        if self.initial_flag:
-            out = "Initial time: " + format_time(self.computation_time_high) + \
-                  "\n" + out
-            self.initial_flag = False
+        # if self.initial_flag:
+        #     out = "Initial time: " + format_time(self.computation_time_high) + \
+        #           "\n" + out
+        #     self.initial_flag = False
         return out

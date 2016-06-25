@@ -1,5 +1,6 @@
 import math
 import sys
+from collections import Iterable
 from functools import wraps
 from timeit import default_timer as timer
 
@@ -56,3 +57,10 @@ def timed_execution(func, tol):
             print("Time:", format_time(dt))
         return ret
     return wrapper
+
+
+def filter_none(arg):
+    """Make iterables and filter None values"""
+    if not isinstance(arg, Iterable):
+        arg = (arg,)
+    return tuple(filter(None, arg))

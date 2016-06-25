@@ -1,18 +1,10 @@
-from collections import Iterable
-
+from .functions import filter_none
 from .core.integrator import integrator, motion
 from .io.attributes import Intervals, Attrs, Attr
 from .io.save import Save
 from .structure.agent import agent_attr_names
 from .structure.result import Result, result_attr_names
 from .structure.wall import wall_attr_names
-
-
-# Make iterables and filter None values
-def _filter_none(arg):
-    if not isinstance(arg, Iterable):
-        arg = (arg,)
-    return tuple(filter(None, arg))
 
 
 class Simulation:
@@ -22,10 +14,10 @@ class Simulation:
         self.dt_max = 0.01
         self.dt_min = 0.001
 
-        # Struct
+        # Struct TODO: Areas, Bounds
         self.agent = agent
-        self.wall = _filter_none(wall)
-        self.goals = _filter_none(goals)
+        self.wall = filter_none(wall)
+        self.goals = filter_none(goals)
         self.result = Result()
 
         # Integrator for rotational and spatial motion.
@@ -45,7 +37,7 @@ class Simulation:
         self.attrs_agent["velocity"] = Attr("velocity", True, True)
         self.attrs_agent["force"] = Attr("force", True, True)
 
-        self.savers = _filter_none(
+        self.savers = filter_none(
             [self.save.hdf(self.agent, self.attrs_agent)] +
             [self.save.hdf(w, self.attrs_wall) for w in self.wall]
         )

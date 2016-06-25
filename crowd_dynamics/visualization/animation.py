@@ -6,7 +6,7 @@ from matplotlib.collections import LineCollection, PatchCollection
 from matplotlib.patches import Circle, Rectangle
 
 from crowd_dynamics.area import GoalRectangle
-from ..display import format_time
+from ..functions import format_time
 from ..structure.wall import LinearWall, RoundWall
 
 

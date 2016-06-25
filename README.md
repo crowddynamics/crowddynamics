@@ -72,10 +72,22 @@ Improved algorithm for social force based on human anticipatory behavior.
 [Universal Power Law Governing Pedestrian Interactions](http://motion.cs.umn.edu/PowerLaw/)
 > Karamouzas, Ioannis, Brian Skinner, and Stephen J. Guy. "Universal power law governing pedestrian interactions." Physical review letters 113, no. 23 (2014): 238701.
 
-### Simulation models
+### Simulation models and Software
 
 [Fire Dynamics Simulator and Smokeview](https://pages.nist.gov/fds-smv/)
 
 [PedSim](http://pedsim.silmaril.org/)
 
 [Simulex](https://www.iesve.com/software/ve-for-engineers/module/Simulex/480) 
+
+[Golaem Crowd](http://golaem.com/crowd) 
+
+[MASSIVE (software)](http://www.massivesoftware.com/) 
+
+[Legion](http://www.legion.com/) 
+
+### Web resources
+
+[UNC gamma](http://gamma.cs.unc.edu/research/crowds/) 
+
+[Crowd Simulation Group](http://www.crowdsimulationgroup.co.uk/)
