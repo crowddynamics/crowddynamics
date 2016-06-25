@@ -16,6 +16,7 @@ http://stackoverflow.com/questions/24197910/live-data-monitor-pyqtgraph
 http://stackoverflow.com/questions/18080170/what-is-the-easiest-way-to-achieve-realtime-plotting-in-pyqtgraph
 http://www.pyqtgraph.org/documentation/graphicsItems/plotdataitem.html?highlight=plotdataitem#pyqtgraph.PlotDataItem
 http://www.pyqtgraph.org/documentation/graphicsItems/viewbox.html
+http://www.pyqtgraph.org/documentation/plotting.html#organization-of-plotting-classes
 
 Remote processing for graphics. Speeds up plotting.
 import pyqtgraph.widgets.RemoteGraphicsView
