@@ -4,13 +4,24 @@ import numba
 from .vector2d import normalize_nx2, angle_nx2
 
 
-"""
-Function that returns unit vector for agent.goal_direction
+def navigation(agent, angle_update=None, direction_update=None):
+    """
+    Function for updating target angle and target direction.
+    :param agent:
+    :param angle_update:
+    :param direction_update:
+    """
+    if angle_update is not None and agent.orientable_flag:
+        if callable(angle_update):
+            agent.target_angle = angle_update(agent)
+        else:
+            agent.target_angle = angle_update
 
-Vector field
-- Incompressible, irrotational and inviscosid fluid flow
-- Poisson equation, Heat equation, Navier-Stokes
-"""
+    if direction_update is not None:
+        if callable(direction_update):
+            agent.target_direction = direction_update(agent)
+        else:
+            agent.target_direction = direction_update
 
 
 # @numba.jit(nopython=True, nogil=True)
@@ -20,20 +31,14 @@ def exit_selection():
 
 
 @numba.jit(nopython=True, nogil=True)
+def direction_to_target_angle(agent):
+    return angle_nx2(agent.target_direction)
+
+
+@numba.jit(nopython=True, nogil=True)
 def set_goal_direction(agent, goal):
     """Update goal direction for agent that have not reached their goals."""
     mask = agent.goal_reached ^ True
     if np.sum(mask):
         agent.goal_direction[mask] = normalize_nx2(goal - agent.position[mask])
-
-
-@numba.jit(nopython=True, nogil=True)
-def direction_to_target_angle(agent):
-    agent.target_angle = angle_nx2(agent.target_direction)
-
-
-@numba.jit(nopython=True, nogil=True)
-def navigation(agent, goal_point):
-    # TODO: Navigation
-    set_goal_direction(agent, goal_point)
 

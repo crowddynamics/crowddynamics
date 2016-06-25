@@ -1,5 +1,8 @@
+from functools import partial
+
 from .functions import filter_none
 from .core.integrator import integrator, motion
+from .core.navigation import direction_to_target_angle, navigation
 from .io.attributes import Intervals, Attrs, Attr
 from .io.save import Save
 from .structure.agent import agent_attr_names
@@ -10,17 +13,18 @@ from .structure.wall import wall_attr_names
 class Simulation:
     """Class for initialising and running a crowd simulation."""
     def __init__(self, agent, wall=None, goals=None, name=None, dirpath=None):
-        # Integrator timestep
-        self.dt_max = 0.01
-        self.dt_min = 0.001
-
-        # Struct TODO: Areas, Bounds
+        # Structures
+        self.result = Result()
         self.agent = agent
         self.wall = filter_none(wall)
         self.goals = filter_none(goals)
-        self.result = Result()
+        self.bounds = None
+        self.areas = None
 
         # Integrator for rotational and spatial motion.
+        # Integrator timestep
+        self.dt_max = 0.01
+        self.dt_min = 0.001
         self.integrator = self.result.computation_timer(integrator)
 
         # Interval for printing the values in result during the simulation.
@@ -46,8 +50,12 @@ class Simulation:
         """
         :return: False is simulation ends otherwise True.
         """
+        # TODO: Active/Inactive agents
 
+        # Navigation
+        navigation(self.agent, angle_update=direction_to_target_angle)
         motion(self.agent, self.wall)
+
         dt = self.integrator(self.dt_min, self.dt_max, self.agent)
         self.result.increment_simulation_time(dt)
 
