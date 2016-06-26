@@ -1,9 +1,12 @@
+from crowd_dynamics.simulation import Simulation
 from crowd_dynamics.parameters import Parameters
 from crowd_dynamics.structure.agent import Agent
 
 
 def initialize(size=100, width=25, height=25):
     name = "outdoor"
+    path = "/home/jaan/Dropbox/Projects/Crowd-Dynamics-Simulations/results"
+
     x = (0.0, width)
     y = (0.0, height)
 
@@ -12,7 +15,8 @@ def initialize(size=100, width=25, height=25):
     # Agents
     agent = Agent(*params.agent(size))
     params.random_position(agent.position, agent.radius, x, y)
+
     agent.velocity += agent.target_velocity * params.random_unit_vector(size)
     agent.target_direction += params.random_unit_vector(size)
 
-    return agent, None, None, name
+    return Simulation(agent, name=name, dirpath=path)

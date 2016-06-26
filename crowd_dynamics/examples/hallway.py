@@ -1,5 +1,6 @@
 import numpy as np
 
+from crowd_dynamics.simulation import Simulation
 from crowd_dynamics.area import GoalRectangle
 from crowd_dynamics.parameters import Parameters
 from crowd_dynamics.structure.agent import Agent
@@ -8,6 +9,7 @@ from crowd_dynamics.structure.wall import LinearWall
 
 def initialize(size=100, width=30, height=5):
     name = "hallway"
+    path = "/home/jaan/Dropbox/Projects/Crowd-Dynamics-Simulations/results"
 
     parameters = Parameters(width, height)
     linear_params = np.array((
@@ -18,10 +20,10 @@ def initialize(size=100, width=30, height=5):
     walls = LinearWall(linear_params)
 
     # Goal
-    height_ = height / 2
+    rx, ry = 1.0, height / 2
     goals = (
-        GoalRectangle(center=(0.0, height_), radius=(1.0, height_)),
-        GoalRectangle(center=(width, height_), radius=(1.0, height_))
+        GoalRectangle(center=(0.0, ry), radius=(rx, ry)),
+        GoalRectangle(center=(width, ry), radius=(rx, ry))
     )
 
     # Agents
@@ -36,14 +38,12 @@ def initialize(size=100, width=30, height=5):
         agent.position[second_half], agent.radius[second_half],
         (width // 2, width - 1.0), (0.0, height), walls)
 
-    direction1 = np.array((1.0, 0.0))
-    direction2 = np.array((-1.0, 0.0))
-    agent.target_direction[first_half] += direction1
-    agent.target_direction[second_half] += direction2
+    agent.target_direction[first_half] += np.array((1.0, 0.0))
+    agent.target_direction[second_half] += np.array((-1.0, 0.0))
 
     agent.angle[first_half] += 0
     agent.angle[second_half] += np.pi
 
     agent.update_shoulder_positions()
 
-    return agent, walls, goals, name
+    return Simulation(agent, wall=walls, goals=goals, name=name, dirpath=path)

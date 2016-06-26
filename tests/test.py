@@ -12,14 +12,13 @@ from crowd_dynamics.structure.wall import LinearWall, RoundWall
 
 
 np.set_printoptions(precision=5, threshold=100, edgeitems=3, linewidth=75,
-                    suppress=True, nanstr=None, infstr=None,
-                    formatter=None)
+                    suppress=True, nanstr=None, infstr=None, formatter=None)
 
 
 size = 200
 params = Parameters(50, 50)
 
-result = Result(size)
+result = Result()
 
 """Walls"""
 linear_wall = LinearWall(params.random_linear_wall(10))
@@ -33,6 +32,6 @@ agent.velocity = params.random_unit_vector(agent.size)
 
 
 def test_integrator():
-    advance = timed_execution(integrator, 1.0)
+    advance = timed_execution(integrator)
     for i in range(200):
         advance(result, agent, walls)

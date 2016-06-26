@@ -1,7 +1,7 @@
 import numpy as np
 from scipy.stats import truncnorm as tn
 
-from crowd_dynamics.functions import filter_none
+from .functions import filter_none
 from .tables.load import body_types, agent_table
 
 
@@ -82,6 +82,18 @@ class Parameters:
             position[i, :] = pos
             i += 1
 
+    def random_round_wall(self, size, r_min, r_max):
+        """Arguments for constructing round wall."""
+        return np.stack((np.random.uniform(*self.x, size=size),
+                         np.random.uniform(*self.y, size=size),
+                         np.random.uniform(r_min, r_max, size=size)), axis=1)
+
+    def random_linear_wall(self, size):
+        """Arguments for constructing linear wall."""
+        args = zip(self.random_2d_coordinates(size),
+                   self.random_2d_coordinates(size))
+        return np.array(tuple(args))
+
     def agent(self, size, body_type="adult"):
         """Arguments for constructing agent."""
         body = body_types[body_type]
@@ -99,17 +111,4 @@ class Parameters:
         target_velocity = eval(values["target_velocity"]) * np.ones(size)
         target_angular_velocity = eval(values["target_angular_velocity"]) * np.ones(size)
 
-        return size, mass, radius, r_t, r_s, r_ts, inertia_rot, \
-               target_velocity, target_angular_velocity
-
-    def random_round_wall(self, size, r_min, r_max):
-        """Arguments for constructing round wall."""
-        return np.stack((np.random.uniform(*self.x, size=size),
-                         np.random.uniform(*self.y, size=size),
-                         np.random.uniform(r_min, r_max, size=size)), axis=1)
-
-    def random_linear_wall(self, size):
-        """Arguments for constructing linear wall."""
-        args = zip(self.random_2d_coordinates(size),
-                   self.random_2d_coordinates(size))
-        return np.array(tuple(args))
+        return size, mass, radius, r_t, r_s, r_ts, inertia_rot, target_velocity, target_angular_velocity

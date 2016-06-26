@@ -71,6 +71,10 @@ class Agent(object):
         # More realistic model is used by default.
         self.three_circles = True  # Orientable.
 
+        if self.circular and self.three_circles:
+            raise ValueError("Two agent models cannot not be active at the "
+                             "same time.")
+
         # Flags
         self.orientable = self.three_circles
         self.active = np.ones(size, np.bool8)

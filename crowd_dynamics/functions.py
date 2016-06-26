@@ -46,7 +46,8 @@ def format_time(timespan, precision=3):
         order = min(-int(math.floor(math.log10(timespan)) // 3), 3)
     else:
         order = 3
-    return u"%.*g %s" % (precision, timespan * scaling[order], units[order])
+    # return u"%.*g %s" % (precision, timespan * scaling[order], units[order])
+    return u"{:.1f} {}".format(timespan * scaling[order], units[order])
 
 
 def filter_none(arg):
@@ -68,7 +69,7 @@ def timed_execution(func):
         if dt < 1.0:
             prev.append(dt)
         # TODO: better formatting
-        print("Calls:{:6d}".format(next(calls)),
+        print("Calls:{:5d}".format(next(calls)),
               "Time:", format_time(dt),
               "Avg time:", format_time(np.mean(prev)))
         return ret
