@@ -11,7 +11,7 @@ def navigation(agent, angle_update=None, direction_update=None):
     :param angle_update: Function, or numpy array for updating agent.target_angle
     :param direction_update: Function, or numpy array for updating agent.target_direction
     """
-    if angle_update is not None and agent.orientable_flag:
+    if angle_update is not None and agent.orientable:
         if callable(angle_update):
             agent.target_angle = angle_update(agent)
         else:

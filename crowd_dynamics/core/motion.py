@@ -110,7 +110,7 @@ def motion(agent, walls):
     agent.reset()  # Reset forces and torque
     force_adjust(agent)
     force_random(agent)
-    if agent.orientable_flag:
+    if agent.orientable:
         torque_adjust(agent)
         torque_random(agent)
     agent_agent(agent)

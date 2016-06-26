@@ -31,7 +31,7 @@ def integrator(agent, dt_min, dt_max):
     agent.velocity += acceleration * dt
     agent.position += agent.velocity * dt
 
-    if agent.orientable_flag:
+    if agent.orientable:
         angular_acceleration = agent.torque / agent.inertia_rot
         agent.angular_velocity += angular_acceleration * dt
         agent.angle += agent.angular_velocity * dt

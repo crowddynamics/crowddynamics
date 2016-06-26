@@ -101,7 +101,7 @@ def agent_agent_interaction(i, j, agent):
         # TODO: Cutoff distance.
         cutoff = 2.0
         if h <= cutoff:
-            if agent.orientable_flag:
+            if agent.orientable:
                 # Update values
                 n, h, r_moment_i, r_moment_j = agent_agent_distance(agent, i, j)
             else:
@@ -117,7 +117,7 @@ def agent_agent_interaction(i, j, agent):
 
         agent.force[i] += force
         agent.force[j] -= force
-        if agent.orientable_flag:
+        if agent.orientable:
             agent.torque[i] += torque(r_moment_i, force)
             agent.torque[j] -= torque(r_moment_j, force)
         agent.force_agent[i] += force
@@ -144,7 +144,7 @@ def agent_wall_interaction(i, w, agent, wall):
         truncate(force, agent.f_soc_iw_max)
 
         if h <= 2.0:
-            if agent.orientable_flag:
+            if agent.orientable:
                 h, n, r_moment_i = agent_wall_distance(agent, wall, i, w)
 
             if h < 0:
@@ -156,5 +156,5 @@ def agent_wall_interaction(i, w, agent, wall):
 
         agent.force[i] += force
         agent.force_wall[i] += force
-        if agent.orientable_flag:
+        if agent.orientable:
             agent.torque[i] += torque(r_moment_i, force)

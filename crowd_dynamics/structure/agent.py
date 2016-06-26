@@ -8,7 +8,7 @@ spec_agent = (
     ("shape", UniTuple(int64, 2)),
     ("circular", boolean),
     ("three_circles", boolean),
-    ("orientable_flag", boolean),
+    ("orientable", boolean),
     ("active", boolean[:]),
     ("goal_reached", boolean[:]),
     ("mass", float64[:, :]),
@@ -72,7 +72,7 @@ class Agent(object):
         self.three_circles = True  # Orientable.
 
         # Flags
-        self.orientable_flag = self.three_circles
+        self.orientable = self.three_circles
         self.active = np.ones(size, np.bool8)
         self.goal_reached = np.zeros(size, np.bool8)
 
@@ -144,11 +144,3 @@ class Agent(object):
             self.position_ls[i] = self.position[i] - offset
             self.position_rs[i] = self.position[i] + offset
             self.front[i] = self.position[i] + n * self.r_t[i]
-
-    def set_three_circles(self):
-        """
-        Positions ->
-        Target direction -> Body angle -> update shoulder position
-        :return:
-        """
-        pass
