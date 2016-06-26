@@ -1,8 +1,12 @@
+import itertools
 import math
 import sys
 from collections import Iterable
+from collections import deque
 from functools import wraps
 from timeit import default_timer as timer
+
+import numpy as np
 
 
 def format_time(timespan, precision=3):
@@ -45,22 +49,28 @@ def format_time(timespan, precision=3):
     return u"%.*g %s" % (precision, timespan * scaling[order], units[order])
 
 
-def timed_execution(func, tol):
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        start = timer()
-        ret = func(*args, **kwargs)
-        dt = timer() - start
-        if dt > tol:
-            print("High time difference:", format_time(dt))
-        else:
-            print("Time:", format_time(dt))
-        return ret
-    return wrapper
-
-
 def filter_none(arg):
     """Make iterables and filter None values"""
     if not isinstance(arg, Iterable):
         arg = (arg,)
     return tuple(filter(None, arg))
+
+
+def timed_execution(func):
+    calls = itertools.count()
+    prev = deque((0,), maxlen=100)
+
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        start = timer()
+        ret = func(*args, **kwargs)
+        dt = timer() - start
+        if dt < 1.0:
+            prev.append(dt)
+        # TODO: better formatting
+        print("Calls:{:6d}".format(next(calls)),
+              "Time:", format_time(dt),
+              "Avg time:", format_time(np.mean(prev)))
+        return ret
+
+    return wrapper

@@ -1,8 +1,7 @@
-from functools import partial
-
-from .functions import filter_none
+from .functions import timed_execution
 from .core.integrator import integrator, motion
 from .core.navigation import direction_to_target_angle, navigation
+from .functions import filter_none
 from .io.attributes import Intervals, Attrs, Attr
 from .io.save import Save
 from .structure.agent import agent_attr_names
@@ -12,6 +11,7 @@ from .structure.wall import wall_attr_names
 
 class Simulation:
     """Class for initialising and running a crowd simulation."""
+
     def __init__(self, agent, wall=None, goals=None, name=None, dirpath=None):
         # Structures
         self.result = Result()
@@ -21,11 +21,13 @@ class Simulation:
         self.bounds = None
         self.areas = None
 
-        # Integrator for rotational and spatial motion.
+        # Angle and direction update algorithms
+        self.angle_update = direction_to_target_angle
+        self.direction_update = None
+
         # Integrator timestep
-        self.dt_max = 0.01
         self.dt_min = 0.001
-        self.integrator = self.result.computation_timer(integrator)
+        self.dt_max = 0.01
 
         # Interval for printing the values in result during the simulation.
         self.interval = Intervals(1.0)
@@ -46,21 +48,22 @@ class Simulation:
             [self.save.hdf(w, self.attrs_wall) for w in self.wall]
         )
 
+    @timed_execution
     def advance(self):
         """
+        One simulation cycle:
+        -> Navigation -> Motion -> Integrator
+        -> Goals -> Bounds -> Save -> Printing
         :return: False is simulation ends otherwise True.
         """
         # TODO: Active/Inactive agents
+        # TODO: Bounds
 
-        # Navigation
-        navigation(self.agent, angle_update=direction_to_target_angle)
+        # Navigation -> Motion -> Integrator
+        navigation(self.agent, self.angle_update, self.direction_update)
         motion(self.agent, self.wall)
-
-        dt = self.integrator(self.dt_min, self.dt_max, self.agent)
+        dt = integrator(self.agent, self.dt_min, self.dt_max)
         self.result.increment_simulation_time(dt)
-
-        # Check if agent are inside of bounds
-        # TODO: Implementation
 
         # Goals
         for goal in self.goals:
@@ -68,22 +71,21 @@ class Simulation:
             for _ in range(num):
                 self.result.increment_in_goal_time()
 
+        if self.interval():
+            print(self.result)
+
         # Save
         for saver in self.savers:
             saver()
 
-        # Display
-        if self.interval():
-            print(self.result)
-
         if len(self.result.in_goal_time) == self.agent.size:
             self.exit()
             return False
+
         return True
 
     def exit(self):
         # Simulation exit
-        print(self.result)
         self.save.hdf(self.result, self.attrs_result)
         for saver in self.savers:
             saver(brute=True)

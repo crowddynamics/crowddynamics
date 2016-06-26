@@ -1,4 +1,3 @@
-import numpy as np
 import numba
 
 from .vector2d import normalize_nx2, angle_nx2
@@ -7,9 +6,10 @@ from .vector2d import normalize_nx2, angle_nx2
 def navigation(agent, angle_update=None, direction_update=None):
     """
     Function for updating target angle and target direction.
-    :param agent:
-    :param angle_update:
-    :param direction_update:
+
+    :param agent: Argument for functions
+    :param angle_update: Function, or numpy array for updating agent.target_angle
+    :param direction_update: Function, or numpy array for updating agent.target_direction
     """
     if angle_update is not None and agent.orientable_flag:
         if callable(angle_update):
@@ -24,21 +24,17 @@ def navigation(agent, angle_update=None, direction_update=None):
             agent.target_direction = direction_update
 
 
-# @numba.jit(nopython=True, nogil=True)
 def exit_selection():
     """Exit selection policy."""
     pass
 
 
-@numba.jit(nopython=True, nogil=True)
 def direction_to_target_angle(agent):
+    """:return: Angle of agent.target_direction."""
     return angle_nx2(agent.target_direction)
 
 
 @numba.jit(nopython=True, nogil=True)
 def set_goal_direction(agent, goal):
-    """Update goal direction for agent that have not reached their goals."""
-    mask = agent.goal_reached ^ True
-    if np.sum(mask):
-        agent.goal_direction[mask] = normalize_nx2(goal - agent.position[mask])
-
+    """:return: Unit vector pointing from agents position to goal point."""
+    return normalize_nx2(goal - agent.position)

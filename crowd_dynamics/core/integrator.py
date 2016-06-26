@@ -19,22 +19,27 @@ def motion(agent, walls):
 
 
 @numba.jit(nopython=True)
-def integrator(dt_min, dt_max, agent):
-    """Explicit euler method"""
-    # TODO: Adaptive time step from maximum position change for agent.
-    # Raise warning if using less than minimum step size
-    # Larger crowd densities requires smaller timestep
+def integrator(agent, dt_min, dt_max):
+    """
+    Explicit euler method using adative timestep for integrating differential
+    system.
+
+    :param dt_min: Minimum timestep for adaptive integration
+    :param dt_max: Maximum timestep for adaptive integration
+    :param agent: Agent class
+    :return: Timestep that was used for integration
+    """
+    # Larger crowd densities may require smaller timestep
     acceleration = agent.force / agent.mass
 
-    # Position change
-    # TODO:
     dv = agent.velocity + acceleration * dt_max
-    dx_max = 5.0 * dt_max  # Max of agent.target_velocity = 5.0
+    dx_max = 1.1 * np.max(agent.target_velocity) * dt_max
     dt = dx_max / np.max(np.hypot(dv[:, 0], dv[:, 1]))
-    # dt = dx_max / length_nx2(dv)
+
     if dt > dt_max:
         dt = dt_max
     elif dt < dt_min:
+        # TODO: Raise warning
         dt = dt_min
 
     agent.velocity += acceleration * dt
@@ -44,9 +49,7 @@ def integrator(dt_min, dt_max, agent):
         angular_acceleration = agent.torque / agent.inertia_rot
         agent.angular_velocity += angular_acceleration * dt
         agent.angle += agent.angular_velocity * dt
-        agent.angle = wrap_to_pi(agent.angle)
-
-    if agent.orientable_flag:
+        agent.angle[:] = wrap_to_pi(agent.angle)
         agent.update_shoulder_positions()
 
     return dt

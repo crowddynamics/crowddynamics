@@ -1,14 +1,6 @@
-from collections import deque
-from functools import wraps
-from timeit import default_timer as timer
-
 import numpy as np
 
-from ..functions import format_time
-
 result_attr_names = (
-    "computation_time_high",
-    "computation_time_tot",
     "iterations",
     "simulation_time",
     "time_steps",
@@ -20,7 +12,8 @@ class Result(object):
     """
     Struct for simulation results.
     """
-    def __init__(self, deque_maxlen=100):
+
+    def __init__(self):
         self.initial_flag = True
 
         # Simulation data
@@ -29,11 +22,6 @@ class Result(object):
         self.time_steps = [0]
         self.in_goal = 0
         self.in_goal_time = []
-
-        # Real time
-        self.computation_time_high = 0
-        self.computation_time_tot = 0
-        self.computation_time = deque((0,), maxlen=deque_maxlen)
 
     def increment_in_goal_time(self):
         self.in_goal += 1
@@ -44,36 +32,10 @@ class Result(object):
         self.simulation_time += dt
         self.time_steps.append(dt)
 
-    def increment_computation_time(self, dt, tol=1.0):
-        """Does not record times higher than tol."""
-        if dt < tol:
-            self.computation_time_tot += dt
-            self.computation_time.append(dt)
-        else:
-            self.computation_time_high += dt
-
-    def computation_timer(self, func, tol=1.0):
-        @wraps(func)
-        def wrapper(*args, **kwargs):
-            start = timer()
-            ret = func(*args, **kwargs)
-            dt = timer() - start
-            self.increment_computation_time(dt, tol)
-            return ret
-        return wrapper
-
     def __str__(self):
-        mean_time = np.mean(self.computation_time)
-        mean_dt = np.mean(self.time_steps[:100])
-        out = "i: {:6d} | {:4d} | {} | {} | {:4f}".format(
-            self.iterations,
-            self.in_goal,
-            format_time(mean_time),
-            format_time(self.computation_time_tot),
-            mean_dt
-        )
-        # if self.initial_flag:
-        #     out = "Initial time: " + format_time(self.computation_time_high) + \
-        #           "\n" + out
-        #     self.initial_flag = False
+        # header -> result_attr_names
+        values = (self.iterations, self.simulation_time, self.in_goal,
+                  np.mean(self.time_steps[-100:]))
+        out = "Iterations: {:6d} | Simu time: {:4f} | " \
+              "In goal: {:4d} | Mean dt: {:4f}".format(*values)
         return out
