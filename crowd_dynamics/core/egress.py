@@ -1,6 +1,11 @@
 import numpy as np
 
 
+"""
+Models for egress congestion.
+"""
+
+
 class EgressGame(object):
     def __init__(self,
                  agent_size,

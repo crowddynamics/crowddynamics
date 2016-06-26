@@ -7,7 +7,7 @@ spec_agent = (
     ("size", int64),
     ("shape", UniTuple(int64, 2)),
     ("circular", boolean),
-    ("three_circles_flag", boolean),
+    ("three_circles", boolean),
     ("orientable_flag", boolean),
     ("active", boolean[:]),
     ("goal_reached", boolean[:]),
@@ -59,37 +59,30 @@ class Agent(object):
     Structure for agent parameters and variables.
     """
 
-    def __init__(self,
-                 size,
-                 mass,
-                 radius,
-                 radius_torso,
-                 radius_shoulder,
-                 radius_torso_shoulder,
-                 inertia_rot,
-                 target_velocity,
-                 target_angular_velocity,
-                 three_circles_flag):
+    def __init__(self, size, mass, radius, radius_torso, radius_shoulder,
+                 radius_torso_shoulder, inertia_rot, target_velocity,
+                 target_angular_velocity):
         # Array properties
         self.size = size
         self.shape = (size, 2)
 
-        # Agent model (Only one can be active)
-        self.circular = True  # Non-orientable
-        self.three_circles_flag = three_circles_flag  # Orientable
+        # Agent models (Only one can be active at time).
+        self.circular = False      # Non-orientable.
+        # More realistic model is used by default.
+        self.three_circles = True  # Orientable.
 
         # Flags
-        self.orientable_flag = self.three_circles_flag
+        self.orientable_flag = self.three_circles
         self.active = np.ones(size, np.bool8)
         self.goal_reached = np.zeros(size, np.bool8)
 
         # Constant properties
-        self.radius = radius  # Total radius
-        self.r_t = radius_torso  # Radius of torso
-        self.r_s = radius_shoulder  # Radius of shoulders
+        self.radius = radius               # Total radius
+        self.r_t = radius_torso            # Radius of torso
+        self.r_s = radius_shoulder         # Radius of shoulders
         self.r_ts = radius_torso_shoulder  # Distance from torso to shoulder
         self.mass = mass.reshape(size, 1)  # Mass
-        self.inertia_rot = inertia_rot  # Moment of inertia
+        self.inertia_rot = inertia_rot     # Moment of inertia
 
         # Movement along x and y axis.
         self.position = np.zeros(self.shape)
@@ -110,7 +103,7 @@ class Agent(object):
 
         self.position_ls = np.zeros(self.shape)  # Left shoulder
         self.position_rs = np.zeros(self.shape)  # Right shoulder
-        self.front = np.zeros(self.shape)  # For plotting agents.
+        self.front = np.zeros(self.shape)        # For plotting agents.
 
         # TODO: vector form?, load from tables
         # Force related parameters
@@ -151,3 +144,11 @@ class Agent(object):
             self.position_ls[i] = self.position[i] - offset
             self.position_rs[i] = self.position[i] + offset
             self.front[i] = self.position[i] + n * self.r_t[i]
+
+    def set_three_circles(self):
+        """
+        Positions ->
+        Target direction -> Body angle -> update shoulder position
+        :return:
+        """
+        pass

@@ -82,7 +82,7 @@ class Parameters:
             position[i, :] = pos
             i += 1
 
-    def agent(self, size, three_circles_flag=True, body_type="adult"):
+    def agent(self, size, body_type="adult"):
         """Arguments for constructing agent."""
         body = body_types[body_type]
         values = agent_table["value"]
@@ -100,7 +100,7 @@ class Parameters:
         target_angular_velocity = eval(values["target_angular_velocity"]) * np.ones(size)
 
         return size, mass, radius, r_t, r_s, r_ts, inertia_rot, \
-               target_velocity, target_angular_velocity, three_circles_flag
+               target_velocity, target_angular_velocity
 
     def random_round_wall(self, size, r_min, r_max):
         """Arguments for constructing round wall."""

@@ -36,6 +36,8 @@ def integrator(agent, dt_min, dt_max):
         agent.angular_velocity += angular_acceleration * dt
         agent.angle += agent.angular_velocity * dt
         agent.angle[:] = wrap_to_pi(agent.angle)
+
+        # TODO: Move somewhere else?
         agent.update_shoulder_positions()
 
     return dt
