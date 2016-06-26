@@ -1,5 +1,3 @@
-import sys
-
 import numpy as np
 import pyqtgraph as pg
 from PyQt4 import QtGui, QtCore
@@ -8,18 +6,6 @@ from .area import GoalRectangle, Bounds
 from .simulation import Simulation
 from .structure.wall import LinearWall
 from .structure.wall import RoundWall
-
-
-"""
-http://zetcode.com/gui/pyqt4/
-http://www.pyqtgraph.org/documentation/plotting.html
-http://stackoverflow.com/questions/24197910/live-data-monitor-pyqtgraph
-http://stackoverflow.com/questions/18080170/what-is-the-easiest-way-to-achieve-realtime-plotting-in-pyqtgraph
-http://www.pyqtgraph.org/documentation/graphicsItems/plotdataitem.html?highlight=plotdataitem#pyqtgraph.PlotDataItem
-http://www.pyqtgraph.org/documentation/graphicsItems/viewbox.html
-http://www.pyqtgraph.org/documentation/plotting.html#organization-of-plotting-classes
-
-"""
 
 
 class CentralItem(pg.PlotItem):
@@ -100,36 +86,50 @@ class CentralItem(pg.PlotItem):
         self.direction.setData(array)
 
 
-class Controls:
+class Controls(QtGui.QWidget):
     def __init__(self):
-        pass
+        super().__init__()
+
+
+class Graphics(pg.GraphicsLayoutWidget):
+    def __init__(self, simulation: Simulation, parent=None, **kargs):
+        """
+        Contains all the plots. Updates interactive plots.
+        """
+        super().__init__(parent, **kargs)
+
+        self.simulation = simulation
+
+        pg.setConfigOptions(antialias=True)
+        self.setWindowTitle("Crowd Dynamics")
+        self.resize(*(1200, 800))
+
+        self.central = CentralItem(self.simulation)
+        self.addItem(self.central, 0, 0, 1, 1)  # row, col, rowspan, colspan
+
+        self.timer = QtCore.QTimer()
+        # noinspection PyUnresolvedReferences
+        self.timer.timeout.connect(self.updatePlots)
+        self.timer.start(0)
+
+    def updatePlots(self):
+        if self.simulation.advance():
+            self.central.updateData()
+        else:
+            self.timer.stop()
 
 
 def main(simulation: Simulation):
-    # Qt application
+    """
+    Launches Qt application for visualizing simulation.
+
+    :param simulation:
+    """
+    import sys
+
+    # TODO: Read simulation data from hdf5 file
+    # TODO: MoviePy
     app = QtGui.QApplication(sys.argv)
-
-    pg.setConfigOptions(antialias=True)
-
-    # Graphics. Contains all the plots.
-    layout = pg.GraphicsLayoutWidget()
-    layout.setWindowTitle("Crowd Dynamics")
-    layout.resize(*(1200, 800))
-    layout.show()
-
-    central = CentralItem(simulation)
-    layout.addItem(central, 0, 0, 1, 1)  # row, col, rowspan, colspan
-
-    timer = QtCore.QTimer()
-
-    def update():
-        if simulation.advance():
-            central.updateData()
-        else:
-            timer.stop()
-
-    timer.timeout.connect(update)
-    timer.start(0)
-
-    # Start the Qt event loop
+    graphics = Graphics(simulation)
+    graphics.show()
     sys.exit(app.exec_())
