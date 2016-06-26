@@ -1,5 +1,6 @@
 from .functions import timed_execution
-from .core.integrator import integrator, motion
+from .core.integrator import integrator
+from .core.motion import motion
 from .core.navigation import direction_to_target_angle, navigation
 from .functions import filter_none
 from .io.attributes import Intervals, Attrs, Attr
@@ -56,8 +57,7 @@ class Simulation:
         -> Goals -> Bounds -> Save -> Printing
         :return: False is simulation ends otherwise True.
         """
-        # TODO: Active/Inactive agents
-        # TODO: Bounds
+        # TODO: (In)Active agents, Bounds, Goal Reached -> handlers
 
         # Navigation -> Motion -> Integrator
         navigation(self.agent, self.angle_update, self.direction_update)

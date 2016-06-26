@@ -266,3 +266,4 @@ sympy-plots-for-*.tex/
 /docs/build/
 /notebooks/backup/
 /notebooks/tables/
+/examples/config.py

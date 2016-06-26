@@ -33,6 +33,7 @@ def initialize(size=200, width=10, height=10, door_width=2):
     # Agents
     agent = Agent(*parameters.agent(size))
     parameters.random_position(agent.position, agent.radius, x, y, walls)
+
     agent.target_direction += np.array((1.0, 0.0))
     agent.update_shoulder_positions()
 

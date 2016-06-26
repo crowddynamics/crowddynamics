@@ -1,6 +1,6 @@
 import numba
-from numba import f8
 import numpy as np
+from numba import f8
 from scipy.stats import truncnorm
 
 from .vector2d import dot2d, wrap_to_pi
@@ -94,3 +94,25 @@ def torque_adjust(agent):
 def torque(radius, force):
     """Torque for 2D vectors. Right corner from cross product."""
     return radius[0] * force[1] - radius[1] * force[0]
+
+
+def motion(agent, walls):
+    """
+    Updates rotational and spatial equations of motion.
+
+    :param agent: Agent class
+    :param walls: Walls calss
+    :return: None. Updates values of agent and walls.
+    """
+    from .interactions import agent_agent, agent_wall
+
+    # TODO: close contact / high crowd density counterflow model
+    agent.reset()  # Reset forces and torque
+    force_adjust(agent)
+    force_random(agent)
+    if agent.orientable_flag:
+        torque_adjust(agent)
+        torque_random(agent)
+    agent_agent(agent)
+    for wall in walls:
+        agent_wall(agent, wall)

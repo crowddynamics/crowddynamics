@@ -6,6 +6,7 @@ from numba.types import UniTuple
 spec_agent = (
     ("size", int64),
     ("shape", UniTuple(int64, 2)),
+    ("circular", boolean),
     ("three_circles_flag", boolean),
     ("orientable_flag", boolean),
     ("active", boolean[:]),
@@ -73,8 +74,11 @@ class Agent(object):
         self.size = size
         self.shape = (size, 2)
 
+        # Agent model (Only one can be active)
+        self.circular = True  # Non-orientable
+        self.three_circles_flag = three_circles_flag  # Orientable
+
         # Flags
-        self.three_circles_flag = three_circles_flag
         self.orientable_flag = self.three_circles_flag
         self.active = np.ones(size, np.bool8)
         self.goal_reached = np.zeros(size, np.bool8)
@@ -87,7 +91,7 @@ class Agent(object):
         self.mass = mass.reshape(size, 1)  # Mass
         self.inertia_rot = inertia_rot  # Moment of inertia
 
-        # Movement along x and y axis. Circular agent model
+        # Movement along x and y axis.
         self.position = np.zeros(self.shape)
         self.velocity = np.zeros(self.shape)
         self.target_velocity = target_velocity.reshape(size, 1)
@@ -108,11 +112,11 @@ class Agent(object):
         self.position_rs = np.zeros(self.shape)  # Right shoulder
         self.front = np.zeros(self.shape)  # For plotting agents.
 
-        # TODO: vector form, table of values
+        # TODO: vector form?, load from tables
         # Force related parameters
         self.tau_adj = 0.5
         self.tau_adj_rot = 0.2
-        self.k = 1.5 * 70  # 1.5 * mass?
+        self.k = 1.5 * np.mean(self.mass)  # 1.5 * mass?
         self.tau_0 = 3.0
         self.mu = 1.2e5
         self.kappa = 4e4
