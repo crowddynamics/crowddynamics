@@ -5,7 +5,7 @@ import pandas as pd
 
 csv_ext = ".csv"
 tex_ext = ".tex"
-folder = "/home/jaan/Dropbox/Projects/Crowd-Dynamics/crowd_dynamics/data"
+folder = "/home/jaan/Dropbox/Projects/Crowd-Dynamics/crowd_dynamics/"
 table_folder = "tables"
 
 os.makedirs(table_folder, exist_ok=True)

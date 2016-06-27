@@ -9,8 +9,12 @@ Welcome to Crowd Dynamics's documentation!
 Contents:
 
 .. toctree::
-   :maxdepth: 2
+    :maxdepth: 2
 
+    agent
+    wall
+    motion
+    integrator
 
 
 Indices and tables

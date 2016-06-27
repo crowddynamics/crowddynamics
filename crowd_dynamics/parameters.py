@@ -1,8 +1,23 @@
+import os
 import numpy as np
+import pandas as pd
 from scipy.stats import truncnorm as tn
 
 from .functions import filter_none
-from .tables.load import body_types, agent_table
+
+
+def load_tables():
+    root = os.path.abspath(__file__)
+    root, _ = os.path.split(root)
+    folder = "tables"
+
+    path1 = os.path.join(root, folder, "body_types.csv")
+    path2 = os.path.join(root, folder, "agent_table.csv")
+
+    # TODO: Values converters.
+    body_types = pd.read_csv(path1, index_col=[0])
+    agent_table = pd.read_csv(path2, index_col=[0])
+    return body_types, agent_table
 
 
 class Parameters:
@@ -96,6 +111,7 @@ class Parameters:
 
     def agent(self, size, body_type="adult"):
         """Arguments for constructing agent."""
+        body_types, agent_table = load_tables()
         body = body_types[body_type]
         values = agent_table["value"]
 
