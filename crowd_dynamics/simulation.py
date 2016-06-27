@@ -1,8 +1,7 @@
-from .functions import timed_execution
 from .core.integrator import integrator
 from .core.motion import motion
 from .core.navigation import direction_to_target_angle, navigation
-from .functions import filter_none
+from .functions import filter_none, timed_execution
 from .io.attributes import Intervals, Attrs, Attr
 from .io.save import Save
 from .structure.agent import agent_attr_names
@@ -13,7 +12,8 @@ from .structure.wall import wall_attr_names
 class Simulation:
     """Class for initialising and running a crowd simulation."""
 
-    def __init__(self, agent, wall=None, goals=None, name=None, dirpath=None):
+    def __init__(self, agent, wall=None, goals=None, name=None, dirpath=None,
+                 angle_update=direction_to_target_angle, direction_update=None):
         # Structures
         self.result = Result()
         self.agent = agent
@@ -23,8 +23,8 @@ class Simulation:
         self.areas = None
 
         # Angle and direction update algorithms
-        self.angle_update = direction_to_target_angle
-        self.direction_update = None
+        self.angle_update = angle_update
+        self.direction_update = direction_update
 
         # Integrator timestep
         self.dt_min = 0.001
@@ -58,7 +58,6 @@ class Simulation:
         :return: False is simulation ends otherwise True.
         """
         # TODO: (In)Active agents, Bounds, Goal Reached -> handlers
-
         # Navigation -> Motion -> Integrator
         navigation(self.agent, self.angle_update, self.direction_update)
         motion(self.agent, self.wall)
@@ -68,8 +67,7 @@ class Simulation:
         # Goals
         for goal in self.goals:
             num = goal.is_reached_by(self.agent)
-            for _ in range(num):
-                self.result.increment_in_goal_time()
+            self.result.increment_in_goal_time(num)
 
         if self.interval():
             print(self.result)
@@ -86,6 +84,7 @@ class Simulation:
 
     def exit(self):
         # Simulation exit
+        print(self.result)
         self.save.hdf(self.result, self.attrs_result)
         for saver in self.savers:
             saver(brute=True)

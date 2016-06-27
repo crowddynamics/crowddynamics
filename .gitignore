@@ -264,7 +264,7 @@ sympy-plots-for-*.tex/
 /research/
 /latex/examples/
 /docs/build/
-/notebooks/backup/
+/notebooks/backup_tables/
 /notebooks/tables/
 /crowd_dynamics/examples/config.py
 /crowd_dynamics/run.py

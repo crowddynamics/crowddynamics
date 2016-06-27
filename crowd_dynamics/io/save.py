@@ -64,7 +64,13 @@ class Save(object):
         self.hdf_filepath = os.path.join(self.path, self.name + self.HDF5)
         self.group_name = None
         self.hdf_savers = None
+        self._new_hdf()
 
+    @staticmethod
+    def timestamp():
+        return str(datetime.datetime.now())
+
+    def _new_hdf(self):
         # Make new HDF5 File
         # TODO: start/end time, simulation length
         # TODO: Bytes saved, memory consumption
@@ -79,7 +85,7 @@ class Save(object):
             # Create Group
             group = file.create_group(self.group_name)
             # Metadata
-            group.attrs["timestamp"] = str(datetime.datetime.now())
+            group.attrs["timestamp"] = self.timestamp()
 
     def hdf(self, struct, attrs: Attrs):
         """
@@ -119,21 +125,20 @@ class Save(object):
         else:
             return None
 
-    def generic(self, *folders, fname=None, exists_ok=True):
+    def new_file(self, *folders, fname, timestamped=True):
+        """
+        Timestamped filename.
+        """
         folder_path = os.path.join(self.path, *folders)
         os.makedirs(folder_path, exist_ok=True)
-        if fname is None:
-            fname = str(datetime.datetime.now()).replace(" ", "_")
+
+        if timestamped:
+            fname, ext = os.path.splitext(fname)
+            fname = fname + "-" + self.timestamp().replace(" ", "_") + ext
+
         file_path = os.path.join(folder_path, fname)
-        if not exists_ok and os.path.exists(file_path):
+
+        if os.path.exists(file_path):
             raise FileExistsError("File: {}".format(file_path))
-        else:
-            return file_path
 
-    def animation(self, fname=None):
-        folder = "animations"
-        return self.generic(folder, fname=fname, exists_ok=True)
-
-    def figure(self, fname=None):
-        folder = "figures"
-        return self.generic(folder, fname=fname, exists_ok=True)
+        return file_path

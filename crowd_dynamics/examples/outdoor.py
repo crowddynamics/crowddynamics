@@ -3,9 +3,8 @@ from crowd_dynamics.parameters import Parameters
 from crowd_dynamics.structure.agent import Agent
 
 
-def initialize(size=100, width=25, height=25):
+def initialize(size=100, width=25, height=25, path=""):
     name = "outdoor"
-    path = "/home/jaan/Dropbox/Projects/Crowd-Dynamics-Simulations/results"
 
     x = (0.0, width)
     y = (0.0, height)

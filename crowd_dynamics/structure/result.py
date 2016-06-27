@@ -23,9 +23,9 @@ class Result(object):
         self.in_goal = 0
         self.in_goal_time = []
 
-    def increment_in_goal_time(self):
-        self.in_goal += 1
-        self.in_goal_time.append(self.simulation_time)
+    def increment_in_goal_time(self, num=1):
+        self.in_goal += num
+        self.in_goal_time.extend(num*(self.simulation_time,))
 
     def increment_simulation_time(self, dt):
         self.iterations += 1

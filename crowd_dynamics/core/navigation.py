@@ -1,9 +1,19 @@
-import numba
-
-from .vector2d import normalize_nx2, angle_nx2
+from .vector2d import angle_nx2
 
 
-def navigation(agent, angle_update=None, direction_update=None):
+def exit_selection():
+    """Exit selection policy."""
+    pass
+
+
+def direction_to_target_angle(agent):
+    """:return: Angle of agent.target_direction."""
+    return angle_nx2(agent.target_direction)
+
+
+def navigation(agent,
+               angle_update=direction_to_target_angle,
+               direction_update=None):
     """
     Function for updating target angle and target direction.
 
@@ -22,19 +32,3 @@ def navigation(agent, angle_update=None, direction_update=None):
             agent.target_direction = direction_update(agent)
         else:
             agent.target_direction = direction_update
-
-
-def exit_selection():
-    """Exit selection policy."""
-    pass
-
-
-def direction_to_target_angle(agent):
-    """:return: Angle of agent.target_direction."""
-    return angle_nx2(agent.target_direction)
-
-
-@numba.jit(nopython=True, nogil=True)
-def set_goal_direction(agent, goal):
-    """:return: Unit vector pointing from agents position to goal point."""
-    return normalize_nx2(goal - agent.position)

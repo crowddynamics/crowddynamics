@@ -7,7 +7,9 @@ csv_ext = ".csv"
 tex_ext = ".tex"
 folder = "/home/jaan/Dropbox/Projects/Crowd-Dynamics/crowd_dynamics/data"
 table_folder = "tables"
+
 os.makedirs(table_folder, exist_ok=True)
+
 # Don't truncate string in DataFrames
 pd.set_option('display.max_colwidth', -1)
 

@@ -129,6 +129,7 @@ def main(simulation: Simulation):
 
     # TODO: Read simulation data from hdf5 file
     # TODO: MoviePy
+
     app = QtGui.QApplication(sys.argv)
     graphics = Graphics(simulation)
     graphics.show()

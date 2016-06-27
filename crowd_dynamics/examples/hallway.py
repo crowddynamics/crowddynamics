@@ -7,9 +7,8 @@ from crowd_dynamics.structure.agent import Agent
 from crowd_dynamics.structure.wall import LinearWall
 
 
-def initialize(size=100, width=30, height=5):
+def initialize(size=100, width=30, height=5, path=""):
     name = "hallway"
-    path = "/home/jaan/Dropbox/Projects/Crowd-Dynamics-Simulations/results"
 
     parameters = Parameters(width, height)
     linear_params = np.array((
