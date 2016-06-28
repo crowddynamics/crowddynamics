@@ -26,7 +26,7 @@ def _direction_update(agent, target, mid, r_mid, c_rect, r_rect):
     return target_direction
 
 
-def initialize(size=100, width=10, height=10, door_width=2, path=""):
+def initialize(size=100, width=10, height=10, door_width=1.2, path=""):
     name = "evacuation"
 
     parameters = Parameters(width, height)

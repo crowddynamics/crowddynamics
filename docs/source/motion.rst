@@ -24,7 +24,7 @@ Total force exerted on the agent is the sum of movement adjusting, social and co
 
 
 Adjusting force
----------------
+^^^^^^^^^^^^^^^
 Force adjusting agent's movement towards desired in some characteristic time
 
 .. math::
@@ -32,7 +32,7 @@ Force adjusting agent's movement towards desired in some characteristic time
 
 
 Social force
-------------
+^^^^^^^^^^^^
 Psychological force for collision avoidance. Naive velocity independent equation
 
 .. math::
@@ -41,22 +41,22 @@ Psychological force for collision avoidance. Naive velocity independent equation
 Improved velocity dependent algorithm
 
 .. math::
-    \mathbf{f}^{soc} = -\nabla_{\tilde{\mathbf{x}}} E(\tau)
-    = -\nabla_{\tilde{\mathbf{x}}} \left(\frac{k}{\tau^{2}} \exp \left( -\frac{\tau}{\tau_{0}} \right) \right) \\
-    = - \left(\frac{k}{a \tau^{2}}\right) \left(\frac{2}{\tau} + \frac{1}{\tau_{0}}\right) \exp\left (-\frac{\tau}{\tau_{0}}\right ) \left(\tilde{\mathbf{v}} -\frac{a \tilde{\mathbf{x}} + b \tilde{\mathbf{v}}}{d} \right),
+    \mathbf{f}^{soc} &= -\nabla_{\tilde{\mathbf{x}}} E(\tau) \\
+    &= -\nabla_{\tilde{\mathbf{x}}} \left(\frac{k}{\tau^{2}} \exp \left( -\frac{\tau}{\tau_{0}} \right) \right) \\
+    &= - \left(\frac{k}{a \tau^{2}}\right) \left(\frac{2}{\tau} + \frac{1}{\tau_{0}}\right) \exp\left (-\frac{\tau}{\tau_{0}}\right ) \left(\tilde{\mathbf{v}} -\frac{a \tilde{\mathbf{x}} + b \tilde{\mathbf{v}}}{d} \right),
 
 where
 
 .. math::
-    a = \tilde{\mathbf{v}} \cdot \tilde{\mathbf{v}} \\
-    b = -\tilde{\mathbf{x}} \cdot \tilde{\mathbf{v}} \\
-    c = \tilde{\mathbf{x}} \cdot \tilde{\mathbf{x}} - \tilde{r}^{2} \\
-    d = \sqrt{b^{2} - a c} \\
-    \tau = \frac{b - d}{a}.
+    a &= \tilde{\mathbf{v}} \cdot \tilde{\mathbf{v}} \\
+    b &= -\tilde{\mathbf{x}} \cdot \tilde{\mathbf{v}} \\
+    c &= \tilde{\mathbf{x}} \cdot \tilde{\mathbf{x}} - \tilde{r}^{2} \\
+    d &= \sqrt{b^{2} - a c} \\
+    \tau &= \frac{b - d}{a}.
 
 
 Contact force
--------------
+^^^^^^^^^^^^^
 Physical contact force
 
 .. math::
@@ -64,11 +64,12 @@ Physical contact force
 
 
 Fluctuation force
------------------
-Fluctuation force
+^^^^^^^^^^^^^^^^^
+From truncated normal distribution
 
 .. math::
-    \boldsymbol{\xi} = f \cdot \begin{bmatrix} \cos(\varphi) & \sin(\varphi) \end{bmatrix}, \quad f \in [0, f_{max}],\quad \varphi \in [0, 2 \pi]
+    \boldsymbol{\xi} &= \xi \cdot \hat{\mathbf{e}}, \quad \xi \in \mathcal{N}(\mu, \sigma^{2}), \\
+    \hat{\mathbf{e}}  &= \begin{bmatrix} \cos(\varphi) & \sin(\varphi) \end{bmatrix}, \quad \varphi \in \mathcal{U}(-\pi, \pi)
 
 
 Total torque
@@ -80,28 +81,29 @@ Total torque exerted on agent, is the sum of adjusting contact and social torque
 
 
 Adjusting torque
-----------------
+^^^^^^^^^^^^^^^^
 Torque adjusting agent's rotational motion towards desired
 
 .. math::
     M_{}^{adj} = \frac{I_{}}{\tau_{}} \left((\varphi_{}(t) - \varphi_{}^{0}) \omega_{}^{0} - \omega_{}(t)\right)
 
 Social torque
--------------
+^^^^^^^^^^^^^
 Torque from social forces acting with other agent or wall
 
 .. math::
     \mathbf{M}_{}^{soc} = \mathbf{r}_{}^{soc} \times \mathbf{f}_{}^{soc}
 
 Contact torque
---------------
+^^^^^^^^^^^^^^
 Torque from contact forces acting with other agent or wall
 
 .. math::
     \mathbf{M}_{}^{c} = \mathbf{r}_{}^{c} \times \mathbf{f}_{}^{c}
 
 Fluctuation torque
-------------------
+^^^^^^^^^^^^^^^^^^
+From truncated normal distribution
 
 .. math::
-    \eta
+    \eta \in \mathcal{N}(\mu, \sigma^{2})

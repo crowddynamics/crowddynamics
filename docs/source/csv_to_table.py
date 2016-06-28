@@ -33,6 +33,14 @@ def convert_verb(expr):
         return r"\verb|%s|" % str(expr)
 
 
+def to_vector(expr, unit=False):
+    if expr is not np.nan:
+        if unit:
+            return r"\hat{\mathbf{%s}}" % str(expr)
+        else:
+            return r"\mathbf{%s}" % str(expr)
+
+
 def agent(filename="agent_table"):
     formatter = {
         "name": convert_verb,
@@ -45,10 +53,9 @@ def agent(filename="agent_table"):
     }
 
     load = os.path.join(folder, filename + csv_ext)
+    save = os.path.join(table_folder, filename + tex_ext)
     df = pd.read_csv(load)
     del df['type']  # Don't include type
-
-    save = os.path.join(table_folder, filename + tex_ext)
     with open(save, "w") as file:
         df.to_latex(file, escape=False, longtable=False, formatters=formatter,
                     na_rep="")
@@ -66,9 +73,8 @@ def body_types(filename="body_types"):
         "explanation": str,
     }
     load = os.path.join(folder, filename + csv_ext)
-    df = pd.read_csv(load)
-
     save = os.path.join(table_folder, filename + tex_ext)
+    df = pd.read_csv(load)
     with open(save, "w") as file:
         df.to_latex(file, escape=False, longtable=False, formatters=formatter,
                     na_rep="")
