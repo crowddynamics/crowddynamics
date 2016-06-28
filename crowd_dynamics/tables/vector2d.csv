@@ -1,0 +1,11 @@
+name,notation,return,numpy
+vector,x,"(x1, x2)",array
+length,norm(x),"Interval(0, oo)",hypot
+angle,angle(x),"Interval(-pi, pi)",arctan2
+rotate90,"dot(R(90), x)","(-x2, x1)",
+rotate270,"dot(R(270), x)","(x2, -x1)",
+dot,"dot(x, y)",,
+cross,"cross(x, y)",,
+normalize,normalize(x),,
+truncate,truncate(x),,
+wraptopi,,,

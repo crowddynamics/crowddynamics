@@ -270,3 +270,4 @@ sympy-plots-for-*.tex/
 /crowd_dynamics/run.py
 /crowd_dynamics/visualization/movie.py
 /crowd_dynamics/examples/two_exits.py
+/docs/sphinx.pdf
