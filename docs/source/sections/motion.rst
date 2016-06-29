@@ -18,8 +18,8 @@ Rotational motion
    I \frac{d^{2}}{d t^{2}} \varphi(t) = M(t)
 
 
-Motion
-------
+Total Motion
+------------
 Total force exerted on the agent is the sum of movement adjusting, social and contact forces between other agents and wall.
 
 .. math::
@@ -35,8 +35,8 @@ Total torque exerted on agent, is the sum of adjusting contact and social torque
 .. literalinclude:: ../../../crowd_dynamics/core/motion.py
    :pyobject: motion
 
-Adjusting force
----------------
+Adjusting Motion
+----------------
 Force adjusting agent's movement towards desired in some characteristic time
 
 .. math::
@@ -46,8 +46,21 @@ Force adjusting agent's movement towards desired in some characteristic time
 .. literalinclude:: ../../../crowd_dynamics/core/motion.py
    :pyobject: force_adjust
 
-Social force
+Torque adjusting agent's rotational motion towards desired
+
+.. math::
+   M_{}^{adj} = \frac{I_{}}{\tau_{}} \left((\varphi_{}(t) - \varphi_{}^{0}) \omega_{}^{0} - \omega_{}(t)\right)
+
+.. literalinclude:: ../../../crowd_dynamics/core/motion.py
+   :pyobject: torque_adjust
+
+Interactions
 ------------
+
+
+
+Social
+^^^^^^
 Psychological force for collision avoidance. Naive velocity independent equation
 
 .. math::
@@ -75,8 +88,16 @@ where
 .. literalinclude:: ../../../crowd_dynamics/core/motion.py
    :pyobject: force_social
 
-Contact force
--------------
+Torque from social forces acting with other agent or wall
+
+.. math::
+   \mathbf{M}_{}^{soc} = \mathbf{r}_{}^{soc} \times \mathbf{f}_{}^{soc}
+
+.. literalinclude:: ../../../crowd_dynamics/core/motion.py
+   :pyobject: torque
+
+Contact
+^^^^^^^
 Physical contact force
 
 .. math::
@@ -85,38 +106,6 @@ Physical contact force
 .. literalinclude:: ../../../crowd_dynamics/core/motion.py
    :pyobject: force_contact
 
-Fluctuation force
------------------
-From truncated normal distribution
-
-.. math::
-   \boldsymbol{\xi} &= \xi \cdot \hat{\mathbf{e}}, \quad \xi \in \mathcal{N}(\mu, \sigma^{2}), \\
-   \hat{\mathbf{e}}  &= \begin{bmatrix} \cos(\varphi) & \sin(\varphi) \end{bmatrix}, \quad \varphi \in \mathcal{U}(-\pi, \pi)
-
-.. literalinclude:: ../../../crowd_dynamics/core/motion.py
-   :pyobject: force_random
-
-
-Adjusting torque
-----------------
-Torque adjusting agent's rotational motion towards desired
-
-.. math::
-   M_{}^{adj} = \frac{I_{}}{\tau_{}} \left((\varphi_{}(t) - \varphi_{}^{0}) \omega_{}^{0} - \omega_{}(t)\right)
-
-.. literalinclude:: ../../../crowd_dynamics/core/motion.py
-   :pyobject: torque_adjust
-
-
-Social torque
--------------
-Torque from social forces acting with other agent or wall
-
-.. math::
-   \mathbf{M}_{}^{soc} = \mathbf{r}_{}^{soc} \times \mathbf{f}_{}^{soc}
-
-Contact torque
---------------
 Torque from contact forces acting with other agent or wall
 
 .. math::
@@ -125,9 +114,18 @@ Torque from contact forces acting with other agent or wall
 .. literalinclude:: ../../../crowd_dynamics/core/motion.py
    :pyobject: torque
 
-Fluctuation torque
+Random fluctuation
 ------------------
-From truncated normal distribution
+Fluctuation force
+
+.. math::
+   \boldsymbol{\xi} &= \xi \cdot \hat{\mathbf{e}}, \quad \xi \in \mathcal{N}(\mu, \sigma^{2}), \\
+   \hat{\mathbf{e}}  &= \begin{bmatrix} \cos(\varphi) & \sin(\varphi) \end{bmatrix}, \quad \varphi \in \mathcal{U}(-\pi, \pi)
+
+.. literalinclude:: ../../../crowd_dynamics/core/motion.py
+   :pyobject: force_random
+
+Fluctuation torque
 
 .. math::
    \eta \in \mathcal{N}(\mu, \sigma^{2})

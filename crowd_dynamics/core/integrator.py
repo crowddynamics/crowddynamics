@@ -28,6 +28,7 @@ def integrator(agent, dt_min, dt_max):
         # TODO: Raise warning
         dt = dt_min
 
+    # TODO: linearize integration
     agent.velocity += acceleration * dt
     agent.position += agent.velocity * dt
 

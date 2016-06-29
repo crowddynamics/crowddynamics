@@ -1,6 +1,6 @@
 from .core.integrator import integrator
 from .core.motion import motion
-from .core.navigation import direction_to_target_angle, navigation
+from .core.navigation import direction_to_target_angle, navigator
 from .functions import filter_none, timed_execution
 from .io.attributes import Intervals, Attrs, Attr
 from .io.save import Save
@@ -59,7 +59,7 @@ class Simulation:
         """
         # TODO: (In)Active agents, Bounds, Goal Reached -> handlers
         # Navigation -> Motion -> Integrator
-        navigation(self.agent, self.angle_update, self.direction_update)
+        navigator(self.agent, self.angle_update, self.direction_update)
         motion(self.agent, self.wall)
         dt = integrator(self.agent, self.dt_min, self.dt_max)
         self.result.increment_simulation_time(dt)

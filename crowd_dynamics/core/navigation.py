@@ -11,9 +11,9 @@ def direction_to_target_angle(agent):
     return angle_nx2(agent.target_direction)
 
 
-def navigation(agent,
-               angle_update=direction_to_target_angle,
-               direction_update=None):
+def navigator(agent,
+              angle_update=direction_to_target_angle,
+              direction_update=None):
     """
     Function for updating target angle and target direction.
 
