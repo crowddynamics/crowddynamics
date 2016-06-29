@@ -1,31 +1,4 @@
 \section{Integrators}
-\subsection{Excplicit Euler Method}
-Updating using discrete time step $ \Delta t $
-\begin{align}
-t_{0} &= 0 \\
-t_{1} &= t_{0} + \Delta t \\
-\vdots \\
-t_{k} &= t_{k-1} + \Delta t
-\end{align}
-
-
-Acceleration on an agent
-\begin{align}
-a_{k} &= \mathbf{f}_{k} / m \\
-\mathbf{v}_{k+1} &= \mathbf{v}_{k} + a_{k} \Delta t \\
-\mathbf{x}_{k+1} &= \mathbf{x}_{k} + \mathbf{v}_{k+1} \Delta t
-\end{align}
-
-
-Angular acceleration
-\begin{align}
-\alpha_{k} &= M_{k} / I \\
-\omega_{k+1} &= \omega_{k} + \alpha_{k} \Delta t \\
-\varphi_{k+1} &= \varphi_{k} + \omega_{k+1} \Delta t
-\end{align}
-
-
-
 \subsection{Velocity verlet}
 Velocity verlet algorithm
 \begin{align}
@@ -37,4 +10,10 @@ or more simply
 \begin{align}
 \mathbf{x}_{k+1} &= \mathbf{x}_{k} + \mathbf{v}_{k} \Delta t + \frac{1}{2} a_{k} \Delta t^{2} \\
 \mathbf{v}_{k+1} &= \mathbf{v}_{k} + \frac{1}{2} \left(a_{k} + a_{k+1}\right) \Delta t \\
+\end{align}
+
+versus
+\begin{align}
+\mathbf{x}_{k+1} &= \mathbf{x}_{k} + \mathbf{v}_{k} \Delta t + \frac{1}{2} a_{k} \Delta t^{2} \\
+\mathbf{v}_{k+1} &= \mathbf{v}_{k} + a_{k} \Delta t \\
 \end{align}

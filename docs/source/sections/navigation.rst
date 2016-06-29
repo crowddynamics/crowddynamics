@@ -42,6 +42,3 @@ Fluid flow
 One way to find suitable function is to solve how *incompressible*, *irrotational* and *inviscid* fluid (ideal fluid) would flow out of the constructed space.
 
 
-Exit selection
---------------
-

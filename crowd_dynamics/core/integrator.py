@@ -7,7 +7,7 @@ from .vector2d import wrap_to_pi
 @numba.jit(nopython=True)
 def integrator(agent, dt_min, dt_max):
     """
-    Explicit euler method using adative timestep for integrating differential
+    Verlet integration using adative timestep for integrating differential
     system.
 
     :param dt_min: Minimum timestep for adaptive integration
@@ -25,17 +25,16 @@ def integrator(agent, dt_min, dt_max):
     if dt > dt_max:
         dt = dt_max
     elif dt < dt_min:
-        # TODO: Raise warning
+        # TODO: Raise warning?
         dt = dt_min
 
-    # TODO: linearize integration
+    agent.position += agent.velocity * dt + 0.5 * acceleration * dt**2
     agent.velocity += acceleration * dt
-    agent.position += agent.velocity * dt
 
     if agent.orientable:
         angular_acceleration = agent.torque / agent.inertia_rot
+        agent.angle += agent.angular_velocity * dt + 0.5 * angular_acceleration * dt**2
         agent.angular_velocity += angular_acceleration * dt
-        agent.angle += agent.angular_velocity * dt
         agent.angle[:] = wrap_to_pi(agent.angle)
 
         # TODO: Move somewhere else?

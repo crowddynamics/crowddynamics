@@ -17,9 +17,9 @@ def force_random(agent, std_trunc=3.0):
 
 def torque_random(agent, std_trunc=3.0):
     """Random torque."""
-    torq = truncnorm.rvs(-std_trunc, std_trunc, loc=0,
-                         scale=agent.std_rand_force, size=agent.size)
-    agent.torque += torq * agent.inertia_rot
+    torque = truncnorm.rvs(-std_trunc, std_trunc, loc=0,
+                           scale=agent.std_rand_force, size=agent.size)
+    agent.torque += torque * agent.inertia_rot
 
 
 @numba.jit(nopython=True, nogil=True)
@@ -77,16 +77,11 @@ def force_social(x_rel, v_rel, r_tot, k, tau_0):
     return force
 
 
-@numba.jit(f8[:](f8, f8[:], f8[:], f8[:], f8, f8, f8), nopython=True, nogil=True)
+@numba.jit(f8[:](f8, f8[:], f8[:], f8[:], f8, f8, f8), nopython=True,
+           nogil=True)
 def force_contact(h, n, v, t, mu, kappa, damping):
     """Frictional contact force with damping."""
     return - h * (mu * n - kappa * dot2d(v, t) * t) + damping * dot2d(v, n) * n
-
-
-@numba.jit(nopython=True, nogil=True)
-def torque(radius, force):
-    """Torque for 2D vectors. Right corner from cross product."""
-    return radius[0] * force[1] - radius[1] * force[0]
 
 
 def motion(agent, walls):

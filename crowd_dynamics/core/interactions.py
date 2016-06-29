@@ -1,8 +1,9 @@
 import numba
 import numpy as np
 
+from crowd_dynamics.core.vector2d import cross2d
 from .motion import force_social, force_social_velocity_independent, \
-    force_contact, torque
+    force_contact
 from .vector2d import length, truncate, rotate270
 
 
@@ -110,16 +111,15 @@ def agent_agent_interaction(i, j, agent):
             # Physical contact
             if h < 0:
                 t = rotate270(n)  # Tangent vector
-                force_c = force_contact(h, n, v, t, agent.mu,
-                                        agent.kappa,
+                force_c = force_contact(h, n, v, t, agent.mu, agent.kappa,
                                         agent.damping)
                 force += force_c
 
         agent.force[i] += force
         agent.force[j] -= force
         if agent.orientable:
-            agent.torque[i] += torque(r_moment_i, force)
-            agent.torque[j] -= torque(r_moment_j, force)
+            agent.torque[i] += cross2d(r_moment_i, force)
+            agent.torque[j] -= cross2d(r_moment_j, force)
         agent.force_agent[i] += force
         agent.force_agent[j] -= force
 
@@ -149,12 +149,11 @@ def agent_wall_interaction(i, w, agent, wall):
 
             if h < 0:
                 t = rotate270(n)  # Tangent
-                force_c = force_contact(h, n, agent.velocity[i], t,
-                                        agent.mu, agent.kappa,
-                                        agent.damping)
+                force_c = force_contact(h, n, agent.velocity[i], t, agent.mu,
+                                        agent.kappa, agent.damping)
                 force += force_c
 
         agent.force[i] += force
         agent.force_wall[i] += force
         if agent.orientable:
-            agent.torque[i] += torque(r_moment_i, force)
+            agent.torque[i] += cross2d(r_moment_i, force)

@@ -26,7 +26,8 @@ def _direction_update(agent, target, mid, r_mid, c_rect, r_rect):
     return target_direction
 
 
-def initialize(size=100, width=10, height=10, door_width=1.2, path=""):
+def initialize(size=100, width=10, height=10, door_width=1.2, exit_hall_width=1,
+               path=""):
     name = "evacuation"
 
     parameters = Parameters(width, height)
@@ -34,12 +35,18 @@ def initialize(size=100, width=10, height=10, door_width=1.2, path=""):
     corner = ((0, 0), (0, height), (width, 0), (width, height))
     door = ((width, (height - door_width) / 2),
             (width, (height + door_width) / 2))
+    hall = ((width + exit_hall_width, (height - door_width) / 2),
+            (width + exit_hall_width, (height + door_width) / 2))
+
     linear_params = np.array(
         ((corner[0], corner[1]),
          (corner[0], corner[2]),
          (corner[1], corner[3]),
          (corner[2], door[0]),
-         (door[1], corner[3]),), dtype=np.float64
+         (door[1], corner[3]),
+         (door[0], hall[0]),
+         (door[1], hall[1]),
+         ), dtype=np.float64
     )
     walls = LinearWall(linear_params)
 

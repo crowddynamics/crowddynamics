@@ -67,8 +67,8 @@ class Agent(object):
         self.shape = (size, 2)
 
         # Agent models (Only one can be active at time).
+        # Three circles model (more realistic) model is used by default.
         self.circular = False      # Non-orientable.
-        # More realistic model is used by default.
         self.three_circles = True  # Orientable.
 
         if self.circular and self.three_circles:
@@ -119,7 +119,7 @@ class Agent(object):
         self.kappa = 4e4
         self.damping = 500
         self.a = 2000
-        self.b = 0.08
+        self.b = 0.04  #0.08
 
         # Standard deviation for truncated normal distribution
         self.std_rand_force = 0.1

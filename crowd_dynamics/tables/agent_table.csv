@@ -13,7 +13,7 @@ r_ts,r_ts,,m,fds+evac,Distance from torso to shoulder
 position,x,,m,,Position
 velocity,v,,m / s,,Velocity
 target_velocity,v_0,5,m / s,,Target velocity
-target_direction,e,,,,Target direction
+target_direction,e_0,,,,Target direction
 force,f,,N,,Force
 force_adjust,f_adj,,N,,Adjusting force
 force_agent,f_agent,,N,,Agent to agent force
