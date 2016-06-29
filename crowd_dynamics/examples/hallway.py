@@ -7,7 +7,7 @@ from crowd_dynamics.structure.agent import Agent
 from crowd_dynamics.structure.wall import LinearWall
 
 
-def initialize(size=100, width=30, height=5, path=""):
+def initialize(size=100, width=30, height=5, path="", **kwargs):
     name = "hallway"
 
     parameters = Parameters(width, height)
@@ -45,4 +45,5 @@ def initialize(size=100, width=30, height=5, path=""):
 
     agent.update_shoulder_positions()
 
-    return Simulation(agent, wall=walls, goals=goals, name=name, dirpath=path)
+    return Simulation(agent, wall=walls, goals=goals, name=name, dirpath=path,
+                      **kwargs)

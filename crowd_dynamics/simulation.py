@@ -13,7 +13,8 @@ class Simulation:
     """Class for initialising and running a crowd simulation."""
 
     def __init__(self, agent, wall=None, goals=None, name=None, dirpath=None,
-                 angle_update=direction_to_target_angle, direction_update=None):
+                 angle_update=direction_to_target_angle, direction_update=None,
+                 dt_min=0.001, dt_max=0.01):
         # Structures
         self.result = Result()
         self.agent = agent
@@ -27,8 +28,8 @@ class Simulation:
         self.direction_update = direction_update
 
         # Integrator timestep
-        self.dt_min = 0.001
-        self.dt_max = 0.01
+        self.dt_min = dt_min
+        self.dt_max = dt_max
 
         # Interval for printing the values in result during the simulation.
         self.interval = Intervals(1.0)

@@ -96,21 +96,22 @@ def agent_agent_interaction(i, j, agent):
         v = agent.velocity[i] - agent.velocity[j]  # Relative velocity
         r_moment_i, r_moment_j = np.zeros(2), np.zeros(2)
 
-        cutoff = 0.4 * agent.sight_soc
+        cutoff = 2.0
 
-        if h >= cutoff:
-            force = force_social(x, v, r_tot, agent.k, agent.tau_0)
-            truncate(force, agent.f_soc_ij_max)
-        else:
+        force = force_social(x, v, r_tot, agent.k, agent.tau_0)
+        truncate(force, agent.f_soc_ij_max)
+
+        if h <= cutoff:
             if agent.orientable:
                 # Update values
                 n, h, r_moment_i, r_moment_j = agent_agent_distance(agent, i, j)
             else:
                 n = x / d  # Normal vector
 
-            r_tot = d - h
-            force = force_social(x, v, r_tot, agent.k, agent.tau_0)
-            truncate(force, agent.f_soc_ij_max)
+            # if length(v) <= 0.1:
+            #     r_tot = d - h
+            #     force = force_social(x, v, r_tot, agent.k, agent.tau_0)
+            #     truncate(force, agent.f_soc_ij_max)
 
             # Physical contact
             if h < 0:
@@ -140,7 +141,7 @@ def agent_wall_interaction(i, w, agent, wall):
         r_moment_i = np.zeros(2)
         force = force_social_velocity_independent(h, n, agent.a, agent.b)
 
-        cutoff = 0.4 * agent.sight_wall
+        cutoff = 2.0
 
         # TODO: Velocity relative social force for agent-wall interaction
         # x, r = wall.relative_position(w, agent.position[i], agent.velocity[i])

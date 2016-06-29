@@ -27,7 +27,7 @@ def _direction_update(agent, target, mid, r_mid, c_rect, r_rect):
 
 
 def initialize(size=100, width=10, height=10, door_width=1.2, exit_hall_width=1,
-               path=""):
+               path="", **kwargs):
     name = "evacuation"
 
     parameters = Parameters(width, height)
@@ -79,4 +79,4 @@ def initialize(size=100, width=10, height=10, door_width=1.2, exit_hall_width=1,
                                r_mid=r_mid, c_rect=c_rect, r_rect=r_rect)
 
     return Simulation(agent, wall=walls, goals=goals, name=name, dirpath=path,
-                      direction_update=direction_update)
+                      direction_update=direction_update, **kwargs)
