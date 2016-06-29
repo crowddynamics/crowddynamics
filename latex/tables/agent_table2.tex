@@ -1,0 +1,35 @@
+
+\begin{table}[H]
+\begin{tabularx}{1.0\linewidth}{ l l l l }
+\hline
+\hline
+$ r $                    & $ \mathrm{m} $ &  & Total radius \\
+$ r_{t} $                & $ \mathrm{m} $ &  & Torso radius \\
+$ r_{s} $                & $ \mathrm{m} $ &  & Shoulder radius \\
+$ r_{ts} $                & $ \mathrm{m} $ &  & Distance from torso to shoulder \\
+$ m $                    & $ \mathrm{kg} $ & $ 80 $ & Mass \\
+$ I $                    & $ \mathrm{kg \cdot m^{2}} $ & $ 4.0 $ & Rotational moment \\
+\hline
+\hline
+$ \mathbf{x} $           & $ \mathrm{m} $ &  & Position \\
+$ \mathbf{v} $           & $ \mathrm{m} / \mathrm{s} $ &  & Velocity \\
+$ v_{0} $                & $ \mathrm{m} / \mathrm{s} $ &  & Goal velocity \\  
+$ \hat{\mathbf{e}}_{0} $ &  &  & Goal direction \\
+$ \hat{\mathbf{e}} $     &  &  & Target direction \\
+\hline
+\hline
+$ \varphi $              & $ \mathrm{rad} $ & $ [-\pi, \pi] $ & Body angle \\
+$ \omega $               & $ \mathrm{rad} / \mathrm{s} $ &  & Angular velocity \\
+$ \varphi_{0} $          & $ \mathrm{rad} $ & $ [-\pi, \pi] $ & Target angle \\
+$ \omega_{0} $           & $ \mathrm{rad} / \mathrm{s} $ & $ 0.4\pi $ & Max angular velocity \\
+\hline
+\hline
+$ \tilde{\mathbf{x}} = \mathbf{x}_{i} - \mathbf{x}_{j} $ & Relative position &&  \\
+$ \tilde{\mathbf{v}} = \mathbf{v}_{i} - \mathbf{v}_{j} $ & Relative velocity && \\
+$ d = \left\|\tilde{\mathbf{x}}\right\| $ & Distance && \\
+$ \hat{\mathbf{n}} = \tilde{\mathbf{x}} / d $ & Normal vector && \\
+$ \hat{\mathbf{t}} = R(-90^{\circ}) \cdot \hat{\mathbf{n}} $ & Tangent vector && \\
+\hline
+\hline
+\end{tabularx}
+\end{table}

@@ -11,11 +11,11 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
-   agent
-   wall
-   motion
-   navigation
-   integrator
+   sections/agent
+   sections/wall
+   sections/motion
+   sections/navigation
+   sections/integrator
 
 
 Indices and tables

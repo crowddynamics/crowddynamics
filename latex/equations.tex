@@ -27,7 +27,7 @@
 
 \usepackage{multicol}
 
-\usepackage{enumerate} 
+\usepackage{enumerate}
 \usepackage[inline]{enumitem}
 \usepackage{url}
 \usepackage{marvosym}
@@ -81,27 +81,23 @@
 
 
 \begin{document}
-\begin{multicols*}{2}
-\input{sections/agent}
-\end{multicols*}
 
-\newpage
-
-% ------------------------
+%\begin{multicols*}{2}
+%\input{sections/agent}
+%\end{multicols*}
 
 \begin{multicols*}{2}
 \input{sections/wall}
 \end{multicols*}
 
-\newpage
-
 \begin{multicols*}{2}
 \input{sections/social_force}
-\input{sections/differential_system}
-\input{sections/navigation}
+\end{multicols*}
+
+\begin{multicols*}{2}
 \input{sections/game}
 \end{multicols*}
 
 %TODO: Bibliographies
-\printbibliography
+%\printbibliography
 \end{document}

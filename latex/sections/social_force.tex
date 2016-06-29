@@ -1,35 +1,30 @@
 \section{Motion}
 \subsection{Differential systems}
-Position and velocity
 \begin{align}
 m \frac{d^{2}}{d t^{2}} \mathbf{x}(t) = \mathbf{f}(t)
 \end{align}
 
-Rotational motion
 \begin{align}
 I \frac{d^{2}}{d t^{2}} \varphi(t) = M(t)
 \end{align}
 
 \subsection{Social force model}
-Total force exerted on the agent is the sum of movement adjusting, social and contact forces between other agents and wall.
 \begin{align}
 \mathbf{f}_{i}(t) = \mathbf{f}_{i}^{adj} + \sum_{j\neq i}^{} \left(\mathbf{f}_{ij}^{soc} + \mathbf{f}_{ij}^{c}\right) + \sum_{w}^{} \left(\mathbf{f}_{iw}^{soc} + \mathbf{f}_{iw}^{c}\right) + \boldsymbol{\xi}_{i}
 \end{align}
 
 
 \subsubsection{Adjusting force}
-Force adjusting agent's movement towards desired in some characteristic time \begin{align}
+\begin{align}
 \mathbf{f}^{adj} &= \frac{m}{\tau^{adj}} (v_{0} \cdot \hat{\mathbf{e}} - \mathbf{v}) 
 \end{align}
 
 
 \subsubsection{Social force}
-Psychological force for collision avoidance. Naive velocity independent equation
 \begin{align}
 \mathbf{f}^{soc} &= A \exp\left(-\frac{h}{B}\right) \hat{\mathbf{n}}
 \end{align}
 
-Improved velocity dependent algorithm
 \begin{align}
 \mathbf{f}^{soc} &= -\nabla_{\tilde{\mathbf{x}}} E(\tau)  \\
 &= -\nabla_{\tilde{\mathbf{x}}} \left(\frac{k}{\tau^{2}} \exp \left( -\frac{\tau}{\tau_{0}} \right) \right) \\
@@ -50,12 +45,6 @@ d &= \sqrt{b^{2} - a c}, \quad b^{2} - a c > 0 \\
 
 
 \subsubsection{Contact force}
-Physical contact force
-\begin{align}
-\mathbf{f}^{c} &= - h \cdot \left(\mu \cdot \hat{\mathbf{n}} - \kappa \cdot (\mathbf{v} \cdot \hat{\mathbf{t}}) \hat{\mathbf{t}}\right), \quad h < 0
-\end{align}
-
-with damping
 \begin{align}
 \mathbf{f}^{c} &= - h \cdot \left(\mu \cdot \hat{\mathbf{n}} - \kappa \cdot (\mathbf{v} \cdot \hat{\mathbf{t}}) \hat{\mathbf{t}}\right) + c_{n} \cdot (\mathbf{v} \cdot \hat{\mathbf{n}}) \hat{\mathbf{n}} , \quad h < 0
 \end{align}
@@ -73,37 +62,32 @@ f \in [0, f_{max}],\quad \varphi \in [0, 2 \pi]
 
 
 \subsection{Rotational motion}
-% FDS evac manual pages: 20 - 21
-Total torque exerted on agent, is the sum of adjusting contact and social torques
 \begin{align}
 M_{i}(t) = M_{i}^{adj} + \sum_{j\neq i}^{} \left(M_{ij}^{soc} + M_{ij}^{c}\right) + \sum_{w}^{} \left(M_{iw}^{soc} + M_{iw}^{c}\right) + \eta_{i}(t)
 \end{align}
 
 
 \subsubsection{Adjusting torque}
-Torque adjusting agent's rotational motion towards desired
 \begin{align}
 M_{}^{adj} &= \frac{I_{}}{\tau_{}} \left((\varphi_{}(t) - \varphi_{}^{0}) \omega_{}^{0} - \omega_{}(t)\right) \\
 \end{align}
 
 \subsubsection{Social torque}
-Torque from social forces acting with other agent or wall
 \begin{align}
 \mathbf{M}_{}^{soc} = \mathbf{r}_{}^{soc} \times \mathbf{f}_{}^{soc}
 \end{align}
 
 \subsubsection{Contact torque}
-Torque from contact forces acting with other agent or wall
 \begin{align}
 \mathbf{M}_{}^{c} = \mathbf{r}_{}^{c} \times \mathbf{f}_{}^{c}
 \end{align}
 
 \subsubsection{Related equations}
-Torque calculated using cross product
+
 \begin{align}
 \mathbf{M} = \mathbf{r} \times \mathbf{f} =  \begin{vmatrix} \mathbf{i} & \mathbf{j} & \mathbf{k} \\ R_{1} & R_{2} & R_{3} \\ f_{1} & f_{2} & f_{3} \\ \end{vmatrix} 
 \end{align}
-which in two dimensions is
+
 \begin{align}
 M = \begin{vmatrix} R_{1} & R_{2} \\ f_{1} & f_{2} \\ \end{vmatrix} = R_{1} \cdot f_{2} - R_{2} \cdot f_{1}
 \end{align}

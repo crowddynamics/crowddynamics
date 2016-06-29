@@ -2,7 +2,7 @@ import numba
 import numpy as np
 
 from .motion import force_social, force_social_velocity_independent, \
-    force_contact_damped, torque
+    force_contact, torque
 from .vector2d import length, truncate, rotate270
 
 
@@ -110,9 +110,9 @@ def agent_agent_interaction(i, j, agent):
             # Physical contact
             if h < 0:
                 t = rotate270(n)  # Tangent vector
-                force_c = force_contact_damped(h, n, v, t, agent.mu,
-                                               agent.kappa,
-                                               agent.damping)
+                force_c = force_contact(h, n, v, t, agent.mu,
+                                        agent.kappa,
+                                        agent.damping)
                 force += force_c
 
         agent.force[i] += force
@@ -149,9 +149,9 @@ def agent_wall_interaction(i, w, agent, wall):
 
             if h < 0:
                 t = rotate270(n)  # Tangent
-                force_c = force_contact_damped(h, n, agent.velocity[i], t,
-                                               agent.mu, agent.kappa,
-                                               agent.damping)
+                force_c = force_contact(h, n, agent.velocity[i], t,
+                                        agent.mu, agent.kappa,
+                                        agent.damping)
                 force += force_c
 
         agent.force[i] += force
