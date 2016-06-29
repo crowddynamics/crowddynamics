@@ -96,17 +96,21 @@ def agent_agent_interaction(i, j, agent):
         v = agent.velocity[i] - agent.velocity[j]  # Relative velocity
         r_moment_i, r_moment_j = np.zeros(2), np.zeros(2)
 
-        force = force_social(x, v, r_tot, agent.k, agent.tau_0)
-        truncate(force, agent.f_soc_ij_max)
+        cutoff = 0.4 * agent.sight_soc
 
-        # TODO: Cutoff distance.
-        cutoff = 2.0
-        if h <= cutoff:
+        if h >= cutoff:
+            force = force_social(x, v, r_tot, agent.k, agent.tau_0)
+            truncate(force, agent.f_soc_ij_max)
+        else:
             if agent.orientable:
                 # Update values
                 n, h, r_moment_i, r_moment_j = agent_agent_distance(agent, i, j)
             else:
                 n = x / d  # Normal vector
+
+            r_tot = d - h
+            force = force_social(x, v, r_tot, agent.k, agent.tau_0)
+            truncate(force, agent.f_soc_ij_max)
 
             # Physical contact
             if h < 0:
