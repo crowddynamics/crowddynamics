@@ -140,6 +140,8 @@ def agent_wall_interaction(i, w, agent, wall):
         r_moment_i = np.zeros(2)
         force = force_social_velocity_independent(h, n, agent.a, agent.b)
 
+        cutoff = 0.4 * agent.sight_wall
+
         # TODO: Velocity relative social force for agent-wall interaction
         # x, r = wall.relative_position(w, agent.position[i], agent.velocity[i])
         # force = force_social(x, agent.velocity[i], agent.radius[i] + r,
@@ -147,7 +149,7 @@ def agent_wall_interaction(i, w, agent, wall):
 
         truncate(force, agent.f_soc_iw_max)
 
-        if h <= 2.0:
+        if h <= cutoff:
             if agent.orientable:
                 h, n, r_moment_i = agent_wall_distance(agent, wall, i, w)
 
