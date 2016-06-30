@@ -49,7 +49,7 @@ Force adjusting agent's movement towards desired in some characteristic time
 Torque adjusting agent's rotational motion towards desired
 
 .. math::
-   M_{}^{adj} = \frac{I_{rot}}{\tau_{adj}^{rot}} \left((\varphi_{}(t) - \varphi_{}^{0}) \omega_{}^{0} - \omega_{}(t)\right)
+   M_{}^{adj} = \frac{I_{rot}}{\tau_{adj}^{rot}} \left( \frac{\varphi_{}(t) - \varphi_{}^{0}}{\pi}  \omega_{}^{0} - \omega_{}(t)\right)
 
 .. literalinclude:: ../../../crowd_dynamics/core/motion.py
    :pyobject: torque_adjust
@@ -61,13 +61,20 @@ Interactions between agent and another agent or wall are modeled using social an
 
 Agent-agent
 ^^^^^^^^^^^
+Circular
 
 .. math::
    \tilde{\mathbf{x}} &= \mathbf{x}_{i} - \mathbf{x}_{j} \\
    \tilde{\mathbf{v}} &= \mathbf{v}_{i} - \mathbf{v}_{j} \\
    d &= \left\| \tilde{\mathbf{x}} \right\| \\
+   r_{tot} &= r_i + r_j \\
+   h &= d - r_{tot} \\
    \hat{\mathbf{n}} &= \tilde{\mathbf{x}} / d \\
    \hat{\mathbf{t}} &= R(-90^{\circ}) \cdot \hat{\mathbf{n}}
+
+Three circles
+
+
 
 Agent-wall
 ^^^^^^^^^^

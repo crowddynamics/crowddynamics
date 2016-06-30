@@ -1,5 +1,7 @@
 import numpy as np
 
+# TODO: Spring, Void
+
 
 class Area(object):
     def __init__(self):

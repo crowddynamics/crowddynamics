@@ -24,6 +24,7 @@ class CentralItem(pg.PlotItem):
 
         # One to one scale for x and y coordinates
         self.setAspectLocked(lock=True, ratio=1)
+        self.showGrid(True, True, 0.5)
 
         # Data
         self.simulation = simulation
@@ -35,11 +36,16 @@ class CentralItem(pg.PlotItem):
         self.addAreas()
 
         # Agent. TODO: Orientable vs circular
+        brush = pg.mkBrush(0, 0, 255, 128)  # RGBA
+        self.psy = self.addCircle(self.agent.radius,
+                                  symbolsPen=None,
+                                  symbolBrush=brush)
+
         connect = np.ones(3 * self.agent.size, dtype=np.int32)
         connect[2::3] = np.zeros(self.agent.size, dtype=np.int32)
         self.left_shoulder = self.addCircle(self.agent.r_s)
         self.right_shoulder = self.addCircle(self.agent.r_s)
-        self.center = self.addCircle(self.agent.r_t)
+        self.torso = self.addCircle(self.agent.r_t)
         self.direction = self.plot(connect=connect)
         self.updateData()
 
@@ -47,8 +53,9 @@ class CentralItem(pg.PlotItem):
         self.walls = self.plot()
         self.addWalls()
 
-    def addCircle(self, sizes):
-        return self.plot(symbol='o', symbolSize=2 * sizes, pen=None, pxMode=False)
+    def addCircle(self, radius, **kwargs):
+        return self.plot(symbol='o', symbolSize=2 * radius, pen=None, pxMode=False,
+                         **kwargs)
 
     def addWalls(self):
         for wall in self.simulation.wall:
@@ -75,7 +82,8 @@ class CentralItem(pg.PlotItem):
         """
         Updates data in the plot.
         """
-        self.center.setData(self.agent.position)
+        self.psy.setData(self.agent.position)
+        self.torso.setData(self.agent.position)
         self.left_shoulder.setData(self.agent.position_ls)
         self.right_shoulder.setData(self.agent.position_rs)
 

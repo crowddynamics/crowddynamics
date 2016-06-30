@@ -121,10 +121,13 @@ class Parameters:
         r_s = body["k_s"] * radius    # radius_shoulder
         r_ts = body["k_ts"] * radius  # distance_torso_shoulder
 
+        # target_velocity = body['v'] * np.ones(size)
+        target_velocity = self.truncnorm(body['v'], body['dv'], size)
+
         # TODO: converters. Eval to values.
         pi = np.pi  # For eval
         inertia_rot = eval(values["inertia_rot"]) * np.ones(size)
-        target_velocity = eval(values["target_velocity"]) * np.ones(size)
+        # target_velocity = eval(values["target_velocity"]) * np.ones(size)
         target_angular_velocity = eval(values["target_angular_velocity"]) * np.ones(size)
 
         return size, mass, radius, r_t, r_s, r_ts, inertia_rot, target_velocity, target_angular_velocity
