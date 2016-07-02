@@ -1,0 +1,7 @@
+name,value,source
+update_interval,0.1,
+neighbor_radius,0.4,
+neighborhood_size,8,
+k,,
+tau_adj,,
+std_rand_force,,

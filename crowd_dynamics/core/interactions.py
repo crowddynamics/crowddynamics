@@ -96,22 +96,16 @@ def agent_agent_interaction(i, j, agent):
         v = agent.velocity[i] - agent.velocity[j]  # Relative velocity
         r_moment_i, r_moment_j = np.zeros(2), np.zeros(2)
 
-        cutoff = 2.0
-
         force = force_social(x, v, r_tot, agent.k, agent.tau_0)
         truncate(force, agent.f_soc_ij_max)
 
+        cutoff = 2.0
         if h <= cutoff:
             if agent.orientable:
                 # Update values
                 n, h, r_moment_i, r_moment_j = agent_agent_distance(agent, i, j)
             else:
                 n = x / d  # Normal vector
-
-            # if length(v) <= 0.1:
-            #     r_tot = d - h
-            #     force = force_social(x, v, r_tot, agent.k, agent.tau_0)
-            #     truncate(force, agent.f_soc_ij_max)
 
             # Physical contact
             if h < 0:
@@ -127,6 +121,21 @@ def agent_agent_interaction(i, j, agent):
             agent.torque[j] -= cross2d(r_moment_j, force)
         agent.force_agent[i] += force
         agent.force_agent[j] -= force
+
+    # TODO: update neighborhood
+    if agent.neighbor_radius > 0 and h < agent.neighbor_radius:
+        if h < agent.neighbor_distances_max[i]:
+            ind = np.argmax(agent.neighbor_distances[i])
+            agent.neighbors[ind] = j
+            agent.neighbor_distances[i, ind] = h
+            agent.neighbor_distances_max[i] = np.max(agent.neighbor_distances[i])
+
+        if h < agent.neighbor_distances_max[j]:
+            ind = np.argmax(agent.neighbor_distances[j])
+            agent.neighbors[ind] = i
+            agent.neighbor_distances[j, ind] = h
+            agent.neighbor_distances_max[j] = np.max(
+                agent.neighbor_distances[j])
 
 
 @numba.jit(nopython=True, nogil=True)

@@ -48,6 +48,11 @@ spec_agent = (
     ("f_soc_iw_max", float64),
     ("sight_soc", float64),
     ("sight_wall", float64),
+    ("neighbor_radius", float64),
+    ("neighborhood_size", int64),
+    ("neighbors", float64[:, :]),
+    ("neighbor_distances", float64[:, :]),
+    ("neighbor_distances_max", float64[:]),
 )
 
 agent_attr_names = [item[0] for item in spec_agent]
@@ -129,16 +134,33 @@ class Agent(object):
         self.f_soc_ij_max = 2e3
         self.f_soc_iw_max = 2e3
 
-        # Cutoff distance
+        # Interaction distances
         self.sight_soc = 7.0
         self.sight_wall = 7.0
 
-    def reset(self):
+        # Maximum size of neighbourhood
+        # Maximum distance that is considered to other agent that is neighbour
+        # Maximum size number of agents that are closer than radius.
+        # If less than maximum size of neighbors left over terms are -1.
+        # TODO: Distances
+        self.neighbor_radius = 1.0  # if less than or equal to 0 -> inactive
+        self.neighborhood_size = 8
+        self.neighbors = np.ones((self.size, self.neighborhood_size))
+        self.neighbor_distances = np.ones((self.size, self.neighborhood_size))
+        self.neighbor_distances_max = np.ones(self.size)
+        self.reset_neighbor()
+
+    def reset_motion(self):
         self.force *= 0
         self.torque *= 0
         self.force_adjust *= 0
         self.force_agent *= 0
         self.force_wall *= 0
+
+    def reset_neighbor(self):
+        self.neighbors[:, :] = -1
+        self.neighbor_distances[:, :] = self.neighbor_radius + 1.0
+        self.neighbor_distances_max[:] = self.neighbor_radius + 1.0
 
     def update_shoulder_positions(self):
         for i in range(self.size):

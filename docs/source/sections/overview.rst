@@ -1,7 +1,12 @@
 Overview
 ========
 
-Definitions
+Introduction
+------------
+
+Multi-agent simulation of crowd dynamics on continuous 2-dimensional space.
+
+Terminology
 -----------
 
 *Multi agent system (MAS)*
@@ -14,12 +19,19 @@ Definitions
 
 *Active agent*
 
-   Individual human pedestrian that is subject to motion.
+   Individual human pedestrian :math:`\mathrm{P}` that is subject to motion.
 
 *Crowd*
 
    A crowd is large group of individuals :math:`N \geq 100 \,\mathrm{P}` within the same space at the same time whose movements are for a prolonged period of time :math:`t \geq 60 \,\mathrm{s}` dependent on predominantly local interactions :math:`\rho \geq 1 \,\mathrm{P/m^{2}}`. [1]
 
+*Crowd density*
+
+    Number of agent per unit of area :math:`\rho` of unit :math:`\mathrm{P/m^{2}}`.
+
+*Crowd pressure*
+
+    Pressure that can measured inside a crowd when multiple agents press onto each others.
 
 *Social force model*
 
@@ -29,13 +41,9 @@ Definitions
 
    Jamming that happens when multiple agent try to exit through same bottleneck.
 
-*Crowd density*
+*Egress flow*
 
-    :math:`\rho`
-
-*Crowd pressure*
-
-*Counterflow model*
+    Numbers of agents going through a bottleneck per time unit :math:`\mathrm{P/s}`.
 
 *Uni-directional flow*
 
@@ -46,7 +54,7 @@ Definitions
 *Orthogonal/crossing flows*
 
 
-References
+**References**
 
 [1]: Duives, Dorine C., Winnie Daamen, and Serge P. Hoogendoorn. "State-of-the-art crowd motion simulation models." Transportation research part C: emerging technologies 37 (2013): 193-209.
 
@@ -54,21 +62,5 @@ References
 
 
 
-Known crowd phenomena
----------------------
 
-Faster is slower
 
-Lane formation
-
-Arching
-
-Turbulence
-
-Stop-and-Go waves
-
-Zipper effect
-
-Herding
-
-Freezing by heat

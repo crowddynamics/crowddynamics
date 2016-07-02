@@ -1,9 +1,9 @@
 import numpy as np
 
-from crowd_dynamics.simulation import Simulation
-from crowd_dynamics.area import GoalRectangle
 from crowd_dynamics.parameters import Parameters
+from crowd_dynamics.simulation import Simulation
 from crowd_dynamics.structure.agent import Agent
+from crowd_dynamics.structure.environment import Goal
 from crowd_dynamics.structure.wall import LinearWall
 
 
@@ -21,8 +21,8 @@ def initialize(size=100, width=30, height=5, path="", **kwargs):
     # Goal
     rx, ry = 1.0, height / 2
     goals = (
-        GoalRectangle(center=(0.0, ry), radius=(rx, ry)),
-        GoalRectangle(center=(width, ry), radius=(rx, ry))
+        Goal(center=(0.0, ry), radius=(rx, ry)),
+        Goal(center=(width, ry), radius=(rx, ry))
     )
 
     # Agents

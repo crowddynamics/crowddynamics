@@ -2,7 +2,7 @@ import numpy as np
 import pyqtgraph as pg
 from PyQt4 import QtGui, QtCore
 
-from .area import GoalRectangle, Bounds
+from crowd_dynamics.structure.environment import Goal, Bounds
 from .simulation import Simulation
 from .structure.wall import LinearWall
 from .structure.wall import RoundWall
@@ -73,7 +73,7 @@ class CentralItem(pg.PlotItem):
     def addAreas(self):
         # TODO: simulation.goals -> simulation.areas
         for area in self.simulation.goals:
-            if isinstance(area, GoalRectangle):
+            if isinstance(area, Goal):
                 pass
             elif isinstance(area, Bounds):
                 pass
@@ -99,6 +99,23 @@ class Controls(QtGui.QWidget):
         super().__init__()
 
 
+class Monitor(pg.PlotItem):
+    name = "monitor"
+    title = "Monitor"
+
+    def __init__(self, simulation: Simulation):
+        """
+        Plot visualizing simulation data.
+        Egress times
+        Forces
+        Timestep
+
+        """
+        super(Monitor, self).__init__(name=self.name, title=self.title)
+        self.showGrid(True, True, 0.5)
+        self.simulation = simulation
+
+
 class Graphics(pg.GraphicsLayoutWidget):
     def __init__(self, simulation: Simulation, parent=None, **kargs):
         """
@@ -113,7 +130,9 @@ class Graphics(pg.GraphicsLayoutWidget):
         self.resize(*(1200, 800))
 
         self.central = CentralItem(self.simulation)
+        self.monitor = Monitor(self.simulation)
         self.addItem(self.central, 0, 0, 1, 1)  # row, col, rowspan, colspan
+        self.addItem(self.monitor, 1, 0, 1, 1)  # row, col, rowspan, colspan
 
         self.timer = QtCore.QTimer()
         # noinspection PyUnresolvedReferences

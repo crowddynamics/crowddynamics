@@ -1,19 +1,11 @@
 import numpy as np
 
-
-"""
-Models for egress congestion.
-"""
+from crowd_dynamics.core.vector2d import length_nx2
 
 
 class EgressGame(object):
-    def __init__(self,
-                 agent_size,
-                 update_interval,
-                 neighbor_radius,
-                 neighborhood_size=8):
-        """
-        Patient and impatient pedestrians in a spatial game for egress congestion.
+    def __init__(self, agent, exit_door, time_aset, update_interval=0.1):
+        """Patient and impatient pedestrians in a spatial game for egress congestion.
 
         +-----------+--------------------------+-----------+
         |           |                Impatient |   Patient |
@@ -23,34 +15,29 @@ class EgressGame(object):
         |   Patient |                    1, -1 |      0, 0 |
         +-----------+--------------------------+-----------+
 
-        :param agent_size:
+        :param agent:
+        :param exit_door:
+        :param time_aset:
         :param update_interval:
         :param neighbor_radius:
         :param neighborhood_size:
         """
+
+        self.agent = agent.size
+        self.exit_door = exit_door
         self.update_interval = update_interval
-        self.agent_size = agent_size
-        self.neighbor_radius = neighbor_radius
-        self.neighborhood_size = neighborhood_size
-        self.current_strategy = np.zeros(agent_size)
-        self.neighbors = np.zeros((agent_size, neighborhood_size))
-        self.strategies = (0, 1)  # Strategies in {Impatient, Patient} = {0, 1}
 
-    def time_aset(self):
-        """
-        :return:  Available safe egress time
-        """
-        return 0
+        self.time_evac = np.zeros(self.agent.size)
+        self.time_aset = time_aset
 
-    def time_evac(self, i):
-        """
-        :param agent_closer_to_exit: Agent closer to exit
-        :param exit_capacity: Exit capacity
-        :return: Estimated evacuation time
-        """
-        agent_closer_to_exit = 0
-        exit_capacity = 0
-        return agent_closer_to_exit / exit_capacity
+        # Number of agents closer to the exit than agent i
+        self.agent_closer_to_exit = np.zeros(self.agent.size)
+
+        # Strategies in {Impatient, Patient} = {0, 1}
+        self.strategies = (0, 1)
+
+        # Current state of the game
+        self.current_strategy = np.zeros(self.agent.size)
 
     def clock(self, dt):
         """
@@ -62,39 +49,53 @@ class EgressGame(object):
         prob = dt / self.update_interval  # Probability of updating
         return np.random.random() < prob
 
-    def game_matrix(self, strategy_p1, strategy_p2, t_aset, t_ij):
+    def payoff(self, s_our, s_neighbor, avg_evac_time):
+        """Payout from game matrix.
+        :param s_our: Our strategy
+        :param s_neighbor: Neighbor strategy
         """
-        :param strategy_p1: Our strategy
-        :param strategy_p2: Neighbor strategy
-        """
-        if strategy_p1 == 0 and strategy_p2 == 0:
-            return t_aset / t_ij
-        elif strategy_p1 == 0 and strategy_p2 == 1:
+        s = (s_our, s_neighbor)
+        if s == (0, 0):
+            return self.time_aset / avg_evac_time
+        elif s == (0, 1):
             return -1
-        elif strategy_p1 == 1 and strategy_p2 == 0:
+        elif s == (1, 0):
             return 1
-        elif strategy_p1 == 1 and strategy_p2 == 1:
+        elif s == (1, 1):
             return 0
-        else:
-            raise ValueError()
+        return 0
 
     def best_response_strategy(self, i):
         """Update single strategy."""
         gain_loss = np.zeros(2)
-        for strategy in self.strategies:
-            for j in range(self.neighborhood_size):
-                mean_time = (self.time_evac(i) + self.time_evac(j)) / 2
-                t_aset = self.time_aset()
-                gain_loss[strategy] += self.game_matrix(
-                    self.current_strategy[i],
-                    self.current_strategy[j],
-                    t_aset, mean_time)
+        for j in self.agent.neighbors[i]:
+            if j < 0:
+                continue
+            avg_evac_time = (self.time_evac[i] + self.time_evac[j]) / 2
+            for strategy in self.strategies:
+                gain_loss[strategy] += self.payoff(
+                    strategy, self.current_strategy[j], avg_evac_time)
 
-        strategy = np.argmin(gain_loss)
-        self.current_strategy[i] = strategy
+        optimal_strategy = np.argmin(gain_loss)
+        self.current_strategy[i] = optimal_strategy
 
     def update_strategies(self, dt):
-        """Update strategies for all agents."""
-        for i in range(self.agent_size):
+        """Update strategies for all agents.
+        :param dt: Timestep used by integrator to update simulation.
+        """
+        # TODO: Mask agent that are not playing the game (anymore).
+
+        # Updates agents closer to the exit
+        self.agent_closer_to_exit = np.argsort(np.argsort(
+            length_nx2(self.exit_door.mid - self.agent.position)))
+
+        # Update evacution times
+        self.time_evac = self.agent_closer_to_exit / self.exit_door.capacity
+
+        # Loop over agents and update strategies
+        for i in range(self.agent.size):
             if self.clock(dt):
                 self.best_response_strategy(i)
+
+    def update_agent_parameters(self):
+        pass

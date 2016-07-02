@@ -1,0 +1,16 @@
+# List of things to implement
+Path Finding:
+- Real: Navigate through the map
+- Optimal: God mode. Agents see through walls, know all exits etc
+
+Youtube Channel:
+- Animations
+
+CAD:
+- CAD support
+- Importing, Designs
+
+Python:
+- Python Packaging: https://python-packaging-user-guide.readthedocs.org/en/latest/
+- Sphinx Documentation: http://www.sphinx-doc.org/en/stable/#
+- Scikits: https://github.com/pv/scikit-example

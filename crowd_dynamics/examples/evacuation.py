@@ -3,11 +3,11 @@ from functools import partial
 import numba
 import numpy as np
 
-from crowd_dynamics.area import GoalRectangle
 from crowd_dynamics.core.vector2d import rotate90, normalize, length
 from crowd_dynamics.parameters import Parameters
 from crowd_dynamics.simulation import Simulation
 from crowd_dynamics.structure.agent import Agent
+from crowd_dynamics.structure.environment import Goal
 from crowd_dynamics.structure.wall import LinearWall
 
 
@@ -51,7 +51,8 @@ def initialize(size=100, width=10, height=10, door_width=1.2, exit_hall_width=1,
     walls = LinearWall(linear_params)
 
     # Goal
-    goals = GoalRectangle(center=(52.5, 25.0), radius=(2.5, 5.0))
+    goals = Goal(center=(width + 1.0, height / 2),
+                 radius=(1.0, height / 2))
 
     # Agents
     agent = Agent(*parameters.agent(size))

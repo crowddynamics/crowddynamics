@@ -28,42 +28,42 @@ Timeline of research used for this simulation code.
 ### 1995
 Pioneering research with crowd simulations.
 
-[Social force model for pedestrian dynamics](http://arxiv.org/pdf/cond-mat/9805244.pdf)
+[Social force model for pedestrian dynamics]()
 > Helbing, Dirk, and Peter Molnar. "Social force model for pedestrian dynamics." Physical review E 51, no. 5 (1995): 4282.
 
 ### 2000
 Original social force model.
 
-[Simulating dynamical features of escape panic](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.323.245&rep=rep1&type=pdf)
+[Simulating dynamical features of escape panic]()
 > Helbing, Dirk, Illés Farkas, and Tamas Vicsek. "Simulating dynamical features of escape panic." Nature 407, no. 6803 (2000): 487-490.
 
 ### 2006
-Modeling agent with three circles.
+Introduction of modeling agent with three circles.
 
-[Crowd dynamics discrete element multi-circle model](http://www.sciencedirect.com/science/article/pii/S0925753505001724)
+[Crowd dynamics discrete element multi-circle model]()
 > Langston, Paul A., Robert Masling, and Basel N. Asmar. "Crowd dynamics discrete element multi-circle model." Safety Science 44, no. 5 (2006): 395-417.
 
 ### 2009
 Simulation model details.
 
-[Fire Dynamics Simulator with Evacuation: FDS+Evac](http://www.vtt.fi/inf/pdf/workingpapers/2009/W119.pdf)
+[Fire Dynamics Simulator with Evacuation: FDS+Evac]()
 > Korhonen, Timo, and Simo Hostikka. "Fire dynamics simulator with evacuation: FDS+ Evac." Technical Reference and User’s Guide. VTT Technical Research Centre of Finland (2009).
 
 
-[Modelling subgroup behaviour in crowd dynamics DEM simulation](http://www.sciencedirect.com/science/article/pii/S0307904X09000808) 
+[Modelling subgroup behaviour in crowd dynamics DEM simulation]() 
 > Singh, Harmeet, Robyn Arter, Louise Dodd, Paul Langston, Edward Lester, and John Drury. "Modelling subgroup behaviour in crowd dynamics DEM simulation." Applied Mathematical Modelling 33, no. 12 (2009): 4408-4423.
 
 ### 2010
 
 Model for counterflow situtations in crowd simulations.
 
-[Counterflow model for agent-based simulation of crowd dynamics](http://www.sciencedirect.com/science/article/pii/S0360132311002630) 
+[Counterflow model for agent-based simulation of crowd dynamics]() 
 > Korhonen, T., S. Heliovaara, Simo Hostikkaa, and H. Ehtamo. "Counterflow model for agent-based simulation of crowd dynamics." Safety Science (2010).
 
 ### 2013
 Game theoretical approach for human behaviour in egress congestion.
 
-[Patient and impatient pedestrians in a spatial game for egress congestion](http://journals.aps.org/pre/abstract/10.1103/PhysRevE.87.012802)
+[Patient and impatient pedestrians in a spatial game for egress congestion]()
 > Heliövaara, Simo, Harri Ehtamo, Dirk Helbing, and Timo Korhonen. "Patient and impatient pedestrians in a spatial game for egress congestion." Physical Review E 87, no. 1 (2013): 012802.
 
 ### 2014

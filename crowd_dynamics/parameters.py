@@ -127,7 +127,6 @@ class Parameters:
         # TODO: converters. Eval to values.
         pi = np.pi  # For eval
         inertia_rot = eval(values["inertia_rot"]) * np.ones(size)
-        # target_velocity = eval(values["target_velocity"]) * np.ones(size)
         target_angular_velocity = eval(values["target_angular_velocity"]) * np.ones(size)
 
         return size, mass, radius, r_t, r_s, r_ts, inertia_rot, target_velocity, target_angular_velocity

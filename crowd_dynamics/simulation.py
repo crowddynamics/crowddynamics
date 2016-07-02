@@ -1,5 +1,4 @@
-from .core.integrator import integrator
-from .core.motion import motion
+from .core.motion import motion, integrator
 from .core.navigation import direction_to_target_angle, navigator
 from .functions import filter_none, timed_execution
 from .io.attributes import Intervals, Attrs, Attr
@@ -63,6 +62,10 @@ class Simulation:
         navigator(self.agent, self.angle_update, self.direction_update)
         motion(self.agent, self.wall)
         dt = integrator(self.agent, self.dt_min, self.dt_max)
+        # TODO: Egress model
+
+        self.agent.reset_neighbor()
+
         self.result.increment_simulation_time(dt)
 
         # Goals

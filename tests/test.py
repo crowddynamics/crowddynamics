@@ -3,7 +3,7 @@
 
 import numpy as np
 
-from crowd_dynamics.core.integrator import integrator
+from crowd_dynamics.core.motion import integrator
 from crowd_dynamics.functions import timed_execution
 from crowd_dynamics.parameters import Parameters
 from crowd_dynamics.structure.agent import Agent
