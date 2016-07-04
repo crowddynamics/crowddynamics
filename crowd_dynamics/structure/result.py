@@ -12,10 +12,9 @@ class Result(object):
     """
     Struct for simulation results.
     """
+    # TODO: rename to stats
 
     def __init__(self):
-        self.initial_flag = True
-
         # Simulation data
         self.iterations = 0
         self.simulation_time = 0

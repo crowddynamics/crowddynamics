@@ -4,11 +4,12 @@ import numba
 import numpy as np
 
 from crowd_dynamics.core.vector2d import rotate90, normalize, length
-from crowd_dynamics.parameters import Parameters
+from crowd_dynamics.parameters import Parameters, populate
 from crowd_dynamics.simulation import Simulation
 from crowd_dynamics.structure.agent import Agent
 from crowd_dynamics.structure.environment import Goal
 from crowd_dynamics.structure.wall import LinearWall
+from crowd_dynamics.area import Rectangle, Circle
 
 
 @numba.jit(nopython=True)
@@ -27,7 +28,7 @@ def _direction_update(agent, target, mid, r_mid, c_rect, r_rect):
 
 
 def initialize(size=100, width=10, height=10, door_width=1.2, exit_hall_width=1,
-               path="", **kwargs):
+               egress_model=False, t_aset=60, path="", **kwargs):
     name = "evacuation"
 
     parameters = Parameters(width, height)
@@ -56,10 +57,12 @@ def initialize(size=100, width=10, height=10, door_width=1.2, exit_hall_width=1,
 
     # Agents
     agent = Agent(*parameters.agent(size))
-    parameters.random_position(agent.position, agent.radius,
-                               (0.0, width), (0.0, height), walls)
+    rect = Rectangle((0.0, width), (0.0, height))
+    circ = Circle((np.pi / 2, np.pi / 2 + np.pi), (0, height / 2),
+                  (width, height / 2))
+    populate(agent, agent.size, circ, walls)
 
-    agent.target_direction += np.array((1.0, 0.0))
+    agent.target_direction[:] = np.array((1.0, 0.0))
     agent.update_shoulder_positions()
 
     # Navigation algorithm
@@ -74,10 +77,17 @@ def initialize(size=100, width=10, height=10, door_width=1.2, exit_hall_width=1,
     c_rect = r_rect = np.array((width / 2, height / 2))
     r_mid = door_width / 2
 
-    # print(target, mid, r_mid, c_rect, r_rect)
-
     direction_update = partial(_direction_update, target=target, mid=mid,
                                r_mid=r_mid, c_rect=c_rect, r_rect=r_rect)
 
+    if egress_model:
+        from crowd_dynamics.core.egress import ExitDoor
+        from crowd_dynamics.core.egress import EgressGame
+        exit_door = ExitDoor(door[0], door[1], np.mean(agent.radius))
+        egress_model = EgressGame(agent, exit_door, t_aset, 0.1)
+    else:
+        egress_model = None
+
     return Simulation(agent, wall=walls, goals=goals, name=name, dirpath=path,
-                      direction_update=direction_update, **kwargs)
+                      direction_update=direction_update,
+                      egress_model=egress_model, **kwargs)

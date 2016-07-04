@@ -16,9 +16,10 @@ Contents:
    sections/agent.rst
    sections/wall.rst
    sections/motion.rst
+   sections/subgroup.rst
    sections/navigation.rst
    sections/egress.rst
-   sections/examples.rst
+   sections/simulations.rst
 
 
 Indices and tables

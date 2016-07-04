@@ -17,4 +17,4 @@ Models
 ------
 
 .. image::
-   agent_model.*
+   ../_static/agent_model.*

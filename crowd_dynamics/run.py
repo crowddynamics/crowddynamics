@@ -20,14 +20,15 @@ def evacuation30():
 def evacuation100():
     """Medium crowd density."""
     from crowd_dynamics.examples.evacuation import initialize
-    return initialize(size=100, width=7, height=7, path=path, dt_max=0.01)
+    return initialize(size=100, width=10, height=10, path=path,
+                      egress_model=True, t_aset=45)
 
 
-def evacuation200():
+def evacuation_high():
     """Medium crowd density."""
     from crowd_dynamics.examples.evacuation import initialize
-    return initialize(size=200, width=7, height=7, door_width=0.8, path=path,
-                      dt_max=0.01)
+    return initialize(size=700, width=15, height=30, path=path,
+                      egress_model=True, t_aset=350)
 
 
 def outdoor():
@@ -41,6 +42,8 @@ def crossing_flows():
 
 
 if __name__ == '__main__':
-    simulation = evacuation100()
+    # simulation = hallway100()
+    simulation = evacuation_high()
+    # simulation = evacuation100()
     from crowd_dynamics.qui import main
     main(simulation)

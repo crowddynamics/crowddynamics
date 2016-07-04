@@ -1,9 +1,12 @@
 import os
+
 import numpy as np
 import pandas as pd
 from scipy.stats import truncnorm as tn
 
-from .functions import filter_none
+from crowd_dynamics.area import Area
+from crowd_dynamics.core.vector2d import length_nx2
+from crowd_dynamics.functions import filter_none
 
 
 def load_tables():
@@ -20,10 +23,81 @@ def load_tables():
     return body_types, agent_table
 
 
+def populate(agent, amount, area: Area, walls=None):
+    """
+    Monte Carlo method for filling an area with desired amount of circles.
+
+    Default area is rectangle.
+
+    Loop:
+    #) Generate a random element inside desired set (area).
+    #) Check if overlapping with
+        #) Agents
+        #) Walls
+    #) Save value
+
+    :param walls:
+    :param amount:
+    :param area: Area to be filled.
+    :param wall:
+    """
+    # Fill inactive agents
+    inactive = agent.active ^ True
+    radius = agent.radius[inactive][:amount]
+    position = agent.position[inactive][:amount]
+    indices = np.arange(agent.size)[inactive][:amount]
+
+    area_agent = np.sum(np.pi * radius ** 2)
+    fill_rate = area_agent / area.size()
+    threshold = 0.8
+    print("Monte Carlo fill rate: {}".format(fill_rate))
+    if fill_rate > threshold:
+        print(Warning("High fill rate of {} over threshold {}.\n"
+                      "Cannot guarantee of placement of all agents.".format(
+            fill_rate, threshold)))
+
+    walls = filter_none(walls)
+
+    i = 0  # Number of agents placed
+    iterations = 0  # Number of iterations done
+    maxlen = len(position)
+    while i < maxlen and iterations < 10 * maxlen:
+        iterations += 1
+        pos = area.random()
+
+        index = indices[i]
+
+        rad = radius[index]
+        radii = radius[:index]
+
+        # Test overlapping with other agents
+        if i > 0:
+            d = length_nx2(pos - position[:index]) - (rad + radii)
+            cond = np.all(d > 0)
+            if not cond:
+                continue
+
+        # Test overlapping with walls
+        cond = 1
+        for wall in walls:
+            for j in range(wall.size):
+                d = wall.distance(j, pos) - rad
+                cond *= d > 0
+        if not cond:
+            continue
+
+        position[index] = pos
+        agent.position[index] = pos
+        agent.active[index] = True
+        i += 1
+    print("Number of agents placed: {}".format(i))
+
+
 class Parameters:
     """
     Generates random parameters for simulations and testing.
     """
+
     def __init__(self, width, height):
         self.x = (0.0, width)
         self.y = (0.0, height)
@@ -43,59 +117,6 @@ class Parameters:
         """Random x and y coordinates inside dims."""
         return np.stack((np.random.uniform(*self.x, size=size),
                          np.random.uniform(*self.y, size=size)), axis=1)
-
-    def random_position(self, position, radius, x_dims=None, y_dims=None,
-                        walls=None):
-        """
-        Generate uniformly distributed random positions inside x_dims and y_dims
-        for the agents without overlapping each others or the walls with Monte
-        Carlo method.
-        """
-        # TODO: define area more accurately
-        # TODO: check if area can be filled
-        walls = filter_none(walls)
-
-        if x_dims is None:
-            x_dims = self.x
-        if y_dims is None:
-            y_dims = self.y
-
-        size = len(position)
-        i = 0           # Number of agents placed
-        iterations = 0  # Number of iterations done
-        max_iterations = 100 * size  # Iteration limit
-        while i < size:
-            if iterations >= max_iterations:
-                raise Exception("Iteration limit if {} reached.".format(
-                    max_iterations))
-            iterations += 1
-
-            # Random uniform position inside x and y dimensions
-            pos = np.zeros(2)
-            pos[0] = np.random.uniform(*x_dims)
-            pos[1] = np.random.uniform(*y_dims)
-            rad = radius[i]
-            radii = radius[:i]
-
-            # Test overlapping with other agents
-            if i > 0:
-                d = pos - position[:i]
-                d = np.hypot(d[:, 0], d[:, 1]) - (rad + radii)
-                cond = np.all(d > 0)
-                if not cond:
-                    continue
-
-            # Test overlapping with walls
-            cond = 1
-            for wall in walls:
-                for j in range(wall.size):
-                    d = wall.distance(j, pos) - rad
-                    cond *= d > 0
-            if not cond:
-                continue
-
-            position[i, :] = pos
-            i += 1
 
     def random_round_wall(self, size, r_min, r_max):
         """Arguments for constructing round wall."""
@@ -130,3 +151,5 @@ class Parameters:
         target_angular_velocity = eval(values["target_angular_velocity"]) * np.ones(size)
 
         return size, mass, radius, r_t, r_s, r_ts, inertia_rot, target_velocity, target_angular_velocity
+
+

@@ -13,14 +13,15 @@ class Simulation:
 
     def __init__(self, agent, wall=None, goals=None, name=None, dirpath=None,
                  angle_update=direction_to_target_angle, direction_update=None,
-                 dt_min=0.001, dt_max=0.01):
+                 egress_model=None, bounds=None, dt_min=0.001, dt_max=0.01):
         # Structures
         self.result = Result()
         self.agent = agent
         self.wall = filter_none(wall)
         self.goals = filter_none(goals)
-        self.bounds = None
+        self.bounds = bounds
         self.areas = None
+        self.egress_model = egress_model
 
         # Angle and direction update algorithms
         self.angle_update = angle_update
@@ -62,15 +63,20 @@ class Simulation:
         navigator(self.agent, self.angle_update, self.direction_update)
         motion(self.agent, self.wall)
         dt = integrator(self.agent, self.dt_min, self.dt_max)
+
         # TODO: Egress model
+        if self.egress_model is not None:
+            self.egress_model.update(self.result.simulation_time, dt)
 
         self.agent.reset_neighbor()
-
         self.result.increment_simulation_time(dt)
+
+        if self.bounds is not None:
+            self.bounds.update(self.agent)
 
         # Goals
         for goal in self.goals:
-            num = goal.is_reached_by(self.agent)
+            num = goal.update(self.agent)
             self.result.increment_in_goal_time(num)
 
         if self.interval():

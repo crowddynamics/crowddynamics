@@ -48,9 +48,10 @@ spec_agent = (
     ("f_soc_iw_max", float64),
     ("sight_soc", float64),
     ("sight_wall", float64),
+    ("dist_three_circle", float64),
     ("neighbor_radius", float64),
     ("neighborhood_size", int64),
-    ("neighbors", float64[:, :]),
+    ("neighbors", int64[:, :]),
     ("neighbor_distances", float64[:, :]),
     ("neighbor_distances_max", float64[:]),
 )
@@ -68,8 +69,8 @@ class Agent(object):
                  radius_torso_shoulder, inertia_rot, target_velocity,
                  target_angular_velocity):
         # Array properties
-        self.size = size
-        self.shape = (size, 2)
+        self.size = size        # Maximum number of agents
+        self.shape = (size, 2)  # Shape of 2D arrays
 
         # Agent models (Only one can be active at time).
         # Three circles model (more realistic) model is used by default.
@@ -82,10 +83,11 @@ class Agent(object):
 
         # Flags
         self.orientable = self.three_circles
-        self.active = np.ones(size, np.bool8)
+        self.active = np.zeros(size, np.bool8)  # Initialise agents as inactive
         self.goal_reached = np.zeros(size, np.bool8)
 
         # Constant properties
+        # TODO: Gender
         self.radius = radius               # Total radius
         self.r_t = radius_torso            # Radius of torso
         self.r_s = radius_shoulder         # Radius of shoulders
@@ -138,29 +140,47 @@ class Agent(object):
         self.sight_soc = 7.0
         self.sight_wall = 7.0
 
+        # Maximum distance > 0 to use three circles model. Improves physical
+        # contact forces and adds rotational movement.
+        self.dist_three_circle = 2.0
+
         # Maximum size of neighbourhood
         # Maximum distance that is considered to other agent that is neighbour
         # Maximum size number of agents that are closer than radius.
         # If less than maximum size of neighbors left over terms are -1.
-        # TODO: Distances
-        self.neighbor_radius = 1.0  # if less than or equal to 0 -> inactive
+        self.neighbor_radius = 0  # if less than or equal to 0 -> inactive
         self.neighborhood_size = 8
-        self.neighbors = np.ones((self.size, self.neighborhood_size))
+        self.neighbors = np.ones((self.size, self.neighborhood_size), dtype=np.int64)
         self.neighbor_distances = np.ones((self.size, self.neighborhood_size))
         self.neighbor_distances_max = np.ones(self.size)
         self.reset_neighbor()
 
+    def set_circular(self):
+        self.circular = True
+        self.three_circles = False
+        self.orientable = self.three_circles
+
+    def set_three_circles(self):
+        self.circular = False
+        self.three_circles = True
+        self.orientable = self.three_circles
+
     def reset_motion(self):
-        self.force *= 0
-        self.torque *= 0
-        self.force_adjust *= 0
-        self.force_agent *= 0
-        self.force_wall *= 0
+        self.force[:] = 0
+        self.torque[:] = 0
+        self.force_adjust[:] = 0
+        self.force_agent[:] = 0
+        self.force_wall[:] = 0
 
     def reset_neighbor(self):
-        self.neighbors[:, :] = -1
-        self.neighbor_distances[:, :] = self.neighbor_radius + 1.0
-        self.neighbor_distances_max[:] = self.neighbor_radius + 1.0
+        if self.neighbor_radius == 0:
+            return
+        self.neighbors[:, :] = -1  # np.nan
+        self.neighbor_distances[:, :] = self.neighbor_radius + 1.0  # np.inf
+        self.neighbor_distances_max[:] = self.neighbor_radius + 1.0  # np.inf
+
+    def indices(self):
+        return np.arange(self.size)[self.active]
 
     def update_shoulder_positions(self):
         for i in range(self.size):

@@ -5,7 +5,7 @@ Linear walls
 ------------
 
 .. image::
-   wall_model.*
+   ../_static/wall_model.*
 
 Linear wall is defined by two points
 

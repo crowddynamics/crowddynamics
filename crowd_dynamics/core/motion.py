@@ -28,7 +28,7 @@ def force_adjust(agent):
     force = (agent.mass / agent.tau_adj) * \
             (agent.target_velocity * agent.target_direction - agent.velocity)
     agent.force += force
-    agent.force_adjust += force
+    # agent.force_adjust += force
 
 
 @numba.jit(nopython=True, nogil=True)
@@ -139,7 +139,7 @@ def integrator(agent, dt_min, dt_max):
         agent.angular_velocity += angular_acceleration * dt
         agent.angle[:] = wrap_to_pi(agent.angle)
 
-        # TODO: Move somewhere else?
-        agent.update_shoulder_positions()
+    # TODO: Move somewhere else?
+    agent.update_shoulder_positions()
 
     return dt

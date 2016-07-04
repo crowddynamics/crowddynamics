@@ -1,7 +1,7 @@
 import numpy as np
 
+
 # TODO: Spring, Void
-from crowd_dynamics.core.vector2d import length
 
 
 class Area(object):
@@ -13,8 +13,15 @@ class Area(object):
 
 
 class Bounds:
-    def __init__(self):
-        pass
+    def __init__(self, center, radius):
+        self.center = np.array(center, dtype=np.float64)
+        self.radius = np.array(radius, dtype=np.float64)
+
+    def update(self, agent):
+        """Agents outside bounds are updated to inactive state."""
+        vec = np.abs(self.center - agent.position) <= self.radius
+        condition = vec[:, 0] & vec[:, 1]
+        agent.active &= condition
 
 
 class Goal(object):
@@ -23,7 +30,7 @@ class Goal(object):
         self.center = np.array(center, dtype=np.float64)
         self.radius = np.array(radius, dtype=np.float64)
 
-    def is_reached_by(self, agent):
+    def update(self, agent):
         """Updates agent that have reached goal.
 
         :param agent:
@@ -37,10 +44,3 @@ class Goal(object):
         return num
 
 
-class ExitDoor(object):
-    def __init__(self, p0, p1, agent_radius):
-        """Exit door / Bottleneck"""
-        self.p = np.array((p0, p1))
-        self.mid = (self.p[0] + self.p[1]) / 2
-        self.radius = length(self.p[1] - self.p[0]) / 2
-        self.capacity = 1.0 * self.radius // agent_radius

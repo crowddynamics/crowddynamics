@@ -9,16 +9,18 @@ from .vector2d import length, truncate, rotate270
 
 @numba.jit(nopython=True, nogil=True)
 def agent_agent(agent):
-    # n - 1 + n - 2 + ... + 1 = n^2 / 2
-    for i in range(agent.size - 1):
-        for j in range(i + 1, agent.size):
+    # n - 1 + n - 2 + ... + 1 = n^2 / 2 in O(n^2)
+    ind = agent.indices()
+    for l, i in enumerate(ind[:-1]):
+        for j in ind[l+1:]:
             agent_agent_interaction(i, j, agent)
 
 
 @numba.jit(nopython=True, nogil=True)
 def agent_wall(agent, wall):
+    ind = agent.indices()
     for w in range(wall.size):
-        for i in range(agent.size):
+        for i in ind:
             agent_wall_interaction(i, w, agent, wall)
 
 
@@ -99,8 +101,7 @@ def agent_agent_interaction(i, j, agent):
         force = force_social(x, v, r_tot, agent.k, agent.tau_0)
         truncate(force, agent.f_soc_ij_max)
 
-        cutoff = 2.0
-        if h <= cutoff:
+        if h <= agent.dist_three_circle:
             if agent.orientable:
                 # Update values
                 n, h, r_moment_i, r_moment_j = agent_agent_distance(agent, i, j)
@@ -119,20 +120,20 @@ def agent_agent_interaction(i, j, agent):
         if agent.orientable:
             agent.torque[i] += cross2d(r_moment_i, force)
             agent.torque[j] -= cross2d(r_moment_j, force)
-        agent.force_agent[i] += force
-        agent.force_agent[j] -= force
+        # agent.force_agent[i] += force
+        # agent.force_agent[j] -= force
 
     # TODO: update neighborhood
     if agent.neighbor_radius > 0 and h < agent.neighbor_radius:
         if h < agent.neighbor_distances_max[i]:
             ind = np.argmax(agent.neighbor_distances[i])
-            agent.neighbors[ind] = j
+            agent.neighbors[i, ind] = j
             agent.neighbor_distances[i, ind] = h
             agent.neighbor_distances_max[i] = np.max(agent.neighbor_distances[i])
 
         if h < agent.neighbor_distances_max[j]:
             ind = np.argmax(agent.neighbor_distances[j])
-            agent.neighbors[ind] = i
+            agent.neighbors[j, ind] = i
             agent.neighbor_distances[j, ind] = h
             agent.neighbor_distances_max[j] = np.max(
                 agent.neighbor_distances[j])
@@ -150,8 +151,6 @@ def agent_wall_interaction(i, w, agent, wall):
         r_moment_i = np.zeros(2)
         force = force_social_velocity_independent(h, n, agent.a, agent.b)
 
-        cutoff = 2.0
-
         # TODO: Velocity relative social force for agent-wall interaction
         # x, r = wall.relative_position(w, agent.position[i], agent.velocity[i])
         # force = force_social(x, agent.velocity[i], agent.radius[i] + r,
@@ -159,7 +158,7 @@ def agent_wall_interaction(i, w, agent, wall):
 
         truncate(force, agent.f_soc_iw_max)
 
-        if h <= cutoff:
+        if h <= agent.dist_three_circle:
             if agent.orientable:
                 h, n, r_moment_i = agent_wall_distance(agent, wall, i, w)
 
@@ -170,6 +169,6 @@ def agent_wall_interaction(i, w, agent, wall):
                 force += force_c
 
         agent.force[i] += force
-        agent.force_wall[i] += force
+        # agent.force_wall[i] += force
         if agent.orientable:
             agent.torque[i] += cross2d(r_moment_i, force)

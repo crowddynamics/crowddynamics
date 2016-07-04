@@ -6,7 +6,7 @@ Modeling egress and room evacuation situations through exit door / bottleneck.
 Exit door
 ---------
 
-.. literalinclude:: ../../../crowd_dynamics/structure/environment.py
+.. literalinclude:: ../../../crowd_dynamics/core/egress.py
    :pyobject: ExitDoor
 
 Neighborhood
@@ -58,7 +58,9 @@ Average evacuation time
 Available safe egress time
 
 .. math::
-   T_{ASET}.
+   T_{ASET}(T) = T_{ASET}(0) - T,
+
+where :math:`T_{ASET}(0)` is initial available safe egress time and :math:`T` is current simulation time.
 
 Payoff matrix
 
@@ -70,4 +72,10 @@ Payoff matrix
 |   Patient |                            :math:`1, -1` | :math:`0, 0`  |
 +-----------+------------------------------------------+---------------+
 
+Updating strategies by `Poisson process`_
+
+.. _poisson process: http://preshing.com/20111007/how-to-generate-random-timings-for-a-poisson-process/
+
+.. literalinclude:: ../../../crowd_dynamics/core/egress.py
+   :pyobject: clock
 

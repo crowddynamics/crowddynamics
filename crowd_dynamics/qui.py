@@ -2,7 +2,7 @@ import numpy as np
 import pyqtgraph as pg
 from PyQt4 import QtGui, QtCore
 
-from crowd_dynamics.structure.environment import Goal, Bounds
+from .structure.environment import Goal, Bounds
 from .simulation import Simulation
 from .structure.wall import LinearWall
 from .structure.wall import RoundWall
@@ -13,18 +13,18 @@ class CentralItem(pg.PlotItem):
     title = "Simulation"
 
     def __init__(self, simulation: Simulation):
-        """
-        Central plot.
-        """
+        """Central plot."""
         # TODO: Remote processing
         # TODO: Legend
         # TODO: Coloring of agents (Forces, etc)
-
-        super(CentralItem, self).__init__(name=self.name, title=self.title)
+        super(CentralItem, self).__init__(name=self.name)
 
         # One to one scale for x and y coordinates
         self.setAspectLocked(lock=True, ratio=1)
         self.showGrid(True, True, 0.5)
+        self.setLabels(title=self.title, left="y", bottom="x")
+        # self.setRange()
+        # self.disableAutoRange()
 
         # Data
         self.simulation = simulation
@@ -36,10 +36,10 @@ class CentralItem(pg.PlotItem):
         self.addAreas()
 
         # Agent. TODO: Orientable vs circular
-        brush = pg.mkBrush(0, 0, 255, 128)  # RGBA
+        self.brush_psy = pg.mkBrush(255, 255, 255, 255 // 4)  # RGBA
         self.psy = self.addCircle(self.agent.radius,
-                                  symbolsPen=None,
-                                  symbolBrush=brush)
+                                  symbolPen=None,
+                                  symbolBrush=self.brush_psy)
 
         connect = np.ones(3 * self.agent.size, dtype=np.int32)
         connect[2::3] = np.zeros(self.agent.size, dtype=np.int32)
@@ -47,15 +47,16 @@ class CentralItem(pg.PlotItem):
         self.right_shoulder = self.addCircle(self.agent.r_s)
         self.torso = self.addCircle(self.agent.r_t)
         self.direction = self.plot(connect=connect)
-        self.updateData()
 
         # Walls
         self.walls = self.plot()
         self.addWalls()
 
+        self.updateData()
+
     def addCircle(self, radius, **kwargs):
-        return self.plot(symbol='o', symbolSize=2 * radius, pen=None, pxMode=False,
-                         **kwargs)
+        return self.plot(symbol='o', symbolSize=2 * radius, pen=None,
+                         pxMode=False, **kwargs)
 
     def addWalls(self):
         for wall in self.simulation.wall:
@@ -79,19 +80,32 @@ class CentralItem(pg.PlotItem):
                 pass
 
     def updateData(self):
-        """
-        Updates data in the plot.
-        """
+        """Updates data in the plot."""
+        # TODO: Update coloring
+        brush = pg.mkBrush(0, 0, 255, 255)
+        if self.simulation.egress_model is not None:
+            impatient = pg.mkBrush(255, 0, 0, 255)  # RGBA
+            patient = pg.mkBrush(0, 0, 255, 255)  # RGBA
+            states = np.array((impatient, patient))
+            brush = states[self.simulation.egress_model.strategy]
+
         self.psy.setData(self.agent.position)
-        self.torso.setData(self.agent.position)
-        self.left_shoulder.setData(self.agent.position_ls)
-        self.right_shoulder.setData(self.agent.position_rs)
+        self.torso.setData(self.agent.position, symbolBrush=brush)
+        self.left_shoulder.setData(self.agent.position_ls, symbolBrush=brush)
+        self.right_shoulder.setData(self.agent.position_rs, symbolBrush=brush)
 
         array = np.concatenate((self.agent.position_ls,
                                 self.agent.front,
                                 self.agent.position_rs), axis=1)
         array = array.reshape(3 * self.agent.shape[0], self.agent.shape[1])
         self.direction.setData(array)
+
+        text = "Iterations: {} " \
+               "Simulation time: {:0.2f} " \
+               "Agents in goal: {}"
+        stats = self.simulation.result
+        self.setLabels(top=text.format(stats.iterations, stats.simulation_time,
+                                       stats.in_goal))
 
 
 class Controls(QtGui.QWidget):
@@ -115,6 +129,9 @@ class Monitor(pg.PlotItem):
         self.showGrid(True, True, 0.5)
         self.simulation = simulation
 
+    def updateData(self):
+        pass
+
 
 class Graphics(pg.GraphicsLayoutWidget):
     def __init__(self, simulation: Simulation, parent=None, **kargs):
@@ -130,9 +147,9 @@ class Graphics(pg.GraphicsLayoutWidget):
         self.resize(*(1200, 800))
 
         self.central = CentralItem(self.simulation)
-        self.monitor = Monitor(self.simulation)
         self.addItem(self.central, 0, 0, 1, 1)  # row, col, rowspan, colspan
-        self.addItem(self.monitor, 1, 0, 1, 1)  # row, col, rowspan, colspan
+        # self.monitor = Monitor(self.simulation)
+        # self.addItem(self.monitor, 1, 0, 1, 1)  # row, col, rowspan, colspan
 
         self.timer = QtCore.QTimer()
         # noinspection PyUnresolvedReferences
@@ -142,6 +159,7 @@ class Graphics(pg.GraphicsLayoutWidget):
     def updatePlots(self):
         if self.simulation.advance():
             self.central.updateData()
+            # self.monitor.updateData()
         else:
             self.timer.stop()
 
