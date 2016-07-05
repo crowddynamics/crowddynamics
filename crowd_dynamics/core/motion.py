@@ -8,35 +8,39 @@ from .vector2d import dot2d, wrap_to_pi
 
 def force_random(agent, std_trunc=3.0):
     # Truncated normal distribution with standard deviation of 3.
+    i = agent.indices()
     magnitude = truncnorm.rvs(0, std_trunc, loc=0, scale=agent.std_rand_force,
-                              size=agent.size)
-    angle = np.random.uniform(0, 2 * np.pi, size=agent.size)
+                              size=i.size)
+    angle = np.random.uniform(0, 2 * np.pi, size=i.size)
     force = magnitude * np.array((np.cos(angle), np.sin(angle)))
-    agent.force += force.T * agent.mass
+    agent.force[i] += force.T * agent.mass[i]
 
 
 def torque_random(agent, std_trunc=3.0):
     """Random torque."""
+    i = agent.indices()
     torque = truncnorm.rvs(-std_trunc, std_trunc, loc=0,
-                           scale=agent.std_rand_force, size=agent.size)
-    agent.torque += torque * agent.inertia_rot
+                           scale=agent.std_rand_force, size=i.size)
+    agent.torque[i] += torque * agent.inertia_rot[i]
 
 
 @numba.jit(nopython=True, nogil=True)
 def force_adjust(agent):
     """Force that adjust movement towards target direction."""
-    force = (agent.mass / agent.tau_adj) * \
-            (agent.target_velocity * agent.target_direction - agent.velocity)
-    agent.force += force
-    # agent.force_adjust += force
+    for i in agent.indices():
+        force = (agent.mass[i] / agent.tau_adj) * \
+                (agent.target_velocity[i] * agent.target_direction[i] - agent.velocity[i])
+        agent.force[i] += force
+        # agent.force_adjust += force
 
 
 @numba.jit(nopython=True, nogil=True)
 def torque_adjust(agent):
     """Adjusting torque."""
-    agent.torque += agent.inertia_rot / agent.tau_adj_rot * (
-        wrap_to_pi(agent.target_angle - agent.angle) / np.pi *
-        agent.target_angular_velocity - agent.angular_velocity)
+    for i in agent.indices():
+        agent.torque[i] += agent.inertia_rot[i] / agent.tau_adj_rot * (
+            wrap_to_pi(agent.target_angle[i] - agent.angle[i]) / np.pi *
+            agent.target_angular_velocity[i] - agent.angular_velocity[i])
 
 
 @numba.jit(f8[:](f8, f8[:], f8, f8), nopython=True, nogil=True)
