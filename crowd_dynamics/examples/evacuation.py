@@ -4,12 +4,11 @@ import numba
 import numpy as np
 
 from crowd_dynamics.core.vector2d import rotate90, normalize, length
+from crowd_dynamics.environment import Goal, Rectangle, Circle
 from crowd_dynamics.parameters import Parameters, populate
 from crowd_dynamics.simulation import Simulation
 from crowd_dynamics.structure.agent import Agent
-from crowd_dynamics.structure.environment import Goal
 from crowd_dynamics.structure.wall import LinearWall
-from crowd_dynamics.area import Rectangle, Circle
 
 
 @numba.jit(nopython=True)
@@ -28,8 +27,11 @@ def _direction_update(agent, target, mid, r_mid, c_rect, r_rect):
 
 
 def initialize(size=100, width=10, height=10, door_width=1.2, exit_hall_width=1,
-               egress_model=False, t_aset=60, path="", **kwargs):
+               spawn_shape="circ", egress_model=False, t_aset=60, path="",
+               **kwargs):
     name = "evacuation"
+
+    # TODO: Bounds
 
     parameters = Parameters(width, height)
 
@@ -57,10 +59,16 @@ def initialize(size=100, width=10, height=10, door_width=1.2, exit_hall_width=1,
 
     # Agents
     agent = Agent(*parameters.agent(size))
-    rect = Rectangle((0.0, width), (0.0, height))
-    circ = Circle((np.pi / 2, np.pi / 2 + np.pi), (0, height / 2),
-                  (width, height / 2))
-    populate(agent, agent.size, circ, walls)
+    shape = None
+    if spawn_shape == "circ":
+        shape = Circle((np.pi / 2, np.pi / 2 + np.pi), (0, height / 2),
+                       (width, height / 2))
+    elif spawn_shape == "rect":
+        shape = Rectangle((0.0, width), (0.0, height))
+    else:
+        ValueError("Spawn shape not valid.")
+
+    populate(agent, agent.size, shape, walls)
 
     agent.target_direction[:] = np.array((1.0, 0.0))
     agent.update_shoulder_positions()

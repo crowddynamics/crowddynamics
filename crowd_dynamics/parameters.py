@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 from scipy.stats import truncnorm as tn
 
-from crowd_dynamics.area import Area
+from crowd_dynamics.environment import Area
 from crowd_dynamics.core.vector2d import length_nx2
 from crowd_dynamics.functions import filter_none
 
@@ -27,10 +27,8 @@ def populate(agent, amount, area: Area, walls=None):
     """
     Monte Carlo method for filling an area with desired amount of circles.
 
-    Default area is rectangle.
-
     Loop:
-    #) Generate a random element inside desired set (area).
+    #) Generate a random element inside desired area.
     #) Check if overlapping with
         #) Agents
         #) Walls
@@ -65,14 +63,12 @@ def populate(agent, amount, area: Area, walls=None):
         iterations += 1
         pos = area.random()
 
-        index = indices[i]
-
-        rad = radius[index]
-        radii = radius[:index]
+        rad = radius[i]
+        radii = radius[:i]
 
         # Test overlapping with other agents
         if i > 0:
-            d = length_nx2(pos - position[:index]) - (rad + radii)
+            d = length_nx2(pos - position[:i]) - (rad + radii)
             cond = np.all(d > 0)
             if not cond:
                 continue
@@ -86,10 +82,13 @@ def populate(agent, amount, area: Area, walls=None):
         if not cond:
             continue
 
-        position[index] = pos
+        position[i] = pos
+
+        index = indices[i]
         agent.position[index] = pos
         agent.active[index] = True
         i += 1
+
     print("Number of agents placed: {}".format(i))
 
 

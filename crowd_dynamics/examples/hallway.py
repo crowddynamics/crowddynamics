@@ -1,9 +1,9 @@
 import numpy as np
 
-from crowd_dynamics.parameters import Parameters
+from crowd_dynamics.environment import Goal, Rectangle
+from crowd_dynamics.parameters import Parameters, populate
 from crowd_dynamics.simulation import Simulation
 from crowd_dynamics.structure.agent import Agent
-from crowd_dynamics.structure.environment import Goal
 from crowd_dynamics.structure.wall import LinearWall
 
 
@@ -30,18 +30,17 @@ def initialize(size=100, width=30, height=5, path="", **kwargs):
     first_half = slice(agent.size // 2)
     second_half = slice(agent.size // 2, None)
 
-    parameters.random_position(
-        agent.position[first_half], agent.radius[first_half],
-        (1.0, width // 2), (0.0, height), walls)
-    parameters.random_position(
-        agent.position[second_half], agent.radius[second_half],
-        (width // 2, width - 1.0), (0.0, height), walls)
+    shape1 = Rectangle((1.0, width // 2), (0.0, height))
+    shape2 = Rectangle((width // 2, width - 1.0), (0.0, height))
 
-    agent.target_direction[first_half] += np.array((1.0, 0.0))
-    agent.target_direction[second_half] += np.array((-1.0, 0.0))
+    populate(agent, agent.size // 2, shape1, walls)
+    populate(agent, agent.size // 2, shape2, walls)
 
-    agent.angle[first_half] += 0
-    agent.angle[second_half] += np.pi
+    agent.target_direction[first_half] = np.array((1.0, 0.0))
+    agent.target_direction[second_half] = np.array((-1.0, 0.0))
+
+    agent.angle[first_half] = 0
+    agent.angle[second_half] = np.pi
 
     agent.update_shoulder_positions()
 

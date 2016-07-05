@@ -2,7 +2,7 @@ import numpy as np
 import pyqtgraph as pg
 from PyQt4 import QtGui, QtCore
 
-from .structure.environment import Goal, Bounds
+from crowd_dynamics.environment import Goal, Bounds
 from .simulation import Simulation
 from .structure.wall import LinearWall
 from .structure.wall import RoundWall
@@ -15,7 +15,7 @@ class CentralItem(pg.PlotItem):
     def __init__(self, simulation: Simulation):
         """Central plot."""
         # TODO: Remote processing
-        # TODO: Legend
+        # TODO: Legend, Range
         # TODO: Coloring of agents (Forces, etc)
         super(CentralItem, self).__init__(name=self.name)
 
@@ -30,12 +30,12 @@ class CentralItem(pg.PlotItem):
         self.simulation = simulation
         self.agent = simulation.agent
 
-        # Areas. TODO: Grid, XRange, YRange
+        # Areas.
         self.bounds = self.plot()
         self.goals = self.plot()
         self.addAreas()
 
-        # Agent. TODO: Orientable vs circular
+        # Agent.
         self.brush_psy = pg.mkBrush(255, 255, 255, 255 // 4)  # RGBA
         self.psy = self.addCircle(self.agent.radius,
                                   symbolPen=None,
@@ -72,7 +72,6 @@ class CentralItem(pg.PlotItem):
                                    symbol='o', pen=None, pxMode=False)
 
     def addAreas(self):
-        # TODO: simulation.goals -> simulation.areas
         for area in self.simulation.goals:
             if isinstance(area, Goal):
                 pass
@@ -81,7 +80,6 @@ class CentralItem(pg.PlotItem):
 
     def updateData(self):
         """Updates data in the plot."""
-        # TODO: Update coloring
         brush = pg.mkBrush(0, 0, 255, 255)
         if self.simulation.egress_model is not None:
             impatient = pg.mkBrush(255, 0, 0, 255)  # RGBA
