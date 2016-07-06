@@ -39,8 +39,8 @@ if __name__ == '__main__':
     # spawn_shape = {"circ", "rect"}
 
     from crowd_dynamics.qui import main
-    simulation = evacuation("high")
-    # simulation = hallway("medium")
+    # simulation = evacuation("high")
+    simulation = hallway("medium")
 
     # main(simulation)
     simulation.run(simu_time_limit=250)

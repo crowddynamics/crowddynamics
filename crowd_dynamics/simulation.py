@@ -52,20 +52,21 @@ class Simulation:
         self.attrs_result = Attrs(result_attr_names)
         attrs_agent = Attrs(agent_attr_names, Intervals(1.0))
         attrs_wall = Attrs(wall_attr_names)
-        attrs_egress = Attrs(egress_game_attrs, Intervals(1.0))
 
         attrs_agent["position"] = Attr("position", True, True)
         attrs_agent["velocity"] = Attr("velocity", True, True)
         attrs_agent["force"] = Attr("force", True, True)
 
-        attrs_egress["strategy"] = Attr("strategy", True, True)
-        attrs_egress["time_evac"] = Attr("time_evac", True, True)
+        arg = [self.save.hdf(self.agent, attrs_agent)] + \
+              [self.save.hdf(w, attrs_wall) for w in self.wall]
 
-        self.savers = filter_none(
-            [self.save.hdf(self.agent, attrs_agent)] +
-            [self.save.hdf(w, attrs_wall) for w in self.wall] +
-            [self.save.hdf(self.egress_model, attrs_egress)]
-        )
+        if self.egress_model is not None:
+            attrs_egress = Attrs(egress_game_attrs, Intervals(1.0))
+            attrs_egress["strategy"] = Attr("strategy", True, True)
+            attrs_egress["time_evac"] = Attr("time_evac", True, True)
+            arg += self.save.hdf(self.egress_model, attrs_egress)
+
+        self.savers = filter_none(arg)
 
     @timed_execution
     def advance(self):
