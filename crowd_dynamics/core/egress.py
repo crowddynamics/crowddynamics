@@ -44,6 +44,7 @@ def best_response_strategy(players, agent, strategy, strategies, time_aset,
     """Best response strategy. Minimizes loss"""
     # TODO: Shuffle indices
     loss = np.zeros(2)  # values: loss, indices: strategy
+    np.random.shuffle(players)
     for i in players:
         if clock(interval, dt):
             for j in agent.neighbors[i]:
@@ -66,6 +67,7 @@ egress_game_attrs = (
     "time_aset_0",
     "strategy",
     "interval",
+    "time_evac",
 )
 
 
@@ -86,6 +88,7 @@ class EgressGame(object):
         self.time_aset_0 = time_aset_0
         self.strategies = np.array((0, 1), dtype=np.int64)
         self.strategy = np.ones(self.agent.size, dtype=np.int64)
+        self.time_evac = np.zeros(self.agent.size)
         self.interval = interval
 
     def agent_closer_to_exit(self, players):
@@ -112,8 +115,8 @@ class EgressGame(object):
         time_evac = self.agent_closer_to_exit(players) / self.exit_door.capacity
         time_aset = self.time_aset_0 - time
 
-        time_evac_indexed = np.zeros(self.agent.size)  # Index time_evac
-        time_evac_indexed[players] = time_evac
+        self.time_evac[:] = 0  # Reset
+        self.time_evac[players] = time_evac  # Index time_evac by players
 
         # Loop over agents and update strategies
         best_response_strategy(players,
@@ -121,6 +124,6 @@ class EgressGame(object):
                                self.strategy,
                                self.strategies,
                                time_aset,
-                               time_evac_indexed,
+                               self.time_evac,
                                self.interval,
                                dt)

@@ -1,4 +1,6 @@
 import numpy as np
+
+from crowd_dynamics.core.egress import egress_game_attrs
 from .core.motion import motion, integrator
 from .core.navigation import direction_to_target_angle, navigator
 from .functions import filter_none, timed_execution
@@ -30,7 +32,6 @@ class Simulation:
         self.wall = filter_none(wall)
         self.goals = filter_none(goals)
         self.bounds = bounds
-        # TODO: save egress
         self.egress_model = egress_model
 
         # Angle and direction update algorithms
@@ -43,22 +44,27 @@ class Simulation:
 
         # Interval for printing the values in result during the simulation.
         self.interval = Intervals(1.0)
+        self.interval2 = Intervals(1.0)
 
         # Simulation IO for saving generated data to HDF5 file for analysis
         # and resuming a simulation.
         self.save = Save(dirpath, name)
         self.attrs_result = Attrs(result_attr_names)
-        self.attrs_agent = Attrs(agent_attr_names, Intervals(1.0))
-        self.attrs_wall = Attrs(wall_attr_names)
-        # self.attrs_egress = Attrs(egress_game_attrs)
+        attrs_agent = Attrs(agent_attr_names, Intervals(1.0))
+        attrs_wall = Attrs(wall_attr_names)
+        attrs_egress = Attrs(egress_game_attrs, Intervals(1.0))
 
-        self.attrs_agent["position"] = Attr("position", True, True)
-        self.attrs_agent["velocity"] = Attr("velocity", True, True)
-        self.attrs_agent["force"] = Attr("force", True, True)
+        attrs_agent["position"] = Attr("position", True, True)
+        attrs_agent["velocity"] = Attr("velocity", True, True)
+        attrs_agent["force"] = Attr("force", True, True)
+
+        attrs_egress["strategy"] = Attr("strategy", True, True)
+        attrs_egress["time_evac"] = Attr("time_evac", True, True)
 
         self.savers = filter_none(
-            [self.save.hdf(self.agent, self.attrs_agent)] +
-            [self.save.hdf(w, self.attrs_wall) for w in self.wall]
+            [self.save.hdf(self.agent, attrs_agent)] +
+            [self.save.hdf(w, attrs_wall) for w in self.wall] +
+            [self.save.hdf(self.egress_model, attrs_egress)]
         )
 
     @timed_execution
@@ -95,6 +101,9 @@ class Simulation:
         if self.interval():
             print(self.result)
 
+        if self.interval2():
+            self.save.hdf(self.result, self.attrs_result, overwrite=True)
+
         # Save
         for saver in self.savers:
             saver()
@@ -108,7 +117,7 @@ class Simulation:
     def exit(self):
         # Simulation exit
         print(self.result)
-        self.save.hdf(self.result, self.attrs_result)
+        self.save.hdf(self.result, self.attrs_result, overwrite=True)
         for saver in self.savers:
             saver(brute=True)
 
@@ -119,8 +128,12 @@ class Simulation:
         :return: None
         """
         if iter_limit is None:
-            while self.advance():
-                pass
-        else:
-            while self.advance() and iter_limit > 0:
-                iter_limit -= 1
+            iter_limit = np.inf
+
+        if simu_time_limit is None:
+            simu_time_limit = np.inf
+
+        while self.advance() and \
+                (iter_limit > 0) and \
+                (self.result.simulation_time < simu_time_limit):
+            iter_limit -= 1

@@ -87,9 +87,10 @@ class Save(object):
             # Metadata
             group.attrs["timestamp"] = self.timestamp()
 
-    def hdf(self, struct, attrs: Attrs):
+    def hdf(self, struct, attrs: Attrs, overwrite=False):
         """
 
+        :param overwrite:
         :param struct: numba.jitclass
         :param attrs: attributes of the jitclass
         :return: Function that saves records and dumps data into hdf5
@@ -102,6 +103,8 @@ class Save(object):
         with h5py.File(self.hdf_filepath, mode='a') as file:
             base = file[self.group_name]
             # New group for structure
+            if overwrite and (struct_name in base):
+                del base[struct_name]
             group = base.create_group(struct_name)
             # Create new datasets
             for attr in attrs:
@@ -115,6 +118,8 @@ class Save(object):
                                          maxshape=maxshape)
                 else:
                     # Not Resizable
+                    # if overwrite and (attr.name in group):
+                    #     del group[attr.name]
                     group.create_dataset(attr.name, data=value)
 
         recordable = Attrs(filter(lambda attr: attr.is_recordable, attrs),

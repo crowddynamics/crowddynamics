@@ -1,6 +1,6 @@
 import numpy as np
 
-from crowd_dynamics.environment import Goal, Rectangle
+from crowd_dynamics.environment import Rectangle
 from crowd_dynamics.parameters import Parameters, populate
 from crowd_dynamics.simulation import Simulation
 from crowd_dynamics.structure.agent import Agent
@@ -19,10 +19,9 @@ def initialize(size=100, width=30, height=5, path="", **kwargs):
     walls = LinearWall(linear_params)
 
     # Goal
-    rx, ry = 1.0, height / 2
     goals = (
-        Goal(center=(0.0, ry), radius=(rx, ry)),
-        Goal(center=(width, ry), radius=(rx, ry))
+        Rectangle((0, 1), (0, height)),
+        Rectangle((width, width+1), (0, height))
     )
 
     # Agents

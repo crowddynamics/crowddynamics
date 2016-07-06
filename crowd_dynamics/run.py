@@ -1,4 +1,5 @@
 path = "/home/jaan/Dropbox/Projects/Crowd-Dynamics-Simulations/"
+path2 = "/media/storage3/"
 
 
 def outdoor(density):
@@ -30,14 +31,16 @@ def evacuation(density):
     elif density == "high":
         return initialize(size=700, width=15, height=30,
                           egress_model=True, t_aset=250,
-                          path=path, name="evacuation700")
+                          path=path2, name="evacuation700")
 
 
 if __name__ == '__main__':
     # density = {"low", "medium", "high"}
     # spawn_shape = {"circ", "rect"}
+
     from crowd_dynamics.qui import main
-    simulation = evacuation("medium")
+    simulation = evacuation("high")
     # simulation = hallway("medium")
-    main(simulation)
-    # simulation.run()
+
+    # main(simulation)
+    simulation.run(simu_time_limit=250)
