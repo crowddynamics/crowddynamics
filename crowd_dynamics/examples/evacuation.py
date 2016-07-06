@@ -4,7 +4,7 @@ import numba
 import numpy as np
 
 from crowd_dynamics.core.vector2d import rotate90, normalize, length
-from crowd_dynamics.environment import Goal, Rectangle, Circle
+from crowd_dynamics.environment import Rectangle, Circle
 from crowd_dynamics.parameters import Parameters, populate
 from crowd_dynamics.simulation import Simulation
 from crowd_dynamics.structure.agent import Agent
@@ -26,12 +26,10 @@ def _direction_update(agent, target, mid, r_mid, c_rect, r_rect):
     return target_direction
 
 
-def initialize(size=100, width=10, height=10, door_width=1.2, exit_hall_width=1,
+def initialize(size=100, width=10, height=10, door_width=1.2, exit_hall_width=2,
                spawn_shape="circ", egress_model=False, t_aset=60, path="",
-               **kwargs):
-    name = "evacuation"
-
-    # TODO: Bounds
+               name="evacuation", **kwargs):
+    bounds = Rectangle((0.0, width + exit_hall_width), (0.0, height))
 
     parameters = Parameters(width, height)
 
@@ -53,9 +51,8 @@ def initialize(size=100, width=10, height=10, door_width=1.2, exit_hall_width=1,
     )
     walls = LinearWall(linear_params)
 
-    # Goal
-    goals = Goal(center=(width + 1.0, height / 2),
-                 radius=(1.0, height / 2))
+    goals = Rectangle((width, width + 2),
+                      ((height - door_width) / 2, (height + door_width) / 2))
 
     # Agents
     agent = Agent(*parameters.agent(size))
@@ -96,6 +93,12 @@ def initialize(size=100, width=10, height=10, door_width=1.2, exit_hall_width=1,
     else:
         egress_model = None
 
-    return Simulation(agent, wall=walls, goals=goals, name=name, dirpath=path,
+    return Simulation(agent,
+                      wall=walls,
+                      goals=goals,
+                      name=name,
+                      dirpath=path,
                       direction_update=direction_update,
-                      egress_model=egress_model, **kwargs)
+                      egress_model=egress_model,
+                      bounds=bounds,
+                      **kwargs)

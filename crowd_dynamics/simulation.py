@@ -1,3 +1,4 @@
+import numpy as np
 from .core.motion import motion, integrator
 from .core.navigation import direction_to_target_angle, navigator
 from .functions import filter_none, timed_execution
@@ -11,16 +12,25 @@ from .structure.wall import wall_attr_names
 class Simulation:
     """Class for initialising and running a crowd simulation."""
 
-    def __init__(self, agent, wall=None, goals=None, name=None, dirpath=None,
-                 angle_update=direction_to_target_angle, direction_update=None,
-                 egress_model=None, bounds=None, dt_min=0.001, dt_max=0.01):
+    def __init__(self,
+                 agent,
+                 wall=None,
+                 goals=None,
+                 name=None,
+                 dirpath=None,
+                 angle_update=direction_to_target_angle,
+                 direction_update=None,
+                 egress_model=None,
+                 bounds=None,
+                 dt_min=0.001,
+                 dt_max=0.01):
         # Structures
         self.result = Result()
         self.agent = agent
         self.wall = filter_none(wall)
         self.goals = filter_none(goals)
         self.bounds = bounds
-        self.areas = None
+        # TODO: save egress
         self.egress_model = egress_model
 
         # Angle and direction update algorithms
@@ -40,6 +50,7 @@ class Simulation:
         self.attrs_result = Attrs(result_attr_names)
         self.attrs_agent = Attrs(agent_attr_names, Intervals(1.0))
         self.attrs_wall = Attrs(wall_attr_names)
+        # self.attrs_egress = Attrs(egress_game_attrs)
 
         self.attrs_agent["position"] = Attr("position", True, True)
         self.attrs_agent["velocity"] = Attr("velocity", True, True)
@@ -72,11 +83,13 @@ class Simulation:
         self.result.increment_simulation_time(dt)
 
         if self.bounds is not None:
-            self.bounds.update(self.agent)
+            self.agent.active &= self.bounds.contains(self.agent.position)
 
         # Goals
         for goal in self.goals:
-            num = goal.update(self.agent)
+            num = -np.sum(self.agent.goal_reached)
+            self.agent.goal_reached |= goal.contains(self.agent.position)
+            num += np.sum(self.agent.goal_reached)
             self.result.increment_in_goal_time(num)
 
         if self.interval():
@@ -99,15 +112,15 @@ class Simulation:
         for saver in self.savers:
             saver(brute=True)
 
-    def run(self, iterations=None):
+    def run(self, iter_limit=None, simu_time_limit=None, time_limit=None):
         """
 
-        :param iterations: Execute simulation until number of iterations has been reached or if None run until simulation ends.
+        :param iter_limit: Execute simulation until number of iterations has been reached or if None run until simulation ends.
         :return: None
         """
-        if iterations is None:
+        if iter_limit is None:
             while self.advance():
                 pass
         else:
-            while self.advance() and iterations > 0:
-                iterations -= 1
+            while self.advance() and iter_limit > 0:
+                iter_limit -= 1

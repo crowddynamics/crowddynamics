@@ -180,7 +180,8 @@ class Agent(object):
         self.neighbor_distances_max[:] = self.neighbor_radius + 1.0  # np.inf
 
     def indices(self):
-        return np.arange(self.size)[self.active]
+        all_indices = np.arange(self.size)
+        return all_indices[self.active]
 
     def update_shoulder_positions(self):
         for i in range(self.size):

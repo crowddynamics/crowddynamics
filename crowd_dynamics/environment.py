@@ -1,31 +1,54 @@
 import numpy as np
 
-
-# TODO: Spring, Void
+from crowd_dynamics.core.vector2d import length, angle, angle_nx2, length_nx2
 
 
 class Area(object):
     def __init__(self):
         """Abstract base class for area object."""
+        # TODO: contains, update
+        # TODO: spring, void
+        pass
+
+    def contains(self, array):
+        """If area contains item"""
+        pass
+
+    def update(self):
+        """Update"""
         pass
 
     def size(self):
         """:return: Total area."""
-        return NotImplemented
+        pass
 
     def random(self):
         """:return: Random point inside the area."""
-        return NotImplemented
+        pass
 
 
 class Rectangle(Area):
     def __init__(self, x, y):
+        """Rectangle.
+        :param x: 2D array like: (xmin, xmax)
+        :param y: 2D array like: (ymin, ymax)
+        """
         super().__init__()
         self.x = x
         self.y = y
 
+    def contains(self, array):
+        if len(array.shape) == 1:
+            x = array[0]
+            y = array[1]
+        else:
+            x = array[:, 0]
+            y = array[:, 1]
+        return (x >= self.x[0]) & (x <= self.x[1]) & \
+               (y >= self.y[0]) & (y <= self.y[1])
+
     def size(self):
-        return np.diff(self.x) * np.diff(self.y)
+        return np.asscalar(np.diff(self.x) * np.diff(self.y))
 
     def random(self):
         pos = np.zeros(2)
@@ -36,48 +59,35 @@ class Rectangle(Area):
 
 class Circle(Area):
     def __init__(self, phi, radius, center):
+        """
+
+        :param phi:
+        :param radius:
+        :param center:
+        """
         super().__init__()
-        self.phi = phi
+        self.phi = phi  # [0, 2 * pi]
         self.radius = radius
         self.center = center
 
+    def contains(self, array):
+        c = array - self.center
+        if len(array.shape) == 1:
+            phi = angle(c)
+            return (length(c) <= self.radius) & \
+                   (phi >= self.phi[0]) & \
+                   (phi <= self.phi[1])
+        else:
+            phi = angle_nx2(c)
+            return (length_nx2(c) <= self.radius) & \
+                   (phi >= self.phi[0]) & \
+                   (phi <= self.phi[1])
+
     def size(self):
         phi = np.array(self.phi) % (2 * np.pi)
-        return np.pi * np.diff(phi) / (2 * np.pi) * self.radius[1]**2
+        return np.asscalar(np.pi * np.diff(phi) / (2 * np.pi) * self.radius[1]**2)
 
     def random(self):
         phi = np.random.uniform(self.phi[0], self.phi[1])
         radius = np.random.power(2) * self.radius[1]
         return radius * np.array([np.cos(phi), np.sin(phi)]) + self.center
-
-
-class Bounds:
-    def __init__(self, center, radius):
-        self.center = np.array(center, dtype=np.float64)
-        self.radius = np.array(radius, dtype=np.float64)
-
-    def update(self, agent):
-        """Agents outside bounds are updated to inactive state."""
-        vec = np.abs(self.center - agent.position) <= self.radius
-        condition = vec[:, 0] & vec[:, 1]
-        agent.active &= condition
-
-
-class Goal(object):
-    def __init__(self, center, radius):
-        """Rectangle shaped."""
-        self.center = np.array(center, dtype=np.float64)
-        self.radius = np.array(radius, dtype=np.float64)
-
-    def update(self, agent):
-        """Updates agent that have reached goal.
-
-        :param agent:
-        :return: Number of agent that reached the goal.
-        """
-        vec = np.abs(self.center - agent.position) <= self.radius
-        condition = vec[:, 0] & vec[:, 1]
-        prev_num = np.sum(agent.goal_reached)
-        agent.goal_reached |= condition
-        num = np.sum(agent.goal_reached) - prev_num
-        return num

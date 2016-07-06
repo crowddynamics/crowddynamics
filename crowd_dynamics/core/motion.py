@@ -122,10 +122,11 @@ def integrator(agent, dt_min, dt_max):
     :return: Timestep that was used for integration
     """
     # Larger crowd densities may require smaller timestep
-    acceleration = agent.force / agent.mass
+    i = agent.indices()
+    acceleration = agent.force[i] / agent.mass[i]
 
-    dv = agent.velocity + acceleration * dt_max
-    dx_max = 1.1 * np.max(agent.target_velocity) * dt_max
+    dv = agent.velocity[i] + acceleration * dt_max
+    dx_max = 1.1 * np.max(agent.target_velocity[i]) * dt_max
     dt = dx_max / np.max(np.hypot(dv[:, 0], dv[:, 1]))
 
     if dt > dt_max:
@@ -134,13 +135,13 @@ def integrator(agent, dt_min, dt_max):
         # TODO: Raise warning?
         dt = dt_min
 
-    agent.position += agent.velocity * dt + 0.5 * acceleration * dt**2
-    agent.velocity += acceleration * dt
+    agent.position[i] += agent.velocity[i] * dt + 0.5 * acceleration * dt**2
+    agent.velocity[i] += acceleration * dt
 
     if agent.orientable:
-        angular_acceleration = agent.torque / agent.inertia_rot
-        agent.angle += agent.angular_velocity * dt + 0.5 * angular_acceleration * dt**2
-        agent.angular_velocity += angular_acceleration * dt
+        angular_acceleration = agent.torque[i] / agent.inertia_rot[i]
+        agent.angle[i] += agent.angular_velocity[i] * dt + 0.5 * angular_acceleration * dt**2
+        agent.angular_velocity[i] += angular_acceleration * dt
         agent.angle[:] = wrap_to_pi(agent.angle)
 
     # TODO: Move somewhere else?

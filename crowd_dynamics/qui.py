@@ -2,7 +2,6 @@ import numpy as np
 import pyqtgraph as pg
 from PyQt4 import QtGui, QtCore
 
-from crowd_dynamics.environment import Goal, Bounds
 from .simulation import Simulation
 from .structure.wall import LinearWall
 from .structure.wall import RoundWall
@@ -31,9 +30,9 @@ class CentralItem(pg.PlotItem):
         self.agent = simulation.agent
 
         # Areas.
-        self.bounds = self.plot()
-        self.goals = self.plot()
-        self.addAreas()
+        # self.bounds = self.plot()
+        # self.goals = self.plot()
+        # self.addAreas()
 
         # Agent.
         self.brush_psy = pg.mkBrush(255, 255, 255, 255 // 4)  # RGBA
@@ -72,11 +71,7 @@ class CentralItem(pg.PlotItem):
                                    symbol='o', pen=None, pxMode=False)
 
     def addAreas(self):
-        for area in self.simulation.goals:
-            if isinstance(area, Goal):
-                pass
-            elif isinstance(area, Bounds):
-                pass
+        pass
 
     def updateData(self):
         """Updates data in the plot."""
