@@ -50,11 +50,13 @@ def format_time(timespan, precision=3):
     return u"{:.1f} {}".format(timespan * scaling[order], units[order])
 
 
-def filter_none(arg):
+def filter_none(*args):
     """Make iterables and filter None values"""
-    if not isinstance(arg, Iterable):
-        arg = (arg,)
-    return tuple(filter(None, arg))
+    if len(args) == 1:
+        arg = args[0]
+        if isinstance(arg, Iterable):
+            args = arg
+    return tuple(filter(None, args))
 
 
 def timed_execution(func):

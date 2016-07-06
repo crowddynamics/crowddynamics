@@ -64,7 +64,7 @@ class Simulation:
             attrs_egress = Attrs(egress_game_attrs, Intervals(1.0))
             attrs_egress["strategy"] = Attr("strategy", True, True)
             attrs_egress["time_evac"] = Attr("time_evac", True, True)
-            arg += self.save.hdf(self.egress_model, attrs_egress)
+            arg.append(self.save.hdf(self.egress_model, attrs_egress))
 
         self.savers = filter_none(arg)
 
