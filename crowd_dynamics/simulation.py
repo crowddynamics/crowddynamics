@@ -1,6 +1,6 @@
 import numpy as np
 
-from crowd_dynamics.core.egress import egress_game_attrs
+from .core.egress import egress_game_attrs
 from .core.motion import motion, integrator
 from .core.navigation import direction_to_target_angle, navigator
 from .functions import filter_none, timed_execution
@@ -26,6 +26,10 @@ class Simulation:
                  bounds=None,
                  dt_min=0.001,
                  dt_max=0.01):
+        # Integrator timestep
+        self.dt_min = dt_min
+        self.dt_max = dt_max
+
         # Structures
         self.result = Result()
         self.agent = agent
@@ -38,17 +42,16 @@ class Simulation:
         self.angle_update = angle_update
         self.direction_update = direction_update
 
-        # Integrator timestep
-        self.dt_min = dt_min
-        self.dt_max = dt_max
-
         # Interval for printing the values in result during the simulation.
         self.interval = Intervals(1.0)
         self.interval2 = Intervals(1.0)
 
+        # TODO: Saving and loading HDF5.
+
         # Simulation IO for saving generated data to HDF5 file for analysis
         # and resuming a simulation.
         self.save = Save(dirpath, name)
+
         self.attrs_result = Attrs(result_attr_names)
         attrs_agent = Attrs(agent_attr_names, Intervals(1.0))
         attrs_wall = Attrs(wall_attr_names)
@@ -82,7 +85,6 @@ class Simulation:
         motion(self.agent, self.wall)
         dt = integrator(self.agent, self.dt_min, self.dt_max)
 
-        # TODO: Egress model
         if self.egress_model is not None:
             self.egress_model.update(self.result.simulation_time, dt)
 
@@ -116,15 +118,14 @@ class Simulation:
         return True
 
     def exit(self):
-        # Simulation exit
+        """Exit simulation."""
         print(self.result)
         self.save.hdf(self.result, self.attrs_result, overwrite=True)
         for saver in self.savers:
             saver(brute=True)
 
-    def run(self, iter_limit=None, simu_time_limit=None, time_limit=None):
+    def run(self, iter_limit=None, simu_time_limit=None):
         """
-
         :param iter_limit: Execute simulation until number of iterations has been reached or if None run until simulation ends.
         :return: None
         """

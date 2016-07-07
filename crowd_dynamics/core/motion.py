@@ -1,26 +1,25 @@
 import numba
 import numpy as np
 from numba import f8
-from scipy.stats import truncnorm
+from scipy.stats import truncnorm as tn
 
+from crowd_dynamics.core.vector2d import length_nx2
 from .vector2d import dot2d, wrap_to_pi
 
 
-def force_random(agent, std_trunc=3.0):
+def force_random(agent):
     # Truncated normal distribution with standard deviation of 3.
     i = agent.indices()
-    magnitude = truncnorm.rvs(0, std_trunc, loc=0, scale=agent.std_rand_force,
-                              size=i.size)
+    magnitude = tn.rvs(0, 3, loc=0, scale=agent.std_rand_force, size=i.size)
     angle = np.random.uniform(0, 2 * np.pi, size=i.size)
     force = magnitude * np.array((np.cos(angle), np.sin(angle)))
     agent.force[i] += force.T * agent.mass[i]
 
 
-def torque_random(agent, std_trunc=3.0):
+def torque_random(agent):
     """Random torque."""
     i = agent.indices()
-    torque = truncnorm.rvs(-std_trunc, std_trunc, loc=0,
-                           scale=agent.std_rand_force, size=i.size)
+    torque = tn.rvs(-3, 3, loc=0, scale=agent.std_rand_force, size=i.size)
     agent.torque[i] += torque * agent.inertia_rot[i]
 
 
@@ -29,7 +28,8 @@ def force_adjust(agent):
     """Force that adjust movement towards target direction."""
     for i in agent.indices():
         force = (agent.mass[i] / agent.tau_adj) * \
-                (agent.target_velocity[i] * agent.target_direction[i] - agent.velocity[i])
+                (agent.target_velocity[i] * agent.target_direction[i] -
+                 agent.velocity[i])
         agent.force[i] += force
         # agent.force_adjust += force
 
@@ -112,8 +112,7 @@ def motion(agent, walls):
 
 @numba.jit(nopython=True)
 def integrator(agent, dt_min, dt_max):
-    """
-    Verlet integration using adative timestep for integrating differential
+    """Verlet integration using adaptive timestep for integrating differential
     system.
 
     :param dt_min: Minimum timestep for adaptive integration
@@ -121,30 +120,31 @@ def integrator(agent, dt_min, dt_max):
     :param agent: Agent class
     :return: Timestep that was used for integration
     """
-    # Larger crowd densities may require smaller timestep
     i = agent.indices()
     acceleration = agent.force[i] / agent.mass[i]
-
     dv = agent.velocity[i] + acceleration * dt_max
     dx_max = 1.1 * np.max(agent.target_velocity[i]) * dt_max
-    dt = dx_max / np.max(np.hypot(dv[:, 0], dv[:, 1]))
 
-    if dt > dt_max:
+    dv_max = np.max(length_nx2(dv))
+    if dv_max == 0:
         dt = dt_max
-    elif dt < dt_min:
-        # TODO: Raise warning?
-        dt = dt_min
+    else:
+        dt = dx_max / dv_max
+        if dt > dt_max:
+            dt = dt_max
+        elif dt < dt_min:
+            dt = dt_min
 
-    agent.position[i] += agent.velocity[i] * dt + 0.5 * acceleration * dt**2
+    agent.position[i] += agent.velocity[i] * dt + 0.5 * acceleration * dt ** 2
     agent.velocity[i] += acceleration * dt
 
     if agent.orientable:
         angular_acceleration = agent.torque[i] / agent.inertia_rot[i]
-        agent.angle[i] += agent.angular_velocity[i] * dt + 0.5 * angular_acceleration * dt**2
+        agent.angle[i] += agent.angular_velocity[i] * dt + \
+                          angular_acceleration * 0.5 * dt ** 2
         agent.angular_velocity[i] += angular_acceleration * dt
         agent.angle[:] = wrap_to_pi(agent.angle)
 
-    # TODO: Move somewhere else?
     agent.update_shoulder_positions()
 
     return dt

@@ -26,7 +26,7 @@ def _direction_update(agent, target, mid, r_mid, c_rect, r_rect):
     return target_direction
 
 
-def initialize(size=100, width=10, height=10, door_width=1.2, exit_hall_width=2,
+def initialize(size, width=10, height=10, door_width=1.2, exit_hall_width=2,
                spawn_shape="circ", egress_model=False, t_aset=60, path="",
                name="evacuation", **kwargs):
     bounds = Rectangle((0.0, width + exit_hall_width), (0.0, height))

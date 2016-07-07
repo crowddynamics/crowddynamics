@@ -261,9 +261,10 @@ sympy-plots-for-*.tex/
 *.hdf5
 
 # Folders
+/CAD/
 /research/
 /docs/build/
-/crowd_dynamics/examples/config.py
-/crowd_dynamics/examples/two_exits.py
 /docs/sphinx.pdf
-/CAD/
+/crowd_dynamics/examples/two_exits.py
+/crowd_dynamics/examples/rounding_corner.py
+/crowd_dynamics/examples/crossing_flows.py

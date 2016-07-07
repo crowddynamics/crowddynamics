@@ -2,6 +2,7 @@ import numpy as np
 import pyqtgraph as pg
 from PyQt4 import QtGui, QtCore
 
+from crowd_dynamics.environment import Rectangle
 from .simulation import Simulation
 from .structure.wall import LinearWall
 from .structure.wall import RoundWall
@@ -14,37 +15,45 @@ class CentralItem(pg.PlotItem):
     def __init__(self, simulation: Simulation):
         """Central plot."""
         # TODO: Remote processing
-        # TODO: Legend, Range
+        # TODO: Legend
         # TODO: Coloring of agents (Forces, etc)
         super(CentralItem, self).__init__(name=self.name)
+
+        # Data
+        self.simulation = simulation
+        agent = self.simulation.agent
+        bounds = self.simulation.bounds
 
         # One to one scale for x and y coordinates
         self.setAspectLocked(lock=True, ratio=1)
         self.showGrid(True, True, 0.5)
         self.setLabels(title=self.title, left="y", bottom="x")
-        # self.setRange()
-        # self.disableAutoRange()
+        if bounds is not None:
+            if isinstance(bounds, Rectangle):
+                self.setRange(xRange=bounds.x, yRange=bounds.y)
+                self.disableAutoRange()
 
-        # Data
-        self.simulation = simulation
-        self.agent = simulation.agent
+        # Areas
+        if bounds is not None:
+            if isinstance(bounds, Rectangle):
+                # brush = pg.mkBrush(255, 255, 255, 255 // 4)  # White, transparent
+                # c1 = pg.PlotDataItem([bounds.x[0]], [bounds.y[0]])
+                # c2 = pg.PlotDataItem([bounds.x[1]], [bounds.y[1]])
+                # pg.FillBetweenItem(c1, c2, brush=brush)
+                pass
+        # TODO: Goals
 
-        # Areas.
-        # self.bounds = self.plot()
-        # self.goals = self.plot()
-        # self.addAreas()
-
-        # Agent.
-        self.brush_psy = pg.mkBrush(255, 255, 255, 255 // 4)  # RGBA
-        self.psy = self.addCircle(self.agent.radius,
+        # Agent
+        brush_psy = pg.mkBrush(255, 255, 255, 255 // 4)  # White, transparent
+        self.psy = self.addCircle(agent.radius,
                                   symbolPen=None,
-                                  symbolBrush=self.brush_psy)
+                                  symbolBrush=brush_psy)
 
-        connect = np.ones(3 * self.agent.size, dtype=np.int32)
-        connect[2::3] = np.zeros(self.agent.size, dtype=np.int32)
-        self.left_shoulder = self.addCircle(self.agent.r_s)
-        self.right_shoulder = self.addCircle(self.agent.r_s)
-        self.torso = self.addCircle(self.agent.r_t)
+        connect = np.ones(3 * agent.size, dtype=np.int32)
+        connect[2::3] = np.zeros(agent.size, dtype=np.int32)
+        self.left_shoulder = self.addCircle(agent.r_s)
+        self.right_shoulder = self.addCircle(agent.r_s)
+        self.torso = self.addCircle(agent.r_t)
         self.direction = self.plot(connect=connect)
 
         # Walls
@@ -70,11 +79,10 @@ class CentralItem(pg.PlotItem):
                                    symbolSize=wall.params[:, 2],
                                    symbol='o', pen=None, pxMode=False)
 
-    def addAreas(self):
-        pass
-
     def updateData(self):
         """Updates data in the plot."""
+        agent = self.simulation.agent
+
         brush = pg.mkBrush(0, 0, 255, 255)
         if self.simulation.egress_model is not None:
             impatient = pg.mkBrush(255, 0, 0, 255)  # RGBA
@@ -82,15 +90,15 @@ class CentralItem(pg.PlotItem):
             states = np.array((impatient, patient))
             brush = states[self.simulation.egress_model.strategy]
 
-        self.psy.setData(self.agent.position)
-        self.torso.setData(self.agent.position, symbolBrush=brush)
-        self.left_shoulder.setData(self.agent.position_ls, symbolBrush=brush)
-        self.right_shoulder.setData(self.agent.position_rs, symbolBrush=brush)
+        self.psy.setData(agent.position)
+        self.torso.setData(agent.position, symbolBrush=brush)
+        self.left_shoulder.setData(agent.position_ls, symbolBrush=brush)
+        self.right_shoulder.setData(agent.position_rs, symbolBrush=brush)
 
-        array = np.concatenate((self.agent.position_ls,
-                                self.agent.front,
-                                self.agent.position_rs), axis=1)
-        array = array.reshape(3 * self.agent.shape[0], self.agent.shape[1])
+        array = np.concatenate((agent.position_ls,
+                                agent.front,
+                                agent.position_rs), axis=1)
+        array = array.reshape(3 * agent.shape[0], agent.shape[1])
         self.direction.setData(array)
 
         text = "Iterations: {} " \
@@ -116,7 +124,6 @@ class Monitor(pg.PlotItem):
         Egress times
         Forces
         Timestep
-
         """
         super(Monitor, self).__init__(name=self.name, title=self.title)
         self.showGrid(True, True, 0.5)
@@ -128,9 +135,7 @@ class Monitor(pg.PlotItem):
 
 class Graphics(pg.GraphicsLayoutWidget):
     def __init__(self, simulation: Simulation, parent=None, **kargs):
-        """
-        Contains all the plots. Updates interactive plots.
-        """
+        """Contains all the plots. Updates interactive plots."""
         super().__init__(parent, **kargs)
 
         self.simulation = simulation
@@ -158,9 +163,7 @@ class Graphics(pg.GraphicsLayoutWidget):
 
 
 def main(simulation: Simulation):
-    """
-    Launches Qt application for visualizing simulation.
-
+    """Launches Qt application for visualizing simulation.
     :param simulation:
     """
     import sys

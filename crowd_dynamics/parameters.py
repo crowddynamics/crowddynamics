@@ -7,6 +7,7 @@ from scipy.stats import truncnorm as tn
 from crowd_dynamics.environment import Area
 from crowd_dynamics.core.vector2d import length_nx2
 from crowd_dynamics.functions import filter_none
+from crowd_dynamics.structure.agent import Agent
 
 
 def load_tables():
@@ -23,7 +24,7 @@ def load_tables():
     return body_types, agent_table
 
 
-def populate(agent, amount, area: Area, walls=None):
+def populate(agent: Agent, amount: int, area: Area, walls=None):
     """
     Monte Carlo method for filling an area with desired amount of circles.
 
@@ -33,11 +34,6 @@ def populate(agent, amount, area: Area, walls=None):
         #) Agents
         #) Walls
     #) Save value
-
-    :param walls:
-    :param amount:
-    :param area: Area to be filled.
-    :param wall:
     """
     # Fill inactive agents
     inactive = agent.active ^ True
@@ -104,7 +100,7 @@ class Parameters:
     @staticmethod
     def truncnorm(loc, abs_scale, size, std=3.0):
         """Scaled symmetrical truncated normal distribution."""
-        return np.array(tn.rvs(-std, std, loc=loc, scale=abs_scale / std, size=size))
+        return tn.rvs(-std, std, loc=loc, scale=abs_scale / std, size=size)
 
     @staticmethod
     def random_unit_vector(size):
@@ -137,11 +133,9 @@ class Parameters:
 
         mass = self.truncnorm(body["mass"], body["mass_scale"], size)
         radius = self.truncnorm(body["radius"], body["dr"], size)
-        r_t = body["k_t"] * radius    # radius_torso
-        r_s = body["k_s"] * radius    # radius_shoulder
-        r_ts = body["k_ts"] * radius  # distance_torso_shoulder
-
-        # target_velocity = body['v'] * np.ones(size)
+        radius_torso = body["k_t"] * radius    # radius_torso
+        radius_shoulder = body["k_s"] * radius    # radius_shoulder
+        torso_shoulder = body["k_ts"] * radius  # distance_torso_shoulder
         target_velocity = self.truncnorm(body['v'], body['dv'], size)
 
         # TODO: converters. Eval to values.
@@ -149,6 +143,7 @@ class Parameters:
         inertia_rot = eval(values["inertia_rot"]) * np.ones(size)
         target_angular_velocity = eval(values["target_angular_velocity"]) * np.ones(size)
 
-        return size, mass, radius, r_t, r_s, r_ts, inertia_rot, target_velocity, target_angular_velocity
+        return size, mass, radius, radius_torso, radius_shoulder, torso_shoulder, \
+               inertia_rot, target_velocity, target_angular_velocity
 
 

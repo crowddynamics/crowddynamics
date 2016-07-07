@@ -59,15 +59,38 @@ spec_agent = (
 agent_attr_names = [item[0] for item in spec_agent]
 
 
+@numba.jit(nopython=True)
+def require(cond):
+    if not np.all(cond):
+        raise ValueError("All conditions are not met.")
+
+
 @numba.jitclass(spec_agent)
 class Agent(object):
     """
     Structure for agent parameters and variables.
     """
 
-    def __init__(self, size, mass, radius, radius_torso, radius_shoulder,
-                 radius_torso_shoulder, inertia_rot, target_velocity,
+    def __init__(self,
+                 size,
+                 mass,
+                 radius,
+                 radius_torso,
+                 radius_shoulder,
+                 radius_torso_shoulder,
+                 inertia_rot,
+                 target_velocity,
                  target_angular_velocity):
+        # Requirements
+        require(mass > 0)
+        require(radius > 0)
+        require(radius_torso > 0)
+        require(radius_shoulder > 0)
+        require(radius_torso_shoulder > 0)
+        require(inertia_rot > 0)
+        require(target_velocity >= 0)
+        require(target_angular_velocity >= 0)
+
         # Array properties
         self.size = size        # Maximum number of agents
         self.shape = (size, 2)  # Shape of 2D arrays
@@ -115,6 +138,7 @@ class Agent(object):
         self.position_ls = np.zeros(self.shape)  # Left shoulder
         self.position_rs = np.zeros(self.shape)  # Right shoulder
         self.front = np.zeros(self.shape)        # For plotting agents.
+        self.update_shoulder_positions()
 
         # TODO: vector form?, load from tables
         # Force related parameters
@@ -180,6 +204,7 @@ class Agent(object):
         self.neighbor_distances_max[:] = self.neighbor_radius + 1.0  # np.inf
 
     def indices(self):
+        # TODO: Other masks
         all_indices = np.arange(self.size)
         return all_indices[self.active]
 

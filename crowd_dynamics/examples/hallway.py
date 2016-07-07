@@ -7,21 +7,18 @@ from crowd_dynamics.structure.agent import Agent
 from crowd_dynamics.structure.wall import LinearWall
 
 
-def initialize(size=100, width=30, height=5, path="", **kwargs):
-    name = "hallway"
-
+def initialize(size, width=30, height=5, path="", name="hallway", **kwargs):
     parameters = Parameters(width, height)
     linear_params = np.array((
         ((0.0, 0.0), (width, 0.0)),
         ((0.0, height), (width, height)),
     ))
-
     walls = LinearWall(linear_params)
 
     # Goal
     goals = (
         Rectangle((0, 1), (0, height)),
-        Rectangle((width, width+1), (0, height))
+        Rectangle((width, width + 1), (0, height))
     )
 
     # Agents
@@ -43,5 +40,7 @@ def initialize(size=100, width=30, height=5, path="", **kwargs):
 
     agent.update_shoulder_positions()
 
+    bounds = Rectangle((0, width), (0, height))
+
     return Simulation(agent, wall=walls, goals=goals, name=name, dirpath=path,
-                      **kwargs)
+                      bounds=bounds, **kwargs)
