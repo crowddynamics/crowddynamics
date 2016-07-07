@@ -21,15 +21,15 @@ def navigator(agent,
     :param angle_update: Function, or numpy array for updating agent.target_angle
     :param direction_update: Function, or numpy array for updating agent.target_direction
     """
+    if direction_update is not None:
+        if callable(direction_update):
+            agent.target_direction[:] = direction_update(agent)
+        else:
+            agent.target_direction[:] = direction_update
 
     if angle_update is not None and agent.orientable:
         if callable(angle_update):
-            agent.target_angle = angle_update(agent)
+            agent.target_angle[:] = angle_update(agent)
         else:
-            agent.target_angle = angle_update
+            agent.target_angle[:] = angle_update
 
-    if direction_update is not None:
-        if callable(direction_update):
-            agent.target_direction = direction_update(agent)
-        else:
-            agent.target_direction = direction_update

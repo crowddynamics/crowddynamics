@@ -1,6 +1,10 @@
 import numba
 import numpy as np
 
+"""
+Probabilistic functions.
+"""
+
 
 @numba.jit(nopython=True)
 def clock(interval, dt):

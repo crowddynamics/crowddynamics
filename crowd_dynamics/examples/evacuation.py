@@ -4,7 +4,7 @@ import numba
 import numpy as np
 
 from crowd_dynamics.core.vector2d import rotate90, normalize, length
-from crowd_dynamics.environment import Rectangle, Circle
+from crowd_dynamics.area import Rectangle, Circle
 from crowd_dynamics.parameters import Parameters, populate
 from crowd_dynamics.simulation import Simulation
 from crowd_dynamics.structure.agent import Agent

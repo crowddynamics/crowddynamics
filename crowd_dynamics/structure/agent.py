@@ -7,7 +7,7 @@ spec_agent = (
     ("size", int64),
     ("shape", UniTuple(int64, 2)),
     ("circular", boolean),
-    ("three_circles", boolean),
+    ("three_circle", boolean),
     ("orientable", boolean),
     ("active", boolean[:]),
     ("goal_reached", boolean[:]),
@@ -16,14 +16,16 @@ spec_agent = (
     ("r_t", float64[:]),
     ("r_s", float64[:]),
     ("r_ts", float64[:]),
+
+    ("mean_radius", float64),
+    ("mean_mass", float64),
+    ("mean_inertia_rot", float64),
+
     ("position", float64[:, :]),
     ("velocity", float64[:, :]),
     ("target_velocity", float64[:, :]),
     ("target_direction", float64[:, :]),
     ("force", float64[:, :]),
-    ("force_adjust", float64[:, :]),
-    ("force_agent", float64[:, :]),
-    ("force_wall", float64[:, :]),
     ("inertia_rot", float64[:]),
     ("angle", float64[:]),
     ("angular_velocity", float64[:]),
@@ -33,9 +35,12 @@ spec_agent = (
     ("position_ls", float64[:, :]),
     ("position_rs", float64[:, :]),
     ("front", float64[:, :]),
+)
+
+spec_agent_motion = (
     ("tau_adj", float64),
     ("tau_adj_rot", float64),
-    ("k", float64),
+    ("k_soc", float64),
     ("tau_0", float64),
     ("mu", float64),
     ("kappa", float64),
@@ -49,6 +54,9 @@ spec_agent = (
     ("sight_soc", float64),
     ("sight_wall", float64),
     ("dist_three_circle", float64),
+)
+
+spec_agent_neighbour = (
     ("neighbor_radius", float64),
     ("neighborhood_size", int64),
     ("neighbors", int64[:, :]),
@@ -56,6 +64,10 @@ spec_agent = (
     ("neighbor_distances_max", float64[:]),
 )
 
+spec_agent += spec_agent_motion + spec_agent_neighbour
+
+agent_attr_motion = [item[0] for item in spec_agent_motion]
+agent_attr_neighbor = [item[0] for item in spec_agent_neighbour]
 agent_attr_names = [item[0] for item in spec_agent]
 
 
@@ -81,6 +93,7 @@ class Agent(object):
                  inertia_rot,
                  target_velocity,
                  target_angular_velocity):
+
         # Requirements
         require(mass > 0)
         require(radius > 0)
@@ -97,20 +110,20 @@ class Agent(object):
 
         # Agent models (Only one can be active at time).
         # Three circles model (more realistic) model is used by default.
-        self.circular = False      # Non-orientable.
-        self.three_circles = True  # Orientable.
+        self.circular = False     # Non-orientable.
+        self.three_circle = True  # Orientable.
 
-        if self.circular and self.three_circles:
+        if self.circular and self.three_circle:
             raise ValueError("Two agent models cannot not be active at the "
                              "same time.")
 
         # Flags
-        self.orientable = self.three_circles
+        self.orientable = self.three_circle
         self.active = np.zeros(size, np.bool8)  # Initialise agents as inactive
         self.goal_reached = np.zeros(size, np.bool8)
 
         # Constant properties
-        # TODO: Gender
+        # TODO: gender, mean values
         self.radius = radius               # Total radius
         self.r_t = radius_torso            # Radius of torso
         self.r_s = radius_shoulder         # Radius of shoulders
@@ -118,15 +131,16 @@ class Agent(object):
         self.mass = mass.reshape(size, 1)  # Mass
         self.inertia_rot = inertia_rot     # Moment of inertia
 
+        self.mean_radius = np.mean(self.radius)
+        self.mean_mass = np.mean(self.mass)
+        self.mean_inertia_rot = np.mean(self.inertia_rot)
+
         # Movement along x and y axis.
         self.position = np.zeros(self.shape)
         self.velocity = np.zeros(self.shape)
         self.target_velocity = target_velocity.reshape(size, 1)
         self.target_direction = np.zeros(self.shape)
         self.force = np.zeros(self.shape)
-        self.force_adjust = np.zeros(self.shape)
-        self.force_agent = np.zeros(self.shape)
-        self.force_wall = np.zeros(self.shape)
 
         # Rotational movement. Three circles agent model
         self.angle = np.zeros(self.size)
@@ -140,17 +154,16 @@ class Agent(object):
         self.front = np.zeros(self.shape)        # For plotting agents.
         self.update_shoulder_positions()
 
-        # TODO: vector form?, load from tables
-        # Force related parameters
+        # Motion related parameters
         self.tau_adj = 0.5
         self.tau_adj_rot = 0.2
-        self.k = 1.5 * np.mean(self.mass)  # 1.5 * mass?
+        self.k_soc = 1.5
         self.tau_0 = 3.0
         self.mu = 1.2e5
         self.kappa = 4e4
         self.damping = 500
         self.a = 2000
-        self.b = 0.04  #0.08
+        self.b = 0.04
 
         # Standard deviation for truncated normal distribution
         self.std_rand_force = 0.1
@@ -161,17 +174,14 @@ class Agent(object):
         self.f_soc_iw_max = 2e3
 
         # Interaction distances
-        self.sight_soc = 7.0
-        self.sight_wall = 7.0
+        self.sight_soc = 3.0
+        self.sight_wall = 3.0
 
         # Maximum distance > 0 to use three circles model. Improves physical
         # contact forces and adds rotational movement.
         self.dist_three_circle = 2.0
 
-        # Maximum size of neighbourhood
-        # Maximum distance that is considered to other agent that is neighbour
-        # Maximum size number of agents that are closer than radius.
-        # If less than maximum size of neighbors left over terms are -1.
+        # Tracking neighboring agents
         self.neighbor_radius = 0  # if less than or equal to 0 -> inactive
         self.neighborhood_size = 8
         self.neighbors = np.ones((self.size, self.neighborhood_size), dtype=np.int64)
@@ -181,20 +191,17 @@ class Agent(object):
 
     def set_circular(self):
         self.circular = True
-        self.three_circles = False
-        self.orientable = self.three_circles
+        self.three_circle = False
+        self.orientable = self.three_circle
 
-    def set_three_circles(self):
+    def set_three_circle(self):
         self.circular = False
-        self.three_circles = True
-        self.orientable = self.three_circles
+        self.three_circle = True
+        self.orientable = self.three_circle
 
     def reset_motion(self):
         self.force[:] = 0
         self.torque[:] = 0
-        self.force_adjust[:] = 0
-        self.force_agent[:] = 0
-        self.force_wall[:] = 0
 
     def reset_neighbor(self):
         if self.neighbor_radius == 0:
@@ -204,6 +211,7 @@ class Agent(object):
         self.neighbor_distances_max[:] = self.neighbor_radius + 1.0  # np.inf
 
     def indices(self):
+        """Indices of active agents."""
         # TODO: Other masks
         all_indices = np.arange(self.size)
         return all_indices[self.active]

@@ -59,6 +59,9 @@ class Simulation:
         attrs_agent["position"] = Attr("position", True, True)
         attrs_agent["velocity"] = Attr("velocity", True, True)
         attrs_agent["force"] = Attr("force", True, True)
+        attrs_agent["angle"] = Attr("angle", True, True)
+        attrs_agent["angular_velocity"] = Attr("angular_velocity", True, True)
+        attrs_agent["torque"] = Attr("torque", True, True)
 
         arg = [self.save.hdf(self.agent, attrs_agent)] + \
               [self.save.hdf(w, attrs_wall) for w in self.wall]

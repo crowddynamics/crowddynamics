@@ -193,5 +193,5 @@ Angular acceleration
    \omega_{k+1} &= \omega_{k} + \alpha_{k} \Delta t \\
 
 
-.. literalinclude:: ../../../crowd_dynamics/core/integrator.py
+.. literalinclude:: ../../../crowd_dynamics/core/motion.py
    :pyobject: integrator

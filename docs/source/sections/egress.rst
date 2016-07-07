@@ -76,6 +76,6 @@ Updating strategies by `Poisson process`_
 
 .. _poisson process: http://preshing.com/20111007/how-to-generate-random-timings-for-a-poisson-process/
 
-.. literalinclude:: ../../../crowd_dynamics/core/egress.py
+.. literalinclude:: ../../../crowd_dynamics/core/random.py
    :pyobject: clock
 

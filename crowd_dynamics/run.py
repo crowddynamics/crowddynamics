@@ -4,7 +4,6 @@ path2 = "/media/storage3/"
 
 def outdoor(density):
     from crowd_dynamics.examples.outdoor import initialize
-    # FIXME: nan array, forces
     kwargs = {}
     if density == "low":
         kwargs.update(size=30, width=10, height=10, path=path)
@@ -46,9 +45,9 @@ if __name__ == '__main__':
     # density = {"low", "medium", "high"}
     # spawn_shape = {"circ", "rect"}
 
-    simulation = outdoor("medium")
-    # simulation = hallway("medium")
-    # simulation = evacuation("high")
+    # simulation = outdoor("medium")
+    simulation = hallway("medium")
+    # simulation = evacuation("medium")
 
     # FIXME: When updating position or angle -> Update_shoulder_positions()
     # TODO: Better agent initialization.

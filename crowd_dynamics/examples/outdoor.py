@@ -1,7 +1,7 @@
 from crowd_dynamics.parameters import Parameters, populate
 from crowd_dynamics.simulation import Simulation
 from crowd_dynamics.structure.agent import Agent
-from crowd_dynamics.environment import Rectangle
+from crowd_dynamics.area import Rectangle
 
 
 def initialize(size, width, height, path="", name="outdoor", **kwargs):

@@ -49,8 +49,8 @@ def force_social_velocity_independent(h, n, a, b):
     return np.exp(- h / b) * a * n
 
 
-@numba.jit(f8[:](f8[:], f8[:], f8, f8, f8), nopython=True, nogil=True)
-def force_social(x_rel, v_rel, r_tot, k, tau_0):
+@numba.jit(f8[:](f8[:], f8[:], f8, f8, f8, f8), nopython=True, nogil=True)
+def force_social(x_rel, v_rel, r_tot, mass, k, tau_0):
     """
     Velocity dependent social force based on human anticipatory behaviour.
     http://motion.cs.umn.edu/PowerLaw/
@@ -74,7 +74,7 @@ def force_social(x_rel, v_rel, r_tot, k, tau_0):
         return force
 
     # Force is returned negative as repulsive force
-    force += - k / (a * tau ** 2.0) * np.exp(-tau / tau_0) * \
+    force += - mass * k / (a * tau ** 2.0) * np.exp(-tau / tau_0) * \
              (2.0 / tau + 1.0 / tau_0) * \
              (v_rel - (v_rel * b + x_rel * a) / d)
 
