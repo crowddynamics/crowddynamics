@@ -4,10 +4,9 @@ import numba
 import numpy as np
 
 from crowd_dynamics.core.vector2d import rotate90, normalize, length
-from crowd_dynamics.area import Rectangle, Circle
-from crowd_dynamics.parameters import Parameters, populate
 from crowd_dynamics.simulation import Simulation
-from crowd_dynamics.structure.agent import Agent
+from crowd_dynamics.structure.area import Rectangle, Circle
+from crowd_dynamics.structure.initialize import initialize_agent
 from crowd_dynamics.structure.wall import LinearWall
 
 
@@ -26,12 +25,10 @@ def _direction_update(agent, target, mid, r_mid, c_rect, r_rect):
     return target_direction
 
 
-def initialize(size, width=10, height=10, door_width=1.2, exit_hall_width=2,
+def initialize(size, width, height, door_width=1.2, exit_hall_width=2,
                spawn_shape="circ", egress_model=False, t_aset=60, path="",
                name="evacuation", **kwargs):
     bounds = Rectangle((0.0, width + exit_hall_width), (0.0, height))
-
-    parameters = Parameters(width, height)
 
     corner = ((0, 0), (0, height), (width, 0), (width, height))
     door = ((width, (height - door_width) / 2),
@@ -54,26 +51,29 @@ def initialize(size, width=10, height=10, door_width=1.2, exit_hall_width=2,
     goals = Rectangle((width, width + 2),
                       ((height - door_width) / 2, (height + door_width) / 2))
 
+
+
     # Agents
-    agent = Agent(*parameters.agent(size))
-    shape = None
+    spawn = None
     if spawn_shape == "circ":
-        shape = Circle((np.pi / 2, np.pi / 2 + np.pi), (0, height / 2),
+        spawn = Circle((np.pi / 2, np.pi / 2 + np.pi), (0, height / 2),
                        (width, height / 2))
     elif spawn_shape == "rect":
-        shape = Rectangle((0.0, width), (0.0, height))
+        spawn = Rectangle((0.0, width), (0.0, height))
     else:
         ValueError("Spawn shape not valid.")
 
-    populate(agent, agent.size, shape, walls)
-
-    agent.target_direction[:] = np.array((1.0, 0.0))
-    agent.update_shoulder_positions()
+    populate_kwargs_list = {
+        'amount': size,
+        'area': spawn,
+        'target_direction': None,
+        'body_angle': 0
+    }
+    agent = initialize_agent(size, populate_kwargs_list, walls=walls)
 
     # Navigation algorithm
     door1 = np.array(door[1], dtype=np.float64)
     door0 = np.array(door[0], dtype=np.float64)
-
     unit = normalize(door1 - door0)
     normal = rotate90(unit)
     mid = (door0 + door1) / 2  # Mid point of the two doors

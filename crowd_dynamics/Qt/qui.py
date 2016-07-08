@@ -2,10 +2,10 @@ import numpy as np
 import pyqtgraph as pg
 from PyQt4 import QtGui, QtCore
 
-from crowd_dynamics.area import Rectangle
-from .simulation import Simulation
-from .structure.wall import LinearWall
-from .structure.wall import RoundWall
+from crowd_dynamics.simulation import Simulation
+from crowd_dynamics.structure.area import Rectangle
+from crowd_dynamics.structure.wall import LinearWall
+from crowd_dynamics.structure.wall import RoundWall
 
 
 class CentralItem(pg.PlotItem):

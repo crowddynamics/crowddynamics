@@ -74,7 +74,7 @@ agent_attr_names = [item[0] for item in spec_agent]
 @numba.jit(nopython=True)
 def require(cond):
     if not np.all(cond):
-        raise ValueError("All conditions are not met.")
+        raise Warning("All conditions are not met.")
 
 
 @numba.jitclass(spec_agent)
@@ -155,27 +155,21 @@ class Agent(object):
         self.update_shoulder_positions()
 
         # Motion related parameters
-        self.tau_adj = 0.5
-        self.tau_adj_rot = 0.2
-        self.k_soc = 1.5
-        self.tau_0 = 3.0
-        self.mu = 1.2e5
-        self.kappa = 4e4
-        self.damping = 500
+        self.tau_adj = 0.5      # Adjusting force
+        self.tau_adj_rot = 0.2  # Adjusting torque
+        self.k_soc = 1.5        # Social force scaling
+        self.tau_0 = 3.0        # Social force interaction time horizon
+        self.mu = 1.2e5         # Contact force
+        self.kappa = 4e4        # Contact force
+        self.damping = 500      # Contact force
         self.a = 2000
         self.b = 0.04
-
-        # Standard deviation for truncated normal distribution
-        self.std_rand_force = 0.1
-        self.std_rand_torque = 0.1
-
-        # Cutoff value for social force
-        self.f_soc_ij_max = 2e3
-        self.f_soc_iw_max = 2e3
-
-        # Interaction distances
-        self.sight_soc = 3.0
-        self.sight_wall = 3.0
+        self.std_rand_force = 0.1   # Fluctuation force
+        self.std_rand_torque = 0.1  # Fluctuation torque
+        self.f_soc_ij_max = 2e3  # Truncation value for social force
+        self.f_soc_iw_max = 2e3  # Truncation value for social force
+        self.sight_soc = 3.0     # Interaction distance with other agents
+        self.sight_wall = 3.0    # Interaction distance with walls
 
         # Maximum distance > 0 to use three circles model. Improves physical
         # contact forces and adds rotational movement.
@@ -217,7 +211,7 @@ class Agent(object):
         return all_indices[self.active]
 
     def update_shoulder_positions(self):
-        for i in range(self.size):
+        for i in self.indices():
             n = np.array((np.cos(self.angle[i]), np.sin(self.angle[i])))
             t = np.array((-np.sin(self.angle[i]), np.cos(self.angle[i])))
             offset = t * self.r_ts[i]

@@ -1,23 +1,17 @@
-from crowd_dynamics.parameters import Parameters, populate
 from crowd_dynamics.simulation import Simulation
-from crowd_dynamics.structure.agent import Agent
-from crowd_dynamics.area import Rectangle
+from crowd_dynamics.structure.area import Rectangle
+from crowd_dynamics.structure.initialize import initialize_agent, random_unit_vector
 
 
 def initialize(size, width, height, path="", name="outdoor", **kwargs):
-    params = Parameters(width, height)
-
     bounds = Rectangle((0.0, width), (0.0, height))
+    target_direction = random_unit_vector(size)
 
-    # Agents:
-    agent = Agent(*params.agent(size))
+    populate_kwargs_list = {'amount': size, 'area': bounds,
+                            'target_direction': target_direction}
+    agent = initialize_agent(
+        size,
+        populate_kwargs_list,
+    )
 
-    populate(agent, agent.size, bounds)
-    agent.velocity[:] = agent.target_velocity * params.random_unit_vector(size)
-
-    target_direction = params.random_unit_vector(size)
-
-    agent.update_shoulder_positions()
-
-    return Simulation(agent, name=name, dirpath=path, bounds=bounds,
-                      direction_update=target_direction, **kwargs)
+    return Simulation(agent, name=name, dirpath=path, bounds=bounds, **kwargs)

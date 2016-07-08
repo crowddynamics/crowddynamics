@@ -3,7 +3,7 @@ import numpy as np
 from numba import f8
 from scipy.stats import truncnorm as tn
 
-from crowd_dynamics.core.vector2d import length_nx2
+from crowd_dynamics.core.vector2d import length_nx2, truncate
 from .vector2d import dot2d, wrap_to_pi
 
 
@@ -49,8 +49,8 @@ def force_social_velocity_independent(h, n, a, b):
     return np.exp(- h / b) * a * n
 
 
-@numba.jit(f8[:](f8[:], f8[:], f8, f8, f8, f8), nopython=True, nogil=True)
-def force_social(x_rel, v_rel, r_tot, mass, k, tau_0):
+@numba.jit(f8[:](f8[:], f8[:], f8, f8, f8, f8, f8), nopython=True, nogil=True)
+def force_social(x_rel, v_rel, r_tot, mass, k, tau_0, f_max):
     """
     Velocity dependent social force based on human anticipatory behaviour.
     http://motion.cs.umn.edu/PowerLaw/
@@ -70,13 +70,19 @@ def force_social(x_rel, v_rel, r_tot, mass, k, tau_0):
     tau = (b - d) / a  # Time-to-collision. In seconds
     tau_max = 30.0  # Maximum time for interaction.
 
-    if tau <= 0 or tau > tau_max:
+    if tau < 0 or tau > tau_max:
         return force
+
+    # TODO: Handle tau = 0  -> agent are in contact
+    # TODO: Truncation for small tau
+    if tau == 0.0:
+        return np.ones_like(x_rel) * f_max
 
     # Force is returned negative as repulsive force
     force += - mass * k / (a * tau ** 2.0) * np.exp(-tau / tau_0) * \
              (2.0 / tau + 1.0 / tau_0) * \
              (v_rel - (v_rel * b + x_rel * a) / d)
+    truncate(force, f_max)
 
     return force
 

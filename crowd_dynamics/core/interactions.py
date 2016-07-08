@@ -98,8 +98,8 @@ def agent_agent_interaction(i, j, agent):
         v = agent.velocity[i] - agent.velocity[j]  # Relative velocity
         r_moment_i, r_moment_j = np.zeros(2), np.zeros(2)
 
-        force = force_social(x, v, r_tot, agent.mean_mass, agent.k_soc, agent.tau_0)
-        truncate(force, agent.f_soc_ij_max)
+        force = force_social(x, v, r_tot, agent.mean_mass, agent.k_soc,
+                             agent.tau_0, agent.f_soc_ij_max)
 
         if h <= agent.dist_three_circle:
             if agent.orientable:
@@ -120,8 +120,6 @@ def agent_agent_interaction(i, j, agent):
         if agent.orientable:
             agent.torque[i] += cross2d(r_moment_i, force)
             agent.torque[j] -= cross2d(r_moment_j, force)
-        # agent.force_agent[i] += force
-        # agent.force_agent[j] -= force
 
     # TODO: update neighborhood
     if agent.neighbor_radius > 0 and h < agent.neighbor_radius:
@@ -150,13 +148,12 @@ def agent_wall_interaction(i, w, agent, wall):
     if h <= agent.sight_wall:
         r_moment_i = np.zeros(2)
         force = force_social_velocity_independent(h, n, agent.a, agent.b)
+        truncate(force, agent.f_soc_iw_max)
 
         # TODO: Velocity relative social force for agent-wall interaction
         # x, r = wall.relative_position(w, agent.position[i], agent.velocity[i])
         # force = force_social(x, agent.velocity[i], agent.radius[i] + r,
         #                      constant.k_soc, constant.tau_0)
-
-        truncate(force, agent.f_soc_iw_max)
 
         if h <= agent.dist_three_circle:
             if agent.orientable:
@@ -169,6 +166,5 @@ def agent_wall_interaction(i, w, agent, wall):
                 force += force_c
 
         agent.force[i] += force
-        # agent.force_wall[i] += force
         if agent.orientable:
             agent.torque[i] += cross2d(r_moment_i, force)
