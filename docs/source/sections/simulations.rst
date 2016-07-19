@@ -1,6 +1,18 @@
 Simulations
 ===========
 
+Setup
+-----
+Setting up a simulation
+
+* Geometry
+    - Bounds
+    - Walls
+    - Areas
+* Configuration
+    - Agents
+
+
 Evacuation
 ----------
 

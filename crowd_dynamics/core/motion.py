@@ -8,7 +8,7 @@ from .vector2d import dot2d, wrap_to_pi
 
 
 def force_random(agent):
-    # Truncated normal distribution with standard deviation of 3.
+    """Truncated normal distribution with standard deviation of 3."""
     i = agent.indices()
     magnitude = tn.rvs(0, 3, loc=0, scale=agent.std_rand_force, size=i.size)
     angle = np.random.uniform(0, 2 * np.pi, size=i.size)
@@ -53,7 +53,6 @@ def force_social_velocity_independent(h, n, a, b):
 def force_social(x_rel, v_rel, r_tot, mass, k, tau_0, f_max):
     """
     Velocity dependent social force based on human anticipatory behaviour.
-    http://motion.cs.umn.edu/PowerLaw/
     """
     force = np.zeros_like(x_rel)
 
@@ -70,18 +69,15 @@ def force_social(x_rel, v_rel, r_tot, mass, k, tau_0, f_max):
     tau = (b - d) / a  # Time-to-collision. In seconds
     tau_max = 30.0  # Maximum time for interaction.
 
-    if tau < 0 or tau > tau_max:
+    if tau <= 0 or tau > tau_max:
         return force
-
-    # TODO: Handle tau = 0  -> agent are in contact
-    # TODO: Truncation for small tau
-    if tau == 0.0:
-        return np.ones_like(x_rel) * f_max
 
     # Force is returned negative as repulsive force
     force += - mass * k / (a * tau ** 2.0) * np.exp(-tau / tau_0) * \
              (2.0 / tau + 1.0 / tau_0) * \
              (v_rel - (v_rel * b + x_rel * a) / d)
+
+    # Truncation for small tau
     truncate(force, f_max)
 
     return force

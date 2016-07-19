@@ -3,7 +3,7 @@ Social Force Model
 
 System of differential equations
 --------------------------------
-Social force model uses consists of real contact forces and hypothetical adjusting, social forces and random fluctuation to simulate crowd motion.
+Social force model consists of real contact forces and fictitious adjusting, social forces and random fluctuation to simulate crowd motion.
 
 Law's of motion are given as system of differential equations
 
@@ -99,7 +99,9 @@ Linear wall
 
 Social
 ^^^^^^
-Psychological force for collision avoidance. Naive velocity independent equation
+**Social force model for pedestrian dynamics**
+
+Psychological force for collision avoidance. Distance based algorithm used in the original social force model by Helbing
 
 .. math::
    \mathbf{f}^{soc} = A \exp\left(-\frac{h}{B}\right) \hat{\mathbf{n}}
@@ -107,21 +109,28 @@ Psychological force for collision avoidance. Naive velocity independent equation
 .. literalinclude:: ../../../crowd_dynamics/core/motion.py
    :pyobject: force_social_velocity_independent
 
-Improved velocity dependent algorithm
+
+**A universal power law governing pedestrian interactions**
+
+Improved algorithm based on human anticipatory behaviour. Algorithm for circular agent
 
 .. math::
    \mathbf{f}^{soc} &= -\nabla_{\tilde{\mathbf{x}}} E(\tau) \\
    &= -\nabla_{\tilde{\mathbf{x}}} \left(\frac{k}{\tau^{2}} \exp \left( -\frac{\tau}{\tau_{0}} \right) \right) \\
-   &= - \left(\frac{k}{a \tau^{2}}\right) \left(\frac{2}{\tau} + \frac{1}{\tau_{0}}\right) \exp\left (-\frac{\tau}{\tau_{0}}\right ) \left(\tilde{\mathbf{v}} -\frac{a \tilde{\mathbf{x}} + b \tilde{\mathbf{v}}}{d} \right),
+   &= - \left(\frac{k}{a \tau^{2}}\right) \left(\frac{2}{\tau} + \frac{1}{\tau_{0}}\right) \exp\left (-\frac{\tau}{\tau_{0}}\right ) \left(\tilde{\mathbf{v}} -\frac{a \tilde{\mathbf{x}} + b \tilde{\mathbf{v}}}{d} \right), \\
+   a &= \tilde{\mathbf{v}} \cdot \tilde{\mathbf{v}} = \| \tilde{\mathbf{v}} \|^2 \\
+   b &= -\tilde{\mathbf{x}} \cdot \tilde{\mathbf{v}} = - \| \tilde{\mathbf{x}} \| \| \tilde{\mathbf{x}} \| \cos(\varphi) \\
+   c &= \tilde{\mathbf{v}} \cdot \tilde{\mathbf{x}} - \tilde{r}^{2} = \| \tilde{\mathbf{x}} \|^2 - \tilde{r}^{2} \\
+   d &= \sqrt{b^{2} - a c} \\
+   \tau &= \frac{b - d}{a}.
 
 where
 
-.. math::
-   a &= \tilde{\mathbf{v}} \cdot \tilde{\mathbf{v}} \\
-   b &= -\tilde{\mathbf{x}} \cdot \tilde{\mathbf{v}} \\
-   c &= \tilde{\mathbf{x}} \cdot \tilde{\mathbf{x}} - \tilde{r}^{2} \\
-   d &= \sqrt{b^{2} - a c} \\
-   \tau &= \frac{b - d}{a}.
+* Coefficient :math:`k=1.5 \cdot \langle m_i \rangle` scales the magnitude of the social force.
+
+* Time-to-collision :math:`\tau` is obtained by linearly extrapolating current trajectories. Social force is :math:`\mathbf{0}` if :math:`\tau < 0` or :math:`\tau` is undefined *(nan)* which happens if term inside square root is less than zero. This means that trajectories do not collide.
+
+Source
 
 .. literalinclude:: ../../../crowd_dynamics/core/motion.py
    :pyobject: force_social

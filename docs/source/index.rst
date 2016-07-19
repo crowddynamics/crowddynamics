@@ -12,12 +12,12 @@ Contents:
    :maxdepth: 2
 
    sections/overview.rst
-   sections/basis.rst
    sections/agent.rst
-   sections/wall.rst
+   sections/field.rst
    sections/motion.rst
    sections/subgroup.rst
    sections/navigation.rst
+   sections/neighborhood.rst
    sections/egress.rst
    sections/simulations.rst
 

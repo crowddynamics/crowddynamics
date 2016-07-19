@@ -1,8 +1,22 @@
-Walls
+Field
 =====
 
+Areas
+-----
+
+Bounds
+^^^^^^
+Area inside which agents are active. If agent exits bounds they become inactive.
+
+Goals
+^^^^^
+
+
+Walls
+-----
+
 Linear walls
-------------
+^^^^^^^^^^^^
 
 .. image::
    ../_static/wall_model.*
@@ -15,7 +29,7 @@ Linear wall is defined by two points
 
 
 Round walls
------------
+^^^^^^^^^^^
 Round wall is defined by point of center and radius
 
 .. math::

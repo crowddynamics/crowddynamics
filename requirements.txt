@@ -1,0 +1,6 @@
+numpy
+numba
+PyQt4
+pyqtgraph
+h5py
+pandas

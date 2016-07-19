@@ -264,7 +264,7 @@ sympy-plots-for-*.tex/
 /CAD/
 /research/
 /docs/build/
-/docs/sphinx.pdf
 /crowd_dynamics/examples/two_exits.py
 /crowd_dynamics/examples/rounding_corner.py
 /crowd_dynamics/examples/crossing_flows.py
+/.travis.yaml

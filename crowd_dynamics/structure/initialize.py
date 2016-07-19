@@ -226,7 +226,7 @@ def initialize_agent(size: int,
     else:
         raise ValueError("Model {} not in {}.".format(model, models))
 
-    # TODO: separate
+    # TODO: separate, manual positions
     # Initial positions
     if isinstance(populate_kwargs_list, dict):
         populate(agent, walls=walls, **populate_kwargs_list)
