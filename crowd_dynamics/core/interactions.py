@@ -12,7 +12,7 @@ def agent_agent(agent):
     # n - 1 + n - 2 + ... + 1 = n^2 / 2 in O(n^2)
     ind = agent.indices()
     for l, i in enumerate(ind[:-1]):
-        for j in ind[l+1:]:
+        for j in ind[l + 1:]:
             agent_agent_interaction(i, j, agent)
 
 
@@ -97,7 +97,7 @@ def agent_agent_interaction(i, j, agent):
     if h <= agent.sight_soc:
         v = agent.velocity[i] - agent.velocity[j]  # Relative velocity
         r_moment_i, r_moment_j = np.zeros(2), np.zeros(2)
-
+        # force_i, force_j = np.zeros(2), np.zeros(2)
         force = force_social(x, v, r_tot, agent.mean_mass, agent.k_soc,
                              agent.tau_0, agent.f_soc_ij_max)
 
@@ -105,8 +105,13 @@ def agent_agent_interaction(i, j, agent):
             if agent.orientable:
                 # Update values
                 n, h, r_moment_i, r_moment_j = agent_agent_distance(agent, i, j)
+                # force
             else:
                 n = x / d  # Normal vector
+                # force = force_social(x, v, r_tot, agent.mean_mass, agent.k_soc,
+                #                      agent.tau_0, agent.f_soc_ij_max)
+                # force_i[:] = force
+                # force_j[:] = force
 
             # Physical contact
             if h < 0:
@@ -127,7 +132,8 @@ def agent_agent_interaction(i, j, agent):
             ind = np.argmax(agent.neighbor_distances[i])
             agent.neighbors[i, ind] = j
             agent.neighbor_distances[i, ind] = h
-            agent.neighbor_distances_max[i] = np.max(agent.neighbor_distances[i])
+            agent.neighbor_distances_max[i] = np.max(
+                agent.neighbor_distances[i])
 
         if h < agent.neighbor_distances_max[j]:
             ind = np.argmax(agent.neighbor_distances[j])

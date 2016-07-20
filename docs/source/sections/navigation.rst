@@ -29,8 +29,8 @@ Default update algorithm is updating target angle to angle of target direction
 .. literalinclude:: ../../../crowd_dynamics/core/navigation.py
    :pyobject: direction_to_target_angle
 
-Construction of update function
--------------------------------
+Update function
+---------------
 
 Manually
 ^^^^^^^^

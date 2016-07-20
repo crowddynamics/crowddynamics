@@ -15,7 +15,7 @@ Contents:
    sections/agent.rst
    sections/field.rst
    sections/motion.rst
-   sections/subgroup.rst
+   sections/extensions.rst
    sections/navigation.rst
    sections/neighborhood.rst
    sections/egress.rst

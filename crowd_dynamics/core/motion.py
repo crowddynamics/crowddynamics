@@ -3,8 +3,7 @@ import numpy as np
 from numba import f8
 from scipy.stats import truncnorm as tn
 
-from crowd_dynamics.core.vector2d import length_nx2, truncate
-from .vector2d import dot2d, wrap_to_pi
+from .vector2d import dot2d, wrap_to_pi, length_nx2, truncate
 
 
 def force_random(agent):
@@ -51,9 +50,7 @@ def force_social_velocity_independent(h, n, a, b):
 
 @numba.jit(f8[:](f8[:], f8[:], f8, f8, f8, f8, f8), nopython=True, nogil=True)
 def force_social(x_rel, v_rel, r_tot, mass, k, tau_0, f_max):
-    """
-    Velocity dependent social force based on human anticipatory behaviour.
-    """
+    """Velocity dependent social force based on human anticipatory behaviour."""
     force = np.zeros_like(x_rel)
 
     a = dot2d(v_rel, v_rel)
