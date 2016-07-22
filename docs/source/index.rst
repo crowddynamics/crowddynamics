@@ -9,7 +9,7 @@ Welcome to Crowd Dynamics's documentation!
 Contents:
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
 
    sections/overview.rst
    sections/agent.rst

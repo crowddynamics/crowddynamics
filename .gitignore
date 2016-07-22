@@ -262,7 +262,6 @@ sympy-plots-for-*.tex/
 
 # Folders
 /CAD/
-/research/
 /docs/build/
 /crowd_dynamics/examples/two_exits.py
 /crowd_dynamics/examples/rounding_corner.py

@@ -44,13 +44,14 @@ def torque_adjust(agent):
 
 @numba.jit(f8[:](f8, f8[:], f8, f8), nopython=True, nogil=True)
 def force_social_velocity_independent(h, n, a, b):
-    """Simple velocity independent social force."""
+    """Pure distance dependent social force used by in the original social force
+    model by Helbing."""
     return np.exp(- h / b) * a * n
 
 
 @numba.jit(f8[:](f8[:], f8[:], f8, f8, f8, f8, f8), nopython=True, nogil=True)
 def force_social(x_rel, v_rel, r_tot, mass, k, tau_0, f_max):
-    """Velocity dependent social force based on human anticipatory behaviour."""
+    """Social force based on human anticipatory behaviour."""
     force = np.zeros_like(x_rel)
 
     a = dot2d(v_rel, v_rel)

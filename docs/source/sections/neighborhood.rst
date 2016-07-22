@@ -36,7 +36,7 @@ where :math:`\rho` is packing density coefficient denoting of the maximum percen
 
 Uses
 ----
-Neighborhood can used for speeding up iterating over agents for updating social forces or for egress congestion algorithms.
+Neighborhood can used for speeding up iterating over agents for updating *social forces*, for *egress congestion* algorithms or *herding* algorithms.
 
 Number of iterations over all agents with naive algorithm has computational complexity of
 
@@ -96,7 +96,7 @@ Social force error without scaling parameter :math:`k` is the distance of the ma
 Maximum error :math:`\max(\varepsilon)` is found when two agents are in head to head collision, mathematically
 
 .. math::
-   \varphi = \sphericalangle(\tilde{\mathbf{x}}, \tilde{\mathbf{v}}) = \pi
+   \varphi = \angle(\tilde{\mathbf{x}}, \tilde{\mathbf{v}}) = \pi
 
 Head on collision minimizes time-to-collision
 
