@@ -9,17 +9,21 @@ Welcome to Crowd Dynamics's documentation!
 Contents:
 
 .. toctree::
-   :maxdepth: 3
+   :maxdepth: 2
 
    sections/overview.rst
    sections/agent.rst
-   sections/field.rst
    sections/motion.rst
+   sections/adjusting.rst
+   sections/interactions.rst
+   sections/fluctuation.rst
    sections/extensions.rst
+   sections/integrator.rst
    sections/navigation.rst
    sections/neighborhood.rst
    sections/egress.rst
    sections/simulations.rst
+   sections/appendix.rst
 
 
 Indices and tables

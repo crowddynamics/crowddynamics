@@ -1,17 +1,11 @@
-Agent
-=====
+Agents
+======
 
-Definition
-----------
-Set of agents is denoted :math:`N = \{ 0, 1, \ldots, n-1 \}` where items are the indices of the agents. Individual agent is usually denoted :math:`i \in N` or :math:`j \in N`.
-
-Models
-------
-There are three different model for agent displayed in the figure.
+Active agents
+-------------
+Set of active agents usually referred as just agents is denoted :math:`N = \{ 0, 1, \ldots, n-1 \}` where items are the indices of the agents. Individual agent is usually denoted :math:`i \in N` or :math:`j \in N`. There are three different model for agent displayed in the figure.
 
 *Circular* model that is unorientable. *Elliptical* model and *three circle* model are orientable and more realistic but also more complex as they require rotational motion and more computation time to compute distances.
-
-
 
 In this simulation model we use circular model to approximate long distance interactions and we improve short distance interactions by using three circles model.
 
@@ -43,10 +37,11 @@ Three circle model is more realistic and more suitable for computing than ellipt
 
 .. [2001fourarc] Qian, Wen-Han, and Kang Qian. "Optimising the four-arc approximation to ellipses." Computer aided geometric design 18, no. 1 (2001): 1-19.
 
-Properties
-----------
 
 ..
+   Properties
+   ^^^^^^^^^^
+
    .. csv-table::
       :file: ../tables/body_types.csv
       :header-rows: 1
@@ -55,4 +50,82 @@ Properties
       :file: ../tables/agent_table.csv
       :header-rows: 1
 
+
+Passive agents
+--------------
+
+Areas
+^^^^^
+
+Bounds
+
+Area inside which agents are active. If agent exits bounds they become inactive.
+
+Goals
+
+
+Obstacles
+^^^^^^^^^
+
+Linear walls
+
+.. image::
+   ../_static/wall_model.*
+
+Linear wall is defined by two points
+
+.. math::
+   \mathbf{p}_{0}, \mathbf{p}_{1}
+
+
+
+Round walls
+
+Round wall is defined by point of center and radius
+
+.. math::
+   \mathbf{p}, r_{w}
+
+
+Relative properties
+-------------------
+Relative properties between agents.
+
+Between active agents
+^^^^^^^^^^^^^^^^^^^^^
+
+Circular
+
+.. math::
+   \tilde{\mathbf{x}} &= \mathbf{x}_{i} - \mathbf{x}_{j} \\
+   \tilde{\mathbf{v}} &= \mathbf{v}_{i} - \mathbf{v}_{j} \\
+   d &= \left\| \tilde{\mathbf{x}} \right\| \\
+   r_{tot} &= r_i + r_j \\
+   h &= d - r_{tot} \\
+   \hat{\mathbf{n}} &= \tilde{\mathbf{x}} / d \\
+   \hat{\mathbf{t}} &= R(-90^{\circ}) \cdot \hat{\mathbf{n}}
+
+Three circles
+
+
+
+Between passive and active agent
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Linear wall
+
+.. math::
+   \tilde{\mathbf{x}} & \\
+   \tilde{\mathbf{v}} &= \mathbf{v}_{i} \\
+   \mathbf{q}_{0} &= \mathbf{x}_{i} - \mathbf{p}_{0} \\
+   \mathbf{q}_{1} &= \mathbf{x}_{i} - \mathbf{p}_{1} \\
+   d &= \begin{cases} \left\| \mathbf{q}_{0} \right\| & l_{t} > l_{w} \\
+   \left| l_{n} \right| & \text{otherwise} \\
+   \left\| \mathbf{q}_{1} \right\| & l_{t} < -l_{w}
+   \end{cases} \\
+   \hat{\mathbf{n}} &= \begin{cases}
+   \hat{\mathbf{q}}_{0} & l_{t} > l_{w} \\
+   \operatorname{sign}(l_{n})\hat{\mathbf{n}}_{w} & \text{otherwise} \\
+   \hat{\mathbf{q}}_{1} & l_{t} < -l_{w}
+   \end{cases} \\
+   \hat{\mathbf{t}} &= R(-90^{\circ}) \cdot \hat{\mathbf{n}}
 
