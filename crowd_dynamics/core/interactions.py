@@ -35,24 +35,22 @@ def agent_agent_distance(agent, i, j):
     r_j = (agent.r_t[j], agent.r_s[j], agent.r_s[j])
 
     # Minimizing values
-    positions = np.zeros(2), np.zeros(2)  #
+    positions = np.zeros(agent.shape[1]), np.zeros(agent.shape[1])  #
     radius = (0.0, 0.0)  # Radius
-    relative_distance = 0  # Minimum relative distance distance
-    normal = np.zeros(2)  # Unit vector of x_rel
+    relative_distance = np.nan  # Minimum relative distance distance
+    normal = np.zeros(agent.shape[1])  # Unit vector of x_rel
 
-    init = True
     for xi, ri in zip(x_i, r_i):
         for xj, rj in zip(x_j, r_j):
             x = xi - xj
             d = length(x)
             r_tot = (ri + rj)
             h = d - r_tot
-            if h < relative_distance or init:
+            if np.isnan(relative_distance) or h < relative_distance:
                 relative_distance = h
                 radius = ri, rj
                 normal = x / d
                 positions = xi, xj
-                init = False
 
     r_moment_i = positions[0] + radius[0] * normal - agent.position[i]
     r_moment_j = positions[1] - radius[1] * normal - agent.position[j]
