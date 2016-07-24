@@ -6,10 +6,11 @@ Interactions between agents are modeled using social and contact forces.
 Social force
 ------------
 
+Psychological force for collision avoidance.
+
 Helbing's social force
 ^^^^^^^^^^^^^^^^^^^^^^
-
-Psychological force for collision avoidance. Distance based algorithm used in the original social force model by Helbing
+Distance based algorithm used in the original social force model by Helbing
 
 .. math::
    \mathbf{f}^{soc} = A \exp\left(-\frac{h}{B}\right) \hat{\mathbf{n}}
@@ -27,7 +28,7 @@ Algorithm based on human anticipatory behaviour. Interaction potential between t
 .. math::
    E(\tau) &= \frac{k}{\tau^{2}} \exp \left( -\frac{\tau}{\tau_{0}} \right), \quad \tau_{0} > 0, \tau > 0
 
-where coefficient :math:`k=1.5 \cdot \langle m_i \rangle` scales the magnitude and :math:`\tau_{0}` is interaction time horizon. Time-to-collision :math:`\tau` is obtained by linearly extrapolating current trajectories and finding where skin-to-skin distance :math:`h` is zero.
+where coefficient :math:`k=1.5 m_i` scales the magnitude and :math:`\tau_{0}` is interaction time horizon. Time-to-collision :math:`\tau` is obtained by linearly extrapolating current trajectories and finding where or if agents collide i.e skin-to-skin distance :math:`h` is zero.
 
 Force affecting agent can be derived by taking spatial gradient of the energy, where time-to-collision :math:`\tau` is function of the relative displacement of the mass centers :math:`\tilde{\mathbf{x}}`
 
@@ -44,32 +45,39 @@ If  :math:`\tau < 0` or :math:`\tau` is undefined [#]_ trajectories are not coll
 
 ----
 
-For **circular** agent :math:`(r_i + r_j) = \tilde{r}` is constant. Skin-to-skin distance
+**Time-to-collision** for two circles with relative center of mass :math:`\mathbf{c}`, relative velocity :math:`\mathbf{\tilde{v}}` and total radius of :math:`\tilde{r} (= \mathrm{constant})` is obtained from *skin-to-skin* distance
 
 .. math::
-   h(\tau) &= \| \tau \tilde{\mathbf{v}} + \tilde{\mathbf{x}} \| - (r_i + r_j), \\
+   h(\tau) &= \| \tau \tilde{\mathbf{v}} + \mathbf{c} \| - \tilde{r}, \\
 
-where :math:`\tau \tilde{\mathbf{v}} + \tilde{\mathbf{x}}` is trajectory of the center of  mass
-
-.. math::
-   h &= 0 \\
-   \| \tilde{\mathbf{x}} + \tau \tilde{\mathbf{v}} \| &= r_i + r_j \\
-   \| \tilde{\mathbf{x}} + \tau \tilde{\mathbf{v}} \|^2 &= (r_i + r_j)^2 \\
-   \tilde{\mathbf{x}} \cdot \tilde{\mathbf{x}} + 2 \tau (\tilde{\mathbf{x}} \cdot \tilde{\mathbf{v}})  + \tau^2 \tilde{\mathbf{v}} \cdot \tilde{\mathbf{v}} &= (r_i + r_j)^2 \\
+Solve for root
 
 .. math::
-   \tau^2 (\tilde{\mathbf{v}} \cdot \tilde{\mathbf{v}}) + 2 \tau (\tilde{\mathbf{x}} \cdot \tilde{\mathbf{v}}) + \tilde{\mathbf{x}} \cdot \tilde{\mathbf{x}} -  \tilde{r}^2 &= 0
+   h(\tau) &= 0 \\
+   \| \mathbf{c} + \tau \tilde{\mathbf{v}} \| &= \tilde{r} \\
+   \| \mathbf{c} + \tau \tilde{\mathbf{v}} \|^2 &= \tilde{r}^2
 
-We can solve equation with `quadratic formula <https://en.wikipedia.org/wiki/Quadratic_equation>`_, then we have
+Quadratic equation is obtained
+
+.. math::
+    \tau^2 (\tilde{\mathbf{v}} \cdot \tilde{\mathbf{v}}) + 2 \tau (\mathbf{c} \cdot \tilde{\mathbf{v}}) + \mathbf{c} \cdot \mathbf{c} - \tilde{r}^2 &=0 \\
+
+Solution with `quadratic formula <https://en.wikipedia.org/wiki/Quadratic_equation>`_ gives us
 
 .. math::
    a &= \tilde{\mathbf{v}} \cdot \tilde{\mathbf{v}} \\
-   b &= -\tilde{\mathbf{x}} \cdot \tilde{\mathbf{v}} \\
-   c &= \tilde{\mathbf{x}} \cdot \tilde{\mathbf{x}} - \tilde{r}^{2}\\
+   b &= -\mathbf{c} \cdot \tilde{\mathbf{v}} \\
+   c &= \mathbf{c} \cdot \mathbf{c} - \tilde{r}^{2}\\
    d &= \sqrt{b^{2} - a c} \\
    \tau &= \frac{b - d}{a}.
 
-Social force is now derived by taking spatial gradient of the energy function
+----
+
+**Circular model**
+
+.. math::
+   \tilde{r} &= r_i + r_j \\
+   \mathbf{c} &= \tilde{\mathbf{x}}
 
 .. math::
    \nabla_{\tilde{\mathbf{x}}} \tau &= \left(\frac{1}{a} \right) \left(\tilde{\mathbf{v}} -\frac{a \tilde{\mathbf{x}} + b \tilde{\mathbf{v}}}{d} \right)
@@ -77,14 +85,12 @@ Social force is now derived by taking spatial gradient of the energy function
 .. math::
    \mathbf{f}^{soc} &= - \left(\frac{k}{\tau^{2}}\right) \left(\frac{2}{\tau} + \frac{1}{\tau_{0}}\right) \exp\left (-\frac{\tau}{\tau_{0}}\right ) \left(\frac{1}{a} \right) \left(\tilde{\mathbf{v}} -\frac{a \tilde{\mathbf{x}} + b \tilde{\mathbf{v}}}{d} \right), \\
 
-Source
-
 .. literalinclude:: ../../../crowd_dynamics/core/motion.py
    :pyobject: force_social
 
 ----
 
-For **elliptical** agent
+**Elliptical model**
 
 .. math::
     \mathbf{\hat{e}}_n &= \operatorname{sin}\left(\varphi\right)\mathbf{\hat{e}_x} + \operatorname{cos}\left(\varphi\right)\mathbf{\hat{e}_y}
@@ -99,20 +105,15 @@ We get radius of form
 .. math::
    r &= \sqrt{c_0 + c_1 \tau + c_2 \tau^2}
 
-.. Taylor series approximation?
-
-.. math::
-   \tau = ???
-
 ----
 
-For **three circle** agent.
+**Three circle model**
 
 .. Relative displacement vector :math:`\mathbf{r}`.
 
 .. math::
    \mathbf{c} &= (\mathbf{x}_{i} + \mathbf{r}_i) - (\mathbf{x}_{j} + \mathbf{r}_j) \\
-   &= (\mathbf{x}_{i} + \mathbf{x}_{j}) + (\mathbf{r}_i - \mathbf{r}_j) \\
+   &= (\mathbf{x}_{i} - \mathbf{x}_{j}) + (\mathbf{r}_i - \mathbf{r}_j) \\
    &= \tilde{\mathbf{x}} + \mathbf{r}
 
 Torso
@@ -123,12 +124,12 @@ Torso
 Left shoulder
 
 .. math::
-   \mathbf{r}_i &= -\mathbf{\hat{e}_{t}}_i
+   \mathbf{r}_i &= -\mathbf{\hat{e}_{t}}{}_i
 
 Right shoulder
 
 .. math::
-   \mathbf{r}_i &= \mathbf{\hat{e}_{t}}_i
+   \mathbf{r}_i &= \mathbf{\hat{e}_{t}}{}_i
 
 Torso-torso
 
@@ -169,9 +170,7 @@ Total gradient
 Social force for three circle model
 
 .. math::
-   \mathbf{f}^{soc} &= \left(\frac{k}{\tau^{2}}\right) \left(\frac{2}{\tau} + \frac{1}{\tau_{0}}\right) \exp\left (-\frac{\tau}{\tau_{0}}\right ) \nabla_{\tilde{\mathbf{x}}} \tau
-   \\
-   &= \left(\frac{k}{\tau^{2}}\right) \left(\frac{2}{\tau} + \frac{1}{\tau_{0}}\right) \exp\left (-\frac{\tau}{\tau_{0}}\right ) \left(\frac{1}{a} \right) \left(3 \tilde{\mathbf{v}} - \sum_{n=1}^{2} \frac{a (\tilde{\mathbf{x}} + 2 \mathbf{r}_n) + b_n \tilde{\mathbf{v}}}{d_n} \right)
+   \mathbf{f}^{soc} &= \left(\frac{k}{\tau^{2}}\right) \left(\frac{2}{\tau} + \frac{1}{\tau_{0}}\right) \exp\left (-\frac{\tau}{\tau_{0}}\right ) \left(\frac{1}{a} \right) \left(3 \tilde{\mathbf{v}} - \sum_{n=1}^{2} \frac{a (\tilde{\mathbf{x}} + 2 \mathbf{r}_n) + b_n \tilde{\mathbf{v}}}{d_n} \right)
 
 ----
 

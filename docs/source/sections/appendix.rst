@@ -8,5 +8,3 @@ This section contains equations and proofs used in the text that are too long to
 A universal power law governing pedestrian interactions
 -------------------------------------------------------
 
-.. math::
-   \nabla_{\tilde{\mathbf{x}}} \tau &=
