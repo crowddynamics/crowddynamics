@@ -31,8 +31,6 @@ Three circle model
 ^^^^^^^^^^^^^^^^^^
 Three circle model aka multi circle model models agent as a *rigid body* that has mass :math:`m`, center of mass :math:`\mathbf{x}` and three circles which represent torso and shoulders. Torso has radius of :math:`r_t` and is centered at center of mass :math:`\mathbf{x}`. Shoulder have both radius of  :math:`r_s` and are centered at :math:`\mathbf{x} \pm r_{ts} \hat{\mathbf{e}}_t`, where :math:`\hat{\mathbf{e}}_t` is unit vector tangential to the orientation :math:`\varphi` of the body.
 
-
-
 Three circle model is more realistic and more suitable for computing than elliptical model making it preferred choice over elliptical model. Also some approximations for ellipses are based on circular arcs. [2001fourarc]_
 
 .. [2001fourarc] Qian, Wen-Han, and Kang Qian. "Optimising the four-arc approximation to ellipses." Computer aided geometric design 18, no. 1 (2001): 1-19.

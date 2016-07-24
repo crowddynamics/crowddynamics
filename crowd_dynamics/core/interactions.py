@@ -1,10 +1,9 @@
 import numba
 import numpy as np
 
-from crowd_dynamics.core.vector2d import cross2d
-from .motion import force_social, force_social_velocity_independent, \
+from .motion import force_social_circular, force_social_helbing, \
     force_contact
-from .vector2d import length, truncate, rotate270
+from .vector2d import length, truncate, rotate270, cross2d
 
 
 @numba.jit(nopython=True, nogil=True)
@@ -94,10 +93,10 @@ def agent_agent_interaction(i, j, agent):
     # Agent sees the other agent
     if h <= agent.sight_soc:
         v = agent.velocity[i] - agent.velocity[j]  # Relative velocity
-        r_moment_i, r_moment_j = np.zeros(2), np.zeros(2)
         # force_i, force_j = np.zeros(2), np.zeros(2)
-        force = force_social(x, v, r_tot, agent.mean_mass, agent.k_soc,
-                             agent.tau_0, agent.f_soc_ij_max)
+        r_moment_i, r_moment_j = np.zeros(2), np.zeros(2)
+        force = force_social_circular(x, v, r_tot, agent.mean_mass, agent.k_soc,
+                                      agent.tau_0, agent.f_soc_ij_max)
 
         if h <= agent.dist_three_circle:
             if agent.orientable:
@@ -151,7 +150,7 @@ def agent_wall_interaction(i, w, agent, wall):
 
     if h <= agent.sight_wall:
         r_moment_i = np.zeros(2)
-        force = force_social_velocity_independent(h, n, agent.a, agent.b)
+        force = force_social_helbing(h, n, agent.a, agent.b)
         truncate(force, agent.f_soc_iw_max)
 
         # TODO: Velocity relative social force for agent-wall interaction

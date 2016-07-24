@@ -23,7 +23,7 @@ A universal power law governing pedestrian interactions
 
 .. TODO: Figure on how tau is calculated.
 
-Algorithm based on human anticipatory behaviour. Interaction potential between two agents
+Algorithm based on human anticipatory behaviour [power2014]_. Interaction potential between two agents
 
 .. math::
    E(\tau) &= \frac{k}{\tau^{2}} \exp \left( -\frac{\tau}{\tau_{0}} \right), \quad \tau_{0} > 0, \tau > 0
@@ -37,11 +37,11 @@ Force affecting agent can be derived by taking spatial gradient of the energy, w
    \mathbf{f}^{soc} &= -\nabla_{\tilde{\mathbf{x}}} E(\tau) \\
    &= \left(\frac{k}{\tau^{2}}\right) \left(\frac{2}{\tau} + \frac{1}{\tau_{0}}\right) \exp\left (-\frac{\tau}{\tau_{0}}\right ) \nabla_{\tilde{\mathbf{x}}} \tau
 
-If  :math:`\tau < 0` or :math:`\tau` is undefined [#]_ trajectories are not colliding and social force is :math:`\mathbf{0}`. [power2014]_
+If  :math:`\tau < 0` or :math:`\tau` is undefined [#]_ trajectories are not colliding and social force is :math:`\mathbf{0}`.
+
+.. [#] Negative number inside square root. When using real floating point numbers nan is returned.
 
 .. [power2014] Karamouzas, Ioannis, Brian Skinner, and Stephen J. Guy. "Universal power law governing pedestrian interactions." Physical review letters 113, no. 23 (2014): 238701.
-
-.. [#] Complex number or floating point nan
 
 ----
 
@@ -116,35 +116,15 @@ We get radius of form
    &= (\mathbf{x}_{i} - \mathbf{x}_{j}) + (\mathbf{r}_i - \mathbf{r}_j) \\
    &= \tilde{\mathbf{x}} + \mathbf{r}
 
-Torso
+Torso, Left shoulder, Right shoulder
 
 .. math::
-   \mathbf{r}_i &= \mathbf{0}
+   \mathbf{r}_{i, j} &\in \{ \mathbf{0}, -\mathbf{\hat{e}_{t}}{}_i, \mathbf{\hat{e}_{t}}{}_i \}
 
-Left shoulder
-
-.. math::
-   \mathbf{r}_i &= -\mathbf{\hat{e}_{t}}{}_i
-
-Right shoulder
+Torso-torso, Torso-shoulder, Shoulder-shoulder
 
 .. math::
-   \mathbf{r}_i &= \mathbf{\hat{e}_{t}}{}_i
-
-Torso-torso
-
-.. math::
-   \tilde{r} &= r_{t, i} + r_{t, j}
-
-Torso-shoulder
-
-.. math::
-   \tilde{r} &= r_{t} + r_{s}
-
-Shoulder-shoulder
-
-.. math::
-   \tilde{r} &= r_{s, i} + r_{s, j}
+   \tilde{r} &= r_i + r_j, \quad r_{i,j} &\in \{ r_t, r_s \}
 
 Time-to-collision
 

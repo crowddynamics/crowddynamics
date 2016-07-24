@@ -1,14 +1,28 @@
 import numba
 import numpy as np
-from numba import f8
 
 from .vector2d import dot2d, truncate
 
 
-@numba.jit(f8[:](f8[:], f8[:], f8, f8, f8, f8, f8), nopython=True, nogil=True)
-def force_social_circular(x_rel, v_rel, r_tot, mass, k, tau_0, f_max):
+@numba.jit(nopython=True, nogil=True)
+def magnitude_soc(tau, tau_0):
+    """Magnitude of social force."""
+    return 1 / (tau ** 2.0) * np.exp(-tau / tau_0) * (2.0 / tau + 1.0 / tau_0)
+
+
+@numba.jit(nopython=True, nogil=True)
+def gradient_soc_circular(x_rel, v_rel, a, b, d):
+    return (v_rel - (v_rel * b + x_rel * a) / d) / a
+
+
+@numba.jit(nopython=True, nogil=True)
+def force_social_circular(agent, i, j):
     """Social force based on human anticipatory behaviour."""
-    force = np.zeros_like(x_rel)
+    x_rel = agent.position[i] - agent.position[j]
+    v_rel = agent.velocity[i] - agent.velocity[j]
+    r_tot = agent.radius[i] + agent.radius[j]
+
+    force = np.zeros(2), np.zeros(2)
 
     a = dot2d(v_rel, v_rel)
     b = -dot2d(x_rel, v_rel)
@@ -27,20 +41,17 @@ def force_social_circular(x_rel, v_rel, r_tot, mass, k, tau_0, f_max):
         return force
 
     # Force is returned negative as repulsive force
-    force += - mass * k / (a * tau ** 2.0) * np.exp(-tau / tau_0) * \
-             (2.0 / tau + 1.0 / tau_0) * \
-             (v_rel - (v_rel * b + x_rel * a) / d)
+    mag = magnitude_soc(tau, agent.tau_0)
+    grad = gradient_soc_circular(x_rel, v_rel, a, b, d)
+    coeff = agent.k_soc * mag * grad
+    force[0][:] = - agent.mass[i] * coeff
+    force[1][:] = - agent.mass[j] * coeff
 
     # Truncation for small tau
-    truncate(force, f_max)
+    truncate(force[0], agent.f_soc_ij_max)
+    truncate(force[1], agent.f_soc_ij_max)
 
     return force
-
-
-@numba.jit(nopython=True, nogil=True)
-def magnitude_soc(tau, tau_0):
-    """Magnitude of social force."""
-    return 1 / (tau ** 2.0) * np.exp(-tau / tau_0) * (2.0 / tau + 1.0 / tau_0)
 
 
 @numba.jit(nopython=True, nogil=True)
@@ -143,8 +154,7 @@ def force_social_three_circle(agent, i, j):
     d = d_matrix[part_i, :]
     r_off1 = r_off_j
     r_off2 = r_off_i[part_i]
-    # TODO: sign, -x_rel, -v_rel
-    grad_j = gradient_soc_three_circle(x_rel, v_rel, r_off1, r_off2, a, b, d)
+    grad_j = -gradient_soc_three_circle(x_rel, v_rel, r_off1, r_off2, a, b, d)
 
     # Magnitude from tau
     mag = magnitude_soc(tau, agent.tau_0)
