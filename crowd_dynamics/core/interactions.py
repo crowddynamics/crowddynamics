@@ -92,15 +92,16 @@ def agent_agent_interaction(i, j, agent):
 
     # Agent sees the other agent
     if h <= agent.sight_soc:
-        force_i, force_j = force_social_circular(agent, i, j)
+        force_i, force_j = np.zeros(2), np.zeros(2)
         r_moment_i, r_moment_j = np.zeros(2), np.zeros(2)
 
-        if agent.orientable and length(force_i) > 0:
+        if agent.orientable:
             # Three circle model
             n, h, r_moment_i, r_moment_j = agent_agent_distance(agent, i, j)
             force_i, force_j = force_social_three_circle(agent, i, j)
         else:
             # Circular
+            force_i, force_j = force_social_circular(agent, i, j)
             n = x / d  # Normal vector
 
         # Physical contact

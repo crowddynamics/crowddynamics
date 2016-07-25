@@ -51,8 +51,8 @@ def evacuation(density):
 
 if __name__ == '__main__':
     # TODO: Better agent initialization.
-    simulation = outdoor("medium")
-    # simulation = hallway("low")
+    # simulation = outdoor("medium")
+    simulation = hallway("medium")
     # simulation = evacuation("medium")
 
     main(simulation)

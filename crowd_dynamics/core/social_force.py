@@ -134,6 +134,7 @@ def force_social_three_circle(agent, i, j):
     r_off_i = np.zeros(2)
     r_off_j = np.zeros(2)
 
+    # TODO: Fix signs
     if contact_i == 1:
         phi = agent.angle[i]
         r_off_i += agent.r_ts[i] * np.array((-np.sin(phi), np.cos(phi)))
