@@ -4,16 +4,6 @@ import numpy as np
 from .vector2d import dot2d, truncate
 
 
-@numba.generated_jit(nopython=True, nogil=True)
-def asscalar(arg):
-    if isinstance(arg, numba.types.Number):
-        return lambda arg: arg
-    elif isinstance(arg, numba.types.Array):
-        return lambda arg: arg.item()
-    else:
-        raise ValueError()
-
-
 @numba.jit(nopython=True, nogil=True)
 def magnitude_soc(tau, tau_0):
     """Magnitude of social force."""
