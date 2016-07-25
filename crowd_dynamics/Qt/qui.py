@@ -44,6 +44,7 @@ class CentralItem(pg.PlotItem):
         # TODO: Goals
 
         # Agent
+        # TODO: Circular model, three circle model
         brush_psy = pg.mkBrush(255, 255, 255, 255 // 4)  # White, transparent
         self.psy = self.addCircle(agent.radius,
                                   symbolPen=None,

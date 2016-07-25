@@ -53,7 +53,6 @@ spec_agent_motion = (
     ("f_soc_iw_max", float64),
     ("sight_soc", float64),
     ("sight_wall", float64),
-    ("dist_three_circle", float64),
 )
 
 spec_agent_neighbour = (
@@ -118,7 +117,7 @@ class Agent(object):
                              "same time.")
 
         # Flags
-        self.orientable = self.three_circle
+        self.orientable = self.three_circle  # Orientable has rotational motion
         self.active = np.zeros(size, np.bool8)  # Initialise agents as inactive
         self.goal_reached = np.zeros(size, np.bool8)
 
@@ -170,10 +169,6 @@ class Agent(object):
         self.f_soc_iw_max = 2e3  # Truncation value for social force
         self.sight_soc = 3.0     # Interaction distance with other agents
         self.sight_wall = 3.0    # Interaction distance with walls
-
-        # Maximum distance > 0 to use three circles model. Improves physical
-        # contact forces and adds rotational movement.
-        self.dist_three_circle = 2.0
 
         # Tracking neighboring agents
         self.neighbor_radius = 0  # if less than or equal to 0 -> inactive

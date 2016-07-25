@@ -95,7 +95,7 @@ def agent_agent_interaction(i, j, agent):
         # force_i, force_j = np.zeros(2), np.zeros(2)
         r_moment_i, r_moment_j = np.zeros(2), np.zeros(2)
 
-        if agent.orientable:
+        if agent.three_circle:
             # Three circle model
             n, h, r_moment_i, r_moment_j = agent_agent_distance(agent, i, j)
             force_i, force_j = force_social_three_circle(agent, i, j)
@@ -145,21 +145,20 @@ def agent_wall_interaction(i, w, agent, wall):
     h = d - r_tot  # Relative distance
 
     if h <= agent.sight_wall:
+        # TODO: Power law social force
         r_moment_i = np.zeros(2)
         force = force_social_helbing(h, n, agent.a, agent.b)
         truncate(force, agent.f_soc_iw_max)
 
-        # TODO: Power law social force
+        # FIXME: only use with power law
+        if agent.three_circle and h < 0.5:
+            h, n, r_moment_i = agent_wall_distance(agent, wall, i, w)
 
-        if h <= agent.dist_three_circle:
-            if agent.orientable:
-                h, n, r_moment_i = agent_wall_distance(agent, wall, i, w)
-
-            if h < 0:
-                t = rotate270(n)  # Tangent
-                force_c = force_contact(h, n, agent.velocity[i], t, agent.mu,
-                                        agent.kappa, agent.damping)
-                force += force_c
+        if h < 0:
+            t = rotate270(n)  # Tangent
+            force_c = force_contact(h, n, agent.velocity[i], t, agent.mu,
+                                    agent.kappa, agent.damping)
+            force += force_c
 
         agent.force[i] += force
         if agent.orientable:
