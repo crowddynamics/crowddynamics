@@ -4,10 +4,20 @@ import numpy as np
 from .vector2d import dot2d, truncate
 
 
+@numba.generated_jit(nopython=True, nogil=True)
+def asscalar(arg):
+    if isinstance(arg, numba.types.Number):
+        return lambda arg: arg
+    elif isinstance(arg, numba.types.Array):
+        return lambda arg: arg.item()
+    else:
+        raise ValueError()
+
+
 @numba.jit(nopython=True, nogil=True)
 def magnitude_soc(tau, tau_0):
     """Magnitude of social force."""
-    return 1 / (tau ** 2.0) * np.exp(-tau / tau_0) * (2.0 / tau + 1.0 / tau_0)
+    return (2.0 / tau + 1.0 / tau_0) * np.exp(-tau / tau_0) / tau ** 2.0
 
 
 @numba.jit(nopython=True, nogil=True)
@@ -44,8 +54,8 @@ def force_social_circular(agent, i, j):
     mag = magnitude_soc(tau, agent.tau_0)
     grad = gradient_soc_circular(x_rel, v_rel, a, b, d)
     coeff = agent.k_soc * mag * grad
-    force[0][:] = - agent.mass[i] * coeff
-    force[1][:] = - agent.mass[j] * coeff
+    force[0][:] += - agent.mass[i] * coeff
+    force[1][:] -= - agent.mass[j] * coeff
 
     # Truncation for small tau
     truncate(force[0], agent.f_soc_ij_max)
@@ -55,13 +65,9 @@ def force_social_circular(agent, i, j):
 
 
 @numba.jit(nopython=True, nogil=True)
-def gradient_soc_three_circle(x_rel, v_rel, r_off_this, r_off_other, a, b, d):
+def gradient_soc_three_circle(x_rel, v_rel, r_off, a, b, d):
     """Gradient of tau."""
-    s = np.zeros(2)
-    for n in range(len(r_off_this)):
-        r_off = r_off_this[n] - r_off_other
-        s += (a * (x_rel + 2 * r_off) + b[n] * v_rel) / d[n]
-    return (3 * v_rel - s) / a
+    return (v_rel - (a * (x_rel + 2 * r_off) + b * v_rel) / d) / a
 
 
 @numba.jit(nopython=True, nogil=True)
@@ -90,20 +96,14 @@ def force_social_three_circle(agent, i, j):
     r_i = (agent.r_t[i], agent.r_s[i], agent.r_s[i])
     r_j = (agent.r_t[j], agent.r_s[j], agent.r_s[j])
 
-    # Parts that will be in contact for agents i and j if colliding.
-    contact = 0, 0
-
-    # For saving values to later use
-    # rows = i, columns = j
-    #                  | torso_j | left_shoulder_j | right_shoulder_j
-    # torso_i          |
-    # left_shoulder_i  |
-    # right_shoulder_i |
-    b_matrix = np.zeros((3, 3))
-    d_matrix = np.zeros((3, 3))
+    # Parts that will be first in contact for agents i and j if colliding.
+    contact_i = np.int64(0)
+    contact_j = np.int64(0)
 
     # Find smallest time-to-collision. In seconds.
     tau = np.nan
+    b_min = np.nan
+    d_min = np.nan
 
     for part_i, (xi, ri) in enumerate(zip(x_i, r_i)):
         for part_j, (xj, rj) in enumerate(zip(x_j, r_j)):
@@ -116,54 +116,50 @@ def force_social_three_circle(agent, i, j):
             c = dot2d(x_rel, x_rel) - r_tot ** 2
             d = np.sqrt(b ** 2 - a * c)
 
-            b[part_i, part_j] = b
-            d[part_i, part_j] = d
-
-            # Avoid zero division. No interaction if tau cannot be defined.
+            # No interaction if tau cannot be defined.
             if np.isnan(d) or d == 0:
                 continue
 
             tau_new = (b - d) / a
-            if np.isnan(tau) or tau_new < tau:
-                contact = part_i, part_j
+            if np.isnan(tau) or 0 < tau_new < tau:
+                contact_i, contact_j = part_i, part_j
                 tau = tau_new
+                b_min = b
+                d_min = d
 
     if np.isnan(tau) or tau <= 0:
         return force
 
     # Shoulder displacement vectors
-    r_ti = agent.r_ts[i] * np.array((-np.sin(agent.angle[i]),
-                                     np.cos(agent.angle[i])))
-    r_tj = agent.r_ts[j] * np.array((-np.sin(agent.angle[j]),
-                                     np.cos(agent.angle[j])))
-    r_off_i = (np.zeros(2), -r_ti, r_ti)
-    r_off_j = (np.zeros(2), -r_tj, r_tj)
+    r_off_i = np.zeros(2)
+    r_off_j = np.zeros(2)
 
-    # Gradient vectors
+    if contact_i == 1:
+        phi = agent.angle[i]
+        r_off_i += agent.r_ts[i] * np.array((-np.sin(phi), np.cos(phi)))
+    elif contact_i == 2:
+        phi = agent.angle[i]
+        r_off_i -= agent.r_ts[i] * np.array((-np.sin(phi), np.cos(phi)))
+
+    if contact_j == 1:
+        phi = agent.angle[j]
+        r_off_j += agent.r_ts[j] * np.array((-np.sin(phi), np.cos(phi)))
+    elif contact_j == 2:
+        phi = agent.angle[j]
+        r_off_j -= agent.r_ts[j] * np.array((-np.sin(phi), np.cos(phi)))
+
     x_rel = agent.position[i] - agent.position[j]
+    r_off = r_off_i - r_off_j
 
-    part_j = contact[1]
-    b = b_matrix[:, part_j]
-    d = d_matrix[:, part_j]
-    r_off1 = r_off_i
-    r_off2 = r_off_j[part_j]
-    grad_i = gradient_soc_three_circle(x_rel, v_rel, r_off1, r_off2, a, b, d)
-
-    part_i = contact[0]
-    b = b_matrix[part_i, :]
-    d = d_matrix[part_i, :]
-    r_off1 = r_off_j
-    r_off2 = r_off_i[part_i]
-    grad_j = -gradient_soc_three_circle(x_rel, v_rel, r_off1, r_off2, a, b, d)
-
-    # Magnitude from tau
+    # Force
     mag = magnitude_soc(tau, agent.tau_0)
-
-    # Forces
-    force[0][:] = - agent.mass[i] * agent.k_soc * mag * grad_i
-    force[1][:] = - agent.mass[j] * agent.k_soc * mag * grad_j
+    grad = gradient_soc_three_circle(x_rel, v_rel, r_off, a, b_min, d_min)
+    f = -agent.k_soc * mag * grad
 
     # Truncation for small tau
+    force[0][:] += agent.mass[i] * f
+    force[1][:] -= agent.mass[j] * f
+
     truncate(force[0], agent.f_soc_ij_max)
     truncate(force[1], agent.f_soc_ij_max)
 

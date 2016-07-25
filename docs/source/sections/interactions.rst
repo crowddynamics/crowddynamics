@@ -16,7 +16,7 @@ Distance based algorithm used in the original social force model by Helbing
    \mathbf{f}^{soc} = A \exp\left(-\frac{h}{B}\right) \hat{\mathbf{n}}
 
 .. literalinclude:: ../../../crowd_dynamics/core/motion.py
-   :pyobject: force_social_velocity_independent
+   :pyobject: force_social_helbing
 
 A universal power law governing pedestrian interactions
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -85,8 +85,8 @@ Solution with `quadratic formula <https://en.wikipedia.org/wiki/Quadratic_equati
 .. math::
    \mathbf{f}^{soc} &= - \left(\frac{k}{\tau^{2}}\right) \left(\frac{2}{\tau} + \frac{1}{\tau_{0}}\right) \exp\left (-\frac{\tau}{\tau_{0}}\right ) \left(\frac{1}{a} \right) \left(\tilde{\mathbf{v}} -\frac{a \tilde{\mathbf{x}} + b \tilde{\mathbf{v}}}{d} \right), \\
 
-.. literalinclude:: ../../../crowd_dynamics/core/motion.py
-   :pyobject: force_social
+.. .. literalinclude:: ../../../crowd_dynamics/core/motion.py
+      :pyobject: force_social
 
 ----
 
@@ -119,7 +119,7 @@ We get radius of form
 Torso, Left shoulder, Right shoulder
 
 .. math::
-   \mathbf{r}_{i, j} &\in \{ \mathbf{0}, -\mathbf{\hat{e}_{t}}{}_i, \mathbf{\hat{e}_{t}}{}_i \}
+   \mathbf{r}_{i, j} &\in \{ \mathbf{0}, -r_{ts} \mathbf{\hat{e}_{t}}{}_i, r_{ts} \mathbf{\hat{e}_{t}}{}_i \}
 
 Torso-torso, Torso-shoulder, Shoulder-shoulder
 
@@ -142,15 +142,12 @@ Gradient
 .. math::
    \nabla_{\tilde{\mathbf{x}}} \tau &= \left(\frac{1}{a} \right) \left(\tilde{\mathbf{v}} -\frac{a (\tilde{\mathbf{x}} + 2 \mathbf{r}) + b \tilde{\mathbf{v}}}{d} \right)
 
-Total gradient
-
-.. math::
-   \nabla_{\tilde{\mathbf{x}}} \tau &= \left(\frac{1}{a} \right) \left(3 \tilde{\mathbf{v}} - \sum_{n=1}^{2} \frac{a (\tilde{\mathbf{x}} + 2 \mathbf{r}_n) + b_n \tilde{\mathbf{v}}}{d_n} \right)
 
 Social force for three circle model
 
 .. math::
-   \mathbf{f}^{soc} &= \left(\frac{k}{\tau^{2}}\right) \left(\frac{2}{\tau} + \frac{1}{\tau_{0}}\right) \exp\left (-\frac{\tau}{\tau_{0}}\right ) \left(\frac{1}{a} \right) \left(3 \tilde{\mathbf{v}} - \sum_{n=1}^{2} \frac{a (\tilde{\mathbf{x}} + 2 \mathbf{r}_n) + b_n \tilde{\mathbf{v}}}{d_n} \right)
+   \mathbf{f}^{soc} &= \left(\frac{k}{\tau^{2}}\right) \left(\frac{2}{\tau} + \frac{1}{\tau_{0}}\right) \exp\left (-\frac{\tau}{\tau_{0}}\right ) \left(\frac{1}{a} \right) \left(\tilde{\mathbf{v}} -\frac{a (\tilde{\mathbf{x}} + 2 \mathbf{r}) + b \tilde{\mathbf{v}}}{d} \right)
+
 
 ----
 

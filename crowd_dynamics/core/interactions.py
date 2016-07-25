@@ -1,8 +1,8 @@
 import numba
 import numpy as np
 
-from .motion import force_social_circular, force_social_helbing, \
-    force_contact
+from .motion import force_social_helbing, force_contact
+from .social_force import force_social_circular, force_social_three_circle
 from .vector2d import length, truncate, rotate270, cross2d
 
 
@@ -92,36 +92,31 @@ def agent_agent_interaction(i, j, agent):
 
     # Agent sees the other agent
     if h <= agent.sight_soc:
-        v = agent.velocity[i] - agent.velocity[j]  # Relative velocity
-        # force_i, force_j = np.zeros(2), np.zeros(2)
+        force_i, force_j = force_social_circular(agent, i, j)
         r_moment_i, r_moment_j = np.zeros(2), np.zeros(2)
-        force = force_social_circular(x, v, r_tot, agent.mean_mass, agent.k_soc,
-                                      agent.tau_0, agent.f_soc_ij_max)
 
-        if h <= agent.dist_three_circle:
-            if agent.orientable:
-                # Update values
-                n, h, r_moment_i, r_moment_j = agent_agent_distance(agent, i, j)
-                # force
-            else:
-                n = x / d  # Normal vector
-                # force = force_social(x, v, r_tot, agent.mean_mass, agent.k_soc,
-                #                      agent.tau_0, agent.f_soc_ij_max)
-                # force_i[:] = force
-                # force_j[:] = force
+        if agent.orientable and length(force_i) > 0:
+            # Three circle model
+            n, h, r_moment_i, r_moment_j = agent_agent_distance(agent, i, j)
+            force_i, force_j = force_social_three_circle(agent, i, j)
+        else:
+            # Circular
+            n = x / d  # Normal vector
 
-            # Physical contact
-            if h < 0:
-                t = rotate270(n)  # Tangent vector
-                force_c = force_contact(h, n, v, t, agent.mu, agent.kappa,
-                                        agent.damping)
-                force += force_c
+        # Physical contact
+        if h < 0:
+            t = rotate270(n)  # Tangent vector
+            v = agent.velocity[i] - agent.velocity[j]  # Relative velocity
+            force_c = force_contact(h, n, v, t, agent.mu, agent.kappa,
+                                    agent.damping)
+            force_i += force_c
+            force_j -= force_c
 
-        agent.force[i] += force
-        agent.force[j] -= force
+        agent.force[i] += force_i
+        agent.force[j] += force_j
         if agent.orientable:
-            agent.torque[i] += cross2d(r_moment_i, force)
-            agent.torque[j] -= cross2d(r_moment_j, force)
+            agent.torque[i] += cross2d(r_moment_i, force_i)
+            agent.torque[j] += cross2d(r_moment_j, force_j)
 
     # TODO: update neighborhood
     if agent.neighbor_radius > 0 and h < agent.neighbor_radius:
@@ -153,10 +148,7 @@ def agent_wall_interaction(i, w, agent, wall):
         force = force_social_helbing(h, n, agent.a, agent.b)
         truncate(force, agent.f_soc_iw_max)
 
-        # TODO: Velocity relative social force for agent-wall interaction
-        # x, r = wall.relative_position(w, agent.position[i], agent.velocity[i])
-        # force = force_social(x, agent.velocity[i], agent.radius[i] + r,
-        #                      constant.k_soc, constant.tau_0)
+        # TODO: Power law social force
 
         if h <= agent.dist_three_circle:
             if agent.orientable:
