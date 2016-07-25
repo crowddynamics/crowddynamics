@@ -92,7 +92,7 @@ def agent_agent_interaction(i, j, agent):
 
     # Agent sees the other agent
     if h <= agent.sight_soc:
-        force_i, force_j = np.zeros(2), np.zeros(2)
+        # force_i, force_j = np.zeros(2), np.zeros(2)
         r_moment_i, r_moment_j = np.zeros(2), np.zeros(2)
 
         if agent.orientable:
