@@ -45,7 +45,7 @@ If  :math:`\tau < 0` or :math:`\tau` is undefined [#]_ trajectories are not coll
 
 ----
 
-**Time-to-collision** for two circles with relative center of mass :math:`\mathbf{c}`, relative velocity :math:`\mathbf{\tilde{v}}` and total radius of :math:`\tilde{r} (= \mathrm{constant})` is obtained from *skin-to-skin* distance
+**Time-to-collision** two **two circles** with relative center of mass :math:`\mathbf{c}`, relative velocity :math:`\mathbf{\tilde{v}}` and total radius of :math:`\tilde{r} (= \mathrm{constant})` is obtained from *skin-to-skin* distance
 
 .. math::
    h(\tau) &= \| \tau \tilde{\mathbf{v}} + \mathbf{c} \| - \tilde{r}, \\
@@ -148,6 +148,35 @@ Social force for three circle model
 .. math::
    \mathbf{f}^{soc} &= \left(\frac{k}{\tau^{2}}\right) \left(\frac{2}{\tau} + \frac{1}{\tau_{0}}\right) \exp\left (-\frac{\tau}{\tau_{0}}\right ) \left(\frac{1}{a} \right) \left(\tilde{\mathbf{v}} -\frac{a (\tilde{\mathbf{x}} + 2 \mathbf{r}) + b \tilde{\mathbf{v}}}{d} \right)
 
+----
+
+**Time-to-collision** for between **circle and line**.
+
+Moving circle with center of mass :math:`\mathbf{c}`, velocity :math:`\mathbf{v}` and total radius of :math:`r`. Static line if defined from point :math:`\mathbf{p}_0` to :math:`\mathbf{p}_1`. *Skin-to-skin* distance
+
+.. math::
+   \tilde{\mathbf{x}} &= \mathbf{p} - \mathbf{c} \\
+   \mathbf{\hat{t}_w} &= \frac{\mathbf{p}_1 - \mathbf{p}_0}{\| \mathbf{p}_1 - \mathbf{p}_0 \|} \\
+   \mathbf{\hat{n}_w} &\perp  \mathbf{\hat{t}_w}
+
+.. math::
+   h(\tau) &= | (\mathbf{p} - (\tau \tilde{\mathbf{v}} + \mathbf{c})) \cdot \mathbf{\hat{n}_w} | - \tilde{r}
+
+From :math:`h(\tau) = 0`
+
+.. math::
+   | -\tau (\tilde{\mathbf{v}} \cdot \mathbf{\hat{n}_w}) + \tilde{\mathbf{x}} \cdot \mathbf{\hat{n}_w} | &= \tilde{r} \\
+
+
+.. math::
+   \tau &= \frac{\tilde{\mathbf{x}} \cdot \mathbf{\hat{n}_w} + \tilde{r}}{\tilde{\mathbf{v}} \cdot \mathbf{\hat{n}_w}}, \quad \tau > \frac{\tilde{\mathbf{x}} \cdot \mathbf{\hat{n}_w}}{\tilde{\mathbf{v}} \cdot \mathbf{\hat{n}_w}}
+
+
+.. math::
+   \tau &= \frac{\tilde{\mathbf{x}} \cdot \mathbf{\hat{n}_w} - \tilde{r}}{\tilde{\mathbf{v}} \cdot \mathbf{\hat{n}_w}}, \quad \tau \leq \frac{\tilde{\mathbf{x}} \cdot \mathbf{\hat{n}_w}}{\tilde{\mathbf{v}} \cdot \mathbf{\hat{n}_w}}
+
+.. math::
+   \nabla_{\tilde{\mathbf{x}}} \tau &= \frac{\mathbf{\hat{n}_w}}{\tilde{\mathbf{v}} \cdot \mathbf{\hat{n}_w}}
 
 ----
 

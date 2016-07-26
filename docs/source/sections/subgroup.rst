@@ -1,15 +1,13 @@
-Social Force Model extensions
-=============================
-
 Subgroup Behaviour
-------------------
+==================
 Crowds in real life often have a number of smaller subgroups. Such as group of two or three friends walking together or couple with or without children.
 
 
 Model by [Langston] for subgroups at most :math:`4` people.
 
+
 Attractor point
-^^^^^^^^^^^^^^^
+---------------
 
 .. math::
    \mathbf{x}_{att} &= \mathbf{x}_{n} \pm d \hat{\mathbf{e}} \\
@@ -21,8 +19,9 @@ where
 * :math:`d` is desired distance between two consecutive members
 * :math:`\theta` is desired angular orientation of the subgroup
 
+
 Intra-subgroup adjusting force
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+------------------------------
 Subgroup adjusting force adds additional term to adjusting force in social force model
 
 .. math::
@@ -30,8 +29,4 @@ Subgroup adjusting force adds additional term to adjusting force in social force
 
 * :math:`\mathbf{e}_{att} = \mathbf{x}_{att} - \mathbf{x}_{i}` relative displacement from the formation attractor point
 * :math:`k` subgroup velocity constant
-
-
-Counterflow
------------
 

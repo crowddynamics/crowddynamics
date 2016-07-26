@@ -12,9 +12,12 @@ In this simulation model we use circular model to approximate long distance inte
 .. image::
     ../_static/agent_model.*
 
-Circular model
-^^^^^^^^^^^^^^
+Unorientable circular model
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Circular model models agent as *particle* that has mass :math:`m`, center of mass :math:`\mathbf{x}` and radius :math:`r`. Model is not orientable and does not require rotational motion.
+
+Orientable circular model
+^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Elliptical model
 ^^^^^^^^^^^^^^^^

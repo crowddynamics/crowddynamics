@@ -44,30 +44,25 @@ class CentralItem(pg.PlotItem):
         # TODO: Goals
 
         # Agent
-        # TODO: Circular model, three circle model
-        brush_psy = pg.mkBrush(255, 255, 255, 255 // 4)  # White, transparent
-        self.psy = self.addCircle(agent.radius,
-                                  symbolPen=None,
-                                  symbolBrush=brush_psy)
+        # brush_psy = pg.mkBrush(255, 255, 255, 255 // 4)  # White, transparent
+        impatient = pg.mkBrush(255, 0, 0, 255)  # RGBA
+        patient = pg.mkBrush(0, 0, 255, 255)  # RGBA
+        self.states = np.array((impatient, patient))
 
-        connect = np.ones(3 * agent.size, dtype=np.int32)
-        connect[2::3] = np.zeros(agent.size, dtype=np.int32)
-        self.left_shoulder = self.addCircle(agent.r_s)
-        self.right_shoulder = self.addCircle(agent.r_s)
-        self.torso = self.addCircle(agent.r_t)
-        self.direction = self.plot(connect=connect)
+        self.left_shoulder = self.plot()
+        self.right_shoulder = self.plot()
+        self.torso = self.plot()
+        self.direction = self.plot()
+
+        self.setAgent()
 
         # Walls
         self.walls = self.plot()
-        self.addWalls()
+        self.setWalls()
 
         self.updateData()
 
-    def addCircle(self, radius, **kwargs):
-        return self.plot(symbol='o', symbolSize=2 * radius, pen=None,
-                         pxMode=False, **kwargs)
-
-    def addWalls(self):
+    def setWalls(self):
         for wall in self.simulation.wall:
             if isinstance(wall, LinearWall):
                 connect = np.zeros(2 * wall.size, dtype=np.int32)
@@ -80,27 +75,42 @@ class CentralItem(pg.PlotItem):
                                    symbolSize=wall.params[:, 2],
                                    symbol='o', pen=None, pxMode=False)
 
+    def setAgent(self):
+        agent = self.simulation.agent
+        brush = pg.mkBrush(0, 0, 255, 255)
+        circle = lambda radius: dict(symbol='o',
+                                     symbolSize=2 * radius,
+                                     symbolBrush=brush,
+                                     pen=None,
+                                     pxMode=False)
+        if agent.circular:
+            self.torso.setData(**circle(agent.radius))
+        elif agent.three_circle:
+            self.torso.setData(**circle(agent.r_t))
+            self.left_shoulder.setData(**circle(agent.r_s))
+            self.right_shoulder.setData(**circle(agent.r_s))
+
+            connect = np.ones(3 * agent.size, dtype=np.int32)
+            connect[2::3] = np.zeros(agent.size, dtype=np.int32)
+            self.direction.setData(connect=connect)
+
     def updateData(self):
         """Updates data in the plot."""
         agent = self.simulation.agent
 
         brush = pg.mkBrush(0, 0, 255, 255)
         if self.simulation.egress_model is not None:
-            impatient = pg.mkBrush(255, 0, 0, 255)  # RGBA
-            patient = pg.mkBrush(0, 0, 255, 255)  # RGBA
-            states = np.array((impatient, patient))
-            brush = states[self.simulation.egress_model.strategy]
+            brush = self.states[self.simulation.egress_model.strategy]
 
-        self.psy.setData(agent.position)
         self.torso.setData(agent.position, symbolBrush=brush)
-        self.left_shoulder.setData(agent.position_ls, symbolBrush=brush)
-        self.right_shoulder.setData(agent.position_rs, symbolBrush=brush)
 
-        array = np.concatenate((agent.position_ls,
-                                agent.front,
-                                agent.position_rs), axis=1)
-        array = array.reshape(3 * agent.shape[0], agent.shape[1])
-        self.direction.setData(array)
+        if agent.three_circle:
+            self.left_shoulder.setData(agent.position_ls, symbolBrush=brush)
+            self.right_shoulder.setData(agent.position_rs, symbolBrush=brush)
+
+            array = np.concatenate((agent.position_ls, agent.front, agent.position_rs), axis=1)
+            array = array.reshape(3 * agent.shape[0], agent.shape[1])
+            self.direction.setData(array)
 
         text = "Iterations: {} " \
                "Simulation time: {:0.2f} " \

@@ -97,6 +97,7 @@ def agent_agent_interaction(i, j, agent):
 
         if agent.three_circle:
             # Three circle model
+            # TODO: Merge functions
             n, h, r_moment_i, r_moment_j = agent_agent_distance(agent, i, j)
             force_i, force_j = force_social_three_circle(agent, i, j)
         else:

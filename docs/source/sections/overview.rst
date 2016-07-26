@@ -7,20 +7,19 @@ Introduction
 
 Multi-agent simulation (MAS) of crowd dynamics on continuous 2-dimensional space using classical mechanics, where agents are modeled as particles of rigid bodies affected by fictitious and real forces that attempt to model real crowd motion and phenomena occurring in crowd motion.
 
-.. Python introduction
+
+.. Section of talking why crowd simulation model should be developed and where they can be applied to.
+
+Crowd simulations can be used as a valuable tool for venue design to improve crowd flows and to prevent disasters and stampedes. They can also be used for game and animation technology to produce realistic looking movement e.g moving large armies.
+
+
+.. Python
 
 Source is written using python version 3.4. Code uses *Numpy* for efficient numerical arrays and *Numba* to just-in-time compile Python functions into computationally efficient machine code. This keeps the source code readable and easily understandable.
 
 The aim is to keep the code highly modular and extendable so that new crowd dynamical models can be easily integrated and tested.
 
 Graphical user interface for interactive visualization of the simulation uses *QtPy4* and *pyqtgraph*.
-
-Motivation
-----------
-.. Section of talking why crowd simulation model should be developed and where they can be applied to.
-
-Crowd simulations can be used as a valuable tool for venue design to improve crowd flows and to prevent disasters and stampedes. They can also be used for game and animation technology to produce realistic looking movement e.g moving large armies.
-
 
 
 Terminology
@@ -84,7 +83,6 @@ empirical data
 granular flow
 
 flowrate through the door
-
 
 
 
@@ -206,35 +204,26 @@ Experimental research
 Crowd disasters
 ^^^^^^^^^^^^^^^
 
-`Crowd disasters <http://www.gkstill.com/CV/ExpertWitness/CrowdDisasters.html>`_
-
-
 
 
 Existing models
 ---------------
 
-`Fire Dynamics Simulator and Smokeview <https://pages.nist.gov/fds-smv/>`_
+- `Fire Dynamics Simulator and Smokeview <https://pages.nist.gov/fds-smv/>`_
+- `PedSim <http://pedsim.silmaril.org/>`_
+- `Simulex <https://www.iesve.com/software/ve-for-engineers/module/Simulex/480>`_
+- `Golaem Crowd <http://golaem.com/crowd>`_
+- `MASSIVE <http://www.massivesoftware.com/>`_
+- `Legion <http://www.legion.com/>`_
+- `EXODUS <http://fseg.gre.ac.uk/exodus/>`_
+- CrowdDMX (References in papers, couldn't find in the internet.)
 
-`PedSim <http://pedsim.silmaril.org/>`_
+Resources
+---------
 
-`Simulex <https://www.iesve.com/software/ve-for-engineers/module/Simulex/480>`_
-
-`Golaem Crowd <http://golaem.com/crowd>`_
-
-`MASSIVE <http://www.massivesoftware.com/>`_
-
-`Legion <http://www.legion.com/>`_
-
-`EXODUS <http://fseg.gre.ac.uk/exodus/>`_
-
-CrowdDMX (References in papers, couldn't find in the internet.)
-
-`UNC gamma <http://gamma.cs.unc.edu/research/crowds/>`_
-
-`Crowd Simulation Group <http://www.crowdsimulationgroup.co.uk/>`_
-
-`Crowd Safety and Risk Analysis, Prof. Dr. G. Keith Still <http://www.gkstill.com/index.html>`_
+- `UNC gamma <http://gamma.cs.unc.edu/research/crowds/>`_
+- `Crowd Simulation Group <http://www.crowdsimulationgroup.co.uk/>`_
+- `Crowd Safety and Risk Analysis, Prof. Dr. G. Keith Still <http://www.gkstill.com/index.html>`_
 
 Known crowd phenomena
 ---------------------
@@ -271,23 +260,3 @@ Stop-and-Go waves
 Zipper effect
 ^^^^^^^^^^^^^
 
-
-
-
-
-References
-----------
-
-.. [helbing1995] Helbing, Dirk, and Peter Molnar. "Social force model for pedestrian dynamics." Physical review E 51, no. 5 (1995): 4282.
-
-.. [helbing2000] Helbing, Dirk, Illés Farkas, and Tamas Vicsek. "Simulating dynamical features of escape panic." Nature 407, no. 6803 (2000): 487-490.
-
-.. [langston2006] Langston, Paul A., Robert Masling, and Basel N. Asmar. "Crowd dynamics discrete element multi-circle model." Safety Science 44, no. 5 (2006): 395-417.
-
-.. [korhonen2009] Korhonen, Timo, and Simo Hostikka. "Fire dynamics simulator with evacuation: FDS+ Evac." Technical Reference and User’s Guide. VTT Technical Research Centre of Finland (2009).
-
-.. [Langston2009] Singh, Harmeet, Robyn Arter, Louise Dodd, Paul Langston, Edward Lester, and John Drury. "Modelling subgroup behaviour in crowd dynamics DEM simulation." Applied Mathematical Modelling 33, no. 12 (2009): 4408-4423.
-
-.. [stateofart2013] Duives, Dorine C., Winnie Daamen, and Serge P. Hoogendoorn. "State-of-the-art crowd motion simulation models." Transportation research part C: emerging technologies 37 (2013): 193-209.
-
-.. [power2014] Karamouzas, Ioannis, Brian Skinner, and Stephen J. Guy. "Universal power law governing pedestrian interactions." Physical review letters 113, no. 23 (2014): 238701.

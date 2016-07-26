@@ -46,13 +46,11 @@ def evacuation(density):
     return initialize(**kwargs)
 
 
-# density = {"low", "medium", "high"}
-# spawn_shape = {"circ", "rect"}
-
 if __name__ == '__main__':
     # TODO: Better agent initialization.
+    # TODO: Circular agent selection
     # simulation = outdoor("medium")
-    simulation = hallway("medium")
+    simulation = hallway("high")
     # simulation = evacuation("medium")
 
     main(simulation)
