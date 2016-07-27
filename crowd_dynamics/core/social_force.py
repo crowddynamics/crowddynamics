@@ -196,6 +196,16 @@ def force_social_three_circle(agent, i, j):
 
 
 @numba.jit(nopython=True, nogil=True)
+def nanargmin(a):
+    a_min = a[0]
+    index = 0
+    for i in range(len(a)):
+        if not np.isnan(a[i]) and a[i] < a_min:
+            a_min = a[i]
+            index = i
+
+
+@numba.jit(nopython=True, nogil=True)
 def social_force_linear_wall(agent, i, p0, p1):
     force = np.zeros(2)
     p = np.array((p0, p1))
@@ -207,19 +217,23 @@ def social_force_linear_wall(agent, i, p0, p1):
     t = (p1 - p0) / length((p1 - p0))
     n = rotate90(t)
 
-    dot_vt = dot2d(v_rel, t)
-    dot2d(x_rel, t) / dot_vt
+    tau_t = -dot2d(x_rel, t) / dot2d(v_rel, t)
 
     tau = np.zeros(3)
     grad = np.zeros((3, 2))
     tau[0], grad[0] = time_to_collision_circle_circle(x_rel[0], v_rel)
     tau[1], grad[1] = time_to_collision_circle_circle(x_rel[1], v_rel)
-    tau[2], grad[2] = time_to_collision_circle_line(x_rel, v_rel, r_tot, n)
+    tau[2], grad[2] = time_to_collision_circle_line(x_rel[0], v_rel, r_tot, n)
 
-
-
-    mag = magnitude(tau, agent.tau_0)
-    force[:] = - agent.mass[i] * agent.k_soc * mag * grad
+    if tau[0] <= tau_t[0]:
+        mag = magnitude(tau[0], agent.tau_0)
+        force[:] = - agent.mass[i] * agent.k_soc * mag * grad[0]
+    elif tau[1] > tau_t[1]:
+        mag = magnitude(tau[1], agent.tau_0)
+        force[:] = - agent.mass[i] * agent.k_soc * mag * grad[1]
+    else:
+        mag = magnitude(tau[2], agent.tau_0)
+        force[:] = - agent.mass[i] * agent.k_soc * mag * grad[2]
 
     truncate(force, agent.f_soc_iw_max)
 

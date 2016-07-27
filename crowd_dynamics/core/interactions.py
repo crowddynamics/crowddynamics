@@ -2,7 +2,8 @@ import numba
 import numpy as np
 
 from .motion import force_social_helbing, force_contact
-from .social_force import force_social_circular, force_social_three_circle
+from .social_force import force_social_circular, force_social_three_circle, \
+    social_force_linear_wall
 from .vector2d import length, truncate, rotate270, cross2d
 
 

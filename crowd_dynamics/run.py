@@ -49,6 +49,7 @@ def evacuation(density):
 if __name__ == '__main__':
     # TODO: Better agent initialization.
     # TODO: Circular agent selection
+    # TODO: Polygonal chain, non overlapping, radius/thickness
     # simulation = outdoor("medium")
     # simulation = hallway("high")
     simulation = evacuation("medium")

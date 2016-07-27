@@ -5,7 +5,6 @@ from PyQt4 import QtGui, QtCore
 from crowd_dynamics.simulation import Simulation
 from crowd_dynamics.structure.area import Rectangle
 from crowd_dynamics.structure.wall import LinearWall
-from crowd_dynamics.structure.wall import RoundWall
 
 
 class CentralItem(pg.PlotItem):
@@ -69,10 +68,6 @@ class CentralItem(pg.PlotItem):
                 self.walls.setData(wall.params[:, :, 0].flatten(),
                                    wall.params[:, :, 1].flatten(),
                                    connect=connect)
-            elif isinstance(wall, RoundWall):
-                self.walls.setData(wall.params[:, :2],
-                                   symbolSize=wall.params[:, 2],
-                                   symbol='o', pen=None, pxMode=False)
 
     def setAgent(self):
         agent = self.simulation.agent
