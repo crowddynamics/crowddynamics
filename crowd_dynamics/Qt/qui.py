@@ -44,7 +44,6 @@ class CentralItem(pg.PlotItem):
         # TODO: Goals
 
         # Agent
-        # brush_psy = pg.mkBrush(255, 255, 255, 255 // 4)  # White, transparent
         impatient = pg.mkBrush(255, 0, 0, 255)  # RGBA
         patient = pg.mkBrush(0, 0, 255, 255)  # RGBA
         self.states = np.array((impatient, patient))

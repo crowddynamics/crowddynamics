@@ -1,18 +1,63 @@
 import numba
 import numpy as np
 
-from .vector2d import dot2d, truncate
+from .vector2d import dot2d, truncate, length, rotate90
 
 
 @numba.jit(nopython=True, nogil=True)
-def magnitude_soc(tau, tau_0):
+def magnitude(tau, tau_0):
     """Magnitude of social force."""
     return (2.0 / tau + 1.0 / tau_0) * np.exp(-tau / tau_0) / tau ** 2.0
 
 
 @numba.jit(nopython=True, nogil=True)
-def gradient_soc_circular(x_rel, v_rel, a, b, d):
+def gradient_circle_circle(x_rel, v_rel, a, b, d):
     return (v_rel - (v_rel * b + x_rel * a) / d) / a
+
+
+@numba.jit(nopython=True, nogil=True)
+def gradient_three_circle(x_rel, v_rel, r_off, a, b, d):
+    """Gradient of tau."""
+    return (v_rel - (a * (x_rel + 2 * r_off) + b * v_rel) / d) / a
+
+
+@numba.jit(nopython=True, nogil=True)
+def gradient_circle_line(v, n):
+    return n / dot2d(v, n)
+
+
+@numba.jit(nopython=True, nogil=True)
+def time_to_collision_circle_circle(x_rel, v_rel, r_tot):
+    a = dot2d(v_rel, v_rel)
+    b = -dot2d(x_rel, v_rel)
+    c = dot2d(x_rel, x_rel) - r_tot ** 2
+    d = np.sqrt(b ** 2 - a * c)
+
+    # No interaction if tau cannot be defined.
+    grad = np.zeros(2)
+    if np.isnan(d) or d == 0 or a == 0:
+        return np.nan, grad
+
+    tau = (b - d) / a  # Time-to-collision. In seconds
+
+    if tau <= 0:
+        return np.nan, grad
+
+    grad = gradient_circle_circle(x_rel, v_rel, a, b, d)
+    return tau, grad
+
+
+@numba.jit(nopython=True, nogil=True)
+def time_to_collision_circle_line(x_rel, v_rel, r_tot, n):
+    g0 = -dot2d(x_rel, n) / dot2d(v_rel, n)
+    g1 = r_tot / dot2d(v_rel, n)
+    tau0 = g0 + g1
+    tau1 = g0 - g1
+    grad = gradient_circle_line(v_rel, n)
+    if tau0 > g0:
+        return tau0, grad
+    else:
+        return tau1, grad
 
 
 @numba.jit(nopython=True, nogil=True)
@@ -29,7 +74,6 @@ def force_social_circular(agent, i, j):
     c = dot2d(x_rel, x_rel) - r_tot ** 2
     d = np.sqrt(b ** 2 - a * c)
 
-    # Avoid zero division.
     # No interaction if tau cannot be defined.
     if np.isnan(d) or d == 0 or a == 0:
         return force
@@ -41,8 +85,8 @@ def force_social_circular(agent, i, j):
         return force
 
     # Force is returned negative as repulsive force
-    mag = magnitude_soc(tau, agent.tau_0)
-    grad = gradient_soc_circular(x_rel, v_rel, a, b, d)
+    mag = magnitude(tau, agent.tau_0)
+    grad = gradient_circle_circle(x_rel, v_rel, a, b, d)
     coeff = agent.k_soc * mag * grad
     force[0][:] += - agent.mass[i] * coeff
     force[1][:] -= - agent.mass[j] * coeff
@@ -52,12 +96,6 @@ def force_social_circular(agent, i, j):
     truncate(force[1], agent.f_soc_ij_max)
 
     return force
-
-
-@numba.jit(nopython=True, nogil=True)
-def gradient_soc_three_circle(x_rel, v_rel, r_off, a, b, d):
-    """Gradient of tau."""
-    return (v_rel - (a * (x_rel + 2 * r_off) + b * v_rel) / d) / a
 
 
 @numba.jit(nopython=True, nogil=True)
@@ -143,8 +181,8 @@ def force_social_three_circle(agent, i, j):
     r_off = r_off_i - r_off_j
 
     # Force
-    mag = magnitude_soc(tau, agent.tau_0)
-    grad = gradient_soc_three_circle(x_rel, v_rel, r_off, a, b_min, d_min)
+    mag = magnitude(tau, agent.tau_0)
+    grad = gradient_three_circle(x_rel, v_rel, r_off, a, b_min, d_min)
     f = -agent.k_soc * mag * grad
 
     # Truncation for small tau
@@ -153,5 +191,36 @@ def force_social_three_circle(agent, i, j):
 
     truncate(force[0], agent.f_soc_ij_max)
     truncate(force[1], agent.f_soc_ij_max)
+
+    return force
+
+
+@numba.jit(nopython=True, nogil=True)
+def social_force_linear_wall(agent, i, p0, p1):
+    force = np.zeros(2)
+    p = np.array((p0, p1))
+
+    x_rel = agent.position[i] - p
+    v_rel = agent.velocity[i]
+    r_tot = agent.radius[i]
+
+    t = (p1 - p0) / length((p1 - p0))
+    n = rotate90(t)
+
+    dot_vt = dot2d(v_rel, t)
+    dot2d(x_rel, t) / dot_vt
+
+    tau = np.zeros(3)
+    grad = np.zeros((3, 2))
+    tau[0], grad[0] = time_to_collision_circle_circle(x_rel[0], v_rel)
+    tau[1], grad[1] = time_to_collision_circle_circle(x_rel[1], v_rel)
+    tau[2], grad[2] = time_to_collision_circle_line(x_rel, v_rel, r_tot, n)
+
+
+
+    mag = magnitude(tau, agent.tau_0)
+    force[:] = - agent.mass[i] * agent.k_soc * mag * grad
+
+    truncate(force, agent.f_soc_iw_max)
 
     return force

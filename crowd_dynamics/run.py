@@ -50,8 +50,8 @@ if __name__ == '__main__':
     # TODO: Better agent initialization.
     # TODO: Circular agent selection
     # simulation = outdoor("medium")
-    simulation = hallway("high")
-    # simulation = evacuation("medium")
+    # simulation = hallway("high")
+    simulation = evacuation("medium")
 
     main(simulation)
     # simulation.run(simu_time_limit=250)

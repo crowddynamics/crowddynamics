@@ -33,12 +33,12 @@ Navigation modifies agents target angle :math:`\varphi_{0}` and target direction
 Direction update is a function that takes at agent class as an argument and returns an unit vector :math:`\hat{\mathbf{e}}`
 
 .. math::
-   \operatorname{direction\_update}(\mathrm{agent}) \to \hat{\mathbf{e}}
+   f_{\hat{\mathbf{e}}}(\mathrm{agent}) \to \hat{\mathbf{e}}
 
 and angle update returns angle
 
 .. math::
-   \operatorname{angle\_update}(\mathrm{agent}) \to [-\pi, \pi].
+   f_{\varphi}(\mathrm{agent}) \to [-\pi, \pi].
 
 
 Navigator
@@ -54,10 +54,8 @@ Default update algorithm is updating target angle to angle of target direction
 .. literalinclude:: ../../../crowd_dynamics/core/navigation.py
    :pyobject: direction_to_target_angle
 
-Update function
-^^^^^^^^^^^^^^^
 
-One way to find suitable function is to solve how *incompressible*, *irrotational* and *inviscid* fluid (ideal fluid) would flow out of the constructed space.
+Algorithm
+^^^^^^^^^
 
-
-
+.. [quickpath2011] Kretz, T., Große, A., Hengst, S., Kautzsch, L., Pohlmann, A., & Vortisch, P. (2011). Quickest Paths in Simulations of Pedestrians. Advances in Complex Systems, 14(5), 733–759. http://doi.org/10.1142/S0219525911003281

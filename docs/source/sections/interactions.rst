@@ -1,7 +1,7 @@
 Interactions
 ============
 
-Interactions between agents are modeled using social and contact forces.
+Interaction between agents is modeled using social and contact forces.
 
 Social force
 ------------
@@ -35,7 +35,7 @@ Force affecting agent can be derived by taking spatial gradient of the energy, w
 
 .. math::
    \mathbf{f}^{soc} &= -\nabla_{\tilde{\mathbf{x}}} E(\tau) \\
-   &= \left(\frac{k}{\tau^{2}}\right) \left(\frac{2}{\tau} + \frac{1}{\tau_{0}}\right) \exp\left (-\frac{\tau}{\tau_{0}}\right ) \nabla_{\tilde{\mathbf{x}}} \tau
+   &= - k \cdot m \left(\frac{1}{\tau^{2}}\right) \left(\frac{2}{\tau} + \frac{1}{\tau_{0}}\right) \exp\left (-\frac{\tau}{\tau_{0}}\right ) \nabla_{\tilde{\mathbf{x}}} \tau
 
 If  :math:`\tau < 0` or :math:`\tau` is undefined [#]_ trajectories are not colliding and social force is :math:`\mathbf{0}`.
 
@@ -152,12 +152,14 @@ Social force for three circle model
 
 **Time-to-collision** for between **circle and line**.
 
-Moving circle with center of mass :math:`\mathbf{c}`, velocity :math:`\mathbf{v}` and total radius of :math:`r`. Static line if defined from point :math:`\mathbf{p}_0` to :math:`\mathbf{p}_1`. *Skin-to-skin* distance
+Moving circle with center of mass :math:`\mathbf{c}`, velocity :math:`\mathbf{v}` and total radius of :math:`r`. Static line defined from point :math:`\mathbf{p}_0` to :math:`\mathbf{p}_1`.
 
 .. math::
-   \tilde{\mathbf{x}} &= \mathbf{p} - \mathbf{c} \\
+   \tilde{\mathbf{x}}_w &= \mathbf{c} - \mathbf{p}_w, \quad w \in \{ 0, 1 \} \\
    \mathbf{\hat{t}_w} &= \frac{\mathbf{p}_1 - \mathbf{p}_0}{\| \mathbf{p}_1 - \mathbf{p}_0 \|} \\
    \mathbf{\hat{n}_w} &\perp  \mathbf{\hat{t}_w}
+
+*Skin-to-skin* distance
 
 .. math::
    h(\tau) &= | (\mathbf{p} - (\tau \tilde{\mathbf{v}} + \mathbf{c})) \cdot \mathbf{\hat{n}_w} | - \tilde{r}
@@ -165,18 +167,44 @@ Moving circle with center of mass :math:`\mathbf{c}`, velocity :math:`\mathbf{v}
 From :math:`h(\tau) = 0`
 
 .. math::
-   | -\tau (\tilde{\mathbf{v}} \cdot \mathbf{\hat{n}_w}) + \tilde{\mathbf{x}} \cdot \mathbf{\hat{n}_w} | &= \tilde{r} \\
+   | -\tau (\mathbf{v} \cdot \mathbf{\hat{n}_w}) - \tilde{\mathbf{x}} \cdot \mathbf{\hat{n}_w} | &= \tilde{r}
+
+If negative inside absolute value
+
+.. math::
+   \tau &= -\frac{\tilde{\mathbf{x}} \cdot \mathbf{\hat{n}_w} + \tilde{r}}{\mathbf{v} \cdot \mathbf{\hat{n}_w}}, \quad \tau > -\frac{\tilde{\mathbf{x}} \cdot \mathbf{\hat{n}_w}}{\mathbf{v} \cdot \mathbf{\hat{n}_w}}
+
+If positive inside absolute value
+
+.. math::
+   \tau &= -\frac{\tilde{\mathbf{x}} \cdot \mathbf{\hat{n}_w} - \tilde{r}}{\mathbf{v} \cdot \mathbf{\hat{n}_w}}, \quad \tau \leq -\frac{\tilde{\mathbf{x}} \cdot \mathbf{\hat{n}_w}}{\mathbf{v} \cdot \mathbf{\hat{n}_w}}
+
+.. math::
+   \nabla_{\tilde{\mathbf{x}}} \tau &= \frac{\mathbf{\hat{n}_w}}{\mathbf{v} \cdot \mathbf{\hat{n}_w}}
+
+----
+
+.. math::
+   \mathbf{q}_w &= \mathbf{p} - (\tau \mathbf{v} + \mathbf{x}), \quad \tau > 0, \quad w \in \{  0, 1 \} \\
+   d(\tau) &=
+   \begin{cases}
+      \| \mathbf{q}_0 \|, & \mathbf{q}_0 \cdot \mathbf{\hat{t}_w} > 0 \\
+      | \mathbf{q}_w \cdot \mathbf{\hat{n}_w} | & \text{otherwise} \\
+      \| \mathbf{q}_1 \| & \mathbf{q}_1 \cdot \mathbf{\hat{t}_w} < 0 \\
+   \end{cases} \\
+   | \mathbf{q}_w \cdot \mathbf{\hat{n}_w} | &=
+   \begin{cases}
+         -\mathbf{q}_w \cdot \mathbf{\hat{n}_w} & \mathbf{q}_w \cdot \mathbf{\hat{n}_w} < 0 \\
+         \mathbf{q}_w \cdot \mathbf{\hat{n}_w} & \mathbf{q}_w \cdot \mathbf{\hat{n}_w} > 0 \\
+   \end{cases} \\
+   h(\tau) &= d(\tau) - r \\
+   h(\tau) &= 0 \\
 
 
 .. math::
-   \tau &= \frac{\tilde{\mathbf{x}} \cdot \mathbf{\hat{n}_w} + \tilde{r}}{\tilde{\mathbf{v}} \cdot \mathbf{\hat{n}_w}}, \quad \tau > \frac{\tilde{\mathbf{x}} \cdot \mathbf{\hat{n}_w}}{\tilde{\mathbf{v}} \cdot \mathbf{\hat{n}_w}}
+   \mathbf{q}_w \cdot \mathbf{\hat{t}_w} \\
+   \mathbf{q}_w \cdot \mathbf{\hat{n}_w}
 
-
-.. math::
-   \tau &= \frac{\tilde{\mathbf{x}} \cdot \mathbf{\hat{n}_w} - \tilde{r}}{\tilde{\mathbf{v}} \cdot \mathbf{\hat{n}_w}}, \quad \tau \leq \frac{\tilde{\mathbf{x}} \cdot \mathbf{\hat{n}_w}}{\tilde{\mathbf{v}} \cdot \mathbf{\hat{n}_w}}
-
-.. math::
-   \nabla_{\tilde{\mathbf{x}}} \tau &= \frac{\mathbf{\hat{n}_w}}{\tilde{\mathbf{v}} \cdot \mathbf{\hat{n}_w}}
 
 ----
 

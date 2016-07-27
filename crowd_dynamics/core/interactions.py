@@ -86,23 +86,21 @@ def agent_wall_distance(agent, wall, i, w):
 def agent_agent_interaction(i, j, agent):
     # Function params
     x = agent.position[i] - agent.position[j]  # Relative positions
-    r_tot = agent.radius[i] + agent.radius[j]  # Total radius
     d = length(x)  # Distance
+    r_tot = agent.radius[i] + agent.radius[j]  # Total radius
     h = d - r_tot  # Relative distance
 
     # Agent sees the other agent
-    if h <= agent.sight_soc:
-        # force_i, force_j = np.zeros(2), np.zeros(2)
-        r_moment_i, r_moment_j = np.zeros(2), np.zeros(2)
-
+    if d <= agent.sight_soc:
         if agent.three_circle:
             # Three circle model
             # TODO: Merge functions
             n, h, r_moment_i, r_moment_j = agent_agent_distance(agent, i, j)
             force_i, force_j = force_social_three_circle(agent, i, j)
         else:
-            # Circular
+            # Circular model
             force_i, force_j = force_social_circular(agent, i, j)
+            r_moment_i, r_moment_j = np.zeros(2), np.zeros(2)
             n = x / d  # Normal vector
 
         # Physical contact
@@ -145,15 +143,18 @@ def agent_wall_interaction(i, w, agent, wall):
     d, n = wall.distance_with_normal(w, x)
     h = d - r_tot  # Relative distance
 
+    # TODO: Power law social force
     if h <= agent.sight_wall:
-        # TODO: Power law social force
-        r_moment_i = np.zeros(2)
-        force = force_social_helbing(h, n, agent.a, agent.b)
-        truncate(force, agent.f_soc_iw_max)
-
-        # FIXME: only use with power law
-        if agent.three_circle and h < 0.5:
+        if agent.three_circle:
             h, n, r_moment_i = agent_wall_distance(agent, wall, i, w)
+            r_moment_i = np.zeros(2)
+            force = force_social_helbing(h, n, agent.a, agent.b)
+            truncate(force, agent.f_soc_iw_max)
+        else:
+            # Circular model
+            r_moment_i = np.zeros(2)
+            force = force_social_helbing(h, n, agent.a, agent.b)
+            truncate(force, agent.f_soc_iw_max)
 
         if h < 0:
             t = rotate270(n)  # Tangent

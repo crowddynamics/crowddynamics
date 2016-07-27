@@ -3,10 +3,10 @@ import numpy as np
 from numba import f8
 from scipy.stats import truncnorm as tn
 
-from .vector2d import dot2d, wrap_to_pi, length_nx2, truncate
+from .vector2d import dot2d, wrap_to_pi, length_nx2
 
 
-def force_random(agent):
+def force_fluctuation(agent):
     """Truncated normal distribution with standard deviation of 3."""
     i = agent.indices()
     magnitude = tn.rvs(0, 3, loc=0, scale=agent.std_rand_force, size=i.size)
@@ -15,7 +15,7 @@ def force_random(agent):
     agent.force[i] += force.T * agent.mass[i]
 
 
-def torque_random(agent):
+def torque_fluctuation(agent):
     """Random torque."""
     i = agent.indices()
     torque = tn.rvs(-3, 3, loc=0, scale=agent.std_rand_force, size=i.size)
@@ -68,10 +68,10 @@ def motion(agent, walls):
 
     agent.reset_motion()  # Reset forces and torque
     force_adjust(agent)
-    force_random(agent)
+    force_fluctuation(agent)
     if agent.orientable:
         torque_adjust(agent)
-        torque_random(agent)
+        torque_fluctuation(agent)
     agent_agent(agent)
     for wall in walls:
         agent_wall(agent, wall)
