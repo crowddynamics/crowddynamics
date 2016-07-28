@@ -2,12 +2,13 @@ import numpy as np
 from numba import float64, int64
 from numba import jitclass
 
-from ..core.vector2d import rotate90, dot2d, angle
+from ..core.vector2d import rotate90, dot2d
 
 """
 Static obstacles
 """
 
+# Generalize walls
 # TODO: Polygonal chains
 # TODO: Splines
 
@@ -19,6 +20,8 @@ spec_linear = (
     ("size", int64),
     ("wall", float64[:, :]),
 )
+
+wall_attr_names = [item[0] for item in spec_linear]
 
 
 @jitclass(spec_linear)

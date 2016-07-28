@@ -7,7 +7,6 @@ Set of active agents usually referred as just agents is denoted :math:`N = \{ 0,
 
 *Circular* model that is unorientable. *Elliptical* model and *three circle* model are orientable and more realistic but also more complex as they require rotational motion and more computation time to compute distances.
 
-In this simulation model we use circular model to approximate long distance interactions and we improve short distance interactions by using three circles model.
 
 .. image::
     ../_static/agent_model.*
@@ -77,15 +76,6 @@ Linear wall is defined by two points
 
 .. math::
    \mathbf{p}_{0}, \mathbf{p}_{1}
-
-
-
-Round walls
-
-Round wall is defined by point of center and radius
-
-.. math::
-   \mathbf{p}, r_{w}
 
 
 Relative properties

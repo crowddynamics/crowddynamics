@@ -1,32 +1,34 @@
 import numba
 import numpy as np
+from numba import f8
 
 from .vector2d import dot2d, truncate, length, rotate90
 
 
-@numba.jit(nopython=True, nogil=True)
+@numba.jit(f8(f8, f8), nopython=True, nogil=True)
 def magnitude(tau, tau_0):
     """Magnitude of social force."""
     return (2.0 / tau + 1.0 / tau_0) * np.exp(-tau / tau_0) / tau ** 2.0
 
 
-@numba.jit(nopython=True, nogil=True)
+@numba.jit(f8[:](f8[:], f8[:], f8, f8, f8), nopython=True, nogil=True)
 def gradient_circle_circle(x_rel, v_rel, a, b, d):
     return (v_rel - (v_rel * b + x_rel * a) / d) / a
 
 
-@numba.jit(nopython=True, nogil=True)
+@numba.jit(f8[:](f8[:], f8[:], f8[:], f8, f8, f8), nopython=True, nogil=True)
 def gradient_three_circle(x_rel, v_rel, r_off, a, b, d):
     """Gradient of tau."""
     return (v_rel - (a * (x_rel + 2 * r_off) + b * v_rel) / d) / a
 
 
-@numba.jit(nopython=True, nogil=True)
+@numba.jit(f8[:](f8[:], f8[:]), nopython=True, nogil=True)
 def gradient_circle_line(v, n):
     return n / dot2d(v, n)
 
 
-@numba.jit(nopython=True, nogil=True)
+@numba.jit(numba.types.Tuple((f8, f8[:]))(f8[:], f8[:], f8),
+           nopython=True, nogil=True)
 def time_to_collision_circle_circle(x_rel, v_rel, r_tot):
     a = dot2d(v_rel, v_rel)
     b = -dot2d(x_rel, v_rel)
@@ -34,14 +36,13 @@ def time_to_collision_circle_circle(x_rel, v_rel, r_tot):
     d = np.sqrt(b ** 2 - a * c)
 
     # No interaction if tau cannot be defined.
-    grad = np.zeros(2)
     if np.isnan(d) or d == 0 or a == 0:
-        return np.nan, grad
+        return np.nan, np.zeros(2)
 
     tau = (b - d) / a  # Time-to-collision. In seconds
 
     if tau <= 0:
-        return np.nan, grad
+        return np.nan, np.zeros(2)
 
     grad = gradient_circle_circle(x_rel, v_rel, a, b, d)
     return tau, grad
@@ -49,15 +50,21 @@ def time_to_collision_circle_circle(x_rel, v_rel, r_tot):
 
 @numba.jit(nopython=True, nogil=True)
 def time_to_collision_circle_line(x_rel, v_rel, r_tot, n):
-    g0 = -dot2d(x_rel, n) / dot2d(v_rel, n)
-    g1 = r_tot / dot2d(v_rel, n)
+    dot_vn = dot2d(v_rel, n)
+    if dot_vn == 0:
+        return np.nan, np.zeros(2)
+
+    g0 = -dot2d(x_rel, n) / dot_vn
+    g1 = r_tot / dot_vn
     tau0 = g0 + g1
     tau1 = g0 - g1
     grad = gradient_circle_line(v_rel, n)
-    if tau0 > g0:
+    if tau0 > g0 > 0:
         return tau0, grad
-    else:
+    elif 0 < tau1 <= g0:
         return tau1, grad
+    else:
+        return np.nan, np.zeros(2)
 
 
 @numba.jit(nopython=True, nogil=True)
@@ -206,32 +213,36 @@ def nanargmin(a):
 
 
 @numba.jit(nopython=True, nogil=True)
-def social_force_linear_wall(agent, i, p0, p1):
+def force_social_linear_wall(i, w, agent, wall):
     force = np.zeros(2)
-    p = np.array((p0, p1))
+    tau = np.zeros(3)
+    grad = np.zeros((3, 2))
 
-    x_rel = agent.position[i] - p
+    p_0, p_1, t_w, n_w, l_w = wall.deconstruct(w)
+    x_rel0 = agent.position[i] - p_0
+    x_rel1 = agent.position[i] - p_1
     v_rel = agent.velocity[i]
     r_tot = agent.radius[i]
 
-    t = (p1 - p0) / length((p1 - p0))
-    n = rotate90(t)
+    dot_vt = dot2d(v_rel, t_w)
+    if dot_vt == 0:
+        tau_t0 = np.nan
+        tau_t1 = np.nan
+    else:
+        tau_t0 = -dot2d(x_rel0, t_w) / dot_vt
+        tau_t1 = -dot2d(x_rel1, t_w) / dot_vt
 
-    tau_t = -dot2d(x_rel, t) / dot2d(v_rel, t)
+    tau[0], grad[0] = time_to_collision_circle_circle(x_rel0, v_rel, r_tot)
+    tau[1], grad[1] = time_to_collision_circle_circle(x_rel1, v_rel, r_tot)
+    tau[2], grad[2] = time_to_collision_circle_line(x_rel0, v_rel, r_tot, n_w)
 
-    tau = np.zeros(3)
-    grad = np.zeros((3, 2))
-    tau[0], grad[0] = time_to_collision_circle_circle(x_rel[0], v_rel)
-    tau[1], grad[1] = time_to_collision_circle_circle(x_rel[1], v_rel)
-    tau[2], grad[2] = time_to_collision_circle_line(x_rel[0], v_rel, r_tot, n)
-
-    if tau[0] <= tau_t[0]:
+    if not np.isnan(tau[0]) and tau[0] <= tau_t0:
         mag = magnitude(tau[0], agent.tau_0)
         force[:] = - agent.mass[i] * agent.k_soc * mag * grad[0]
-    elif tau[1] > tau_t[1]:
+    elif not np.isnan(tau[1]) and tau[1] > tau_t1:
         mag = magnitude(tau[1], agent.tau_0)
         force[:] = - agent.mass[i] * agent.k_soc * mag * grad[1]
-    else:
+    elif not np.isnan(tau[2]):
         mag = magnitude(tau[2], agent.tau_0)
         force[:] = - agent.mass[i] * agent.k_soc * mag * grad[2]
 
