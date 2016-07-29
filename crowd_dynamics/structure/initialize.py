@@ -183,7 +183,7 @@ def populate(agent: Agent,
 def initialize_agent(size: int,
                      populate_kwargs_list,
                      body_type="adult",
-                     model="circular",
+                     model="three_circle",
                      walls=None):
     """Arguments for constructing agent."""
     # TODO: converters. Eval to values.

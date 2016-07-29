@@ -1,41 +1,64 @@
 Agents
 ======
 
-Active agents
--------------
-Set of active agents usually referred as just agents is denoted :math:`N = \{ 0, 1, \ldots, n-1 \}` where items are the indices of the agents. Individual agent is usually denoted :math:`i \in N` or :math:`j \in N`. There are three different model for agent displayed in the figure.
+Domain
+------
+Domain inside which agents are active is denoted
 
-*Circular* model that is unorientable. *Elliptical* model and *three circle* model are orientable and more realistic but also more complex as they require rotational motion and more computation time to compute distances.
+.. math::
+   \Omega \subset \mathbb{R}^{2}
 
+
+Simulation time is denoted
+
+.. math::
+   t \in \mathbb{R}^{+}
+
+Agent
+-----
+Set of active agents usually referred as just agents is denoted
+
+.. math::
+   A = \{ 0, 1, \ldots, n-1 \}
+
+where items are the indices of the agents. Individual agent is usually denoted :math:`i \in A` or :math:`j \in A`.
+
+Size of the set
+
+.. math::
+   N = | A |
+
+Models
+^^^^^^
+Three different models for she shape of the agent from above are displayed in the figure.
 
 .. image::
     ../_static/agent_model.*
 
-Unorientable circular model
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Circular model models agent as *particle* that has mass :math:`m`, center of mass :math:`\mathbf{x}` and radius :math:`r`. Model is not orientable and does not require rotational motion.
+All agents have mass :math:`m > 0`, center of the mass :math:`\mathbf{x} \in \Omega` and moment of inertia :math:`I > 0`. Orientable agents have body angle of :math:`\varphi \in [-\pi, \pi]`. Normal and tangential unit vectors for agent
 
-Orientable circular model
-^^^^^^^^^^^^^^^^^^^^^^^^^
+.. math::
+   \mathbf{\hat{e}_n} &= [\cos(\varphi), \sin(\varphi)] \\
+   \mathbf{\hat{e}_t} &= [\sin(\varphi), -\cos(\varphi)]
+
+They are used in
+
+Circular model
+^^^^^^^^^^^^^^
+Simplest of the models is circular model without orientation. Circle is defined with radius :math:`r > 0` from the center of mass.
+
 
 Elliptical model
 ^^^^^^^^^^^^^^^^
-In elliptical model agent is represented as a *rigid body* that has mass :math:`m`, center of mass :math:`\mathbf{x}` and two axes major :math:`r` and minor :math:`r_t`.
+Ellipse is defined two axes :math:`r` and :math:`r_t`. Elliptical model is mentioned but not used because complexity of its equation. Preferred model is three circle model which is more realistic and the fact that approximations required to compute elliptical model are based on circular arcs would make it similar to compute. [2001fourarc]_
 
-Parametric formula for elliptical agent
-
-.. math::
-   R(\varphi) [r_t \cos(\phi), r \sin(\phi)],
-
-where :math:`R(\varphi)` is rotation matrix and :math:`\phi` is angle from normal vector :math:`\hat{\mathbf{e}}_n`.
+.. [2001fourarc] Qian, W. H., & Qian, K. (2001). Optimizing the four-arc approximation to ellipses. Computer Aided Geometric Design, 18(1), 1–19. http://doi.org/10.1016/S0167-8396(00)00033-9
 
 Three circle model
 ^^^^^^^^^^^^^^^^^^
-Three circle model aka multi circle model models agent as a *rigid body* that has mass :math:`m`, center of mass :math:`\mathbf{x}` and three circles which represent torso and shoulders. Torso has radius of :math:`r_t` and is centered at center of mass :math:`\mathbf{x}`. Shoulder have both radius of  :math:`r_s` and are centered at :math:`\mathbf{x} \pm r_{ts} \hat{\mathbf{e}}_t`, where :math:`\hat{\mathbf{e}}_t` is unit vector tangential to the orientation :math:`\varphi` of the body.
+Three circle model models agent with three circles which represent torso and two shoulders. Torso has radius of :math:`r_t` and is centered at center of mass :math:`\mathbf{x}` and shoulder have both radius of  :math:`r_s` and are centered at :math:`\mathbf{x} \pm r_{ts} \mathbf{\hat{e}_t}`. [langston2007]_
 
-Three circle model is more realistic and more suitable for computing than elliptical model making it preferred choice over elliptical model. Also some approximations for ellipses are based on circular arcs. [2001fourarc]_
-
-.. [2001fourarc] Qian, Wen-Han, and Kang Qian. "Optimising the four-arc approximation to ellipses." Computer aided geometric design 18, no. 1 (2001): 1-19.
+.. [langston2007] Langston, P. A., Masling, R., & Asmar, B. N. (2006). Crowd dynamics discrete element multi-circle model. Safety Science. http://doi.org/10.1016/j.ssci.2005.11.007
 
 
 ..
@@ -51,23 +74,14 @@ Three circle model is more realistic and more suitable for computing than ellipt
       :header-rows: 1
 
 
-Passive agents
---------------
+Obstacle
+--------
+Obstacle is denoted
 
-Areas
-^^^^^
+.. math::
+   \mathcal{O} \subset \Omega
 
-Bounds
-
-Area inside which agents are active. If agent exits bounds they become inactive.
-
-Goals
-
-
-Obstacles
-^^^^^^^^^
-
-Linear walls
+**Linear wall**
 
 .. image::
    ../_static/wall_model.*
@@ -78,45 +92,11 @@ Linear wall is defined by two points
    \mathbf{p}_{0}, \mathbf{p}_{1}
 
 
-Relative properties
--------------------
-Relative properties between agents.
+Exit door
+---------
 
-Between active agents
-^^^^^^^^^^^^^^^^^^^^^
-
-Circular
+Exit door is denoted
 
 .. math::
-   \tilde{\mathbf{x}} &= \mathbf{x}_{i} - \mathbf{x}_{j} \\
-   \tilde{\mathbf{v}} &= \mathbf{v}_{i} - \mathbf{v}_{j} \\
-   d &= \left\| \tilde{\mathbf{x}} \right\| \\
-   r_{tot} &= r_i + r_j \\
-   h &= d - r_{tot} \\
-   \hat{\mathbf{n}} &= \tilde{\mathbf{x}} / d \\
-   \hat{\mathbf{t}} &= R(-90^{\circ}) \cdot \hat{\mathbf{n}}
-
-Three circles
-
-
-
-Between passive and active agent
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Linear wall
-
-.. math::
-   \tilde{\mathbf{x}} & \\
-   \tilde{\mathbf{v}} &= \mathbf{v}_{i} \\
-   \mathbf{q}_{0} &= \mathbf{x}_{i} - \mathbf{p}_{0} \\
-   \mathbf{q}_{1} &= \mathbf{x}_{i} - \mathbf{p}_{1} \\
-   d &= \begin{cases} \left\| \mathbf{q}_{0} \right\| & l_{t} > l_{w} \\
-   \left| l_{n} \right| & \text{otherwise} \\
-   \left\| \mathbf{q}_{1} \right\| & l_{t} < -l_{w}
-   \end{cases} \\
-   \hat{\mathbf{n}} &= \begin{cases}
-   \hat{\mathbf{q}}_{0} & l_{t} > l_{w} \\
-   \operatorname{sign}(l_{n})\hat{\mathbf{n}}_{w} & \text{otherwise} \\
-   \hat{\mathbf{q}}_{1} & l_{t} < -l_{w}
-   \end{cases} \\
-   \hat{\mathbf{t}} &= R(-90^{\circ}) \cdot \hat{\mathbf{n}}
+   \mathcal{E} \subset \Omega
 

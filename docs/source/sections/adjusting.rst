@@ -1,9 +1,8 @@
 Adjusting Motion
 ================
 
-Force
------
-
+Force and Torque
+----------------
 Force adjusting agent's movement towards desired in some characteristic time
 
 .. math::
@@ -24,38 +23,15 @@ Torque adjusting agent's rotational motion towards desired
 
 Navigation
 ----------
-
-Target angle and direction
-^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Navigation modifies agents target angle :math:`\varphi_{0}` and target direction :math:`\hat{\mathbf{e}}_{0}`.
-
-Direction update is a function that takes at agent class as an argument and returns an unit vector :math:`\hat{\mathbf{e}}`
-
-.. math::
-   f_{\hat{\mathbf{e}}}(\mathrm{agent}) \to \hat{\mathbf{e}}
-
-and angle update returns angle
-
-.. math::
-   f_{\varphi}(\mathrm{agent}) \to [-\pi, \pi].
+Target direction :math:`\hat{\mathbf{e}}_{0}`.
 
 
-Navigator
-^^^^^^^^^
-
-Navigator takes as argument functions to update target angle and direction and updates then when called.
-
-.. literalinclude:: ../../../crowd_dynamics/core/navigation.py
-   :pyobject: navigator
-
-Default update algorithm is updating target angle to angle of target direction
-
-.. literalinclude:: ../../../crowd_dynamics/core/navigation.py
-   :pyobject: direction_to_target_angle
-
-
-Algorithm
-^^^^^^^^^
+`Eikonal Equation <https://en.wikipedia.org/wiki/Eikonal_equation>`_
 
 .. [quickpath2011] Kretz, T., Große, A., Hengst, S., Kautzsch, L., Pohlmann, A., & Vortisch, P. (2011). Quickest Paths in Simulations of Pedestrians. Advances in Complex Systems, 14(5), 733–759. http://doi.org/10.1142/S0219525911003281
+
+
+Desired rotation
+----------------
+Target angle :math:`\varphi_{0}`
+

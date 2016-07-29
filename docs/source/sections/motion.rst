@@ -1,6 +1,8 @@
 Social Force Model
 ==================
 
+Classical mechanics approach to modelling pedestrian dynamics.
+
 Social force model consists of real contact forces and fictitious adjusting, social forces and random fluctuation to simulate crowd motion. [helbing1995]_, [helbing2000]_
 
 Law's of motion are given as system of differential equations
@@ -36,15 +38,3 @@ Total torque exerted on agent, is the sum of adjusting contact and social torque
 .. [helbing1995] Helbing, Dirk, and Peter Molnar. "Social force model for pedestrian dynamics." Physical review E 51, no. 5 (1995): 4282.
 
 .. [helbing2000] Helbing, Dirk, Illés Farkas, and Tamas Vicsek. "Simulating dynamical features of escape panic." Nature 407, no. 6803 (2000): 487-490.
-
-
-
-
-
-
-
-
-
-
-
-

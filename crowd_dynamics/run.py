@@ -50,9 +50,10 @@ if __name__ == '__main__':
     # TODO: Better agent initialization.
     # TODO: Circular agent selection
     # TODO: Polygonal chain, non overlapping, radius/thickness
+    # TODO: Agent maximum velocity for optimizations
     # simulation = outdoor("medium")
-    # simulation = hallway("high")
-    simulation = evacuation("medium")
+    simulation = hallway("medium")
+    # simulation = evacuation("medium")
 
     main(simulation)
     # simulation.run(simu_time_limit=250)

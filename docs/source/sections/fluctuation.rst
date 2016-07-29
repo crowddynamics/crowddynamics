@@ -1,5 +1,7 @@
-Random Fluctuation
-==================
+Fluctuation
+===========
+
+
 Fluctuation force
 
 .. math::
@@ -7,7 +9,7 @@ Fluctuation force
    \hat{\mathbf{e}}  &= \begin{bmatrix} \cos(\varphi) & \sin(\varphi) \end{bmatrix}, \quad \varphi \in \mathcal{U}(-\pi, \pi)
 
 .. literalinclude:: ../../../crowd_dynamics/core/motion.py
-   :pyobject: force_random
+   :pyobject: force_fluctuation
 
 Fluctuation torque
 
@@ -15,4 +17,4 @@ Fluctuation torque
    \eta \in \mathcal{N}(\mu, \sigma^{2})
 
 .. literalinclude:: ../../../crowd_dynamics/core/motion.py
-   :pyobject: torque_random
+   :pyobject: torque_fluctuation

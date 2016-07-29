@@ -38,7 +38,7 @@ Terminology
 
 *Crowd*
 
-   A crowd is large group of individuals :math:`N \geq 100 \,\mathrm{P}` within the same space at the same time whose movements are for a prolonged period of time :math:`t \geq 60 \,\mathrm{s}` dependent on predominantly local interactions :math:`\rho \geq 1 \,\mathrm{P/m^{2}}`. [stateofart2013]_
+   A crowd is large group of individuals :math:`N \geq 100 \,\mathrm{P}` within the same space at the same time whose movements are for a prolonged period of time :math:`t \geq 60 \,\mathrm{s}` dependent on predominantly local interactions :math:`\rho \geq 1 \,\mathrm{P/m^{2}}`.
 
 *Crowd density*
 
@@ -50,11 +50,11 @@ Terminology
 
 *Social force model*
 
-   It is suggested that the motion of pedestrians can be described as if they would be subject to *social forces*. These *forces* are not directly exerted by the pedestrians’ personal environment, but they are a measure for the internal motivations of the individuals to perform certain actions (movements). [helbing1995social]_
+   It is suggested that the motion of pedestrians can be described as if they would be subject to *social forces*. These *forces* are not directly exerted by the pedestrians’ personal environment, but they are a measure for the internal motivations of the individuals to perform certain actions (movements).
 
 *Subgroup*
 
-    A subset of a group. It is defined as a number of people that desire to stay together. [Langston2009subgroup]_
+    A subset of a group. It is defined as a number of people that desire to stay together.
 
 *Egress congestion*
 

@@ -1,10 +1,10 @@
 import numba
 import numpy as np
 
-from .motion import force_social_helbing, force_contact
+from .motion import force_contact
 from .social_force import force_social_circular, force_social_three_circle, \
     force_social_linear_wall
-from .vector2d import length, truncate, rotate270, cross2d
+from .vector2d import length, rotate270, cross2d
 
 
 @numba.jit(nopython=True, nogil=True)
@@ -149,13 +149,10 @@ def agent_wall_interaction(i, w, agent, wall):
         if agent.three_circle:
             h, n, r_moment_i = agent_wall_distance(agent, wall, i, w)
             r_moment_i = np.zeros(2)
-            force = force_social_helbing(h, n, agent.a, agent.b)
-            truncate(force, agent.f_soc_iw_max)
+            force = force_social_linear_wall(i, w, agent, wall)
         else:
             # Circular model
             r_moment_i = np.zeros(2)
-            # force = force_social_helbing(h, n, agent.a, agent.b)
-            # truncate(force, agent.f_soc_iw_max)
             force = force_social_linear_wall(i, w, agent, wall)
 
         if h < 0:

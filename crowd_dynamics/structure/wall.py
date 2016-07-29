@@ -11,6 +11,8 @@ Static obstacles
 # Generalize walls
 # TODO: Polygonal chains
 # TODO: Splines
+# TODO: Bezier curves
+# TODO: Infinite line
 
 
 spec_linear = (

@@ -3,12 +3,6 @@ Egress congestion
 
 Modeling egress and room evacuation situations through exit door / bottleneck.
 
-Exit door
----------
-
-.. literalinclude:: ../../../crowd_dynamics/core/egress.py
-   :pyobject: ExitDoor
-
 Neighborhood
 ------------
 
@@ -16,6 +10,11 @@ Eight closes agents aka *Moore's neighborhood*.
 
 Spatial game
 ------------
+
+.. literalinclude:: ../../../crowd_dynamics/core/egress.py
+   :pyobject: ExitDoor
+
+
 Spatial game for egress congestion. Game is interaction between agents.
 
 Estimated evacuation time for an agent

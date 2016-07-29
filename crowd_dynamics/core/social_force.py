@@ -172,17 +172,17 @@ def force_social_three_circle(agent, i, j):
     # TODO: Fix signs
     if contact_i == 1:
         phi = agent.angle[i]
-        r_off_i += agent.r_ts[i] * np.array((-np.sin(phi), np.cos(phi)))
+        r_off_i += agent.r_ts[i] * np.array((np.sin(phi), -np.cos(phi)))
     elif contact_i == 2:
         phi = agent.angle[i]
-        r_off_i -= agent.r_ts[i] * np.array((-np.sin(phi), np.cos(phi)))
+        r_off_i -= agent.r_ts[i] * np.array((np.sin(phi), -np.cos(phi)))
 
     if contact_j == 1:
         phi = agent.angle[j]
-        r_off_j += agent.r_ts[j] * np.array((-np.sin(phi), np.cos(phi)))
+        r_off_j += agent.r_ts[j] * np.array((np.sin(phi), -np.cos(phi)))
     elif contact_j == 2:
         phi = agent.angle[j]
-        r_off_j -= agent.r_ts[j] * np.array((-np.sin(phi), np.cos(phi)))
+        r_off_j -= agent.r_ts[j] * np.array((np.sin(phi), -np.cos(phi)))
 
     x_rel = agent.position[i] - agent.position[j]
     r_off = r_off_i - r_off_j

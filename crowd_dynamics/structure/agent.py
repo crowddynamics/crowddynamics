@@ -3,6 +3,8 @@ import numpy as np
 from numba import float64, int64, boolean
 from numba.types import UniTuple
 
+from crowd_dynamics.core.vector2d import rotate270
+
 spec_agent = (
     ("size", int64),
     ("shape", UniTuple(int64, 2)),
@@ -208,7 +210,7 @@ class Agent(object):
     def update_shoulder_positions(self):
         for i in self.indices():
             n = np.array((np.cos(self.angle[i]), np.sin(self.angle[i])))
-            t = np.array((-np.sin(self.angle[i]), np.cos(self.angle[i])))
+            t = rotate270(n)
             offset = t * self.r_ts[i]
             self.position_ls[i] = self.position[i] - offset
             self.position_rs[i] = self.position[i] + offset
