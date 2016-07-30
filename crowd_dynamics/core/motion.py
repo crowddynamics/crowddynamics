@@ -30,7 +30,6 @@ def force_adjust(agent):
                 (agent.target_velocity[i] * agent.target_direction[i] -
                  agent.velocity[i])
         agent.force[i] += force
-        # agent.force_adjust += force
 
 
 @numba.jit(nopython=True, nogil=True)

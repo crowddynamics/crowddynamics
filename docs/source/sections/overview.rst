@@ -42,11 +42,15 @@ Terminology
 
 *Crowd density*
 
-    Number of agent per unit of area :math:`\rho` of unit :math:`\mathrm{P/m^{2}}`.
+   Number of agent per unit of area :math:`\rho` of unit :math:`\mathrm{P / m^{2}}`.
+
+*Crowd Flow rate*
+
+   Number of agents per second :math:`\mathrm{P / s}`. For example the unit of the capacity of exit.
 
 *Crowd pressure*
 
-    Pressure that can measured inside a crowd when multiple agents press onto each others.
+   Pressure :math:`p` that can measured inside a crowd when multiple agents press onto each others. Created by contact forces between agents.
 
 *Social force model*
 
@@ -84,6 +88,11 @@ granular flow
 
 flowrate through the door
 
+anthropometry
+
+fundamental diagram
+
+https://en.wikipedia.org/wiki/Fundamental_diagram_of_traffic_flow
 
 
 

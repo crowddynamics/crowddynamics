@@ -28,6 +28,7 @@ Size of the set
 .. math::
    N = | A |
 
+
 Models
 ^^^^^^
 Three different models for she shape of the agent from above are displayed in the figure.
@@ -41,7 +42,8 @@ All agents have mass :math:`m > 0`, center of the mass :math:`\mathbf{x} \in \Om
    \mathbf{\hat{e}_n} &= [\cos(\varphi), \sin(\varphi)] \\
    \mathbf{\hat{e}_t} &= [\sin(\varphi), -\cos(\varphi)]
 
-They are used in
+Velocity of the agent's center of mass :math:`\mathbf{v}` and rotational velocity :math:`\omega` around center of mass.
+
 
 Circular model
 ^^^^^^^^^^^^^^

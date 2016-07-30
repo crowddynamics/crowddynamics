@@ -13,6 +13,7 @@ Python package for multi-agent simulation of crowd dynamics.
 
    sections/overview.rst
    sections/agent.rst
+   sections/quantity.rst
    sections/motion.rst
    sections/adjusting.rst
    sections/interactions.rst
