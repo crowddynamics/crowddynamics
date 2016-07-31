@@ -1,21 +1,16 @@
 Neighborhood
 ============
 
-Definition
-----------
 Neighborhood of agent :math:`i` is denoted :math:`N_i^{neigh} \subset N \setminus \{i\}` is a subset of agents whose distance from agent :math:`i` is smaller than :math:`d \geq 0`
 
 .. math::
    N_i^{neigh} = \{j \mid j \in N, j \neq i,  \quad \operatorname{dist}(i, j) \leq d  \}
 
-Distance
---------
-Distance function can be defined in desired way. For example, distance from the center of masses
+Distance function can be defined in different ways depending on the use. For example, distance from the center of masses
 
 .. math::
    \operatorname{dist}(i, j) &= \| x_i - x_j \| \\
                              &= \| \tilde{x} \|
-
 
 or skin-to-skin distance of agents
 
@@ -24,8 +19,6 @@ or skin-to-skin distance of agents
 
 We can also limit the size of the neighborhood :math:`|N_{neigh}|` to contain certain number of the closest agents.
 
-Size
-----
 Maximum limit of the neighbourhood size is a packing problem. We use following equation to estimate the limit
 
 .. math::
@@ -34,8 +27,6 @@ Maximum limit of the neighbourhood size is a packing problem. We use following e
 where :math:`\rho` is packing density coefficient denoting of the maximum percentage of area that can be filled by the agents.
 
 
-Uses
-----
 Neighborhood can used for speeding up iterating over agents for updating *social forces*, for *egress congestion* algorithms or *herding* algorithms.
 
 Number of iterations over all agents with naive algorithm has computational complexity of

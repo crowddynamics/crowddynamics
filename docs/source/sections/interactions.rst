@@ -8,22 +8,11 @@ Social force
 
 Psychological force for collision avoidance.
 
-Helbing's social force
-^^^^^^^^^^^^^^^^^^^^^^
-Distance based algorithm used in the original social force model by Helbing
-
-.. math::
-   \mathbf{f}^{soc} = A \exp\left(-\frac{h}{B}\right) \hat{\mathbf{n}}
-
-.. literalinclude:: ../../../crowd_dynamics/core/motion.py
-   :pyobject: force_social_helbing
-
-A universal power law governing pedestrian interactions
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+----
 
 .. TODO: Figure on how tau is calculated.
 
-Algorithm based on human anticipatory behaviour [power2014]_. Interaction potential between two agents
+Algorithm based on human anticipatory behaviour. Interaction potential between two agents
 
 .. math::
    E(\tau) &= \frac{k}{\tau^{2}} \exp \left( -\frac{\tau}{\tau_{0}} \right), \quad \tau_{0} > 0, \tau > 0

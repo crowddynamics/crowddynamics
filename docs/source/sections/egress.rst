@@ -1,19 +1,12 @@
 Egress congestion
 =================
 
-Modeling egress and room evacuation situations through exit door / bottleneck.
-
-Neighborhood
-------------
-
-Eight closes agents aka *Moore's neighborhood*.
+Modeling egress and room evacuation situations through a bottleneck.
 
 Spatial game
 ------------
 
-.. literalinclude:: ../../../crowd_dynamics/core/egress.py
-   :pyobject: ExitDoor
-
+Eight closes agents aka *Moore's neighborhood*.
 
 Spatial game for egress congestion. Game is interaction between agents.
 
@@ -78,3 +71,6 @@ Updating strategies by `Poisson process`_
 .. literalinclude:: ../../../crowd_dynamics/core/random.py
    :pyobject: clock
 
+----
+
+.. [game2013] Heli??vaara, S., Ehtamo, H., Helbing, D., & Korhonen, T. (2013). Patient and impatient pedestrians in a spatial game for egress congestion. Physical Review E - Statistical, Nonlinear, and Soft Matter Physics. http://doi.org/10.1103/PhysRevE.87.012802

@@ -12,6 +12,8 @@ where
 - Target velocity :math:`v_{0}` is usually *average walking speed* for agent in its current situation.
 - Target direction :math:`\mathbf{\hat{e}_{0}}` is solved by *navigation* or *path planning* algorithm. More details in the navigation section.
 
+----
+
 Adjusting torque account for agent's desire to rotate it orientation.
 
 .. math::
@@ -32,24 +34,70 @@ where
    .. literalinclude:: ../../../crowd_dynamics/core/motion.py
       :pyobject: torque_adjust
 
+----
 
 Navigation
 ----------
-Navigation aka path planning.
 
-Target direction :math:`\hat{\mathbf{e}}_{0}`.
+Distance map
+^^^^^^^^^^^^
+
+Navigation aka path planning is related to *continuos shortest path problem*, which can se solved by solving `Eikonal equation`_,
+
+.. math::
+   \left \| \nabla S(\mathbf{x}) \right \| = \frac{1}{f(\mathbf{x})}, \quad \mathbf{x} \in \Omega
+
+where :math:`S(\mathbf{x})` is distance map, which denotes the shortest time to travel from :math:`\mathbf{x}` to destination, which is given by boundary conditions. Function :math:`f(\mathbf{x})` is the speed at :math:`\mathbf{x}` defined
+
+.. math::
+   f : \bar{\Omega} &\mapsto (0, +\infty)
+
+Boundary conditions of the distance map define the value at the the destination
+
+.. math::
+   S(\mathbf{x}) &= 0, \quad \mathbf{x} \in \mathcal{E}
+
+and inside obstacles
+
+.. math::
+   S(\mathbf{x}) &\to \infty, \quad \mathbf{x} \in \mathcal{O}
+
+Static potential
+^^^^^^^^^^^^^^^^
+We get static potential by defining speed in walkable areas :math:`\Omega \setminus \mathcal{O}` and inside obstacles :math:`\mathcal{O}`
+
+.. math::
+   f(\mathbf{x}) &= 1, \quad \mathbf{x} \in \Omega \setminus \mathcal{O} \\
+   f(\mathbf{x}) &\to 0, \quad \mathbf{x} \in \mathcal{O}
+
+Dynamic potential
+^^^^^^^^^^^^^^^^^
+
+.. math::
+   f(\mathbf{x}) &= 1, \quad \mathbf{x} \in \Omega \setminus (\mathcal{O} \cup \mathcal{A}) \\
+   f(\mathbf{x}) &\leq 1, \quad \mathbf{x} \in \mathcal{A} \\
+   f(\mathbf{x}) &\to 0, \quad \mathbf{x} \in \mathcal{O}
+
+.. math::
+   \frac{1}{f(\mathbf{x})} &= 1 + \max \left( 0, c_{0} \left( 1 + c_{1} \frac{\mathbf{v} \cdot \nabla S(\mathbf{x})}{v_{0} \| \nabla S(\mathbf{x}) \|} \right) \right)
+
+Target direction
+^^^^^^^^^^^^^^^^
+
+.. math::
+   \hat{\mathbf{e}}_{0} &= -\frac{\nabla S(\mathbf{x})}{\| \nabla S(\mathbf{x}) \|}
 
 
-`Eikonal Equation <https://en.wikipedia.org/wiki/Eikonal_equation>`_
+.. _Eikonal equation: <https://en.wikipedia.org/wiki/Eikonal_equation>
 
-
-
+----
 
 Orientation
 -----------
 Target orientation :math:`\varphi_{0}`
 
 
-**References**
-
 .. [quickpath2011] Kretz, T., Große, A., Hengst, S., Kautzsch, L., Pohlmann, A., & Vortisch, P. (2011). Quickest Paths in Simulations of Pedestrians. Advances in Complex Systems, 14(5), 733–759. http://doi.org/10.1142/S0219525911003281
+
+.. [dense2016] Stüvel, S. A. (2016). Dense Crowds of Virtual Humans.
+

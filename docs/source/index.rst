@@ -12,14 +12,13 @@ Python package for multi-agent simulation of crowd dynamics.
    :maxdepth: 2
 
    sections/overview.rst
-   sections/agent.rst
+   sections/definitions.rst
    sections/quantity.rst
-   sections/motion.rst
+   sections/social_force_model.rst
    sections/adjusting.rst
    sections/interactions.rst
    sections/fluctuation.rst
    sections/subgroup.rst
-   sections/counterflow.rst
    sections/integrator.rst
    sections/neighborhood.rst
    sections/egress.rst

@@ -23,6 +23,7 @@ Total torque exerted on agent, is the sum of adjusting torque and torque exerted
    M_{i}(t) = M_{i}^{adj} + \sum_{j\neq i}^{} \left(M_{ij}^{soc} + M_{ij}^{c}\right) + \sum_{w}^{} \left(M_{iw}^{soc} + M_{iw}^{c}\right)
 
 
+----
 
 .. [helbing1995] Helbing, D., & Moln??r, P. (1995). Social force model for pedestrian dynamics. Physical Review E, 51(5), 4282–4286. http://doi.org/10.1103/PhysRevE.51.4282
 

@@ -1,18 +1,31 @@
-Agents
-======
+Definitions
+===========
 
-Domain
-------
-Domain inside which agents are active is denoted
-
-.. math::
-   \Omega \subset \mathbb{R}^{2}
-
+Time
+----
 
 Simulation time is denoted
 
 .. math::
    t \in \mathbb{R}^{+}
+
+----
+
+
+Domain
+------
+Domain containing agent and obstacles.
+
+.. math::
+   \bar{\Omega} \subset \mathbb{R}^{2}
+
+Domain can be broken down to open area and boundary
+
+.. math::
+   \bar{\Omega} &= \Omega \cup \partial\Omega
+
+----
+
 
 Agent
 -----
@@ -28,6 +41,12 @@ Size of the set
 .. math::
    N = | A |
 
+Area occupied by agents
+
+.. math::
+   \mathcal{A} &= \sum_{i \in A} \mathcal{A}_{i}, \quad \mathcal{A}_{i} \subset \Omega
+
+----
 
 Models
 ^^^^^^
@@ -52,15 +71,15 @@ Simplest of the models is circular model without orientation. Circle is defined 
 
 Elliptical model
 ^^^^^^^^^^^^^^^^
-Ellipse is defined two axes :math:`r` and :math:`r_t`. Elliptical model is mentioned but not used because complexity of its equation. Preferred model is three circle model which is more realistic and the fact that approximations required to compute elliptical model are based on circular arcs would make it similar to compute. [2001fourarc]_
+Ellipse is defined two axes :math:`r` and :math:`r_t`. Elliptical model is mentioned but not used because complexity of its equation. Preferred model is three circle model which is more realistic and the fact that approximations required to compute elliptical model are based on circular arcs would make it similar to compute. [fourarc2001]_
 
-.. [2001fourarc] Qian, W. H., & Qian, K. (2001). Optimizing the four-arc approximation to ellipses. Computer Aided Geometric Design, 18(1), 1–19. http://doi.org/10.1016/S0167-8396(00)00033-9
+
 
 Three circle model
 ^^^^^^^^^^^^^^^^^^
 Three circle model models agent with three circles which represent torso and two shoulders. Torso has radius of :math:`r_t` and is centered at center of mass :math:`\mathbf{x}` and shoulder have both radius of  :math:`r_s` and are centered at :math:`\mathbf{x} \pm r_{ts} \mathbf{\hat{e}_t}`. [langston2007]_
 
-.. [langston2007] Langston, P. A., Masling, R., & Asmar, B. N. (2006). Crowd dynamics discrete element multi-circle model. Safety Science. http://doi.org/10.1016/j.ssci.2005.11.007
+
 
 
 ..
@@ -76,6 +95,8 @@ Three circle model models agent with three circles which represent torso and two
       :header-rows: 1
 
 
+----
+
 Obstacle
 --------
 Obstacle is denoted
@@ -83,16 +104,29 @@ Obstacle is denoted
 .. math::
    \mathcal{O} \subset \Omega
 
-**Linear wall**
+..
+    .. image::
+       ../_static/wall_model.*
 
-.. image::
-   ../_static/wall_model.*
 
-Linear wall is defined by two points
+    Linear wall is defined by two points
 
-.. math::
-   \mathbf{p}_{0}, \mathbf{p}_{1}
+    .. math::
+       \mathbf{p}_{0}, \mathbf{p}_{1}
 
+Linear curves
+^^^^^^^^^^^^^
+Piecewise linear curve or more formally `polygonal chain`_
+
+
+.. _polygonal chain: https://en.wikipedia.org/wiki/Polygonal_chain
+
+Bezier curves
+^^^^^^^^^^^^^
+
+Bezier curves
+
+----
 
 Exit door
 ---------
@@ -102,3 +136,11 @@ Exit door is denoted
 .. math::
    \mathcal{E} \subset \Omega
 
+
+----
+
+.. [fourarc2001] Qian, W. H., & Qian, K. (2001). Optimizing the four-arc approximation to ellipses. Computer Aided Geometric Design, 18(1), 1–19. http://doi.org/10.1016/S0167-8396(00)00033-9
+
+.. [langston2007] Langston, P. A., Masling, R., & Asmar, B. N. (2006). Crowd dynamics discrete element multi-circle model. Safety Science. http://doi.org/10.1016/j.ssci.2005.11.007
+
+.. [obstacle2015] Cristiani, E., & Peri, D. (2015). Handling obstacles in pedestrian simulations: Models and optimization. Retrieved from http://arxiv.org/abs/1512.08528
