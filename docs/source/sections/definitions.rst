@@ -29,7 +29,7 @@ Domain can be broken down to open area and boundary
 
 Agent
 -----
-Set of active agents usually referred as just agents is denoted
+Set of active agents that are subject to motion usually referred just agents is denoted
 
 .. math::
    A = \{ 0, 1, \ldots, n-1 \}

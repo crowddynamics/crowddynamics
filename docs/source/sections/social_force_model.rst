@@ -1,6 +1,10 @@
 Social Force Model
 ==================
-Social force model approached modelling pedestrian dynamics using classical mechanics. Law's of motion are given as `Langevin equations`_ where translational motion and rotational motion
+Social force model approached modelling pedestrian dynamics using classical mechanics. Helbing describes social forces in [helbing1995]
+
+   *These forces are not directly exerted by the pedestrians’ personal environment, but they are a measure for the internal motivations of the individuals to perform certain actions (movements).*
+
+Law's of motion are given as `Langevin equations`_ where translational motion and rotational motion
 
 .. _Langevin equations: https://en.wikipedia.org/wiki/Langevin_equation
 
