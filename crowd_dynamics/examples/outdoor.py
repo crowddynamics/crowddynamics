@@ -14,4 +14,4 @@ def initialize(size, width, height, path="", name="outdoor", **kwargs):
         populate_kwargs_list,
     )
 
-    return Simulation(agent, name=name, dirpath=path, bounds=bounds, **kwargs)
+    return Simulation(agent, name=name, dirpath=path, domain=bounds, **kwargs)

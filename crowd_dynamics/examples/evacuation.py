@@ -100,5 +100,5 @@ def initialize(size, width, height, door_width=1.2, exit_hall_width=2,
                       dirpath=path,
                       direction_update=direction_update,
                       egress_model=egress_model,
-                      bounds=bounds,
+                      domain=bounds,
                       **kwargs)

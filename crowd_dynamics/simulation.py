@@ -12,8 +12,9 @@ from .structure.wall import wall_attr_names
 
 
 class Simulation:
-    """Class for initialising and running a crowd simulation."""
-
+    """
+    Class for initialising and running a crowd simulation.
+    """
     def __init__(self,
                  agent,
                  wall=None,
@@ -23,19 +24,20 @@ class Simulation:
                  angle_update=direction_to_target_angle,
                  direction_update=None,
                  egress_model=None,
-                 bounds=None,
+                 domain=None,
                  dt_min=0.001,
                  dt_max=0.01):
+
         # Integrator timestep
         self.dt_min = dt_min
         self.dt_max = dt_max
 
         # Structures
         self.result = Result()
+        self.domain = domain
         self.agent = agent
         self.wall = filter_none(wall)
         self.goals = filter_none(goals)
-        self.bounds = bounds
         self.egress_model = egress_model
 
         # Angle and direction update algorithms
@@ -77,13 +79,8 @@ class Simulation:
     @timed_execution
     def advance(self):
         """
-        One simulation cycle:
-        -> Navigation -> Motion -> Integrator
-        -> Goals -> Bounds -> Save -> Printing
         :return: False is simulation ends otherwise True.
         """
-        # TODO: (In)Active agents, Bounds, Goal Reached -> handlers
-        # Navigation -> Motion -> Integrator
         navigator(self.agent, self.angle_update, self.direction_update)
         motion(self.agent, self.wall)
         dt = integrator(self.agent, self.dt_min, self.dt_max)
@@ -94,8 +91,8 @@ class Simulation:
         self.agent.reset_neighbor()
         self.result.increment_simulation_time(dt)
 
-        if self.bounds is not None:
-            self.agent.active &= self.bounds.contains(self.agent.position)
+        if self.domain is not None:
+            self.agent.active &= self.domain.contains(self.agent.position)
 
         # Goals
         for goal in self.goals:

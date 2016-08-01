@@ -3,11 +3,21 @@ Definitions
 
 Time
 ----
-
-Simulation time is denoted
+Time is denoted
 
 .. math::
-   t \in \mathbb{R}^{+}
+   t \in \mathbb{R}^{+}.
+
+When numerically solving differential equation we use adaptive discrete timestep
+
+.. math::
+   \Delta t \in [0.1, 0.01].
+
+In dynamics differential in respect of time is sometimes denoted
+
+.. math::
+   \frac{d^2}{dt^2} \mathbf{x} &= \mathbf{\ddot{x}}.
+
 
 ----
 
@@ -109,22 +119,27 @@ Obstacle is denoted
        ../_static/wall_model.*
 
 
-    Linear wall is defined by two points
-
-    .. math::
-       \mathbf{p}_{0}, \mathbf{p}_{1}
-
 Linear curves
 ^^^^^^^^^^^^^
-Piecewise linear curve or more formally `polygonal chain`_
-
+Piecewise linear curve or more formally `polygonal chain`_ that consists of linearly connected points
 
 .. _polygonal chain: https://en.wikipedia.org/wiki/Polygonal_chain
 
-Bezier curves
-^^^^^^^^^^^^^
+.. math::
+   \mathbf{p}_{i} \in \mathbb{R}^{2}, \quad i \in \{0, \ldots, n\}.
+
+
 
 Bezier curves
+^^^^^^^^^^^^^
+`Bézier curve`_ are parametric curves
+
+.. _Bézier curve: https://en.wikipedia.org/wiki/B%C3%A9zier_curve#General_definition
+
+.. math::
+   \mathbf {B} (t)={}&\sum _{i=0}^{n}{n \choose i}(1-t)^{n-i}t^{i}\mathbf {p} _{i}
+
+
 
 ----
 

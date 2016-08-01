@@ -54,6 +54,5 @@ if __name__ == '__main__':
     # simulation = outdoor("medium")
     simulation = hallway("medium")
     # simulation = evacuation("medium")
-
     main(simulation)
     # simulation.run(simu_time_limit=250)

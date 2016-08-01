@@ -11,7 +11,7 @@ Number of agent per unit of area :math:`\rho` of unit :math:`\mathrm{P / m^{2}}`
 - Unstable :math:`\rho \in [3.5,  5]`
 - Congested :math:`\rho \geq 5`
 
-
+Another way to define density in unit-less quantity is to define it to be the percentage of area occupied. This has value range :math:`0` to :math:`1`.
 
 Flow
 ----

@@ -7,7 +7,7 @@ from crowd_dynamics.structure.area import Rectangle
 from crowd_dynamics.structure.wall import LinearWall
 
 
-class CentralItem(pg.PlotItem):
+class SimulationGraphics(pg.PlotItem):
     name = "central_item"
     title = "Simulation"
 
@@ -16,36 +16,37 @@ class CentralItem(pg.PlotItem):
         # TODO: Remote processing
         # TODO: Legend
         # TODO: Coloring of agents (Forces, etc)
-        super(CentralItem, self).__init__(name=self.name)
+        super(SimulationGraphics, self).__init__(name=self.name)
 
         # Data
         self.simulation = simulation
         agent = self.simulation.agent
-        bounds = self.simulation.bounds
+        domain = self.simulation.domain
 
         # One to one scale for x and y coordinates
         self.setAspectLocked(lock=True, ratio=1)
         self.showGrid(True, True, 0.5)
         self.setLabels(title=self.title, left="y", bottom="x")
-        if bounds is not None:
-            if isinstance(bounds, Rectangle):
-                self.setRange(xRange=bounds.x, yRange=bounds.y)
+
+        if domain is not None:
+            if isinstance(domain, Rectangle):
+                self.setRange(xRange=domain.x, yRange=domain.y)
                 self.disableAutoRange()
 
         # Areas
-        if bounds is not None:
-            if isinstance(bounds, Rectangle):
+        if domain is not None:
+            if isinstance(domain, Rectangle):
                 # brush = pg.mkBrush(255, 255, 255, 255 // 4)  # White, transparent
-                # c1 = pg.PlotDataItem([bounds.x[0]], [bounds.y[0]])
-                # c2 = pg.PlotDataItem([bounds.x[1]], [bounds.y[1]])
+                # c1 = pg.PlotDataItem([domain.x[0]], [domain.y[0]])
+                # c2 = pg.PlotDataItem([domain.x[1]], [domain.y[1]])
                 # pg.FillBetweenItem(c1, c2, brush=brush)
                 pass
         # TODO: Goals
 
         # Agent
-        impatient = pg.mkBrush(255, 0, 0, 255)  # RGBA
-        patient = pg.mkBrush(0, 0, 255, 255)  # RGBA
-        self.states = np.array((impatient, patient))
+        self.impatient = pg.mkBrush(255, 0, 0, 255)  # RGBA
+        self.patient = pg.mkBrush(0, 0, 255, 255)  # RGBA
+        self.states = np.array((self.impatient, self.patient))
 
         self.left_shoulder = self.plot()
         self.right_shoulder = self.plot()
@@ -92,9 +93,10 @@ class CentralItem(pg.PlotItem):
         """Updates data in the plot."""
         agent = self.simulation.agent
 
-        brush = pg.mkBrush(0, 0, 255, 255)
         if self.simulation.egress_model is not None:
             brush = self.states[self.simulation.egress_model.strategy]
+        else:
+            brush = self.patient
 
         self.torso.setData(agent.position, symbolBrush=brush)
 
@@ -114,69 +116,123 @@ class CentralItem(pg.PlotItem):
                                        stats.in_goal))
 
 
-class Controls(QtGui.QWidget):
-    def __init__(self):
-        super().__init__()
+class Main(pg.LayoutWidget):
+    def __init__(self, simulation: Simulation, parent=None):
+        super(Main, self).__init__(parent)
 
-
-class Monitor(pg.PlotItem):
-    name = "monitor"
-    title = "Monitor"
-
-    def __init__(self, simulation: Simulation):
-        """
-        Plot visualizing simulation data.
-        Egress times
-        Forces
-        Timestep
-        """
-        super(Monitor, self).__init__(name=self.name, title=self.title)
-        self.showGrid(True, True, 0.5)
-        self.simulation = simulation
-
-    def updateData(self):
-        pass
-
-
-class Graphics(pg.GraphicsLayoutWidget):
-    def __init__(self, simulation: Simulation, parent=None, **kargs):
-        """Contains all the plots. Updates interactive plots."""
-        super().__init__(parent, **kargs)
-
+        # Data
         self.simulation = simulation
 
         pg.setConfigOptions(antialias=True)
         self.setWindowTitle("Crowd Dynamics")
-        self.resize(*(1200, 800))
+        self.resize(1200, 800)
 
-        self.central = CentralItem(self.simulation)
-        self.addItem(self.central, 0, 0, 1, 1)  # row, col, rowspan, colspan
-        # self.monitor = Monitor(self.simulation)
-        # self.addItem(self.monitor, 1, 0, 1, 1)  # row, col, rowspan, colspan
-
+        # Timer for updating interactive plots
         self.timer = QtCore.QTimer()
-        # noinspection PyUnresolvedReferences
-        self.timer.timeout.connect(self.updatePlots)
-        self.timer.start(0)
+        self.timer.timeout.connect(self.run)
 
-    def updatePlots(self):
-        if self.simulation.advance():
-            self.central.updateData()
-            # self.monitor.updateData()
+        # Simulation Plot
+        self.graphics = pg.GraphicsLayoutWidget()
+        self.central = SimulationGraphics(self.simulation)
+        self.graphics.addItem(self.central, 0, 0, 1, 1)
+
+        # Buttons for controlling the simulation
+        btn1 = QtGui.QPushButton("Initialize simulation")
+        # btn1.clicked.connect()
+
+        btn2 = QtGui.QPushButton("Start")
+        btn2.clicked.connect(self.start)
+
+        btn3 = QtGui.QPushButton("Stop")
+        btn3.clicked.connect(self.stop)
+
+        btn4 = QtGui.QPushButton("Save and exit")
+        btn4.clicked.connect(self.exit_and_save)
+
+        # Check boxes for optional data visualization
+        # Density, flow rate, pressure, potential field, forces
+        cbx1 = QtGui.QCheckBox("Density")
+        cbx2 = QtGui.QCheckBox("Potential field")
+
+        # Button popup menus
+        # simulation type, body type, agent model, attributes to save
+        menu1 = QtGui.QComboBox()
+        menu1.addItems(("outdoor",
+                        "hallway",
+                        "evacuation"))
+        menu1.currentIndexChanged[str].connect(self.select)
+
+        menu2 = QtGui.QComboBox()
+        menu2.addItems(("circular",
+                        "three_circle"))
+
+        # Text boxes for setting values
+        # QtGui.
+
+        # Layout for widgets
+        self.addWidget(self.graphics, row=0, col=1, rowspan=11, colspan=5)
+
+        self.addWidget(btn1, row=12, col=1)
+        self.addWidget(btn2, row=12, col=2)
+        self.addWidget(btn3, row=12, col=3)
+        self.addWidget(btn4, row=12, col=4)
+
+        self.addWidget(menu1, row=0, col=0)
+        self.addWidget(menu2, row=1, col=0)
+
+        self.addWidget(cbx1, row=2, col=0)
+        self.addWidget(cbx2, row=3, col=0)
+
+        # Display the window when initialized
+        self.show()
+
+    def select(self, name):
+        print(name)
+        if name == "outdoor":
+            from crowd_dynamics.examples.outdoor import initialize
+        elif name == "hallway":
+            from crowd_dynamics.examples.hallway import initialize
+        elif name == "evacuation":
+            from crowd_dynamics.examples.evacuation import initialize
         else:
+            raise ValueError("")
+
+    def start(self):
+        if not self.timer.isActive():
+            self.timer.start(0)
+
+    def stop(self):
+        if self.timer.isActive():
+            print("Simulation stopped")
             self.timer.stop()
+
+    def exit_and_save(self):
+        self.stop()
+        self.simulation.exit()
+        self.close()
+
+    def run(self):
+        if self.simulation.advance():
+            print("Simulation started")
+            self.central.updateData()
+        else:
+            print("End of simulation")
+            self.stop()
 
 
 def main(simulation: Simulation):
     """Launches Qt application for visualizing simulation.
     :param simulation:
     """
-    import sys
-
     # TODO: Read simulation data from hdf5 file
     # TODO: MoviePy
+    import sys
 
     app = QtGui.QApplication(sys.argv)
-    graphics = Graphics(simulation)
-    graphics.show()
-    sys.exit(app.exec_())
+    qui = Main(simulation)
+
+    # Start Qt event loop unless running in interactive mode or using pyside.
+    if (sys.flags.interactive != 1) or not hasattr(QtCore, 'PYQT_VERSION'):
+        sys.exit(app.exec_())
+    else:
+        raise Warning("Interactive mode or Pyside are not supported.")

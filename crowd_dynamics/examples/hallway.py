@@ -35,4 +35,4 @@ def initialize(size, width, height, path="", name="hallway", **kwargs):
     agent = initialize_agent(size, populate_kwargs_list, walls=walls)
 
     return Simulation(agent, wall=walls, goals=goals, name=name, dirpath=path,
-                      bounds=bounds, **kwargs)
+                      domain=bounds, **kwargs)

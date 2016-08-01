@@ -203,16 +203,6 @@ def force_social_three_circle(agent, i, j):
 
 
 @numba.jit(nopython=True, nogil=True)
-def nanargmin(a):
-    a_min = a[0]
-    index = 0
-    for i in range(len(a)):
-        if not np.isnan(a[i]) and a[i] < a_min:
-            a_min = a[i]
-            index = i
-
-
-@numba.jit(nopython=True, nogil=True)
 def force_social_linear_wall(i, w, agent, wall):
     force = np.zeros(2)
     tau = np.zeros(3)
