@@ -36,16 +36,9 @@ def force_adjust(agent):
 def torque_adjust(agent):
     """Adjusting torque."""
     for i in agent.indices():
-        agent.torque[i] += agent.inertia_rot[i] / agent.tau_adj_rot * (
+        agent.torque[i] += agent.inertia_rot[i] / agent.tau_rot * (
             wrap_to_pi(agent.target_angle[i] - agent.angle[i]) / np.pi *
             agent.target_angular_velocity[i] - agent.angular_velocity[i])
-
-
-@numba.jit(f8[:](f8, f8[:], f8, f8), nopython=True, nogil=True)
-def force_social_helbing(h, n, a, b):
-    """Pure distance dependent social force used by in the original social force
-    model by Helbing."""
-    return np.exp(- h / b) * a * n
 
 
 @numba.jit(f8[:](f8, f8[:], f8[:], f8[:], f8, f8, f8), nopython=True,

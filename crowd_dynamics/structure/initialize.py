@@ -106,14 +106,14 @@ def set_motion_parameters():
     pass
 
 
-def populate(agent: Agent,
-             amount: int,
-             area: Area,
-             walls=None,
-             target_direction: np.ndarray = None,
-             target_angle: np.ndarray = None,
-             velocity: np.ndarray = None,
-             body_angle: float = None, ):
+def set_positions(agent: Agent,
+                  amount: int,
+                  area: Area,
+                  walls=None,
+                  target_direction: np.ndarray = None,
+                  target_angle: np.ndarray = None,
+                  velocity: np.ndarray = None,
+                  body_angle: float = None, ):
     """
     Monte Carlo method for filling an area with desired amount of circles.
 
@@ -189,8 +189,6 @@ def initialize_agent(size: int,
     # TODO: converters. Eval to values.
     pi = np.pi  # For eval
 
-    models = {"circular", "three_circle"}
-
     # Load tabular values
     body_types, agent_table = load_tables()
     body = body_types[body_type]
@@ -219,6 +217,7 @@ def initialize_agent(size: int,
                   target_angular_velocity)
 
     # Agent model
+    models = {"circular", "three_circle"}
     if model == "circular":
         agent.set_circular()
     elif model == "three_circle":
@@ -229,10 +228,10 @@ def initialize_agent(size: int,
     # TODO: separate, manual positions
     # Initial positions
     if isinstance(populate_kwargs_list, dict):
-        populate(agent, walls=walls, **populate_kwargs_list)
+        set_positions(agent, walls=walls, **populate_kwargs_list)
     elif isinstance(populate_kwargs_list, Iterable):
         for kwargs in populate_kwargs_list:
-            populate(agent, walls=walls, **kwargs)
+            set_positions(agent, walls=walls, **kwargs)
     else:
         raise ValueError("")
 

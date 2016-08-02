@@ -28,7 +28,7 @@ def _direction_update(agent, target, mid, r_mid, c_rect, r_rect):
 def initialize(size, width, height, door_width=1.2, exit_hall_width=2,
                spawn_shape="circ", egress_model=False, t_aset=60, path="",
                name="evacuation", **kwargs):
-    bounds = Rectangle((0.0, width + exit_hall_width), (0.0, height))
+    domain = Rectangle((0.0, width + exit_hall_width), (0.0, height))
 
     corner = ((0, 0), (0, height), (width, 0), (width, height))
     door = ((width, (height - door_width) / 2),
@@ -100,5 +100,5 @@ def initialize(size, width, height, door_width=1.2, exit_hall_width=2,
                       dirpath=path,
                       direction_update=direction_update,
                       egress_model=egress_model,
-                      domain=bounds,
+                      domain=domain,
                       **kwargs)

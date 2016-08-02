@@ -117,11 +117,8 @@ class SimulationGraphics(pg.PlotItem):
 
 
 class Main(pg.LayoutWidget):
-    def __init__(self, simulation: Simulation, parent=None):
+    def __init__(self, simulation: Simulation=None, parent=None):
         super(Main, self).__init__(parent)
-
-        # Data
-        self.simulation = simulation
 
         pg.setConfigOptions(antialias=True)
         self.setWindowTitle("Crowd Dynamics")
@@ -132,8 +129,12 @@ class Main(pg.LayoutWidget):
         self.timer.timeout.connect(self.run)
 
         # Simulation Plot
+        self.simulation = simulation
         self.graphics = pg.GraphicsLayoutWidget()
-        self.central = SimulationGraphics(self.simulation)
+        if self.simulation is None:
+            self.central = pg.PlotItem()
+        else:
+            self.central = SimulationGraphics(self.simulation)
         self.graphics.addItem(self.central, 0, 0, 1, 1)
 
         # Buttons for controlling the simulation
@@ -151,23 +152,31 @@ class Main(pg.LayoutWidget):
 
         # Check boxes for optional data visualization
         # Density, flow rate, pressure, potential field, forces
+        lbl1 = QtGui.QLabel("Visualization")
         cbx1 = QtGui.QCheckBox("Density")
         cbx2 = QtGui.QCheckBox("Potential field")
 
         # Button popup menus
         # simulation type, body type, agent model, attributes to save
+        simu_names = ("outdoor", "hallway", "evacuation")
+        agent_models = ("circular", "three_circle")
+        body_types = ("adult", "male", "female", "child", "eldery")
+
         menu1 = QtGui.QComboBox()
-        menu1.addItems(("outdoor",
-                        "hallway",
-                        "evacuation"))
-        menu1.currentIndexChanged[str].connect(self.select)
+        menu1.addItems(simu_names)
+        menu1.currentIndexChanged[str].connect(self.select_simulation)
 
         menu2 = QtGui.QComboBox()
-        menu2.addItems(("circular",
-                        "three_circle"))
+        menu2.addItems(agent_models)
+        menu2.currentIndexChanged[str].connect(self.select_agent_model)
+
+        menu3 = QtGui.QComboBox()
+        menu3.addItems(body_types)
+        menu3.currentIndexChanged[str].connect(self.select_body_type)
 
         # Text boxes for setting values
-        # QtGui.
+        line1 = QtGui.QLineEdit()
+        line1.setMaximumWidth(150)
 
         # Layout for widgets
         self.addWidget(self.graphics, row=0, col=1, rowspan=11, colspan=5)
@@ -179,14 +188,17 @@ class Main(pg.LayoutWidget):
 
         self.addWidget(menu1, row=0, col=0)
         self.addWidget(menu2, row=1, col=0)
+        self.addWidget(menu3, row=2, col=0)
+        self.addWidget(line1, row=3, col=0)
 
-        self.addWidget(cbx1, row=2, col=0)
-        self.addWidget(cbx2, row=3, col=0)
+        self.addWidget(lbl1, row=4, col=0)
+        self.addWidget(cbx1, row=5, col=0)
+        self.addWidget(cbx2, row=6, col=0)
 
         # Display the window when initialized
         self.show()
 
-    def select(self, name):
+    def select_simulation(self, name):
         print(name)
         if name == "outdoor":
             from crowd_dynamics.examples.outdoor import initialize
@@ -196,6 +208,18 @@ class Main(pg.LayoutWidget):
             from crowd_dynamics.examples.evacuation import initialize
         else:
             raise ValueError("")
+        simulation = initialize(size=30, width=10, height=10)
+        central = SimulationGraphics(simulation)
+        self.central.close()
+        self.graphics.addItem(central, 0, 0, 1, 1)
+        self.simulation = simulation
+        self.central = central
+
+    def select_agent_model(self, name):
+        pass
+
+    def select_body_type(self, name):
+        pass
 
     def start(self):
         if not self.timer.isActive():
@@ -220,7 +244,7 @@ class Main(pg.LayoutWidget):
             self.stop()
 
 
-def main(simulation: Simulation):
+def main(simulation: Simulation=None):
     """Launches Qt application for visualizing simulation.
     :param simulation:
     """
@@ -236,3 +260,7 @@ def main(simulation: Simulation):
         sys.exit(app.exec_())
     else:
         raise Warning("Interactive mode or Pyside are not supported.")
+
+
+# if __name__ == '__main__':
+#     main()

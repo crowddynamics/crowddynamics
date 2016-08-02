@@ -7,7 +7,7 @@ from crowd_dynamics.structure.wall import LinearWall
 
 
 def initialize(size, width, height, path="", name="hallway", **kwargs):
-    bounds = Rectangle((0, width), (0, height))
+    domain = Rectangle((0, width), (0, height))
     linear_params = np.array((
         ((0.0, 0.0), (width, 0.0)),
         ((0.0, height), (width, height)),
@@ -35,4 +35,4 @@ def initialize(size, width, height, path="", name="hallway", **kwargs):
     agent = initialize_agent(size, populate_kwargs_list, walls=walls)
 
     return Simulation(agent, wall=walls, goals=goals, name=name, dirpath=path,
-                      domain=bounds, **kwargs)
+                      domain=domain, **kwargs)

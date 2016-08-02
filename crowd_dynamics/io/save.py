@@ -58,7 +58,8 @@ class Save(object):
         self.name = name
 
         # Make the directory if it doesn't exist
-        os.makedirs(self.path, exist_ok=True)
+        if len(path) > 0:
+            os.makedirs(self.path, exist_ok=True)
 
         # Path to the HDF5 file
         self.hdf_filepath = os.path.join(self.path, self.name + self.HDF5)

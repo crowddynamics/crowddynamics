@@ -41,14 +41,12 @@ spec_agent = (
 
 spec_agent_motion = (
     ("tau_adj", float64),
-    ("tau_adj_rot", float64),
+    ("tau_rot", float64),
     ("k_soc", float64),
     ("tau_0", float64),
     ("mu", float64),
     ("kappa", float64),
     ("damping", float64),
-    ("a", float64),
-    ("b", float64),
     ("std_rand_force", float64),
     ("std_rand_torque", float64),
     ("f_soc_ij_max", float64),
@@ -156,21 +154,19 @@ class Agent(object):
         self.update_shoulder_positions()
 
         # Motion related parameters
-        self.tau_adj = 0.5      # Adjusting force
-        self.tau_adj_rot = 0.2  # Adjusting torque
-        self.k_soc = 1.5        # Social force scaling
-        self.tau_0 = 3.0        # Social force interaction time horizon
-        self.mu = 1.2e5         # Contact force
-        self.kappa = 4e4        # Contact force
-        self.damping = 500      # Contact force
-        self.a = 2000
-        self.b = 0.04
+        self.tau_adj = 0.5          # Adjusting force
+        self.tau_rot = 0.2          # Adjusting torque
+        self.k_soc = 1.5            # Social force scaling
+        self.tau_0 = 3.0            # Social force interaction time horizon
+        self.mu = 1.2e5             # Contact force
+        self.kappa = 4e4            # Contact force
+        self.damping = 500          # Contact force
         self.std_rand_force = 0.1   # Fluctuation force
         self.std_rand_torque = 0.1  # Fluctuation torque
-        self.f_soc_ij_max = 2e3  # Truncation value for social force
-        self.f_soc_iw_max = 2e3  # Truncation value for social force
-        self.sight_soc = 3.0     # Interaction distance with other agents
-        self.sight_wall = 3.0    # Interaction distance with walls
+        self.f_soc_ij_max = 2e3     # Truncation value for social force
+        self.f_soc_iw_max = 2e3     # Truncation value for social force
+        self.sight_soc = 3.0        # Interaction distance with other agents
+        self.sight_wall = 3.0       # Interaction distance with walls
 
         # Tracking neighboring agents
         self.neighbor_radius = 0  # if less than or equal to 0 -> inactive

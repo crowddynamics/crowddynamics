@@ -267,3 +267,4 @@ sympy-plots-for-*.tex/
 /crowd_dynamics/examples/rounding_corner.py
 /crowd_dynamics/examples/crossing_flows.py
 /.travis.yaml
+/docs/notebooks/csv_to_table.py

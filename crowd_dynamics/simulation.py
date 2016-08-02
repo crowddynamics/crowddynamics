@@ -49,7 +49,6 @@ class Simulation:
         self.interval2 = Intervals(1.0)
 
         # TODO: Saving and loading HDF5.
-
         # Simulation IO for saving generated data to HDF5 file for analysis
         # and resuming a simulation.
         self.save = Save(dirpath, name)
