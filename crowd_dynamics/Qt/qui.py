@@ -1,124 +1,13 @@
-import numpy as np
-import pyqtgraph as pg
 from PyQt4 import QtGui, QtCore
 
+import pyqtgraph as pg
+from crowd_dynamics.Qt.graphics import SimulationGraphics
 from crowd_dynamics.simulation import Simulation
-from crowd_dynamics.structure.area import Rectangle
-from crowd_dynamics.structure.wall import LinearWall
 
 
-class SimulationGraphics(pg.PlotItem):
-    name = "central_item"
-    title = "Simulation"
-
-    def __init__(self, simulation: Simulation):
-        """Central plot."""
-        # TODO: Remote processing
-        # TODO: Legend
-        # TODO: Coloring of agents (Forces, etc)
-        super(SimulationGraphics, self).__init__(name=self.name)
-
-        # Data
-        self.simulation = simulation
-        agent = self.simulation.agent
-        domain = self.simulation.domain
-
-        # One to one scale for x and y coordinates
-        self.setAspectLocked(lock=True, ratio=1)
-        self.showGrid(True, True, 0.5)
-        self.setLabels(title=self.title, left="y", bottom="x")
-
-        if domain is not None:
-            if isinstance(domain, Rectangle):
-                self.setRange(xRange=domain.x, yRange=domain.y)
-                self.disableAutoRange()
-
-        # Areas
-        if domain is not None:
-            if isinstance(domain, Rectangle):
-                # brush = pg.mkBrush(255, 255, 255, 255 // 4)  # White, transparent
-                # c1 = pg.PlotDataItem([domain.x[0]], [domain.y[0]])
-                # c2 = pg.PlotDataItem([domain.x[1]], [domain.y[1]])
-                # pg.FillBetweenItem(c1, c2, brush=brush)
-                pass
-        # TODO: Goals
-
-        # Agent
-        self.impatient = pg.mkBrush(255, 0, 0, 255)  # RGBA
-        self.patient = pg.mkBrush(0, 0, 255, 255)  # RGBA
-        self.states = np.array((self.impatient, self.patient))
-
-        self.left_shoulder = self.plot()
-        self.right_shoulder = self.plot()
-        self.torso = self.plot()
-        self.direction = self.plot()
-
-        self.setAgent()
-
-        # Walls
-        self.walls = self.plot()
-        self.setWalls()
-
-        self.updateData()
-
-    def setWalls(self):
-        for wall in self.simulation.wall:
-            if isinstance(wall, LinearWall):
-                connect = np.zeros(2 * wall.size, dtype=np.int32)
-                connect[::2] = np.ones(wall.size, dtype=np.int32)
-                self.walls.setData(wall.params[:, :, 0].flatten(),
-                                   wall.params[:, :, 1].flatten(),
-                                   connect=connect)
-
-    def setAgent(self):
-        agent = self.simulation.agent
-        brush = pg.mkBrush(0, 0, 255, 255)
-        circle = lambda radius: dict(symbol='o',
-                                     symbolSize=2 * radius,
-                                     symbolBrush=brush,
-                                     pen=None,
-                                     pxMode=False)
-        if agent.circular:
-            self.torso.setData(**circle(agent.radius))
-        elif agent.three_circle:
-            self.torso.setData(**circle(agent.r_t))
-            self.left_shoulder.setData(**circle(agent.r_s))
-            self.right_shoulder.setData(**circle(agent.r_s))
-
-            connect = np.ones(3 * agent.size, dtype=np.int32)
-            connect[2::3] = np.zeros(agent.size, dtype=np.int32)
-            self.direction.setData(connect=connect)
-
-    def updateData(self):
-        """Updates data in the plot."""
-        agent = self.simulation.agent
-
-        if self.simulation.egress_model is not None:
-            brush = self.states[self.simulation.egress_model.strategy]
-        else:
-            brush = self.patient
-
-        self.torso.setData(agent.position, symbolBrush=brush)
-
-        if agent.three_circle:
-            self.left_shoulder.setData(agent.position_ls, symbolBrush=brush)
-            self.right_shoulder.setData(agent.position_rs, symbolBrush=brush)
-
-            array = np.concatenate((agent.position_ls, agent.front, agent.position_rs), axis=1)
-            array = array.reshape(3 * agent.shape[0], agent.shape[1])
-            self.direction.setData(array)
-
-        text = "Iterations: {} " \
-               "Simulation time: {:0.2f} " \
-               "Agents in goal: {}"
-        stats = self.simulation.result
-        self.setLabels(top=text.format(stats.iterations, stats.simulation_time,
-                                       stats.in_goal))
-
-
-class Main(pg.LayoutWidget):
+class Gui(pg.LayoutWidget):
     def __init__(self, simulation: Simulation=None, parent=None):
-        super(Main, self).__init__(parent)
+        super(Gui, self).__init__(parent)
 
         pg.setConfigOptions(antialias=True)
         self.setWindowTitle("Crowd Dynamics")
@@ -131,10 +20,7 @@ class Main(pg.LayoutWidget):
         # Simulation Plot
         self.simulation = simulation
         self.graphics = pg.GraphicsLayoutWidget()
-        if self.simulation is None:
-            self.central = pg.PlotItem()
-        else:
-            self.central = SimulationGraphics(self.simulation)
+        self.central = SimulationGraphics()
         self.graphics.addItem(self.central, 0, 0, 1, 1)
 
         # Buttons for controlling the simulation
@@ -152,9 +38,9 @@ class Main(pg.LayoutWidget):
 
         # Check boxes for optional data visualization
         # Density, flow rate, pressure, potential field, forces
-        lbl1 = QtGui.QLabel("Visualization")
-        cbx1 = QtGui.QCheckBox("Density")
-        cbx2 = QtGui.QCheckBox("Potential field")
+        # lbl1 = QtGui.QLabel("Visualization")
+        cbx1 = QtGui.QCheckBox("Density Grid")
+        cbx2 = QtGui.QCheckBox("Navigation Field")
 
         # Button popup menus
         # simulation type, body type, agent model, attributes to save
@@ -191,7 +77,7 @@ class Main(pg.LayoutWidget):
         self.addWidget(menu3, row=2, col=0)
         self.addWidget(line1, row=3, col=0)
 
-        self.addWidget(lbl1, row=4, col=0)
+        # self.addWidget(lbl1, row=4, col=0)
         self.addWidget(cbx1, row=5, col=0)
         self.addWidget(cbx2, row=6, col=0)
 
@@ -208,12 +94,10 @@ class Main(pg.LayoutWidget):
             from crowd_dynamics.examples.evacuation import initialize
         else:
             raise ValueError("")
-        simulation = initialize(size=30, width=10, height=10)
-        central = SimulationGraphics(simulation)
-        self.central.close()
-        self.graphics.addItem(central, 0, 0, 1, 1)
-        self.simulation = simulation
-        self.central = central
+
+        path = "/home/jaan/Dropbox/Projects/Crowd-Dynamics-Simulations/"
+        self.simulation = initialize(size=30, width=10, height=10, path=path)
+        self.central.setSimulation(self.simulation)
 
     def select_agent_model(self, name):
         pass
@@ -242,25 +126,3 @@ class Main(pg.LayoutWidget):
         else:
             print("End of simulation")
             self.stop()
-
-
-def main(simulation: Simulation=None):
-    """Launches Qt application for visualizing simulation.
-    :param simulation:
-    """
-    # TODO: Read simulation data from hdf5 file
-    # TODO: MoviePy
-    import sys
-
-    app = QtGui.QApplication(sys.argv)
-    qui = Main(simulation)
-
-    # Start Qt event loop unless running in interactive mode or using pyside.
-    if (sys.flags.interactive != 1) or not hasattr(QtCore, 'PYQT_VERSION'):
-        sys.exit(app.exec_())
-    else:
-        raise Warning("Interactive mode or Pyside are not supported.")
-
-
-# if __name__ == '__main__':
-#     main()

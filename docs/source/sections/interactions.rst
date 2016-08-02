@@ -37,7 +37,7 @@ If  :math:`\tau < 0` or :math:`\tau` is undefined [#]_ trajectories are not coll
 **Time-to-collision** two **two circles** with relative center of mass :math:`\mathbf{c}`, relative velocity :math:`\mathbf{\tilde{v}}` and total radius of :math:`\tilde{r} (= \mathrm{constant})` is obtained from *skin-to-skin* distance
 
 .. math::
-   h(\tau) &= \| \tau \tilde{\mathbf{v}} + \mathbf{c} \| - \tilde{r}, \\
+   h(\tau) &= \| \tau \tilde{\mathbf{v}} + \mathbf{c} \| - \tilde{r}.
 
 Solve for root
 
@@ -49,7 +49,7 @@ Solve for root
 Quadratic equation is obtained
 
 .. math::
-    \tau^2 (\tilde{\mathbf{v}} \cdot \tilde{\mathbf{v}}) + 2 \tau (\mathbf{c} \cdot \tilde{\mathbf{v}}) + \mathbf{c} \cdot \mathbf{c} - \tilde{r}^2 &=0 \\
+    \tau^2 (\tilde{\mathbf{v}} \cdot \tilde{\mathbf{v}}) + 2 \tau (\mathbf{c} \cdot \tilde{\mathbf{v}}) + \mathbf{c} \cdot \mathbf{c} - \tilde{r}^2 &=0
 
 Solution with `quadratic formula <https://en.wikipedia.org/wiki/Quadratic_equation>`_ gives us
 
@@ -72,7 +72,7 @@ Solution with `quadratic formula <https://en.wikipedia.org/wiki/Quadratic_equati
    \nabla_{\tilde{\mathbf{x}}} \tau &= \left(\frac{1}{a} \right) \left(\tilde{\mathbf{v}} -\frac{a \tilde{\mathbf{x}} + b \tilde{\mathbf{v}}}{d} \right)
 
 .. math::
-   \mathbf{f}^{soc} &= - \left(\frac{k}{\tau^{2}}\right) \left(\frac{2}{\tau} + \frac{1}{\tau_{0}}\right) \exp\left (-\frac{\tau}{\tau_{0}}\right ) \left(\frac{1}{a} \right) \left(\tilde{\mathbf{v}} -\frac{a \tilde{\mathbf{x}} + b \tilde{\mathbf{v}}}{d} \right), \\
+   \mathbf{f}^{soc} &= - \left(\frac{k}{\tau^{2}}\right) \left(\frac{2}{\tau} + \frac{1}{\tau_{0}}\right) \exp\left (-\frac{\tau}{\tau_{0}}\right ) \left(\frac{1}{a} \right) \left(\tilde{\mathbf{v}} -\frac{a \tilde{\mathbf{x}} + b \tilde{\mathbf{v}}}{d} \right)
 
 .. .. literalinclude:: ../../../crowd_dynamics/core/motion.py
       :pyobject: force_social
@@ -82,11 +82,9 @@ Solution with `quadratic formula <https://en.wikipedia.org/wiki/Quadratic_equati
 **Elliptical model**
 
 .. math::
-    \mathbf{\hat{e}}_n &= \operatorname{sin}\left(\varphi\right)\mathbf{\hat{e}_x} + \operatorname{cos}\left(\varphi\right)\mathbf{\hat{e}_y}
-    \\
+    \mathbf{\hat{e}}_n &= \operatorname{sin}\left(\varphi\right)\mathbf{\hat{e}_x} + \operatorname{cos}\left(\varphi\right)\mathbf{\hat{e}_y} \\
    r &= \| r_t \cos(\phi) \mathbf{\hat{e}_x} + r \sin(\phi) \mathbf{\hat{e}_y} \|, \quad \phi = \angle(\tilde{\mathbf{x}} + \tau\tilde{\mathbf{v}}, \mathbf{\hat{e}_n}) \\
-      \cos(\phi) &= \frac{(\tilde{\mathbf{x}} + \tau\tilde{\mathbf{v}})}{\| \tilde{\mathbf{x}} + \tau\tilde{\mathbf{v}} \|} \cdot \mathbf{\hat{e}_{n}}
-   \\
+      \cos(\phi) &= \frac{(\tilde{\mathbf{x}} + \tau\tilde{\mathbf{v}})}{\| \tilde{\mathbf{x}} + \tau\tilde{\mathbf{v}} \|} \cdot \mathbf{\hat{e}_{n}} \\
    \sin(\phi) &= \left \| \frac{(\tilde{\mathbf{x}} + \tau\tilde{\mathbf{v}})}{\| \tilde{\mathbf{x}} + \tau\tilde{\mathbf{v}} \|} \times \mathbf{\hat{e}_{n}} \right \|
 
 We get radius of form
@@ -187,7 +185,7 @@ If positive inside absolute value
          \mathbf{q}_w \cdot \mathbf{\hat{n}_w} & \mathbf{q}_w \cdot \mathbf{\hat{n}_w} > 0 \\
    \end{cases} \\
    h(\tau) &= d(\tau) - r \\
-   h(\tau) &= 0 \\
+   h(\tau) &= 0
 
 
 .. math::

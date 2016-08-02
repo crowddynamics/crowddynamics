@@ -1,8 +1,11 @@
 import sys
 
-sys.path.append("/home/jaan/Dropbox/Projects/Crowd-Dynamics")
+from PyQt4 import QtGui, QtCore
 
-from crowd_dynamics.Qt.qui import main
+from crowd_dynamics.Qt.qui import Gui
+from crowd_dynamics.simulation import Simulation
+
+sys.path.append("/home/jaan/Dropbox/Projects/Crowd-Dynamics")
 
 path = "/home/jaan/Dropbox/Projects/Crowd-Dynamics-Simulations/"
 path2 = "/media/storage3/Crowd-Dynamics-Simulations/"
@@ -46,6 +49,24 @@ def evacuation(density):
     return initialize(**kwargs)
 
 
+def main(simulation: Simulation=None):
+    """Launches Qt application for visualizing simulation.
+    :param simulation:
+    """
+    # TODO: Read simulation data from hdf5 file
+    # TODO: MoviePy
+    import sys
+
+    app = QtGui.QApplication(sys.argv)
+    qui = Gui(simulation)
+
+    # Start Qt event loop unless running in interactive mode or using pyside.
+    if (sys.flags.interactive != 1) or not hasattr(QtCore, 'PYQT_VERSION'):
+        sys.exit(app.exec_())
+    else:
+        raise Warning("Interactive mode or Pyside are not supported.")
+
+
 if __name__ == '__main__':
     # TODO: Better agent initialization.
     # TODO: Circular agent selection
@@ -53,6 +74,6 @@ if __name__ == '__main__':
     # TODO: Agent maximum velocity for optimizations
     # simulation = outdoor("medium")
     # simulation = hallway("medium")
-    simulation = evacuation("medium")
-    main(simulation)
-    # simulation.run(simu_time_limit=250)
+    # simulation = evacuation("medium")
+    # main(simulation)
+    main()
