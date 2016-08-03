@@ -26,8 +26,9 @@ def _direction_update(agent, target, mid, r_mid, c_rect, r_rect):
 
 
 def initialize(size, width, height, door_width=1.2, exit_hall_width=2,
-               spawn_shape="circ", egress_model=False, t_aset=60, path="",
-               name="evacuation", **kwargs):
+               model="circular", body_type="adult", spawn_shape="circ",
+               egress_model=False, t_aset=60, path="", name="evacuation",
+               **kwargs):
     domain = Rectangle((0.0, width + exit_hall_width), (0.0, height))
 
     corner = ((0, 0), (0, height), (width, 0), (width, height))
@@ -69,7 +70,8 @@ def initialize(size, width, height, door_width=1.2, exit_hall_width=2,
         'target_direction': None,
         'body_angle': 0
     }
-    agent = initialize_agent(size, populate_kwargs_list, walls=walls)
+    agent = initialize_agent(size, populate_kwargs_list, body_type=body_type,
+                             model=model, walls=walls)
 
     # Navigation algorithm
     door1 = np.array(door[1], dtype=np.float64)
