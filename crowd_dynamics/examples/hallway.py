@@ -6,8 +6,14 @@ from crowd_dynamics.structure.initialize import initialize_agent
 from crowd_dynamics.structure.wall import LinearWall
 
 
-def initialize(size, width, height, model="circular", body_type="adult",
-               path="", name="hallway", **kwargs):
+def hallway(size,
+            width,
+            height,
+            agent_model="circular",
+            body_type="adult",
+            path="",
+            name="hallway",
+            **kwargs):
     domain = Rectangle((0, width), (0, height))
     linear_params = np.array((
         ((0.0, 0.0), (width, 0.0)),
@@ -34,7 +40,7 @@ def initialize(size, width, height, model="circular", body_type="adult",
          'body_angle': np.pi},
     )
     agent = initialize_agent(size, populate_kwargs_list, body_type=body_type,
-                             model=model, walls=walls)
+                             agent_model=agent_model, walls=walls)
 
     return Simulation(agent, wall=walls, goals=goals, name=name, dirpath=path,
                       domain=domain, **kwargs)

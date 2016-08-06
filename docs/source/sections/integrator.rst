@@ -1,11 +1,9 @@
 Integrator
 ==========
-System is updated using discrete time step :math:`\Delta t`
 
-.. math::
-   t_{0}, t_{1}, \ldots, t_{k} = 0, \Delta t, \ldots, t_{k-1} + \Delta t \\
-
-Adaptive time step :math:`\Delta t` is used when integration is done.
+Method
+------
+Integration using discrete adaptive time step :math:`\Delta t`.
 
 Acceleration on an agent
 

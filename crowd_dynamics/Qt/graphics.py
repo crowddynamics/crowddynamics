@@ -10,11 +10,9 @@ class SimulationGraphics(pg.PlotItem):
     title = "Crowd Simulation"
     name = "simulation_graphics"
 
-    # TODO: Remote processing
-    # TODO: Legend
-    # TODO: Coloring of agents (Forces, etc)
-
     def __init__(self):
+        """Widget for displaying simulation graphics."""
+        # TODO: Remote processing
         super(SimulationGraphics, self).__init__(name=self.name)
 
         # One to one scale for x and y coordinates
@@ -26,9 +24,14 @@ class SimulationGraphics(pg.PlotItem):
         # Data
         self.simulation = None
 
+        # Pens
+        self.active_pen = pg.mkPen('w')
+        self.inactive_pen = pg.mkPen(None)
+
         # Brushes: RGBA
         self.domain_brush = pg.mkBrush(255, 255, 255, 255 // 8)  # White, transparent
         self.goal_brush = pg.mkBrush(255, 255, 255, 255 // 4)    # White, transparent
+        self.inactive = pg.mkBrush(0, 0, 0, 0)  # Fully transparent
         self.impatient = pg.mkBrush(255, 0, 0, 255)
         self.patient = pg.mkBrush(0, 0, 255, 255)
         self.states = np.array((self.impatient, self.patient))
@@ -41,6 +44,7 @@ class SimulationGraphics(pg.PlotItem):
         self.walls = self.plot()
 
     def setSimulation(self, simulation: Simulation):
+        self.clearPlots()
         self.clear()
 
         self.left_shoulder = self.plot()
@@ -50,6 +54,9 @@ class SimulationGraphics(pg.PlotItem):
         self.walls = self.plot()
 
         self.simulation = simulation
+        self.initData()
+
+    def initData(self):
         domain = self.simulation.domain
         goals = self.simulation.goals
         agent = self.simulation.agent
@@ -72,7 +79,6 @@ class SimulationGraphics(pg.PlotItem):
 
         circle = lambda radius: dict(symbol='o',
                                      symbolSize=2 * radius,
-                                     symbolBrush=self.patient,
                                      pen=None,
                                      pxMode=False)
         if agent.circular:
@@ -99,21 +105,33 @@ class SimulationGraphics(pg.PlotItem):
         """Updates data in the plot."""
         if self.simulation is not None:
             agent = self.simulation.agent
+            sympen = np.zeros(agent.size, dtype=object)
+            sympen[:] = self.active_pen
+            sympen[agent.active ^ True] = self.inactive_pen
 
             if self.simulation.egress_model is not None:
                 brush = self.states[self.simulation.egress_model.strategy]
             else:
-                brush = self.patient
+                brush = np.zeros(agent.size, dtype=object)
+                brush[:] = self.patient
 
-            self.torso.setData(agent.position, symbolBrush=brush)
+            brush[agent.active ^ True] = self.inactive
+
+            self.torso.setData(agent.position,
+                               symbolBrush=brush,
+                               symbolPen=sympen)
 
             if agent.three_circle:
-                self.left_shoulder.setData(agent.position_ls, symbolBrush=brush)
-                self.right_shoulder.setData(agent.position_rs, symbolBrush=brush)
+                self.left_shoulder.setData(agent.position_ls,
+                                           symbolBrush=brush,
+                                           symbolPen=sympen)
+                self.right_shoulder.setData(agent.position_rs,
+                                            symbolBrush=brush,
+                                            symbolPen=sympen)
 
                 array = np.concatenate((agent.position_ls, agent.front, agent.position_rs), axis=1)
                 array = array.reshape(3 * agent.shape[0], agent.shape[1])
-                self.direction.setData(array)
+                self.direction.setData(array)  # TODO: pen
 
             text = "Iterations: {} | Simulation time: {:0.2f} | " \
                    "Agents in goal: {}"

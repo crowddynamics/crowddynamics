@@ -1,14 +1,132 @@
+from collections import OrderedDict
+
 from PyQt4 import QtGui, QtCore
-from PyQt4.QtGui import QComboBox, QIntValidator, QLineEdit, QCheckBox, \
-    QDoubleValidator
+from PyQt4.QtGui import QComboBox, QCheckBox,  QSpinBox, QDoubleSpinBox
 
 import pyqtgraph as pg
 from crowd_dynamics.Qt.graphics import SimulationGraphics
+from crowd_dynamics.examples.evacuation import evacuation
+from crowd_dynamics.examples.hallway import hallway
+from crowd_dynamics.examples.outdoor import outdoor
 
 
-class Gui(pg.LayoutWidget):
+kw = ("size", "width", "height", "agent_model", "body_type")
+
+kw = dict(
+    outdoor=kw,
+    evacuation=kw + ("door_width",
+                     "exit_hall_width",
+                     "spawn_shape",
+                     "egress_model",
+                     "t_aset"),
+    hallway=kw
+)
+
+
+class Controls(QtGui.QFrame):
     def __init__(self, parent=None):
-        super(Gui, self).__init__(parent)
+        """Simulation controls."""
+        # self.parent = parent
+        super().__init__(parent)
+
+        self.box = QtGui.QVBoxLayout()
+        self.setLayout(self.box)
+
+        # Select simulation
+        self.simulations = OrderedDict(outdoor=outdoor,
+                                       hallway=hallway,
+                                       evacuation=evacuation)
+        self.simu_names = ("",) + tuple(self.simulations.keys())
+
+        simu_name = QComboBox()
+        simu_name.addItems(self.simu_names)
+        simu_name.currentIndexChanged[str].connect(self.setControls)
+
+        # Timer for updating interactive plots
+        self.timer = QtCore.QTimer()
+        self.timer.timeout.connect(self.run)
+
+        # Values
+        self.simulation = None
+        self.initialize = None
+        self.values = OrderedDict()
+
+    def updateValues(self):
+        for key, value in self.values.items():
+            self.values[key] = value.text()
+
+    def initSimulation(self):
+        if self.initialize is not None:
+            self.updateValues()
+            self.simulation = self.initialize(**self.values)
+
+    def setControls(self, name):
+        if name == "":
+            # Clear current layout
+            self.initialize = None
+            self.simulation = None
+        elif name in self.simu_names:
+            agent_models = ("circular", "three_circle")
+            body_types = ("adult", "male", "female", "child", "eldery")
+
+            self.initialize = self.simulations[name]
+
+            # Set arguments for selected simulation
+            size = QSpinBox()
+            size.setMinimum(1)
+            size.setMaximum(1000)
+
+            width = QDoubleSpinBox()
+            width.setMinimum(0)
+
+            height = QDoubleSpinBox()
+            height.setMinimum(0)
+
+            agent_model = QComboBox()
+            agent_model.addItems(agent_models)
+
+            body_type = QComboBox()
+            body_type.addItems(body_types)
+
+            self.value["size"] = size
+            self.value["height"] = height
+            self.value["width"] = width
+            self.value["agent_model"] = agent_model
+            self.value["body_type"] = body_type
+
+            # Initialize simulation
+            btn_initsimu = QtGui.QPushButton("Initialize simulation")
+            btn_initsimu.clicked.connect(self.initSimulation)
+
+            # Set visualizations
+            density = QCheckBox("Density Grid")
+            navigation = QCheckBox("Navigation Field")
+            density.setEnabled(False)
+            navigation.setEnabled(False)
+
+            # Run simulation
+            simulate = QtGui.QPushButton("Run Simulation")
+            save = QtGui.QPushButton("Save")
+            simulate.setEnabled(False)
+            save.setEnabled(False)
+
+            self.box.addItem(size)
+            self.box.addItem(width)
+            self.box.addItem(height)
+            self.box.addItem(agent_model)
+            self.box.addItem(body_type)
+            self.box.addItem(btn_initsimu)
+            self.box.addItem(density)
+            self.box.addItem(navigation)
+            self.box.addItem(simulate)
+            self.box.addItem(save)
+
+
+class MainWindow(QtGui.QWidget):
+    # TODO: QMainWindow
+    def __init__(self, parent=None):
+        """Main window for gui application."""
+        super(MainWindow, self).__init__(parent)
 
         pg.setConfigOptions(antialias=True)
         self.setWindowTitle("Crowd Dynamics")
@@ -39,113 +157,17 @@ class Gui(pg.LayoutWidget):
         btn4 = QtGui.QPushButton("Save and exit")
         btn4.clicked.connect(self.exit_and_save)
 
-        # Check boxes for optional data visualization
-        # Density, flow rate, pressure, potential field, forces
-        cbx1 = QCheckBox("Density Grid")
-        cbx2 = QCheckBox("Navigation Field")
-
-        # Button popup menus
-        # simulation type, body type, agent model, attributes to save
-        simu_names = ("Select Simulation", "outdoor", "hallway", "evacuation")
-        agent_models = ("circular", "three_circle")
-        body_types = ("adult", "male", "female", "child", "eldery")
-
-        menu1 = QComboBox()
-        menu1.addItems(simu_names)
-        menu1.currentIndexChanged[str].connect(self.select_simulation)
-
-        menu2 = QComboBox()
-        menu2.addItems(agent_models)
-        menu2.currentIndexChanged[str].connect(self.select_agent_model)
-
-        menu3 = QComboBox()
-        menu3.addItems(body_types)
-        menu3.currentIndexChanged[str].connect(self.select_body_type)
-
-        # Text boxes for setting values
-        # Size
-        self.line1 = QLineEdit()
-        self.line1.setMaxLength(4)
-        self.line1.setMaximumWidth(150)
-        self.line1.setValidator(QIntValidator())
-        self.line1.returnPressed.connect(self.set_size)
-
-        # Width
-        self.line2 = QLineEdit()
-        self.line2.setMaximumWidth(150)
-        self.line2.setValidator(QDoubleValidator())
-        self.line2.returnPressed.connect(self.set_width)
-
-        # Height
-        self.line3 = QLineEdit()
-        self.line3.setMaximumWidth(150)
-        self.line3.setValidator(QDoubleValidator())
-        self.line3.returnPressed.connect(self.set_height)
-
         # Layout for widgets
-        self.addWidget(self.graphics, row=0, col=1, rowspan=11, colspan=5)
+        layout = QtGui.QGridLayout()
+        self.setLayout(layout)
 
-        self.addWidget(self.btn_simulate, row=12, col=1)
-        self.addWidget(btn4, row=12, col=2)
-
-        self.addWidget(menu1, row=0, col=0)
-        self.addWidget(menu2, row=1, col=0)
-        self.addWidget(menu3, row=2, col=0)
-
-        self.addWidget(self.line1, row=3, col=0)
-        self.addWidget(self.line2, row=4, col=0)
-        self.addWidget(self.line3, row=5, col=0)
-
-        self.addWidget(self.btn_initsimu, row=6, col=0)
-
-        self.addWidget(cbx1, row=7, col=0)
-        self.addWidget(cbx2, row=8, col=0)
-
-        # Display the window when initialized
-        self.show()
+        # row | col | rowspan | colspan
+        layout.addWidget(self.graphics, 0, 1, 11, 5)
 
     def initialize_simulation(self):
-        name = self.simulation_name
-        if name == "outdoor":
-            from crowd_dynamics.examples.outdoor import initialize
-        elif name == "hallway":
-            from crowd_dynamics.examples.hallway import initialize
-        elif name == "evacuation":
-            from crowd_dynamics.examples.evacuation import initialize
-        else:
-            raise ValueError("")
-        self.simulation = initialize(**self.simu_kw)
-        self.central.setSimulation(self.simulation)
-
-    def select_simulation(self, name):
-        print("Simulation:", name)
-        self.simulation_name = name
-
-    def select_agent_model(self, model):
-        print("Agent model:", model)
-        self.simu_kw["model"] = model
-
-    def select_body_type(self, btype):
-        print("Body type:", btype)
-        self.simu_kw["body_type"] = btype
-
-    def set_size(self):
-        size = int(self.line1.text())
-        if size >= 1:
-            self.simu_kw["size"] = size
-            self.line1.clear()
-
-    def set_width(self):
-        width = float(self.line2.text())
-        if width > 0:
-            self.simu_kw["width"] = width
-            self.line2.clear()
-
-    def set_height(self):
-        height = float(self.line3.text())
-        if height > 0:
-            self.simu_kw["height"] = height
-            self.line3.clear()
+        if self.simulation_name is not None:
+            self.simulation = hallway(**self.simu_kw)
+            self.central.setSimulation(self.simulation)
 
     def start(self):
         if not self.timer.isActive():
@@ -164,9 +186,10 @@ class Gui(pg.LayoutWidget):
             self.stop()
 
     def exit_and_save(self):
-        self.stop()
-        self.simulation.exit()
-        self.close()
+        if self.simulation is not None:
+            self.stop()
+            self.simulation.exit()
+            self.close()
 
     def run(self):
         if self.simulation.advance():

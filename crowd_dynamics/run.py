@@ -9,10 +9,11 @@ def run_gui():
     """Launches Qt application for visualizing simulation.
     :param simulation:
     """
-    from crowd_dynamics.Qt.qui import Gui
+    from crowd_dynamics.Qt.qui import MainWindow
 
     app = QtGui.QApplication(sys.argv)
-    qui = Gui()
+    window = MainWindow()
+    window.show()
 
     # Start Qt event loop unless running in interactive mode or using pyside.
     if (sys.flags.interactive != 1) or not hasattr(QtCore, 'PYQT_VERSION'):
@@ -23,7 +24,6 @@ def run_gui():
 
 if __name__ == '__main__':
     # TODO: Better agent initialization.
-    # TODO: Circular agent selection
     # TODO: Polygonal chain, non overlapping, radius/thickness
     # TODO: Agent maximum velocity for optimizations
     # TODO: Read simulation data from hdf5 file

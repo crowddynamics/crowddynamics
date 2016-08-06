@@ -183,7 +183,7 @@ def set_positions(agent: Agent,
 def initialize_agent(size: int,
                      populate_kwargs_list,
                      body_type="adult",
-                     model="circular",
+                     agent_model="circular",
                      walls=None):
     """Arguments for constructing agent."""
     # TODO: converters. Eval to values.
@@ -218,12 +218,12 @@ def initialize_agent(size: int,
 
     # Agent model
     models = {"circular", "three_circle"}
-    if model == "circular":
+    if agent_model == "circular":
         agent.set_circular()
-    elif model == "three_circle":
+    elif agent_model == "three_circle":
         agent.set_three_circle()
     else:
-        raise ValueError("Model {} not in {}.".format(model, models))
+        raise ValueError("Model {} not in {}.".format(agent_model, models))
 
     # TODO: separate, manual positions
     # Initial positions

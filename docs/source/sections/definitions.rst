@@ -143,10 +143,10 @@ Bezier curves
 
 ----
 
-Exit door
----------
+Exit
+----
 
-Exit door is denoted
+Exit is denoted
 
 .. math::
    \mathcal{E} \subset \Omega

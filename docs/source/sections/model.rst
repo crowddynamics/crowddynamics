@@ -1,6 +1,10 @@
+Simulation Models
+=================
+Micro-, meso- and macroscopic models.
+
 Social Force Model
-==================
-Social force model approached modelling pedestrian dynamics using classical mechanics. Helbing describes social forces in [helbing1995]
+------------------
+Social force model approached modelling pedestrian dynamics using classical mechanics. Helbing describes social forces in [helbing1995]_, [helbing2000]_,
 
    *These forces are not directly exerted by the pedestrians’ personal environment, but they are a measure for the internal motivations of the individuals to perform certain actions (movements).*
 
@@ -26,6 +30,11 @@ Total torque exerted on agent, is the sum of adjusting torque and torque exerted
 .. math::
    M_{i}(t) = M_{i}^{adj} + \sum_{j\neq i}^{} \left(M_{ij}^{soc} + M_{ij}^{c}\right) + \sum_{w}^{} \left(M_{iw}^{soc} + M_{iw}^{c}\right)
 
+----
+
+Macroscopic
+-----------
+Macroscopic modelling of crowds. [cristiani2011]_
 
 ----
 
@@ -34,3 +43,7 @@ Total torque exerted on agent, is the sum of adjusting torque and torque exerted
 .. [helbing2000] Helbing, D., Farkas, I., & Vicsek, T. (2000). Simulating dynamical features of escape panic. Nature, 407(6803), 487–490. http://doi.org/10.1038/35035023
 
 .. [fdsevac2009] Korhonen, T., & Hostikka, S. (2009). VTT WORKING PAPERS 119 Fire Dynamics Simulator with Evacuation: FDS+Evac Technical Reference and User’s Guide. Retrieved from http://www.vtt.fi/publications/index.jsp
+
+.. [cristiani2011] Cristiani, E., & Peri, D. (2015). Handling obstacles in pedestrian simulations: Models and optimization. Retrieved from http://arxiv.org/abs/1512.08528
+
+.. [duives2014] Duives, D. C., Daamen, W., & Hoogendoorn, S. P. (2014). State-of-the-art crowd motion simulation models. Transportation Research Part C: Emerging Technologies. http://doi.org/10.1016/j.trc.2013.02.005
