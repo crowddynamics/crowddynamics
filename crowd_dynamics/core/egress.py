@@ -1,7 +1,7 @@
 import numba
 import numpy as np
 
-from crowd_dynamics.core.random import clock
+from crowd_dynamics.core.random import poisson_clock
 from crowd_dynamics.core.vector2d import length_nx2
 
 
@@ -36,7 +36,7 @@ def best_response_strategy(players, agent, strategy, strategies, time_aset,
     loss = np.zeros(2)  # values: loss, indices: strategy
     np.random.shuffle(players)
     for i in players:
-        if clock(interval, dt):
+        if poisson_clock(interval, dt):
             for j in agent.neighbors[i]:
                 # TODO: check if j not in players:
                 if j < 0:

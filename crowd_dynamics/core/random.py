@@ -7,7 +7,7 @@ Probabilistic functions.
 
 
 @numba.jit(nopython=True)
-def clock(interval, dt):
+def poisson_clock(interval, dt):
     """Probabilistic clock with expected frequency of update interval.
     :return: Boolean whether strategy should be updated of not.
     """

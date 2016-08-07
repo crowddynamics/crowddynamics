@@ -1,11 +1,9 @@
 Interactions
 ============
-
 Interaction between agents is modeled using social and contact forces.
 
 Social Force
 ------------
-
 Psychological force for collision avoidance.
 
 ----
@@ -21,12 +19,11 @@ where coefficient :math:`k=1.5 m_i` scales the magnitude and :math:`\tau_{0}` is
 
 Force affecting agent can be derived by taking spatial gradient of the energy, where time-to-collision :math:`\tau` is function of the relative displacement of the mass centers :math:`\tilde{\mathbf{x}}`
 
-
 .. math::
    \mathbf{f}^{soc} &= -\nabla_{\tilde{\mathbf{x}}} E(\tau) \\
    &= - k \cdot m \left(\frac{1}{\tau^{2}}\right) \left(\frac{2}{\tau} + \frac{1}{\tau_{0}}\right) \exp\left (-\frac{\tau}{\tau_{0}}\right ) \nabla_{\tilde{\mathbf{x}}} \tau
 
-If  :math:`\tau < 0` or :math:`\tau` is undefined [#]_ trajectories are not colliding and social force is :math:`\mathbf{0}`.
+If :math:`\tau < 0` or :math:`\tau` is undefined [#]_ trajectories are not colliding and social force is :math:`\mathbf{0}`.
 
 .. [#] Negative number inside square root. When using real floating point numbers nan is returned.
 
@@ -49,7 +46,7 @@ Solve for root
 Quadratic equation is obtained
 
 .. math::
-    \tau^2 (\tilde{\mathbf{v}} \cdot \tilde{\mathbf{v}}) + 2 \tau (\mathbf{c} \cdot \tilde{\mathbf{v}}) + \mathbf{c} \cdot \mathbf{c} - \tilde{r}^2 &=0
+   \tau^2 (\tilde{\mathbf{v}} \cdot \tilde{\mathbf{v}}) + 2 \tau (\mathbf{c} \cdot \tilde{\mathbf{v}}) + \mathbf{c} \cdot \mathbf{c} - \tilde{r}^2 &=0
 
 Solution with `quadratic formula <https://en.wikipedia.org/wiki/Quadratic_equation>`_ gives us
 
@@ -74,17 +71,14 @@ Solution with `quadratic formula <https://en.wikipedia.org/wiki/Quadratic_equati
 .. math::
    \mathbf{f}^{soc} &= - \left(\frac{k}{\tau^{2}}\right) \left(\frac{2}{\tau} + \frac{1}{\tau_{0}}\right) \exp\left (-\frac{\tau}{\tau_{0}}\right ) \left(\frac{1}{a} \right) \left(\tilde{\mathbf{v}} -\frac{a \tilde{\mathbf{x}} + b \tilde{\mathbf{v}}}{d} \right)
 
-.. .. literalinclude:: ../../../crowd_dynamics/core/motion.py
-      :pyobject: force_social
-
 ----
 
 **Elliptical model**
 
 .. math::
-    \mathbf{\hat{e}}_n &= \operatorname{sin}\left(\varphi\right)\mathbf{\hat{e}_x} + \operatorname{cos}\left(\varphi\right)\mathbf{\hat{e}_y} \\
+   \mathbf{\hat{e}}_n &= \operatorname{sin}\left(\varphi\right)\mathbf{\hat{e}_x} + \operatorname{cos}\left(\varphi\right)\mathbf{\hat{e}_y} \\
    r &= \| r_t \cos(\phi) \mathbf{\hat{e}_x} + r \sin(\phi) \mathbf{\hat{e}_y} \|, \quad \phi = \angle(\tilde{\mathbf{x}} + \tau\tilde{\mathbf{v}}, \mathbf{\hat{e}_n}) \\
-      \cos(\phi) &= \frac{(\tilde{\mathbf{x}} + \tau\tilde{\mathbf{v}})}{\| \tilde{\mathbf{x}} + \tau\tilde{\mathbf{v}} \|} \cdot \mathbf{\hat{e}_{n}} \\
+   \cos(\phi) &= \frac{(\tilde{\mathbf{x}} + \tau\tilde{\mathbf{v}})}{\| \tilde{\mathbf{x}} + \tau\tilde{\mathbf{v}} \|} \cdot \mathbf{\hat{e}_{n}} \\
    \sin(\phi) &= \left \| \frac{(\tilde{\mathbf{x}} + \tau\tilde{\mathbf{v}})}{\| \tilde{\mathbf{x}} + \tau\tilde{\mathbf{v}} \|} \times \mathbf{\hat{e}_{n}} \right \|
 
 We get radius of form
@@ -111,7 +105,7 @@ Torso, Left shoulder, Right shoulder
 Torso-torso, Torso-shoulder, Shoulder-shoulder
 
 .. math::
-   \tilde{r} &= r_i + r_j, \quad r_{i,j} &\in \{ r_t, r_s \}
+   \tilde{r} &= r_i + r_j, \quad r_{i,j} \in \{ r_t, r_s \}
 
 Time-to-collision
 
@@ -128,7 +122,6 @@ Gradient
 
 .. math::
    \nabla_{\tilde{\mathbf{x}}} \tau &= \left(\frac{1}{a} \right) \left(\tilde{\mathbf{v}} -\frac{a (\tilde{\mathbf{x}} + 2 \mathbf{r}) + b \tilde{\mathbf{v}}}{d} \right)
-
 
 Social force for three circle model
 
@@ -175,23 +168,21 @@ If positive inside absolute value
    \mathbf{q}_w &= \mathbf{p} - (\tau \mathbf{v} + \mathbf{x}), \quad \tau > 0, \quad w \in \{  0, 1 \} \\
    d(\tau) &=
    \begin{cases}
-      \| \mathbf{q}_0 \|, & \mathbf{q}_0 \cdot \mathbf{\hat{t}_w} > 0 \\
-      | \mathbf{q}_w \cdot \mathbf{\hat{n}_w} | & \text{otherwise} \\
-      \| \mathbf{q}_1 \| & \mathbf{q}_1 \cdot \mathbf{\hat{t}_w} < 0 \\
+   \| \mathbf{q}_0 \|, & \mathbf{q}_0 \cdot \mathbf{\hat{t}_w} > 0 \\
+   | \mathbf{q}_w \cdot \mathbf{\hat{n}_w} | & \text{otherwise} \\
+   \| \mathbf{q}_1 \| & \mathbf{q}_1 \cdot \mathbf{\hat{t}_w} < 0 \\
    \end{cases} \\
    | \mathbf{q}_w \cdot \mathbf{\hat{n}_w} | &=
    \begin{cases}
-         -\mathbf{q}_w \cdot \mathbf{\hat{n}_w} & \mathbf{q}_w \cdot \mathbf{\hat{n}_w} < 0 \\
-         \mathbf{q}_w \cdot \mathbf{\hat{n}_w} & \mathbf{q}_w \cdot \mathbf{\hat{n}_w} > 0 \\
+   -\mathbf{q}_w \cdot \mathbf{\hat{n}_w} & \mathbf{q}_w \cdot \mathbf{\hat{n}_w} < 0 \\
+   \mathbf{q}_w \cdot \mathbf{\hat{n}_w} & \mathbf{q}_w \cdot \mathbf{\hat{n}_w} > 0 \\
    \end{cases} \\
    h(\tau) &= d(\tau) - r \\
    h(\tau) &= 0
 
-
 .. math::
    \mathbf{q}_w \cdot \mathbf{\hat{t}_w} \\
    \mathbf{q}_w \cdot \mathbf{\hat{n}_w}
-
 
 ----
 
@@ -202,13 +193,8 @@ Physical contact force
 .. math::
    \mathbf{f}^{c} = - h \cdot \left(\mu \cdot \hat{\mathbf{n}} - \kappa \cdot (\mathbf{v} \cdot \hat{\mathbf{t}}) \hat{\mathbf{t}}\right) + c_{n} \cdot (\mathbf{v} \cdot \hat{\mathbf{n}}) \hat{\mathbf{n}} , \quad h < 0
 
-.. literalinclude:: ../../../crowd_dynamics/core/motion.py
-   :pyobject: force_contact
-
-
 Torque
 ------
-
 Torque from social forces acting with other agent or wall
 
 .. math::
