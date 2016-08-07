@@ -9,7 +9,7 @@ def run_gui():
     """Launches Qt application for visualizing simulation.
     :param simulation:
     """
-    from src.Qt.qui import MainWindow
+    from src.Qt.main import MainWindow
 
     app = QtGui.QApplication(sys.argv)
     window = MainWindow()

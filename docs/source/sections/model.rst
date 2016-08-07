@@ -45,6 +45,10 @@ Continuum
 Macroscopic modelling of crowds. [cristiani2011]_
 
 
+Cellular Automata
+-----------------
+Discrete grid
+
 
 ----
 
