@@ -2,17 +2,7 @@ import numba
 import numpy as np
 
 from crowd_dynamics.core.random import clock
-from crowd_dynamics.core.vector2d import length_nx2, length
-
-
-class ExitDoor(object):
-    def __init__(self, p0, p1, agent_radius):
-        """Exit door / Bottleneck"""
-        self.p = np.array((p0, p1))
-        self.mid = (self.p[0] + self.p[1]) / 2.0
-        self.capacity_coeff = 1.0  # Agents per second
-        self.radius = length(self.p[1] - self.p[0]) / 2.0
-        self.capacity = self.capacity_coeff * self.radius // agent_radius
+from crowd_dynamics.core.vector2d import length_nx2
 
 
 @numba.jit(nopython=True)

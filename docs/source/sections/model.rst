@@ -1,9 +1,16 @@
 Simulation Models
 =================
-Micro-, meso- and macroscopic models.
+- #) Microscopic
+  #) Mesoscopic
+  #) Macroscopic
 
-Social Force Model
-------------------
+- #) Continuous space
+  #) Discrete lattice
+
+Multi Agent Model
+-----------------
+Microscopic modeling of crowd dynamics.
+
 Social force model approached modelling pedestrian dynamics using classical mechanics. Helbing describes social forces in [helbing1995]_, [helbing2000]_,
 
    *These forces are not directly exerted by the pedestrians’ personal environment, but they are a measure for the internal motivations of the individuals to perform certain actions (movements).*
@@ -30,11 +37,14 @@ Total torque exerted on agent, is the sum of adjusting torque and torque exerted
 .. math::
    M_{i}(t) = M_{i}^{adj} + \sum_{j\neq i}^{} \left(M_{ij}^{soc} + M_{ij}^{c}\right) + \sum_{w}^{} \left(M_{iw}^{soc} + M_{iw}^{c}\right)
 
+
 ----
 
-Macroscopic
------------
+Continuum
+---------
 Macroscopic modelling of crowds. [cristiani2011]_
+
+
 
 ----
 

@@ -8,7 +8,7 @@ from .io.attributes import Intervals, Attrs, Attr
 from .io.save import Save
 from .structure.agent import agent_attr_names
 from .structure.result import Result, result_attr_names
-from .structure.wall import wall_attr_names
+from .structure.obstacle import wall_attr_names
 
 
 class Simulation:

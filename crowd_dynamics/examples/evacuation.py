@@ -7,7 +7,7 @@ from crowd_dynamics.core.vector2d import rotate90, normalize, length
 from crowd_dynamics.simulation import Simulation
 from crowd_dynamics.structure.area import Rectangle, Circle
 from crowd_dynamics.structure.initialize import initialize_agent
-from crowd_dynamics.structure.wall import LinearWall
+from crowd_dynamics.structure.obstacle import LinearWall, ExitDoor
 
 
 @numba.jit(nopython=True)

@@ -1,8 +1,8 @@
 Overview
 ========
 
-Crowd dynamics
---------------
+Simulation
+----------
 .. Simulation model introduction
 
 Multi-agent simulation (MAS) of crowd dynamics on continuous 2-dimensional space using classical mechanics, where agents are modeled as particles of rigid bodies affected by fictitious and real forces that attempt to model real crowd motion and phenomena occurring in crowd motion.
@@ -12,7 +12,7 @@ Multi-agent simulation (MAS) of crowd dynamics on continuous 2-dimensional space
 Crowd simulations can be used as a valuable tool for venue design to improve crowd flows and to prevent disasters and stampedes. They can also be used for game and animation technology to produce realistic looking movement e.g moving large armies.
 
 
-Source code
+Source Code
 -----------
 .. Source code and Python requirements information.
 

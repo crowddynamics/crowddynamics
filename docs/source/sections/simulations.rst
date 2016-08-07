@@ -34,8 +34,8 @@ Hallway
    #) Passing / overtaking
 
 
-Crossing flows
---------------
+Crossing
+--------
 
 #) Orthogonal flow
 
@@ -43,3 +43,8 @@ Outdoor
 -------
 
 #) Multi-directional flow
+
+
+Rounding Corner
+---------------
+

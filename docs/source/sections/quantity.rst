@@ -24,7 +24,12 @@ Crowd flow has similarities with granular flow, gas kinetics and fluid-dynamics.
 
 Rate
 ^^^^
-Number of agents per second :math:`Q` of unit :math:`\mathrm{1 / s}`.
+Number of agents per second
+
+.. math::
+   J = \frac{\Delta N}{\Delta t}
+
+of unit :math:`\mathrm{1 / s}`.
 
 Types
 ^^^^^

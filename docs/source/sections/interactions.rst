@@ -3,7 +3,7 @@ Interactions
 
 Interaction between agents is modeled using social and contact forces.
 
-Social force
+Social Force
 ------------
 
 Psychological force for collision avoidance.
@@ -195,8 +195,8 @@ If positive inside absolute value
 
 ----
 
-Contact force
--------------
+Physical Contact
+----------------
 Physical contact force
 
 .. math::

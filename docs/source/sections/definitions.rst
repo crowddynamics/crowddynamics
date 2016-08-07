@@ -119,25 +119,35 @@ Obstacle is denoted
        ../_static/wall_model.*
 
 
+Radial curves
+^^^^^^^^^^^^^
+
+
+
 Linear curves
 ^^^^^^^^^^^^^
-Piecewise linear curve or more formally `polygonal chain`_ that consists of linearly connected points
+Piecewise linear curve or more formally `polygonal chain`_ that consists of linearly connected sequence of points
 
 .. _polygonal chain: https://en.wikipedia.org/wiki/Polygonal_chain
 
 .. math::
-   \mathbf{p}_{i} \in \mathbb{R}^{2}, \quad i \in \{0, \ldots, n\}.
+   \mathbf{p}_{i} \in \mathbb{R}^{2}, \quad i \in \mathbb{N}_{0}
 
 
 
 Bezier curves
 ^^^^^^^^^^^^^
-`Bézier curve`_ are parametric curves
+`Bézier curve`_ are parametric curves. Here we consider
+
+#) Linear Bézier curves.
+#) Quadratic Bézier curves
+#) Cubic Bézier curves
+
 
 .. _Bézier curve: https://en.wikipedia.org/wiki/B%C3%A9zier_curve#General_definition
 
 .. math::
-   \mathbf {B} (t)={}&\sum _{i=0}^{n}{n \choose i}(1-t)^{n-i}t^{i}\mathbf {p} _{i}
+   \mathbf {B} (t)={}&\sum _{i=0}^{n}{n \choose i}(1-t)^{n-i}t^{i}\mathbf {p} _{i}, \quad t \in [0, 1], \quad n \in \{2, 3\}
 
 
 
@@ -145,17 +155,48 @@ Bezier curves
 
 Exit
 ----
-
 Exit is denoted
 
 .. math::
    \mathcal{E} \subset \Omega
 
+Width of the exit must sufficient for agent to pass through. Lower bound for the exit width
+
+.. math::
+   d_{door} \geq d_{agent}
+
+Narrow bottleneck
+
+.. math::
+   d_{door} \leq 6 d_{agent}
+
+Capacity estimation of unidirectional flow through narrow bottleneck. Capacity of the bottleneck increases in stepwise manner
+
+.. math::
+   \beta \propto \left \lfloor \frac{d_{door} - (d_{agent} - d_{layer})}{d_{layer}} \right \rfloor
+
+.. math::
+   \beta \propto \left \lfloor \frac{d_{door}}{d_{agent}} \right \rfloor
+
+where
+
+- :math:`\left \lfloor \cdot \right \rfloor` is the `floor function`_
+
+.. _floor function: https://en.wikipedia.org/wiki/Floor_and_ceiling_functions
+
+[hoogen2005]_, [seyfried2007]_
+
+
+Exit selection
 
 ----
 
 .. [fourarc2001] Qian, W. H., & Qian, K. (2001). Optimizing the four-arc approximation to ellipses. Computer Aided Geometric Design, 18(1), 1–19. http://doi.org/10.1016/S0167-8396(00)00033-9
 
+.. [hoogen2005] Hoogendoorn, S. P., & Daamen, W. (2005). Pedestrian Behavior at Bottlenecks. Transportation Science, 39(2), 147–159. http://doi.org/10.1287/trsc.1040.0102
+
 .. [langston2007] Langston, P. A., Masling, R., & Asmar, B. N. (2006). Crowd dynamics discrete element multi-circle model. Safety Science. http://doi.org/10.1016/j.ssci.2005.11.007
+
+.. [seyfried2007] Seyfried, A., Rupprecht, T., Passon, O., Steffen, B., Klingsch, W., & Boltes, M. (2007). New insights into pedestrian flow through bottlenecks. Transportation Science, 43:395–406, 43(3), 16. http://doi.org/10.1287/trsc.1090.0263
 
 .. [obstacle2015] Cristiani, E., & Peri, D. (2015). Handling obstacles in pedestrian simulations: Models and optimization. Retrieved from http://arxiv.org/abs/1512.08528
