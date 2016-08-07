@@ -1,6 +1,6 @@
 import numpy as np
 
-from crowd_dynamics.core.vector2d import length, angle, angle_nx2, length_nx2
+from src.core.vector2d import length, angle, angle_nx2, length_nx2
 
 
 class Area(object):

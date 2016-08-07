@@ -6,10 +6,10 @@ import numpy as np
 import pandas as pd
 from scipy.stats import truncnorm as tn
 
-from crowd_dynamics.core.vector2d import length_nx2, angle_nx2
-from crowd_dynamics.functions import filter_none
-from crowd_dynamics.structure.agent import Agent
-from crowd_dynamics.structure.area import Area
+from src.core.vector2d import length_nx2, angle_nx2
+from src.functions import filter_none
+from src.structure.agent import Agent
+from src.structure.area import Area
 
 
 def random_unit_vector(size):

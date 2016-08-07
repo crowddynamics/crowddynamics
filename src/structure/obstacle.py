@@ -2,7 +2,7 @@ import numpy as np
 from numba import float64, int64
 from numba import jitclass
 
-from crowd_dynamics.core.vector2d import length
+from src.core.vector2d import length
 from ..core.vector2d import rotate90, dot2d
 
 """

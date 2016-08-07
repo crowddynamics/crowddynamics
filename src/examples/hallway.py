@@ -1,9 +1,9 @@
 import numpy as np
 
-from crowd_dynamics.simulation import Simulation
-from crowd_dynamics.structure.area import Rectangle
-from crowd_dynamics.structure.initialize import initialize_agent
-from crowd_dynamics.structure.obstacle import LinearWall
+from src.simulation import Simulation
+from src.structure.area import Rectangle
+from src.structure.initialize import initialize_agent
+from src.structure.obstacle import LinearWall
 
 
 def hallway(size,

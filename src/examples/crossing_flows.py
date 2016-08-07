@@ -1,4 +1,4 @@
-from crowd_dynamics.simulation import Simulation
+from src.simulation import Simulation
 
 
 def initialize(**kwargs):

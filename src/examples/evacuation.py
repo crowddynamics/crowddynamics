@@ -3,11 +3,11 @@ from functools import partial
 import numba
 import numpy as np
 
-from crowd_dynamics.core.vector2d import rotate90, normalize, length
-from crowd_dynamics.simulation import Simulation
-from crowd_dynamics.structure.area import Rectangle, Circle
-from crowd_dynamics.structure.initialize import initialize_agent
-from crowd_dynamics.structure.obstacle import LinearWall, ExitDoor
+from src.core.vector2d import rotate90, normalize, length
+from src.simulation import Simulation
+from src.structure.area import Rectangle, Circle
+from src.structure.initialize import initialize_agent
+from src.structure.obstacle import LinearWall, ExitDoor
 
 
 @numba.jit(nopython=True)
@@ -97,8 +97,8 @@ def evacuation(size,
                                r_mid=r_mid, c_rect=c_rect, r_rect=r_rect)
 
     if egress_model:
-        from crowd_dynamics.core.egress import ExitDoor
-        from crowd_dynamics.core.egress import EgressGame
+        from src.core.egress import ExitDoor
+        from src.core.egress import EgressGame
         exit_door = ExitDoor(door[0], door[1], np.mean(agent.radius))
         egress_model = EgressGame(agent, exit_door, t_aset, 0.1)
     else:

@@ -4,10 +4,10 @@ from PyQt4 import QtGui, QtCore
 from PyQt4.QtGui import QComboBox, QCheckBox,  QSpinBox, QDoubleSpinBox
 
 import pyqtgraph as pg
-from crowd_dynamics.Qt.graphics import SimulationGraphics
-from crowd_dynamics.examples.evacuation import evacuation
-from crowd_dynamics.examples.hallway import hallway
-from crowd_dynamics.examples.outdoor import outdoor
+from src.Qt.graphics import SimulationGraphics
+from src.examples.evacuation import evacuation
+from src.examples.hallway import hallway
+from src.examples.outdoor import outdoor
 
 
 kw = ("size", "width", "height", "agent_model", "body_type")

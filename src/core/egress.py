@@ -1,8 +1,8 @@
 import numba
 import numpy as np
 
-from crowd_dynamics.core.random import poisson_clock
-from crowd_dynamics.core.vector2d import length_nx2
+from src.core.random import poisson_clock
+from src.core.vector2d import length_nx2
 
 
 @numba.jit(nopython=True)
