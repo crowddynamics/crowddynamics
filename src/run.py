@@ -2,14 +2,13 @@ import sys
 
 from PyQt4 import QtGui, QtCore
 
-sys.path.append("/home/jaan/Dropbox/Projects/Crowd-Dynamics")
-
 
 def run_gui():
     """Launches Qt application for visualizing simulation.
     :param simulation:
     """
-    from src.Qt.main import MainWindow
+    sys.path.append("/home/jaan/Dropbox/Projects/Crowd-Dynamics")
+    from src.Qt.main2 import MainWindow
 
     app = QtGui.QApplication(sys.argv)
     window = MainWindow()

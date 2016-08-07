@@ -27,11 +27,11 @@ where
 - Target orientation :math:`\varphi_{0}`. In low and medium crowd densities the angle of the target direction can be sufficient for target orientation. In high crowd densities agents may twist their body differently for example to try to squeeze through narrow spaces, requiring more sophisticated algorithms.
 
 ..
-   .. literalinclude:: ../../../crowd_dynamics/core/motion.py
+   .. literalinclude:: ../../../src/core/motion.py
       :pyobject: force_adjust
 
 
-   .. literalinclude:: ../../../crowd_dynamics/core/motion.py
+   .. literalinclude:: ../../../src/core/motion.py
       :pyobject: torque_adjust
 
 ----

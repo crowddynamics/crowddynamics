@@ -43,7 +43,7 @@ class Controls(QtGui.QFrame):
         simu_name.currentIndexChanged[str].connect(self.setControls)
 
         # Timer for updating interactive plots
-        self.timer = QtCore.QTimer()
+        self.timer = QtCore.QTimer(self)
         self.timer.timeout.connect(self.run)
 
         # Values
