@@ -4,4 +4,5 @@ gui:
 	pyuic4 gui.ui > gui.py
 
 clean:
+	rm -r __pycache__
 	rm gui.py

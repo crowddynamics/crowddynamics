@@ -16,7 +16,7 @@ class SimulationGraphics(pg.PlotItem):
         super(SimulationGraphics, self).__init__(name=self.name)
 
         # One to one scale for x and y coordinates
-        self.setLabels(title=self.title, left="y", bottom="x")
+        # self.setLabels(title=self.title, left="y", bottom="x")
         self.setAspectLocked(lock=True, ratio=1)
         self.showGrid(True, True, 0.25)
         self.disableAutoRange()

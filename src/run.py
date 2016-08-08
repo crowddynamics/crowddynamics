@@ -8,7 +8,7 @@ def run_gui():
     :param simulation:
     """
     sys.path.append("/home/jaan/Dropbox/Projects/Crowd-Dynamics")
-    from src.Qt.main2 import MainWindow
+    from src.Qt.main import MainWindow
 
     app = QtGui.QApplication(sys.argv)
     window = MainWindow()
@@ -27,4 +27,5 @@ if __name__ == '__main__':
     # TODO: Agent maximum velocity for optimizations
     # TODO: Read simulation data from hdf5 file
     # TODO: MoviePy
+    # TODO: Logger
     run_gui()

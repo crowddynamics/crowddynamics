@@ -22,6 +22,7 @@ Python package for multi-agent simulation of crowd dynamics.
    sections/integrator.rst
    sections/neighborhood.rst
    sections/egress.rst
+   sections/interface.rst
    sections/simulations.rst
    sections/appendix.rst
 

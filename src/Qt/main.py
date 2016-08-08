@@ -1,200 +1,151 @@
-from collections import OrderedDict
-
 from PyQt4 import QtGui, QtCore
-from PyQt4.QtGui import QComboBox, QCheckBox,  QSpinBox, QDoubleSpinBox
-
 import pyqtgraph as pg
-from src.Qt.graphics import SimulationGraphics
-from src.examples.evacuation import evacuation
-from src.examples.hallway import hallway
-from src.examples.outdoor import outdoor
+
+from .graphics import SimulationGraphics
+from .gui import Ui_MainWindow
 
 
-kw = ("size", "width", "height", "agent_model", "body_type")
+class MainWindow(QtGui.QMainWindow):
+    def __init__(self):
+        """
+        Overview
+        --------
+        Graphical user interface for Crowd Dynamics simulation using
 
-kw = dict(
-    outdoor=kw,
-    evacuation=kw + ("door_width",
-                     "exit_hall_width",
-                     "spawn_shape",
-                     "egress_model",
-                     "t_aset"),
-    hallway=kw
-)
+        - PyQt4 [pyqt4]_
+        - Pyqtgraph [pyqtgraph]_
 
+        Design greatly inspired by [rtgraph]_.
 
-class Controls(QtGui.QFrame):
-    def __init__(self, parent=None):
-        """Simulation controls."""
-        # self.parent = parent
-        super().__init__(parent)
+        Main Window
+        -----------
+        Layout for the main window is created by using Qt designer.
 
-        self.box = QtGui.QVBoxLayout()
-        self.setLayout(self.box)
+        Graphics
+        --------
+        Graphics are implemented using pyqtgraph.
+
+        Communication
+        -------------
+        Communication with simulation data.
+
+        .. [pyqt4] Hess, D., & Summerfield, M. (2013). PyQt Whitepaper.
+
+        .. [pyqtgraph] Campagnola, L. (2014). PyQtGraph - Scientific Graphics
+           and GUI Library for Python. Posledn{’\i} Aktualizace. article.
+           Retrieved from http://www.pyqtgraph.org/
+
+        .. [rtgraph] Sepúlveda, S., Reyes, P., & Weinstein, A. (2015).
+           Visualizing physiological signals in real-time.
+           PROC. OF THE 14th PYTHON IN SCIENCE CONF.
+           Retrieved from https://github.com/ssepulveda/RTGraph
+        """
+        super(MainWindow, self).__init__()
+        # TODO: density, navigation visualization
+
+        # Load ui files
+        self.ui = Ui_MainWindow()
+        self.ui.setupUi(self)
+
+        # Graphics
+        self.central = None
+        self.simulation = None
+        self.timer_plot_update = None
+
+        # Configures
+        self.configure_plot()
+        self.configure_timers()
+        self.configure_signals()
+
+    def configure_plot(self):
+        pg.setConfigOptions(antialias=True)
+        self.ui.plt.setBackground(background=None)
+        self.central = SimulationGraphics()
+        self.ui.plt.addItem(self.central, 0, 0)
+
+    def configure_timers(self):
+        self.timer_plot_update = QtCore.QTimer(self)
+        self.timer_plot_update.timeout.connect(self.plot_update)
+
+    def configure_signals(self):
+        # Default values for the fields
+        self.ui.agentSize.setValue(30)
+        self.ui.heightBox.setValue(10.0)
+        self.ui.widthBox.setValue(10.0)
 
         # Select simulation
-        self.simulations = OrderedDict(outdoor=outdoor,
-                                       hallway=hallway,
-                                       evacuation=evacuation)
-        self.simu_names = ("",) + tuple(self.simulations.keys())
+        # self.ui.simulationName.currentIndexChanged[str].connect()
 
-        simu_name = QComboBox()
-        simu_name.addItems(self.simu_names)
-        simu_name.currentIndexChanged[str].connect(self.setControls)
+        # Simulation controls
+        self.ui.initSimulation.clicked.connect(self.init_simulation)
 
-        # Timer for updating interactive plots
-        self.timer = QtCore.QTimer(self)
-        self.timer.timeout.connect(self.run)
+        self.ui.runSimulation.setCheckable(True)
+        self.ui.runSimulation.setEnabled(False)
+        self.ui.runSimulation.clicked.connect(self.run)
 
-        # Values
-        self.simulation = None
-        self.initialize = None
-        self.values = OrderedDict()
+        self.ui.saveSimulation.setEnabled(False)
+        self.ui.saveSimulation.clicked.connect(self.save)
 
-    def updateValues(self):
-        for key, value in self.values.items():
-            self.values[key] = value.text()
+    def init_simulation(self):
+        # TODO: Importer
+        from ..examples.evacuation import evacuation
+        from ..examples.hallway import hallway
+        from ..examples.outdoor import outdoor
 
-    def initSimulation(self):
-        if self.initialize is not None:
-            self.updateValues()
-            self.simulation = self.initialize(**self.values)
-
-    def setControls(self, name):
-        if name == "":
-            # Clear current layout
-            self.initialize = None
-            self.simulation = None
-        elif name in self.simu_names:
-            agent_models = ("circular", "three_circle")
-            body_types = ("adult", "male", "female", "child", "eldery")
-
-            self.initialize = self.simulations[name]
-
-            # Set arguments for selected simulation
-            size = QSpinBox()
-            size.setMinimum(1)
-            size.setMaximum(1000)
-
-            width = QDoubleSpinBox()
-            width.setMinimum(0)
-
-            height = QDoubleSpinBox()
-            height.setMinimum(0)
-
-            agent_model = QComboBox()
-            agent_model.addItems(agent_models)
-
-            body_type = QComboBox()
-            body_type.addItems(body_types)
-
-            self.value["size"] = size
-            self.value["height"] = height
-            self.value["width"] = width
-            self.value["agent_model"] = agent_model
-            self.value["body_type"] = body_type
-
-            # Initialize simulation
-            btn_initsimu = QtGui.QPushButton("Initialize simulation")
-            btn_initsimu.clicked.connect(self.initSimulation)
-
-            # Set visualizations
-            density = QCheckBox("Density Grid")
-            navigation = QCheckBox("Navigation Field")
-            density.setEnabled(False)
-            navigation.setEnabled(False)
-
-            # Run simulation
-            simulate = QtGui.QPushButton("Run Simulation")
-            save = QtGui.QPushButton("Save")
-            simulate.setEnabled(False)
-            save.setEnabled(False)
-
-            self.box.addItem(size)
-            self.box.addItem(width)
-            self.box.addItem(height)
-            self.box.addItem(agent_model)
-            self.box.addItem(body_type)
-            self.box.addItem(btn_initsimu)
-            self.box.addItem(density)
-            self.box.addItem(navigation)
-            self.box.addItem(simulate)
-            self.box.addItem(save)
-
-
-class MainWindow(QtGui.QWidget):
-    # TODO: QMainWindow
-    def __init__(self, parent=None):
-        """Main window for gui application."""
-        super(MainWindow, self).__init__(parent)
-
-        pg.setConfigOptions(antialias=True)
-        self.setWindowTitle("Crowd Dynamics")
-        self.resize(1200, 800)
-
-        # Timer for updating interactive plots
-        self.timer = QtCore.QTimer()
-        self.timer.timeout.connect(self.run)
-
-        # Simulation Plot
-        self.simulation = None
-        self.simulation_name = None
         path = "/home/jaan/Dropbox/Projects/Crowd-Dynamics-Simulations/"
-        # path2 = "/media/storage3/Crowd-Dynamics-Simulations/"
-        self.simu_kw = {"size": 30, "width": 10, "height": 10, "path": path}
-        self.graphics = pg.GraphicsLayoutWidget()
-        self.central = SimulationGraphics()
-        self.graphics.addItem(self.central, 0, 0, 1, 1)
+        name = self.ui.simulationName.currentText()
+        kw = dict(
+            size=self.ui.agentSize.value(),
+            height=self.ui.heightBox.value(),
+            width=self.ui.widthBox.value(),
+            agent_model=self.ui.agentModel.currentText(),
+            body_type=self.ui.bodyType.currentText(),
+            path=path,
+        )
 
-        # Buttons for controlling the simulation
-        self.btn_initsimu = QtGui.QPushButton("Initialize simulation")
-        self.btn_initsimu.clicked.connect(self.initialize_simulation)
-
-        self.btn_simulate = QtGui.QPushButton("Simulate")
-        self.btn_simulate.setCheckable(True)
-        self.btn_simulate.clicked.connect(self.simulate)
-
-        btn4 = QtGui.QPushButton("Save and exit")
-        btn4.clicked.connect(self.exit_and_save)
-
-        # Layout for widgets
-        layout = QtGui.QGridLayout()
-        self.setLayout(layout)
-
-        # row | col | rowspan | colspan
-        layout.addWidget(self.graphics, 0, 1, 11, 5)
-
-    def initialize_simulation(self):
-        if self.simulation_name is not None:
-            self.simulation = hallway(**self.simu_kw)
-            self.central.setSimulation(self.simulation)
-
-    def start(self):
-        if not self.timer.isActive():
-            print("Simulation started")
-            self.timer.start(0)
-
-    def stop(self):
-        if self.timer.isActive():
-            print("Simulation stopped")
-            self.timer.stop()
-
-    def simulate(self):
-        if self.btn_simulate.isChecked():
-            self.start()
+        if name == "evacuation":
+            self.simulation = evacuation(**kw)
+        elif name == "hallway":
+            self.simulation = hallway(**kw)
+        elif name == "outdoor":
+            self.simulation = outdoor(**kw)
         else:
-            self.stop()
+            self.simulation = None
+            self.ui.runSimulation.setEnabled(False)
+            self.ui.saveSimulation.setEnabled(False)
+            return
 
-    def exit_and_save(self):
-        if self.simulation is not None:
-            self.stop()
-            self.simulation.exit()
-            self.close()
+        self.central.setSimulation(self.simulation)
 
-    def run(self):
+        # Enable controls
+        self.ui.runSimulation.setEnabled(True)
+        self.ui.saveSimulation.setEnabled(True)
+
+    def plot_update(self):
+        print("plot update")
         if self.simulation.advance():
-            print("Simulation started")
             self.central.updateData()
         else:
-            print("End of simulation")
+            self.stop()
+
+    def save(self):
+        pass
+
+    def start(self):
+        print("Start")
+        if not self.timer_plot_update.isActive():
+            self.timer_plot_update.start(0)
+
+    def stop(self):
+        print("Stop")
+        if self.timer_plot_update.isActive():
+            self.timer_plot_update.stop()
+
+    def run(self):
+        print("Run")
+        if self.simulation is None:
+            raise Warning("Simulation is not initialized.")
+        if self.ui.runSimulation.isChecked():
+            self.start()
+        else:
             self.stop()
