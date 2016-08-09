@@ -267,3 +267,4 @@ sympy-plots-for-*.tex/
 /src/examples/rounding_corner.py
 /src/examples/crossing_flows.py
 /docs/notebooks/csv_to_table.py
+/docs/notebooks/
