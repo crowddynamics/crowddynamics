@@ -84,6 +84,8 @@ def run_gui():
 # TODO: density, navigation visualization
 # TODO: Frames per second
 # TODO: Saving and loading HDF5.
+# TODO: start/end time, simulation length
+# TODO: Bytes saved, memory consumption
 
 
 if __name__ == '__main__':
