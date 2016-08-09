@@ -100,7 +100,9 @@ class Simulation:
         pass
 
     def save(self):
-        pass
+        if self.hdfstore is not None:
+            self.hdfstore.save(self.result, self.attrs_result, overwrite=True)
+            self.hdfstore.record(brute=True)
 
     @timed_execution
     def advance(self):
@@ -130,12 +132,12 @@ class Simulation:
         if self.interval():
             print(self.result)
 
-        if self.interval2():
-            self.hdfstore.save(self.result, self.attrs_result, overwrite=True)
-
         # Save
-        for saver in self.hdfstore.savers:
-            saver()
+        if self.hdfstore is not None:
+            if self.interval2():
+                self.hdfstore.save(self.result, self.attrs_result,
+                                   overwrite=True)
+            self.hdfstore.record()
 
         if len(self.result.in_goal_time) == self.agent.size:
             self.exit()
@@ -146,9 +148,7 @@ class Simulation:
     def exit(self):
         """Exit simulation."""
         print(self.result)
-        self.hdfstore.save(self.result, self.attrs_result, overwrite=True)
-        for save in self.hdfstore.savers:
-            save(brute=True)
+        self.save()
 
     def run(self, iter_limit=None, simu_time_limit=None):
         """

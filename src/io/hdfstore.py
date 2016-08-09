@@ -10,7 +10,7 @@ def timestamp():
     return str(datetime.datetime.now())
 
 
-class HDFSaver:
+class HDFRecorder:
     def __init__(self, struct, struct_name, recordable, filepath, group_name):
         self.filepath = filepath
         self.group_name = group_name
@@ -21,7 +21,7 @@ class HDFSaver:
         self.start = 0
         self.end = 1
 
-    def __call__(self, brute=False):
+    def record(self, brute=False):
         """
 
         :param brute: If true forces saving
@@ -59,7 +59,7 @@ class HDFStore(object):
         # Path to the HDF5 file
         self.filepath = filepath + self.ext
         self.group_name = None
-        self.savers = []
+        self.recorders = []
         self.configure_file()
 
     def configure_file(self):
@@ -120,5 +120,9 @@ class HDFStore(object):
         recordable = Attrs(filter(lambda attr: attr.is_recordable, attrs),
                            attrs.save_func)
         if len(recordable) and recordable.save_func is not None:
-            self.savers.append(HDFSaver(struct, struct_name, recordable,
-                                        self.filepath, self.group_name))
+            self.recorders.append(HDFRecorder(struct, struct_name, recordable,
+                                              self.filepath, self.group_name))
+
+    def record(self, brute=False):
+        for saver in self.recorders:
+            saver.record(brute)
