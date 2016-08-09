@@ -13,7 +13,7 @@ Force
 Fluctuation force
 
 .. math::
-   \boldsymbol{\xi} &= \xi \cdot \mathbf{\hat{e}}(\mu), \quad \xi \in \mathcal{N}(\mu, \sigma^{2}), \quad \varphi \in \mathcal{U}(-\pi, \pi)
+   \boldsymbol{\xi} = \xi \cdot \mathbf{\hat{e}}(\mu), \quad \xi \in \mathcal{N}(\mu, \sigma^{2}), \quad \varphi \in \mathcal{U}(-\pi, \pi)
 
 where :math:`\mathbf{\hat{e}}(\mu)` is unit vector to direction of :math:`\mu`.
 

@@ -6,23 +6,18 @@ from src.structure.area import Rectangle
 from src.structure.obstacle import LinearWall
 
 
-class SimulationGraphics(pg.PlotItem):
-    title = "Crowd Simulation"
-    name = "simulation_graphics"
-
+class SimulationPlot(pg.PlotItem):
     def __init__(self):
         """Widget for displaying simulation graphics."""
-        # TODO: Remote processing
-        super(SimulationGraphics, self).__init__(name=self.name)
-
-        # One to one scale for x and y coordinates
-        # self.setLabels(title=self.title, left="y", bottom="x")
-        self.setAspectLocked(lock=True, ratio=1)
-        self.showGrid(True, True, 0.25)
-        self.disableAutoRange()
+        super(SimulationPlot, self).__init__()
 
         # Data
         self.simulation = None
+
+        # Plot settings
+        self.setAspectLocked(lock=True, ratio=1)  # One to one scale
+        self.showGrid(True, True, 0.25)
+        self.disableAutoRange()
 
         # Pens
         self.active_pen = pg.mkPen('w')
@@ -31,7 +26,7 @@ class SimulationGraphics(pg.PlotItem):
         # Brushes: RGBA
         self.domain_brush = pg.mkBrush(255, 255, 255, 255 // 8)  # White, transparent
         self.goal_brush = pg.mkBrush(255, 255, 255, 255 // 4)    # White, transparent
-        self.inactive = pg.mkBrush(0, 0, 0, 0)  # Fully transparent
+        self.inactive = pg.mkBrush(0, 0, 0, 0)                   # Fully transparent
         self.impatient = pg.mkBrush(255, 0, 0, 255)
         self.patient = pg.mkBrush(0, 0, 255, 255)
         self.states = np.array((self.impatient, self.patient))
@@ -43,20 +38,23 @@ class SimulationGraphics(pg.PlotItem):
         self.direction = self.plot()
         self.walls = self.plot()
 
-    def setSimulation(self, simulation: Simulation):
+    def set_simulation(self, simulation: Simulation):
+        # Clear plots
         self.clearPlots()
         self.clear()
 
+        # Initialize plots
         self.left_shoulder = self.plot()
         self.right_shoulder = self.plot()
         self.torso = self.plot()
         self.direction = self.plot()
         self.walls = self.plot()
 
+        # Initialise data
         self.simulation = simulation
-        self.initData()
+        self.init_data()
 
-    def initData(self):
+    def init_data(self):
         domain = self.simulation.domain
         goals = self.simulation.goals
         agent = self.simulation.agent
@@ -99,9 +97,9 @@ class SimulationGraphics(pg.PlotItem):
                                    wall.params[:, :, 1].flatten(),
                                    connect=connect)
 
-        self.updateData()
+        self.update_data()
 
-    def updateData(self):
+    def update_data(self):
         """Updates data in the plot."""
         if self.simulation is not None:
             agent = self.simulation.agent
@@ -132,9 +130,3 @@ class SimulationGraphics(pg.PlotItem):
                 array = np.concatenate((agent.position_ls, agent.front, agent.position_rs), axis=1)
                 array = array.reshape(3 * agent.shape[0], agent.shape[1])
                 self.direction.setData(array)  # TODO: pen
-
-            text = "Iterations: {} | Simulation time: {:0.2f} | " \
-                   "Agents in goal: {}"
-            stats = self.simulation.result
-            self.setLabels(top=text.format(stats.iterations, stats.simulation_time,
-                                           stats.in_goal))

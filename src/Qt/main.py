@@ -1,54 +1,22 @@
 from PyQt4 import QtGui, QtCore
 import pyqtgraph as pg
 
-from .graphics import SimulationGraphics
+import logging as log
+
+from .graphics import SimulationPlot
 from .gui import Ui_MainWindow
 
 
 class MainWindow(QtGui.QMainWindow):
     def __init__(self):
-        """
-        Overview
-        --------
-        Graphical user interface for Crowd Dynamics simulation using
-
-        - PyQt4 [pyqt4]_
-        - Pyqtgraph [pyqtgraph]_
-
-        Design greatly inspired by [rtgraph]_.
-
-        Main Window
-        -----------
-        Layout for the main window is created by using Qt designer.
-
-        Graphics
-        --------
-        Graphics are implemented using pyqtgraph.
-
-        Communication
-        -------------
-        Communication with simulation data.
-
-        .. [pyqt4] Hess, D., & Summerfield, M. (2013). PyQt Whitepaper.
-
-        .. [pyqtgraph] Campagnola, L. (2014). PyQtGraph - Scientific Graphics
-           and GUI Library for Python. Posledn{’\i} Aktualizace. article.
-           Retrieved from http://www.pyqtgraph.org/
-
-        .. [rtgraph] Sepúlveda, S., Reyes, P., & Weinstein, A. (2015).
-           Visualizing physiological signals in real-time.
-           PROC. OF THE 14th PYTHON IN SCIENCE CONF.
-           Retrieved from https://github.com/ssepulveda/RTGraph
-        """
         super(MainWindow, self).__init__()
-        # TODO: density, navigation visualization
 
         # Load ui files
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
 
         # Graphics
-        self.central = None
+        self.simulation_plot = None
         self.simulation = None
         self.timer_plot_update = None
 
@@ -58,16 +26,19 @@ class MainWindow(QtGui.QMainWindow):
         self.configure_signals()
 
     def configure_plot(self):
+        log.info("Configuring graphics")
         pg.setConfigOptions(antialias=True)
         self.ui.plt.setBackground(background=None)
-        self.central = SimulationGraphics()
-        self.ui.plt.addItem(self.central, 0, 0)
+        self.simulation_plot = SimulationPlot()
+        self.ui.plt.addItem(self.simulation_plot, 0, 0)
 
     def configure_timers(self):
+        log.info("Configuring timers")
         self.timer_plot_update = QtCore.QTimer(self)
         self.timer_plot_update.timeout.connect(self.plot_update)
 
     def configure_signals(self):
+        log.info("Configuring signals")
         # Default values for the fields
         self.ui.agentSize.setValue(30)
         self.ui.heightBox.setValue(10.0)
@@ -92,7 +63,8 @@ class MainWindow(QtGui.QMainWindow):
         from ..examples.hallway import hallway
         from ..examples.outdoor import outdoor
 
-        path = "/home/jaan/Dropbox/Projects/Crowd-Dynamics-Simulations/"
+        path = "/home/jaan/Dropbox/Projects/CrowdDynamicsSimulations/"
+
         name = self.ui.simulationName.currentText()
         kw = dict(
             size=self.ui.agentSize.value(),
@@ -115,36 +87,43 @@ class MainWindow(QtGui.QMainWindow):
             self.ui.saveSimulation.setEnabled(False)
             return
 
-        self.central.setSimulation(self.simulation)
+        self.simulation_plot.set_simulation(self.simulation)
+
+        log.info("Initializing simulation: \"{}\" with parameters \n{}".format(name, kw))
 
         # Enable controls
         self.ui.runSimulation.setEnabled(True)
         self.ui.saveSimulation.setEnabled(True)
 
     def plot_update(self):
-        print("plot update")
+        # TODO: simulation stats
         if self.simulation.advance():
-            self.central.updateData()
+            self.simulation_plot.update_data()
         else:
             self.stop()
 
     def save(self):
-        pass
+        if self.simulation is not None:
+            log.info("Simulation saved")
+            self.simulation.save()
+        else:
+            log.warning("Attempting to save but simulation is not initialized.")
 
     def start(self):
-        print("Start")
         if not self.timer_plot_update.isActive():
+            log.info("Starting")
             self.timer_plot_update.start(0)
 
     def stop(self):
-        print("Stop")
         if self.timer_plot_update.isActive():
+            log.info("Stopping")
             self.timer_plot_update.stop()
 
     def run(self):
-        print("Run")
         if self.simulation is None:
-            raise Warning("Simulation is not initialized.")
+            log.warning("Simulation is not initialized.")
+            return
+
         if self.ui.runSimulation.isChecked():
             self.start()
         else:

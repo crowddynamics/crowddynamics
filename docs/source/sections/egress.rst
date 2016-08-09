@@ -142,7 +142,7 @@ Algorithm
 #) Sort by players to map player to number of closer agents
 
 .. math::
-   \boldsymbol{\lambda} &= \operatorname{arg\,sort} (\boldsymbol{\lambda}^{-1})
+   \boldsymbol{\lambda} = \operatorname{arg\,sort} (\boldsymbol{\lambda}^{-1})
 
 
 ----

@@ -15,14 +15,14 @@ Distance function can be defined in different ways depending on the use. For exa
 or skin-to-skin distance of agents
 
 .. math::
-   \operatorname{dist}(i, j) &= h_{ij}.
+   \operatorname{dist}(i, j) = h_{ij}.
 
 We can also limit the size of the neighborhood :math:`|N_{neigh}|` to contain certain number of the closest agents.
 
 Maximum limit of the neighbourhood size is a packing problem. We use following equation to estimate the limit
 
 .. math::
-   |N_{neigh}| &\leq \rho \frac{A_{neigh}}{A_{agent}}
+   | N_{neigh} | \leq \rho \frac{A_{neigh}}{A_{agent}}
 
 where :math:`\rho` is packing density coefficient denoting of the maximum percentage of area that can be filled by the agents.
 
@@ -68,7 +68,7 @@ Circular neighborhood
 For circular agents in circular neighborhood
 
 .. math::
-   |N_{neigh}| &\leq \rho \left(\frac{R}{r}\right)^2
+   |N_{neigh}| \leq \rho \left(\frac{R}{r}\right)^2
 
 where
 
@@ -92,7 +92,7 @@ Maximum error :math:`\max(\varepsilon)` is found when two agents are in head to 
 Head on collision minimizes time-to-collision
 
 .. math::
-   \tau = \tau_{min} &= \frac{\| \tilde{\mathbf{x}} \| - \tilde{r}}{\| \tilde{\mathbf{v}} \|}
+   \tau = \tau_{min} = \frac{\| \tilde{\mathbf{x}} \| - \tilde{r}}{\| \tilde{\mathbf{v}} \|}
 
 Vector part of the eqation
 
@@ -102,7 +102,7 @@ Vector part of the eqation
 Error
 
 .. math::
-   \varepsilon &= \frac{1}{\| \tilde{\mathbf{v}} \|} \left(\frac{1}{\tau_{min}^{2}}\right) \left(\frac{2}{\tau_{min}} + \frac{1}{\tau_{0}}\right) \exp\left (-\frac{\tau_{min}}{\tau_{0}}\right )
+   \varepsilon = \frac{1}{\| \tilde{\mathbf{v}} \|} \left(\frac{1}{\tau_{min}^{2}}\right) \left(\frac{2}{\tau_{min}} + \frac{1}{\tau_{0}}\right) \exp\left (-\frac{\tau_{min}}{\tau_{0}}\right )
 
 By subsituting
 
@@ -112,7 +112,7 @@ By subsituting
    \tilde{r} &= 2 r
 
 .. math::
-   \tau_{min} &= \frac{R/2 - r}{v_{max}} - t
+   \tau_{min} = \frac{R/2 - r}{v_{max}} - t
 
 .. math::
    r &\in [0.21, 0.27] \\
@@ -120,4 +120,4 @@ By subsituting
    t &\geq \Delta t
 
 .. math::
-   \varepsilon(R, v_{max}, t) &= \frac{1}{2 v_{max}} \left(\frac{1}{\tau_{min}^{2}}\right) \left(\frac{2}{\tau_{min}} + \frac{1}{\tau_{0}}\right) \exp\left (-\frac{\tau_{min}}{\tau_{0}}\right )
+   \varepsilon(R, v_{max}, t) = \frac{1}{2 v_{max}} \left(\frac{1}{\tau_{min}^{2}}\right) \left(\frac{2}{\tau_{min}} + \frac{1}{\tau_{0}}\right) \exp\left (-\frac{\tau_{min}}{\tau_{0}}\right )

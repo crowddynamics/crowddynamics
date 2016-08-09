@@ -16,7 +16,7 @@ When numerically solving differential equation we use adaptive discrete timestep
 In dynamics differential in respect of time is sometimes denoted
 
 .. math::
-   \frac{d^2}{dt^2} \mathbf{x} &= \mathbf{\ddot{x}}.
+   \frac{d^2}{dt^2} \mathbf{x} = \mathbf{\ddot{x}}.
 
 
 ----
@@ -32,7 +32,7 @@ Domain containing agent and obstacles.
 Domain can be broken down to open area and boundary
 
 .. math::
-   \bar{\Omega} &= \Omega \cup \partial\Omega
+   \bar{\Omega} = \Omega \cup \partial\Omega
 
 ----
 
@@ -54,7 +54,7 @@ Size of the set
 Area occupied by agents
 
 .. math::
-   \mathcal{A} &= \sum_{i \in A} \mathcal{A}_{i}, \quad \mathcal{A}_{i} \subset \Omega
+   \mathcal{A} = \sum_{i \in A} \mathcal{A}_{i}, \quad \mathcal{A}_{i} \subset \Omega
 
 ----
 
@@ -147,7 +147,7 @@ Bezier curves
 .. _Bézier curve: https://en.wikipedia.org/wiki/B%C3%A9zier_curve#General_definition
 
 .. math::
-   \mathbf {B} (t)={}&\sum _{i=0}^{n}{n \choose i}(1-t)^{n-i}t^{i}\mathbf {p} _{i}, \quad t \in [0, 1], \quad n \in \{2, 3\}
+   \mathbf {B} (t)={} \sum _{i=0}^{n}{n \choose i}(1-t)^{n-i}t^{i}\mathbf {p} _{i}, \quad t \in [0, 1], \quad n \in \{2, 3\}
 
 
 

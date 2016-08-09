@@ -26,7 +26,6 @@ Python package for multi-agent simulation of crowd dynamics.
    sections/simulations.rst
    sections/appendix.rst
 
-.. sections/research.rst
 
 Indices and tables
 ==================

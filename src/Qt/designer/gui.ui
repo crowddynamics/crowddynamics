@@ -294,7 +294,7 @@ QStatusBar {
       <item>
        <widget class="QLabel" name="label_7">
         <property name="text">
-         <string>Simulation</string>
+         <string>New Simulation</string>
         </property>
        </widget>
       </item>
@@ -489,10 +489,40 @@ QStatusBar {
     <property name="title">
      <string>File</string>
     </property>
+    <addaction name="actionOpen"/>
+    <addaction name="actionSave"/>
+   </widget>
+   <widget class="QMenu" name="menuVisualisations">
+    <property name="title">
+     <string>Visualisation</string>
+    </property>
+    <addaction name="actionDensity_Grid"/>
+    <addaction name="actionNavigation_Field"/>
    </widget>
    <addaction name="menuMenu"/>
+   <addaction name="menuVisualisations"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionSave">
+   <property name="text">
+    <string>Save As</string>
+   </property>
+  </action>
+  <action name="actionOpen">
+   <property name="text">
+    <string>Open</string>
+   </property>
+  </action>
+  <action name="actionDensity_Grid">
+   <property name="text">
+    <string>Density</string>
+   </property>
+  </action>
+  <action name="actionNavigation_Field">
+   <property name="text">
+    <string>Navigation</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>

@@ -1,4 +1,5 @@
 import numpy as np
+import logging as log
 
 from .core.egress import egress_game_attrs
 from .core.motion import motion, integrator
@@ -33,12 +34,14 @@ class Simulation:
         self.dt_max = dt_max
 
         # Structures
-        self.result = Result()
         self.domain = domain
         self.agent = agent
         self.wall = filter_none(wall)
         self.goals = filter_none(goals)
         self.egress_model = egress_model
+
+        # Simulation results storage structure
+        self.result = Result()
 
         # Angle and direction update algorithms
         self.angle_update = angle_update
@@ -48,32 +51,43 @@ class Simulation:
         self.interval = Intervals(1.0)
         self.interval2 = Intervals(1.0)
 
-        # TODO: Saving and loading HDF5.
-        # Simulation IO for saving generated data to HDF5 file for analysis
-        # and resuming a simulation.
-        self.save = Save(dirpath, name)
+        # Saving data to HDF5 file for analysis and resuming a simulation.
+        self.saver = None
+        self.savers = None
+        self.attrs_result = None
+
+        self.configure_save(dirpath, name)
+
+    def configure_save(self, dirpath, name):
+        self.saver = Save(dirpath, name)
+        args = []
 
         self.attrs_result = Attrs(result_attr_names)
         attrs_agent = Attrs(agent_attr_names, Intervals(1.0))
         attrs_wall = Attrs(wall_attr_names)
 
-        attrs_agent["position"] = Attr("position", True, True)
-        attrs_agent["velocity"] = Attr("velocity", True, True)
-        attrs_agent["force"] = Attr("force", True, True)
-        attrs_agent["angle"] = Attr("angle", True, True)
-        attrs_agent["angular_velocity"] = Attr("angular_velocity", True, True)
-        attrs_agent["torque"] = Attr("torque", True, True)
+        attrs = ("position", "velocity", "force", "angle", "angular_velocity",
+                 "torque")
+        for attr in attrs:
+            attrs_agent[attr] = Attr(attr, True, True)
 
-        arg = [self.save.hdf(self.agent, attrs_agent)] + \
-              [self.save.hdf(w, attrs_wall) for w in self.wall]
+        args.append(self.saver.hdf(self.agent, attrs_agent))
+        for w in self.wall:
+            args.append(self.saver.hdf(w, attrs_wall))
 
         if self.egress_model is not None:
             attrs_egress = Attrs(egress_game_attrs, Intervals(1.0))
             attrs_egress["strategy"] = Attr("strategy", True, True)
             attrs_egress["time_evac"] = Attr("time_evac", True, True)
-            arg.append(self.save.hdf(self.egress_model, attrs_egress))
+            args.append(self.saver.hdf(self.egress_model, attrs_egress))
 
-        self.savers = filter_none(arg)
+        self.savers = filter_none(args)
+
+    def load(self):
+        pass
+
+    def save(self):
+        pass
 
     @timed_execution
     def advance(self):
@@ -104,7 +118,7 @@ class Simulation:
             print(self.result)
 
         if self.interval2():
-            self.save.hdf(self.result, self.attrs_result, overwrite=True)
+            self.saver.hdf(self.result, self.attrs_result, overwrite=True)
 
         # Save
         for saver in self.savers:
@@ -119,9 +133,9 @@ class Simulation:
     def exit(self):
         """Exit simulation."""
         print(self.result)
-        self.save.hdf(self.result, self.attrs_result, overwrite=True)
-        for saver in self.savers:
-            saver(brute=True)
+        self.saver.hdf(self.result, self.attrs_result, overwrite=True)
+        for save in self.savers:
+            save(brute=True)
 
     def run(self, iter_limit=None, simu_time_limit=None):
         """

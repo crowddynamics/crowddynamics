@@ -13,7 +13,7 @@ Psychological force for collision avoidance.
 Algorithm based on human anticipatory behaviour. Interaction potential between two agents
 
 .. math::
-   E(\tau) &= \frac{k}{\tau^{2}} \exp \left( -\frac{\tau}{\tau_{0}} \right), \quad \tau_{0} > 0, \tau > 0
+   E(\tau) = \frac{k}{\tau^{2}} \exp \left( -\frac{\tau}{\tau_{0}} \right), \quad \tau_{0} > 0, \tau > 0
 
 where coefficient :math:`k=1.5 m_i` scales the magnitude and :math:`\tau_{0}` is interaction time horizon. Time-to-collision :math:`\tau` is obtained by linearly extrapolating current trajectories and finding where or if agents collide i.e skin-to-skin distance :math:`h` is zero.
 
@@ -34,7 +34,7 @@ If :math:`\tau < 0` or :math:`\tau` is undefined [#]_ trajectories are not colli
 **Time-to-collision** two **two circles** with relative center of mass :math:`\mathbf{c}`, relative velocity :math:`\mathbf{\tilde{v}}` and total radius of :math:`\tilde{r} (= \mathrm{constant})` is obtained from *skin-to-skin* distance
 
 .. math::
-   h(\tau) &= \| \tau \tilde{\mathbf{v}} + \mathbf{c} \| - \tilde{r}.
+   h(\tau) = \| \tau \tilde{\mathbf{v}} + \mathbf{c} \| - \tilde{r}.
 
 Solve for root
 
@@ -46,7 +46,7 @@ Solve for root
 Quadratic equation is obtained
 
 .. math::
-   \tau^2 (\tilde{\mathbf{v}} \cdot \tilde{\mathbf{v}}) + 2 \tau (\mathbf{c} \cdot \tilde{\mathbf{v}}) + \mathbf{c} \cdot \mathbf{c} - \tilde{r}^2 &=0
+   \tau^2 (\tilde{\mathbf{v}} \cdot \tilde{\mathbf{v}}) + 2 \tau (\mathbf{c} \cdot \tilde{\mathbf{v}}) + \mathbf{c} \cdot \mathbf{c} - \tilde{r}^2 =0
 
 Solution with `quadratic formula <https://en.wikipedia.org/wiki/Quadratic_equation>`_ gives us
 
@@ -66,10 +66,10 @@ Solution with `quadratic formula <https://en.wikipedia.org/wiki/Quadratic_equati
    \mathbf{c} &= \tilde{\mathbf{x}}
 
 .. math::
-   \nabla_{\tilde{\mathbf{x}}} \tau &= \left(\frac{1}{a} \right) \left(\tilde{\mathbf{v}} -\frac{a \tilde{\mathbf{x}} + b \tilde{\mathbf{v}}}{d} \right)
+   \nabla_{\tilde{\mathbf{x}}} \tau = \left(\frac{1}{a} \right) \left(\tilde{\mathbf{v}} -\frac{a \tilde{\mathbf{x}} + b \tilde{\mathbf{v}}}{d} \right)
 
 .. math::
-   \mathbf{f}^{soc} &= - \left(\frac{k}{\tau^{2}}\right) \left(\frac{2}{\tau} + \frac{1}{\tau_{0}}\right) \exp\left (-\frac{\tau}{\tau_{0}}\right ) \left(\frac{1}{a} \right) \left(\tilde{\mathbf{v}} -\frac{a \tilde{\mathbf{x}} + b \tilde{\mathbf{v}}}{d} \right)
+   \mathbf{f}^{soc} = - \left(\frac{k}{\tau^{2}}\right) \left(\frac{2}{\tau} + \frac{1}{\tau_{0}}\right) \exp\left (-\frac{\tau}{\tau_{0}}\right ) \left(\frac{1}{a} \right) \left(\tilde{\mathbf{v}} -\frac{a \tilde{\mathbf{x}} + b \tilde{\mathbf{v}}}{d} \right)
 
 ----
 
@@ -84,7 +84,7 @@ Solution with `quadratic formula <https://en.wikipedia.org/wiki/Quadratic_equati
 We get radius of form
 
 .. math::
-   r &= \sqrt{c_0 + c_1 \tau + c_2 \tau^2}
+   r = \sqrt{c_0 + c_1 \tau + c_2 \tau^2}
 
 ----
 
@@ -100,12 +100,12 @@ We get radius of form
 Torso, Left shoulder, Right shoulder
 
 .. math::
-   \mathbf{r}_{i, j} &\in \{ \mathbf{0}, -r_{ts} \mathbf{\hat{e}_{t}}{}_i, r_{ts} \mathbf{\hat{e}_{t}}{}_i \}
+   \mathbf{r}_{i, j} \in \{ \mathbf{0}, -r_{ts} \mathbf{\hat{e}_{t}}{}_i, r_{ts} \mathbf{\hat{e}_{t}}{}_i \}
 
 Torso-torso, Torso-shoulder, Shoulder-shoulder
 
 .. math::
-   \tilde{r} &= r_i + r_j, \quad r_{i,j} \in \{ r_t, r_s \}
+   \tilde{r} = r_i + r_j, \quad r_{i,j} \in \{ r_t, r_s \}
 
 Time-to-collision
 
@@ -121,12 +121,12 @@ Time-to-collision
 Gradient
 
 .. math::
-   \nabla_{\tilde{\mathbf{x}}} \tau &= \left(\frac{1}{a} \right) \left(\tilde{\mathbf{v}} -\frac{a (\tilde{\mathbf{x}} + 2 \mathbf{r}) + b \tilde{\mathbf{v}}}{d} \right)
+   \nabla_{\tilde{\mathbf{x}}} \tau = \left(\frac{1}{a} \right) \left(\tilde{\mathbf{v}} -\frac{a (\tilde{\mathbf{x}} + 2 \mathbf{r}) + b \tilde{\mathbf{v}}}{d} \right)
 
 Social force for three circle model
 
 .. math::
-   \mathbf{f}^{soc} &= \left(\frac{k}{\tau^{2}}\right) \left(\frac{2}{\tau} + \frac{1}{\tau_{0}}\right) \exp\left (-\frac{\tau}{\tau_{0}}\right ) \left(\frac{1}{a} \right) \left(\tilde{\mathbf{v}} -\frac{a (\tilde{\mathbf{x}} + 2 \mathbf{r}) + b \tilde{\mathbf{v}}}{d} \right)
+   \mathbf{f}^{soc} = \left(\frac{k}{\tau^{2}}\right) \left(\frac{2}{\tau} + \frac{1}{\tau_{0}}\right) \exp\left (-\frac{\tau}{\tau_{0}}\right ) \left(\frac{1}{a} \right) \left(\tilde{\mathbf{v}} -\frac{a (\tilde{\mathbf{x}} + 2 \mathbf{r}) + b \tilde{\mathbf{v}}}{d} \right)
 
 ----
 
@@ -142,25 +142,25 @@ Moving circle with center of mass :math:`\mathbf{c}`, velocity :math:`\mathbf{v}
 *Skin-to-skin* distance
 
 .. math::
-   h(\tau) &= | (\mathbf{p} - (\tau \tilde{\mathbf{v}} + \mathbf{c})) \cdot \mathbf{\hat{n}_w} | - \tilde{r}
+   h(\tau) = | (\mathbf{p} - (\tau \tilde{\mathbf{v}} + \mathbf{c})) \cdot \mathbf{\hat{n}_w} | - \tilde{r}
 
 From :math:`h(\tau) = 0`
 
 .. math::
-   | -\tau (\mathbf{v} \cdot \mathbf{\hat{n}_w}) - \tilde{\mathbf{x}} \cdot \mathbf{\hat{n}_w} | &= \tilde{r}
+   | -\tau (\mathbf{v} \cdot \mathbf{\hat{n}_w}) - \tilde{\mathbf{x}} \cdot \mathbf{\hat{n}_w} | = \tilde{r}
 
 If negative inside absolute value
 
 .. math::
-   \tau &= -\frac{\tilde{\mathbf{x}} \cdot \mathbf{\hat{n}_w} + \tilde{r}}{\mathbf{v} \cdot \mathbf{\hat{n}_w}}, \quad \tau > -\frac{\tilde{\mathbf{x}} \cdot \mathbf{\hat{n}_w}}{\mathbf{v} \cdot \mathbf{\hat{n}_w}}
+   \tau = -\frac{\tilde{\mathbf{x}} \cdot \mathbf{\hat{n}_w} + \tilde{r}}{\mathbf{v} \cdot \mathbf{\hat{n}_w}}, \quad \tau > -\frac{\tilde{\mathbf{x}} \cdot \mathbf{\hat{n}_w}}{\mathbf{v} \cdot \mathbf{\hat{n}_w}}
 
 If positive inside absolute value
 
 .. math::
-   \tau &= -\frac{\tilde{\mathbf{x}} \cdot \mathbf{\hat{n}_w} - \tilde{r}}{\mathbf{v} \cdot \mathbf{\hat{n}_w}}, \quad \tau \leq -\frac{\tilde{\mathbf{x}} \cdot \mathbf{\hat{n}_w}}{\mathbf{v} \cdot \mathbf{\hat{n}_w}}
+   \tau = -\frac{\tilde{\mathbf{x}} \cdot \mathbf{\hat{n}_w} - \tilde{r}}{\mathbf{v} \cdot \mathbf{\hat{n}_w}}, \quad \tau \leq -\frac{\tilde{\mathbf{x}} \cdot \mathbf{\hat{n}_w}}{\mathbf{v} \cdot \mathbf{\hat{n}_w}}
 
 .. math::
-   \nabla_{\tilde{\mathbf{x}}} \tau &= \frac{\mathbf{\hat{n}_w}}{\mathbf{v} \cdot \mathbf{\hat{n}_w}}
+   \nabla_{\tilde{\mathbf{x}}} \tau = \frac{\mathbf{\hat{n}_w}}{\mathbf{v} \cdot \mathbf{\hat{n}_w}}
 
 ----
 
