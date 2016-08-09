@@ -1,5 +1,6 @@
 import datetime
 
+import logging as log
 import h5py
 import numpy as np
 
@@ -67,6 +68,8 @@ class HDFStore(object):
         Configure new HDF5 File.
         :return:
         """
+        log.info("Configuring HDFStore")
+
         with h5py.File(self.filepath, mode='a') as file:
             # Group Name
             groups = (int(name) for name in file if name.isdigit())
@@ -81,6 +84,10 @@ class HDFStore(object):
 
             # Metadata
             group.attrs["timestamp"] = timestamp()
+
+        log.info("HDFStore:\n"
+                 "Filepath: {}\n"
+                 "Group: {}".format(self.filepath, self.group_name))
 
     def save(self, struct, attrs: Attrs, overwrite=False):
         """

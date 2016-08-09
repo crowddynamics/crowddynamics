@@ -89,7 +89,9 @@ class MainWindow(QtGui.QMainWindow):
 
         self.simulation_plot.set_simulation(self.simulation)
 
-        log.info("Initializing simulation: \"{}\" with parameters \n{}".format(name, kw))
+        log.info("Initializing simulation\n"
+                 "Name: {}\n"
+                 "Args: {}".format(name, kw))
 
         # Enable controls
         self.ui.runSimulation.setEnabled(True)

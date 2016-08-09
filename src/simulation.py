@@ -1,7 +1,8 @@
 import datetime
-import os
-import numpy as np
 import logging as log
+import os
+
+import numpy as np
 
 from .core.egress import egress_game_attrs
 from .core.motion import motion, integrator
@@ -10,7 +11,6 @@ from .functions import filter_none, timed_execution
 from .io.attributes import Intervals, Attrs, Attr
 from .io.hdfstore import HDFStore
 from .structure.agent import agent_attr_names
-from .structure.result import Result, result_attr_names
 from .structure.obstacle import wall_attr_names
 
 
@@ -35,9 +35,26 @@ class Simulation:
         else:
             self.name = name
 
+        self.result_attr_names = (
+            "dt_min",
+            "dt_max",
+            "iterations",
+            "time",
+            "time_steps",
+            "in_goal_time",
+        )
+        self.attrs_result = Attrs(self.result_attr_names)
+
         # Integrator timestep
         self.dt_min = dt_min
         self.dt_max = dt_max
+
+        self.iterations = 0
+        self.time = 0
+        self.time_steps = [0]
+
+        self.in_goal = 0
+        self.in_goal_time = []
 
         # Structures
         self.domain = domain
@@ -46,25 +63,16 @@ class Simulation:
         self.goals = filter_none(goals)
         self.egress_model = egress_model
 
-        # Simulation results storage structure
-        self.result = Result()
-
         # Angle and direction update algorithms
         self.angle_update = angle_update
         self.direction_update = direction_update
 
-        # Interval for printing the values in result during the simulation.
-        self.interval = Intervals(1.0)
-        self.interval2 = Intervals(1.0)
-
         # Saving data to HDF5 file for analysis and resuming a simulation.
         self.hdfstore = None
-        self.attrs_result = None
-
         self.configure_save(dirpath)
 
     def configure_save(self, dirpath):
-        log.info("HDFStore configuring...")
+        log.info("Simulation: Configuring save")
 
         if dirpath is None or len(dirpath) == 0:
             filepath = self.name
@@ -74,7 +82,6 @@ class Simulation:
 
         self.hdfstore = HDFStore(filepath)
 
-        self.attrs_result = Attrs(result_attr_names)
         attrs_agent = Attrs(agent_attr_names, Intervals(1.0))
         attrs_wall = Attrs(wall_attr_names)
 
@@ -94,30 +101,35 @@ class Simulation:
             attrs_egress["time_evac"] = Attr("time_evac", True, True)
             self.hdfstore.save(self.egress_model, attrs_egress)
 
-        log.info("HDFStore configured.")
-
     def load(self):
         pass
 
     def save(self):
         if self.hdfstore is not None:
-            self.hdfstore.save(self.result, self.attrs_result, overwrite=True)
+            self.hdfstore.save(self, self.attrs_result, overwrite=True)
             self.hdfstore.record(brute=True)
+
+    def exit(self):
+        log.info("Simulation exit")
+        self.save()
 
     @timed_execution
     def advance(self):
         """
-        :return: False is simulation ends otherwise True.
+        :return: True -> continues, False -> ends.
         """
         navigator(self.agent, self.angle_update, self.direction_update)
         motion(self.agent, self.wall)
         dt = integrator(self.agent, self.dt_min, self.dt_max)
 
+        self.iterations += 1
+        self.time += dt
+        self.time_steps.append(dt)
+
         if self.egress_model is not None:
-            self.egress_model.update(self.result.simulation_time, dt)
+            self.egress_model.update(self.time, dt)
 
         self.agent.reset_neighbor()
-        self.result.increment_simulation_time(dt)
 
         if self.domain is not None:
             self.agent.active &= self.domain.contains(self.agent.position)
@@ -127,41 +139,24 @@ class Simulation:
             num = -np.sum(self.agent.goal_reached)
             self.agent.goal_reached |= goal.contains(self.agent.position)
             num += np.sum(self.agent.goal_reached)
-            self.result.increment_in_goal_time(num)
-
-        if self.interval():
-            print(self.result)
+            self.in_goal += num
+            self.in_goal_time.extend(num * (self.time,))
 
         # Save
         if self.hdfstore is not None:
-            if self.interval2():
-                self.hdfstore.save(self.result, self.attrs_result,
-                                   overwrite=True)
             self.hdfstore.record()
-
-        if len(self.result.in_goal_time) == self.agent.size:
-            self.exit()
-            return False
 
         return True
 
-    def exit(self):
-        """Exit simulation."""
-        print(self.result)
-        self.save()
-
-    def run(self, iter_limit=None, simu_time_limit=None):
+    def run(self, max_iter=np.inf, max_time=np.inf):
         """
-        :param iter_limit: Execute simulation until number of iterations has been reached or if None run until simulation ends.
+
+        :param max_iter: Iteration limit
+        :param max_time: Time (simulation not real time) limit
         :return: None
         """
-        if iter_limit is None:
-            iter_limit = np.inf
-
-        if simu_time_limit is None:
-            simu_time_limit = np.inf
-
         while self.advance() and \
-                (iter_limit > 0) and \
-                (self.result.simulation_time < simu_time_limit):
-            iter_limit -= 1
+              self.iterations < max_iter and \
+              self.time < max_time:
+            pass
+        self.exit()

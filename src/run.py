@@ -82,7 +82,7 @@ def run_gui():
 # TODO: Read simulation data from hdf5 file
 # TODO: MoviePy
 # TODO: Logger, __class__.__name__
-# TODO: Multiprocessor
+# TODO: Multiprocessing, Queue, Gui <-> Simulation <-> IO
 # TODO: density, navigation visualization
 # TODO: Frames per second
 # TODO: Saving and loading HDF5.
