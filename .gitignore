@@ -266,5 +266,4 @@ sympy-plots-for-*.tex/
 /src/examples/two_exits.py
 /src/examples/rounding_corner.py
 /src/examples/crossing_flows.py
-/.travis.yaml
 /docs/notebooks/csv_to_table.py
