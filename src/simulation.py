@@ -1,3 +1,5 @@
+import datetime
+import os
 import numpy as np
 import logging as log
 
@@ -13,9 +15,8 @@ from .structure.obstacle import wall_attr_names
 
 
 class Simulation:
-    """
-    Class for initialising and running a crowd simulation.
-    """
+    """Class for initialising and running a crowd simulation."""
+
     def __init__(self,
                  agent,
                  wall=None,
@@ -28,6 +29,11 @@ class Simulation:
                  domain=None,
                  dt_min=0.001,
                  dt_max=0.01):
+
+        if name is None or len(name) == 0:
+            self.name = str(datetime.datetime.now())
+        else:
+            self.name = name
 
         # Integrator timestep
         self.dt_min = dt_min
@@ -53,35 +59,42 @@ class Simulation:
 
         # Saving data to HDF5 file for analysis and resuming a simulation.
         self.hdfstore = None
-        self.hdfsaver = None
         self.attrs_result = None
 
-        self.configure_save(dirpath, name)
+        self.configure_save(dirpath)
 
-    def configure_save(self, dirpath, name):
-        self.hdfstore = HDFStore(dirpath, name)
-        args = []
+    def configure_save(self, dirpath):
+        log.info("HDFStore configuring...")
+
+        if dirpath is None or len(dirpath) == 0:
+            filepath = self.name
+        else:
+            os.makedirs(dirpath, exist_ok=True)
+            filepath = os.path.join(dirpath, self.name)
+
+        self.hdfstore = HDFStore(filepath)
 
         self.attrs_result = Attrs(result_attr_names)
         attrs_agent = Attrs(agent_attr_names, Intervals(1.0))
         attrs_wall = Attrs(wall_attr_names)
 
+        # TODO: Gui selection for saveable attributes
         attrs = ("position", "velocity", "force", "angle", "angular_velocity",
                  "torque")
         for attr in attrs:
             attrs_agent[attr] = Attr(attr, True, True)
 
-        args.append(self.hdfstore.save(self.agent, attrs_agent))
+        self.hdfstore.save(self.agent, attrs_agent)
         for w in self.wall:
-            args.append(self.hdfstore.save(w, attrs_wall))
+            self.hdfstore.save(w, attrs_wall)
 
         if self.egress_model is not None:
             attrs_egress = Attrs(egress_game_attrs, Intervals(1.0))
             attrs_egress["strategy"] = Attr("strategy", True, True)
             attrs_egress["time_evac"] = Attr("time_evac", True, True)
-            args.append(self.hdfstore.save(self.egress_model, attrs_egress))
+            self.hdfstore.save(self.egress_model, attrs_egress)
 
-        self.hdfsaver = filter_none(args)
+        log.info("HDFStore configured.")
 
     def load(self):
         pass
@@ -121,7 +134,7 @@ class Simulation:
             self.hdfstore.save(self.result, self.attrs_result, overwrite=True)
 
         # Save
-        for saver in self.hdfsaver:
+        for saver in self.hdfstore.savers:
             saver()
 
         if len(self.result.in_goal_time) == self.agent.size:
@@ -134,7 +147,7 @@ class Simulation:
         """Exit simulation."""
         print(self.result)
         self.hdfstore.save(self.result, self.attrs_result, overwrite=True)
-        for save in self.hdfsaver:
+        for save in self.hdfstore.savers:
             save(brute=True)
 
     def run(self, iter_limit=None, simu_time_limit=None):

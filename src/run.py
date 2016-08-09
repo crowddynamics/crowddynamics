@@ -13,7 +13,9 @@ def start_logging(level):
     logger = log.getLogger()
     logger.setLevel(level)
 
-    file_handler = logging.handlers.RotatingFileHandler("run.log",
+    filename = "run.log"
+    # os.remove(filename)  # Remove old log file
+    file_handler = logging.handlers.RotatingFileHandler(filename,
                                                         maxBytes=(10240 * 5),
                                                         backupCount=2)
     file_handler.setFormatter(log_format)
@@ -79,7 +81,7 @@ def run_gui():
 # TODO: Agent maximum velocity for optimizations
 # TODO: Read simulation data from hdf5 file
 # TODO: MoviePy
-# TODO: Logger
+# TODO: Logger, __class__.__name__
 # TODO: Multiprocessor
 # TODO: density, navigation visualization
 # TODO: Frames per second

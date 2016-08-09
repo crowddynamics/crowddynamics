@@ -48,7 +48,7 @@ class MainWindow(QtGui.QMainWindow):
         # self.ui.simulationName.currentIndexChanged[str].connect()
 
         # Simulation controls
-        self.ui.initSimulation.clicked.connect(self.init_simulation)
+        self.ui.initSimulation.clicked.connect(self.new_simulation)
 
         self.ui.runSimulation.setCheckable(True)
         self.ui.runSimulation.setEnabled(False)
@@ -57,7 +57,7 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.saveSimulation.setEnabled(False)
         self.ui.saveSimulation.clicked.connect(self.save)
 
-    def init_simulation(self):
+    def new_simulation(self):
         # TODO: Importer
         from ..examples.evacuation import evacuation
         from ..examples.hallway import hallway
