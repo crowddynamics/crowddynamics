@@ -1,7 +1,7 @@
 import numpy as np
 
 import pyqtgraph as pg
-from src.simulation import Simulation
+from src.simulation import MultiAgentSimulation
 from src.structure.area import Rectangle
 from src.structure.obstacle import LinearWall
 
@@ -38,7 +38,7 @@ class SimulationPlot(pg.PlotItem):
         self.direction = self.plot()
         self.walls = self.plot()
 
-    def set_simulation(self, simulation: Simulation):
+    def set_simulation(self, simulation: MultiAgentSimulation):
         # Clear plots
         self.clearPlots()
         self.clear()
@@ -89,7 +89,7 @@ class SimulationPlot(pg.PlotItem):
             connect[2::3] = np.zeros(agent.size, dtype=np.int32)
             self.direction.setData(connect=connect)
 
-        for wall in self.simulation.wall:
+        for wall in self.simulation.walls:
             if isinstance(wall, LinearWall):
                 connect = np.zeros(2 * wall.size, dtype=np.int32)
                 connect[::2] = np.ones(wall.size, dtype=np.int32)

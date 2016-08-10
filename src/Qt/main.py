@@ -59,28 +59,27 @@ class MainWindow(QtGui.QMainWindow):
 
     def new_simulation(self):
         # TODO: Importer
-        from ..examples.evacuation import evacuation
-        from ..examples.hallway import hallway
-        from ..examples.outdoor import outdoor
+        from ..examples.evacuation import RoomEvacuation
+        from ..examples.hallway import Hallway
+        from ..examples.outdoor import Outdoor
 
-        path = "/home/jaan/Dropbox/Projects/CrowdDynamicsSimulations/"
+        # path = "/home/jaan/Dropbox/Projects/CrowdDynamicsSimulations/"
 
         name = self.ui.simulationName.currentText()
         kw = dict(
             size=self.ui.agentSize.value(),
             height=self.ui.heightBox.value(),
             width=self.ui.widthBox.value(),
-            agent_model=self.ui.agentModel.currentText(),
-            body_type=self.ui.bodyType.currentText(),
-            path=path,
+            model=self.ui.agentModel.currentText(),
+            body=self.ui.bodyType.currentText(),
         )
 
         if name == "evacuation":
-            self.simulation = evacuation(**kw)
+            self.simulation = RoomEvacuation(**kw)
         elif name == "hallway":
-            self.simulation = hallway(**kw)
+            self.simulation = Hallway(**kw)
         elif name == "outdoor":
-            self.simulation = outdoor(**kw)
+            self.simulation = Outdoor(**kw)
         else:
             self.simulation = None
             self.ui.runSimulation.setEnabled(False)

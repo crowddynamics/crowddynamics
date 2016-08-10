@@ -1,6 +1,6 @@
-from src.simulation import Simulation
+from src.simulation import MultiAgentSimulation
 
 
 def initialize(**kwargs):
-    simulation = Simulation(**kwargs)
+    simulation = MultiAgentSimulation(**kwargs)
     return simulation
