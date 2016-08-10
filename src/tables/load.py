@@ -5,7 +5,8 @@ import pandas as pd
 
 
 class Table:
-    root = os.path.abspath(".")
+    root = os.path.abspath(__file__)
+    root = os.path.split(root)[0]
     ext = ".csv"
     filenames = ("agent", "body")
 
