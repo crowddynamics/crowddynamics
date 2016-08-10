@@ -1,9 +1,7 @@
-import os
-import warnings
+import logging as log
 from collections import Iterable
 
 import numpy as np
-import pandas as pd
 from scipy.stats import truncnorm as tn
 
 from src.core.vector2d import length_nx2, angle_nx2
@@ -44,29 +42,12 @@ def truncnorm(loc, abs_scale, size, std=3.0):
     return tn.rvs(-std, std, loc=loc, scale=scale, size=size)
 
 
-def load_tables():
-    # TODO: converters.
-    root = os.path.abspath(__file__)
-    root, _ = os.path.split(root)
-    folder = "tables"
-
-    path1 = os.path.join(root, folder, "body_types.csv")
-    path2 = os.path.join(root, folder, "agent_table.csv")
-
-    if not os.path.exists(path1) or not os.path.exists(path2):
-        raise FileNotFoundError("")
-
-    body_types = pd.read_csv(path1, index_col=[0])
-    agent_table = pd.read_csv(path2, index_col=[0])
-    return body_types, agent_table
-
-
-def set_initial_motion(indices: (slice, np.ndarray),
-                       agent: Agent,
-                       target_direction: np.ndarray = None,
-                       target_angle: np.ndarray = None,
-                       velocity: np.ndarray = None,
-                       body_angle: float = None):
+def agent_motion(indices: (slice, np.ndarray),
+                 agent: Agent,
+                 target_direction: np.ndarray = None,
+                 target_angle: np.ndarray = None,
+                 velocity: np.ndarray = None,
+                 body_angle: float = None):
     """Set initial parameters for motion.
     :param indices:
     :param agent:
@@ -98,22 +79,14 @@ def set_initial_motion(indices: (slice, np.ndarray),
         agent.angle[indices] = body_angle
 
 
-def set_motion_parameters():
-    # TODO: motion params: scalar/vector
-    # for attr in agent_attr_motion:
-    #     value = eval(values[attr])
-    #     setattr(agent, attr, value)
-    pass
-
-
-def set_positions(agent: Agent,
-                  amount: int,
-                  area: Area,
-                  walls=None,
-                  target_direction: np.ndarray = None,
-                  target_angle: np.ndarray = None,
-                  velocity: np.ndarray = None,
-                  body_angle: float = None, ):
+def agent_positions(agent: Agent,
+                    amount: int,
+                    area: Area,
+                    walls=None,
+                    target_direction: np.ndarray = None,
+                    target_angle: np.ndarray = None,
+                    velocity: np.ndarray = None,
+                    body_angle: float = None, ):
     """
     Monte Carlo method for filling an area with desired amount of circles.
 
@@ -132,19 +105,16 @@ def set_positions(agent: Agent,
 
     area_agent = np.sum(np.pi * radius ** 2)
     fill_rate = area_agent / area.size()
-    threshold = np.pi / 4  # Area of circle divided by area rectangle
-    print("Monte Carlo fill rate: {}".format(fill_rate))
-    if fill_rate > threshold:
-        warnings.warn(Warning("High fill rate of {} over threshold {}.\n"
-                      "Cannot guarantee of placement of all agents.".format(
-            fill_rate, threshold)))
+
+    log.info("Crowd Density: {}".format(fill_rate))
 
     walls = filter_none(walls)
 
     i = 0  # Number of agents placed
     iterations = 0  # Number of iterations done
     maxlen = len(position)
-    while i < maxlen and iterations < 10 * maxlen:
+    maxiter = 10 * maxlen
+    while i < maxlen and iterations < maxiter:
         iterations += 1
         pos = area.random()
 
@@ -174,10 +144,11 @@ def set_positions(agent: Agent,
         agent.active[index] = True
         i += 1
 
-    set_initial_motion(indices[:i], agent, target_direction, target_angle,
-                       velocity, body_angle)
+    agent_motion(indices[:i], agent, target_direction, target_angle,
+                 velocity, body_angle)
 
-    print("Number of agents placed: {}".format(i))
+    log.info("Iterations: {}/{}\n"
+             "Agents placed: {}/{}".format(iterations, maxiter, i, maxlen))
 
 
 def initialize_agent(size: int,
@@ -187,12 +158,15 @@ def initialize_agent(size: int,
                      walls=None):
     """Arguments for constructing agent."""
     # TODO: converters. Eval to values.
-    pi = np.pi  # For eval
 
     # Load tabular values
-    body_types, agent_table = load_tables()
-    body = body_types[body_type]
-    values = agent_table["value"]
+    from src.tables.load import Table
+    table = Table()
+    body = table.body()[body_type]
+    values = table.agent()["value"]
+
+    # Eval
+    pi = np.pi
 
     # Arguments for Agent
     mass = truncnorm(body["mass"], body["mass_scale"], size)
@@ -217,21 +191,28 @@ def initialize_agent(size: int,
                   target_angular_velocity)
 
     # Agent model
-    models = {"circular", "three_circle"}
+    agent_models = ("circular", "three_circle")
+    default_model = agent_models[0]
+
+    if agent_model not in agent_models:
+        log.warning("Model {} not in agent_models {}. "
+                    "Using Default: {}".format(
+            agent_model, agent_models, default_model))
+        agent_model = default_model
+
     if agent_model == "circular":
         agent.set_circular()
-    elif agent_model == "three_circle":
+
+    if agent_model == "three_circle":
         agent.set_three_circle()
-    else:
-        raise ValueError("Model {} not in {}.".format(agent_model, models))
 
     # TODO: separate, manual positions
     # Initial positions
     if isinstance(populate_kwargs_list, dict):
-        set_positions(agent, walls=walls, **populate_kwargs_list)
+        agent_positions(agent, walls=walls, **populate_kwargs_list)
     elif isinstance(populate_kwargs_list, Iterable):
         for kwargs in populate_kwargs_list:
-            set_positions(agent, walls=walls, **kwargs)
+            agent_positions(agent, walls=walls, **kwargs)
     else:
         raise ValueError("")
 

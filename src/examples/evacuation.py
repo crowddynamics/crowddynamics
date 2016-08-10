@@ -4,10 +4,10 @@ import numba
 import numpy as np
 
 from src.core.vector2d import rotate90, normalize, length
+from src.initialize import initialize_agent
 from src.simulation import Simulation
 from src.structure.area import Rectangle, Circle
-from src.structure.initialize import initialize_agent
-from src.structure.obstacle import LinearWall, ExitDoor
+from src.structure.obstacle import LinearWall
 
 
 @numba.jit(nopython=True)
@@ -25,18 +25,9 @@ def _direction_update(agent, target, mid, r_mid, c_rect, r_rect):
     return target_direction
 
 
-def evacuation(size,
-               width,
-               height,
-               door_width=1.2,
-               exit_hall_width=2,
-               agent_model="circular",
-               body_type="adult",
-               spawn_shape="circ",
-               egress_model=False,
-               t_aset=60,
-               path="",
-               name="evacuation",
+def evacuation(size, width, height, agent_model, body_type,
+               spawn_shape="circ", door_width=1.2, exit_hall_width=2,
+               egress_model=False, t_aset=60, path="", name="evacuation",
                **kwargs):
     domain = Rectangle((0.0, width + exit_hall_width), (0.0, height))
 
@@ -60,8 +51,6 @@ def evacuation(size,
 
     goals = Rectangle((width, width + 2),
                       ((height - door_width) / 2, (height + door_width) / 2))
-
-
 
     # Agents
     spawn = None

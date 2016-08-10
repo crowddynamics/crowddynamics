@@ -1,18 +1,12 @@
 import numpy as np
 
+from src.initialize import initialize_agent
 from src.simulation import Simulation
 from src.structure.area import Rectangle
-from src.structure.initialize import initialize_agent
 from src.structure.obstacle import LinearWall
 
 
-def hallway(size,
-            width,
-            height,
-            agent_model="circular",
-            body_type="adult",
-            path="",
-            name="hallway",
+def hallway(size, width, height, agent_model, body_type, path="", name="hallway",
             **kwargs):
     domain = Rectangle((0, width), (0, height))
     linear_params = np.array((

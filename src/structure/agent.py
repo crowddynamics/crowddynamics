@@ -5,11 +5,14 @@ from numba.types import UniTuple
 
 from src.core.vector2d import rotate270
 
+
 spec_agent = (
     ("size", int64),
     ("shape", UniTuple(int64, 2)),
+
     ("circular", boolean),
     ("three_circle", boolean),
+
     ("orientable", boolean),
     ("active", boolean[:]),
     ("goal_reached", boolean[:]),
@@ -18,10 +21,6 @@ spec_agent = (
     ("r_t", float64[:]),
     ("r_s", float64[:]),
     ("r_ts", float64[:]),
-
-    ("mean_radius", float64),
-    ("mean_mass", float64),
-    ("mean_inertia_rot", float64),
 
     ("position", float64[:, :]),
     ("velocity", float64[:, :]),
@@ -108,13 +107,8 @@ class Agent(object):
         self.shape = (size, 2)  # Shape of 2D arrays
 
         # Agent models (Only one can be active at time).
-        # Three circles model (more realistic) model is used by default.
-        self.circular = False     # Non-orientable.
-        self.three_circle = True  # Orientable.
-
-        if self.circular and self.three_circle:
-            raise ValueError("Two agent models cannot not be active at the "
-                             "same time.")
+        self.circular = True
+        self.three_circle = False
 
         # Flags
         self.orientable = self.three_circle  # Orientable has rotational motion
@@ -122,17 +116,12 @@ class Agent(object):
         self.goal_reached = np.zeros(size, np.bool8)
 
         # Constant properties
-        # TODO: gender, mean values
         self.radius = radius               # Total radius
         self.r_t = radius_torso            # Radius of torso
         self.r_s = radius_shoulder         # Radius of shoulders
         self.r_ts = radius_torso_shoulder  # Distance from torso to shoulder
         self.mass = mass.reshape(size, 1)  # Mass
         self.inertia_rot = inertia_rot     # Moment of inertia
-
-        self.mean_radius = np.mean(self.radius)
-        self.mean_mass = np.mean(self.mass)
-        self.mean_inertia_rot = np.mean(self.inertia_rot)
 
         # Movement along x and y axis.
         self.position = np.zeros(self.shape)

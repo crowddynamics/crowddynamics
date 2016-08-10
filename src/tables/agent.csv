@@ -32,10 +32,8 @@ tau_rot,tau_adjrot,0.2,s,fds+evac,Characteristic time for agent adjusting its  r
 k_soc,k_soc,1.5,N,power law,Social force scaling constant
 tau_0,tau_0,3,s,power law,Interaction time horizon
 mu,mu,12000,kg / s^2,fds+evac,Compression counteraction constant
-kappa,kappa,40000,kg / (m * s),fds+evac,Sliding friction constant
+kappa,kappa,4000,kg / (m * s),fds+evac,Sliding friction constant
 damping,c_d,500,N,fds+evac,Damping coefficient for contact force
-a,A,2000,N,helbing,Scaling coefficient for social force
-b,B,0.08,m,helbing,Coefficient for social force
 std_rand_force,xi / m,0.1,,fds+evac,Standard deviation for random force from truncated normal distribution
 std_rand_torque,eta / I_rot,0.1,,fds+evac,Standard deviation for random torque from truncated normal distribution
 f_soc_ij_max,,2000,N,,Truncation for social force with agent to agent interaction
