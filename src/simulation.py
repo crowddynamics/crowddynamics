@@ -7,7 +7,7 @@ from scipy.stats import truncnorm as tn
 
 from .core.vector2d import angle_nx2, length_nx2
 from .functions import filter_none
-from .core.egress import egress_game_attrs
+from .core.game import egress_game_attrs
 from .core.motion import motion, integrator
 from .core.navigation import navigator
 from .functions import timed_execution
@@ -168,12 +168,12 @@ class MultiAgentSimulation:
         self.in_goal_time = []
 
         # Structures
-        self.domain = None  # None is whole 2-dimensional real domain
-        self.agent = None
-        self.walls = ()
-        self.goals = ()
+        self.domain = None  # Area. None accounts for whole real domain.
+        self.agent = None   # Agent class
+        self.walls = ()     # Obstacle / Walls
+        self.goals = ()     # Area
+        self.exits = ()
 
-        # Extras
         self.egress_model = None
 
         # Saving data to HDF5 file for analysis and resuming a simulation.
@@ -273,6 +273,12 @@ class MultiAgentSimulation:
         else:
             self.walls = (obstacles,)
 
+    def configure_exits(self, exits):
+        if isinstance(exits, Iterable):
+            self.exits = exits
+        else:
+            self.exits = (exits,)
+
     def configure_agent_positions(self, kwargs):
         # TODO: separate, manual positions
         # Initial positions
@@ -293,10 +299,6 @@ class MultiAgentSimulation:
         if self.hdfstore is not None:
             self.hdfstore.save(self, self.attrs_result, overwrite=True)
             self.hdfstore.record(brute=True)
-
-    def exit(self):
-        log.info("Simulation exit")
-        self.save()
 
     @timed_execution
     def update(self):
@@ -338,10 +340,8 @@ class MultiAgentSimulation:
         :param max_time: Time (simulation not real time) limit
         :return: None
         """
-        while self.update() and \
-                        self.iterations < max_iter and \
-                        self.time < max_time:
+        while self.update() and self.iterations < max_iter and self.time < max_time:
             pass
-        self.exit()
+        self.save()
 
 

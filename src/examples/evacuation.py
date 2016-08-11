@@ -8,6 +8,9 @@ from src.simulation import MultiAgentSimulation
 from src.structure.area import Rectangle, Circle
 from src.structure.obstacle import LinearWall
 
+from src.structure.obstacle import LinearExit
+from src.core.game import EgressGame
+
 
 @numba.jit(nopython=True)
 def _direction_update(agent, target, mid, r_mid, c_rect, r_rect):
@@ -90,13 +93,12 @@ class RoomEvacuation(MultiAgentSimulation):
         self.configure_agent(size, body)
         self.configure_agent_model(model)
         self.configure_obstacles(walls)
+        exit_door = LinearExit(door[0], door[1], np.mean(self.agent.radius))
+        self.configure_exits(exit_door)
         self.configure_agent_positions(kw)
 
 
-def evacuation():
-    from src.structure.obstacle import LinearExit
-    from src.core.egress import EgressGame
-
-    t_aset = 60
-    exit_door = LinearExit(door[0], door[1], np.mean(agent.radius))
-    egress_model = EgressGame(agent, exit_door, t_aset, 0.1)
+class RoomEvacuationWithEgressGame(RoomEvacuation):
+    def __init__(self, size, width, height, model, body, t_aset_0=60):
+        super().__init__(size, width, height, model, body)
+        self.egress_model = EgressGame(self.agent, self.exits[0], t_aset_0, 0.1)

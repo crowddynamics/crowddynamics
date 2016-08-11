@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'design/gui.ui'
+# Form implementation generated from reading ui file 'designer/gui.ui'
 #
 # Created by: PyQt4 UI code generator 4.11.4
 #
@@ -314,6 +314,7 @@ class Ui_MainWindow(object):
         self.simulationName.addItem(_fromUtf8(""))
         self.simulationName.addItem(_fromUtf8(""))
         self.simulationName.addItem(_fromUtf8(""))
+        self.simulationName.addItem(_fromUtf8(""))
         self.verticalLayout.addWidget(self.simulationName)
         self.label = QtGui.QLabel(self.centralwidget)
         self.label.setObjectName(_fromUtf8("label"))
@@ -416,6 +417,7 @@ class Ui_MainWindow(object):
         self.simulationName.setItemText(1, _translate("MainWindow", "outdoor", None))
         self.simulationName.setItemText(2, _translate("MainWindow", "hallway", None))
         self.simulationName.setItemText(3, _translate("MainWindow", "evacuation", None))
+        self.simulationName.setItemText(4, _translate("MainWindow", "evacuation_game", None))
         self.label.setText(_translate("MainWindow", "Size", None))
         self.label_2.setText(_translate("MainWindow", "Width", None))
         self.label_3.setText(_translate("MainWindow", "Height", None))

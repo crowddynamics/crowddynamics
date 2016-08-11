@@ -320,6 +320,11 @@ QStatusBar {
           <string>evacuation</string>
          </property>
         </item>
+        <item>
+         <property name="text">
+          <string>evacuation_game</string>
+         </property>
+        </item>
        </widget>
       </item>
       <item>
