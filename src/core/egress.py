@@ -65,6 +65,7 @@ class EgressGame(object):
     def __init__(self, agent, exit_door, time_aset_0, interval):
         """Patient and impatient pedestrians in a spatial game for egress
         congestion. Strategies are denoted: {0: "Impatient", 1: "Patient"}.
+
         :param agent: Agent class
         :param exit_door: Exit door class
         :param time_aset_0: Initial available safe egress time.

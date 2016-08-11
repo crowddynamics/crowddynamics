@@ -98,7 +98,7 @@ class MainWindow(QtGui.QMainWindow):
 
     def plot_update(self):
         # TODO: simulation stats
-        if self.simulation.advance():
+        if self.simulation.update():
             self.simulation_plot.update_data()
         else:
             self.stop()

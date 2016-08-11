@@ -299,7 +299,7 @@ class MultiAgentSimulation:
         self.save()
 
     @timed_execution
-    def advance(self):
+    def update(self):
         # TODO: Initial -> Final
         navigator(self.agent, self.angle_update, self.direction_update)
         motion(self.agent, self.walls)
@@ -338,7 +338,7 @@ class MultiAgentSimulation:
         :param max_time: Time (simulation not real time) limit
         :return: None
         """
-        while self.advance() and \
+        while self.update() and \
                         self.iterations < max_iter and \
                         self.time < max_time:
             pass

@@ -98,9 +98,9 @@ class LinearWall(object):
         return d_iw, n_iw
 
 
-class ExitDoor(object):
+class LinearExit(object):
     def __init__(self, p0, p1, agent_radius):
-        """Exit door / Bottleneck"""
+        """Linear Exit"""
         self.p = np.array((p0, p1))
         self.mid = (self.p[0] + self.p[1]) / 2.0
         self.capacity_coeff = 1.0  # Agents per second
