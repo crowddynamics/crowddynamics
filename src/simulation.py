@@ -163,7 +163,7 @@ class MultiAgentSimulation:
         self.iterations = 0
         self.time = 0
         self.time_steps = [0]
-        # TODO: In-Goal to area class
+        # TODO: In-goal -> Area class
         self.in_goal = 0
         self.in_goal_time = []
 
@@ -207,11 +207,11 @@ class MultiAgentSimulation:
         for w in self.walls:
             self.hdfstore.save(w, attrs_wall)
 
-        if self.egress_model is not None:
-            attrs_egress = Attrs(egress_game_attrs, Intervals(1.0))
-            attrs_egress["strategy"] = Attr("strategy", True, True)
-            attrs_egress["time_evac"] = Attr("time_evac", True, True)
-            self.hdfstore.save(self.egress_model, attrs_egress)
+        # if self.egress_model is not None:
+        #     attrs_egress = Attrs(egress_game_attrs, Intervals(1.0))
+        #     attrs_egress["strategy"] = Attr("strategy", True, True)
+        #     attrs_egress["time_evac"] = Attr("time_evac", True, True)
+        #     self.hdfstore.save(self.egress_model, attrs_egress)
 
     def configure_domain(self, domain):
         if isinstance(domain, Area) or domain is None:
@@ -220,9 +220,9 @@ class MultiAgentSimulation:
 
     def configure_goals(self, goals):
         if isinstance(goals, Iterable):
-            self.walls = goals
+            self.goals = goals
         else:
-            self.walls = (goals,)
+            self.goals = (goals,)
 
     def configure_agent(self, size, body):
         # Load tabular values
@@ -298,7 +298,7 @@ class MultiAgentSimulation:
     def save(self):
         if self.hdfstore is not None:
             self.hdfstore.save(self, self.attrs_result, overwrite=True)
-            self.hdfstore.record(brute=True)
+            # self.hdfstore.record(brute=True)
 
     @timed_execution
     def update(self):
@@ -325,7 +325,8 @@ class MultiAgentSimulation:
             self.agent.goal_reached |= goal.contains(self.agent.position)
             num += np.sum(self.agent.goal_reached)
             self.in_goal += num
-            self.in_goal_time.extend(num * (self.time,))
+            for _ in range(num):
+                self.in_goal_time.append(self.time)
 
         # Save
         if self.hdfstore is not None:

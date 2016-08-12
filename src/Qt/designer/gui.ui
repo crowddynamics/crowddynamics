@@ -288,8 +288,14 @@ QStatusBar {
 }</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QHBoxLayout" name="horizontalLayout">
-    <item>
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="0" column="0">
      <layout class="QVBoxLayout" name="verticalLayout">
       <item>
        <widget class="QLabel" name="label_7">
@@ -436,6 +442,37 @@ QStatusBar {
        </widget>
       </item>
       <item>
+       <widget class="QLabel" name="label_8">
+        <property name="text">
+         <string>Directory path</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QRadioButton" name="saveButton">
+        <property name="text">
+         <string>Save simulation</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="dirpathLine">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="initSimulation">
+        <property name="text">
+         <string>Initialize</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="Line" name="line">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
@@ -446,13 +483,6 @@ QStatusBar {
        <widget class="QLabel" name="label_6">
         <property name="text">
          <string>Simulation controls</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="initSimulation">
-        <property name="text">
-         <string>Initialize</string>
         </property>
        </widget>
       </item>
@@ -470,9 +500,16 @@ QStatusBar {
         </property>
        </widget>
       </item>
+      <item>
+       <widget class="QPushButton" name="pushButton">
+        <property name="text">
+         <string>Close</string>
+        </property>
+       </widget>
+      </item>
      </layout>
     </item>
-    <item>
+    <item row="0" column="2">
      <widget class="GraphicsLayoutWidget" name="plt">
       <property name="styleSheet">
        <string notr="true"/>

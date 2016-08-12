@@ -58,10 +58,12 @@ class RoomEvacuation(MultiAgentSimulation):
         # Agents
         spawn = None
         if spawn_shape == "circ":
-            spawn = Circle((np.pi / 2, np.pi / 2 + np.pi), (0, height / 2),
-                           (width, height / 2))
+            spawn = Circle(phi=(np.pi / 2, np.pi / 2 + np.pi),
+                           radius=(0, height / 2),
+                           center=(width, height / 2))
         elif spawn_shape == "rect":
-            spawn = Rectangle((0.0, width), (0.0, height))
+            spawn = Rectangle(x=(0.0, width),
+                              y=(0.0, height))
         else:
             ValueError("Spawn shape not valid.")
 

@@ -5,7 +5,7 @@ from src.core.random import poisson_clock
 from src.core.vector2d import length_nx2
 
 
-class SpatialGame:
+class SpatialGame(object):
     """Base class for spatial games"""
     def __init__(self):
         self.players = None

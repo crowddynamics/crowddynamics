@@ -26,6 +26,9 @@ class Area(object):
         """:return: Random point inside the area."""
         pass
 
+    def __str__(self):
+        return self.__class__.__name__
+
 
 class Rectangle(Area):
     def __init__(self, x, y):
@@ -56,9 +59,12 @@ class Rectangle(Area):
         pos[1] = np.random.uniform(self.y[0], self.y[1])
         return pos
 
+    def __str__(self):
+        return self.__class__.__name__ + str((tuple(self.x), tuple(self.y)))
+
 
 class Circle(Area):
-    def __init__(self, phi, radius, center):
+    def __init__(self, center, radius, phi=(0, 2 * np.pi)):
         """
 
         :param phi:
@@ -66,9 +72,9 @@ class Circle(Area):
         :param center:
         """
         super().__init__()
-        self.phi = phi  # [0, 2 * pi]
-        self.radius = radius
         self.center = center
+        self.radius = radius
+        self.phi = phi        # subset of [0, 2 * pi]
 
     def contains(self, array):
         c = array - self.center
@@ -91,3 +97,8 @@ class Circle(Area):
         phi = np.random.uniform(self.phi[0], self.phi[1])
         radius = np.random.power(2) * self.radius[1]
         return radius * np.array([np.cos(phi), np.sin(phi)]) + self.center
+
+    def __str__(self):
+        return self.__class__.__name__ + str((tuple(self.phi),
+                                              tuple(self.radius),
+                                              tuple(self.center)))

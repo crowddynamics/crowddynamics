@@ -19,11 +19,16 @@ class MainWindow(QtGui.QMainWindow):
         self.simulation_plot = None
         self.simulation = None
         self.timer_plot_update = None
+        self.dirpath = None
 
         # Configures
         self.configure_plot()
         self.configure_timers()
         self.configure_signals()
+
+    def getdirectory(self):
+        dlg = QtGui.QFileDialog()
+        dlg.setFileMode(QtGui.QFileDialog.Directory)
 
     def configure_plot(self):
         log.info("Configuring graphics")
@@ -57,14 +62,23 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.saveSimulation.setEnabled(False)
         self.ui.saveSimulation.clicked.connect(self.save)
 
+        # QFileDialog for opening and saving simulation
+        # Select dirpath for saving simulation
+        self.ui.dirpathLine.setEnabled(False)
+        self.ui.saveButton.clicked.connect(self.save_button)
+
+    def save_button(self):
+        if self.ui.saveButton.isChecked():
+            self.ui.dirpathLine.setEnabled(True)
+        else:
+            self.ui.dirpathLine.setEnabled(False)
+
     def new_simulation(self):
         # TODO: Importer
         from ..examples.evacuation import RoomEvacuation, \
             RoomEvacuationWithEgressGame
         from ..examples.hallway import Hallway
         from ..examples.outdoor import Outdoor
-
-        # path = "/home/jaan/Dropbox/Projects/CrowdDynamicsSimulations/"
 
         name = self.ui.simulationName.currentText()
         kw = dict(
@@ -90,6 +104,10 @@ class MainWindow(QtGui.QMainWindow):
             return
 
         self.simulation_plot.set_simulation(self.simulation)
+
+        self.dirpath = self.ui.dirpathLine.text()
+        if self.ui.saveButton.isChecked():
+            self.simulation.configure_saving(self.dirpath)
 
         log.info("Initializing simulation\n"
                  "Name: {}\n"
