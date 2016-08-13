@@ -5,17 +5,17 @@ from collections import Iterable
 import numpy as np
 from scipy.stats import truncnorm as tn
 
-from .core.vector2d import angle_nx2, length_nx2
-from .functions import filter_none
-from .core.game import egress_game_attrs
-from .core.motion import motion, integrator
-from .core.navigation import navigator
-from .functions import timed_execution
-from .io.attributes import Intervals, Attrs, Attr
-from .io.hdfstore import HDFStore
-from .structure.agent import agent_attr_names, Agent
-from .structure.area import Area
-from .structure.obstacle import wall_attr_names
+from src.core.vector2d import angle_nx2, length_nx2
+from src.functions import filter_none
+from src.core.game import egress_game_attrs
+from src.core.motion import motion, integrator
+from src.core.navigation import navigator
+from src.functions import timed_execution
+from src.io.attributes import Intervals, Attrs, Attr
+from src.io.hdfstore import HDFStore
+from src.structure.agent import agent_attr_names, Agent
+from src.structure.area import Area
+from src.structure.obstacle import wall_attr_names
 
 
 def random_unit_vector(size):
@@ -140,17 +140,11 @@ def agent_positions(agent: Agent,
 
 
 class MultiAgentSimulation:
-    def __init__(self):
-        self.result_attr_names = (
-            "dt_min",
-            "dt_max",
-            "iterations",
-            "time",
-            "time_steps",
-            "in_goal_time",
-        )
-        self.attrs_result = Attrs(self.result_attr_names)
+    attrs_result = Attrs((
+        "dt_min", "dt_max", "iterations", "time", "time_steps", "in_goal_time",
+    ))
 
+    def __init__(self):
         # Integrator timestep
         self.dt_min = 0.001
         self.dt_max = 0.01
@@ -163,8 +157,7 @@ class MultiAgentSimulation:
         self.iterations = 0
         self.time = 0
         self.time_steps = [0]
-        # TODO: In-goal -> Area class
-        self.in_goal = 0
+        self.in_goal = 0        # TODO: In-goal -> Area class
         self.in_goal_time = []
 
         # Structures
@@ -172,7 +165,7 @@ class MultiAgentSimulation:
         self.agent = None   # Agent class
         self.walls = ()     # Obstacle / Walls
         self.goals = ()     # Area
-        self.exits = ()
+        self.exits = ()     # Exit
 
         self.egress_model = None
 
@@ -182,36 +175,6 @@ class MultiAgentSimulation:
     @property
     def name(self):
         return self.__class__.__name__
-
-    def configure_saving(self, dirpath):
-        log.info("Simulation: Configuring save")
-
-        if dirpath is None or len(dirpath) == 0:
-            filepath = self.name
-        else:
-            os.makedirs(dirpath, exist_ok=True)
-            filepath = os.path.join(dirpath, self.name)
-
-        self.hdfstore = HDFStore(filepath)
-
-        attrs_agent = Attrs(agent_attr_names, Intervals(1.0))
-        attrs_wall = Attrs(wall_attr_names)
-
-        # TODO: Gui selection for saveable attributes
-        attrs = ("position", "velocity", "force", "angle", "angular_velocity",
-                 "torque")
-        for attr in attrs:
-            attrs_agent[attr] = Attr(attr, True, True)
-
-        self.hdfstore.save(self.agent, attrs_agent)
-        for w in self.walls:
-            self.hdfstore.save(w, attrs_wall)
-
-        # if self.egress_model is not None:
-        #     attrs_egress = Attrs(egress_game_attrs, Intervals(1.0))
-        #     attrs_egress["strategy"] = Attr("strategy", True, True)
-        #     attrs_egress["time_evac"] = Attr("time_evac", True, True)
-        #     self.hdfstore.save(self.egress_model, attrs_egress)
 
     def configure_domain(self, domain):
         if isinstance(domain, Area) or domain is None:
@@ -291,6 +254,36 @@ class MultiAgentSimulation:
             raise ValueError("")
 
         self.agent.update_shoulder_positions()
+
+    def configure_saving(self, dirpath):
+        log.info("Simulation: Configuring save")
+
+        if dirpath is None or len(dirpath) == 0:
+            filepath = self.name
+        else:
+            os.makedirs(dirpath, exist_ok=True)
+            filepath = os.path.join(dirpath, self.name)
+
+        self.hdfstore = HDFStore(filepath)
+
+        attrs_agent = Attrs(agent_attr_names, Intervals(1.0))
+        attrs_wall = Attrs(wall_attr_names)
+
+        # TODO: Gui selection for saveable attributes
+        attrs = ("position", "velocity", "force", "angle", "angular_velocity",
+                 "torque")
+        for attr in attrs:
+            attrs_agent[attr] = Attr(attr, True, True)
+
+        self.hdfstore.save(self.agent, attrs_agent)
+        for w in self.walls:
+            self.hdfstore.save(w, attrs_wall)
+
+            # if self.egress_model is not None:
+            #     attrs_egress = Attrs(egress_game_attrs, Intervals(1.0))
+            #     attrs_egress["strategy"] = Attr("strategy", True, True)
+            #     attrs_egress["time_evac"] = Attr("time_evac", True, True)
+            #     self.hdfstore.save(self.egress_model, attrs_egress)
 
     def load(self):
         pass
