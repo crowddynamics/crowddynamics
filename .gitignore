@@ -259,8 +259,12 @@ sympy-plots-for-*.tex/
 *.lprof
 *.mp4
 *.hdf5
+*.old
+/.travis.yaml
+TODO
 
 # Folders
 /docs/build/
-/docs/notebooks/
 /src/examples/CAD/
+/buildscripts/
+/notebooks/

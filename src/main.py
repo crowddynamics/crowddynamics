@@ -1,35 +1,9 @@
 import argparse
 import logging as log
-import logging.handlers
 import os
-import platform
 import sys
 
-from PyQt4 import QtGui, QtCore
-
-
-def start_logging(level):
-    log_format = log.Formatter('%(asctime)s, %(levelname)s, %(message)s')
-    logger = log.getLogger()
-    logger.setLevel(level)
-
-    filename = "run.log"
-    # os.remove(filename)  # Remove old log file
-    file_handler = logging.handlers.RotatingFileHandler(filename,
-                                                        maxBytes=(10240 * 5),
-                                                        backupCount=2)
-    file_handler.setFormatter(log_format)
-    logger.addHandler(file_handler)
-
-    console_handler = log.StreamHandler(sys.stdout)
-    console_handler.setFormatter(log_format)
-    logger.addHandler(console_handler)
-
-
-def user_info():
-    log.info("Platform: %s", platform.platform())
-    log.info("Path: %s", sys.path[0])
-    log.info("Python: %s", sys.version[0:5])
+from .log import start_logging, user_info
 
 
 def man():
@@ -45,6 +19,7 @@ def run_gui():
     """Launches Qt application for visualizing simulation.
     :param simulation:
     """
+    from PyQt4 import QtGui, QtCore
     sys.path.insert(0, os.path.abspath(".."))
     from src.Qt.main import MainWindow
 

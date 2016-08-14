@@ -1,0 +1,30 @@
+TODO: Logger, __class__.__name__
+TODO: Command line arguments
+
+# Simulation
+TODO: Simulation configuration
+TODO: Load simulation data
+TODO: Start/end time, simulation length
+TODO: Multiprocessing, Queue, Gui <-> Simulation <-> IO
+TODO: Bytes saved, Memory consumption
+TODO: CAD integration
+
+# Structures
+TODO: Linear, Bezier, Radial Curves
+TODO: Agent maximum velocity for optimizations
+
+# Graphical user interface
+TODO: MoviePy
+TODO: Density & Navigation Visualization
+TODO: Frames per second
+
+# Package/Module
+TODO: Python Packaging
+TODO: Software Versioning
+
+# Continuous integration
+TODO: Circle-CI, Travis-CI, Appveyor ?
+
+# Documentation
+TODO: Truncated normal distribution
+TODO: Bokeh plots

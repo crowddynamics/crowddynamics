@@ -26,14 +26,6 @@ where
 - Maximum angular velocity :math:`\omega_{0}`.
 - Target orientation :math:`\varphi_{0}`. In low and medium crowd densities the angle of the target direction can be sufficient for target orientation. In high crowd densities agents may twist their body differently for example to try to squeeze through narrow spaces, requiring more sophisticated algorithms.
 
-..
-   .. literalinclude:: ../../../src/core/motion.py
-      :pyobject: force_adjust
-
-
-   .. literalinclude:: ../../../src/core/motion.py
-      :pyobject: torque_adjust
-
 ----
 
 Navigation
@@ -73,6 +65,12 @@ We get static potential by defining speed in walkable areas :math:`\Omega \setmi
    f(\mathbf{x}) &= 1, \quad \mathbf{x} \in \Omega \setminus \mathcal{O} \\
    f(\mathbf{x}) &\to 0, \quad \mathbf{x} \in \mathcal{O}
 
+Target direction
+
+.. math::
+   \hat{\mathbf{e}}_{0} = -\frac{\nabla S(\mathbf{x})}{\| \nabla S(\mathbf{x}) \|}
+
+
 Dynamic potential
 ^^^^^^^^^^^^^^^^^
 
@@ -91,18 +89,18 @@ Dynamic potential
 - :math:`c_{1}` impact of the moving direction of an agent
 
 Target direction
-^^^^^^^^^^^^^^^^
 
 .. math::
-   \hat{\mathbf{e}}_{0} = -\frac{\nabla S(\mathbf{x})}{\| \nabla S(\mathbf{x}) \|}
+   \hat{\mathbf{e}}_{0} = -\frac{\nabla T(\mathbf{x})}{\| \nabla T(\mathbf{x}) \|}
 
 
 Numerical solving
 ^^^^^^^^^^^^^^^^^
 Fast Marching Method
 
-Fast Iterative Method
+https://github.com/scikit-fmm/scikit-fmm
 
+Fast Iterative Method
 
 ----
 
