@@ -8,6 +8,7 @@ Crowd Dynamics
 Python package for multi-agent simulation of crowd dynamics.
 
 .. toctree::
+   :numbered:
    :maxdepth: 2
 
    sections/overview.rst

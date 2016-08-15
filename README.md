@@ -4,6 +4,4 @@ Summer 2016 project for *Aalto University's* [Systems Analysis Laboratory](http:
 
 Python package for simulating, visualizing and analysing movement of human crowds. 
 
-## Requirements
-
 [Anaconda](https://www.continuum.io/downloads)

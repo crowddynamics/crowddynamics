@@ -28,7 +28,7 @@ wall_attr_names = [item[0] for item in spec_linear]
 
 
 @jitclass(spec_linear)
-class LinearWall(object):
+class LinearObstacle(object):
     def __init__(self, linear_params):
         self.params = linear_params
         self.cols = 9

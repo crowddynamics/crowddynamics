@@ -1,4 +1,4 @@
-from src.simulation import MultiAgentSimulation, random_unit_vector
+from src.simulation.multiagent import MultiAgentSimulation, random_unit_vector
 from src.structure.area import Rectangle
 
 

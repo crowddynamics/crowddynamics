@@ -1,5 +1,7 @@
-TODO: Logger, __class__.__name__
+TODO: Logging, __class__.__name__
 TODO: Command line arguments
+TODO: JIT Compilation
+TODO: Executable
 
 # Simulation
 TODO: Simulation configuration
@@ -13,6 +15,9 @@ TODO: CAD integration
 TODO: Linear, Bezier, Radial Curves
 TODO: Agent maximum velocity for optimizations
 
+# Egress Game
+TODO: Unidirectional narrow bottleneck capacity estimation
+
 # Graphical user interface
 TODO: MoviePy
 TODO: Density & Navigation Visualization
@@ -21,6 +26,7 @@ TODO: Frames per second
 # Package/Module
 TODO: Python Packaging
 TODO: Software Versioning
+TODO: Conda package
 
 # Continuous integration
 TODO: Circle-CI, Travis-CI, Appveyor ?

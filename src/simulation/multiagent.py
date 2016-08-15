@@ -1,16 +1,16 @@
 import logging as log
 import os
 from collections import Iterable
+from collections import deque
+from timeit import default_timer as timer
 
 import numpy as np
 from scipy.stats import truncnorm as tn
 
-from src.core.vector2d import angle_nx2, length_nx2
-from src.functions import filter_none
-from src.core.game import egress_game_attrs
 from src.core.motion import motion, integrator
 from src.core.navigation import navigator
-from src.functions import timed_execution
+from src.core.vector2d import angle_nx2, length_nx2
+from src.functions import filter_none
 from src.io.attributes import Intervals, Attrs, Attr
 from src.io.hdfstore import HDFStore
 from src.structure.agent import agent_attr_names, Agent
@@ -160,14 +160,14 @@ class MultiAgentSimulation:
         self.in_goal = 0        # TODO: In-goal -> Area class
         self.in_goal_time = []
 
+        self.update_time = deque((0,), maxlen=100)
+
         # Structures
         self.domain = None  # Area. None accounts for whole real domain.
         self.agent = None   # Agent class
         self.walls = ()     # Obstacle / Walls
         self.goals = ()     # Area
         self.exits = ()     # Exit
-
-        self.egress_model = None
 
         # Saving data to HDF5 file for analysis and resuming a simulation.
         self.hdfstore = None
@@ -279,12 +279,6 @@ class MultiAgentSimulation:
         for w in self.walls:
             self.hdfstore.save(w, attrs_wall)
 
-            # if self.egress_model is not None:
-            #     attrs_egress = Attrs(egress_game_attrs, Intervals(1.0))
-            #     attrs_egress["strategy"] = Attr("strategy", True, True)
-            #     attrs_egress["time_evac"] = Attr("time_evac", True, True)
-            #     self.hdfstore.save(self.egress_model, attrs_egress)
-
     def load(self):
         pass
 
@@ -293,9 +287,12 @@ class MultiAgentSimulation:
             self.hdfstore.save(self, self.attrs_result, overwrite=True)
             # self.hdfstore.record(brute=True)
 
-    @timed_execution
     def update(self):
-        # TODO: Initial -> Final
+        # TODO: Initialize update function. Final update function
+
+        # Time execution
+        start = timer()
+
         navigator(self.agent, self.angle_update, self.direction_update)
         motion(self.agent, self.walls)
         dt = integrator(self.agent, self.dt_min, self.dt_max)
@@ -303,11 +300,6 @@ class MultiAgentSimulation:
         self.iterations += 1
         self.time += dt
         self.time_steps.append(dt)
-
-        if self.egress_model is not None:
-            self.egress_model.update(self.time, dt)
-
-        self.agent.reset_neighbor()
 
         if self.domain is not None:
             self.agent.active &= self.domain.contains(self.agent.position)
@@ -324,6 +316,9 @@ class MultiAgentSimulation:
         # Save
         if self.hdfstore is not None:
             self.hdfstore.record()
+
+        time_diff = timer() - start
+        self.update_time.append(time_diff)
 
         return True
 

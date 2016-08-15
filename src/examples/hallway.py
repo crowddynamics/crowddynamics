@@ -1,8 +1,8 @@
 import numpy as np
 
-from src.simulation import MultiAgentSimulation
+from src.simulation.multiagent import MultiAgentSimulation
 from src.structure.area import Rectangle
-from src.structure.obstacle import LinearWall
+from src.structure.obstacle import LinearObstacle
 
 
 class Hallway(MultiAgentSimulation):
@@ -19,7 +19,7 @@ class Hallway(MultiAgentSimulation):
             ((0.0, 0.0), (width, 0.0)),
             ((0.0, height), (width, height)),
         ))
-        walls = LinearWall(linear_params)
+        walls = LinearObstacle(linear_params)
 
         spawn1 = Rectangle((1.0, width // 2), (0.0, height))
         spawn2 = Rectangle((width // 2, width - 1.0), (0.0, height))

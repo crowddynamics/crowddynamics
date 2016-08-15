@@ -3,7 +3,7 @@ import numpy as np
 import pyqtgraph as pg
 from src.simulation.multiagent import MultiAgentSimulation
 from src.structure.area import Rectangle
-from src.structure.obstacle import LinearWall
+from src.structure.obstacle import LinearObstacle
 
 
 class SimulationPlot(pg.PlotItem):
@@ -16,7 +16,7 @@ class SimulationPlot(pg.PlotItem):
 
         # Plot settings
         self.setAspectLocked(lock=True, ratio=1)  # One to one scale
-        self.showGrid(True, True, 0.25)
+        self.showGrid(x=True, y=True, alpha=0.25)
         self.disableAutoRange()
 
         # Pens
@@ -90,7 +90,7 @@ class SimulationPlot(pg.PlotItem):
             self.direction.setData(connect=connect)
 
         for wall in self.simulation.walls:
-            if isinstance(wall, LinearWall):
+            if isinstance(wall, LinearObstacle):
                 connect = np.zeros(2 * wall.size, dtype=np.int32)
                 connect[::2] = np.ones(wall.size, dtype=np.int32)
                 self.walls.setData(wall.params[:, :, 0].flatten(),
@@ -107,11 +107,12 @@ class SimulationPlot(pg.PlotItem):
             sympen[:] = self.active_pen
             sympen[agent.active ^ True] = self.inactive_pen
 
-            if self.simulation.egress_model is not None:
-                brush = self.states[self.simulation.egress_model.strategy]
-            else:
-                brush = np.zeros(agent.size, dtype=object)
-                brush[:] = self.patient
+            # if self.simulation.egress_model is not None:
+            #     brush = self.states[self.simulation.egress_model.strategy]
+            # else:
+
+            brush = np.zeros(agent.size, dtype=object)
+            brush[:] = self.patient
 
             brush[agent.active ^ True] = self.inactive
 

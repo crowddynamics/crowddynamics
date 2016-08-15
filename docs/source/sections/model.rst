@@ -7,8 +7,14 @@ Simulation Models
 - #) Continuous space
   #) Discrete lattice
 
-Multi Agent Model
+Cellular Automata
 -----------------
+Discrete grid
+
+----
+
+Multi-Agent
+-----------
 Microscopic modeling of crowd dynamics.
 
 Social force model approached modelling pedestrian dynamics using classical mechanics. Helbing describes social forces in [helbing1995]_, [helbing2000]_,
@@ -44,10 +50,6 @@ Continuum
 ---------
 Macroscopic modelling of crowds. [cristiani2011]_
 
-
-Cellular Automata
------------------
-Discrete grid
 
 
 ----
