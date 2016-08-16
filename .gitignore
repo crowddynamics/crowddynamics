@@ -268,3 +268,5 @@ TODO
 /src/examples/CAD/
 /buildscripts/
 /notebooks/
+docs/source/pydoctheme/pydoctheme.css
+docs/source/pydoctheme/theme.conf

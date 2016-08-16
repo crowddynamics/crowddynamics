@@ -4,6 +4,12 @@ import skfmm
 from .vector2d import angle_nx2
 
 
+class ExitSelection:
+    """Exit selection policy."""
+    def __init__(self, agent, exits):
+        pass
+
+
 class Navigation:
     """Target direction"""
     def __init__(self, agent, domain, obstacles, exits):
@@ -33,48 +39,20 @@ class Navigation:
         return
 
     def static_potential(self):
-        return
+        pass
 
     def dynamic_potential(self):
-        return
+        pass
+
+    def update(self):
+        # self.agent.target_direction = None
+        pass
 
 
 class Orientation:
     """Target orientation"""
-    def __init__(self):
-        pass
+    def __init__(self, agent):
+        self.agent = agent
 
-
-class ExitSelection:
-    """Exit selection policy."""
-    def __init__(self):
-        pass
-
-
-def direction_to_target_angle(agent):
-    """:return: Angle of agent.target_direction."""
-    return angle_nx2(agent.target_direction)
-
-
-def navigator(agent,
-              angle_update=direction_to_target_angle,
-              direction_update=None):
-    """
-    Function for updating target angle and target direction.
-
-    :param agent: Argument for functions
-    :param angle_update: Function, or numpy array for updating agent.target_angle
-    :param direction_update: Function, or numpy array for updating agent.target_direction
-    """
-    if direction_update is not None:
-        if callable(direction_update):
-            agent.target_direction[:] = direction_update(agent)
-        else:
-            agent.target_direction[:] = direction_update
-
-    if angle_update is not None and agent.orientable:
-        if callable(angle_update):
-            agent.target_angle[:] = angle_update(agent)
-        else:
-            agent.target_angle[:] = angle_update
-
+    def update(self):
+        self.agent.target_angle[:] = angle_nx2(self.agent.target_direction)

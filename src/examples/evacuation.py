@@ -3,15 +3,13 @@ from functools import partial
 import numba
 import numpy as np
 
-from src.io.attributes import Intervals, Attrs, Attr
-
-from src.core.vector2d import rotate90, normalize, length
-from src.simulation.multiagent import MultiAgentSimulation
-from src.structure.area import Rectangle, Circle
-from src.structure.obstacle import LinearObstacle
-
-from src.structure.obstacle import LinearExit
 from src.core.game import EgressGame
+from src.core.vector2d import rotate90, normalize, length
+from src.io.attributes import Intervals, Attrs, Attr
+from src.multiagent import MultiAgentSimulation
+from src.structure.area import Rectangle, Circle
+from src.structure.obstacle import LinearExit
+from src.structure.obstacle import LinearObstacle
 
 
 @numba.jit(nopython=True)
@@ -27,6 +25,27 @@ def _direction_update(agent, target, mid, r_mid, c_rect, r_rect):
         else:
             target_direction[i] = np.array((1.0, 0.0))
     return target_direction
+
+
+class Navigation:
+    def __init__(self, agent, door, door_width, width, height):
+        self.agent = agent
+        # Navigation algorithm
+        door1 = np.array(door[1], dtype=np.float64)
+        door0 = np.array(door[0], dtype=np.float64)
+        unit = normalize(door1 - door0)
+        normal = rotate90(unit)
+        mid = (door0 + door1) / 2  # Mid point of the two doors
+        r_max = 0.27  # Max agent radius
+        target = mid + r_max * normal
+        c_rect = r_rect = np.array((width / 2, height / 2))
+        r_mid = door_width / 2
+
+        self.func = partial(_direction_update, target=target, mid=mid,
+                            r_mid=r_mid, c_rect=c_rect, r_rect=r_rect)
+
+    def update(self):
+        self.agent.target_direction = self.func(self.agent)
 
 
 class RoomEvacuation(MultiAgentSimulation):
@@ -76,36 +95,27 @@ class RoomEvacuation(MultiAgentSimulation):
             'body_angle': 0
         }
 
-        # Navigation algorithm
-        door1 = np.array(door[1], dtype=np.float64)
-        door0 = np.array(door[0], dtype=np.float64)
-        unit = normalize(door1 - door0)
-        normal = rotate90(unit)
-        mid = (door0 + door1) / 2  # Mid point of the two doors
-        r_max = 0.27  # Max agent radius
-        target = mid + r_max * normal
-        c_rect = r_rect = np.array((width / 2, height / 2))
-        r_mid = door_width / 2
-
-        self.direction_update = partial(_direction_update, target=target,
-                                        mid=mid,
-                                        r_mid=r_mid, c_rect=c_rect,
-                                        r_rect=r_rect)
+        exit_door = LinearExit(door[0], door[1], 0.27)
 
         self.configure_domain(domain)
         self.configure_goals(goals)
+        self.configure_obstacles(walls)
+        self.configure_exits(exit_door)
+
         self.configure_agent(size, body)
         self.configure_agent_model(model)
-        self.configure_obstacles(walls)
-        exit_door = LinearExit(door[0], door[1], np.mean(self.agent.radius))
-        self.configure_exits(exit_door)
         self.configure_agent_positions(kw)
+
+        navigation = Navigation(self.agent, door, door_width, width, height)
+        self.configure_navigation(navigation)
+        self.configure_orientation()
 
 
 class RoomEvacuationWithEgressGame(RoomEvacuation):
     def __init__(self, size, width, height, model, body, t_aset_0=60):
-        super(RoomEvacuationWithEgressGame, self).__init__(size, width, height, model, body)
-        self.egress_model = EgressGame(self.agent, self.exits[0], t_aset_0, 0.1)
+        super(RoomEvacuationWithEgressGame, self).__init__(size, width, height,
+                                                           model, body)
+        self.game = EgressGame(self.agent, self.exits[0], t_aset_0, 0.1)
 
     def configure_saving(self, dirpath):
         super(RoomEvacuationWithEgressGame, self).configure_saving(dirpath)
@@ -113,12 +123,11 @@ class RoomEvacuationWithEgressGame(RoomEvacuation):
         from src.core.game import egress_game_attrs
 
         attrs_egress = Attrs(egress_game_attrs, Intervals(1.0))
-        attrs = ("strategy", "time_evac")
-        for attr in attrs:
+        recordable = ("strategy", "time_evac")
+        for attr in recordable:
             attrs_egress[attr] = Attr(attr, True, True)
-        self.hdfstore.save(self.egress_model, attrs_egress)
+        self.hdfstore.save(self.game, attrs_egress)
 
     def update(self):
         super(RoomEvacuationWithEgressGame, self).update()
-        self.egress_model.update(self.time, self.time_steps[-1])
-        self.agent.reset_neighbor()
+        self.game.update(self.time_tot, self.time_steps[-1])

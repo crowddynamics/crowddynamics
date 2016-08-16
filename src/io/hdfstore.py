@@ -130,6 +130,6 @@ class HDFStore(object):
             self.recorders.append(HDFRecorder(struct, struct_name, recordable,
                                               self.filepath, self.group_name))
 
-    def record(self, brute=False):
+    def update(self, brute=False):
         for saver in self.recorders:
             saver.record(brute)

@@ -158,7 +158,7 @@ class Agent(object):
         self.sight_wall = 3.0       # Interaction distance with walls
 
         # Tracking neighboring agents
-        self.neighbor_radius = 0  # if less than or equal to 0 -> inactive
+        self.neighbor_radius = 0  # if less equal to 0 -> inactive
         self.neighborhood_size = 8
         self.neighbors = np.ones((self.size, self.neighborhood_size), dtype=np.int64)
         self.neighbor_distances = np.ones((self.size, self.neighborhood_size))

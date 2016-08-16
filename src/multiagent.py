@@ -7,8 +7,8 @@ from timeit import default_timer as timer
 import numpy as np
 from scipy.stats import truncnorm as tn
 
-from src.core.motion import motion, integrator
-from src.core.navigation import navigator
+from src.core.motion import integrator
+from src.core.navigation import Navigation, Orientation
 from src.core.vector2d import angle_nx2, length_nx2
 from src.functions import filter_none
 from src.io.attributes import Intervals, Attrs, Attr
@@ -16,6 +16,9 @@ from src.io.hdfstore import HDFStore
 from src.structure.agent import agent_attr_names, Agent
 from src.structure.area import Area
 from src.structure.obstacle import wall_attr_names
+from .core.interactions import agent_agent, agent_wall
+from .core.motion import force_adjust, force_fluctuation, \
+        torque_adjust, torque_fluctuation
 
 
 def random_unit_vector(size):
@@ -149,43 +152,69 @@ class MultiAgentSimulation:
         self.dt_min = 0.001
         self.dt_max = 0.01
 
-        # Angle and direction update algorithms
-        self.angle_update = None
-        self.direction_update = None
-
         # State of the simulation
         self.iterations = 0
-        self.time = 0
+        self.time_tot = 0
         self.time_steps = [0]
-        self.in_goal = 0        # TODO: In-goal -> Area class
-        self.in_goal_time = []
-
-        self.update_time = deque((0,), maxlen=100)
+        self.call_time = deque((0,), maxlen=100)
 
         # Structures
-        self.domain = None  # Area. None accounts for whole real domain.
-        self.agent = None   # Agent class
-        self.walls = ()     # Obstacle / Walls
+        self.domain = None  # Area
+        self.agent = None   # Agent
+        self.walls = ()     # Obstacle
         self.goals = ()     # Area
         self.exits = ()     # Exit
 
+        self.in_goal = 0        # TODO: In-goal -> Area class
+        self.in_goal_time = []
+
         # Saving data to HDF5 file for analysis and resuming a simulation.
         self.hdfstore = None
+
+        # Angle and direction update algorithms
+        self.navigation = None
+        self.orientation = None
+
+        # Updating simulation
+        self.update_stack = []
 
     @property
     def name(self):
         return self.__class__.__name__
 
     def configure_domain(self, domain):
-        if isinstance(domain, Area) or domain is None:
+        if isinstance(domain, Area):
             self.domain = domain
             log.info("Domain configured: {}".format(domain))
+        elif domain is None:
+            # Full real domain
+            raise NotImplemented("Full real space is not yet supported.")
+        else:
+            raise ValueError("Domain is wrong type.")
 
-    def configure_goals(self, goals):
-        if isinstance(goals, Iterable):
+    def configure_goals(self, goals=None):
+        if goals is None:
+            self.goals = ()
+        elif isinstance(goals, Iterable):
             self.goals = goals
         else:
             self.goals = (goals,)
+
+    def configure_obstacles(self, obstacles=None):
+        if obstacles is None:
+            self.walls = ()
+        elif isinstance(obstacles, Iterable):
+            self.walls = obstacles
+        else:
+            self.walls = (obstacles,)
+
+    def configure_exits(self, exits=None):
+        if exits is None:
+            self.exits = ()
+        elif isinstance(exits, Iterable):
+            self.exits = exits
+        else:
+            self.exits = (exits,)
 
     def configure_agent(self, size, body):
         # Load tabular values
@@ -230,18 +259,6 @@ class MultiAgentSimulation:
 
             log.info("Agent model configured: {}".format(model))
 
-    def configure_obstacles(self, obstacles):
-        if isinstance(obstacles, Iterable):
-            self.walls = obstacles
-        else:
-            self.walls = (obstacles,)
-
-    def configure_exits(self, exits):
-        if isinstance(exits, Iterable):
-            self.exits = exits
-        else:
-            self.exits = (exits,)
-
     def configure_agent_positions(self, kwargs):
         # TODO: separate, manual positions
         # Initial positions
@@ -254,6 +271,21 @@ class MultiAgentSimulation:
             raise ValueError("")
 
         self.agent.update_shoulder_positions()
+
+    def configure_navigation(self, custom=None):
+        """Default navigation algorithm"""
+        if custom is None:
+            self.navigation = Navigation(self.agent, self.domain, self.walls,
+                                         self.exits)
+        else:
+            self.navigation = custom
+
+    def configure_orientation(self, custom=None):
+        """Default orientation algorithm"""
+        if custom is None:
+            self.orientation = Orientation(self.agent)
+        else:
+            self.orientation = custom
 
     def configure_saving(self, dirpath):
         log.info("Simulation: Configuring save")
@@ -268,16 +300,15 @@ class MultiAgentSimulation:
 
         attrs_agent = Attrs(agent_attr_names, Intervals(1.0))
         attrs_wall = Attrs(wall_attr_names)
-
-        # TODO: Gui selection for saveable attributes
-        attrs = ("position", "velocity", "force", "angle", "angular_velocity",
-                 "torque")
-        for attr in attrs:
+        recordable = ("position", "velocity", "force", "angle",
+                      "angular_velocity", "torque")
+        for attr in recordable:
             attrs_agent[attr] = Attr(attr, True, True)
 
         self.hdfstore.save(self.agent, attrs_agent)
-        for w in self.walls:
-            self.hdfstore.save(w, attrs_wall)
+
+        for wall in self.walls:
+            self.hdfstore.save(wall, attrs_wall)
 
     def load(self):
         pass
@@ -287,38 +318,62 @@ class MultiAgentSimulation:
             self.hdfstore.save(self, self.attrs_result, overwrite=True)
             # self.hdfstore.record(brute=True)
 
+    def motion(self):
+        """Social force model."""
+        self.agent.reset_motion()
+        self.agent.reset_neighbor()
+
+        force_adjust(self.agent)
+        force_fluctuation(self.agent)
+        if self.agent.orientable:
+            torque_adjust(self.agent)
+            torque_fluctuation(self.agent)
+        agent_agent(self.agent)
+        for wall in self.walls:
+            agent_wall(self.agent, wall)
+
+    def integrate(self):
+        dt = integrator(self.agent, self.dt_min, self.dt_max)
+        self.time_steps.append(dt)
+        self.time_tot += dt
+
     def update(self):
+        """
+        Sequence of functions to update multi-agent simulation.
+        :return:
+        """
         # TODO: Initialize update function. Final update function
+        # TODO: Sequence of functions (callables).
 
         # Time execution
         start = timer()
 
-        navigator(self.agent, self.angle_update, self.direction_update)
-        motion(self.agent, self.walls)
-        dt = integrator(self.agent, self.dt_min, self.dt_max)
+        if self.navigation is not None:
+            self.navigation.update()
 
-        self.iterations += 1
-        self.time += dt
-        self.time_steps.append(dt)
+        if self.orientation is not None and self.agent.orientable:
+            self.orientation.update()
+
+        self.motion()
+        self.integrate()
 
         if self.domain is not None:
             self.agent.active &= self.domain.contains(self.agent.position)
 
-        # Goals
         for goal in self.goals:
             num = -np.sum(self.agent.goal_reached)
             self.agent.goal_reached |= goal.contains(self.agent.position)
             num += np.sum(self.agent.goal_reached)
             self.in_goal += num
             for _ in range(num):
-                self.in_goal_time.append(self.time)
+                self.in_goal_time.append(self.time_tot)
 
-        # Save
         if self.hdfstore is not None:
-            self.hdfstore.record()
+            self.hdfstore.update()
 
         time_diff = timer() - start
-        self.update_time.append(time_diff)
+        self.call_time.append(time_diff)
+        self.iterations += 1
 
         return True
 
@@ -329,8 +384,6 @@ class MultiAgentSimulation:
         :param max_time: Time (simulation not real time) limit
         :return: None
         """
-        while self.update() and self.iterations < max_iter and self.time < max_time:
+        while self.update() and self.iterations < max_iter and self.time_tot < max_time:
             pass
         self.save()
-
-

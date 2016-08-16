@@ -1,7 +1,7 @@
 import numpy as np
-
 import pyqtgraph as pg
-from src.simulation.multiagent import MultiAgentSimulation
+
+from src.multiagent import MultiAgentSimulation
 from src.structure.area import Rectangle
 from src.structure.obstacle import LinearObstacle
 

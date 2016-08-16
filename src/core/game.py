@@ -122,11 +122,6 @@ class EgressGame(object):
         self.time_evac[players] = t_evac  # Index time_evac by players
 
         # Loop over agents and update strategies
-        best_response_strategy(players,
-                               self.agent,
-                               self.strategy,
-                               self.strategies,
-                               t_aset,
-                               self.time_evac,
-                               self.interval,
-                               dt)
+        best_response_strategy(players, self.agent, self.strategy,
+                               self.strategies, t_aset, self.time_evac,
+                               self.interval, dt)

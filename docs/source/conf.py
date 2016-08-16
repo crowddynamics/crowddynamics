@@ -19,7 +19,8 @@ import os
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-sys.path.insert(0, os.path.abspath('../..'))
+# sys.path.insert(0, os.path.abspath('../..'))
+# sys.path.insert(0, os.path.abspath('pydoctheme'))
 
 # -- General configuration ------------------------------------------------
 
@@ -116,15 +117,13 @@ html_theme = 'alabaster'
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
-html_theme_options = {
-    # 'github_user': 'jaantollander',
-    # 'github_repo': 'Crowd-Dynamics',
-    # 'github_button': True,
-    # 'fixed_sidebar': True
-}
+# html_theme = 'pydoctheme'
 
 # Add any paths that contain custom themes here, relative to this directory.
-# html_theme_path = []
+# html_theme_path = ['pydoctheme']
+# html_theme_options = {
+#     'collapsiblesidebar': True
+# }
 
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".

@@ -48,27 +48,6 @@ def force_contact(h, n, v, t, mu, kappa, damping):
     return - h * (mu * n - kappa * dot2d(v, t) * t) + damping * dot2d(v, n) * n
 
 
-def motion(agent, walls):
-    """
-    Updates rotational and spatial equations of motion.
-
-    :param agent: Agent class
-    :param walls: Walls calss
-    :return: None. Updates values of agent and walls.
-    """
-    from .interactions import agent_agent, agent_wall
-
-    agent.reset_motion()  # Reset forces and torque
-    force_adjust(agent)
-    force_fluctuation(agent)
-    if agent.orientable:
-        torque_adjust(agent)
-        torque_fluctuation(agent)
-    agent_agent(agent)
-    for wall in walls:
-        agent_wall(agent, wall)
-
-
 @numba.jit(nopython=True)
 def integrator(agent, dt_min, dt_max):
     """Verlet integration using adaptive timestep for integrating differential
