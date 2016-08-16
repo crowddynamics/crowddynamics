@@ -1,10 +1,53 @@
-from PyQt4 import QtGui, QtCore
-import pyqtgraph as pg
-
 import logging as log
+import os
 
+import pyqtgraph as pg
+from PyQt4 import QtGui, QtCore
+
+from .game import Ui_Game
 from .graphics import SimulationPlot
 from .gui import Ui_MainWindow
+
+
+class GameControls(QtGui.QWidget):
+    def __init__(self, parent=None):
+        super(GameControls, self).__init__(parent)
+        self.parent = parent
+        self.ui = Ui_Game()
+        self.ui.setupUi(self)
+
+        self.timer = None
+
+        self.configure_timers()
+        self.configure_signals()
+
+    def configure_signals(self):
+        self.ui.gameButton.setCheckable(True)
+        self.ui.gameButton.clicked.connect(self.run)
+
+    def configure_timers(self):
+        self.timer = QtCore.QTimer(self)
+        self.timer.timeout.connect(self.update_plot)
+
+    def update_plot(self):
+        t_aset = self.ui.tasetBox.value()
+        self.parent.simulation.game.update(0, 1, t_aset)
+        self.parent.simulation_plot.update_data()
+
+    def start(self):
+        if not self.timer.isActive():
+            log.info("Starting")
+            self.timer.start(0)
+
+    def stop(self):
+        if self.timer.isActive():
+            self.timer.stop()
+
+    def run(self):
+        if self.ui.gameButton.isChecked():
+            self.start()
+        else:
+            self.stop()
 
 
 class MainWindow(QtGui.QMainWindow):
@@ -18,7 +61,7 @@ class MainWindow(QtGui.QMainWindow):
         # Graphics
         self.simulation_plot = None
         self.simulation = None
-        self.timer_plot_update = None
+        self.timer = None
         self.dirpath = None
 
         # Configures
@@ -26,7 +69,10 @@ class MainWindow(QtGui.QMainWindow):
         self.configure_timers()
         self.configure_signals()
 
-    def getdirectory(self):
+        # Widgets. (Non hard coded widgets)
+        self.widgets = []
+
+    def get_directory(self):
         dlg = QtGui.QFileDialog()
         dlg.setFileMode(QtGui.QFileDialog.Directory)
 
@@ -39,8 +85,8 @@ class MainWindow(QtGui.QMainWindow):
 
     def configure_timers(self):
         log.info("Configuring timers")
-        self.timer_plot_update = QtCore.QTimer(self)
-        self.timer_plot_update.timeout.connect(self.plot_update)
+        self.timer = QtCore.QTimer(self)
+        self.timer.timeout.connect(self.update_plot)
 
     def configure_signals(self):
         log.info("Configuring signals")
@@ -65,6 +111,7 @@ class MainWindow(QtGui.QMainWindow):
         # QFileDialog for opening and saving simulation
         # Select dirpath for saving simulation
         self.ui.dirpathLine.setEnabled(False)
+        self.ui.dirpathLine.setText(os.path.abspath("."))
         self.ui.saveButton.clicked.connect(self.save_button)
 
     def save_button(self):
@@ -79,6 +126,9 @@ class MainWindow(QtGui.QMainWindow):
         from ..examples.hallway import Hallway
         from ..examples.outdoor import Outdoor
 
+        for widget in self.widgets:
+            self.ui.verticalLayout.removeWidget(widget)
+
         name = self.ui.simulationName.currentText()
         kw = dict(
             size=self.ui.agentSize.value(),
@@ -92,6 +142,9 @@ class MainWindow(QtGui.QMainWindow):
             self.simulation = RoomEvacuation(**kw)
         elif name == "evacuation_game":
             self.simulation = RoomEvacuationGame(**kw)
+            widget = GameControls(self)
+            self.ui.verticalLayout.addWidget(widget)
+            self.widgets.append(widget)
         elif name == "hallway":
             self.simulation = Hallway(**kw)
         elif name == "outdoor":
@@ -116,7 +169,7 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.runSimulation.setEnabled(True)
         self.ui.saveSimulation.setEnabled(True)
 
-    def plot_update(self):
+    def update_plot(self):
         # TODO: simulation stats
         if self.simulation.update():
             self.simulation_plot.update_data()
@@ -131,14 +184,14 @@ class MainWindow(QtGui.QMainWindow):
             log.warning("Attempting to save but simulation is not initialized.")
 
     def start(self):
-        if not self.timer_plot_update.isActive():
+        if not self.timer.isActive():
             log.info("Starting")
-            self.timer_plot_update.start(0)
+            self.timer.start(0)
 
     def stop(self):
-        if self.timer_plot_update.isActive():
+        if self.timer.isActive():
             log.info("Stopping")
-            self.timer_plot_update.stop()
+            self.timer.stop()
 
     def run(self):
         if self.simulation is None:

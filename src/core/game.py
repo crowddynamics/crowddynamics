@@ -97,16 +97,13 @@ class EgressGame(object):
     def agent_closer_to_exit(self, players):
         # values: distances from the door
         dist = length_nx2(self.exit_door.mid - self.agent.position[players])
-
         # players[values] = agents, indices = number of agents closer to exit
         num = np.argsort(dist)
-
         # values = number of agents closer to exit, players[indices] = agents
         num = np.argsort(num)
-
         return num
 
-    def update(self, t_simu, dt):
+    def update(self, t_simu, dt, t_aset=None):
         """Update strategies for all agents.
         :param dt: Timestep used by integrator to update simulation.
         """
@@ -116,7 +113,8 @@ class EgressGame(object):
 
         # Number of agents closer to the exit than agent i
         t_evac = self.agent_closer_to_exit(players) / self.exit_door.capacity
-        t_aset = self.t_aset_0 - t_simu
+        if t_aset is None:
+            t_aset = self.t_aset_0 - t_simu
 
         self.t_evac[:] = 0  # Reset
         self.t_evac[players] = t_evac  # Index time_evac by players

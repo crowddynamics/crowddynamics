@@ -1,6 +1,8 @@
 User Interface
 ==============
 
+.. image:: ../_static/gui1.png
+
 Graphics
 --------
 Graphical user interface and simulation graphics for crowd dynamics. Main window is created
