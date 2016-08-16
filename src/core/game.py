@@ -66,10 +66,10 @@ def best_response_strategy(players, agent, strategy, strategies, time_aset,
 
 egress_game_attrs = (
     "strategies",
-    "time_aset_0",
     "strategy",
+    "t_aset_0",
+    "t_evac",
     "interval",
-    "time_evac",
 )
 
 
@@ -88,10 +88,10 @@ class EgressGame(object):
         self.agent.reset_neighbor()
         self.exit_door = exit_door
 
-        self.t_aset_0 = t_aset_0
         self.strategies = np.array((0, 1), dtype=np.int64)
         self.strategy = np.ones(self.agent.size, dtype=np.int64)
-        self.time_evac = np.zeros(self.agent.size)
+        self.t_aset_0 = t_aset_0
+        self.t_evac = np.zeros(self.agent.size)
         self.interval = interval
 
     def agent_closer_to_exit(self, players):
@@ -118,10 +118,10 @@ class EgressGame(object):
         t_evac = self.agent_closer_to_exit(players) / self.exit_door.capacity
         t_aset = self.t_aset_0 - t_simu
 
-        self.time_evac[:] = 0  # Reset
-        self.time_evac[players] = t_evac  # Index time_evac by players
+        self.t_evac[:] = 0  # Reset
+        self.t_evac[players] = t_evac  # Index time_evac by players
 
         # Loop over agents and update strategies
         best_response_strategy(players, self.agent, self.strategy,
-                               self.strategies, t_aset, self.time_evac,
+                               self.strategies, t_aset, self.t_evac,
                                self.interval, dt)

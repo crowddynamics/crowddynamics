@@ -107,12 +107,11 @@ class SimulationPlot(pg.PlotItem):
             sympen[:] = self.active_pen
             sympen[agent.active ^ True] = self.inactive_pen
 
-            # if self.simulation.egress_model is not None:
-            #     brush = self.states[self.simulation.egress_model.strategy]
-            # else:
-
-            brush = np.zeros(agent.size, dtype=object)
-            brush[:] = self.patient
+            if self.simulation.game is not None:
+                brush = self.states[self.simulation.game.strategy]
+            else:
+                brush = np.zeros(agent.size, dtype=object)
+                brush[:] = self.patient
 
             brush[agent.active ^ True] = self.inactive
 

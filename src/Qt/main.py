@@ -75,8 +75,7 @@ class MainWindow(QtGui.QMainWindow):
 
     def new_simulation(self):
         # TODO: Importer
-        from ..examples.evacuation import RoomEvacuation, \
-            RoomEvacuationWithEgressGame
+        from ..examples.evacuation import RoomEvacuation, RoomEvacuationGame
         from ..examples.hallway import Hallway
         from ..examples.outdoor import Outdoor
 
@@ -92,7 +91,7 @@ class MainWindow(QtGui.QMainWindow):
         if name == "evacuation":
             self.simulation = RoomEvacuation(**kw)
         elif name == "evacuation_game":
-            self.simulation = RoomEvacuationWithEgressGame(**kw)
+            self.simulation = RoomEvacuationGame(**kw)
         elif name == "hallway":
             self.simulation = Hallway(**kw)
         elif name == "outdoor":

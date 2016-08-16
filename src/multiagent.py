@@ -18,7 +18,7 @@ from src.structure.area import Area
 from src.structure.obstacle import wall_attr_names
 from .core.interactions import agent_agent, agent_wall
 from .core.motion import force_adjust, force_fluctuation, \
-        torque_adjust, torque_fluctuation
+    torque_adjust, torque_fluctuation
 
 
 def random_unit_vector(size):
@@ -74,6 +74,7 @@ def agent_positions(agent: Agent,
                     amount: int,
                     area: Area,
                     walls=None,
+                    domain: Area = None,
                     target_direction: np.ndarray = None,
                     target_angle: np.ndarray = None,
                     velocity: np.ndarray = None,
@@ -112,6 +113,9 @@ def agent_positions(agent: Agent,
         rad = radius[i]
         radii = radius[:i]
 
+        if domain is not None and not domain.contains(pos):
+            continue
+
         # Test overlapping with other agents
         if i > 0:
             d = length_nx2(pos - position[:i]) - (rad + radii)
@@ -144,7 +148,8 @@ def agent_positions(agent: Agent,
 
 class MultiAgentSimulation:
     attrs_result = Attrs((
-        "dt_min", "dt_max", "iterations", "time", "time_steps", "in_goal_time",
+        "dt_min", "dt_max", "iterations", "time_tot", "time_steps",
+        "in_goal_time",
     ))
 
     def __init__(self):
@@ -160,12 +165,12 @@ class MultiAgentSimulation:
 
         # Structures
         self.domain = None  # Area
-        self.agent = None   # Agent
-        self.walls = ()     # Obstacle
-        self.goals = ()     # Area
-        self.exits = ()     # Exit
+        self.agent = None  # Agent
+        self.walls = ()  # Obstacle
+        self.goals = ()  # Area
+        self.exits = ()  # Exit
 
-        self.in_goal = 0        # TODO: In-goal -> Area class
+        self.in_goal = 0  # TODO: In-goal -> Area class
         self.in_goal_time = []
 
         # Saving data to HDF5 file for analysis and resuming a simulation.
@@ -176,6 +181,7 @@ class MultiAgentSimulation:
         self.orientation = None
 
         # Updating simulation
+        self.game = None
         self.update_stack = []
 
     @property
@@ -263,10 +269,12 @@ class MultiAgentSimulation:
         # TODO: separate, manual positions
         # Initial positions
         if isinstance(kwargs, dict):
-            agent_positions(self.agent, walls=self.walls, **kwargs)
+            agent_positions(self.agent, walls=self.walls, domain=self.domain,
+                            **kwargs)
         elif isinstance(kwargs, Iterable):
             for kwarg in kwargs:
-                agent_positions(self.agent, walls=self.walls, **kwarg)
+                agent_positions(self.agent, walls=self.walls,
+                                domain=self.domain, **kwarg)
         else:
             raise ValueError("")
 
@@ -356,6 +364,9 @@ class MultiAgentSimulation:
 
         self.motion()
         self.integrate()
+
+        if self.game is not None:
+            self.game.update(self.time_tot, self.time_steps[-1])
 
         if self.domain is not None:
             self.agent.active &= self.domain.contains(self.agent.position)

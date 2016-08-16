@@ -33,7 +33,7 @@ class Attrs(dict):
     def check_hasattr(self, struct):
         for key, attr in self.items():
             if not hasattr(struct, attr.name):
-                del self[key]
+                raise Warning("struct has no attribute {}".format(attr))
         if len(self) == 0:
             raise ValueError("Struct \"{}\" doesn't contain any of given "
                              "attributes.".format(struct))

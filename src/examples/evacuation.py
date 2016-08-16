@@ -5,11 +5,11 @@ import numpy as np
 
 from src.core.game import EgressGame
 from src.core.vector2d import rotate90, normalize, length
-from src.io.attributes import Intervals, Attrs, Attr
 from src.multiagent import MultiAgentSimulation
 from src.structure.area import Rectangle, Circle
 from src.structure.obstacle import LinearExit
 from src.structure.obstacle import LinearObstacle
+from src.io.attributes import Intervals, Attrs, Attr
 
 
 @numba.jit(nopython=True)
@@ -111,23 +111,20 @@ class RoomEvacuation(MultiAgentSimulation):
         self.configure_orientation()
 
 
-class RoomEvacuationWithEgressGame(RoomEvacuation):
-    def __init__(self, size, width, height, model, body, t_aset_0=60):
-        super(RoomEvacuationWithEgressGame, self).__init__(size, width, height,
-                                                           model, body)
+class RoomEvacuationGame(RoomEvacuation):
+    def __init__(self, size, width, height, model, body,
+                 spawn_shape="circ", door_width=1.2, exit_hall_width=2,
+                 t_aset_0=60):
+        super(RoomEvacuationGame, self).__init__(
+            size, width, height, model, body, spawn_shape, door_width,
+            exit_hall_width)
         self.game = EgressGame(self.agent, self.exits[0], t_aset_0, 0.1)
 
     def configure_saving(self, dirpath):
-        super(RoomEvacuationWithEgressGame, self).configure_saving(dirpath)
-
+        super(RoomEvacuationGame, self).configure_saving(dirpath)
         from src.core.game import egress_game_attrs
-
         attrs_egress = Attrs(egress_game_attrs, Intervals(1.0))
-        recordable = ("strategy", "time_evac")
+        recordable = ("strategy", "t_evac")
         for attr in recordable:
             attrs_egress[attr] = Attr(attr, True, True)
         self.hdfstore.save(self.game, attrs_egress)
-
-    def update(self):
-        super(RoomEvacuationWithEgressGame, self).update()
-        self.game.update(self.time_tot, self.time_steps[-1])
