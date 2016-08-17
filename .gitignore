@@ -265,8 +265,4 @@ TODO
 
 # Folders
 /docs/build/
-/src/examples/CAD/
 /buildscripts/
-/notebooks/
-docs/source/pydoctheme/static/pydoctheme.css
-docs/source/pydoctheme/theme.conf
