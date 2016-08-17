@@ -1,3 +1,13 @@
+Hahmottelen nyt tähän sitä mitä haluttaisiin Harrin kanssa, että syntyis elokuun loppuun mennessä:
+
+1a. Jos vain onnistuu, ellipsimallin ymppääminen nopeusriippuvaiseen sosiaalisen voiman malliin (jos tuntuu liian hankalalta, tähän ei kantsi käyttää nyt kesällä liikaa aikaa, vaan ajetaan vaan seuraavien kohtien simulaatiot ympyrämallilla)
+1b. Jos ellipsimallin ymppääminen onnistuu, voisit tehdä nopean kirjallisuuskatsauksen (lähinnä selaamalla Langstonin paperin ja Power law paperin viittaukset) onko kukaan aikasemmin tehnyt tätä
+2. Saada koodi tuottamaan staattisia pelitasapainokuvat (samantyyliset kuin Heliövaara et al., 2013, Physical Review E)
+3. Mahdollisuus tutkia aikaintervalleja huoneista evakuoitujen agenttien välillä, eri T_{ASET} arvoilla => voitaisiin tutkia miten eri peliparametrin T_{ASET} arvot vaikuttavat näiden aikaintervallien jakaumaan. Riittää vaan, että koodi puljauttaa esim. sellaisen datan ulos, että millä ajanhetkillä agentit ovat poistuneet. Mä voin tehä analyysit tällä datalle syksymällä.
+4. Vikoina päivinä voisit tutustuttaa mut koodeihin, niin voisin itsekin hyödyntää koodeja syksyllä
+5. Loppukesästä/syksyllä kaikki kesätyöntekijät pitää lyhkäsen esitelmän aikaansaannoksistaan. Eli pitäisi koota lyhkänen powerpoint-esitys. Voi olla, että Harrilla on jotain sanottavaa miten tämä kuuluu tehdä.
+
+
 # Documentation
 TODO: Video Tutorial !!!
 TODO: Truncated normal distribution
@@ -40,3 +50,4 @@ TODO: Conda package
 
 # Continuous integration
 TODO: Circle-CI, Travis-CI, Appveyor ?
+
