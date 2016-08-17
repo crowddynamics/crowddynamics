@@ -2,16 +2,17 @@ import logging as log
 import os
 
 import pyqtgraph as pg
+import pyqtgraph.exporters
 from PyQt4 import QtGui, QtCore
 
-from .game import Ui_Game
 from .graphics import SimulationPlot
+from .game import Ui_Game
 from .gui import Ui_MainWindow
 
 
 class GameControls(QtGui.QWidget):
     def __init__(self, parent=None):
-        super(GameControls, self).__init__()
+        super(GameControls, self).__init__(parent)
         self.parent = parent
         self.ui = Ui_Game()
         self.ui.setupUi(self)
@@ -60,6 +61,7 @@ class MainWindow(QtGui.QMainWindow):
 
         # Graphics
         self.simulation_plot = None
+        self.image_exporter = None
         self.simulation = None
         self.timer = None
         self.dirpath = None
@@ -156,6 +158,7 @@ class MainWindow(QtGui.QMainWindow):
             return
 
         self.simulation_plot.set_simulation(self.simulation)
+        self.image_exporter = pg.exporters.ImageExporter(self.simulation_plot)
 
         self.dirpath = self.ui.dirpathLine.text()
         if self.ui.saveButton.isChecked():

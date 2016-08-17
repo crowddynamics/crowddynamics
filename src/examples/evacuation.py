@@ -55,8 +55,10 @@ class RoomEvacuation(MultiAgentSimulation):
         domain = Rectangle((0.0, width + exit_hall_width), (0.0, height))
 
         corner = ((0, 0), (0, height), (width, 0), (width, height))
+
         door = ((width, (height - door_width) / 2),
                 (width, (height + door_width) / 2))
+
         hall = ((width + exit_hall_width, (height - door_width) / 2),
                 (width + exit_hall_width, (height + door_width) / 2))
 
@@ -68,6 +70,7 @@ class RoomEvacuation(MultiAgentSimulation):
              (door[1], corner[3]),
              (door[0], hall[0]),
              (door[1], hall[1]),
+             (door[0], door[1]),  # Close the door
              ), dtype=np.float64
         )
 

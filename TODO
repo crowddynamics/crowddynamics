@@ -1,4 +1,11 @@
-TODO: Logging, __class__.__name__
+# Documentation
+TODO: Video Tutorial !!!
+TODO: Truncated normal distribution
+TODO: Bokeh plots
+TODO: Fundamental diagram
+
+# General
+TODO: Logging, Formatter, yaml configs file
 TODO: Command line arguments
 TODO: JIT Compilation
 TODO: Executable
@@ -10,6 +17,8 @@ TODO: Start/end time, simulation length
 TODO: Multiprocessing, Queue, Gui <-> Simulation <-> IO
 TODO: Bytes saved, Memory consumption
 TODO: CAD integration
+TODO: pyqtgraph exporter
+TODO: Spatial game improvements
 
 # Structures
 TODO: Curves; Linear, Bezier, Radial
@@ -31,8 +40,3 @@ TODO: Conda package
 
 # Continuous integration
 TODO: Circle-CI, Travis-CI, Appveyor ?
-
-# Documentation
-TODO: Truncated normal distribution
-TODO: Bokeh plots
-TODO: Fundamental diagram

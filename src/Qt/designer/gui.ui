@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1000</width>
-    <height>600</height>
+    <height>693</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -451,7 +451,14 @@ QStatusBar {
       <item>
        <widget class="QRadioButton" name="saveButton">
         <property name="text">
-         <string>Save simulation</string>
+         <string>Save Data</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QRadioButton" name="radioButton">
+        <property name="text">
+         <string>Save Plots</string>
         </property>
        </widget>
       </item>

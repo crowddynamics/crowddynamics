@@ -16,10 +16,12 @@ class HDFRecorder:
         self.struct = struct
         self.recordable = recordable
         self.buffer = {attr.name: [] for attr in self.recordable}
+
+        # Indices
         self.start = 0
         self.end = 1
 
-    def record(self, brute=False):
+    def update(self, brute=False):
         """
 
         :param brute: If true forces saving
@@ -84,11 +86,9 @@ class HDFStore(object):
 
     def save(self, struct, attrs: Attrs, overwrite=False):
         """
-
-        :param overwrite:
-        :param struct: numba.jitclass
-        :param attrs: attributes of the jitclass
-        :return: Function that saves records and dumps data into hdf5
+        :param struct: Structure
+        :param attrs: Attributes in the structure to be saved.
+        :param overwrite: Overwrites existing values in the hdf for the structure.
         """
         struct_name = struct.__class__.__name__.lower()
         attrs.check_hasattr(struct)
@@ -122,5 +122,5 @@ class HDFStore(object):
                                               self.filepath, self.group_name))
 
     def update(self, brute=False):
-        for saver in self.recorders:
-            saver.record(brute)
+        for recorder in self.recorders:
+            recorder.update(brute)
