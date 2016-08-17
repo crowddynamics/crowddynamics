@@ -17,6 +17,10 @@ Communication
 -------------
 Communication with simulation data.
 
+Input/Output
+------------
+Simulation data is stored to hdf5 file.
+
 ----
 
 .. [pyqt4] Hess, D., & Summerfield, M. (2013). PyQt Whitepaper.
@@ -29,3 +33,5 @@ Communication with simulation data.
  Visualizing physiological signals in real-time.
  PROC. OF THE 14th PYTHON IN SCIENCE CONF.
  Retrieved from https://github.com/ssepulveda/RTGraph
+
+

@@ -12,7 +12,8 @@ TODO: Bytes saved, Memory consumption
 TODO: CAD integration
 
 # Structures
-TODO: Linear, Bezier, Radial Curves
+TODO: Curves; Linear, Bezier, Radial
+TODO: Areas: Polygon, Circle,
 TODO: Agent maximum velocity for optimizations
 
 # Egress Game
@@ -34,3 +35,4 @@ TODO: Circle-CI, Travis-CI, Appveyor ?
 # Documentation
 TODO: Truncated normal distribution
 TODO: Bokeh plots
+TODO: Fundamental diagram

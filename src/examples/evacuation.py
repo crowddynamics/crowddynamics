@@ -70,6 +70,7 @@ class RoomEvacuation(MultiAgentSimulation):
              (door[1], hall[1]),
              ), dtype=np.float64
         )
+
         walls = LinearObstacle(linear_params)
 
         goals = Rectangle((width, width + 2),

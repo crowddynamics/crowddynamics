@@ -1,14 +1,11 @@
 import datetime
+import os
 
 import logging as log
 import h5py
 import numpy as np
 
 from .attributes import Attrs
-
-
-def timestamp():
-    return str(datetime.datetime.now())
 
 
 class HDFRecorder:
@@ -54,40 +51,36 @@ class HDFRecorder:
 
 
 class HDFStore(object):
+    """
+    Class for saving object's array or scalar data in hdf5 file.
+    """
     ext = ".hdf5"
 
     def __init__(self, filepath):
         # Path to the HDF5 file
-        self.filepath = filepath + self.ext
+        self.filepath, _ = os.path.splitext(filepath)
+        self.filepath += self.ext
         self.group_name = None
         self.recorders = []
         self.configure_file()
 
     def configure_file(self):
-        """
-        Configure new HDF5 File.
-        :return:
-        """
-        log.info("Configuring HDFStore")
+        """Configure and creates new HDF5 File."""
 
         with h5py.File(self.filepath, mode='a') as file:
-            # Group Name
+            # Group Name. Integer one grater than last one.
             groups = (int(name) for name in file if name.isdigit())
             try:
                 num = max(groups) + 1
             except ValueError:
                 num = 0  # If generator is empty
-            self.group_name = "{:04d}".format(num)
 
-            # Create Group
-            group = file.create_group(self.group_name)
-
+            self.group_name = "{:04d}".format(num)      # HDF group
+            group = file.create_group(self.group_name)  # Create Group
             # Metadata
-            group.attrs["timestamp"] = timestamp()
+            group.attrs["timestamp"] = str(datetime.datetime.now())
 
-        log.info("HDFStore:\n"
-                 "Filepath: {}\n"
-                 "Group: {}".format(self.filepath, self.group_name))
+        log.info("Filepath: {}, Group: {}".format(self.filepath, self.group_name))
 
     def save(self, struct, attrs: Attrs, overwrite=False):
         """
@@ -100,8 +93,6 @@ class HDFStore(object):
         struct_name = struct.__class__.__name__.lower()
         attrs.check_hasattr(struct)
 
-        # HDF5 File
-        # TODO: Attributes for new group
         with h5py.File(self.filepath, mode='a') as file:
             base = file[self.group_name]
 

@@ -23,11 +23,12 @@ def run_gui():
     sys.path.insert(0, os.path.abspath(".."))
     from src.Qt.main import MainWindow
 
+    filename = "run"
     args = man().parse_args()
     if args.logLevel:
-        start_logging(args.logLevel)
+        start_logging(args.logLevel, filename, remove_old=True)
     else:
-        start_logging(log.INFO)
+        start_logging(log.INFO, filename, remove_old=True)
     user_info()
 
     name = "CrowdDynamics"

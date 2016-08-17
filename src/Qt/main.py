@@ -11,7 +11,7 @@ from .gui import Ui_MainWindow
 
 class GameControls(QtGui.QWidget):
     def __init__(self, parent=None):
-        super(GameControls, self).__init__(parent)
+        super(GameControls, self).__init__()
         self.parent = parent
         self.ui = Ui_Game()
         self.ui.setupUi(self)

@@ -4,8 +4,7 @@
 
 Crowd Dynamics
 ==============
-
-Python package for multi-agent simulation of crowd dynamics.
+Python package for crowd simulation.
 
 .. toctree::
    :numbered:
@@ -20,7 +19,6 @@ Python package for multi-agent simulation of crowd dynamics.
    sections/interactions.rst
    sections/fluctuation.rst
    sections/subgroup.rst
-   sections/integrator.rst
    sections/neighborhood.rst
    sections/egress.rst
    sections/interface.rst

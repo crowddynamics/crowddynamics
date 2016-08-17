@@ -3,6 +3,11 @@ Quantities
 
 Density
 -------
+Defined
+
+.. math::
+   \rho : \Omega \times \mathbb{R}^{+} \mapsto \mathbb{R}^{+}
+
 Number of agent per unit of area :math:`\rho(\mathbf{x}, t)` of unit :math:`\mathrm{P / m^{2}}`. Realistic values range from :math:`0` to :math:`10` people per square metre. Density ranges can be classified in increasing order
 
 - Free flow :math:`\rho \in [0,  1]`
@@ -10,11 +15,6 @@ Number of agent per unit of area :math:`\rho(\mathbf{x}, t)` of unit :math:`\mat
 - Capacity :math:`\rho \in [2.5,  3.5]`
 - Unstable :math:`\rho \in [3.5,  5]`
 - Congested :math:`\rho \geq 5`
-
-In continuous space
-
-.. math::
-   \rho : \Omega \times \mathbb{R}^{+} \mapsto \mathbb{R}^{+}
 
 Another way to define density in unit-less quantity is to define it to be the percentage of area occupied. This has value range :math:`0` to :math:`1`.
 
@@ -74,6 +74,12 @@ Crowd pressure :math:`p` created by contact forces when multiple agents press on
 
 .. math::
    p \propto \sum \mathbf{f}_{c}
+
+----
+
+Fundamental Diagram
+-------------------
+Relationship between crowd density and flow rate.
 
 ----
 
