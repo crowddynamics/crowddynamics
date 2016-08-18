@@ -1,3 +1,4 @@
+import logging as log
 import itertools
 import math
 import sys
@@ -5,8 +6,6 @@ from collections import Iterable
 from collections import deque
 from functools import wraps
 from timeit import default_timer as timer
-
-import numpy as np
 
 
 def format_time(timespan, precision=3):
@@ -50,6 +49,17 @@ def format_time(timespan, precision=3):
     return u"{:.1f} {}".format(timespan * scaling[order], units[order])
 
 
+def timed(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        start = timer()
+        ret = func(*args, **kwargs)
+        dt = timer() - start
+        print(func.__name__, format_time(dt), (1 / dt))
+        return ret
+    return wrapper
+
+
 def filter_none(*args):
     """Make iterables and filter None values"""
     if len(args) == 1:
@@ -57,23 +67,3 @@ def filter_none(*args):
         if isinstance(arg, Iterable):
             args = arg
     return tuple(filter(None, args))
-
-
-def timed_execution(func):
-    calls = itertools.count()
-    prev = deque((0,), maxlen=100)
-
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        start = timer()
-        ret = func(*args, **kwargs)
-        dt = timer() - start
-        if dt < 1.0:
-            prev.append(dt)
-        # TODO: better formatting
-        print("Calls:{:5d}".format(next(calls)),
-              "Time:", format_time(dt),
-              "Avg time:", format_time(np.mean(prev)))
-        return ret
-
-    return wrapper

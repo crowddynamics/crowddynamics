@@ -2,7 +2,7 @@ import logging as log
 import os
 from collections import Iterable
 from collections import deque
-from timeit import default_timer as timer
+from functools import wraps
 
 import numpy as np
 from scipy.stats import truncnorm as tn
@@ -10,7 +10,7 @@ from scipy.stats import truncnorm as tn
 from src.core.motion import integrator
 from src.core.navigation import Navigation, Orientation
 from src.core.vector2d import angle_nx2, length_nx2
-from src.functions import filter_none
+from src.functions import filter_none, timed
 from src.io.attributes import Intervals, Attrs, Attr
 from src.io.hdfstore import HDFStore
 from src.structure.agent import agent_attr_names, Agent
@@ -161,7 +161,6 @@ class MultiAgentSimulation:
         self.iterations = 0
         self.time_tot = 0
         self.time_steps = [0]
-        self.call_time = deque((0,), maxlen=100)
 
         # Structures
         self.domain = None  # Area
@@ -318,9 +317,6 @@ class MultiAgentSimulation:
         for wall in self.walls:
             self.hdfstore.save(wall, attrs_wall)
 
-    def load(self):
-        pass
-
     def save(self):
         if self.hdfstore is not None:
             self.hdfstore.save(self, self.attrs_result, overwrite=True)
@@ -345,17 +341,8 @@ class MultiAgentSimulation:
         self.time_steps.append(dt)
         self.time_tot += dt
 
+    @timed
     def update(self):
-        """
-        Sequence of functions to update multi-agent simulation.
-        :return:
-        """
-        # TODO: Initialize update function. Final update function
-        # TODO: Sequence of functions (callables).
-
-        # Time execution
-        start = timer()
-
         if self.navigation is not None:
             self.navigation.update()
 
@@ -382,19 +369,4 @@ class MultiAgentSimulation:
         if self.hdfstore is not None:
             self.hdfstore.update()
 
-        time_diff = timer() - start
-        self.call_time.append(time_diff)
         self.iterations += 1
-
-        return True
-
-    def run(self, max_iter=np.inf, max_time=np.inf):
-        """
-
-        :param max_iter: Iteration limit
-        :param max_time: Time (simulation not real time) limit
-        :return: None
-        """
-        while self.update() and self.iterations < max_iter and self.time_tot < max_time:
-            pass
-        self.save()

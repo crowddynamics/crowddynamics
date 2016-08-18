@@ -7,6 +7,7 @@ from src.core.vector2d import length_nx2
 
 class SpatialGame(object):
     """Base class for spatial games"""
+
     def __init__(self):
         self.players = None
         self.strategies = None
@@ -64,16 +65,15 @@ def best_response_strategy(players, agent, strategy, strategies, time_aset,
             # TODO: Update agents parameters by the new strategy
 
 
-egress_game_attrs = (
-    "strategies",
-    "strategy",
-    "t_aset_0",
-    "t_evac",
-    "interval",
-)
-
-
 class EgressGame(object):
+    attrs = (
+        "strategies",
+        "strategy",
+        "t_aset_0",
+        "t_evac",
+        "interval",
+    )
+
     def __init__(self, agent, exit_door, t_aset_0, interval):
         """Patient and impatient pedestrians in a spatial game for egress
         congestion. Strategies are denoted: {0: "Impatient", 1: "Patient"}.

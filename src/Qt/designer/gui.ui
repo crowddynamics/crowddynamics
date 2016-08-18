@@ -449,14 +449,14 @@ QStatusBar {
        </widget>
       </item>
       <item>
-       <widget class="QRadioButton" name="saveButton">
+       <widget class="QRadioButton" name="saveData">
         <property name="text">
          <string>Save Data</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QRadioButton" name="radioButton">
+       <widget class="QRadioButton" name="savePlots">
         <property name="text">
          <string>Save Plots</string>
         </property>

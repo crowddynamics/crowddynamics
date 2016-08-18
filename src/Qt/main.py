@@ -1,10 +1,13 @@
+import datetime
 import logging as log
 import os
 
+import itertools
 import pyqtgraph as pg
 import pyqtgraph.exporters
 from PyQt4 import QtGui, QtCore
 
+from src.functions import timed
 from .graphics import SimulationPlot
 from .game import Ui_Game
 from .gui import Ui_MainWindow
@@ -61,10 +64,12 @@ class MainWindow(QtGui.QMainWindow):
 
         # Graphics
         self.simulation_plot = None
-        self.image_exporter = None
         self.simulation = None
         self.timer = None
         self.dirpath = None
+        self.image_path = None
+        self.image_count = None
+        self.image_exporter = None
 
         # Configures
         self.configure_plot()
@@ -112,15 +117,25 @@ class MainWindow(QtGui.QMainWindow):
 
         # QFileDialog for opening and saving simulation
         # Select dirpath for saving simulation
-        self.ui.dirpathLine.setEnabled(False)
         self.ui.dirpathLine.setText(os.path.abspath("."))
-        self.ui.saveButton.clicked.connect(self.save_button)
 
-    def save_button(self):
-        if self.ui.saveButton.isChecked():
-            self.ui.dirpathLine.setEnabled(True)
-        else:
-            self.ui.dirpathLine.setEnabled(False)
+    def configure_saving_plots(self):
+        if self.simulation is not None:
+            folder = self.simulation.__class__.__name__
+            folder2 = str(datetime.datetime.now()).replace(' ', '_')
+            image_path = os.path.join(self.dirpath, folder, folder2)
+            os.makedirs(image_path)
+            self.image_path = image_path
+            self.image_count = itertools.count(start=0, step=1)
+            self.image_exporter = pg.exporters.ImageExporter(
+                self.simulation_plot)
+
+    def save_figure(self):
+        if self.image_exporter is not None:
+            ext = ".jpg"
+            name = str(next(self.image_count))
+            path = os.path.join(self.image_path, name)
+            self.image_exporter.export(path + ext)
 
     def new_simulation(self):
         # TODO: Importer
@@ -158,26 +173,26 @@ class MainWindow(QtGui.QMainWindow):
             return
 
         self.simulation_plot.set_simulation(self.simulation)
-        self.image_exporter = pg.exporters.ImageExporter(self.simulation_plot)
 
         self.dirpath = self.ui.dirpathLine.text()
-        if self.ui.saveButton.isChecked():
+        if self.ui.saveData.isChecked():
             self.simulation.configure_saving(self.dirpath)
 
-        log.info("Initializing simulation\n"
-                 "Name: {}\n"
+        if self.ui.savePlots.isChecked():
+            self.configure_saving_plots()
+
+        log.info("Name: {}\n"
                  "Args: {}".format(name, kw))
 
         # Enable controls
         self.ui.runSimulation.setEnabled(True)
         self.ui.saveSimulation.setEnabled(True)
 
+    @timed
     def update_plot(self):
         # TODO: simulation stats
-        if self.simulation.update():
-            self.simulation_plot.update_data()
-        else:
-            self.stop()
+        self.simulation.update()
+        self.simulation_plot.update_data()
 
     def save(self):
         if self.simulation is not None:

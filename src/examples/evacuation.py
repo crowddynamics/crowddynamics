@@ -126,8 +126,7 @@ class RoomEvacuationGame(RoomEvacuation):
 
     def configure_saving(self, dirpath):
         super(RoomEvacuationGame, self).configure_saving(dirpath)
-        from src.core.game import egress_game_attrs
-        attrs_egress = Attrs(egress_game_attrs, Intervals(1.0))
+        attrs_egress = Attrs(self.game.attrs, Intervals(1.0))
         recordable = ("strategy", "t_evac")
         for attr in recordable:
             attrs_egress[attr] = Attr(attr, True, True)

@@ -25,7 +25,7 @@ except AttributeError:
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName(_fromUtf8("MainWindow"))
-        MainWindow.resize(1000, 600)
+        MainWindow.resize(1000, 693)
         MainWindow.setStyleSheet(_fromUtf8("\n"
 "/*\n"
 "    Android Material Dark\n"
@@ -367,9 +367,12 @@ class Ui_MainWindow(object):
         self.label_8 = QtGui.QLabel(self.centralwidget)
         self.label_8.setObjectName(_fromUtf8("label_8"))
         self.verticalLayout.addWidget(self.label_8)
-        self.saveButton = QtGui.QRadioButton(self.centralwidget)
-        self.saveButton.setObjectName(_fromUtf8("saveButton"))
-        self.verticalLayout.addWidget(self.saveButton)
+        self.saveData = QtGui.QRadioButton(self.centralwidget)
+        self.saveData.setObjectName(_fromUtf8("saveData"))
+        self.verticalLayout.addWidget(self.saveData)
+        self.savePlots = QtGui.QRadioButton(self.centralwidget)
+        self.savePlots.setObjectName(_fromUtf8("savePlots"))
+        self.verticalLayout.addWidget(self.savePlots)
         self.dirpathLine = QtGui.QLineEdit(self.centralwidget)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
@@ -453,7 +456,8 @@ class Ui_MainWindow(object):
         self.agentModel.setItemText(0, _translate("MainWindow", "circular", None))
         self.agentModel.setItemText(1, _translate("MainWindow", "three_circle", None))
         self.label_8.setText(_translate("MainWindow", "Directory path", None))
-        self.saveButton.setText(_translate("MainWindow", "Save simulation", None))
+        self.saveData.setText(_translate("MainWindow", "Save Data", None))
+        self.savePlots.setText(_translate("MainWindow", "Save Plots", None))
         self.initSimulation.setText(_translate("MainWindow", "Initialize", None))
         self.label_6.setText(_translate("MainWindow", "Simulation controls", None))
         self.runSimulation.setText(_translate("MainWindow", "Run", None))

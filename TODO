@@ -15,7 +15,7 @@ TODO: Bokeh plots
 TODO: Fundamental diagram
 
 # General
-TODO: Logging, Formatter, yaml configs file
+TODO: Logging, Formatter, yaml configs file, Simulation log, Loggers
 TODO: Command line arguments
 TODO: JIT Compilation
 TODO: Executable
