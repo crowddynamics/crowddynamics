@@ -2,6 +2,7 @@ import pyqtgraph as pg
 from PyQt4 import QtGui, QtCore
 from multiprocessing import Queue
 
+from src.configs.load import Load
 from .graphics import MultiAgentPlot
 from .ui.gui import Ui_MainWindow
 
@@ -13,9 +14,13 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # Load ui files
         self.setupUi(self)
 
-        # Simulation process
+        # Loading data from configs
+        self.configs_loader = Load()
+        self.configs = self.configs_loader.yaml("simulations")
+
+        # Simulation with multiprocessing
         self.queue = Queue()
-        self.simulation = None
+        self.process = None
 
         # Graphics
         pg.setConfigOptions(antialias=True)
@@ -29,7 +34,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.configure_timers()
         self.configure_signals()
 
-        # Widgets. (Non hard coded widgets)
+        # Programatically laid widgets
         self.sidebarWidgets = []
 
     def configure_plot(self):
@@ -45,15 +50,28 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.startButton.clicked.connect(self.start)
         self.stopButton.clicked.connect(self.stop)
         # Menus
-        # self.actionNew
+        names = self.configs["simulations"].keys()
+        self.simulationsBox.addItems(names)
+        self.simulationsBox.currentIndexChanged.connect(self.set_sidebar)
 
-    def clear_queue(self):
+    def reset_buffers(self):
         while not self.queue.empty():
             self.queue.get()
 
-    def set_simulation(self):
-        self.clear_queue()
+    def set_sidebar(self, name):
+        # self.configs
+        # for widget in widgets:
+        #     self.sidebarLeft.addWidget(widget)
         pass
+
+    def clear_sidebar(self):
+        for widget in self.sidebarWidgets:
+            self.sidebarLeft.removeWidget(widget)
+
+    def set_simulation(self):
+        self.reset_buffers()
+        self.clear_sidebar()
+        # self.set_sidebar()
 
     def update_plot(self):
         """Updates the data in the plot."""

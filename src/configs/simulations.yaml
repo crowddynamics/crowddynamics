@@ -1,34 +1,55 @@
+# Simulation classes and kwargs
 simulations:
-  outdoor: outdoor.Outdoor
-  hallway: hallway.Hallway
-  room_evacuation: evacuation.RoomEvacuation
+  outdoor:
+    class: examples.outdoor.Outdoor
+    kwargs:
+      - size: 100
+      - model: three_circle
+      - body: adult
+      - height: 20.0
+      - width: 20.0
 
-default_kwargs:
-  size: 1
-  agent_model:
+  hallway:
+    class: examples.hallway.Hallway
+    kwargs:
+      size: 100
+      model: three_circle
+      body: adult
+      height: 5.0
+      width: 20.0
+
+  room_evacuation:
+    class: examples.evacuation.RoomEvacuation
+    kwargs:
+      size: 100
+      model: circular
+      body: adult
+      height: 20.0
+      width: 10.0
+      doorwidth: 1.2
+      exit_hall_width: 2.0
+      spawn_shape: circ
+
+# Qt mappings for the kwargs
+# Int    -> QSpinBox
+# Double -> QDoubleSpinBox
+# list   -> QComboBox
+# bool   -> QRadioButton
+kwargs:
+  size: [1, 1000]  # [min, max]
+  model:
     - circular
     - three_circle
-  body_type:
+  body:
     - adult
     - male
     - female
     - child
     - eldery
-
-kwargs:
-  outdoor:
-    height: 20.0
-    width: 20.0
-
-  hallway:
-    height: 5.0
-    width: 20.0
-
-  room_evacuation:
-    height: 20.0
-    width: 10.0
-    doorwidth: 1.2
-    exit_hall_width: 2.0
-    spawn_shape:
-      - circ
-      - rect
+  height: [0, 100]
+  width: [0, 100]
+  doorwidth: [1, 3]
+  exit_hall_width: [0, 10]
+  spawn_shape:
+    - circ
+    - rect
