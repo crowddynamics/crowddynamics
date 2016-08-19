@@ -37,9 +37,12 @@ class Load:
         return pd.read_csv(path, index_col=[0])
 
     @lru_cache()
-    def yaml(self, name):
+    def yaml(self, name, ordered=False):
         """Load yaml with ordered loader."""
         ext = ".yaml"
         path = os.path.join(self.root, name + ext)
         with open(path) as f:
-            return ordered_load(f, yaml.SafeLoader)
+            if ordered:
+                return yaml.safe_load(f)
+            else:
+                return ordered_load(f, yaml.SafeLoader)

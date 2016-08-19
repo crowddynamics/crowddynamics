@@ -1,4 +1,4 @@
-import logging as log
+import logging
 from collections import Iterable, namedtuple
 from multiprocessing import Process, Event, Queue
 
@@ -94,7 +94,7 @@ def agent_positions(agent: Agent,
     area_agent = np.sum(np.pi * radius ** 2)
     fill_rate = area_agent / area.size()
 
-    log.info("Crowd Density: {}".format(fill_rate))
+    logging.info("Density: {:0.3f}".format(fill_rate))
 
     walls = filter_none(walls)
 
@@ -138,8 +138,8 @@ def agent_positions(agent: Agent,
     agent_motion(indices[:i], agent, target_direction, target_angle,
                  velocity, body_angle)
 
-    log.info("Iterations: {}/{}\n"
-             "Agents placed: {}/{}".format(iterations, maxiter, i, maxlen))
+    logging.info("Iterations: {}/{}".format(iterations, maxiter))
+    logging.info("Agents placed: {}/{}".format(i, maxlen))
 
 
 class MultiAgentSimulation(Process):
@@ -190,20 +190,24 @@ class MultiAgentSimulation(Process):
 
     def stop(self):
         self.exit.set()
+        logging.info("")
 
     def run(self):
+        logging.info("Start")
         while not self.exit.is_set():
             self.update()
+        logging.info("End")
 
     def configure_domain(self, domain):
         if isinstance(domain, Area):
             self.domain = domain
-            log.info("Domain configured: {}".format(domain))
         elif domain is None:
             # Full real domain
             raise NotImplemented("Full real space is not yet supported.")
         else:
+            logging.warning("")
             raise ValueError("Domain is wrong type.")
+        logging.info(domain)
 
     def configure_goals(self, goals=None):
         if goals is None:
@@ -212,6 +216,7 @@ class MultiAgentSimulation(Process):
             self.goals = goals
         else:
             self.goals = (goals,)
+        logging.info(goals)
 
     def configure_obstacles(self, obstacles=None):
         if obstacles is None:
@@ -220,6 +225,7 @@ class MultiAgentSimulation(Process):
             self.walls = obstacles
         else:
             self.walls = (obstacles,)
+        logging.info("")
 
     def configure_exits(self, exits=None):
         if exits is None:
@@ -228,6 +234,7 @@ class MultiAgentSimulation(Process):
             self.exits = exits
         else:
             self.exits = (exits,)
+        logging.info("")
 
     def configure_agent(self, size, body):
         # Load tabular values
@@ -254,23 +261,17 @@ class MultiAgentSimulation(Process):
         self.agent = Agent(size, mass, radius, radius_torso, radius_shoulder,
                            torso_shoulder, inertia_rot, target_velocity,
                            target_angular_velocity)
-        log.info("Agent class configured:\n"
-                 "Size: {}\n"
-                 "Body: {}".format(size, body))
+        logging.info("")
 
     def configure_agent_model(self, model):
-        models = ("circular", "three_circle")
-
-        if model not in models:
-            log.warning("Agent model {} not in models {}".format(models, model))
+        if model == "circular":
+            self.agent.set_circular()
+        elif model == "three_circle":
+            self.agent.set_three_circle()
         else:
-            if model == "circular":
-                self.agent.set_circular()
-
-            if model == "three_circle":
-                self.agent.set_three_circle()
-
-            log.info("Agent model configured: {}".format(model))
+            logging.warning("")
+            raise Warning()
+        logging.info("")
 
     def configure_agent_positions(self, kwargs):
         # TODO: separate, manual positions
@@ -283,9 +284,11 @@ class MultiAgentSimulation(Process):
                 agent_positions(self.agent, walls=self.walls,
                                 domain=self.domain, **kwarg)
         else:
+            logging.warning("")
             raise ValueError("")
 
         self.agent.update_shoulder_positions()
+        logging.info("")
 
     def configure_navigation(self, custom=None):
         """Default navigation algorithm"""
@@ -294,6 +297,7 @@ class MultiAgentSimulation(Process):
                                          self.exits)
         else:
             self.navigation = custom
+        logging.info("")
 
     def configure_orientation(self, custom=None):
         """Default orientation algorithm"""
@@ -301,6 +305,7 @@ class MultiAgentSimulation(Process):
             self.orientation = Orientation(self.agent)
         else:
             self.orientation = custom
+        logging.info("")
 
     def queue_handler(self):
         if self.queue.full():
@@ -316,6 +321,8 @@ class MultiAgentSimulation(Process):
                 setattr(d, attr, value)
             data.append(d)
         self.queue.put(data)
+
+        logging.debug("")
 
     @timed
     def update(self):
@@ -361,3 +368,5 @@ class MultiAgentSimulation(Process):
 
         # Put data to the queue
         self.queue_handler()
+
+        logging.debug("")

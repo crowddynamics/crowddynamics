@@ -18,7 +18,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
         # Loading data from configs
         self.configs_loader = Load()
-        self.configs = self.configs_loader.yaml("simulations")
+        self.configs = self.configs_loader.yaml("simulations", ordered=True)
 
         # Simulation with multiprocessing
         self.queue = Queue()
