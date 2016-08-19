@@ -124,10 +124,10 @@ class RoomEvacuationGame(RoomEvacuation):
             exit_hall_width)
         self.game = EgressGame(self.agent, self.exits[0], t_aset_0, 0.1)
 
-    def configure_saving(self, dirpath):
-        super(RoomEvacuationGame, self).configure_saving(dirpath)
-        attrs_egress = Attrs(self.game.attrs, Intervals(1.0))
-        recordable = ("strategy", "t_evac")
-        for attr in recordable:
-            attrs_egress[attr] = Attr(attr, True, True)
-        self.hdfstore.save(self.game, attrs_egress)
+    # def configure_saving(self, dirpath):
+    #     super(RoomEvacuationGame, self).configure_saving(dirpath)
+    #     attrs_egress = Attrs(self.game.attrs, Intervals(1.0))
+    #     recordable = ("strategy", "t_evac")
+    #     for attr in recordable:
+    #         attrs_egress[attr] = Attr(attr, True, True)
+    #     self.hdfstore.save(self.game, attrs_egress)

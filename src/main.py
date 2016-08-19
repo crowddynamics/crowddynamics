@@ -23,7 +23,7 @@ def run_gui():
     sys.path.insert(0, os.path.abspath(".."))
     from src.Qt.main import MainWindow
 
-    filename = "run"
+    filename = "main"
     args = man().parse_args()
     if args.logLevel:
         start_logging(args.logLevel, filename)
@@ -31,8 +31,7 @@ def run_gui():
         start_logging(log.INFO, filename)
     user_info()
 
-    name = "CrowdDynamics"
-    log.info("Starting {name}".format(name=name))
+    log.info("Starting")
 
     app = QtGui.QApplication(sys.argv)
     win = MainWindow()
@@ -44,7 +43,7 @@ def run_gui():
     else:
         log.warning("Interactive mode or pyside are not supported.")
 
-    log.info("Finishing {name}\n".format(name=name))
+    log.info("Finishing")
     log.shutdown()
 
     win.close()

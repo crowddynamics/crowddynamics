@@ -1,6 +1,8 @@
+import importlib
+from multiprocessing import Queue
+
 import pyqtgraph as pg
 from PyQt4 import QtGui, QtCore
-from multiprocessing import Queue
 
 from src.configs.load import Load
 from .graphics import MultiAgentPlot
@@ -31,7 +33,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
         # Configures
         self.configure_plot()
-        self.configure_timers()
         self.configure_signals()
 
         # Programatically laid widgets
@@ -49,29 +50,76 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.timer.timeout.connect(self.update_plot)
         self.startButton.clicked.connect(self.start)
         self.stopButton.clicked.connect(self.stop)
+
         # Menus
         names = self.configs["simulations"].keys()
-        self.simulationsBox.addItems(names)
-        self.simulationsBox.currentIndexChanged.connect(self.set_sidebar)
+        self.simulationsBox.addItem("")  # No simulation. Clear sidebar.
+        self.simulationsBox.addItems(tuple(names))
+        self.simulationsBox.currentIndexChanged[str].connect(self.set_sidebar)
 
     def reset_buffers(self):
         while not self.queue.empty():
             self.queue.get()
 
-    def set_sidebar(self, name):
-        # self.configs
-        # for widget in widgets:
-        #     self.sidebarLeft.addWidget(widget)
-        pass
-
     def clear_sidebar(self):
+        # FIXME
         for widget in self.sidebarWidgets:
             self.sidebarLeft.removeWidget(widget)
 
+    def set_sidebar(self, name):
+        self.clear_sidebar()
+
+        if name == "":
+            return
+
+        mapping = self.configs["kwarg_mapping"]
+        configs = self.configs["simulations"][name]
+        kwargs = configs["kwargs"]
+
+        # TODO: Connect to dictionary
+        for key, val in kwargs.items():
+            # Set valid values and current value
+            label = QtGui.QLabel(key)
+            values = mapping[key]
+            if isinstance(val, int):
+                widget = QtGui.QSpinBox()
+                widget.setMinimum(values[0])
+                widget.setMaximum(values[1])
+                widget.setValue(val)
+            elif isinstance(val, float):
+                widget = QtGui.QDoubleSpinBox()
+                widget.setMinimum(values[0])
+                widget.setMaximum(values[1])
+                widget.setValue(val)
+            elif isinstance(val, bool):
+                widget = QtGui.QRadioButton()
+                # widget.setChecked(val)
+            elif isinstance(val, str):
+                widget = QtGui.QComboBox()
+                widget.addItems(values)
+                index = widget.findText(val)
+                widget.setCurrentIndex(index)
+            else:
+                continue
+
+            self.sidebarWidgets.append(widget)
+            self.sidebarLeft.addWidget(label)
+            self.sidebarLeft.addWidget(widget)
+
+        initButton = QtGui.QPushButton("Initialize")
+        initButton.clicked.connect(self.set_simulation)
+        self.sidebarLeft.addWidget(initButton)
+        # self.sidebarLeft.addWidget(QtGui.QSpacerItem())
+
     def set_simulation(self):
         self.reset_buffers()
-        self.clear_sidebar()
-        # self.set_sidebar()
+        name = self.simulationsBox.currentText()
+        simu_dict = self.configs["simulations"][name]
+        module_name = simu_dict["module"]
+        class_name = simu_dict["class"]
+        module = importlib.import_module(module_name)
+        simulation = getattr(module, class_name)
+        self.process = simulation(self.queue, **simu_dict["kwargs"])
 
     def update_plot(self):
         """Updates the data in the plot."""
@@ -79,8 +127,14 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
     def start(self):
         """Start simulation process and updating plot."""
-        pass
+        if self.process is not None:
+            self.process.start()
+            self.timer.start(0)
 
     def stop(self):
         """Stops simulation process and updating the plot"""
-        pass
+        if self.process is not None:
+            self.timer.stop()
+            self.process.stop()
+            self.process.join()
+            self.reset_buffers()

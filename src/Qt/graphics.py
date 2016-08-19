@@ -7,9 +7,9 @@ from src.structure.obstacle import LinearObstacle
 
 
 class MultiAgentPlot(pg.PlotItem):
-    def __init__(self):
+    def __init__(self, parent=None):
         """Widget for displaying simulation graphics."""
-        super(MultiAgentPlot, self).__init__()
+        super(MultiAgentPlot, self).__init__(parent)
 
         # Data
         self.simulation = None
