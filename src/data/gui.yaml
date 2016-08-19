@@ -1,0 +1,10 @@
+body_types:
+  - adult
+  - male
+  - female
+  - child
+  - eldery
+
+agent_models:
+  - circular
+  - three_circle

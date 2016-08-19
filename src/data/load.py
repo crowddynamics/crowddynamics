@@ -4,15 +4,15 @@ from functools import lru_cache
 import pandas as pd
 
 
-class Table:
+class Load:
     root = os.path.abspath(__file__)
     root = os.path.split(root)[0]
-    ext = ".csv"
     filenames = ("agent", "body")
 
     @lru_cache()
-    def load(self, name):
+    def table(self, name):
+        ext = ".csv"
         # TODO: converters. Evaluate to values.
         if name in self.filenames:
-            path = os.path.join(self.root, name + self.ext)
+            path = os.path.join(self.root, name + ext)
             return pd.read_csv(path, index_col=[0])

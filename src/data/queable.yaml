@@ -1,0 +1,8 @@
+agent:
+  - position
+  - angle
+  - position_ls
+  - position_rs
+  - front
+  - active
+  - goal_reached

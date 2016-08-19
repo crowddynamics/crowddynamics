@@ -49,9 +49,9 @@ class Navigation:
 
 
 class RoomEvacuation(MultiAgentSimulation):
-    def __init__(self, size, width, height, model, body,
+    def __init__(self, queue, size, width, height, model, body,
                  spawn_shape="circ", door_width=1.2, exit_hall_width=2):
-        super(RoomEvacuation, self).__init__()
+        super(RoomEvacuation, self).__init__(queue)
         domain = Rectangle((0.0, width + exit_hall_width), (0.0, height))
 
         corner = ((0, 0), (0, height), (width, 0), (width, height))
@@ -116,10 +116,10 @@ class RoomEvacuation(MultiAgentSimulation):
 
 
 class RoomEvacuationGame(RoomEvacuation):
-    def __init__(self, size, width, height, model, body,
+    def __init__(self, queue, size, width, height, model, body,
                  spawn_shape="circ", door_width=1.2, exit_hall_width=2,
                  t_aset_0=60):
-        super(RoomEvacuationGame, self).__init__(
+        super(RoomEvacuationGame, self).__init__(queue,
             size, width, height, model, body, spawn_shape, door_width,
             exit_hall_width)
         self.game = EgressGame(self.agent, self.exits[0], t_aset_0, 0.1)

@@ -9,8 +9,8 @@ from PyQt4 import QtGui, QtCore
 
 from src.functions import timed
 from .graphics import SimulationPlot
-from .game import Ui_Game
-from .gui import Ui_MainWindow
+from .ui.game import Ui_Game
+from .ui.gui import Ui_MainWindow
 
 
 class GameControls(QtGui.QWidget):

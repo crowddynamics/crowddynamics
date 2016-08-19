@@ -1,13 +1,17 @@
 # Make python file out of the ui files.
 
-all: clean gui
+DESIGNERDIR = designer
+BUILDDIR    = ui
+
+# Commands
+
+all: clean gui game
 
 gui:
-	pyuic4 designer/gui.ui > gui.py
+	pyuic4 $(DESIGNERDIR)/gui.ui > $(BUILDDIR)/gui.py
 
 game:
-	pyuic4 designer/game.ui > game.py
+	pyuic4 $(DESIGNERDIR)/game.ui > $(BUILDDIR)/game.py
 
 clean:
-	rm -r __pycache__
-	rm gui.py
+	rm -rf $(BUILDDIR)/*

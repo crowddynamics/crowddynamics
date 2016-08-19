@@ -3,9 +3,9 @@ from src.structure.area import Rectangle
 
 
 class Outdoor(MultiAgentSimulation):
-    def __init__(self, size, width, height, model, body):
+    def __init__(self, queue, size, width, height, model, body):
         # TODO: Periodic boundaries
-        super().__init__()
+        super().__init__(queue)
         domain = Rectangle((0.0, width), (0.0, height))
         target_direction = random_unit_vector(size)
         kw = {'amount': size,

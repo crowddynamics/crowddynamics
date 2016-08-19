@@ -5,7 +5,7 @@ import platform
 import sys
 
 
-def start_logging(level, filename, remove_old=False):
+def start_logging(level, filename):
     """
     Starts logger for crowd dynamics simulation.
 
@@ -17,10 +17,6 @@ def start_logging(level, filename, remove_old=False):
     ext = ".log"
     filename, _ = os.path.splitext(filename)
     filename += ext
-
-    # Remove old log file
-    if remove_old and os.path.exists(filename):
-        os.remove(filename)  # Remove old log file
 
     # Format of the log output
     log_format = log.Formatter('%(asctime)s, '

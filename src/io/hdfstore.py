@@ -124,3 +124,6 @@ class HDFStore(object):
     def update(self, brute=False):
         for recorder in self.recorders:
             recorder.update(brute)
+
+
+

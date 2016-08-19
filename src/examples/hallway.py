@@ -6,8 +6,8 @@ from src.structure.obstacle import LinearObstacle
 
 
 class Hallway(MultiAgentSimulation):
-    def __init__(self, size, width, height, model, body):
-        super().__init__()
+    def __init__(self, queue, size, width, height, model, body):
+        super().__init__(queue)
         domain = Rectangle((0, width), (0, height))
 
         goals = (

@@ -1,21 +1,17 @@
 import logging as log
-import os
-from collections import Iterable
-from collections import deque
-from functools import wraps
+from collections import Iterable, namedtuple
+from multiprocessing import Process, Event, Queue
 
 import numpy as np
 from scipy.stats import truncnorm as tn
 
-from src.core.motion import integrator
-from src.core.navigation import Navigation, Orientation
-from src.core.vector2d import angle_nx2, length_nx2
-from src.functions import filter_none, timed
-from src.io.attributes import Intervals, Attrs, Attr
-from src.io.hdfstore import HDFStore
-from src.structure.agent import agent_attr_names, Agent
-from src.structure.area import Area
-from src.structure.obstacle import wall_attr_names
+from .core.motion import integrator
+from .core.navigation import Navigation, Orientation
+from .core.vector2d import angle_nx2, length_nx2
+from .functions import filter_none, timed
+from .io.attributes import Attrs
+from .structure.agent import Agent
+from .structure.area import Area
 from .core.interactions import agent_agent, agent_wall
 from .core.motion import force_adjust, force_fluctuation, \
     torque_adjust, torque_fluctuation
@@ -146,21 +142,17 @@ def agent_positions(agent: Agent,
              "Agents placed: {}/{}".format(iterations, maxiter, i, maxlen))
 
 
-class MultiAgentSimulation:
+class MultiAgentSimulation(Process):
     attrs_result = Attrs((
         "dt_min", "dt_max", "iterations", "time_tot", "time_steps",
         "in_goal_time",
     ))
 
-    def __init__(self):
-        # Integrator timestep
-        self.dt_min = 0.001
-        self.dt_max = 0.01
-
-        # State of the simulation
-        self.iterations = 0
-        self.time_tot = 0
-        self.time_steps = [0]
+    def __init__(self, queue: Queue):
+        # Multiprocessing
+        super(MultiAgentSimulation, self).__init__()
+        self.queue = queue
+        self.exit = Event()
 
         # Structures
         self.domain = None  # Area
@@ -169,23 +161,39 @@ class MultiAgentSimulation:
         self.goals = ()  # Area
         self.exits = ()  # Exit
 
-        self.in_goal = 0  # TODO: In-goal -> Area class
-        self.in_goal_time = []
-
-        # Saving data to HDF5 file for analysis and resuming a simulation.
-        self.hdfstore = None
-
         # Angle and direction update algorithms
         self.navigation = None
         self.orientation = None
 
-        # Updating simulation
+        # Additional models
         self.game = None
-        self.update_stack = []
+
+        # Integrator timestep
+        self.dt_min = 0.001
+        self.dt_max = 0.01
+
+        # State of the simulation
+        self.iterations = 0
+        self.time_tot = 0
+        self.time_steps = [0]
+        self.in_goal = 0  # TODO: In-goal -> Area class
+        self.in_goal_time = []
+
+        # Queuable data
+        self.queuable = {"agent": ("position", "angle", "position_ls",
+                                   "position_rs", "front", "active",
+                                   "goal_reached")}
 
     @property
     def name(self):
         return self.__class__.__name__
+
+    def stop(self):
+        self.exit.set()
+
+    def run(self):
+        while not self.exit.is_set():
+            self.update()
 
     def configure_domain(self, domain):
         if isinstance(domain, Area):
@@ -223,10 +231,10 @@ class MultiAgentSimulation:
 
     def configure_agent(self, size, body):
         # Load tabular values
-        from src.tables.load import Table
-        table = Table()
-        body = table.load("body")[body]
-        values = table.load("agent")["value"]
+        from src.data.load import Load
+        load = Load()
+        body = load.table("body")[body]
+        values = load.table("agent")["value"]
 
         # Eval
         pi = np.pi
@@ -294,36 +302,30 @@ class MultiAgentSimulation:
         else:
             self.orientation = custom
 
-    def configure_saving(self, dirpath):
-        log.info("Simulation: Configuring save")
+    def queue_handler(self):
+        if self.queue.full():
+            # TODO: Wait until there is free spaces in the queue
+            pass
 
-        if dirpath is None or len(dirpath) == 0:
-            filepath = self.name
-        else:
-            os.makedirs(dirpath, exist_ok=True)
-            filepath = os.path.join(dirpath, self.name)
+        data = []
+        for struct_name, attrs in self.queuable.items():
+            struct = getattr(self, struct_name)
+            d = namedtuple(struct_name, attrs)
+            for attr in attrs:
+                value = np.copy(getattr(struct, attr))
+                setattr(d, attr, value)
+            data.append(d)
+        self.queue.put(data)
 
-        self.hdfstore = HDFStore(filepath)
+    @timed
+    def update(self):
+        if self.navigation is not None:
+            self.navigation.update()
 
-        attrs_agent = Attrs(agent_attr_names, Intervals(1.0))
-        attrs_wall = Attrs(wall_attr_names)
-        recordable = ("position", "velocity", "force", "angle",
-                      "angular_velocity", "torque")
-        for attr in recordable:
-            attrs_agent[attr] = Attr(attr, True, True)
+        if self.orientation is not None and self.agent.orientable:
+            self.orientation.update()
 
-        self.hdfstore.save(self.agent, attrs_agent)
-
-        for wall in self.walls:
-            self.hdfstore.save(wall, attrs_wall)
-
-    def save(self):
-        if self.hdfstore is not None:
-            self.hdfstore.save(self, self.attrs_result, overwrite=True)
-            # self.hdfstore.record(brute=True)
-
-    def motion(self):
-        """Social force model."""
+        # Motion
         self.agent.reset_motion()
         self.agent.reset_neighbor()
 
@@ -336,21 +338,10 @@ class MultiAgentSimulation:
         for wall in self.walls:
             agent_wall(self.agent, wall)
 
-    def integrate(self):
+        # Integrate
         dt = integrator(self.agent, self.dt_min, self.dt_max)
         self.time_steps.append(dt)
         self.time_tot += dt
-
-    @timed
-    def update(self):
-        if self.navigation is not None:
-            self.navigation.update()
-
-        if self.orientation is not None and self.agent.orientable:
-            self.orientation.update()
-
-        self.motion()
-        self.integrate()
 
         if self.game is not None:
             self.game.update(self.time_tot, self.time_steps[-1])
@@ -366,7 +357,7 @@ class MultiAgentSimulation:
             for _ in range(num):
                 self.in_goal_time.append(self.time_tot)
 
-        if self.hdfstore is not None:
-            self.hdfstore.update()
-
         self.iterations += 1
+
+        # Put data to the queue
+        self.queue_handler()

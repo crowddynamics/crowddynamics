@@ -3,7 +3,7 @@ import logging as log
 import os
 import sys
 
-from .log import start_logging, user_info
+from src.logger.log import start_logging, user_info
 
 
 def man():
@@ -26,9 +26,9 @@ def run_gui():
     filename = "run"
     args = man().parse_args()
     if args.logLevel:
-        start_logging(args.logLevel, filename, remove_old=True)
+        start_logging(args.logLevel, filename)
     else:
-        start_logging(log.INFO, filename, remove_old=True)
+        start_logging(log.INFO, filename)
     user_info()
 
     name = "CrowdDynamics"
