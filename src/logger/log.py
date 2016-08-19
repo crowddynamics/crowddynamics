@@ -1,8 +1,16 @@
 import logging as log
 import logging.handlers
+import logging.config
 import os
 import platform
 import sys
+import yaml
+
+
+def start():
+    with open("config.yaml") as f:
+        d = yaml.parse(f)
+        log.config.dictConfig(d)
 
 
 def start_logging(level, filename):

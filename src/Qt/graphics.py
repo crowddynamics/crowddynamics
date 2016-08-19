@@ -6,10 +6,10 @@ from src.structure.area import Rectangle
 from src.structure.obstacle import LinearObstacle
 
 
-class SimulationPlot(pg.PlotItem):
+class MultiAgentPlot(pg.PlotItem):
     def __init__(self):
         """Widget for displaying simulation graphics."""
-        super(SimulationPlot, self).__init__()
+        super(MultiAgentPlot, self).__init__()
 
         # Data
         self.simulation = None

@@ -266,3 +266,4 @@ TODO
 # Folders
 /docs/build/
 /buildscripts/
+/src/examples/test.py

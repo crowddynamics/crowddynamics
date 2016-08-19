@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1000</width>
-    <height>693</height>
+    <height>700</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -294,236 +294,71 @@ QStatusBar {
      <verstretch>0</verstretch>
     </sizepolicy>
    </property>
-   <layout class="QGridLayout" name="gridLayout">
-    <item row="0" column="0">
-     <layout class="QVBoxLayout" name="verticalLayout">
-      <item>
-       <widget class="QLabel" name="label_7">
-        <property name="text">
-         <string>New Simulation</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QComboBox" name="simulationName">
-        <item>
-         <property name="text">
-          <string/>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>outdoor</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>hallway</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>evacuation</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>evacuation_game</string>
-         </property>
-        </item>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLabel" name="label">
-        <property name="text">
-         <string>Size</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QSpinBox" name="agentSize">
-        <property name="minimum">
-         <number>1</number>
-        </property>
-        <property name="maximum">
-         <number>1000</number>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLabel" name="label_2">
-        <property name="text">
-         <string>Width</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QDoubleSpinBox" name="widthBox">
-        <property name="minimum">
-         <double>1.000000000000000</double>
-        </property>
-        <property name="singleStep">
-         <double>1.000000000000000</double>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLabel" name="label_3">
-        <property name="text">
-         <string>Height</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QDoubleSpinBox" name="heightBox">
-        <property name="minimum">
-         <double>1.000000000000000</double>
-        </property>
-        <property name="singleStep">
-         <double>1.000000000000000</double>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLabel" name="label_4">
-        <property name="text">
-         <string>Body type</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QComboBox" name="bodyType">
-        <item>
-         <property name="text">
-          <string>adult</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>male</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>female</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>child</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>eldery</string>
-         </property>
-        </item>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLabel" name="label_5">
-        <property name="text">
-         <string>Agent model</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QComboBox" name="agentModel">
-        <item>
-         <property name="text">
-          <string>circular</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>three_circle</string>
-         </property>
-        </item>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLabel" name="label_8">
-        <property name="text">
-         <string>Directory path</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QRadioButton" name="saveData">
-        <property name="text">
-         <string>Save Data</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QRadioButton" name="savePlots">
-        <property name="text">
-         <string>Save Plots</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLineEdit" name="dirpathLine">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="initSimulation">
-        <property name="text">
-         <string>Initialize</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="Line" name="line">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLabel" name="label_6">
-        <property name="text">
-         <string>Simulation controls</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="runSimulation">
-        <property name="text">
-         <string>Run</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="saveSimulation">
-        <property name="text">
-         <string>Save</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="pushButton">
-        <property name="text">
-         <string>Close</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </item>
-    <item row="0" column="2">
-     <widget class="GraphicsLayoutWidget" name="plt">
-      <property name="styleSheet">
-       <string notr="true"/>
-      </property>
-     </widget>
-    </item>
-   </layout>
+   <widget class="GraphicsLayoutWidget" name="graphicsLayout">
+    <property name="geometry">
+     <rect>
+      <x>160</x>
+      <y>10</y>
+      <width>831</width>
+      <height>601</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true"/>
+    </property>
+   </widget>
+   <widget class="QWidget" name="horizontalLayoutWidget">
+    <property name="geometry">
+     <rect>
+      <x>160</x>
+      <y>620</y>
+      <width>831</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <layout class="QHBoxLayout" name="controlbar">
+     <item>
+      <widget class="QPushButton" name="startButton">
+       <property name="text">
+        <string>Start</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="stopButton">
+       <property name="text">
+        <string>Stop</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="saveButton">
+       <property name="text">
+        <string>Save</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QWidget" name="">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>10</y>
+      <width>141</width>
+      <height>631</height>
+     </rect>
+    </property>
+    <layout class="QVBoxLayout" name="sidebarLeft">
+     <item>
+      <widget class="QLabel" name="label_7">
+       <property name="text">
+        <string>Sidebar</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
@@ -534,22 +369,23 @@ QStatusBar {
      <height>27</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menuMenu">
+   <widget class="QMenu" name="simulationMenu">
     <property name="title">
-     <string>File</string>
+     <string>Simulation</string>
     </property>
+    <addaction name="actionNew"/>
     <addaction name="actionOpen"/>
     <addaction name="actionSave"/>
    </widget>
-   <widget class="QMenu" name="menuVisualisations">
+   <widget class="QMenu" name="visualisationMenu">
     <property name="title">
      <string>Visualisation</string>
     </property>
-    <addaction name="actionDensity_Grid"/>
-    <addaction name="actionNavigation_Field"/>
+    <addaction name="actionDensity"/>
+    <addaction name="actionNavigation"/>
    </widget>
-   <addaction name="menuMenu"/>
-   <addaction name="menuVisualisations"/>
+   <addaction name="simulationMenu"/>
+   <addaction name="visualisationMenu"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionSave">
@@ -562,14 +398,19 @@ QStatusBar {
     <string>Open</string>
    </property>
   </action>
-  <action name="actionDensity_Grid">
+  <action name="actionDensity">
    <property name="text">
     <string>Density</string>
    </property>
   </action>
-  <action name="actionNavigation_Field">
+  <action name="actionNavigation">
    <property name="text">
     <string>Navigation</string>
+   </property>
+  </action>
+  <action name="actionNew">
+   <property name="text">
+    <string>New</string>
    </property>
   </action>
  </widget>

@@ -1,0 +1,34 @@
+simulations:
+  outdoor: outdoor.Outdoor
+  hallway: hallway.Hallway
+  room_evacuation: evacuation.RoomEvacuation
+
+default_kwargs:
+  size: 1
+  agent_model:
+    - circular
+    - three_circle
+  body_type:
+    - adult
+    - male
+    - female
+    - child
+    - eldery
+
+kwargs:
+  outdoor:
+    height: 20.0
+    width: 20.0
+
+  hallway:
+    height: 5.0
+    width: 20.0
+
+  room_evacuation:
+    height: 20.0
+    width: 10.0
+    doorwidth: 1.2
+    exit_hall_width: 2.0
+    spawn_shape:
+      - circ
+      - rect

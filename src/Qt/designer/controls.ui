@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Form</class>
- <widget class="QWidget" name="Form">
+ <class>Sidebar</class>
+ <widget class="QWidget" name="Sidebar">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>150</width>
-    <height>800</height>
+    <width>151</width>
+    <height>258</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -108,7 +108,7 @@
      </widget>
     </item>
     <item>
-     <widget class="QPushButton" name="initSimulation">
+     <widget class="QPushButton" name="initializeButton">
       <property name="text">
        <string>Initialize</string>
       </property>

@@ -231,10 +231,10 @@ class MultiAgentSimulation(Process):
 
     def configure_agent(self, size, body):
         # Load tabular values
-        from src.data.load import Load
+        from src.configs.load import Load
         load = Load()
-        body = load.table("body")[body]
-        values = load.table("agent")["value"]
+        body = load.csv("body")[body]
+        values = load.csv("agent")["value"]
 
         # Eval
         pi = np.pi

@@ -1,3 +1,4 @@
+yaml
 numpy
 numba
 PyQt4
