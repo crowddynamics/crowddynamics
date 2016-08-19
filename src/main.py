@@ -3,7 +3,7 @@ import logging as log
 import os
 import sys
 
-from src.logger.log import start_logging, user_info
+from src.log import start_logging, user_info
 
 
 def man():

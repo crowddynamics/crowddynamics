@@ -8,7 +8,7 @@ import yaml
 
 
 def start():
-    with open("config.yaml") as f:
+    with open("configs/logger.yaml") as f:
         d = yaml.parse(f)
         log.config.dictConfig(d)
 
