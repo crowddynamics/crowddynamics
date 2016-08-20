@@ -1,0 +1,16 @@
+---
+# Pyqtgraph graphics arguments, mkPen, mkBrush
+# RGBA
+pen:
+
+
+brush:
+  domain: [255, 255, 255, 31]
+  goal:   [255, 255, 255, 63]
+
+  agent:
+    active:
+    inactive:
+
+
+...

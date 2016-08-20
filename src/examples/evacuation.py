@@ -49,8 +49,8 @@ class Navigation:
 
 
 class RoomEvacuation(MultiAgentSimulation):
-    def __init__(self, queue, size, width, height, model, body,
-                 spawn_shape="circ", door_width=1.2, exit_hall_width=2):
+    def __init__(self, queue, size, width, height, model, body, spawn_shape,
+                 door_width, exit_hall_width):
         super(RoomEvacuation, self).__init__(queue)
         domain = Rectangle((0.0, width + exit_hall_width), (0.0, height))
 
@@ -116,18 +116,19 @@ class RoomEvacuation(MultiAgentSimulation):
 
 
 class RoomEvacuationGame(RoomEvacuation):
-    def __init__(self, queue, size, width, height, model, body,
-                 spawn_shape="circ", door_width=1.2, exit_hall_width=2,
-                 t_aset_0=60):
-        super(RoomEvacuationGame, self).__init__(queue,
-            size, width, height, model, body, spawn_shape, door_width,
+    def __init__(self, queue, size, width, height, model, body, spawn_shape,
+                 door_width, exit_hall_width, t_aset_0, interval,
+                 neighbor_radius, neighborhood_size):
+        super(RoomEvacuationGame, self).__init__(
+            queue, size, width, height, model, body, spawn_shape, door_width,
             exit_hall_width)
-        self.game = EgressGame(self.agent, self.exits[0], t_aset_0, 0.1)
+        self.game = EgressGame(self.agent, self.exits[0], t_aset_0, interval,
+                               neighbor_radius, neighborhood_size)
 
-    # def configure_saving(self, dirpath):
-    #     super(RoomEvacuationGame, self).configure_saving(dirpath)
-    #     attrs_egress = Attrs(self.game.attrs, Intervals(1.0))
-    #     recordable = ("strategy", "t_evac")
-    #     for attr in recordable:
-    #         attrs_egress[attr] = Attr(attr, True, True)
-    #     self.hdfstore.save(self.game, attrs_egress)
+        # def configure_saving(self, dirpath):
+        #     super(RoomEvacuationGame, self).configure_saving(dirpath)
+        #     attrs_egress = Attrs(self.game.attrs, Intervals(1.0))
+        #     recordable = ("strategy", "t_evac")
+        #     for attr in recordable:
+        #         attrs_egress[attr] = Attr(attr, True, True)
+        #     self.hdfstore.save(self.game, attrs_egress)

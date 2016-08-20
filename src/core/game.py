@@ -74,7 +74,8 @@ class EgressGame(object):
         "interval",
     )
 
-    def __init__(self, agent, exit_door, t_aset_0, interval):
+    def __init__(self, agent, exit_door, t_aset_0, interval, neighbor_radius,
+                 neighborhood_size):
         """Patient and impatient pedestrians in a spatial game for egress
         congestion. Strategies are denoted: {0: "Impatient", 1: "Patient"}.
 
@@ -84,7 +85,8 @@ class EgressGame(object):
         :param interval: Interval for updating strategies
         """
         self.agent = agent
-        self.agent.neighbor_radius = 0.4
+        self.agent.neighbor_radius = neighbor_radius
+        self.agent.neighborhood_size = neighborhood_size
         self.agent.reset_neighbor()
         self.exit_door = exit_door
 

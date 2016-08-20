@@ -139,7 +139,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         logging.info("")
         if self.process is not None:
             self.process.start()
-            self.timer.start(1/30)
+            self.timer.start(0.01)  # same as dt used in simulation
 
     def stop(self):
         """Stops simulation process and updating the plot"""

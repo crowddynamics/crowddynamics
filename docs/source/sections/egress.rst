@@ -145,6 +145,12 @@ Algorithm
    \boldsymbol{\lambda} = \operatorname{arg\,sort} (\boldsymbol{\lambda}^{-1})
 
 
+Effect on agents
+----------------
+- :math:`k`
+- :math:`\tau_{adj}`
+- :math:`\sigma_{force}`
+
 ----
 
 .. [game2013] Heli??vaara, S., Ehtamo, H., Helbing, D., & Korhonen, T. (2013). Patient and impatient pedestrians in a spatial game for egress congestion. Physical Review E - Statistical, Nonlinear, and Soft Matter Physics. http://doi.org/10.1103/PhysRevE.87.012802

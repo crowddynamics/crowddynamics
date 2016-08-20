@@ -17,9 +17,6 @@ Fluctuation force
 
 where :math:`\mathbf{\hat{e}}(\mu)` is unit vector to direction of :math:`\mu`.
 
-.. literalinclude:: ../../../src/core/motion.py
-   :pyobject: force_fluctuation
-
 
 Torque
 ------
@@ -27,6 +24,3 @@ Fluctuation torque
 
 .. math::
    \eta \in \mathcal{N}(\mu, \sigma^{2})
-
-.. literalinclude:: ../../../src/core/motion.py
-   :pyobject: torque_fluctuation

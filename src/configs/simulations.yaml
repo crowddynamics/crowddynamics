@@ -47,7 +47,10 @@ simulations:
       door_width: 1.2
       exit_hall_width: 2.0
       spawn_shape: "circ"
-      t_aset: 200.0
+      t_aset_0: 200.0
+      interval: 0.1
+      neighbor_radius: 0.4
+      neighborhood_size: 8
 
 
 # Qt mappings for the kwargs
@@ -64,5 +67,9 @@ kwarg_mapping:
   door_width: [0, 3]
   exit_hall_width: [0, 10]
   spawn_shape: ["circ", "rect"]
-  t_aset: [0, 100000]
+  t_aset_0: [0, 100000]
+  interval: [0, 1]
+  neighbor_radius: [0, 100000]
+  neighborhood_size: [1, 8]
+
 ...
