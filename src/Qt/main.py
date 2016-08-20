@@ -1,5 +1,6 @@
 import importlib
 from multiprocessing import Queue
+import logging
 
 import pyqtgraph as pg
 from PyQt4 import QtGui, QtCore
@@ -21,7 +22,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.configs = self.configs_loader.yaml("simulations", ordered=True)
 
         # Simulation with multiprocessing
-        self.queue = Queue()
+        self.queue = Queue(maxsize=100)
         self.process = None
 
         # Graphics
@@ -35,17 +36,17 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.configure_plot()
         self.configure_signals()
 
-        # Programatically laid widgets
-        self.sidebarWidgets = []
-
     def configure_plot(self):
         """Graphics widget for plotting simulation data."""
+        logging.info("")
         self.graphicsLayout.setBackground(background=None)
         self.plot = MultiAgentPlot()
         self.graphicsLayout.addItem(self.plot, 0, 0)
 
     def configure_signals(self):
         """Sets the functionality and values for the widgets."""
+        logging.info("")
+
         # Buttons
         self.timer.timeout.connect(self.update_plot)
         self.startButton.clicked.connect(self.start)
@@ -58,15 +59,22 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.simulationsBox.currentIndexChanged[str].connect(self.set_sidebar)
 
     def reset_buffers(self):
+        logging.info("")
         while not self.queue.empty():
             self.queue.get()
 
     def clear_sidebar(self):
-        # FIXME
-        for widget in self.sidebarWidgets:
-            self.sidebarLeft.removeWidget(widget)
+        # http://stackoverflow.com/questions/4528347/clear-all-widgets-in-a-layout-in-pyqt
+        logging.info("")
+        layout = self.sidebarLeft
+        for i in reversed(range(layout.count())):
+            if i in (0, 1):
+                continue
+            logging.debug("{}".format(layout.itemAt(i)))
+            layout.itemAt(i).widget().setParent(None)
 
     def set_sidebar(self, name):
+        logging.info("")
         self.clear_sidebar()
 
         if name == "":
@@ -78,6 +86,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
         # TODO: Connect to dictionary
         for key, val in kwargs.items():
+            logging.debug("{}: {}".format(key, val))
             # Set valid values and current value
             label = QtGui.QLabel(key)
             values = mapping[key]
@@ -101,8 +110,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 widget.setCurrentIndex(index)
             else:
                 continue
-
-            self.sidebarWidgets.append(widget)
             self.sidebarLeft.addWidget(label)
             self.sidebarLeft.addWidget(widget)
 
@@ -112,6 +119,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # self.sidebarLeft.addWidget(QtGui.QSpacerItem())
 
     def set_simulation(self):
+        logging.info("")
         self.reset_buffers()
         name = self.simulationsBox.currentText()
         simu_dict = self.configs["simulations"][name]
@@ -123,16 +131,19 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
     def update_plot(self):
         """Updates the data in the plot."""
+        # logging.debug("")
         pass
 
     def start(self):
         """Start simulation process and updating plot."""
+        logging.info("")
         if self.process is not None:
             self.process.start()
-            self.timer.start(0)
+            self.timer.start(1/30)
 
     def stop(self):
         """Stops simulation process and updating the plot"""
+        logging.info("")
         if self.process is not None:
             self.timer.stop()
             self.process.stop()

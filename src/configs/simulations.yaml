@@ -47,7 +47,7 @@ simulations:
       door_width: 1.2
       exit_hall_width: 2.0
       spawn_shape: "circ"
-      t_set: 200.0
+      t_aset: 200.0
 
 
 # Qt mappings for the kwargs

@@ -43,6 +43,6 @@ class Load:
         path = os.path.join(self.root, name + ext)
         with open(path) as f:
             if ordered:
-                return yaml.safe_load(f)
-            else:
                 return ordered_load(f, yaml.SafeLoader)
+            else:
+                return yaml.safe_load(f)

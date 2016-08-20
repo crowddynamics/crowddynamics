@@ -18,12 +18,6 @@ def man():
     return parser
 
 
-def user_info():
-    logging.info("Platform: %s", platform.platform())
-    logging.info("Path: %s", sys.path[0])
-    logging.info("Python: %s", sys.version[0:5])
-
-
 def setup_logging(default_path='configs/logging.yaml',
                   default_level=logging.INFO,
                   env_key='LOG_CFG'):
@@ -52,6 +46,12 @@ def setup_logging(default_path='configs/logging.yaml',
         logging.basicConfig(level=default_level)
 
 
+def user_info():
+    logging.info("Platform: %s", platform.platform())
+    logging.info("Path: %s", sys.path[0])
+    logging.info("Python: %s", sys.version[0:5])
+
+
 def run_gui():
     """Launches Qt application for visualizing simulation.
     :param simulation:
@@ -66,7 +66,7 @@ def run_gui():
     else:
         log_level = logging.INFO
 
-    setup_logging(default_level=log_level)
+    setup_logging()
     user_info()
     logging.info("Starting")
 
@@ -80,7 +80,7 @@ def run_gui():
     else:
         logging.warning("Interactive mode or pyside are not supported.")
 
-    logging.info("Finishing")
+    logging.info("Finishing\n")
     logging.shutdown()
 
     win.close()

@@ -5,6 +5,7 @@ from multiprocessing import Process, Event, Queue
 import numpy as np
 from scipy.stats import truncnorm as tn
 
+from .configs.load import Load
 from .core.motion import integrator
 from .core.navigation import Navigation, Orientation
 from .core.vector2d import angle_nx2, length_nx2
@@ -189,8 +190,8 @@ class MultiAgentSimulation(Process):
         return self.__class__.__name__
 
     def stop(self):
-        self.exit.set()
         logging.info("")
+        self.exit.set()
 
     def run(self):
         logging.info("Start")
@@ -199,6 +200,7 @@ class MultiAgentSimulation(Process):
         logging.info("End")
 
     def configure_domain(self, domain):
+        logging.info("In: {}".format(domain))
         if isinstance(domain, Area):
             self.domain = domain
         elif domain is None:
@@ -207,38 +209,42 @@ class MultiAgentSimulation(Process):
         else:
             logging.warning("")
             raise ValueError("Domain is wrong type.")
-        logging.info(domain)
+        logging.info("Out: {}".format(domain))
 
     def configure_goals(self, goals=None):
+        logging.info("In: {}".format(goals))
         if goals is None:
             self.goals = ()
         elif isinstance(goals, Iterable):
             self.goals = goals
         else:
             self.goals = (goals,)
-        logging.info(goals)
+        logging.info("Out: {}".format(goals))
 
     def configure_obstacles(self, obstacles=None):
+        logging.info("In: {}".format(obstacles))
         if obstacles is None:
             self.walls = ()
         elif isinstance(obstacles, Iterable):
             self.walls = obstacles
         else:
             self.walls = (obstacles,)
-        logging.info("")
+        logging.info("Out: {}".format(obstacles))
 
     def configure_exits(self, exits=None):
+        logging.info("In: {}".format(exits))
         if exits is None:
             self.exits = ()
         elif isinstance(exits, Iterable):
             self.exits = exits
         else:
             self.exits = (exits,)
-        logging.info("")
+        logging.info("Out: {}".format(exits))
 
     def configure_agent(self, size, body):
+        logging.info("In: {}, {}".format(size, body))
+
         # Load tabular values
-        from src.configs.load import Load
         load = Load()
         body = load.csv("body")[body]
         values = load.csv("agent")["value"]
@@ -261,9 +267,10 @@ class MultiAgentSimulation(Process):
         self.agent = Agent(size, mass, radius, radius_torso, radius_shoulder,
                            torso_shoulder, inertia_rot, target_velocity,
                            target_angular_velocity)
-        logging.info("")
+        logging.info("Out: {}".format(self.agent))
 
     def configure_agent_model(self, model):
+        logging.info("In: {}".format(model))
         if model == "circular":
             self.agent.set_circular()
         elif model == "three_circle":
@@ -271,9 +278,11 @@ class MultiAgentSimulation(Process):
         else:
             logging.warning("")
             raise Warning()
-        logging.info("")
+        logging.info("Out")
 
     def configure_agent_positions(self, kwargs):
+        logging.info("In: {}".format(kwargs))
+
         # TODO: separate, manual positions
         # Initial positions
         if isinstance(kwargs, dict):
@@ -308,10 +317,6 @@ class MultiAgentSimulation(Process):
         logging.info("")
 
     def queue_handler(self):
-        if self.queue.full():
-            # TODO: Wait until there is free spaces in the queue
-            pass
-
         data = []
         for struct_name, attrs in self.queuable.items():
             struct = getattr(self, struct_name)
@@ -321,8 +326,6 @@ class MultiAgentSimulation(Process):
                 setattr(d, attr, value)
             data.append(d)
         self.queue.put(data)
-
-        logging.debug("")
 
     @timed
     def update(self):
