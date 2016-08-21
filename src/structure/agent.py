@@ -64,10 +64,6 @@ spec_agent_neighbour = (
 
 spec_agent += spec_agent_motion + spec_agent_neighbour
 
-agent_attr_motion = [item[0] for item in spec_agent_motion]
-agent_attr_neighbor = [item[0] for item in spec_agent_neighbour]
-agent_attr_names = [item[0] for item in spec_agent]
-
 
 @numba.jit(nopython=True)
 def require(cond):

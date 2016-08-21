@@ -1,129 +1,134 @@
 import datetime
+import logging
 import os
 
-import logging as log
 import h5py
 import numpy as np
 
-from .attributes import Attrs
 
+class ListBuffer(list):
+    def __init__(self, start=0, end=0):
+        """Buffer that tracks start and end indices of added items."""
+        super(ListBuffer, self).__init__()
+        self.start = start
+        self.end = end
 
-class HDFRecorder:
-    def __init__(self, struct, struct_name, recordable, filepath, group_name):
-        self.filepath = filepath
-        self.group_name = group_name
-        self.struct_name = struct_name
-        self.struct = struct
-        self.recordable = recordable
-        self.buffer = {attr.name: [] for attr in self.recordable}
-
-        # Indices
-        self.start = 0
-        self.end = 1
-
-    def update(self, brute=False):
-        """
-
-        :param brute: If true forces saving
-        :return:
-        """
-        is_save = self.recordable.save_func
-
-        if callable(is_save):
-            is_save = is_save()
-
-        for attr in self.recordable:
-            # Append value to buffer
-            value = np.copy(getattr(self.struct, attr.name))
-            self.buffer[attr.name].append(value)
-
-            # Save values to hdf
-            if is_save or brute:
-                values = np.array(self.buffer[attr.name])
-                with h5py.File(self.filepath, mode='a') as file:
-                    dset = file[self.group_name][self.struct_name][attr.name]
-                    new_shape = (self.end + 1,) + values.shape[1:]
-                    dset.resize(new_shape)
-                    dset[self.start + 1:] = values
-                self.buffer[attr.name].clear()
-
-        if is_save:
-            self.start = self.end
+    def append(self, p_object):
+        super(ListBuffer, self).append(p_object)
         self.end += 1
+
+    def clear(self):
+        super(ListBuffer, self).clear()
+        self.start = self.end
 
 
 class HDFStore(object):
-    """
-    Class for saving object's array or scalar data in hdf5 file.
-    """
+    """Class for saving object's array or scalar data in hdf5 file."""
+    # TODO: Threading, Locks
     ext = ".hdf5"
 
     def __init__(self, filepath):
         # Path to the HDF5 file
-        self.filepath, _ = os.path.splitext(filepath)
-        self.filepath += self.ext
+        self.filepath, _ = os.path.splitext(filepath)  # Remove extension
+        self.filepath += self.ext  # Set extension
         self.group_name = None
-        self.recorders = []
+
+        # Appending data
+        self.buffers = []  # (struct, buffers)
+
+        # Configuration
         self.configure_file()
+
+    @staticmethod
+    def create_dataset(group: h5py.Group, name, values, resizable=False):
+        """
+
+        :param group: h5py.Group
+        :param name: Name
+        :param values: Values to be stored. Goes through np.array(value).
+        :param resizable: If true values can be added to the dataset.
+        :return:
+        """
+        values = np.array(values)
+        kw = {}
+        if resizable:
+            values = np.array(values)
+            maxshape = (None,) + values.shape
+            kw.update(maxshape=maxshape)
+            values = np.expand_dims(values, axis=0)
+        group.create_dataset(name, data=values, **kw)
+
+    @staticmethod
+    def append_buffer_to_dataset(dset: h5py.Dataset, buffer: ListBuffer):
+        """Append values to resizable h5py dataset."""
+        if len(buffer):  # Buffer is not empty
+            values = np.array(buffer)
+            new_shape = ((buffer.end + 1),) + values.shape[1:]
+            dset.resize(new_shape)
+            dset[buffer.start:] = values
 
     def configure_file(self):
         """Configure and creates new HDF5 File."""
+        logging.info("")
 
+        timestamp = str(datetime.datetime.now())
         with h5py.File(self.filepath, mode='a') as file:
-            # Group Name. Integer one grater than last one.
-            groups = (int(name) for name in file if name.isdigit())
-            try:
-                num = max(groups) + 1
-            except ValueError:
-                num = 0  # If generator is empty
-
-            self.group_name = "{:04d}".format(num)      # HDF group
+            self.group_name = timestamp.replace(" ", "_")  # HDF group name
             group = file.create_group(self.group_name)  # Create Group
-            # Metadata
-            group.attrs["timestamp"] = str(datetime.datetime.now())
+            group.attrs["timestamp"] = timestamp  # Metadata
 
-        log.info("Filepath: {}, Group: {}".format(self.filepath, self.group_name))
+        logging.info(self.filepath)
+        logging.info(self.group_name)
 
-    def save(self, struct, attrs: Attrs, overwrite=False):
-        """
-        :param struct: Structure
-        :param attrs: Attributes in the structure to be saved.
-        :param overwrite: Overwrites existing values in the hdf for the structure.
-        """
-        struct_name = struct.__class__.__name__.lower()
-        attrs.check_hasattr(struct)
+    def add_dataset(self, struct, attributes, overwrite=False):
+        logging.info("")
 
         with h5py.File(self.filepath, mode='a') as file:
-            base = file[self.group_name]
-
-            # New group for structure
-            if overwrite and (struct_name in base):
-                del base[struct_name]
-            group = base.create_group(struct_name)
+            name = struct.__class__.__name__.lower()
+            base = file[self.group_name]  # New group for structure
+            if overwrite and (name in base):
+                del base[name]  # Delete existing dataset
+            group = base.create_group(name)
 
             # Create new datasets
-            for attr in attrs:
+            for attr in attributes:
                 value = np.copy(getattr(struct, attr.name))
-                if attr.is_resizable:
-                    # Resizable -> Values can be added to dataset
-                    value = np.array(value)
-                    maxshape = (None,) + value.shape
-                    value = np.expand_dims(value, axis=0)
-                    group.create_dataset(attr.name, data=value,
-                                         maxshape=maxshape)
-                else:
-                    # Not Resizable
-                    group.create_dataset(attr.name, data=value)
+                self.create_dataset(group, attr.name, value, attr.is_resizable)
 
-        recordable = Attrs(filter(lambda attr: attr.is_recordable, attrs),
-                           attrs.save_func)
-        if len(recordable) and recordable.save_func is not None:
-            self.recorders.append(HDFRecorder(struct, struct_name, recordable,
-                                              self.filepath, self.group_name))
+        logging.info("")
 
-    def update(self, brute=False):
-        for recorder in self.recorders:
-            recorder.update(brute)
+    def add_buffers(self, struct, attributes):
+        """
+        struct
+        buffers:
+          attr.name: buffer1
+          attr.name: buffer2
+          ...
+        """
+        logging.info("")
 
+        buffers = {attr.name: ListBuffer(start=1, end=1) for attr in attributes}
+        self.buffers.append((struct, buffers))
 
+        logging.info("")
 
+    def update_buffers(self):
+        for struct, buffers in self.buffers:
+            logging.debug("Struct: {}".format(struct))
+            for attr, buffer in buffers:
+                logging.debug("Attr: {}, Buffer: {}".format(attr, buffer))
+                value = getattr(struct, attr)
+                value = np.copy(value)
+                buffer.append(value)
+
+    def dump_buffers(self):
+        logging.debug("")
+        # TODO: Swap old buffers to new cleared one
+        with h5py.File(self.filepath, mode='a') as file:
+            grp = file[self.group_name]
+            for struct, buffers in self.buffers:
+                name = struct.__class__.__name__.lower()
+                for attr, buffer in buffers:
+                    dset = grp[name][attr.name]
+                    self.append_buffer_to_dataset(dset, buffer)
+                    buffer.clear()

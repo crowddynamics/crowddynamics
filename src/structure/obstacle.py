@@ -24,8 +24,6 @@ spec_linear = (
     ("wall", float64[:, :]),
 )
 
-wall_attr_names = [item[0] for item in spec_linear]
-
 
 @jitclass(spec_linear)
 class LinearObstacle(object):

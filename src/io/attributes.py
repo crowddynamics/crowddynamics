@@ -34,9 +34,6 @@ class Attrs(dict):
         for key, attr in self.items():
             if not hasattr(struct, attr.name):
                 raise Warning("struct has no attribute {}".format(attr))
-        if len(self) == 0:
-            raise ValueError("Struct \"{}\" doesn't contain any of given "
-                             "attributes.".format(struct))
 
     def __iter__(self):
         return iter(self.values())

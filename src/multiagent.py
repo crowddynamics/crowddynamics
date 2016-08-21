@@ -144,11 +144,6 @@ def agent_positions(agent: Agent,
 
 
 class MultiAgentSimulation(Process):
-    attrs_result = Attrs((
-        "dt_min", "dt_max", "iterations", "time_tot", "time_steps",
-        "in_goal_time",
-    ))
-
     def __init__(self, queue: Queue):
         # Multiprocessing
         super(MultiAgentSimulation, self).__init__()
@@ -157,10 +152,10 @@ class MultiAgentSimulation(Process):
 
         # Structures
         self.domain = None  # Area
-        self.agent = None  # Agent
-        self.walls = ()  # Obstacle
-        self.goals = ()  # Area
-        self.exits = ()  # Exit
+        self.goals = ()     # Area
+        self.exits = ()     # Exit
+        self.walls = ()     # Obstacle
+        self.agent = None   # Agent
 
         # Angle and direction update algorithms
         self.navigation = None
