@@ -1,16 +1,45 @@
 import os
 from functools import lru_cache
 
-import yaml
 import pandas as pd
 
 from collections import OrderedDict
+
+try:
+    from ruamel import yaml
+except ImportError:
+    import yaml
+
+
+class Config:
+    root = os.path.abspath(__file__)
+    root = os.path.split(root)[0]
+
+    def structure(self):
+        from src.structure.agent import spec_agent
+        from src.structure.obstacle import spec_linear
+        ext = ".yaml"
+        name = "structure"
+        filepath = os.path.join(self.root, name + ext)
+
+        d = {
+            "agent": spec_agent,
+            "walls": spec_linear
+        }
+
+        data = {}
+        for name, spec in d.items():
+            data[name] = [item[0] for item in spec]
+
+        with open(filepath, "w") as f:
+            yaml.safe_dump(data, stream=f, default_flow_style=False)
 
 
 def ordered_load(stream, Loader=yaml.Loader, object_pairs_hook=OrderedDict):
     """
     http://stackoverflow.com/questions/5121931/in-python-how-can-you-load- yaml-mappings-as-ordereddicts
     """
+
     class OrderedLoader(Loader):
         pass
 
@@ -26,8 +55,9 @@ def ordered_load(stream, Loader=yaml.Loader, object_pairs_hook=OrderedDict):
 
 class Load:
     root = os.path.abspath(__file__)
-    root = os.path.split(root)[0]
     # TODO: converters. Evaluate to values.
+
+    root = os.path.split(root)[0]
 
     @lru_cache()
     def csv(self, name):
@@ -37,12 +67,9 @@ class Load:
         return pd.read_csv(path, index_col=[0])
 
     @lru_cache()
-    def yaml(self, name, ordered=False):
+    def yaml(self, name):
         """Load yaml with ordered loader."""
         ext = ".yaml"
         path = os.path.join(self.root, name + ext)
         with open(path) as f:
-            if ordered:
-                return ordered_load(f, yaml.SafeLoader)
-            else:
-                return yaml.safe_load(f)
+            return yaml.safe_load(f)

@@ -19,7 +19,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
         # Loading data from configs
         self.configs_loader = Load()
-        self.configs = self.configs_loader.yaml("simulations", ordered=True)
+        self.configs = self.configs_loader.yaml("simulations")
 
         # Simulation with multiprocessing
         self.queue = Queue(maxsize=100)
@@ -92,13 +92,17 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             values = mapping[key]
             if isinstance(val, int):
                 widget = QtGui.QSpinBox()
-                widget.setMinimum(values[0])
-                widget.setMaximum(values[1])
+                if values[0] is not None:
+                    widget.setMinimum(values[0])
+                if values[1] is not None:
+                    widget.setMaximum(values[1])
                 widget.setValue(val)
             elif isinstance(val, float):
                 widget = QtGui.QDoubleSpinBox()
-                widget.setMinimum(values[0])
-                widget.setMaximum(values[1])
+                if values[0] is not None:
+                    widget.setMinimum(values[0])
+                if values[1] is not None:
+                    widget.setMaximum(values[1])
                 widget.setValue(val)
             elif isinstance(val, bool):
                 widget = QtGui.QRadioButton()

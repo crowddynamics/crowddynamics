@@ -25,6 +25,8 @@ class ListBuffer(list):
 class HDFStore(object):
     """Class for saving object's array or scalar data in hdf5 file."""
     # TODO: Threading, Locks
+    # http://effbot.org/pyfaq/what-kinds-of-global-value-mutation-are-thread-safe.htm
+    # TODO: Attributes
     ext = ".hdf5"
 
     def __init__(self, filepath):
@@ -35,6 +37,7 @@ class HDFStore(object):
 
         # Appending data
         self.buffers = []  # (struct, buffers)
+        self.queue = None
 
         # Configuration
         self.configure_file()
@@ -49,6 +52,7 @@ class HDFStore(object):
         :param resizable: If true values can be added to the dataset.
         :return:
         """
+        logging.info("")
         values = np.array(values)
         kw = {}
         if resizable:
@@ -62,10 +66,13 @@ class HDFStore(object):
     def append_buffer_to_dataset(dset: h5py.Dataset, buffer: ListBuffer):
         """Append values to resizable h5py dataset."""
         if len(buffer):  # Buffer is not empty
+            logging.info("")
             values = np.array(buffer)
             new_shape = ((buffer.end + 1),) + values.shape[1:]
             dset.resize(new_shape)
             dset[buffer.start:] = values
+        else:
+            logging.warning("Buffer is empty.")
 
     def configure_file(self):
         """Configure and creates new HDF5 File."""
@@ -113,6 +120,7 @@ class HDFStore(object):
         logging.info("")
 
     def update_buffers(self):
+        logging.info("")
         for struct, buffers in self.buffers:
             logging.debug("Struct: {}".format(struct))
             for attr, buffer in buffers:
@@ -122,13 +130,15 @@ class HDFStore(object):
                 buffer.append(value)
 
     def dump_buffers(self):
-        logging.debug("")
-        # TODO: Swap old buffers to new cleared one
+        logging.info("")
+        # TODO: Swap old buffers to new cleared one. Threading and Queue.
         with h5py.File(self.filepath, mode='a') as file:
             grp = file[self.group_name]
             for struct, buffers in self.buffers:
+                logging.debug("Struct: {}".format(struct))
                 name = struct.__class__.__name__.lower()
                 for attr, buffer in buffers:
+                    logging.debug("Attr: {}, Buffer: {}".format(attr, buffer))
                     dset = grp[name][attr.name]
                     self.append_buffer_to_dataset(dset, buffer)
                     buffer.clear()
