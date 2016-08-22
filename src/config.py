@@ -1,5 +1,6 @@
 import os
 from collections import OrderedDict
+from copy import deepcopy
 from functools import lru_cache
 
 import pandas as pd
@@ -12,22 +13,40 @@ folder = "configs"
 
 
 class Create:
-    def attributes(self):
+    def parameters(self):
         from src.structure.agent import spec_agent
 
         ext = ".yaml"
-        name = "attributes"
+        name = "parameters"
         filepath = os.path.join(root, folder, name + ext)
 
         # TODO: Add Comments
-        data = OrderedDict([('agent', OrderedDict())])
+        default = OrderedDict([("resizable", False),
+                               ("graphics", False)])
+
+        data = OrderedDict([('simulation', OrderedDict()),
+                            ('agent', OrderedDict()),])
 
         for item in spec_agent:
-            data['agent'][item[0]] = OrderedDict([("resizable", False)])
+            data['agent'][item[0]] = deepcopy(default)
 
-        data['agent']['position']['resizable'] = True
-        data['agent']['angle']['resizable'] = True
-        data['agent']['active']['resizable'] = True
+        # Mutable values that are stored
+        resizable = ("position", "angle", "active")
+        for item in resizable:
+            data['agent'][item]['resizable'] = True
+
+        # Values to be updated in graphics
+        graphics = ("position", "angle", "active", "goal_reached")
+        for item in graphics:
+            data['agent'][item]['graphics'] = True
+
+        parameters = ("dt_min", "dt_max", "time_tot", "in_goal")
+        for item in parameters:
+            data['simulation'][item] = deepcopy(default)
+
+        resizable = ("time_tot", "in_goal")
+        for item in resizable:
+            data['simulation'][item]['resizable'] = True
 
         with open(filepath, "w") as file:
             yaml.dump(data,

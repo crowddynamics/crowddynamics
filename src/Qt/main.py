@@ -97,7 +97,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             logging.debug("Setting \"{}\" to \"{}\"".format(key, value))
             kwargs[key] = value
 
-        # TODO: Connect to dictionary
         for key, val in kwargs.items():
             logging.debug("{}: {}".format(key, val))
             # Set valid values and current value

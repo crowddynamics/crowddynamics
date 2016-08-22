@@ -15,16 +15,13 @@ TODO: Bokeh plots
 TODO: Fundamental diagram
 
 # General
-TODO: Logging, Formatter, yaml configs file, Simulation log, Loggers
 TODO: Command line arguments
 TODO: JIT Compilation
 TODO: Executable
 
 # Simulation
-TODO: Simulation configuration
 TODO: Load simulation data
 TODO: Start/end time, simulation length
-TODO: Multiprocessing, Queue, Gui <-> Simulation <-> IO
 TODO: Bytes saved, Memory consumption
 TODO: CAD integration
 TODO: pyqtgraph exporter

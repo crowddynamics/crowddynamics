@@ -1,16 +1,34 @@
 ---
-# Pyqtgraph graphics arguments, mkPen, mkBrush
-# RGBA
-pen:
+# Pyqtgraph graphics arguments
+# pyqtgraph.mkPen
+# pyqtgraph.mkBrush
 
+circle:
+  symbol: "o"
+  symbolSize: 2 * radius
+  pen: null
+  pxMode: false
 
-brush:
-  domain: [255, 255, 255, 31]
-  goal:   [255, 255, 255, 63]
+domain:
+  pen: null
+  brush: [255, 255, 255, 31]
 
-  agent:
-    active:
-    inactive:
+goal:
+  pen: null
+  brush: [255, 255, 255, 63]
 
+agent:
+  active:
+    pen: "w"
+    brush: [0, 0, 255, 255]
+  inactive:
+    pen: null
+    brush: [0, 0, 0, 0]
+  patient:
+    pen: "w"
+    brush: [0, 0, 255, 255]
+  impatient:
+    pen: "w"
+    brush: [255, 0, 0, 255]
 
 ...

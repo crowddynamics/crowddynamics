@@ -144,7 +144,10 @@ def agent_positions(agent: Agent,
 
 
 class MultiAgentSimulation(Process):
-    def __init__(self, queue: Queue):
+    structures = ("domain", "goals", "exits", "walls", "agent")
+    parameters = ("dt_min", "dt_max", "time_tot", "in_goal")
+
+    def __init__(self, queue: Queue=None):
         # Multiprocessing
         super(MultiAgentSimulation, self).__init__()
         self.queue = queue
@@ -171,16 +174,14 @@ class MultiAgentSimulation(Process):
         # State of the simulation
         self.iterations = 0
         self.time_tot = 0
-        self.time_steps = [0]
         self.in_goal = 0  # TODO: In-goal -> Area class
+
+        self.time_steps = [0]
         self.in_goal_time = []
 
         # Data
-        self.hdfstore = None
         self.load = Load()
-        self.queuable = {"agent": ("position", "angle", "position_ls",
-                                   "position_rs", "front", "active",
-                                   "goal_reached")}
+        self.hdfstore = None
 
     @property
     def name(self):
@@ -320,26 +321,19 @@ class MultiAgentSimulation(Process):
             self.hdfstore = HDFStore(self.name)
 
             # Add dataset
-            attributes = self.load.yaml('attributes')
-            args = self.agent, attributes['agent']
+            parameters = self.load.yaml('parameters')
+
+            args = self.agent, parameters['agent']
+            self.hdfstore.add_dataset(*args)
+            self.hdfstore.add_buffers(*args)
+
+            args = self, parameters['simulation']
             self.hdfstore.add_dataset(*args)
             self.hdfstore.add_buffers(*args)
 
             logging.info("")
         else:
             logging.warning("Already configured.")
-
-    def queue_handler(self):
-        # FIXME
-        data = []
-        for struct_name, attrs in self.queuable.items():
-            struct = getattr(self, struct_name)
-            d = namedtuple(struct_name, attrs)
-            for attr in attrs:
-                value = np.copy(getattr(struct, attr))
-                setattr(d, attr, value)
-            data.append(d)
-        self.queue.put(data)
 
     @timed
     def update(self):
@@ -385,11 +379,9 @@ class MultiAgentSimulation(Process):
 
         self.iterations += 1
 
-        # TODO: Queue data to send to graphics
-
         if self.hdfstore is not None:
             self.hdfstore.update_buffers()
             if self.iterations % 100 == 0:
                 self.hdfstore.dump_buffers()
 
-
+        # TODO: Queue data to send to graphics

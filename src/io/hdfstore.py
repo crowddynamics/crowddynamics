@@ -24,9 +24,6 @@ class ListBuffer(list):
 
 class HDFStore(object):
     """Class for saving object's array or scalar data in hdf5 file."""
-    # TODO: Threading, Locks
-    # http://effbot.org/pyfaq/what-kinds-of-global-value-mutation-are-thread-safe.htm
-    # TODO: Attributes
     ext = ".hdf5"
 
     def __init__(self, filepath):
@@ -37,7 +34,6 @@ class HDFStore(object):
 
         # Appending data
         self.buffers = []  # (struct, buffers)
-        self.queue = None
 
         # Configuration
         self.configure_file()
@@ -124,7 +120,7 @@ class HDFStore(object):
         logging.info("")
 
     def update_buffers(self):
-        logging.info("")
+        logging.debug("")
         for struct, buffers in self.buffers:
             struct_name = struct.__class__.__name__.lower()
             logging.debug(struct_name)
@@ -136,7 +132,6 @@ class HDFStore(object):
 
     def dump_buffers(self):
         logging.info("")
-        # TODO: Swap old buffers to new cleared one. Threading and Queue.
         with h5py.File(self.filepath, mode='a') as file:
             grp = file[self.group_name]
             for struct, buffers in self.buffers:
