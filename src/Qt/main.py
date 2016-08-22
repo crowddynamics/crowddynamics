@@ -1,11 +1,11 @@
 import importlib
-from multiprocessing import Queue
 import logging
+from multiprocessing import Queue
 
 import pyqtgraph as pg
 from PyQt4 import QtGui, QtCore
 
-from src.configs.load import Load
+from src.config import Load
 from .graphics import MultiAgentPlot
 from .ui.gui import Ui_MainWindow
 

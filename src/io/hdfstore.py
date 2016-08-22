@@ -100,7 +100,7 @@ class HDFStore(object):
             # Create new datasets
             for attr in attributes:
                 value = np.copy(getattr(struct, attr.name))
-                self.create_dataset(group, attr.name, value, attr.is_resizable)
+                self.create_dataset(group, attr["name"], value, attr["resizable"])
 
         logging.info("")
 
@@ -114,7 +114,7 @@ class HDFStore(object):
         """
         logging.info("")
 
-        buffers = {attr.name: ListBuffer(start=1, end=1) for attr in attributes}
+        buffers = {attr["name"]: ListBuffer(start=1, end=1) for attr in attributes if attr["is_resizable"]}
         self.buffers.append((struct, buffers))
 
         logging.info("")

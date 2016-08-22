@@ -5,17 +5,16 @@ from multiprocessing import Process, Event, Queue
 import numpy as np
 from scipy.stats import truncnorm as tn
 
-from .configs.load import Load
+from src.config import Load
+from .core.interactions import agent_agent, agent_wall
+from .core.motion import force_adjust, force_fluctuation, \
+    torque_adjust, torque_fluctuation
 from .core.motion import integrator
 from .core.navigation import Navigation, Orientation
 from .core.vector2d import angle_nx2, length_nx2
 from .functions import filter_none, timed
-from .io.attributes import Attrs
 from .structure.agent import Agent
 from .structure.area import Area
-from .core.interactions import agent_agent, agent_wall
-from .core.motion import force_adjust, force_fluctuation, \
-    torque_adjust, torque_fluctuation
 
 
 def random_unit_vector(size):
