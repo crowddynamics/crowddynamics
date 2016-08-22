@@ -25,7 +25,7 @@
   - r_ts: !!omap
     - resizable: false
   - position: !!omap
-    - resizable: false
+    - resizable: true
   - velocity: !!omap
     - resizable: false
   - target_velocity: !!omap
@@ -37,7 +37,7 @@
   - inertia_rot: !!omap
     - resizable: false
   - angle: !!omap
-    - resizable: false
+    - resizable: true
   - angular_velocity: !!omap
     - resizable: false
   - target_angle: !!omap
@@ -47,9 +47,9 @@
   - torque: !!omap
     - resizable: false
   - position_ls: !!omap
-    - resizable: false
+    - resizable: true
   - position_rs: !!omap
-    - resizable: false
+    - resizable: true
   - front: !!omap
     - resizable: false
   - tau_adj: !!omap

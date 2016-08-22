@@ -9,7 +9,6 @@ from src.multiagent import MultiAgentSimulation
 from src.structure.area import Rectangle, Circle
 from src.structure.obstacle import LinearExit
 from src.structure.obstacle import LinearObstacle
-from src.io.attributes import Intervals, Attrs, Attr
 
 
 @numba.jit(nopython=True)

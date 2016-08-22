@@ -24,13 +24,16 @@ class Create:
         for item in spec_agent:
             data['agent'][item[0]] = OrderedDict([("resizable", False)])
 
+        data['agent']['position']['resizable'] = True
+        data['agent']['angle']['resizable'] = True
+        data['agent']['active']['resizable'] = True
+
         with open(filepath, "w") as file:
             yaml.dump(data,
                       stream=file,
                       Dumper=yaml.RoundTripDumper,
                       default_flow_style=False)
 
-Create().attributes()
 
 class Load:
     @lru_cache()

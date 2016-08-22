@@ -32,6 +32,8 @@ def setup_logging(default_path='configs/logging.yaml',
     DEBUG    10
     NOTSET    0
     """
+    # TODO: numpy.printing settings
+
     filepath = os.path.abspath(__file__)
     folderpath = os.path.split(filepath)[0]
     path = os.path.join(folderpath, default_path)

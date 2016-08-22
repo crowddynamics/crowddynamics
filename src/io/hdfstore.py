@@ -68,7 +68,7 @@ class HDFStore(object):
         if len(buffer):  # Buffer is not empty
             logging.info("")
             values = np.array(buffer)
-            new_shape = ((buffer.end + 1),) + values.shape[1:]
+            new_shape = (buffer.end,) + values.shape[1:]
             dset.resize(new_shape)
             dset[buffer.start:] = values
         else:
@@ -82,7 +82,7 @@ class HDFStore(object):
         with h5py.File(self.filepath, mode='a') as file:
             self.group_name = timestamp.replace(" ", "_")  # HDF group name
             group = file.create_group(self.group_name)  # Create Group
-            group.attrs["timestamp"] = timestamp  # Metadata
+            # group.attrs["timestamp"] = timestamp  # Metadata
 
         logging.info(self.filepath)
         logging.info(self.group_name)
@@ -98,9 +98,9 @@ class HDFStore(object):
             group = base.create_group(name)
 
             # Create new datasets
-            for attr in attributes:
-                value = np.copy(getattr(struct, attr.name))
-                self.create_dataset(group, attr["name"], value, attr["resizable"])
+            for name, settings in attributes.items():
+                value = np.copy(getattr(struct, name))
+                self.create_dataset(group, name, value, settings["resizable"])
 
         logging.info("")
 
@@ -114,7 +114,11 @@ class HDFStore(object):
         """
         logging.info("")
 
-        buffers = {attr["name"]: ListBuffer(start=1, end=1) for attr in attributes if attr["is_resizable"]}
+        buffers = {}
+        for name, settings in attributes.items():
+            if settings["resizable"]:
+                buffers[name] = ListBuffer(start=1, end=1)
+
         self.buffers.append((struct, buffers))
 
         logging.info("")
@@ -122,10 +126,11 @@ class HDFStore(object):
     def update_buffers(self):
         logging.info("")
         for struct, buffers in self.buffers:
-            logging.debug("Struct: {}".format(struct))
-            for attr, buffer in buffers:
-                logging.debug("Attr: {}, Buffer: {}".format(attr, buffer))
-                value = getattr(struct, attr)
+            struct_name = struct.__class__.__name__.lower()
+            logging.debug(struct_name)
+            for attr_name, buffer in buffers.items():
+                # logging.debug("")
+                value = getattr(struct, attr_name)
                 value = np.copy(value)
                 buffer.append(value)
 
@@ -135,10 +140,10 @@ class HDFStore(object):
         with h5py.File(self.filepath, mode='a') as file:
             grp = file[self.group_name]
             for struct, buffers in self.buffers:
-                logging.debug("Struct: {}".format(struct))
-                name = struct.__class__.__name__.lower()
-                for attr, buffer in buffers:
-                    logging.debug("Attr: {}, Buffer: {}".format(attr, buffer))
-                    dset = grp[name][attr.name]
+                struct_name = struct.__class__.__name__.lower()
+                logging.debug(struct_name)
+                for attr_name, buffer in buffers.items():
+                    # logging.debug("")
+                    dset = grp[struct_name][attr_name]
                     self.append_buffer_to_dataset(dset, buffer)
                     buffer.clear()

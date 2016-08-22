@@ -36,6 +36,11 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.configure_plot()
         self.configure_signals()
 
+    def enable_controls(self, boolean):
+        self.startButton.setEnabled(boolean)
+        self.stopButton.setEnabled(boolean)
+        self.saveButton.setEnabled(boolean)
+
     def configure_plot(self):
         """Graphics widget for plotting simulation data."""
         logging.info("")
@@ -51,6 +56,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.timer.timeout.connect(self.update_plot)
         self.startButton.clicked.connect(self.start)
         self.stopButton.clicked.connect(self.stop)
+
+        # Disable until simulation is set
+        self.enable_controls(False)
 
         # Menus
         names = self.configs["simulations"].keys()
@@ -92,17 +100,31 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             values = mapping[key]
             if isinstance(val, int):
                 widget = QtGui.QSpinBox()
+
                 if values[0] is not None:
                     widget.setMinimum(values[0])
+                else:
+                    widget.setMinimum(-100000)
+
                 if values[1] is not None:
                     widget.setMaximum(values[1])
+                else:
+                    widget.setMaximum(100000)
+
                 widget.setValue(val)
             elif isinstance(val, float):
                 widget = QtGui.QDoubleSpinBox()
+
                 if values[0] is not None:
                     widget.setMinimum(values[0])
+                else:
+                    widget.setMinimum(-float("inf"))
+
                 if values[1] is not None:
                     widget.setMaximum(values[1])
+                else:
+                    widget.setMaximum(float("inf"))
+
                 widget.setValue(val)
             elif isinstance(val, bool):
                 widget = QtGui.QRadioButton()
@@ -120,6 +142,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         initButton = QtGui.QPushButton("Initialize")
         initButton.clicked.connect(self.set_simulation)
         self.sidebarLeft.addWidget(initButton)
+
         # self.sidebarLeft.addWidget(QtGui.QSpacerItem())
 
     def set_simulation(self):
@@ -132,6 +155,10 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         module = importlib.import_module(module_name)
         simulation = getattr(module, class_name)
         self.process = simulation(self.queue, **simu_dict["kwargs"])
+
+        # Enable controls
+        self.saveButton.clicked.connect(self.process.configure_hdfstore)
+        self.enable_controls(True)
 
     def update_plot(self):
         """Updates the data in the plot."""
@@ -147,9 +174,12 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
     def stop(self):
         """Stops simulation process and updating the plot"""
-        logging.info("")
         if self.process is not None:
+            logging.info("")
             self.timer.stop()
             self.process.stop()
             self.process.join()
             self.reset_buffers()
+            self.enable_controls(False)
+        else:
+            logging.warning("")

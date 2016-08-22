@@ -5,7 +5,8 @@ from multiprocessing import Process, Event, Queue
 import numpy as np
 from scipy.stats import truncnorm as tn
 
-from src.config import Load
+from .io.hdfstore import HDFStore
+from .config import Load
 from .core.interactions import agent_agent, agent_wall
 from .core.motion import force_adjust, force_fluctuation, \
     torque_adjust, torque_fluctuation
@@ -174,7 +175,9 @@ class MultiAgentSimulation(Process):
         self.in_goal = 0  # TODO: In-goal -> Area class
         self.in_goal_time = []
 
-        # Queuable data
+        # Data
+        self.hdfstore = None
+        self.load = Load()
         self.queuable = {"agent": ("position", "angle", "position_ls",
                                    "position_rs", "front", "active",
                                    "goal_reached")}
@@ -239,9 +242,8 @@ class MultiAgentSimulation(Process):
         logging.info("In: {}, {}".format(size, body))
 
         # Load tabular values
-        load = Load()
-        body = load.csv("body")[body]
-        values = load.csv("agent")["value"]
+        body = self.load.csv("body")[body]
+        values = self.load.csv("agent")["value"]
 
         # Eval
         pi = np.pi
@@ -275,7 +277,7 @@ class MultiAgentSimulation(Process):
         logging.info("Out")
 
     def configure_agent_positions(self, kwargs):
-        logging.info("In: {}".format(kwargs))
+        logging.info("")
 
         # TODO: separate, manual positions
         # Initial positions
@@ -310,7 +312,25 @@ class MultiAgentSimulation(Process):
             self.orientation = custom
         logging.info("")
 
+    def configure_hdfstore(self):
+        if self.hdfstore is None:
+            logging.info("")
+
+            # Configure hdfstore file
+            self.hdfstore = HDFStore(self.name)
+
+            # Add dataset
+            attributes = self.load.yaml('attributes')
+            args = self.agent, attributes['agent']
+            self.hdfstore.add_dataset(*args)
+            self.hdfstore.add_buffers(*args)
+
+            logging.info("")
+        else:
+            logging.warning("Already configured.")
+
     def queue_handler(self):
+        # FIXME
         data = []
         for struct_name, attrs in self.queuable.items():
             struct = getattr(self, struct_name)
@@ -364,6 +384,11 @@ class MultiAgentSimulation(Process):
         self.iterations += 1
 
         # Put data to the queue
-        self.queue_handler()
+        # self.queue_handler()
+
+        if self.hdfstore is not None:
+            self.hdfstore.update_buffers()
+            if self.iterations % 100 == 0:
+                self.hdfstore.dump_buffers()
 
         logging.debug("")
