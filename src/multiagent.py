@@ -343,6 +343,8 @@ class MultiAgentSimulation(Process):
 
     @timed
     def update(self):
+        logging.debug("")
+
         if self.navigation is not None:
             self.navigation.update()
 
@@ -383,12 +385,11 @@ class MultiAgentSimulation(Process):
 
         self.iterations += 1
 
-        # Put data to the queue
-        # self.queue_handler()
+        # TODO: Queue data to send to graphics
 
         if self.hdfstore is not None:
             self.hdfstore.update_buffers()
             if self.iterations % 100 == 0:
                 self.hdfstore.dump_buffers()
 
-        logging.debug("")
+

@@ -11,7 +11,7 @@
   - orientable: !!omap
     - resizable: false
   - active: !!omap
-    - resizable: false
+    - resizable: true
   - goal_reached: !!omap
     - resizable: false
   - mass: !!omap
@@ -47,9 +47,9 @@
   - torque: !!omap
     - resizable: false
   - position_ls: !!omap
-    - resizable: true
+    - resizable: false
   - position_rs: !!omap
-    - resizable: true
+    - resizable: false
   - front: !!omap
     - resizable: false
   - tau_adj: !!omap

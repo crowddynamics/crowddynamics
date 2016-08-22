@@ -27,7 +27,7 @@ simulations: !!omap
       module: "src.examples.evacuation"
       class: "RoomEvacuation"
       kwargs: !!omap
-        - size: 100
+        - size: 200
         - model: "circular"
         - body: "adult"
         - height: 20.0
