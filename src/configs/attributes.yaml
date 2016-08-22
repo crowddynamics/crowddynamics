@@ -1,133 +1,90 @@
-agent:
-- !!omap
-  - name: size
-  - resizable: false
-- !!omap
-  - name: shape
-  - resizable: false
-- !!omap
-  - name: circular
-  - resizable: false
-- !!omap
-  - name: three_circle
-  - resizable: false
-- !!omap
-  - name: orientable
-  - resizable: false
-- !!omap
-  - name: active
-  - resizable: false
-- !!omap
-  - name: goal_reached
-  - resizable: false
-- !!omap
-  - name: mass
-  - resizable: false
-- !!omap
-  - name: radius
-  - resizable: false
-- !!omap
-  - name: r_t
-  - resizable: false
-- !!omap
-  - name: r_s
-  - resizable: false
-- !!omap
-  - name: r_ts
-  - resizable: false
-- !!omap
-  - name: position
-  - resizable: false
-- !!omap
-  - name: velocity
-  - resizable: false
-- !!omap
-  - name: target_velocity
-  - resizable: false
-- !!omap
-  - name: target_direction
-  - resizable: false
-- !!omap
-  - name: force
-  - resizable: false
-- !!omap
-  - name: inertia_rot
-  - resizable: false
-- !!omap
-  - name: angle
-  - resizable: false
-- !!omap
-  - name: angular_velocity
-  - resizable: false
-- !!omap
-  - name: target_angle
-  - resizable: false
-- !!omap
-  - name: target_angular_velocity
-  - resizable: false
-- !!omap
-  - name: torque
-  - resizable: false
-- !!omap
-  - name: position_ls
-  - resizable: false
-- !!omap
-  - name: position_rs
-  - resizable: false
-- !!omap
-  - name: front
-  - resizable: false
-- !!omap
-  - name: tau_adj
-  - resizable: false
-- !!omap
-  - name: tau_rot
-  - resizable: false
-- !!omap
-  - name: k_soc
-  - resizable: false
-- !!omap
-  - name: tau_0
-  - resizable: false
-- !!omap
-  - name: mu
-  - resizable: false
-- !!omap
-  - name: kappa
-  - resizable: false
-- !!omap
-  - name: damping
-  - resizable: false
-- !!omap
-  - name: std_rand_force
-  - resizable: false
-- !!omap
-  - name: std_rand_torque
-  - resizable: false
-- !!omap
-  - name: f_soc_ij_max
-  - resizable: false
-- !!omap
-  - name: f_soc_iw_max
-  - resizable: false
-- !!omap
-  - name: sight_soc
-  - resizable: false
-- !!omap
-  - name: sight_wall
-  - resizable: false
-- !!omap
-  - name: neighbor_radius
-  - resizable: false
-- !!omap
-  - name: neighborhood_size
-  - resizable: false
-- !!omap
-  - name: neighbors
-  - resizable: false
-- !!omap
-  - name: neighbor_distances
-  - resizable: false
-- !!omap
-  - name: neighbor_distances_max
-  - resizable: false
+!!omap
+- agent: !!omap
+  - size: !!omap
+    - resizable: false
+  - shape: !!omap
+    - resizable: false
+  - circular: !!omap
+    - resizable: false
+  - three_circle: !!omap
+    - resizable: false
+  - orientable: !!omap
+    - resizable: false
+  - active: !!omap
+    - resizable: false
+  - goal_reached: !!omap
+    - resizable: false
+  - mass: !!omap
+    - resizable: false
+  - radius: !!omap
+    - resizable: false
+  - r_t: !!omap
+    - resizable: false
+  - r_s: !!omap
+    - resizable: false
+  - r_ts: !!omap
+    - resizable: false
+  - position: !!omap
+    - resizable: false
+  - velocity: !!omap
+    - resizable: false
+  - target_velocity: !!omap
+    - resizable: false
+  - target_direction: !!omap
+    - resizable: false
+  - force: !!omap
+    - resizable: false
+  - inertia_rot: !!omap
+    - resizable: false
+  - angle: !!omap
+    - resizable: false
+  - angular_velocity: !!omap
+    - resizable: false
+  - target_angle: !!omap
+    - resizable: false
+  - target_angular_velocity: !!omap
+    - resizable: false
+  - torque: !!omap
+    - resizable: false
+  - position_ls: !!omap
+    - resizable: false
+  - position_rs: !!omap
+    - resizable: false
+  - front: !!omap
+    - resizable: false
+  - tau_adj: !!omap
+    - resizable: false
+  - tau_rot: !!omap
+    - resizable: false
+  - k_soc: !!omap
+    - resizable: false
+  - tau_0: !!omap
+    - resizable: false
+  - mu: !!omap
+    - resizable: false
+  - kappa: !!omap
+    - resizable: false
+  - damping: !!omap
+    - resizable: false
+  - std_rand_force: !!omap
+    - resizable: false
+  - std_rand_torque: !!omap
+    - resizable: false
+  - f_soc_ij_max: !!omap
+    - resizable: false
+  - f_soc_iw_max: !!omap
+    - resizable: false
+  - sight_soc: !!omap
+    - resizable: false
+  - sight_wall: !!omap
+    - resizable: false
+  - neighbor_radius: !!omap
+    - resizable: false
+  - neighborhood_size: !!omap
+    - resizable: false
+  - neighbors: !!omap
+    - resizable: false
+  - neighbor_distances: !!omap
+    - resizable: false
+  - neighbor_distances_max: !!omap
+    - resizable: false

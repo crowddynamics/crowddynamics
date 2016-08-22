@@ -19,9 +19,10 @@ class Create:
         name = "attributes"
         filepath = os.path.join(root, folder, name + ext)
 
-        data = {'agent': [OrderedDict((("name", item[0]),
-                                       ("resizable", False)))
-                          for item in spec_agent]}
+        data = OrderedDict([('agent', OrderedDict())])
+
+        for item in spec_agent:
+            data['agent'][item[0]] = OrderedDict([("resizable", False)])
 
         with open(filepath, "w") as file:
             yaml.dump(data,
@@ -29,6 +30,7 @@ class Create:
                       Dumper=yaml.RoundTripDumper,
                       default_flow_style=False)
 
+Create().attributes()
 
 class Load:
     @lru_cache()
