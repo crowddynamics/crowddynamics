@@ -1,5 +1,6 @@
 import importlib
 import logging
+from functools import partial
 from multiprocessing import Queue
 
 import pyqtgraph as pg
@@ -18,8 +19,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.setupUi(self)
 
         # Loading data from configs
-        self.configs_loader = Load()
-        self.configs = self.configs_loader.yaml("simulations")
+        self.load = Load()
+        self.configs = self.load.yaml("simulations")
 
         # Simulation with multiprocessing
         self.queue = Queue(maxsize=100)
@@ -61,9 +62,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.enable_controls(False)
 
         # Menus
-        names = self.configs["simulations"].keys()
+        names = tuple(self.configs["simulations"].keys())
         self.simulationsBox.addItem("")  # No simulation. Clear sidebar.
-        self.simulationsBox.addItems(tuple(names))
+        self.simulationsBox.addItems(names)
         self.simulationsBox.currentIndexChanged[str].connect(self.set_sidebar)
 
     def reset_buffers(self):
@@ -88,16 +89,22 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         if name == "":
             return
 
-        mapping = self.configs["kwarg_mapping"]
-        configs = self.configs["simulations"][name]
-        kwargs = configs["kwargs"]
+        kwarg_mapping = self.configs["kwarg_mapping"]
+        kwargs = self.configs["simulations"][name]["kwargs"]
+
+        def _update(key, value):
+            # FIXME
+            logging.debug("Setting \"{}\" to \"{}\"".format(key, value))
+            kwargs[key] = value
 
         # TODO: Connect to dictionary
         for key, val in kwargs.items():
             logging.debug("{}: {}".format(key, val))
             # Set valid values and current value
             label = QtGui.QLabel(key)
-            values = mapping[key]
+            values = kwarg_mapping[key]
+            update = partial(_update, key)
+
             if isinstance(val, int):
                 widget = QtGui.QSpinBox()
 
@@ -112,30 +119,35 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                     widget.setMaximum(100000)
 
                 widget.setValue(val)
+                widget.valueChanged.connect(update)
             elif isinstance(val, float):
                 widget = QtGui.QDoubleSpinBox()
 
+                inf = float("inf")
                 if values[0] is not None:
                     widget.setMinimum(values[0])
                 else:
-                    widget.setMinimum(-float("inf"))
+                    widget.setMinimum(-inf)
 
                 if values[1] is not None:
                     widget.setMaximum(values[1])
                 else:
-                    widget.setMaximum(float("inf"))
+                    widget.setMaximum(inf)
 
                 widget.setValue(val)
+                widget.valueChanged.connect(update)
             elif isinstance(val, bool):
                 widget = QtGui.QRadioButton()
-                # widget.setChecked(val)
+                widget.setChecked(val)
+                widget.toggled.connect(update)
             elif isinstance(val, str):
                 widget = QtGui.QComboBox()
                 widget.addItems(values)
                 index = widget.findText(val)
                 widget.setCurrentIndex(index)
+                widget.currentIndexChanged[str].connect(update)
             else:
-                continue
+                logging.warning("Value type not supported: {}".format(type(val)))
             self.sidebarLeft.addWidget(label)
             self.sidebarLeft.addWidget(widget)
 
@@ -149,12 +161,15 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         logging.info("")
         self.reset_buffers()
         name = self.simulationsBox.currentText()
+
         simu_dict = self.configs["simulations"][name]
         module_name = simu_dict["module"]
         class_name = simu_dict["class"]
+        kwargs = simu_dict["kwargs"]
+
         module = importlib.import_module(module_name)
         simulation = getattr(module, class_name)
-        self.process = simulation(self.queue, **simu_dict["kwargs"])
+        self.process = simulation(self.queue, **kwargs)
 
         # Enable controls
         self.saveButton.clicked.connect(self.process.configure_hdfstore)
