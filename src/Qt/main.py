@@ -46,7 +46,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """Graphics widget for plotting simulation data."""
         logging.info("")
         self.graphicsLayout.setBackground(background=None)
-        self.plot = MultiAgentPlot()
+        self.plot = MultiAgentPlot(queue=self.queue, parent=self)
         self.graphicsLayout.addItem(self.plot, 0, 0)
 
     def configure_signals(self):

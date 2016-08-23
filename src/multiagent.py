@@ -313,6 +313,14 @@ class MultiAgentSimulation(Process):
             self.orientation = custom
         logging.info("")
 
+    def configure_queuing(self):
+        if self.queue is not None:
+            logging.info("")
+            parameters = self.load.yaml('parameters')
+            args = self.agent, parameters['agent']
+        else:
+            logging.warning("Queue is not defined.")
+
     def configure_hdfstore(self):
         if self.hdfstore is None:
             logging.info("")

@@ -19,16 +19,16 @@ goal:
 
 agent:
   active:
-    pen: "w"
-    brush: [0, 0, 255, 255]
+    symbolPen: "w"
+    symbolBrush: [0, 0, 255, 255]
   inactive:
-    pen: null
-    brush: [0, 0, 0, 0]
+    symbolPen: null
+    symbolBrush: [0, 0, 0, 0]
   patient:
-    pen: "w"
-    brush: [0, 0, 255, 255]
+    symbolPen: "w"
+    symbolBrush: [0, 0, 255, 255]
   impatient:
-    pen: "w"
-    brush: [255, 0, 0, 255]
+    symbolPen: "w"
+    symbolBrush: [255, 0, 0, 255]
 
 ...

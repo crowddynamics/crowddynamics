@@ -78,7 +78,6 @@ class HDFStore(object):
         with h5py.File(self.filepath, mode='a') as file:
             self.group_name = timestamp.replace(" ", "_")  # HDF group name
             group = file.create_group(self.group_name)  # Create Group
-            # group.attrs["timestamp"] = timestamp  # Metadata
 
         logging.info(self.filepath)
         logging.info(self.group_name)
@@ -116,8 +115,6 @@ class HDFStore(object):
                 buffers[name] = ListBuffer(start=1, end=1)
 
         self.buffers.append((struct, buffers))
-
-        logging.info("")
 
     def update_buffers(self):
         logging.debug("")
