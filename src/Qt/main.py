@@ -23,7 +23,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.configs = self.load.yaml("simulations")
 
         # Simulation with multiprocessing
-        self.queue = Queue(maxsize=100)
+        self.queue = Queue(maxsize=10)
         self.process = None
 
         # Graphics
@@ -46,7 +46,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """Graphics widget for plotting simulation data."""
         logging.info("")
         self.graphicsLayout.setBackground(background=None)
-        self.plot = MultiAgentPlot(queue=self.queue)
+        self.plot = MultiAgentPlot()
         self.graphicsLayout.addItem(self.plot, 0, 0)
 
     def configure_signals(self):
@@ -180,10 +180,17 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
     def update_plots(self):
         """Updates the data in the plot(s)."""
         logging.debug("")
-        self.plot.update_data()
+        data = self.queue.get()
+        if data is None:
+            self.timer.stop()
+            self.enable_controls(False)
+            # self.reset_buffers()
+        else:
+            self.plot.update_data(data)
 
     def start(self):
         """Start simulation process and updating plot."""
+        self.startButton.setEnabled(False)
         if self.process is not None:
             logging.info("")
             self.process.start()
@@ -195,10 +202,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """Stops simulation process and updating the plot"""
         if self.process is not None:
             logging.info("")
-            self.timer.stop()
             self.process.stop()
-            self.process.join()
-            self.reset_buffers()
-            self.enable_controls(False)
         else:
             logging.info("Process is not set")

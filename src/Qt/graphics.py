@@ -1,4 +1,5 @@
 import logging
+from multiprocessing import Queue
 
 import numpy as np
 import pyqtgraph as pg
@@ -68,10 +69,9 @@ class Rectangle(pg.FillBetweenItem):
 
 
 class MultiAgentPlot(pg.PlotItem):
-    def __init__(self, queue, parent=None):
+    def __init__(self, parent=None):
         """GraphicsItem for displaying simulation graphics."""
         super(MultiAgentPlot, self).__init__(parent)
-        self.queue = queue
 
         # Plot settings
         self.setAspectLocked(lock=True, ratio=1)  # One to one scale
@@ -80,6 +80,10 @@ class MultiAgentPlot(pg.PlotItem):
 
         # Dynamics plot items
         self.agent = None
+
+        # Video writing
+        # self.exporter = pg.exporters.ImageExporter(self)  # FIXME
+        # self.queue_image = None
 
     def configure(self, process: MultiAgentSimulation):
         """Configure static plot items and initial configuration of dynamic
@@ -141,9 +145,11 @@ class MultiAgentPlot(pg.PlotItem):
                               wall.params[:, :, 1].flatten(),
                               connect=connect)
 
-    def update_data(self):
+    def update_data(self, data):
         """Update dynamic items."""
         # logging.debug("")
-        data = self.queue.get()
         for key, values in data.items():
             getattr(self, key).set_data(**values)
+        # Export image to be written to a video file
+        # image = self.exporter.export(toBytes=True)
+        # self.queue_image.put(image)

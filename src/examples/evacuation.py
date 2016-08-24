@@ -69,7 +69,7 @@ class RoomEvacuation(MultiAgentSimulation):
              (door[1], corner[3]),
              (door[0], hall[0]),
              (door[1], hall[1]),
-             (door[0], door[1]),  # Close the door
+             # (door[0], door[1]),  # Close the door
              ), dtype=np.float64
         )
 

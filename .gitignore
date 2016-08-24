@@ -268,3 +268,5 @@ TODO
 /buildscripts/
 /src/examples/test.py
 /src/test.py
+/src/compile.py
+/src/Qt/movie.py
