@@ -78,9 +78,9 @@ class ThreeCircle:
         position_ls, position_rs, front = shoulder_positions(
             position, orientation, active, self.r_ts, self.torso.radius
         )
-        self.left_shoulder.setData(position_ls, active)
-        self.right_shoulder.setData(position_rs, active)
-        self.torso.setData(position, active)
+        self.left_shoulder.set_data(position_ls, active)
+        self.right_shoulder.set_data(position_rs, active)
+        self.torso.set_data(position, active)
         # TODO: orientation_indicator
 
 
@@ -114,6 +114,7 @@ class MultiAgentPlot(pg.PlotItem):
         """
         logging.info("")
         self.clearPlots()
+        self.clear()
 
         if process.domain is not None:
             logging.debug("domain")
