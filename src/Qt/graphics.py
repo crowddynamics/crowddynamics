@@ -1,5 +1,4 @@
 import logging
-from multiprocessing import Queue
 
 import numpy as np
 import pyqtgraph as pg
@@ -81,10 +80,6 @@ class MultiAgentPlot(pg.PlotItem):
         # Dynamics plot items
         self.agent = None
 
-        # Video writing
-        # self.exporter = pg.exporters.ImageExporter(self)  # FIXME
-        # self.queue_image = None
-
     def configure(self, process: MultiAgentSimulation):
         """Configure static plot items and initial configuration of dynamic
         plot items (agents).
@@ -150,6 +145,3 @@ class MultiAgentPlot(pg.PlotItem):
         # logging.debug("")
         for key, values in data.items():
             getattr(self, key).set_data(**values)
-        # Export image to be written to a video file
-        # image = self.exporter.export(toBytes=True)
-        # self.queue_image.put(image)

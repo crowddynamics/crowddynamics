@@ -4,6 +4,7 @@ from functools import partial
 from multiprocessing import Queue
 
 import pyqtgraph as pg
+import pyqtgraph.exporters
 from PyQt4 import QtGui, QtCore
 
 from src.config import Load
@@ -29,6 +30,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # Graphics
         pg.setConfigOptions(antialias=True)
         self.plot = None
+        self.exporter = None
+        self.image_queue = None
 
         self.timer = QtCore.QTimer(self)
         self.dirpath = None
@@ -48,6 +51,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.graphicsLayout.setBackground(background=None)
         self.plot = MultiAgentPlot()
         self.graphicsLayout.addItem(self.plot, 0, 0)
+        self.exporter = pg.exporters.ImageExporter(self.plot)
 
     def configure_signals(self):
         """Sets the functionality and values for the widgets."""
@@ -184,9 +188,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         if data is None:
             self.timer.stop()
             self.enable_controls(False)
-            # self.reset_buffers()
         else:
             self.plot.update_data(data)
+            # self.exporter.export(toBytes=True)
 
     def start(self):
         """Start simulation process and updating plot."""

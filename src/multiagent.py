@@ -190,16 +190,15 @@ class MultiAgentSimulation(Process):
         return self.__class__.__name__
 
     def stop(self):
-        logging.info("Setting MultiAgent Exit")
+        logging.info("MultiAgent Exit...")
         self.exit.set()
-        # logging.info("Exiting MultiAgent")
 
     def run(self):
-        logging.info("Start MultiAgent")
+        logging.info("MultiAgent Starting")
         while not self.exit.is_set():
             self.update()
         self.queue.put(None)  # Poison pill. Ends simulation
-        logging.info("Ending MultiAgent")
+        logging.info("MultiAgent Stopping")
 
     def configure_domain(self, domain):
         logging.info("In: {}".format(domain))
