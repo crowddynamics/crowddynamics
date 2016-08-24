@@ -1,29 +1,12 @@
-import numpy as np
-import numba
 import logging
+
+import numpy as np
 import pyqtgraph as pg
 
 from src.config import Load
-from src.core.vector2d import rotate270
 from src.multiagent import MultiAgentSimulation
 from src.structure import area
 from src.structure.obstacle import LinearObstacle
-
-
-@numba.jit(nopython=True, nogil=True)
-def shoulder_positions(position, orientation, active, r_ts, r_t):
-    indices = np.arange(len(position))[active]
-    position_ls = np.zeros_like(position)
-    position_rs = np.zeros_like(position)
-    front = np.zeros_like(position)
-    for i in indices:
-        n = np.array((np.cos(orientation[i]), np.sin(orientation[i])))
-        t = rotate270(n)
-        offset = t * r_ts[i]
-        position_ls[i] = position[i] - offset
-        position_rs[i] = position[i] + offset
-        front[i] = position[i] + n * r_t[i]
-    return position_ls, position_rs, front
 
 
 class Circular(pg.PlotDataItem):
@@ -52,7 +35,6 @@ class Circular(pg.PlotDataItem):
         self.setData(**kwargs)
 
     def set_data(self, position, active):
-        logging.debug("")
         for key, val in self.settings["active"].items():
             self.opts[key][active] = val
 
@@ -60,28 +42,22 @@ class Circular(pg.PlotDataItem):
             self.opts[key][active ^ True] = val
 
         self.setData(position)
-        # self.updateItems()
 
 
 class ThreeCircle:
-    def __init__(self, r_t, r_s, r_ts):
-        self.r_ts = r_ts
-
+    def __init__(self, r_t, r_s):
         # PlotItems
         self.left_shoulder = Circular(r_s)
         self.right_shoulder = Circular(r_s)
         self.torso = Circular(r_t)
-        self.orientation_indicator = None
+        self.orientation = None
         self.items = (self.left_shoulder, self.right_shoulder, self.torso)
 
-    def set_data(self, position, orientation, active):
-        position_ls, position_rs, front = shoulder_positions(
-            position, orientation, active, self.r_ts, self.torso.radius
-        )
+    def set_data(self, position, position_ls, position_rs, active):
+        # TODO: orientation_indicator
         self.left_shoulder.set_data(position_ls, active)
         self.right_shoulder.set_data(position_rs, active)
         self.torso.set_data(position, active)
-        # TODO: orientation_indicator
 
 
 class Rectangle(pg.FillBetweenItem):
@@ -103,7 +79,7 @@ class MultiAgentPlot(pg.PlotItem):
         self.disableAutoRange()
 
         # Dynamics plot items
-        self.dynamic_items = None
+        self.agent = None
 
     def configure(self, process: MultiAgentSimulation):
         """Configure static plot items and initial configuration of dynamic
@@ -113,22 +89,27 @@ class MultiAgentPlot(pg.PlotItem):
         :return:
         """
         logging.info("")
+
+        # Clear previous plots and items
         self.clearPlots()
         self.clear()
+
+        # Setup plots
+        settings = Load().yaml("graphics")
 
         if process.domain is not None:
             logging.debug("domain")
             domain = process.domain
             if isinstance(domain, area.Rectangle):
                 self.setRange(xRange=domain.x, yRange=domain.y)
-                self.addItem(Rectangle(domain.x, domain.y))
+                self.addItem(Rectangle(domain.x, domain.y, settings["domain"]["brush"]))
 
         if process.goals is not None:
             logging.debug("goals")
             goals = process.goals
             for goal in goals:
                 if isinstance(goal, area.Rectangle):
-                    self.addItem(Rectangle(goal.x, goal.y))
+                    self.addItem(Rectangle(goal.x, goal.y, settings["goal"]["brush"]))
 
         if process.exits is not None:
             logging.debug("exits")
@@ -138,14 +119,16 @@ class MultiAgentPlot(pg.PlotItem):
             logging.debug("agent")
             agent = process.agent
             if agent.three_circle:
-                model = ThreeCircle(agent.r_t, agent.r_s, agent.r_ts)
-                model.set_data(agent.position, agent.angle, agent.active)
+                model = ThreeCircle(agent.r_t, agent.r_s)
+                model.set_data(agent.position, agent.position_ls,
+                               agent.position_rs, agent.active)
                 for item in model.items:
                     self.addItem(item)
             else:
                 model = Circular(agent.radius)
                 model.set_data(agent.position, agent.active)
                 self.addItem(model)
+            self.agent = model
 
         if process.walls is not None:
             logging.debug("walls")
@@ -154,10 +137,13 @@ class MultiAgentPlot(pg.PlotItem):
                 if isinstance(wall, LinearObstacle):
                     connect = np.zeros(2 * wall.size, dtype=np.int32)
                     connect[::2] = np.ones(wall.size, dtype=np.int32)
-                    walls.setData(wall.params[:, :, 0].flatten(),
-                                  wall.params[:, :, 1].flatten(),
-                                  connect=connect)
+                    self.plot(wall.params[:, :, 0].flatten(),
+                              wall.params[:, :, 1].flatten(),
+                              connect=connect)
 
     def update_data(self):
-        logging.debug("")
+        """Update dynamic items."""
+        # logging.debug("")
         data = self.queue.get()
+        for key, values in data.items():
+            getattr(self, key).set_data(**values)

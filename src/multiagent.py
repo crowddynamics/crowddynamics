@@ -1,11 +1,10 @@
 import logging
-from collections import Iterable, namedtuple
+from collections import Iterable
 from multiprocessing import Process, Event, Queue
 
 import numpy as np
 from scipy.stats import truncnorm as tn
 
-from .io.hdfstore import HDFStore
 from .config import Load
 from .core.interactions import agent_agent, agent_wall
 from .core.motion import force_adjust, force_fluctuation, \
@@ -13,7 +12,8 @@ from .core.motion import force_adjust, force_fluctuation, \
 from .core.motion import integrator
 from .core.navigation import Navigation, Orientation
 from .core.vector2d import angle_nx2, length_nx2
-from .functions import filter_none, timed
+from .functions import filter_none
+from .io.hdfstore import HDFStore
 from .structure.agent import Agent
 from .structure.area import Area
 
@@ -45,6 +45,7 @@ def agent_motion(indices: (slice, np.ndarray),
     :param body_angle:
     :return:
     """
+    logging.info("")
     # FIXME: Nones
 
     if target_direction is not None:
@@ -136,11 +137,12 @@ def agent_positions(agent: Agent,
         agent.active[index] = True
         i += 1
 
-    agent_motion(indices[:i], agent, target_direction, target_angle,
-                 velocity, body_angle)
-
     logging.info("Iterations: {}/{}".format(iterations, maxiter))
     logging.info("Agents placed: {}/{}".format(i, maxlen))
+
+    # FIXME
+    agent_motion(indices[:i], agent, target_direction, target_angle,
+                 velocity, body_angle)
 
 
 class MultiAgentSimulation(Process):
@@ -343,7 +345,6 @@ class MultiAgentSimulation(Process):
         else:
             logging.warning("Already configured.")
 
-    @timed
     def update(self):
         logging.debug("")
 
@@ -393,3 +394,13 @@ class MultiAgentSimulation(Process):
                 self.hdfstore.dump_buffers()
 
         # TODO: Queue data to send to graphics
+        data = {
+            "agent": {
+                "position": np.copy(self.agent.position),
+                "active": np.copy(self.agent.active),
+            }
+        }
+        if self.agent.three_circle:
+            data["agent"]["position_ls"] = np.copy(self.agent.position_ls)
+            data["agent"]["position_rs"] = np.copy(self.agent.position_rs)
+        self.queue.put(data)

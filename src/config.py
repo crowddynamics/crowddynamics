@@ -36,7 +36,7 @@ class Create:
             data['agent'][item]['resizable'] = True
 
         # Values to be updated in graphics
-        graphics = ("position", "angle", "active", "goal_reached")
+        graphics = ("position", "angle", "active")
         for item in graphics:
             data['agent'][item]['graphics'] = True
 

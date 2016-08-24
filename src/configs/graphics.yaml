@@ -10,9 +10,14 @@ domain:
   brush: !!python/object/apply:pyqtgraph.mkBrush
     args: [255, 255, 255, 31]
 
+
 goal:
-  pen: null
-  brush: [255, 255, 255, 63]
+  pen: !!python/object/apply:pyqtgraph.mkPen
+    args: null
+
+  brush: !!python/object/apply:pyqtgraph.mkBrush
+    args: [255, 255, 255, 63]
+
 
 agent:
   active:
@@ -30,11 +35,17 @@ agent:
       args: [0, 0, 0, 0]
 
   patient:
-    symbolPen: "w"
-    symbolBrush: [0, 0, 255, 255]
+    symbolPen: !!python/object/apply:pyqtgraph.mkPen
+      args: "w"
+
+    symbolBrush: !!python/object/apply:pyqtgraph.mkBrush
+      args: [0, 0, 255, 255]
 
   impatient:
-    symbolPen: "w"
-    symbolBrush: [255, 0, 0, 255]
+    symbolPen: !!python/object/apply:pyqtgraph.mkPen
+      args: "w"
+
+    symbolBrush: !!python/object/apply:pyqtgraph.mkBrush
+      args: [255, 0, 0, 255]
 
 ...
