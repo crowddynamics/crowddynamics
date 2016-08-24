@@ -25,7 +25,7 @@ class Create:
                                ("graphics", False)])
 
         data = OrderedDict([('simulation', OrderedDict()),
-                            ('agent', OrderedDict()),])
+                            ('agent', OrderedDict()), ])
 
         for item in spec_agent:
             data['agent'][item[0]] = deepcopy(default)
@@ -69,4 +69,4 @@ class Load:
         ext = ".yaml"
         path = os.path.join(root, folder, name + ext)
         with open(path) as f:
-            return yaml.safe_load(f)
+            return yaml.load(f, Loader=yaml.Loader)

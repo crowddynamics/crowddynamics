@@ -32,7 +32,26 @@ def setup_logging(default_path='configs/logging.yaml',
     DEBUG    10
     NOTSET    0
     """
-    # TODO: numpy.printing settings
+    try:
+        import numpy as np
+        np.set_printoptions(precision=5, threshold=6, edgeitems=3, linewidth=None,
+                            suppress=False, nanstr=None, infstr=None,
+                            formatter=None)
+    except ImportError():
+        pass
+
+    try:
+        import pandas as pd
+        pandas_options = {'display.chop_threshold': None,
+                          'display.precision': 4,
+                          'display.max_columns': 8,
+                          'display.max_rows': 8,
+                          'display.max_info_columns': 8,
+                          'display.max_info_rows': 8}
+        for key, val in pandas_options.items():
+            pd.set_option(key, val)
+    except ImportError():
+        pass
 
     filepath = os.path.abspath(__file__)
     folderpath = os.path.split(filepath)[0]

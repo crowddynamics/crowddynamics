@@ -3,15 +3,12 @@
 # pyqtgraph.mkPen
 # pyqtgraph.mkBrush
 
-circle:
-  symbol: "o"
-  symbolSize: 2 * radius
-  pen: null
-  pxMode: false
-
 domain:
-  pen: null
-  brush: [255, 255, 255, 31]
+  pen: !!python/object/apply:pyqtgraph.mkPen
+    args: null
+
+  brush: !!python/object/apply:pyqtgraph.mkBrush
+    args: [255, 255, 255, 31]
 
 goal:
   pen: null
@@ -19,14 +16,23 @@ goal:
 
 agent:
   active:
-    symbolPen: "w"
-    symbolBrush: [0, 0, 255, 255]
+    symbolPen: !!python/object/apply:pyqtgraph.mkPen
+      args: "w"
+
+    symbolBrush: !!python/object/apply:pyqtgraph.mkBrush
+      args: [0, 0, 255, 255]
+
   inactive:
-    symbolPen: null
-    symbolBrush: [0, 0, 0, 0]
+    symbolPen: !!python/object/apply:pyqtgraph.mkPen
+      args: null
+
+    symbolBrush: !!python/object/apply:pyqtgraph.mkBrush
+      args: [0, 0, 0, 0]
+
   patient:
     symbolPen: "w"
     symbolBrush: [0, 0, 255, 255]
+
   impatient:
     symbolPen: "w"
     symbolBrush: [255, 0, 0, 255]

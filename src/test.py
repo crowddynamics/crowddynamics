@@ -1,3 +1,4 @@
 from src.config import Load
 
-print(Load().yaml('attributes'))
+
+print(Load().yaml('graphics'))

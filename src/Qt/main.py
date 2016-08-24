@@ -46,7 +46,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """Graphics widget for plotting simulation data."""
         logging.info("")
         self.graphicsLayout.setBackground(background=None)
-        self.plot = MultiAgentPlot(queue=self.queue, parent=self)
+        self.plot = MultiAgentPlot(queue=self.queue)
         self.graphicsLayout.addItem(self.plot, 0, 0)
 
     def configure_signals(self):
@@ -54,7 +54,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         logging.info("")
 
         # Buttons
-        self.timer.timeout.connect(self.update_plot)
+        self.timer.timeout.connect(self.update_plots)
         self.startButton.clicked.connect(self.start)
         self.stopButton.clicked.connect(self.stop)
 
@@ -174,17 +174,22 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.saveButton.clicked.connect(self.process.configure_hdfstore)
         self.enable_controls(True)
 
-    def update_plot(self):
-        """Updates the data in the plot."""
-        # logging.debug("")
-        pass
+        # Plot Simulation
+        self.plot.configure(self.process)
+
+    def update_plots(self):
+        """Updates the data in the plot(s)."""
+        logging.debug("")
+        self.plot.update_data()
 
     def start(self):
         """Start simulation process and updating plot."""
-        logging.info("")
         if self.process is not None:
+            logging.info("")
             self.process.start()
-            self.timer.start(0.01)  # same as dt used in simulation
+            self.timer.start(0.01 * 1000)  # same as dt used in simulation
+        else:
+            logging.info("Process is not set")
 
     def stop(self):
         """Stops simulation process and updating the plot"""
@@ -196,4 +201,4 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             self.reset_buffers()
             self.enable_controls(False)
         else:
-            logging.warning("")
+            logging.info("Process is not set")
