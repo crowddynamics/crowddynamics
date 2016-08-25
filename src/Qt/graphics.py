@@ -34,7 +34,7 @@ class Circular(pg.PlotDataItem):
 
         self.setData(**kwargs)
 
-    def set_data(self, position, active):
+    def set_data(self, position, active, **kwargs):
         for key, val in self.settings["active"].items():
             self.opts[key][active] = val
 
@@ -53,7 +53,7 @@ class ThreeCircle:
         self.orientation = None
         self.items = (self.left_shoulder, self.right_shoulder, self.torso)
 
-    def set_data(self, position, position_ls, position_rs, active):
+    def set_data(self, position, position_ls, position_rs, active, **kwargs):
         # TODO: orientation_indicator
         self.left_shoulder.set_data(position_ls, active)
         self.right_shoulder.set_data(position_rs, active)

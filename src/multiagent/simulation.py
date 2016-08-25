@@ -1,11 +1,11 @@
 import logging
 from collections import Iterable
+from copy import deepcopy
 from multiprocessing import Process, Event, Queue
 
 import numpy as np
 from scipy.stats import truncnorm as tn
 
-from src.geometry.surface import Area
 from src.config import Load
 from src.core.interactions import agent_agent, agent_wall
 from src.core.motion import force_adjust, force_fluctuation, \
@@ -13,7 +13,8 @@ from src.core.motion import force_adjust, force_fluctuation, \
 from src.core.motion import integrator
 from src.core.navigation import Navigation, Orientation
 from src.core.vector2d import angle_nx2, length_nx2
-from src.functions import filter_none
+from src.functions import filter_none, timed
+from src.geometry.surface import Area
 from src.io.hdfstore import HDFStore
 from src.multiagent.agent import Agent
 
@@ -47,6 +48,7 @@ def agent_motion(indices: (slice, np.ndarray),
     """
     logging.info("")
     # FIXME: Nones
+    # TODO: 'random' param
 
     if target_direction is not None:
         agent.target_direction[indices] = target_direction
@@ -77,8 +79,7 @@ def agent_positions(agent: Agent,
                     target_angle: np.ndarray = None,
                     velocity: np.ndarray = None,
                     body_angle: float = None, ):
-    """
-    Monte Carlo method for filling an area with desired amount of circles.
+    """Monte Carlo method for filling an area with desired amount of circles.
 
     Loop:
     #) Generate a random element inside desired area.
@@ -145,6 +146,30 @@ def agent_positions(agent: Agent,
                  velocity, body_angle)
 
 
+class QueueDict:
+    def __init__(self, producer):
+        self.producer = producer
+        self.dict = {}
+
+    def set(self, args):
+        self.dict.clear()
+        for key, attrs in args:
+            self.dict[key] = {}
+            for attr in attrs:
+                self.dict[key][attr] = None
+
+    def fill(self, d):
+        for key, attrs in d.items():
+            item = getattr(self.producer, key)
+            for attr in attrs.keys():
+                d[key][attr] = np.copy(getattr(item, attr))
+
+    def get(self):
+        d = deepcopy(self.dict)
+        self.fill(d)
+        return d
+
+
 class MultiAgentSimulation(Process):
     structures = ("domain", "goals", "exits", "walls", "agent")
     parameters = ("dt_min", "dt_max", "time_tot", "in_goal", "dt_prev")
@@ -182,6 +207,7 @@ class MultiAgentSimulation(Process):
         # Data
         self.load = Load()
         self.hdfstore = None
+        self.queue_dict = None
 
     @property
     def name(self):
@@ -314,14 +340,6 @@ class MultiAgentSimulation(Process):
             self.orientation = custom
         logging.info("")
 
-    def configure_queuing(self):
-        if self.queue is not None:
-            logging.info("")
-            parameters = self.load.yaml('parameters')
-            args = self.agent, parameters['agent']
-        else:
-            logging.warning("Queue is not defined.")
-
     def configure_hdfstore(self):
         if self.hdfstore is None:
             logging.info("")
@@ -342,7 +360,21 @@ class MultiAgentSimulation(Process):
 
             logging.info("")
         else:
-            logging.warning("Already configured.")
+            logging.info("Already configured.")
+
+    def configure_queuing(self, args):
+        """
+
+        :param args: Example [("agent", ["position", "active", "position_ls", "position_rs"])]
+        :return:
+        """
+        # FIXME
+        if self.queue is not None:
+            logging.info("")
+            self.queue_dict = QueueDict(self)
+            self.queue_dict.set(args)
+        else:
+            logging.info("Queue is not defined.")
 
     def update(self):
         logging.debug("")
@@ -395,14 +427,5 @@ class MultiAgentSimulation(Process):
             if self.iterations % 100 == 0:
                 self.hdfstore.dump_buffers()
 
-        # Sends data to graphics to be displayed
-        data = {
-            "agent": {
-                "position": np.copy(self.agent.position),
-                "active": np.copy(self.agent.active),
-            }
-        }
-        if self.agent.three_circle:
-            data["agent"]["position_ls"] = np.copy(self.agent.position_ls)
-            data["agent"]["position_rs"] = np.copy(self.agent.position_rs)
+        data = self.queue_dict.get()
         self.queue.put(data)

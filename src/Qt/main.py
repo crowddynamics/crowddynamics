@@ -24,7 +24,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.configs = self.load.yaml("simulations")
 
         # Simulation with multiprocessing
-        self.queue = Queue(maxsize=10)
+        self.queue = Queue(maxsize=4)
         self.process = None
 
         # Graphics
@@ -179,7 +179,10 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.enable_controls(True)
 
         # Plot Simulation
+        # TODO: data to request to be put onto queue
         self.plot.configure(self.process)
+        args = [("agent", ["position", "active", "position_ls", "position_rs"])]
+        self.process.configure_queuing(args)
 
     def update_plots(self):
         """Updates the data in the plot(s)."""
@@ -207,5 +210,10 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         if self.process is not None:
             logging.info("")
             self.process.stop()
+            self.process = None
+            try:
+                self.saveButton.clicked.disconnect()
+            except Exception():
+                pass
         else:
             logging.info("Process is not set")
