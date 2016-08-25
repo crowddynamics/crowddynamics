@@ -1,5 +1,5 @@
-Definitions
-===========
+Mathematical Foundations
+========================
 
 Time
 ----
@@ -117,6 +117,13 @@ Obstacle is denoted
 ..
     .. image::
        ../_static/wall_model.*
+
+Curves
+^^^^^^
+.. https://en.wikipedia.org/wiki/Curve#Definition
+
+.. math::
+   \gamma: I \to X
 
 
 Radial curves

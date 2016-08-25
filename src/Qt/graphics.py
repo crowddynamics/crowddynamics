@@ -3,10 +3,10 @@ import logging
 import numpy as np
 import pyqtgraph as pg
 
+from src.geometry.curve import LinearObstacle
 from src.config import Load
-from src.multiagent import MultiAgentSimulation
-from src.structure import area
-from src.structure.obstacle import LinearObstacle
+from src.geometry import surface
+from src.multiagent.simulation import MultiAgentSimulation
 
 
 class Circular(pg.PlotDataItem):
@@ -99,7 +99,7 @@ class MultiAgentPlot(pg.PlotItem):
         if process.domain is not None:
             logging.debug("domain")
             domain = process.domain
-            if isinstance(domain, area.Rectangle):
+            if isinstance(domain, surface.Rectangle):
                 self.setRange(xRange=domain.x, yRange=domain.y)
                 self.addItem(Rectangle(domain.x, domain.y, settings["domain"]["brush"]))
 
@@ -107,7 +107,7 @@ class MultiAgentPlot(pg.PlotItem):
             logging.debug("goals")
             goals = process.goals
             for goal in goals:
-                if isinstance(goal, area.Rectangle):
+                if isinstance(goal, surface.Rectangle):
                     self.addItem(Rectangle(goal.x, goal.y, settings["goal"]["brush"]))
 
         if process.exits is not None:

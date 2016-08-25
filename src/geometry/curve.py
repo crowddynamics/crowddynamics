@@ -3,7 +3,7 @@ from numba import float64, int64
 from numba import jitclass
 
 from src.core.vector2d import length
-from ..core.vector2d import rotate90, dot2d
+from src.core.vector2d import rotate90, dot2d
 
 """
 Static obstacles

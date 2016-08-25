@@ -144,7 +144,6 @@ def agent_wall_interaction(i, w, agent, wall):
     d, n = wall.distance_with_normal(w, x)
     h = d - r_tot  # Relative distance
 
-    # TODO: Power law social force
     if h <= agent.sight_wall:
         if agent.three_circle:
             h, n, r_moment_i = agent_wall_distance(agent, wall, i, w)

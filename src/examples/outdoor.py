@@ -1,5 +1,5 @@
-from src.multiagent import MultiAgentSimulation, random_unit_vector
-from src.structure.area import Rectangle
+from src.geometry.surface import Rectangle
+from src.multiagent.simulation import MultiAgentSimulation, random_unit_vector
 
 
 class Outdoor(MultiAgentSimulation):

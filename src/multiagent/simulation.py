@@ -5,17 +5,17 @@ from multiprocessing import Process, Event, Queue
 import numpy as np
 from scipy.stats import truncnorm as tn
 
-from .config import Load
-from .core.interactions import agent_agent, agent_wall
-from .core.motion import force_adjust, force_fluctuation, \
+from src.geometry.surface import Area
+from src.config import Load
+from src.core.interactions import agent_agent, agent_wall
+from src.core.motion import force_adjust, force_fluctuation, \
     torque_adjust, torque_fluctuation
-from .core.motion import integrator
-from .core.navigation import Navigation, Orientation
-from .core.vector2d import angle_nx2, length_nx2
-from .functions import filter_none
-from .io.hdfstore import HDFStore
-from .structure.agent import Agent
-from .structure.area import Area
+from src.core.motion import integrator
+from src.core.navigation import Navigation, Orientation
+from src.core.vector2d import angle_nx2, length_nx2
+from src.functions import filter_none
+from src.io.hdfstore import HDFStore
+from src.multiagent.agent import Agent
 
 
 def random_unit_vector(size):
@@ -147,7 +147,7 @@ def agent_positions(agent: Agent,
 
 class MultiAgentSimulation(Process):
     structures = ("domain", "goals", "exits", "walls", "agent")
-    parameters = ("dt_min", "dt_max", "time_tot", "in_goal")
+    parameters = ("dt_min", "dt_max", "time_tot", "in_goal", "dt_prev")
 
     def __init__(self, queue: Queue=None):
         # Multiprocessing
@@ -174,12 +174,10 @@ class MultiAgentSimulation(Process):
         self.dt_max = 0.01
 
         # State of the simulation
-        self.iterations = 0
-        self.time_tot = 0
-        self.in_goal = 0  # TODO: In-goal -> Area class
-
-        self.time_steps = [0]
-        self.in_goal_time = []
+        self.iterations = 0  # Integer
+        self.time_tot = 0.0  # Float (types matter for saving to a file)
+        self.in_goal = 0     # Integer TODO: Move to area?
+        self.dt_prev = 0.1   # Float. Last used time step.
 
         # Data
         self.load = Load()
@@ -349,13 +347,14 @@ class MultiAgentSimulation(Process):
     def update(self):
         logging.debug("")
 
+        # Path finding and rotation planning
         if self.navigation is not None:
             self.navigation.update()
 
         if self.orientation is not None and self.agent.orientable:
             self.orientation.update()
 
-        # Motion
+        # Computing motion (forces and torques) for the system
         self.agent.reset_motion()
         self.agent.reset_neighbor()
 
@@ -368,33 +367,35 @@ class MultiAgentSimulation(Process):
         for wall in self.walls:
             agent_wall(self.agent, wall)
 
-        # Integrate
-        dt = integrator(self.agent, self.dt_min, self.dt_max)
-        self.time_steps.append(dt)
-        self.time_tot += dt
+        # Integration of the system
+        self.dt_prev = integrator(self.agent, self.dt_min, self.dt_max)
+        self.time_tot += self.dt_prev
 
+        # Game theoretical model
         if self.game is not None:
-            self.game.update(self.time_tot, self.time_steps[-1])
+            self.game.update(self.time_tot, self.dt_prev)
 
+        # Check which agent are inside the domain aka active
         if self.domain is not None:
             self.agent.active &= self.domain.contains(self.agent.position)
 
+        # Check which agent have reached their desired goals
         for goal in self.goals:
             num = -np.sum(self.agent.goal_reached)
             self.agent.goal_reached |= goal.contains(self.agent.position)
             num += np.sum(self.agent.goal_reached)
             self.in_goal += num
-            for _ in range(num):
-                self.in_goal_time.append(self.time_tot)
 
+        # Raise iteration count
         self.iterations += 1
 
+        # Stores the simulation data into buffers and dumps buffer into file
         if self.hdfstore is not None:
             self.hdfstore.update_buffers()
             if self.iterations % 100 == 0:
                 self.hdfstore.dump_buffers()
 
-        # TODO: Queue data to send to graphics
+        # Sends data to graphics to be displayed
         data = {
             "agent": {
                 "position": np.copy(self.agent.position),

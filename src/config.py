@@ -14,7 +14,7 @@ folder = "configs"
 
 class Create:
     def parameters(self):
-        from src.structure.agent import spec_agent
+        from src.multiagent.agent import spec_agent
 
         ext = ".yaml"
         name = "parameters"

@@ -77,7 +77,7 @@ class HDFStore(object):
         timestamp = str(datetime.datetime.now())
         with h5py.File(self.filepath, mode='a') as file:
             self.group_name = timestamp.replace(" ", "_")  # HDF group name
-            group = file.create_group(self.group_name)  # Create Group
+            file.create_group(self.group_name)  # Create Group
 
         logging.info(self.filepath)
         logging.info(self.group_name)

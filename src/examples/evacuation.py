@@ -2,13 +2,13 @@ from functools import partial
 
 import numba
 import numpy as np
+from src.geometry.surface import Rectangle, Circle
 
+from src.geometry.curve import LinearExit
+from src.geometry.curve import LinearObstacle
 from src.core.game import EgressGame
 from src.core.vector2d import rotate90, normalize, length
-from src.multiagent import MultiAgentSimulation
-from src.structure.area import Rectangle, Circle
-from src.structure.obstacle import LinearExit
-from src.structure.obstacle import LinearObstacle
+from src.multiagent.simulation import MultiAgentSimulation
 
 
 @numba.jit(nopython=True)
