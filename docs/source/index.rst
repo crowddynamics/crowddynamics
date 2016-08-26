@@ -11,7 +11,7 @@ Python package for crowd simulation.
    :maxdepth: 1
 
    sections/overview.rst
-   sections/definitions.rst
+   sections/foundations.rst
    sections/quantity.rst
    sections/phenomena.rst
    sections/model.rst

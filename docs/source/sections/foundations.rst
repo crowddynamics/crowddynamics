@@ -1,5 +1,15 @@
 Mathematical Foundations
 ========================
+Mathematically crowd dynamics or crowd simulation is defined as a function
+
+.. math::
+   f: A \times \mathbb{R}^+ \mapsto A
+
+that maps current state of agent :math:`A` and time :math:`t \in \mathbb{R}^{+}` to new state :math:`A`. Common states to be manipulated are agents *spatial* and *rotational* motion. States are model dependent and more can be defined as needed, keeping in mind the principle of `Occam's razor`_.
+
+.. _Occam's razor: https://en.wikipedia.org/wiki/Occam%27s_razor
+
+----
 
 Time
 ----
@@ -8,7 +18,7 @@ Time is denoted
 .. math::
    t \in \mathbb{R}^{+}.
 
-When numerically solving differential equation we use adaptive discrete timestep
+When numerically solving differential equation we use adaptive discrete timestep from a defined interval
 
 .. math::
    \Delta t \in [0.1, 0.01].
@@ -21,18 +31,100 @@ In dynamics differential in respect of time is sometimes denoted
 
 ----
 
+Geometry
+--------
+Spatical geometry of the crowd simulation is defined in two dimensional space :math:`\mathbb{R}^{2}`. Geometrical constructs that are used in this simulation are *point*, *curve* and *surface*. For numerical and practical purposes simulations use simple geometric object such as polygons, linestrings and circles.
+
+.. http://toblerity.org/shapely/manual.html
 
 Domain
-------
-Domain containing agent and obstacles.
+^^^^^^
+Domain is surface that contains all objects in the simulation such as agents and obstacles. Defined
 
 .. math::
-   \bar{\Omega} \subset \mathbb{R}^{2}
+   \Omega \subset \mathbb{R}^{2}
 
-Domain can be broken down to open area and boundary
+Agents that move outside the domain will turn inactive.
+
+.. Domain can be broken down to open area and boundary
+   .. math::
+      \bar{\Omega} = \Omega \cup \partial\Omega
+
+Obstacle
+^^^^^^^^
+Obstacle is a static curve that is unpassable (agent cannot go through). Defined
 
 .. math::
-   \bar{\Omega} = \Omega \cup \partial\Omega
+   \mathcal{O} \subset \Omega
+
+..
+    .. image::
+       ../_static/wall_model.*
+
+
+Exit
+^^^^
+Exit is a static curve that is passable. Defined
+
+.. math::
+   \mathcal{E} \subset \Omega
+
+Width of the exit must sufficient for agent to pass through. Lower bound for the exit width
+
+.. math::
+   d_{door} \geq d_{agent}
+
+Narrow bottleneck
+
+.. math::
+   d_{door} \leq 6 d_{agent}
+
+Capacity estimation of unidirectional flow through narrow bottleneck. Capacity of the bottleneck increases in stepwise manner
+
+.. math::
+   \beta \propto \left \lfloor \frac{d_{door} - (d_{agent} - d_{layer})}{d_{layer}} \right \rfloor
+
+.. math::
+   \beta \propto \left \lfloor \frac{d_{door}}{d_{agent}} \right \rfloor
+
+where
+
+- :math:`\left \lfloor \cdot \right \rfloor` is the `floor function`_
+
+.. _floor function: https://en.wikipedia.org/wiki/Floor_and_ceiling_functions
+
+[hoogen2005]_, [seyfried2007]_
+
+
+Exit selection
+
+----
+
+Linear curves
+^^^^^^^^^^^^^
+Piecewise linear curve or more formally `polygonal chain`_ that consists of linearly connected sequence of points
+
+.. _polygonal chain: https://en.wikipedia.org/wiki/Polygonal_chain
+
+.. math::
+   \mathbf{p}_{i} \in \mathbb{R}^{2}, \quad i \in \mathbb{N}_{0}
+
+
+
+Bezier curves
+^^^^^^^^^^^^^
+`Bézier curve`_ are parametric curves. Here we consider
+
+#) Linear Bézier curves.
+#) Quadratic Bézier curves
+#) Cubic Bézier curves
+
+
+.. _Bézier curve: https://en.wikipedia.org/wiki/B%C3%A9zier_curve#General_definition
+
+.. math::
+   \mathbf {B} (t)={} \sum _{i=0}^{n}{n \choose i}(1-t)^{n-i}t^{i}\mathbf {p} _{i}, \quad t \in [0, 1], \quad n \in \{2, 3\}
+
 
 ----
 
@@ -104,97 +196,6 @@ Three circle model models agent with three circles which represent torso and two
       :file: ../tables/agent_table.csv
       :header-rows: 1
 
-
-----
-
-Obstacle
---------
-Obstacle is denoted
-
-.. math::
-   \mathcal{O} \subset \Omega
-
-..
-    .. image::
-       ../_static/wall_model.*
-
-Curves
-^^^^^^
-.. https://en.wikipedia.org/wiki/Curve#Definition
-
-.. math::
-   \gamma: I \to X
-
-
-Radial curves
-^^^^^^^^^^^^^
-
-
-
-Linear curves
-^^^^^^^^^^^^^
-Piecewise linear curve or more formally `polygonal chain`_ that consists of linearly connected sequence of points
-
-.. _polygonal chain: https://en.wikipedia.org/wiki/Polygonal_chain
-
-.. math::
-   \mathbf{p}_{i} \in \mathbb{R}^{2}, \quad i \in \mathbb{N}_{0}
-
-
-
-Bezier curves
-^^^^^^^^^^^^^
-`Bézier curve`_ are parametric curves. Here we consider
-
-#) Linear Bézier curves.
-#) Quadratic Bézier curves
-#) Cubic Bézier curves
-
-
-.. _Bézier curve: https://en.wikipedia.org/wiki/B%C3%A9zier_curve#General_definition
-
-.. math::
-   \mathbf {B} (t)={} \sum _{i=0}^{n}{n \choose i}(1-t)^{n-i}t^{i}\mathbf {p} _{i}, \quad t \in [0, 1], \quad n \in \{2, 3\}
-
-
-
-----
-
-Exit
-----
-Exit is denoted
-
-.. math::
-   \mathcal{E} \subset \Omega
-
-Width of the exit must sufficient for agent to pass through. Lower bound for the exit width
-
-.. math::
-   d_{door} \geq d_{agent}
-
-Narrow bottleneck
-
-.. math::
-   d_{door} \leq 6 d_{agent}
-
-Capacity estimation of unidirectional flow through narrow bottleneck. Capacity of the bottleneck increases in stepwise manner
-
-.. math::
-   \beta \propto \left \lfloor \frac{d_{door} - (d_{agent} - d_{layer})}{d_{layer}} \right \rfloor
-
-.. math::
-   \beta \propto \left \lfloor \frac{d_{door}}{d_{agent}} \right \rfloor
-
-where
-
-- :math:`\left \lfloor \cdot \right \rfloor` is the `floor function`_
-
-.. _floor function: https://en.wikipedia.org/wiki/Floor_and_ceiling_functions
-
-[hoogen2005]_, [seyfried2007]_
-
-
-Exit selection
 
 ----
 
