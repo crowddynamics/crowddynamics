@@ -8,9 +8,9 @@ class Outdoor(MultiAgentSimulation):
         super().__init__(queue)
         domain = Rectangle((0.0, width), (0.0, height))
         target_direction = random_unit_vector(size)
-        kw = {'amount': size,
-              'area': domain,
-              'target_direction': target_direction}
+        positions = {'amount': size,
+                     'area': domain,
+                     'target_direction': target_direction}
 
         self.configure_domain(domain)
         self.configure_goals(None)
@@ -19,7 +19,7 @@ class Outdoor(MultiAgentSimulation):
 
         self.configure_agent(size, body)
         self.configure_agent_model(model)
-        self.configure_agent_positions(kw)
+        self.configure_agent_positions(positions)
 
         self.configure_navigation()
         self.configure_orientation()

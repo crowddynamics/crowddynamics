@@ -8,7 +8,7 @@ Python package for crowd simulation.
 
 .. toctree::
    :numbered:
-   :maxdepth: 2
+   :maxdepth: 1
 
    sections/overview.rst
    sections/definitions.rst

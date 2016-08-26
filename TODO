@@ -11,10 +11,11 @@ Hahmottelen nyt tähän sitä mitä haluttaisiin Harrin kanssa, että syntyis el
 # Resources
 https://pymotw.com/2/multiprocessing/communication.html
 http://toblerity.org/shapely/manual.html
+http://stackoverflow.com/questions/20805418/pyyaml-dump-format
+http://stackoverflow.com/questions/5121931/in-python-how-can-you-load-yaml-mappings-as-ordereddicts
 
 # Documentation
 TODO: Video Tutorial !!!
-TODO: Truncated normal distribution
 TODO: Bokeh plots
 TODO: Fundamental diagram
 
@@ -24,27 +25,18 @@ TODO: JIT Compilation
 TODO: Executable
 
 # Simulation
-TODO: Load simulation data
-TODO: Start/end time, simulation length
-TODO: Bytes saved, Memory consumption
-TODO: CAD integration
-TODO: pyqtgraph exporter
-TODO: Spatial game improvements
-TODO: Geometry, Shapely
+TODO: Configuration
 TODO: asyncio, concurrent.futures, multiprocessing
-
-# Structures
-TODO: Curves; Linear, Bezier, Radial
-TODO: Areas: Polygon, Circle,
+TODO: Geometry, Shapely
+TODO: CAD integration
+TODO: Bezier Curves
 TODO: Agent maximum velocity for optimizations
-
-# Egress Game
 TODO: Unidirectional narrow bottleneck capacity estimation
 
 # Graphical user interface
-TODO: MoviePy
 TODO: Density & Navigation Visualization
 TODO: Frames per second
+TODO: MoviePy
 
 # Package/Module
 TODO: Python Packaging

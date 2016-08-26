@@ -1,8 +1,8 @@
 Overview
 ========
 
-Crowd Dynamics
---------------
+Motivation
+----------
 .. Section of talking why crowd simulation model should be developed and where they can be applied to.
 
 `Crowd dynamics` studies movement of human crowds.

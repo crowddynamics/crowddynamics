@@ -1,5 +1,7 @@
+import datetime
 import importlib
 import logging
+import os
 from functools import partial
 from multiprocessing import Queue
 
@@ -28,13 +30,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.process = None
 
         # Graphics
-        pg.setConfigOptions(antialias=True)
-        self.plot = None
-        self.exporter = None
-        self.image_queue = None
-
         self.timer = QtCore.QTimer(self)
-        self.dirpath = None
+        self.plot = None
 
         # Configures
         self.configure_plot()
@@ -48,10 +45,10 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
     def configure_plot(self):
         """Graphics widget for plotting simulation data."""
         logging.info("")
-        self.graphicsLayout.setBackground(background=None)
+        pg.setConfigOptions(antialias=True)
+        self.graphicsLayout.setBackground(None)
         self.plot = MultiAgentPlot()
         self.graphicsLayout.addItem(self.plot, 0, 0)
-        self.exporter = pg.exporters.ImageExporter(self.plot)
 
     def configure_signals(self):
         """Sets the functionality and values for the widgets."""
@@ -151,14 +148,13 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 widget.currentIndexChanged[str].connect(update)
             else:
                 logging.warning("Value type not supported: {}".format(type(val)))
+
             self.sidebarLeft.addWidget(label)
             self.sidebarLeft.addWidget(widget)
 
-        initButton = QtGui.QPushButton("Initialize")
+        initButton = QtGui.QPushButton("Initialize Simulation")
         initButton.clicked.connect(self.set_simulation)
         self.sidebarLeft.addWidget(initButton)
-
-        # self.sidebarLeft.addWidget(QtGui.QSpacerItem())
 
     def set_simulation(self):
         logging.info("")
@@ -175,12 +171,14 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.process = simulation(self.queue, **kwargs)
 
         # Enable controls
-        self.saveButton.clicked.connect(self.process.configure_hdfstore)
+        savingButton = QtGui.QPushButton("Configure Saving")
+        savingButton.clicked.connect(self.process.configure_hdfstore)
+        self.sidebarLeft.addWidget(savingButton)
         self.enable_controls(True)
 
         # Plot Simulation
-        # TODO: data to request to be put onto queue
         self.plot.configure(self.process)
+        # TODO: better format
         args = [("agent", ["position", "active", "position_ls", "position_rs"])]
         self.process.configure_queuing(args)
 
@@ -211,9 +209,5 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             logging.info("")
             self.process.stop()
             self.process = None
-            try:
-                self.saveButton.clicked.disconnect()
-            except Exception():
-                pass
         else:
             logging.info("Process is not set")

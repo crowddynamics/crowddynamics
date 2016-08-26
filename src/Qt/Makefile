@@ -5,13 +5,10 @@ BUILDDIR    = ui
 
 # Commands
 
-all: clean gui game
+all: clean gui
 
 gui:
 	pyuic4 $(DESIGNERDIR)/gui.ui > $(BUILDDIR)/gui.py
-
-game:
-	pyuic4 $(DESIGNERDIR)/game.ui > $(BUILDDIR)/game.py
 
 clean:
 	rm -rf $(BUILDDIR)/*

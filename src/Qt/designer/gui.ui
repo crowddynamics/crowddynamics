@@ -323,19 +323,19 @@ QStatusBar {
      </widget>
     </item>
     <item row="1" column="1">
-     <widget class="QFrame" name="horizontalFrame">
+     <widget class="QWidget" name="controlbarDown" native="true">
       <layout class="QHBoxLayout" name="controlbar">
        <item>
         <widget class="QPushButton" name="startButton">
          <property name="text">
-          <string>Start</string>
+          <string>Start Process</string>
          </property>
         </widget>
        </item>
        <item>
         <widget class="QPushButton" name="stopButton">
          <property name="text">
-          <string>Stop</string>
+          <string>Stop Process</string>
          </property>
         </widget>
        </item>

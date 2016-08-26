@@ -79,25 +79,12 @@ def agent_positions(agent: Agent,
                     target_angle: np.ndarray = None,
                     velocity: np.ndarray = None,
                     body_angle: float = None, ):
-    """Monte Carlo method for filling an area with desired amount of circles.
-
-    Loop:
-    #) Generate a random element inside desired area.
-    #) Check if overlapping with
-        #) Agents
-        #) Walls
-    #) Save value
-    """
+    """Monte Carlo method for filling an area with desired amount of circles."""
     # Fill inactive agents
     inactive = agent.active ^ True
     radius = agent.radius[inactive][:amount]
     position = agent.position[inactive][:amount]
     indices = np.arange(agent.size)[inactive][:amount]
-
-    area_agent = np.sum(np.pi * radius ** 2)
-    fill_rate = area_agent / area.size()
-
-    logging.info("Density: {:0.3f}".format(fill_rate))
 
     walls = filter_none(walls)
 

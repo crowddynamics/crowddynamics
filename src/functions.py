@@ -1,9 +1,6 @@
-import logging as log
-import itertools
 import math
 import sys
 from collections import Iterable
-from collections import deque
 from functools import wraps
 from timeit import default_timer as timer
 
