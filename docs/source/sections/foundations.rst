@@ -35,31 +35,41 @@ Geometry
 --------
 Spatical geometry of the crowd simulation is defined in two dimensional space :math:`\mathbb{R}^{2}`. Geometrical constructs that are used in this simulation are *point*, *curve* and *surface*. For numerical and practical purposes simulations use simple geometric object such as polygons, linestrings and circles.
 
-.. http://toblerity.org/shapely/manual.html
+Point is defined
+
+.. math::
+   \mathbf{p} \in \mathbb{R}^{2}
+
+Linestring is linearly connected set of points
+
+.. math::
+   \mathbf{p}_{i} \in \mathbb{R}^{2}, \quad i \in \mathbb{N}_{0}
+
+Linerings have their end point connected as well. Polygon is a set of the area that is covered by linering. `Shapely`_.
+
+For theoretical purposes `Bézier curves`_ may also be considered but may be too complex for simulations.
+
+.. _Bézier curves: https://en.wikipedia.org/wiki/B%C3%A9zier_curve#General_definition
+
+.. _Shapely: http://toblerity.org/shapely/manual.html
+
 
 Domain
 ^^^^^^
 Domain is surface that contains all objects in the simulation such as agents and obstacles. Defined
 
 .. math::
-   \Omega \subset \mathbb{R}^{2}
+   \Omega \subset \mathbb{R}^{2}.
 
 Agents that move outside the domain will turn inactive.
 
-.. Domain can be broken down to open area and boundary
-   .. math::
-      \bar{\Omega} = \Omega \cup \partial\Omega
 
 Obstacle
 ^^^^^^^^
 Obstacle is a static curve that is unpassable (agent cannot go through). Defined
 
 .. math::
-   \mathcal{O} \subset \Omega
-
-..
-    .. image::
-       ../_static/wall_model.*
+   \mathcal{O} \subset \Omega.
 
 
 Exit
@@ -67,25 +77,30 @@ Exit
 Exit is a static curve that is passable. Defined
 
 .. math::
-   \mathcal{E} \subset \Omega
-
-Width of the exit must sufficient for agent to pass through. Lower bound for the exit width
-
-.. math::
-   d_{door} \geq d_{agent}
+   \mathcal{E} \subset \Omega.
 
 Narrow bottleneck
+^^^^^^^^^^^^^^^^^
+A special case of exit is a narrow bottleneck. Defined as line from point :math:`\mathbf{p}_0` to :math:`\mathbf{p}_1`. Width of the door
 
 .. math::
-   d_{door} \leq 6 d_{agent}
+   d_{door} = \| \mathbf{p}_0 - \mathbf{p}_1 \|
 
-Capacity estimation of unidirectional flow through narrow bottleneck. Capacity of the bottleneck increases in stepwise manner
+Width of the exit must sufficient for agent to pass through. Lower and upper bounds for the exit width are
+
+.. math::
+   d_{agent} \leq d_{door} \leq 6 d_{agent}
+
+Capacity estimation of unidirectional flow through narrow bottleneck. Capacity of the bottleneck increases in stepwise manner. Simple estimation of capacity
+
+.. math::
+   \beta \propto \left \lfloor \frac{d_{door}}{d_{agent}} \right \rfloor
+
+More sophisticated estimation [hoogen2005]_, [seyfried2007]_
 
 .. math::
    \beta \propto \left \lfloor \frac{d_{door} - (d_{agent} - d_{layer})}{d_{layer}} \right \rfloor
 
-.. math::
-   \beta \propto \left \lfloor \frac{d_{door}}{d_{agent}} \right \rfloor
 
 where
 
@@ -93,65 +108,26 @@ where
 
 .. _floor function: https://en.wikipedia.org/wiki/Floor_and_ceiling_functions
 
-[hoogen2005]_, [seyfried2007]_
-
-
-Exit selection
-
-----
-
-Linear curves
-^^^^^^^^^^^^^
-Piecewise linear curve or more formally `polygonal chain`_ that consists of linearly connected sequence of points
-
-.. _polygonal chain: https://en.wikipedia.org/wiki/Polygonal_chain
-
-.. math::
-   \mathbf{p}_{i} \in \mathbb{R}^{2}, \quad i \in \mathbb{N}_{0}
-
-
-
-Bezier curves
-^^^^^^^^^^^^^
-`Bézier curve`_ are parametric curves. Here we consider
-
-#) Linear Bézier curves.
-#) Quadratic Bézier curves
-#) Cubic Bézier curves
-
-
-.. _Bézier curve: https://en.wikipedia.org/wiki/B%C3%A9zier_curve#General_definition
-
-.. math::
-   \mathbf {B} (t)={} \sum _{i=0}^{n}{n \choose i}(1-t)^{n-i}t^{i}\mathbf {p} _{i}, \quad t \in [0, 1], \quad n \in \{2, 3\}
-
 
 ----
 
 
 Agent
 -----
-Set of active agents that are subject to motion usually referred just agents is denoted
+Set of agents that are subject to motion usually referred just agents is denoted
 
 .. math::
-   A = \{ 0, 1, \ldots, n-1 \}
+   A &= \{ a_0, a_1, \ldots \} \\
+   N &= | A |
 
-where items are the indices of the agents. Individual agent is usually denoted :math:`i \in A` or :math:`j \in A`.
-
-Size of the set
-
-.. math::
-   N = | A |
-
-Area occupied by agents
+Common convention denoting individual agent is :math:`i \in A` or :math:`j \in A`. Area occupied by agents
 
 .. math::
-   \mathcal{A} = \sum_{i \in A} \mathcal{A}_{i}, \quad \mathcal{A}_{i} \subset \Omega
+   \mathcal{A} = \bigcup_{i \in A} \mathcal{A}_{i} \subset \Omega.
 
-----
 
-Models
-^^^^^^
+Model
+^^^^^
 Three different models for she shape of the agent from above are displayed in the figure.
 
 .. image::

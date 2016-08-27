@@ -115,6 +115,10 @@ Orientation
 Target orientation :math:`\varphi_{0}`
 
 
+Exit Selection
+--------------
+
+
 ----
 
 .. [quickpath2011] Kretz, T., Große, A., Hengst, S., Kautzsch, L., Pohlmann, A., & Vortisch, P. (2011). Quickest Paths in Simulations of Pedestrians. Advances in Complex Systems, 14(5), 733–759. http://doi.org/10.1142/S0219525911003281

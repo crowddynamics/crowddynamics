@@ -13,7 +13,7 @@ from src.core.motion import force_adjust, force_fluctuation, \
 from src.core.motion import integrator
 from src.core.navigation import Navigation, Orientation
 from src.core.vector2d import angle_nx2, length_nx2
-from src.functions import filter_none, timed
+from src.functions import filter_none
 from src.geometry.surface import Area
 from src.io.hdfstore import HDFStore
 from src.multiagent.agent import Agent
@@ -278,7 +278,6 @@ class MultiAgentSimulation(Process):
         self.agent = Agent(size, mass, radius, radius_torso, radius_shoulder,
                            torso_shoulder, inertia_rot, target_velocity,
                            target_angular_velocity)
-        logging.info("Out: {}".format(self.agent))
 
     def configure_agent_model(self, model):
         logging.info("In: {}".format(model))
