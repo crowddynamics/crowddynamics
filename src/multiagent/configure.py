@@ -74,9 +74,10 @@ class PolygonSample:
 
     def draw(self):
         # Draw random triangle weighted by the area of the triangle
-        x = np.random.uniform(0, self.area_sum)
+        x = np.random.uniform(high=self.area_sum)
         i = np.searchsorted(self.area_cumsum, x)
-        return self.sample_trianle(self.tria_points[i], self.triangles[i])
+        point = self.sample_trianle(self.tria_points[i], self.triangles[i])
+        return point
 
 
 class ConfigField:
