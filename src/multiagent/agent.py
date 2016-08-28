@@ -188,11 +188,14 @@ class Agent(object):
         all_indices = np.arange(self.size)
         return all_indices[self.active]
 
+    def update_shoulder_position(self, i):
+        n = np.array((np.cos(self.angle[i]), np.sin(self.angle[i])))
+        t = rotate270(n)
+        offset = t * self.r_ts[i]
+        self.position_ls[i] = self.position[i] - offset
+        self.position_rs[i] = self.position[i] + offset
+        self.front[i] = self.position[i] + n * self.r_t[i]
+
     def update_shoulder_positions(self):
         for i in self.indices():
-            n = np.array((np.cos(self.angle[i]), np.sin(self.angle[i])))
-            t = rotate270(n)
-            offset = t * self.r_ts[i]
-            self.position_ls[i] = self.position[i] - offset
-            self.position_rs[i] = self.position[i] + offset
-            self.front[i] = self.position[i] + n * self.r_t[i]
+            self.update_shoulder_position(i)

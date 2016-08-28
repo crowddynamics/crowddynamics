@@ -1,8 +1,8 @@
 import numpy as np
-from src.geometry.surface import Rectangle
 
-from src.geometry.curve import LinearObstacle
+from src.multiagent.curve import LinearObstacle
 from src.multiagent.simulation import MultiAgentSimulation
+from src.multiagent.surface import Rectangle
 
 
 class Hallway(MultiAgentSimulation):

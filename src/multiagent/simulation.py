@@ -14,9 +14,9 @@ from src.core.motion import integrator
 from src.core.navigation import Navigation, Orientation
 from src.core.vector2d import angle_nx2, length_nx2
 from src.functions import filter_none
-from src.geometry.surface import Area
 from src.io.hdfstore import HDFStore
 from src.multiagent.agent import Agent
+from src.multiagent.surface import Area
 
 
 def random_unit_vector(size):

@@ -102,6 +102,3 @@ class Circle(Area):
         return self.__class__.__name__ + str((tuple(self.phi),
                                               tuple(self.radius),
                                               tuple(self.center)))
-
-
-

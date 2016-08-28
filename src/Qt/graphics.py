@@ -3,9 +3,9 @@ import logging
 import numpy as np
 import pyqtgraph as pg
 
-from src.geometry.curve import LinearObstacle
 from src.config import Load
-from src.geometry import surface
+from src.multiagent import surface
+from src.multiagent.curve import LinearObstacle
 from src.multiagent.simulation import MultiAgentSimulation
 
 

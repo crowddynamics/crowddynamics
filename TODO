@@ -14,6 +14,12 @@ http://toblerity.org/shapely/manual.html
 http://stackoverflow.com/questions/20805418/pyyaml-dump-format
 http://stackoverflow.com/questions/5121931/in-python-how-can-you-load-yaml-mappings-as-ordereddicts
 
+http://mathworld.wolfram.com/TrianglePointPicking.html
+http://gis.stackexchange.com/questions/6412/generate-points-that-lie-inside-polygon
+http://docs.scipy.org/doc/scipy/reference/spatial.html
+Delaunay triangulation
+
+
 # Documentation
 TODO: Video Tutorial !!!
 TODO: Bokeh plots

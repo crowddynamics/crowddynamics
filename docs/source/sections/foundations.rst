@@ -152,25 +152,18 @@ Elliptical model
 Ellipse is defined two axes :math:`r` and :math:`r_t`. Elliptical model is mentioned but not used because complexity of its equation. Preferred model is three circle model which is more realistic and the fact that approximations required to compute elliptical model are based on circular arcs would make it similar to compute. [fourarc2001]_
 
 
-
 Three circle model
 ^^^^^^^^^^^^^^^^^^
 Three circle model models agent with three circles which represent torso and two shoulders. Torso has radius of :math:`r_t` and is centered at center of mass :math:`\mathbf{x}` and shoulder have both radius of  :math:`r_s` and are centered at :math:`\mathbf{x} \pm r_{ts} \mathbf{\hat{e}_t}`. [langston2007]_
 
 
+Initial Configuration
+---------------------
+Initial configuration :math:`t=0` of the geometry and placement of agents.
 
-
-..
-   Properties
-   ^^^^^^^^^^
-
-   .. csv-table::
-      :file: ../tables/body_types.csv
-      :header-rows: 1
-
-   .. csv-table::
-      :file: ../tables/agent_table.csv
-      :header-rows: 1
+#) Domain
+#) Obstacles and exits
+#) Placement of agents
 
 
 ----

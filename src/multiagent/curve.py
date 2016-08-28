@@ -9,13 +9,6 @@ from src.core.vector2d import rotate90, dot2d
 Static obstacles
 """
 
-# Generalize walls
-# TODO: Polygonal chains
-# TODO: Splines
-# TODO: Bezier curves
-# TODO: Infinite line
-
-
 spec_linear = (
     ("params", float64[:, :, :]),
     ("cols", int64),
