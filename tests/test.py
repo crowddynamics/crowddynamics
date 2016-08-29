@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 from shapely.geometry import Polygon, Point
 
-from src.multiagent.configure import PolygonSample
+from src.multiagent.simulation import PolygonSample
 
 height = 1
 width = 1
@@ -13,10 +13,6 @@ poly = Polygon([(0, 0),
                 (width, height),
                 (width, 0),
                 (width / 2, -1)])
-#
-# poly = Polygon([(0, 0),
-#                 (0, height),
-#                 (width, height),])
 
 sample = PolygonSample(poly)
 

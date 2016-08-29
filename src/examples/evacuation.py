@@ -8,7 +8,6 @@ from src.core.vector2d import rotate90, normalize, length
 from src.multiagent.curve import LinearExit
 from src.multiagent.curve import LinearObstacle
 from src.multiagent.simulation import MultiAgentSimulation
-from src.multiagent.surface import Rectangle, Circle
 
 
 @numba.jit(nopython=True)

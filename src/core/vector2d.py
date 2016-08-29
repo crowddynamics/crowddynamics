@@ -105,9 +105,3 @@ def truncate(vec2d, limit):
     l = length(vec2d)
     if l != 0 and l > limit:
         vec2d *= limit / l
-
-
-# @numba.jit(f8[:](f8[:], f8[:]), nopython=True, nogil=True, cache=True)
-def reflect(v, l):
-    """Reflects point v along line l."""
-    return 2 * dot2d(v, l) / dot2d(l, l) * l - v

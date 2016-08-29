@@ -2,9 +2,13 @@ import logging
 from collections import Iterable
 from copy import deepcopy
 from multiprocessing import Process, Event, Queue
+from numbers import Number
 
 import numpy as np
-from scipy.stats import truncnorm as tn
+from scipy.spatial.qhull import Delaunay
+from scipy.stats import truncnorm
+from shapely.geometry import Polygon, Point
+from shapely.ops import cascaded_union
 
 from src.config import Load
 from src.core.interactions import agent_agent, agent_wall
@@ -12,125 +16,321 @@ from src.core.motion import force_adjust, force_fluctuation, \
     torque_adjust, torque_fluctuation
 from src.core.motion import integrator
 from src.core.navigation import Navigation, Orientation
-from src.core.vector2d import angle_nx2, length_nx2
-from src.functions import filter_none
+from src.core.vector2d import angle
 from src.io.hdfstore import HDFStore
 from src.multiagent.agent import Agent
-from src.multiagent.surface import Area
 
 
-def random_unit_vector(size):
-    """Random unit vector."""
-    orientation = np.random.uniform(0, 2 * np.pi, size=size)
-    return np.stack((np.cos(orientation), np.sin(orientation)), axis=1)
+class PolygonSample:
+    """Draw random uniform point from inside of polygon. [1]_
 
+    - Delaunay triangulation to break the polygon into triangular mesh. [2]_
+    - Draw random uniform triangle weighted by its area.
+    - Draw random uniform sample from inside the triangle.
 
-def truncnorm(loc, abs_scale, size, std=3.0):
-    """Scaled symmetrical truncated normal distribution."""
-    scale = abs_scale / std
-    return tn.rvs(-std, std, loc=loc, scale=scale, size=size)
-
-
-def agent_motion(indices: (slice, np.ndarray),
-                 agent: Agent,
-                 target_direction: np.ndarray = None,
-                 target_angle: np.ndarray = None,
-                 velocity: np.ndarray = None,
-                 body_angle: float = None):
-    """Set initial parameters for motion.
-    :param indices:
-    :param agent:
-    :param target_direction:
-    :param target_angle:
-    :param velocity:
-    :param body_angle:
-    :return:
+    .. [1] http://gis.stackexchange.com/questions/6412/generate-points-that-lie-inside-polygon
+    .. [2] https://en.wikipedia.org/wiki/Delaunay_triangulation
     """
-    logging.info("")
-    # FIXME: Nones
-    # TODO: 'random' param
 
-    if target_direction is not None:
-        agent.target_direction[indices] = target_direction
+    def __init__(self, polygon: Polygon):
+        """
 
-    if velocity is None and target_direction is not None:
-        agent.velocity[indices] = agent.target_direction[indices]
-        agent.velocity[indices] *= agent.target_velocity[indices]
-    elif velocity is not None:
-        agent.velocity[indices] = velocity
+        :param polygon: Polygon to be sampled.
+        """
+        self.polygon = polygon
 
-    if target_angle is None and target_direction is not None:
-        agent.target_angle[indices] = angle_nx2(agent.target_direction[indices])
-    elif target_angle is not None:
-        agent.target_angle[indices] = target_angle
+        # Triangular mesh
+        self.mesh = None
 
-    if body_angle is None and target_direction is not None:
-        agent.angle[indices] = angle_nx2(agent.velocity[indices])
-    elif body_angle is not None:
-        agent.angle[indices] = body_angle
+        # Cumulative sum of areas of the triangles
+        self.weights = None
+
+        self.triangulation()
+
+    @staticmethod
+    def random_sample_triangle(p):
+        """Generate uniform random sample indide from a triangle. [1]_, [2]_
+
+        .. math::
+           P = (1 - \sqrt{r_1}) A + (\sqrt{r_1} (1 - r_2))  B + (r_2 \sqrt{r_1}) C,
+
+        where random variables are
+
+        .. math::
+           r_1, r_2 \sim U[0, 1]
+
+        .. [1] http://math.stackexchange.com/questions/18686/uniform-random-point-in-triangle
+        .. [2] http://mathworld.wolfram.com/TrianglePointPicking.html
+
+        :param p: Three points defining a triangle.
+        :return: Uniformly distributed random point from inside of the triangle.
+        """
+        r = np.random.uniform(size=2)  # Random variables
+        x = (1 - np.sqrt(r[0])) * p[0] + \
+            (np.sqrt(r[0]) * (1 - r[1])) * p[1] + \
+            r[1] * np.sqrt(r[0]) * p[2]
+        return Point(x)
+
+    def triangulation(self):
+        # Delaunay triangulation
+        points = np.asarray(self.polygon.exterior)
+        delaunay = Delaunay(points)
+        self.mesh = points[delaunay.simplices]
+
+        # Areas of the triangles
+        areas = [Polygon(pts).area for pts in self.mesh]
+        self.weights = np.array(areas).cumsum()
+
+    def draw(self):
+        # Draw random triangle weighted by the area of the triangle
+        x = np.random.uniform(high=self.weights[-1])
+        i = np.searchsorted(self.weights, x)
+
+        # Random sample from the triangle
+        point = self.random_sample_triangle(self.mesh[i])
+        return point
 
 
-def agent_positions(agent: Agent,
-                    amount: int,
-                    area: Area,
-                    walls=None,
-                    domain: Area = None,
-                    target_direction: np.ndarray = None,
-                    target_angle: np.ndarray = None,
-                    velocity: np.ndarray = None,
-                    body_angle: float = None, ):
-    """Monte Carlo method for filling an area with desired amount of circles."""
-    # Fill inactive agents
-    inactive = agent.active ^ True
-    radius = agent.radius[inactive][:amount]
-    position = agent.position[inactive][:amount]
-    indices = np.arange(agent.size)[inactive][:amount]
+class Configuration:
+    def __init__(self):
+        self.domain = None  # Shapely.Polygon
+        self.goals = []
+        self.obstacles = []  # shapely.LineString
+        self.exits = []  # shapely.LineString
+        self.agent = None
+        self.walls = []  # LinearWalls
 
-    walls = filter_none(walls)
+        # Current index of agent to be placed
+        self._index = 0
 
-    i = 0  # Number of agents placed
-    iterations = 0  # Number of iterations done
-    maxlen = len(position)
-    maxiter = 10 * maxlen
-    while i < maxlen and iterations < maxiter:
-        iterations += 1
-        pos = area.random()
+        # Surfaces that is occupied by obstacles, exits, or other agents
+        self._occupied = cascaded_union(())  # Empty initially
 
-        rad = radius[i]
-        radii = radius[:i]
+    @staticmethod
+    def truncnorm(loc, abs_scale, size, std=3.0):
+        """Scaled symmetrical truncated normal distribution."""
+        scale = abs_scale / std
+        return truncnorm.rvs(-std, std, loc=loc, scale=scale, size=size)
 
-        if domain is not None and not domain.contains(pos):
-            continue
+    @staticmethod
+    def random_vector(size, orient=(0.0, 2.0 * np.pi), mag=1.0):
+        orientation = np.random.uniform(orient[0], orient[1], size=size)
+        return mag * np.stack((np.cos(orientation), np.sin(orientation)),
+                              axis=1)
 
-        # Test overlapping with other agents
-        if i > 0:
-            d = length_nx2(pos - position[:i]) - (rad + radii)
-            cond = np.all(d > 0)
-            if not cond:
-                continue
+    def _set_goal(self, polygon):
+        if polygon.is_valid and polygon.is_simple:
+            self.goals.append(polygon)
 
-        # Test overlapping with walls
-        cond = 1
-        for wall in walls:
-            for j in range(wall.size):
-                d = wall.distance(j, pos) - rad
-                cond *= d > 0
-        if not cond:
-            continue
+    def _set_obstacle(self, linestring):
+        if linestring.is_valid and linestring.is_simple:
+            self.obstacles.append(linestring)
 
-        position[i] = pos
+    def _set_exit(self, linestring):
+        if linestring.is_valid and linestring.is_simple:
+            self.exits.append(linestring)
 
-        index = indices[i]
-        agent.position[index] = pos
-        agent.active[index] = True
-        i += 1
+    def set_domain(self, polygon):
+        logging.info("")
+        if polygon.is_valid and polygon.is_simple:
+            self.domain = polygon
 
-    logging.info("Iterations: {}/{}".format(iterations, maxiter))
-    logging.info("Agents placed: {}/{}".format(i, maxlen))
+    def set_goals(self, polygon):
+        logging.info("")
+        if isinstance(polygon, Iterable):
+            for poly in polygon:
+                self._set_goal(poly)
+        else:
+            self._set_goal(polygon)
 
-    # FIXME
-    agent_motion(indices[:i], agent, target_direction, target_angle,
-                 velocity, body_angle)
+    def set_obstacles(self, linestring):
+        logging.info("")
+        if isinstance(linestring, Iterable):
+            for ls in linestring:
+                self._set_obstacle(ls)
+        else:
+            self._set_obstacle(linestring)
+
+    def set_exits(self, linestring):
+        logging.info("")
+        if isinstance(linestring, Iterable):
+            for ls in linestring:
+                self._set_exit(ls)
+        else:
+            self._set_exit(linestring)
+
+    def set_body(self, size, body):
+        logging.info("In: {}, {}".format(size, body))
+
+        # noinspection PyUnusedLocal
+        pi = np.pi
+
+        load = Load()
+        # Load tabular values
+        bodies = load.csv("body")
+        try:
+            body = bodies[body]
+        except:
+            raise KeyError(
+                "Body \"{}\" is not in bodies {}.".format(body, bodies))
+        values = load.csv("agent")["value"]
+
+        # Arguments for Agent
+        mass = self.truncnorm(body["mass"], body["mass_scale"], size)
+        radius = self.truncnorm(body["radius"], body["dr"], size)
+        radius_torso = body["k_t"] * radius
+        radius_shoulder = body["k_s"] * radius
+        torso_shoulder = body["k_ts"] * radius
+        target_velocity = self.truncnorm(body['v'], body['dv'], size)
+        inertia_rot = eval(values["inertia_rot"]) * np.ones(size)
+        target_angular_velocity = eval(values["target_angular_velocity"]) * \
+                                  np.ones(size)
+
+        # Agent class
+        self.agent = Agent(size, mass, radius, radius_torso, radius_shoulder,
+                           torso_shoulder, inertia_rot, target_velocity,
+                           target_angular_velocity)
+
+    def set_model(self, model):
+        logging.info("{}".format(model))
+        if model == "circular":
+            self.agent.set_circular()
+        elif model == "three_circle":
+            self.agent.set_three_circle()
+        else:
+            logging.warning("")
+            raise ValueError()
+        logging.info("Out")
+
+    def set_motion(self, i, target_direction, target_angle, velocity, orientation):
+        if target_direction is None:
+            pass
+        elif isinstance(target_direction, np.ndarray):
+            self.agent.target_direction[i] = target_direction
+        elif target_direction == "random":
+            self.agent.target_direction[i] = self.random_vector(1)
+
+        if velocity is None:
+            pass
+        elif isinstance(velocity, np.ndarray):
+            self.agent.velocity[i] = velocity
+        elif velocity == "random":
+            self.agent.velocity[i] = self.random_vector(1)
+        elif velocity == "auto":
+            self.agent.velocity[i] = self.agent.target_direction[i]
+            self.agent.velocity[i] *= self.agent.target_velocity[i]
+
+        if target_angle is None:
+            pass
+        elif isinstance(target_angle, np.ndarray):
+            self.agent.target_angle[i] = target_angle
+        elif target_angle == "random":
+            self.agent.target_angle[i] = self.random_vector(1)
+        elif velocity == "auto":
+            self.agent.target_angle[i] = angle(self.agent.target_direction[i])
+
+        if orientation is None:
+            pass
+        elif isinstance(orientation, Number):
+            self.agent.orientation[i] = orientation
+        elif orientation == "random":
+            self.agent.angle[i] = np.random.random()
+        elif velocity == "auto":
+            self.agent.orientation[i] = angle(self.agent.velocity[i])
+
+    def set(self, **kwargs):
+        """Set spatial and rotational parameters.
+
+        ================== ==========================
+        **Kwargs:**
+        *size*             Integer: Number of agent to be placed. \n
+                           None: Places all agents
+        *surface*          surface: Custom value \n
+                           None: Domain
+        *position*         ndarray: Custom values \n
+                           "random": Uses Monte Carlo method to place agent
+                           without overlapping with obstacles or other agents.
+        *target_direction* ndarray: Custom value \n
+                           "random": Uniformly distributed random value \n
+                           "auto":
+                           None: Default value
+        *velocity*         ndarray: Custom value  \n
+                           "random: Uniformly distributed random value, \n
+                           "auto":
+                           None: Default value
+        *target_angle*     ndarray: Custom value  \n
+                           "random": Uniformly distributed random value, \n
+                           "auto":
+                           None: Default value
+        *orientation*      float: Custom value  \n
+                           "random": Uniformly distributed random value, \n
+                           "auto":
+                           None: Default value
+        ================== ==========================
+        """
+        logging.info("")
+
+        size = kwargs.get("size")
+        surface = kwargs.get("surface", self.domain)
+        position = kwargs.get("position", "random")
+        velocity = kwargs.get("velocity", None)
+        orientation = kwargs.get("orientation", None)
+        target_direction = kwargs.get("target_direction", "auto")
+        target_angle = kwargs.get("target_angle", "auto")
+
+        iterations = 0  # Number of iterations
+        area_filled = 0  # Total area filled by agents
+        random_sample = PolygonSample(surface)
+
+        self._occupied = cascaded_union(self.obstacles + self.exits)
+
+        limit = self._index + size
+        while self._index < limit:
+            # Random point inside spawn surface. Center of mass for an agent.
+            if position == "random":
+                point = random_sample.draw()
+                self.agent.position[self._index] = np.asarray(point)
+            elif isinstance(position, np.ndarray):
+                # self.agent.position[self.i] = position[self.i]
+                # point = Point(position[self.i])
+                raise NotImplemented
+
+            self.set_motion(self._index, target_direction, target_angle,
+                            velocity, orientation)
+
+            if self.agent.three_circle:
+                self.agent.update_shoulder_position(self._index)
+                point_ls = Point(self.agent.position_ls[self._index])
+                point_rs = Point(self.agent.position_rs[self._index])
+                agent = cascaded_union((
+                    point.buffer(self.agent.r_t[self._index]),
+                    point_ls.buffer(self.agent.r_s[self._index]),
+                    point_rs.buffer(self.agent.r_s[self._index]),
+                ))
+            else:
+                agent = point.buffer(self.agent.radius[self._index])
+
+            if not agent.intersects(self._occupied):
+                density = area_filled / surface.area
+                logging.debug("Agent {} | Density {}".format(self._index, density))
+                self._occupied = cascaded_union((self._occupied, agent))
+                area_filled += agent.area
+                self.agent.active[self._index] = True
+                self._index += 1
+            else:
+                # Reset
+                self.agent.position[self._index] = 0
+                self.agent.position_ls[self._index] = 0
+                self.agent.position_rs[self._index] = 0
+                self.agent.velocity[self._index] = 0
+                self.agent.angle[self._index] = 0
+                self.agent.target_angle[self._index] = 0
+                self.agent.target_direction[self._index] = 0
+                self.agent.front[self._index] = 0
+
+            iterations += 1
+
+        logging.info("Density: {}".format(area_filled / surface.area))
 
 
 class QueueDict:
@@ -157,22 +357,17 @@ class QueueDict:
         return d
 
 
-class MultiAgentSimulation(Process):
+class MultiAgentSimulation(Process, Configuration):
     structures = ("domain", "goals", "exits", "walls", "agent")
     parameters = ("dt_min", "dt_max", "time_tot", "in_goal", "dt_prev")
 
     def __init__(self, queue: Queue=None):
         # Multiprocessing
         super(MultiAgentSimulation, self).__init__()
+        Configuration.__init__(self)
+
         self.queue = queue
         self.exit = Event()
-
-        # Structures
-        self.domain = None  # Area
-        self.goals = ()     # Area
-        self.exits = ()     # Exit
-        self.walls = ()     # Obstacle
-        self.agent = None   # Agent
 
         # Angle and direction update algorithms
         self.navigation = None
@@ -211,109 +406,11 @@ class MultiAgentSimulation(Process):
         self.queue.put(None)  # Poison pill. Ends simulation
         logging.info("MultiAgent Stopping")
 
-    def configure_domain(self, domain):
-        logging.info("In: {}".format(domain))
-        if isinstance(domain, Area):
-            self.domain = domain
-        elif domain is None:
-            # Full real domain
-            raise NotImplemented("Full real space is not yet supported.")
-        else:
-            logging.warning("")
-            raise ValueError("Domain is wrong type.")
-        logging.info("Out: {}".format(domain))
-
-    def configure_goals(self, goals=None):
-        logging.info("In: {}".format(goals))
-        if goals is None:
-            self.goals = ()
-        elif isinstance(goals, Iterable):
-            self.goals = goals
-        else:
-            self.goals = (goals,)
-        logging.info("Out: {}".format(goals))
-
-    def configure_obstacles(self, obstacles=None):
-        logging.info("In: {}".format(obstacles))
-        if obstacles is None:
-            self.walls = ()
-        elif isinstance(obstacles, Iterable):
-            self.walls = obstacles
-        else:
-            self.walls = (obstacles,)
-        logging.info("Out: {}".format(obstacles))
-
-    def configure_exits(self, exits=None):
-        logging.info("In: {}".format(exits))
-        if exits is None:
-            self.exits = ()
-        elif isinstance(exits, Iterable):
-            self.exits = exits
-        else:
-            self.exits = (exits,)
-        logging.info("Out: {}".format(exits))
-
-    def configure_agent(self, size, body):
-        logging.info("In: {}, {}".format(size, body))
-
-        # Load tabular values
-        body = self.load.csv("body")[body]
-        values = self.load.csv("agent")["value"]
-
-        # Eval
-        pi = np.pi
-
-        # Arguments for Agent
-        mass = truncnorm(body["mass"], body["mass_scale"], size)
-        radius = truncnorm(body["radius"], body["dr"], size)
-        radius_torso = body["k_t"] * radius
-        radius_shoulder = body["k_s"] * radius
-        torso_shoulder = body["k_ts"] * radius
-        target_velocity = truncnorm(body['v'], body['dv'], size)
-        inertia_rot = eval(values["inertia_rot"]) * np.ones(size)
-        target_angular_velocity = eval(values["target_angular_velocity"]) * \
-                                  np.ones(size)
-
-        # Agent class
-        self.agent = Agent(size, mass, radius, radius_torso, radius_shoulder,
-                           torso_shoulder, inertia_rot, target_velocity,
-                           target_angular_velocity)
-
-    def configure_agent_model(self, model):
-        logging.info("In: {}".format(model))
-        if model == "circular":
-            self.agent.set_circular()
-        elif model == "three_circle":
-            self.agent.set_three_circle()
-        else:
-            logging.warning("")
-            raise Warning()
-        logging.info("Out")
-
-    def configure_agent_positions(self, kwargs):
-        logging.info("")
-
-        # TODO: separate, manual positions
-        # Initial positions
-        if isinstance(kwargs, dict):
-            agent_positions(self.agent, walls=self.walls, domain=self.domain,
-                            **kwargs)
-        elif isinstance(kwargs, Iterable):
-            for kwarg in kwargs:
-                agent_positions(self.agent, walls=self.walls,
-                                domain=self.domain, **kwarg)
-        else:
-            logging.warning("")
-            raise ValueError("")
-
-        self.agent.update_shoulder_positions()
-        logging.info("")
-
     def configure_navigation(self, custom=None):
         """Default navigation algorithm"""
         if custom is None:
-            self.navigation = Navigation(self.agent, self.domain, self.walls,
-                                         self.exits)
+            self.navigation = Navigation(self.agent, self.domain,
+                                         self.obstacles, self.exits)
         else:
             self.navigation = custom
         logging.info("")
@@ -394,15 +491,15 @@ class MultiAgentSimulation(Process):
             self.game.update(self.time_tot, self.dt_prev)
 
         # Check which agent are inside the domain aka active
-        if self.domain is not None:
-            self.agent.active &= self.domain.contains(self.agent.position)
+        # if self.domain is not None:
+        #     self.agent.active &= self.domain.contains(self.agent.position)
 
         # Check which agent have reached their desired goals
-        for goal in self.goals:
-            num = -np.sum(self.agent.goal_reached)
-            self.agent.goal_reached |= goal.contains(self.agent.position)
-            num += np.sum(self.agent.goal_reached)
-            self.in_goal += num
+        # for goal in self.goals:
+        #     num = -np.sum(self.agent.goal_reached)
+        #     self.agent.goal_reached |= goal.contains(self.agent.position)
+        #     num += np.sum(self.agent.goal_reached)
+        #     self.in_goal += num
 
         # Raise iteration count
         self.iterations += 1
@@ -415,3 +512,5 @@ class MultiAgentSimulation(Process):
 
         data = self.queue_dict.get()
         self.queue.put(data)
+
+

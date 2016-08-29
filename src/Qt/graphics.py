@@ -2,9 +2,9 @@ import logging
 
 import numpy as np
 import pyqtgraph as pg
+from shapely.geometry import Polygon
 
 from src.config import Load
-from src.multiagent import surface
 from src.multiagent.curve import LinearObstacle
 from src.multiagent.simulation import MultiAgentSimulation
 
@@ -99,16 +99,20 @@ class MultiAgentPlot(pg.PlotItem):
         if process.domain is not None:
             logging.debug("domain")
             domain = process.domain
-            if isinstance(domain, surface.Rectangle):
-                self.setRange(xRange=domain.x, yRange=domain.y)
-                self.addItem(Rectangle(domain.x, domain.y, settings["domain"]["brush"]))
+            if isinstance(domain, Polygon):
+                x, y = domain.exterior.xy
+                x, y = np.asarray(x), np.asarray(y)
+                self.setRange(xRange=(x.min(), x.max()),
+                              yRange=(y.min(), y.max()))
+                item = pg.PlotDataItem(x, y)  # settings["domain"]["brush"]
+                self.addItem(item)
 
         if process.goals is not None:
             logging.debug("goals")
             goals = process.goals
-            for goal in goals:
-                if isinstance(goal, surface.Rectangle):
-                    self.addItem(Rectangle(goal.x, goal.y, settings["goal"]["brush"]))
+            # for goal in goals:
+            #     if isinstance(goal, surface.Rectangle):
+            #         self.addItem(Rectangle(goal.x, goal.y, settings["goal"]["brush"]))
 
         if process.exits is not None:
             logging.debug("exits")
