@@ -171,6 +171,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.process = simulation(self.queue, **kwargs)
 
         # Enable controls
+        # FIXME: Dont make multiple copies
         savingButton = QtGui.QPushButton("Configure Saving")
         savingButton.clicked.connect(self.process.configure_hdfstore)
         self.sidebarLeft.addWidget(savingButton)
