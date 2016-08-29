@@ -156,14 +156,15 @@ Three circle model
 ^^^^^^^^^^^^^^^^^^
 Three circle model models agent with three circles which represent torso and two shoulders. Torso has radius of :math:`r_t` and is centered at center of mass :math:`\mathbf{x}` and shoulder have both radius of  :math:`r_s` and are centered at :math:`\mathbf{x} \pm r_{ts} \mathbf{\hat{e}_t}`. [langston2007]_
 
+----
 
-Initial Configuration
+Initial configuration
 ---------------------
-Initial configuration :math:`t=0` of the geometry and placement of agents.
+Initial placement of agents inside a polygonal surface, a spawn denoted by :math:`\mathcal{S} \subset \Omega`, uses random uniform sampling.
 
-#) Domain
-#) Obstacles and exits
-#) Placement of agents
+#) Triangulation
+#) Random Triangle
+#) Random point inside triangle
 
 
 ----

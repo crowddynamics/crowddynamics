@@ -51,6 +51,7 @@ class RoomEvacuation(MultiAgentSimulation):
     def __init__(self, queue, size, width, height, model, body, spawn_shape,
                  door_width, exit_hall_width):
         super(RoomEvacuation, self).__init__(queue)
+
         domain = Rectangle((0.0, width + exit_hall_width), (0.0, height))
 
         corner = ((0, 0), (0, height), (width, 0), (width, height))
