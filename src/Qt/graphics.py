@@ -2,6 +2,7 @@ import logging
 
 import numpy as np
 import pyqtgraph as pg
+from shapely.geometry import LineString
 from shapely.geometry import Polygon
 
 from src.config import Load
@@ -27,10 +28,7 @@ class Circular(pg.PlotDataItem):
                       symbolBrush=symbol_brush, )
 
         for key, val in self.settings["active"].items():
-            logging.debug("{}: {}".format(key, val))
             kwargs[key][:] = val
-
-        logging.debug("{}".format(kwargs))
 
         self.setData(**kwargs)
 
@@ -104,19 +102,26 @@ class MultiAgentPlot(pg.PlotItem):
                 x, y = np.asarray(x), np.asarray(y)
                 self.setRange(xRange=(x.min(), x.max()),
                               yRange=(y.min(), y.max()))
-                item = pg.PlotDataItem(x, y)  # settings["domain"]["brush"]
-                self.addItem(item)
+                # item = pg.PlotDataItem(x, y)  # settings["domain"]["brush"]
+                # self.addItem(item)
 
         if process.goals is not None:
             logging.debug("goals")
             goals = process.goals
-            # for goal in goals:
-            #     if isinstance(goal, surface.Rectangle):
-            #         self.addItem(Rectangle(goal.x, goal.y, settings["goal"]["brush"]))
+            for goal in goals:
+                if isinstance(goal, Polygon):
+                    # settings["goal"]["brush"]
+                    pass
 
         if process.exits is not None:
             logging.debug("exits")
-            pass
+            exits = process.exits
+            for exit_ in exits:
+                if isinstance(exit_, LineString):
+                    x, y = exit_.xy
+                    x, y = np.asarray(x), np.asarray(y)
+                    item = pg.PlotDataItem(x, y)
+                    self.addItem(item)
 
         if process.agent is not None:
             logging.debug("agent")
@@ -133,16 +138,15 @@ class MultiAgentPlot(pg.PlotItem):
                 self.addItem(model)
             self.agent = model
 
-        if process.walls is not None:
-            logging.debug("walls")
-            walls = process.walls
-            for wall in walls:
-                if isinstance(wall, LinearObstacle):
-                    connect = np.zeros(2 * wall.size, dtype=np.int32)
-                    connect[::2] = np.ones(wall.size, dtype=np.int32)
-                    self.plot(wall.params[:, :, 0].flatten(),
-                              wall.params[:, :, 1].flatten(),
-                              connect=connect)
+        if process.obstacles is not None:
+            logging.debug("Obstacles")
+            obstacles = process.obstacles
+            for obstacle in obstacles:
+                if isinstance(obstacle, LineString):
+                    x, y = obstacle.xy
+                    x, y = np.asarray(x), np.asarray(y)
+                    item = pg.PlotDataItem(x, y)
+                    self.addItem(item)
 
     def update_data(self, data):
         """Update dynamic items."""

@@ -21,6 +21,13 @@ from src.io.hdfstore import HDFStore
 from src.multiagent.agent import Agent
 
 
+try:
+    from shapely import speedups
+    speedups.enable()
+except ImportError():
+    pass
+
+
 class PolygonSample:
     """Draw random uniform point from inside of polygon. [1]_
 
@@ -118,22 +125,30 @@ class Configuration:
         return mag * np.stack((np.cos(orientation), np.sin(orientation)),
                               axis=1)
 
-    def _set_goal(self, polygon):
-        if polygon.is_valid and polygon.is_simple:
-            self.goals.append(polygon)
-
-    def _set_obstacle(self, linestring):
-        if linestring.is_valid and linestring.is_simple:
-            self.obstacles.append(linestring)
-
-    def _set_exit(self, linestring):
-        if linestring.is_valid and linestring.is_simple:
-            self.exits.append(linestring)
-
     def set_domain(self, polygon):
         logging.info("")
         if polygon.is_valid and polygon.is_simple:
             self.domain = polygon
+        else:
+            logging.warning("Domain not valid.")
+
+    def _set_goal(self, polygon):
+        if polygon.is_valid and polygon.is_simple:
+            self.goals.append(polygon)
+        else:
+            logging.warning("Goal not valid.")
+
+    def _set_obstacle(self, linestring):
+        if linestring.is_valid and linestring.is_simple:
+            self.obstacles.append(linestring)
+        else:
+            logging.warning("Obstacle not valid.")
+
+    def _set_exit(self, linestring):
+        if linestring.is_valid and linestring.is_simple:
+            self.exits.append(linestring)
+        else:
+            logging.warning("Exit not valid.")
 
     def set_goals(self, polygon):
         logging.info("")
@@ -362,8 +377,7 @@ class MultiAgentSimulation(Process, Configuration):
     parameters = ("dt_min", "dt_max", "time_tot", "in_goal", "dt_prev")
 
     def __init__(self, queue: Queue=None):
-        # Multiprocessing
-        super(MultiAgentSimulation, self).__init__()
+        super(MultiAgentSimulation, self).__init__()  # Multiprocessing
         Configuration.__init__(self)
 
         self.queue = queue
