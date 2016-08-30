@@ -120,8 +120,8 @@ class MultiAgentPlot(pg.PlotItem):
                 if isinstance(exit_, LineString):
                     x, y = exit_.xy
                     x, y = np.asarray(x), np.asarray(y)
-                    item = pg.PlotDataItem(x, y)
-                    self.addItem(item)
+                    item = pg.PlotDataItem(x, y)  # TODO: pen
+                    # self.addItem(item)
 
         if process.agent is not None:
             logging.debug("agent")

@@ -21,5 +21,5 @@ class Outdoor(MultiAgentSimulation):
         self.set_model(model)
         self.set(**kwargs)
 
-        self.configure_navigation()
-        self.configure_orientation()
+        self.set_navigation()
+        self.set_orientation()

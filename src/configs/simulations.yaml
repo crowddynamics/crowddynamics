@@ -23,19 +23,19 @@ simulations: !!omap
         - height: 5.0
         - width: 20.0
 
-#  - room_evacuation:
-#      module: "src.examples.evacuation"
-#      class: "RoomEvacuation"
-#      kwargs: !!omap
-#        - size: 200
-#        - model: "circular"
-#        - body: "adult"
-#        - height: 20.0
-#        - width: 10.0
-#        - door_width: 1.2
-#        - exit_hall_width: 2.0
-#        - spawn_shape: "circ"
-#
+  - room_evacuation:
+      module: "src.examples.evacuation"
+      class: "RoomEvacuation"
+      kwargs: !!omap
+        - size: 200
+        - model: "circular"
+        - body: "adult"
+        - height: 20.0
+        - width: 10.0
+        - door_width: 1.2
+        - exit_hall_width: 2.0
+        - spawn_shape: "circ"
+
 #  - room_evacuation_game:
 #      module: "src.examples.evacuation"
 #      class: "RoomEvacuationGame"
@@ -67,7 +67,7 @@ kwarg_mapping:
   width: [0, null]
   door_width: [0, 3]
   exit_hall_width: [0, null]
-  spawn_shape: ["circ", "rect"]
+  spawn_shape: ["circ", null]
   t_aset_0: [0, null]
   interval: [0, 1]
   neighbor_radius: [0, null]

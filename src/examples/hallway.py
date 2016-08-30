@@ -30,11 +30,11 @@ class Hallway(MultiAgentSimulation):
             {'size': size // 2,
              'surface': spawn[0],
              'target_direction': np.array((1.0, 0.0)),
-             'body_angle': 0},
+             'orientation': 0},
             {'size': size // 2,
              'surface': spawn[1],
              'target_direction': np.array((-1.0, 0.0)),
-             'body_angle': np.pi},
+             'orientation': np.pi},
         )
 
         self.set_domain(domain)
@@ -45,5 +45,5 @@ class Hallway(MultiAgentSimulation):
         for kw in kwargs:
             self.set(**kw)
 
-        self.configure_navigation()
-        self.configure_orientation()
+        self.set_navigation()
+        self.set_orientation()

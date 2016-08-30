@@ -20,9 +20,9 @@ from src.core.vector2d import angle
 from src.io.hdfstore import HDFStore
 from src.multiagent.agent import Agent
 
-
 try:
     from shapely import speedups
+
     speedups.enable()
 except ImportError():
     pass
@@ -45,18 +45,31 @@ class PolygonSample:
         :param polygon: Polygon to be sampled.
         """
         self.polygon = polygon
+        self.nodes = np.asarray(self.polygon.exterior)
 
         # Triangular mesh
-        self.mesh = None
+        self.delaunay = Delaunay(self.nodes)
+        self.mesh = self.nodes[self.delaunay.simplices]
 
         # Cumulative sum of areas of the triangles
-        self.weights = None
+        self.weights = self._weights(self.mesh)
 
-        self.triangulation()
+    @staticmethod
+    def _weights(mesh):
+        area_tot = 0
+        weigths = np.zeros(mesh.shape[0])
+        # TODO: Speedup
+        for i, (a, b, c) in enumerate(mesh):
+            # Area of triangle
+            area_tot += np.abs(a[0] * (b[1] - c[1]) +
+                               b[0] * (c[1] - a[1]) +
+                               c[0] * (a[1] - b[1])) / 2
+            weigths[i] = area_tot
+        return weigths
 
     @staticmethod
     def random_sample_triangle(p):
-        """Generate uniform random sample indide from a triangle. [1]_, [2]_
+        """Generate uniform random sample from inside of a triangle. [1]_, [2]_
 
         .. math::
            P = (1 - \sqrt{r_1}) A + (\sqrt{r_1} (1 - r_2))  B + (r_2 \sqrt{r_1}) C,
@@ -76,17 +89,7 @@ class PolygonSample:
         x = (1 - np.sqrt(r[0])) * p[0] + \
             (np.sqrt(r[0]) * (1 - r[1])) * p[1] + \
             r[1] * np.sqrt(r[0]) * p[2]
-        return Point(x)
-
-    def triangulation(self):
-        # Delaunay triangulation
-        points = np.asarray(self.polygon.exterior)
-        delaunay = Delaunay(points)
-        self.mesh = points[delaunay.simplices]
-
-        # Areas of the triangles
-        areas = [Polygon(pts).area for pts in self.mesh]
-        self.weights = np.array(areas).cumsum()
+        return x
 
     def draw(self):
         # Draw random triangle weighted by the area of the triangle
@@ -94,8 +97,32 @@ class PolygonSample:
         i = np.searchsorted(self.weights, x)
 
         # Random sample from the triangle
-        point = self.random_sample_triangle(self.mesh[i])
-        return point
+        sample = self.random_sample_triangle(self.mesh[i])
+        return Point(sample)
+
+
+class QueueDict:
+    def __init__(self, producer):
+        self.producer = producer
+        self.dict = {}
+
+    def set(self, args):
+        self.dict.clear()
+        for key, attrs in args:
+            self.dict[key] = {}
+            for attr in attrs:
+                self.dict[key][attr] = None
+
+    def fill(self, d):
+        for key, attrs in d.items():
+            item = getattr(self.producer, key)
+            for attr in attrs.keys():
+                d[key][attr] = np.copy(getattr(item, attr))
+
+    def get(self):
+        d = deepcopy(self.dict)
+        self.fill(d)
+        return d
 
 
 class Configuration:
@@ -105,7 +132,10 @@ class Configuration:
         self.obstacles = []  # shapely.LineString
         self.exits = []  # shapely.LineString
         self.agent = None
-        self.walls = []  # LinearWalls
+
+        # Angle and direction update algorithms
+        self.navigation = None
+        self.orientation = None
 
         # Current index of agent to be placed
         self._index = 0
@@ -174,6 +204,23 @@ class Configuration:
         else:
             self._set_exit(linestring)
 
+    def set_navigation(self, custom=None):
+        """Default navigation algorithm"""
+        logging.info("")
+        if custom is None:
+            self.navigation = Navigation(self.agent, self.domain,
+                                         self.obstacles, self.exits)
+        else:
+            self.navigation = custom
+
+    def set_orientation(self, custom=None):
+        """Default orientation algorithm"""
+        logging.info("")
+        if custom is None:
+            self.orientation = Orientation(self.agent)
+        else:
+            self.orientation = custom
+
     def set_body(self, size, body):
         logging.info("In: {}, {}".format(size, body))
 
@@ -217,7 +264,8 @@ class Configuration:
             raise ValueError()
         logging.info("Out")
 
-    def set_motion(self, i, target_direction, target_angle, velocity, orientation):
+    def set_motion(self, i, target_direction, target_angle, velocity,
+                   orientation):
         if target_direction is None:
             pass
         elif isinstance(target_direction, np.ndarray):
@@ -247,11 +295,11 @@ class Configuration:
         if orientation is None:
             pass
         elif isinstance(orientation, Number):
-            self.agent.orientation[i] = orientation
+            self.agent.angle[i] = orientation
         elif orientation == "random":
             self.agent.angle[i] = np.random.random()
         elif velocity == "auto":
-            self.agent.orientation[i] = angle(self.agent.velocity[i])
+            self.agent.angle[i] = angle(self.agent.velocity[i])
 
     def set(self, **kwargs):
         """Set spatial and rotational parameters.
@@ -300,15 +348,18 @@ class Configuration:
         self._occupied = cascaded_union(self.obstacles + self.exits)
 
         limit = self._index + size
-        while self._index < limit:
+        iter_limit = size * 5
+        # TODO: Speedup
+        while self._index < limit and iterations < iter_limit:
             # Random point inside spawn surface. Center of mass for an agent.
             if position == "random":
                 point = random_sample.draw()
                 self.agent.position[self._index] = np.asarray(point)
             elif isinstance(position, np.ndarray):
-                # self.agent.position[self.i] = position[self.i]
-                # point = Point(position[self.i])
-                raise NotImplemented
+                point = Point(position[self._index])
+                self.agent.position[self._index] = position[self._index]
+            else:
+                raise ValueError()
 
             self.set_motion(self._index, target_direction, target_angle,
                             velocity, orientation)
@@ -327,7 +378,8 @@ class Configuration:
 
             if not agent.intersects(self._occupied):
                 density = area_filled / surface.area
-                logging.debug("Agent {} | Density {}".format(self._index, density))
+                logging.debug(
+                    "Agent {} | Density {}".format(self._index, density))
                 self._occupied = cascaded_union((self._occupied, agent))
                 area_filled += agent.area
                 self.agent.active[self._index] = True
@@ -348,44 +400,18 @@ class Configuration:
         logging.info("Density: {}".format(area_filled / surface.area))
 
 
-class QueueDict:
-    def __init__(self, producer):
-        self.producer = producer
-        self.dict = {}
-
-    def set(self, args):
-        self.dict.clear()
-        for key, attrs in args:
-            self.dict[key] = {}
-            for attr in attrs:
-                self.dict[key][attr] = None
-
-    def fill(self, d):
-        for key, attrs in d.items():
-            item = getattr(self.producer, key)
-            for attr in attrs.keys():
-                d[key][attr] = np.copy(getattr(item, attr))
-
-    def get(self):
-        d = deepcopy(self.dict)
-        self.fill(d)
-        return d
-
-
 class MultiAgentSimulation(Process, Configuration):
     structures = ("domain", "goals", "exits", "walls", "agent")
     parameters = ("dt_min", "dt_max", "time_tot", "in_goal", "dt_prev")
 
-    def __init__(self, queue: Queue=None):
+    def __init__(self, queue: Queue = None):
         super(MultiAgentSimulation, self).__init__()  # Multiprocessing
         Configuration.__init__(self)
 
         self.queue = queue
         self.exit = Event()
 
-        # Angle and direction update algorithms
-        self.navigation = None
-        self.orientation = None
+        self.walls = []  # LinearWalls
 
         # Additional models
         self.game = None
@@ -397,13 +423,12 @@ class MultiAgentSimulation(Process, Configuration):
         # State of the simulation
         self.iterations = 0  # Integer
         self.time_tot = 0.0  # Float (types matter for saving to a file)
-        self.in_goal = 0     # Integer TODO: Move to area?
-        self.dt_prev = 0.1   # Float. Last used time step.
+        self.in_goal = 0  # Integer TODO: Move to area?
+        self.dt_prev = 0.1  # Float. Last used time step.
 
-        # Data
-        self.load = Load()
-        self.hdfstore = None
-        self.queue_dict = None
+        # Data flow
+        self.hdfstore = None  # Sends data to hdf5 file
+        self.queue_items = None  # Sends data to graphics
 
     @property
     def name(self):
@@ -420,23 +445,6 @@ class MultiAgentSimulation(Process, Configuration):
         self.queue.put(None)  # Poison pill. Ends simulation
         logging.info("MultiAgent Stopping")
 
-    def configure_navigation(self, custom=None):
-        """Default navigation algorithm"""
-        if custom is None:
-            self.navigation = Navigation(self.agent, self.domain,
-                                         self.obstacles, self.exits)
-        else:
-            self.navigation = custom
-        logging.info("")
-
-    def configure_orientation(self, custom=None):
-        """Default orientation algorithm"""
-        if custom is None:
-            self.orientation = Orientation(self.agent)
-        else:
-            self.orientation = custom
-        logging.info("")
-
     def configure_hdfstore(self):
         if self.hdfstore is None:
             logging.info("")
@@ -444,8 +452,10 @@ class MultiAgentSimulation(Process, Configuration):
             # Configure hdfstore file
             self.hdfstore = HDFStore(self.name)
 
+            load = Load()
+
             # Add dataset
-            parameters = self.load.yaml('parameters')
+            parameters = load.yaml('parameters')
 
             args = self.agent, parameters['agent']
             self.hdfstore.add_dataset(*args)
@@ -468,8 +478,8 @@ class MultiAgentSimulation(Process, Configuration):
         # FIXME
         if self.queue is not None:
             logging.info("")
-            self.queue_dict = QueueDict(self)
-            self.queue_dict.set(args)
+            self.queue_items = QueueDict(self)
+            self.queue_items.set(args)
         else:
             logging.info("Queue is not defined.")
 
@@ -524,7 +534,5 @@ class MultiAgentSimulation(Process, Configuration):
             if self.iterations % 100 == 0:
                 self.hdfstore.dump_buffers()
 
-        data = self.queue_dict.get()
+        data = self.queue_items.get()
         self.queue.put(data)
-
-

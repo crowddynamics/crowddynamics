@@ -2,11 +2,10 @@ from functools import partial
 
 import numba
 import numpy as np
+from shapely.geometry import LineString, Point, Polygon
 
 from src.core.game import EgressGame
 from src.core.vector2d import rotate90, normalize, length
-from src.multiagent.curve import LinearExit
-from src.multiagent.curve import LinearObstacle
 from src.multiagent.simulation import MultiAgentSimulation
 
 
@@ -51,67 +50,47 @@ class RoomEvacuation(MultiAgentSimulation):
                  door_width, exit_hall_width):
         super(RoomEvacuation, self).__init__(queue)
 
-        domain = Rectangle((0.0, width + exit_hall_width), (0.0, height))
+        room = Polygon([(0, 0), (0, height), (width, height), (width, 0), ])
+        hall = Polygon([(width, (height - door_width) / 2),
+                        (width, (height + door_width) / 2),
+                        (width + exit_hall_width, (height + door_width) / 2),
+                        (width + exit_hall_width, (height - door_width) / 2), ])
 
-        corner = ((0, 0), (0, height), (width, 0), (width, height))
-
-        door = ((width, (height - door_width) / 2),
-                (width, (height + door_width) / 2))
-
-        hall = ((width + exit_hall_width, (height - door_width) / 2),
-                (width + exit_hall_width, (height + door_width) / 2))
-
-        linear_params = np.array(
-            ((corner[0], corner[1]),
-             (corner[0], corner[2]),
-             (corner[1], corner[3]),
-             (corner[2], door[0]),
-             (door[1], corner[3]),
-             (door[0], hall[0]),
-             (door[1], hall[1]),
-             # (door[0], door[1]),  # Close the door
-             ), dtype=np.float64
+        door = (
+            LineString([(width, (height - door_width) / 2),
+                        (width, (height + door_width) / 2), ]),
+            LineString([(width + exit_hall_width, (height - door_width) / 2),
+                        (width + exit_hall_width, (height + door_width) / 2), ])
         )
 
-        walls = LinearObstacle(linear_params)
+        domain = room | hall
+        goals = hall
+        exit_door = door[0]
+        obstacles = (room | hall).exterior - door[1]
 
-        goals = Rectangle((width, width + 2),
-                          ((height - door_width) / 2,
-                           (height + door_width) / 2))
-
-        # Agents
-        spawn = None
+        spawn = room
         if spawn_shape == "circ":
-            spawn = Circle(phi=(np.pi / 2, np.pi / 2 + np.pi),
-                           radius=(0, height / 2),
-                           center=(width, height / 2))
-        elif spawn_shape == "rect":
-            spawn = Rectangle(x=(0.0, width),
-                              y=(0.0, height))
-        else:
-            ValueError("Spawn shape not valid.")
+            spawn = room & Point((width, height / 2)).buffer(height / 2)
 
-        kw = {
-            'amount': size,
-            'area': spawn,
+        kwargs = {
+            'size': size,
+            'surface': spawn,
             'target_direction': None,
-            'body_angle': 0
+            'orientation': 0
         }
 
-        exit_door = LinearExit(door[0], door[1], 0.27)
+        self.set_domain(domain)
+        self.set_goals(goals)
+        self.set_obstacles(obstacles)
+        self.set_exits(exit_door)
+        self.set_body(size, body)
+        self.set_model(model)
+        self.set(**kwargs)
 
-        self.configure_domain(domain)
-        self.configure_goals(goals)
-        self.configure_obstacles(walls)
-        self.configure_exits(exit_door)
-
-        self.configure_agent(size, body)
-        self.configure_agent_model(model)
-        self.configure_agent_positions(kw)
-
-        navigation = Navigation(self.agent, door, door_width, width, height)
-        self.configure_navigation(navigation)
-        self.configure_orientation()
+        # FIXME
+        # navigation = Navigation(self.agent, door, door_width, width, height)
+        # self.set_navigation(navigation)
+        # self.set_orientation()
 
 
 class RoomEvacuationGame(RoomEvacuation):
