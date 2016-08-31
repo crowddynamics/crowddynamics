@@ -105,3 +105,50 @@ def truncate(vec2d, limit):
     l = length(vec2d)
     if l != 0 and l > limit:
         vec2d *= limit / l
+
+
+@numba.jit(nopython=True, nogil=True)
+def distance_circle_line(x, r, p):
+    d = p[1] - p[0]
+    l_w = length(d)
+    t_w = d / l_w
+    n_w = rotate90(t_w)
+
+    q = x - p
+    l_t = - dot2d(t_w, q[1]) - dot2d(t_w, q[0])
+
+    if l_t > l_w:
+        d_iw = length(q[0])
+    elif l_t < -l_w:
+        d_iw = length(q[1])
+    else:
+        l_n = dot2d(n_w, q[0])
+        d_iw = np.abs(l_n)
+
+    d_iw -= r
+    return d_iw
+
+
+@numba.jit(nopython=True, nogil=True)
+def distance_circle_line_with_normal(x, r, p):
+    d = p[1] - p[0]
+    l_w = length(d)
+    t_w = d / l_w
+    n_w = rotate90(t_w)
+
+    q = x - p
+    l_t = - dot2d(t_w, q[1]) - dot2d(t_w, q[0])
+
+    if l_t > l_w:
+        d_iw = length(q[0])
+        n_iw = q[0] / d_iw
+    elif l_t < -l_w:
+        d_iw = length(q[1])
+        n_iw = q[1] / d_iw
+    else:
+        l_n = dot2d(n_w, q[0])
+        d_iw = np.abs(l_n)
+        n_iw = np.sign(l_n) * n_w
+
+    d_iw -= r
+    return d_iw, n_iw

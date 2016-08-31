@@ -19,6 +19,7 @@ from src.core.navigation import Navigation, Orientation
 from src.core.vector2d import angle
 from src.io.hdfstore import HDFStore
 from src.multiagent.agent import Agent
+from src.multiagent.curve import LinearObstacle
 
 try:
     from shapely import speedups
@@ -29,7 +30,10 @@ except ImportError():
 
 
 class PolygonSample:
-    """Draw random uniform point from inside of polygon. [1]_
+    """
+    Uniform sampling of a polygon
+    -----------------------------
+    Generates random uniform point from inside of polygon. [1]_
 
     - Delaunay triangulation to break the polygon into triangular mesh. [2]_
     - Draw random uniform triangle weighted by its area.
@@ -56,6 +60,11 @@ class PolygonSample:
 
     @staticmethod
     def _weights(mesh):
+        """Computes cumulative sum of the areas of the triangle mesh.
+
+        :param mesh: Trianle mesh.
+        :return: Cumulative sum the area of the triangle mesh
+        """
         area_tot = 0
         weigths = np.zeros(mesh.shape[0])
         # TODO: Speedup
@@ -68,8 +77,12 @@ class PolygonSample:
         return weigths
 
     @staticmethod
-    def random_sample_triangle(p):
-        """Generate uniform random sample from inside of a triangle. [1]_, [2]_
+    def random_sample_triangle(x):
+        """
+        Uniform sampling of a triangle
+        ------------------------------
+        Generate uniform random sample from a triangle defined by points A, B
+        and C [1]_, [2]_. Point inside the triangle is given
 
         .. math::
            P = (1 - \sqrt{r_1}) A + (\sqrt{r_1} (1 - r_2))  B + (r_2 \sqrt{r_1}) C,
@@ -77,19 +90,21 @@ class PolygonSample:
         where random variables are
 
         .. math::
-           r_1, r_2 \sim U[0, 1]
+           r_1, r_2 \sim \mathcal{U}(0, 1)
 
+        References
+        ----------
         .. [1] http://math.stackexchange.com/questions/18686/uniform-random-point-in-triangle
         .. [2] http://mathworld.wolfram.com/TrianglePointPicking.html
 
-        :param p: Three points defining a triangle.
-        :return: Uniformly distributed random point from inside of the triangle.
+        :param x: Three points defining a triangle (A, B, C).
+        :return: Uniformly distributed random point P.
         """
         r = np.random.uniform(size=2)  # Random variables
-        x = (1 - np.sqrt(r[0])) * p[0] + \
-            (np.sqrt(r[0]) * (1 - r[1])) * p[1] + \
-            r[1] * np.sqrt(r[0]) * p[2]
-        return x
+        p = (1 - np.sqrt(r[0])) * x[0] + \
+            (np.sqrt(r[0]) * (1 - r[1])) * x[1] + \
+            r[1] * np.sqrt(r[0]) * x[2]
+        return p
 
     def draw(self):
         # Draw random triangle weighted by the area of the triangle
@@ -126,6 +141,7 @@ class QueueDict:
 
 
 class Configuration:
+    """Set initial configuration for multi-agent simulation"""
     def __init__(self):
         self.domain = None  # Shapely.Polygon
         self.goals = []
@@ -411,7 +427,7 @@ class MultiAgentSimulation(Process, Configuration):
         self.queue = queue
         self.exit = Event()
 
-        self.walls = []  # LinearWalls
+        self.walls = None  # LinearWalls
 
         # Additional models
         self.game = None
@@ -444,6 +460,16 @@ class MultiAgentSimulation(Process, Configuration):
             self.update()
         self.queue.put(None)  # Poison pill. Ends simulation
         logging.info("MultiAgent Stopping")
+
+    def set_obstacles_to_linear_walls(self):
+        points = []
+        for obstacle in self.obstacles:
+            a = np.asarray(obstacle)
+            for i in range(len(a) - 1):
+                points.append((a[i], a[i + 1]))
+        if points:
+            params = np.array(points)
+            self.walls = LinearObstacle(params)
 
     def configure_hdfstore(self):
         if self.hdfstore is None:
@@ -503,8 +529,8 @@ class MultiAgentSimulation(Process, Configuration):
             torque_adjust(self.agent)
             torque_fluctuation(self.agent)
         agent_agent(self.agent)
-        for wall in self.walls:
-            agent_wall(self.agent, wall)
+        if self.walls is not None:
+            agent_wall(self.agent, self.walls)
 
         # Integration of the system
         self.dt_prev = integrator(self.agent, self.dt_min, self.dt_max)

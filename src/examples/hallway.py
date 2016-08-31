@@ -47,3 +47,5 @@ class Hallway(MultiAgentSimulation):
 
         self.set_navigation()
         self.set_orientation()
+
+        self.set_obstacles_to_linear_walls()

@@ -19,13 +19,20 @@ def agent_agent(agent):
 @numba.jit(nopython=True, nogil=True)
 def agent_wall(agent, wall):
     ind = agent.indices()
-    for w in range(wall.size):
-        for i in ind:
+    for i in ind:
+        for w in range(wall.size):
             agent_wall_interaction(i, w, agent, wall)
 
 
 @numba.jit(nopython=True, nogil=True)
 def agent_agent_distance(agent, i, j):
+    """Distance between two three-circle models.
+
+    :param agent:
+    :param i:
+    :param j:
+    :return:
+    """
     # Positions: center, left, right
     x_i = (agent.position[i], agent.position_ls[i], agent.position_rs[i])
     x_j = (agent.position[j], agent.position_ls[j], agent.position_rs[j])
@@ -46,7 +53,7 @@ def agent_agent_distance(agent, i, j):
             d = length(x)
             r_tot = (ri + rj)
             h = d - r_tot
-            if np.isnan(relative_distance) or h < relative_distance:
+            if h < relative_distance or np.isnan(relative_distance):
                 relative_distance = h
                 radius = ri, rj
                 normal = x / d
@@ -60,23 +67,30 @@ def agent_agent_distance(agent, i, j):
 
 @numba.jit(nopython=True, nogil=True)
 def agent_wall_distance(agent, wall, i, w):
+    """Distance between three-circle model and a line.
+
+    :param agent:
+    :param wall:
+    :param i:
+    :param w:
+    :return:
+    """
     x_i = (agent.position[i], agent.position_ls[i], agent.position_rs[i])
     r_i = (agent.r_t[i], agent.r_s[i], agent.r_s[i])
 
-    relative_distance = 0
+    relative_distance = np.nan
     position = np.zeros(2)
     normal = np.zeros(2)
-    radius = 0
-    init = True
+    radius = 0.0
+
     for xi, ri in zip(x_i, r_i):
         d, n = wall.distance_with_normal(w, xi)
         h = d - ri
-        if h < relative_distance or init:
+        if h < relative_distance or np.isnan(relative_distance):
+            relative_distance = h
             position = xi
             radius = ri
-            relative_distance = h
             normal = n
-            init = False
 
     r_moment_i = position - radius * normal - agent.position[i]
 

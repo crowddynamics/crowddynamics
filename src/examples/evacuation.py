@@ -92,6 +92,8 @@ class RoomEvacuation(MultiAgentSimulation):
         # self.set_navigation(navigation)
         # self.set_orientation()
 
+        self.set_obstacles_to_linear_walls()
+
 
 class RoomEvacuationGame(RoomEvacuation):
     def __init__(self, queue, size, width, height, model, body, spawn_shape,

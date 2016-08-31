@@ -5,9 +5,6 @@ from numba import jitclass
 from src.core.vector2d import length
 from src.core.vector2d import rotate90, dot2d
 
-"""
-Static obstacles
-"""
 
 spec_linear = (
     ("params", float64[:, :, :]),
