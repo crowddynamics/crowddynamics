@@ -4,6 +4,7 @@ from copy import deepcopy
 from multiprocessing import Process, Event, Queue
 from numbers import Number
 
+import numba
 import numpy as np
 from scipy.spatial.qhull import Delaunay
 from scipy.stats import truncnorm
@@ -11,7 +12,8 @@ from shapely.geometry import Polygon, Point
 from shapely.ops import cascaded_union
 
 from src.config import Load
-from src.core.interactions import agent_agent, agent_wall
+from src.core.interactions import agent_agent, agent_wall, \
+    agent_agent_distance_three_circle
 from src.core.motion import force_adjust, force_fluctuation, \
     torque_adjust, torque_fluctuation
 from src.core.motion import integrator
@@ -339,9 +341,31 @@ class Configuration:
 
         self._occupied = cascaded_union(self.obstacles + self.exits)
 
-        limit = self._index + size
+        start_index = self._index
+        limit = start_index + size
         iter_limit = size * 5
-        # TODO: Speedup
+
+        @numba.jit(nopython=True)
+        def agent_distance_condition(agent, start_index, i):
+            """Test function for determining if agents are overlapping."""
+            condition = True
+            if agent.three_circle:
+                for j in range(start_index, i):
+                    if condition:
+                        t = agent_agent_distance_three_circle(agent, i, j)
+                        condition &= t[1] > 0
+                    else:
+                        break
+            else:
+                for j in range(start_index, i):
+                    if condition:
+                        d = agent.position[i] - agent.position[j]
+                        s = length(d) - agent.radius[i] - agent.radius[j]
+                        condition &= s > 0
+                    else:
+                        break
+            return condition
+
         while self._index < limit and iterations < iter_limit:
             # Random point inside spawn surface. Center of mass for an agent.
             if position == "random":
@@ -368,20 +392,14 @@ class Configuration:
                     point_rs.buffer(self.agent.r_s[self._index]),
                 ))
             else:
-                d = self.agent.position[size:self._index-1] - \
-                    self.agent.position[self._index]
-                d = length(d) - \
-                    self.agent.radius[size:self._index-1] - \
-                    self.agent.radius[self._index]
-
                 agent = point.buffer(self.agent.radius[self._index])
 
             # Check if agent intersects with other agents or obstacles
-            if not agent.intersects(self._occupied):
+            if agent_distance_condition(self.agent, start_index, self._index) \
+                    and not agent.intersects(self._occupied):
                 density = area_filled / surface.area
                 logging.debug(
                     "Agent {} | Density {}".format(self._index, density))
-                self._occupied = cascaded_union((self._occupied, agent))
                 area_filled += agent.area
                 self.agent.active[self._index] = True
                 self._index += 1
