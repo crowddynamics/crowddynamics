@@ -6,7 +6,6 @@ from shapely.geometry import LineString
 from shapely.geometry import Polygon
 
 from src.config import Load
-from src.multiagent.curve import LinearObstacle
 from src.multiagent.simulation import MultiAgentSimulation
 
 
@@ -58,13 +57,6 @@ class ThreeCircle:
         self.torso.set_data(position, active)
 
 
-class Rectangle(pg.FillBetweenItem):
-    def __init__(self, x, y, brush=None):
-        c1 = pg.PlotDataItem(x, (y[0], y[0]))
-        c2 = pg.PlotDataItem(x, (y[1], y[1]))
-        super(Rectangle, self).__init__(c1, c2, brush=brush)
-
-
 class MultiAgentPlot(pg.PlotItem):
     def __init__(self, parent=None):
         """GraphicsItem for displaying simulation graphics."""
@@ -102,7 +94,7 @@ class MultiAgentPlot(pg.PlotItem):
                 x, y = np.asarray(x), np.asarray(y)
                 self.setRange(xRange=(x.min(), x.max()),
                               yRange=(y.min(), y.max()))
-                # item = pg.PlotDataItem(x, y)  # settings["domain"]["brush"]
+                item = pg.PlotDataItem(x, y)  # settings["domain"]["brush"]
                 # self.addItem(item)
 
         if process.goals is not None:

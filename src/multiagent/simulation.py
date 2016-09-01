@@ -16,10 +16,10 @@ from src.core.motion import force_adjust, force_fluctuation, \
     torque_adjust, torque_fluctuation
 from src.core.motion import integrator
 from src.core.navigation import Navigation, Orientation
-from src.core.vector2d import angle
+from src.core.vector2d import angle, length
 from src.io.hdfstore import HDFStore
 from src.multiagent.agent import Agent
-from src.multiagent.curve import LinearObstacle
+from src.multiagent.field import LinearObstacle
 
 try:
     from shapely import speedups
@@ -114,30 +114,6 @@ class PolygonSample:
         # Random sample from the triangle
         sample = self.random_sample_triangle(self.mesh[i])
         return Point(sample)
-
-
-class QueueDict:
-    def __init__(self, producer):
-        self.producer = producer
-        self.dict = {}
-
-    def set(self, args):
-        self.dict.clear()
-        for key, attrs in args:
-            self.dict[key] = {}
-            for attr in attrs:
-                self.dict[key][attr] = None
-
-    def fill(self, d):
-        for key, attrs in d.items():
-            item = getattr(self.producer, key)
-            for attr in attrs.keys():
-                d[key][attr] = np.copy(getattr(item, attr))
-
-    def get(self):
-        d = deepcopy(self.dict)
-        self.fill(d)
-        return d
 
 
 class Configuration:
@@ -380,8 +356,10 @@ class Configuration:
             self.set_motion(self._index, target_direction, target_angle,
                             velocity, orientation)
 
+            # Geometry of the agent
             if self.agent.three_circle:
                 self.agent.update_shoulder_position(self._index)
+
                 point_ls = Point(self.agent.position_ls[self._index])
                 point_rs = Point(self.agent.position_rs[self._index])
                 agent = cascaded_union((
@@ -390,8 +368,15 @@ class Configuration:
                     point_rs.buffer(self.agent.r_s[self._index]),
                 ))
             else:
+                d = self.agent.position[size:self._index-1] - \
+                    self.agent.position[self._index]
+                d = length(d) - \
+                    self.agent.radius[size:self._index-1] - \
+                    self.agent.radius[self._index]
+
                 agent = point.buffer(self.agent.radius[self._index])
 
+            # Check if agent intersects with other agents or obstacles
             if not agent.intersects(self._occupied):
                 density = area_filled / surface.area
                 logging.debug(
@@ -416,7 +401,34 @@ class Configuration:
         logging.info("Density: {}".format(area_filled / surface.area))
 
 
+class QueueDict:
+    def __init__(self, producer):
+        self.producer = producer
+        self.dict = {}
+
+    def set(self, args):
+        self.dict.clear()
+        for key, attrs in args:
+            self.dict[key] = {}
+            for attr in attrs:
+                self.dict[key][attr] = None
+
+    def fill(self, d):
+        for key, attrs in d.items():
+            item = getattr(self.producer, key)
+            for attr in attrs.keys():
+                d[key][attr] = np.copy(getattr(item, attr))
+
+    def get(self):
+        d = deepcopy(self.dict)
+        self.fill(d)
+        return d
+
+
 class MultiAgentSimulation(Process, Configuration):
+    """
+    Class that calls numerical algorithms of the multi-agent simulation.
+    """
     structures = ("domain", "goals", "exits", "walls", "agent")
     parameters = ("dt_min", "dt_max", "time_tot", "in_goal", "dt_prev")
 
@@ -451,10 +463,14 @@ class MultiAgentSimulation(Process, Configuration):
         return self.__class__.__name__
 
     def stop(self):
+        """Sets event to true in order to stop the simulation process."""
         logging.info("MultiAgent Exit...")
         self.exit.set()
 
     def run(self):
+        """Runs simulation process until is called. This calls the update method
+        repeatedly. Finally at stop it puts poison pill (None) into the queue to
+        denote last generated value."""
         logging.info("MultiAgent Starting")
         while not self.exit.is_set():
             self.update()
@@ -478,9 +494,8 @@ class MultiAgentSimulation(Process, Configuration):
             # Configure hdfstore file
             self.hdfstore = HDFStore(self.name)
 
-            load = Load()
-
             # Add dataset
+            load = Load()
             parameters = load.yaml('parameters')
 
             args = self.agent, parameters['agent']

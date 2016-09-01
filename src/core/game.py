@@ -73,13 +73,7 @@ class EgressGame(SpatialGame):
 
     .. [1] Heli??vaara, S., Ehtamo, H., Helbing, D., & Korhonen, T. (2013). Patient and impatient pedestrians in a spatial game for egress congestion. Physical Review E - Statistical, Nonlinear, and Soft Matter Physics. http://doi.org/10.1103/PhysRevE.87.012802
     """
-    attrs = (
-        "strategies",
-        "strategy",
-        "t_aset_0",
-        "t_evac",
-        "interval",
-    )
+
     strategies = np.array((0, 1), dtype=np.int64)
 
     def __init__(self, agent, exit_door, t_aset_0, interval, neighbor_radius,
@@ -103,9 +97,9 @@ class EgressGame(SpatialGame):
 
         self.exit_door = exit_door
 
-        self.strategy = np.ones(self.agent.size, dtype=np.int64)
         self.t_aset_0 = t_aset_0
         self.t_evac = np.zeros(self.agent.size)
+        self.strategy = np.ones(self.agent.size, dtype=np.int64)
         self.interval = interval
 
     def agent_closer_to_exit(self, players):

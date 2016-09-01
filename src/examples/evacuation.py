@@ -87,10 +87,14 @@ class RoomEvacuation(MultiAgentSimulation):
         self.set_model(model)
         self.set(**kwargs)
 
-        # FIXME
-        # navigation = Navigation(self.agent, door, door_width, width, height)
-        # self.set_navigation(navigation)
-        # self.set_orientation()
+        target = np.asarray(exit_door)
+        navigation = Navigation(self.agent,
+                                target,
+                                door_width,
+                                width,
+                                height)
+        self.set_navigation(navigation)
+        self.set_orientation()
 
         self.set_obstacles_to_linear_walls()
 
@@ -102,13 +106,6 @@ class RoomEvacuationGame(RoomEvacuation):
         super(RoomEvacuationGame, self).__init__(
             queue, size, width, height, model, body, spawn_shape, door_width,
             exit_hall_width)
+        # FIXME: Exit door
         self.game = EgressGame(self.agent, self.exits[0], t_aset_0, interval,
                                neighbor_radius, neighborhood_size)
-
-        # def configure_saving(self, dirpath):
-        #     super(RoomEvacuationGame, self).configure_saving(dirpath)
-        #     attrs_egress = Attrs(self.game.attrs, Intervals(1.0))
-        #     recordable = ("strategy", "t_evac")
-        #     for attr in recordable:
-        #         attrs_egress[attr] = Attr(attr, True, True)
-        #     self.hdfstore.save(self.game, attrs_egress)

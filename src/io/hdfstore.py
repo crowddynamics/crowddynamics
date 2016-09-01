@@ -7,8 +7,11 @@ import numpy as np
 
 
 class ListBuffer(list):
+    """
+    List that tracks start and end indices of added items.
+    """
+
     def __init__(self, start=0, end=0):
-        """Buffer that tracks start and end indices of added items."""
         super(ListBuffer, self).__init__()
         self.start = start
         self.end = end
@@ -23,7 +26,11 @@ class ListBuffer(list):
 
 
 class HDFStore(object):
-    """Class for saving object's array or scalar data in hdf5 file."""
+    """
+    Class for saving object's array or scalar data in hdf5 file. Data can be
+    saved once or made bufferable so that new data points can be added and
+    dumped into the hdf5 file.
+    """
     ext = ".hdf5"
 
     def __init__(self, filepath):

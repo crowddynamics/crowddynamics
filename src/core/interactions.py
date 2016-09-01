@@ -25,7 +25,7 @@ def agent_wall(agent, wall):
 
 
 @numba.jit(nopython=True, nogil=True)
-def agent_agent_distance(agent, i, j):
+def agent_agent_distance_three_circle(agent, i, j):
     """Distance between two three-circle models.
 
     :param agent:
@@ -110,7 +110,7 @@ def agent_agent_interaction(i, j, agent):
         if agent.three_circle:
             # Three circle model
             # TODO: Merge functions
-            n, h, r_moment_i, r_moment_j = agent_agent_distance(agent, i, j)
+            n, h, r_moment_i, r_moment_j = agent_agent_distance_three_circle(agent, i, j)
             force_i, force_j = force_social_three_circle(agent, i, j)
         else:
             # Circular model

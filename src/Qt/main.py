@@ -1,20 +1,32 @@
-import datetime
 import importlib
 import logging
-import os
 from functools import partial
 from multiprocessing import Queue
 
 import pyqtgraph as pg
-import pyqtgraph.exporters
 from PyQt4 import QtGui, QtCore
 
 from src.config import Load
+from src.multiagent.simulation import MultiAgentSimulation
 from .graphics import MultiAgentPlot
 from .ui.gui import Ui_MainWindow
 
 
 class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
+    """
+    Main window for the grahical user interface. Layout is created by using
+    qtdesigner and the files can be found in the *designer* folder. Makefile
+    to generate python code from the designer files can be used with command::
+
+       make gui
+
+    Main window consists of
+
+    - Menubar (top)
+    - Sidebar (left)
+    - Graphics layout widget (middle)
+    - Control bar (bottom)
+    """
     def __init__(self):
         super(MainWindow, self).__init__()
 
@@ -84,7 +96,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             layout.itemAt(i).widget().setParent(None)
 
     def set_sidebar(self, name):
-        logging.info("")
+        logging.info(name)
+
         self.clear_sidebar()
 
         if name == "":
@@ -156,8 +169,19 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         initButton.clicked.connect(self.set_simulation)
         self.sidebarLeft.addWidget(initButton)
 
+        def _clicked_saving(process):
+            if process is None:
+                pass
+            elif isinstance(process, MultiAgentSimulation):
+                process.configure_hdfstore()
+
+        savingButton = QtGui.QPushButton("Save to HDF5Store")
+        savingButton.clicked.connect(partial(_clicked_saving, self.process))
+        self.sidebarLeft.addWidget(savingButton)
+
     def set_simulation(self):
         logging.info("")
+
         self.reset_buffers()
         name = self.simulationsBox.currentText()
 
@@ -171,10 +195,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.process = simulation(self.queue, **kwargs)
 
         # Enable controls
-        # FIXME: Dont make multiple copies
-        savingButton = QtGui.QPushButton("Configure Saving")
-        savingButton.clicked.connect(self.process.configure_hdfstore)
-        self.sidebarLeft.addWidget(savingButton)
         self.enable_controls(True)
 
         # Plot Simulation
@@ -192,7 +212,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             self.enable_controls(False)
         else:
             self.plot.update_data(data)
-            # self.exporter.export(toBytes=True)
 
     def start(self):
         """Start simulation process and updating plot."""

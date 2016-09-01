@@ -17,8 +17,14 @@ http://stackoverflow.com/questions/5121931/in-python-how-can-you-load-yaml-mappi
 http://mathworld.wolfram.com/TrianglePointPicking.html
 http://gis.stackexchange.com/questions/6412/generate-points-that-lie-inside-polygon
 http://docs.scipy.org/doc/scipy/reference/spatial.html
-Delaunay triangulation
 
+Delaunay triangulation
+Voronoi Diagrams
+
+
+# Map generation
+http://www-cs-students.stanford.edu/~amitp/game-programming/polygon-map-generation/
+TODO: labyrinth
 
 # Documentation
 TODO: Video Tutorial !!!
