@@ -24,7 +24,7 @@ simulations: !!omap
         - width: 20.0
 
   - room_evacuation:
-      module: "src.examples.evacuation"
+      module: "src.examples"
       class: "RoomEvacuation"
       kwargs: !!omap
         - size: 200
@@ -37,7 +37,7 @@ simulations: !!omap
         - spawn_shape: "circ"
 
 #  - room_evacuation_game:
-#      module: "src.examples.evacuation"
+#      module: "src.examples"
 #      class: "RoomEvacuationGame"
 #      kwargs: !!omap
 #        - size: 300
