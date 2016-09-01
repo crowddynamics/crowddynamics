@@ -74,8 +74,9 @@ def user_info():
 
 
 def run_gui():
-    """Launches Qt application for visualizing simulation.
-    :param simulation:
+    """
+    Parses command line arguments, setups logging functionality and launches
+    graphical user interface for visualizing simulation.
     """
     from PyQt4 import QtGui, QtCore
     sys.path.insert(0, os.path.abspath(".."))

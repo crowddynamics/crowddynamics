@@ -4,7 +4,7 @@
 
 simulations: !!omap
   - outdoor:
-      module: "src.examples.outdoor"
+      module: "src.examples"
       class: "Outdoor"
       kwargs: !!omap
         - size: 100
@@ -14,7 +14,7 @@ simulations: !!omap
         - width: 20.0
 
   - hallway:
-      module: "src.examples.hallway"
+      module: "src.examples"
       class: "Hallway"
       kwargs: !!omap
         - size: 100

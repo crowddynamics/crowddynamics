@@ -121,11 +121,15 @@ class PolygonSample:
 class Configuration:
     """Set initial configuration for multi-agent simulation"""
     def __init__(self):
+        # Shapely
         self.domain = None  # Shapely.Polygon
         self.goals = []
         self.obstacles = []  # shapely.LineString
         self.exits = []  # shapely.LineString
+
+        # Numpy + Numba. More computationally efficient forms
         self.agent = None
+        self.walls = None  # LinearWalls
 
         # Angle and direction update algorithms
         self.navigation = None
@@ -418,6 +422,16 @@ class Configuration:
 
         logging.info("Density: {}".format(area_filled / surface.area))
 
+    def set_obstacles_to_linear_walls(self):
+        points = []
+        for obstacle in self.obstacles:
+            a = np.asarray(obstacle)
+            for i in range(len(a) - 1):
+                points.append((a[i], a[i + 1]))
+        if points:
+            params = np.array(points)
+            self.walls = LinearObstacle(params)
+
 
 class QueueDict:
     def __init__(self, producer):
@@ -457,8 +471,6 @@ class MultiAgentSimulation(Process, Configuration):
         self.queue = queue
         self.exit = Event()
 
-        self.walls = None  # LinearWalls
-
         # Additional models
         self.game = None
 
@@ -468,7 +480,7 @@ class MultiAgentSimulation(Process, Configuration):
 
         # State of the simulation
         self.iterations = 0  # Integer
-        self.time_tot = 0.0  # Float (types matter for saving to a file)
+        self.time_tot = 0.0  # Float (types matter when saving to a file)
         self.in_goal = 0  # Integer TODO: Move to area?
         self.dt_prev = 0.1  # Float. Last used time step.
 
@@ -494,16 +506,6 @@ class MultiAgentSimulation(Process, Configuration):
             self.update()
         self.queue.put(None)  # Poison pill. Ends simulation
         logging.info("MultiAgent Stopping")
-
-    def set_obstacles_to_linear_walls(self):
-        points = []
-        for obstacle in self.obstacles:
-            a = np.asarray(obstacle)
-            for i in range(len(a) - 1):
-                points.append((a[i], a[i + 1]))
-        if points:
-            params = np.array(points)
-            self.walls = LinearObstacle(params)
 
     def configure_hdfstore(self):
         if self.hdfstore is None:

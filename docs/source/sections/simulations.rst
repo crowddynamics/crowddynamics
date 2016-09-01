@@ -1,50 +1,64 @@
 Simulations
 ===========
 
-Setup
------
-Setting up a simulation
+Outdoor
+-------
+Simulation for testing collision avoidance generally.
 
-* Geometry
-    - Bounds
-    - Walls
-    - Areas
-* Configuration
-    - Agents
+..
+   .. figure:: ../_static/outdoor.svg
+      :width: 50%
 
+Attributes
 
-Evacuation
-----------
-
-#) Low / medium / high crowd density
-#) Unidirectional flow
-#) Door width
+- Multi-directional flow
+- Periodic boundaries
 
 
 Hallway
 -------
+Attributes
 
-#) Low / medium / high crowd density
-#) Unidirectional flow
+- Low / medium / high crowd density
+- Overtaking
+- Counterflow
 
-   #) Counterflow
+Variables
 
 #) Bidirectional flow
-
-   #) Passing / overtaking
+#) Unidirectional flow
 
 
 Crossing
 --------
+Attributes
 
-#) Orthogonal flow
+- Orthogonal flow
 
-Outdoor
+
+Evacuation
+----------
+Attributes
+
+- Unidirectional flow
+- Door width
+- Door capacity
+- Herding
+- Exit selection
+
+Variables
+
+- Number of exits
+   - One exit
+   - Two exits
+   - Multiple exits
+
+
+Turning
 -------
+Simulation for testing navigation algorithm.
 
-#) Multi-directional flow
+Attributes
 
-
-Rounding Corner
----------------
+- Unidirectional flow
 
