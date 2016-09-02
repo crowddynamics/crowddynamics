@@ -80,7 +80,7 @@ def run_gui():
     """
     from PyQt4 import QtGui, QtCore
     sys.path.insert(0, os.path.abspath(".."))
-    from src.Qt.main import MainWindow
+    from src.gui.main import MainWindow
 
     args = man().parse_args()
     if args.logLevel:

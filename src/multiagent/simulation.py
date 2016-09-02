@@ -206,8 +206,7 @@ class Configuration:
         """Default navigation algorithm"""
         logging.info("")
         if custom is None:
-            self.navigation = Navigation(self.agent, self.domain,
-                                         self.obstacles, self.exits)
+            self.navigation = Navigation(self)
         else:
             self.navigation = custom
 
@@ -215,7 +214,7 @@ class Configuration:
         """Default orientation algorithm"""
         logging.info("")
         if custom is None:
-            self.orientation = Orientation(self.agent)
+            self.orientation = Orientation(self)
         else:
             self.orientation = custom
 

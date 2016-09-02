@@ -14,6 +14,7 @@ http://toblerity.org/shapely/manual.html
 http://stackoverflow.com/questions/20805418/pyyaml-dump-format
 http://stackoverflow.com/questions/5121931/in-python-how-can-you-load-yaml-mappings-as-ordereddicts
 
+# 2D Geometry
 http://mathworld.wolfram.com/TrianglePointPicking.html
 http://gis.stackexchange.com/questions/6412/generate-points-that-lie-inside-polygon
 http://docs.scipy.org/doc/scipy/reference/spatial.html
@@ -21,9 +22,13 @@ http://docs.scipy.org/doc/scipy/reference/spatial.html
 Delaunay triangulation
 Voronoi Diagrams
 
+http://www-cs-students.stanford.edu/~amitp/game-programming/polygon-map-generation/
+
+https://en.wikipedia.org/wiki/Point_in_polygon
+http://stackoverflow.com/questions/3654289/scipy-create-2d-polygon-mask
+
 
 # Map generation
-http://www-cs-students.stanford.edu/~amitp/game-programming/polygon-map-generation/
 TODO: labyrinth
 
 # Documentation

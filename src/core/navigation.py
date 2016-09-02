@@ -1,47 +1,93 @@
+import logging
 import numpy as np
-import skfmm
 
+from src.multiagent.simulation import Configuration
 from .vector2d import angle_nx2
 
 
 class ExitSelection:
     """Exit selection policy."""
-    def __init__(self, agent, exits):
-        pass
+    def __init__(self, simulation: Configuration):
+        self.simulation = simulation
 
 
 class Navigation:
-    """Target direction"""
-    def __init__(self, agent, domain, obstacles, exits):
-        self.agent = agent
-        self.domain = domain
-        self.obstacles = obstacles
-        self.exits = exits
+    """
+    Target direction. Algorithm based on solving the continous shortest path
+    problem by solving eikonal equation. [1]_, [2]_
 
-    def distance_map(self, n=201, dx=1e-2):
+    There are at least two open source eikonal solvers. Fast marching method
+    (FMM) [3]_ for rectangular and tetrahedral meshes using Python and C++ and
+    fast iterative method (FIM) [4]_ for triangular meshes using c++ and CUDA.
+
+    In this implementation we use the FMM algorithm because it is simpler.
+
+    .. [1] Kretz, T., Große, A., Hengst, S., Kautzsch, L., Pohlmann, A., & Vortisch, P. (2011). Quickest Paths in Simulations of Pedestrians. Advances in Complex Systems, 14(5), 733–759. http://doi.org/10.1142/S0219525911003281
+    .. [2] Cristiani, E., & Peri, D. (2015). Handling obstacles in pedestrian simulations: Models and optimization. Retrieved from http://arxiv.org/abs/1512.08528
+    .. [3] https://github.com/scikit-fmm/scikit-fmm
+    .. [4] https://github.com/SCIInstitute/SCI-Solver_Eikonal
+    """
+    def __init__(self, simulation: Configuration):
+        self.simulation = simulation
+
+    def distance_map(self, step=0.01):
+        """
+        Computes distance map for the simulation domain.
+
+        #) From rectangular grid from the bounding box of the polygonal domain
+        #) Set initial value of the grid to -1
+        #) Set values of points that contain exit to 1
+        #) Mask points that contain obstacle
+
+        :param step: Meshgrid cell size (width, height) in meters.
+        :return:
+        """
+        logging.info("")
+
+        import skfmm
+
         # Discretize the domain
-        x = np.linspace(self.domain.x[0], self.domain.x[1], n)
-        y = np.linspace(self.domain.y[0], self.domain.y[0], n)
-        X, Y = np.meshgrid(x, y)
+        x, y = self.simulation.domain.exterior.xy
+        x, y = np.asarray(x), np.asarray(y)
+
+        # Bounding box of domain
+        lim = (x.min(), x.max()), (y.min(), y.max())
+        diff = np.array([np.diff(lim[0]), np.diff(lim[1])])
+        n = (diff / step).astype(int)
+        dx = diff / n
+        grid = np.meshgrid(np.linspace(*lim[0], num=n[0]),
+                           np.linspace(*lim[1], num=n[1]))
+        values = grid[0].flatten(), grid[1].flatten()
+
+        points = np.vstack(values).T
+        tol = dx / 2
+        points_exit = np.asarray(self.simulation.exits)
+        points_obstacles = np.asarray(self.simulation.obstacles)
+
+        # Indices of exits and obstacles
+        indices_exit = None
+        indices_obstacles = None
 
         # Set contour.
-        phi = -1 * np.ones_like(X)
-
         # Exits. Zero contour defines the exit.
-        # phi[] = 1
-
         # Obstacles are defined by masked values.
-        mask = None
-
+        phi = np.zeros_like(grid[0])
+        phi[:] = -1
+        phi[indices_exit] = 1
+        mask = np.zeros_like(phi, dtype=bool)
+        mask[indices_obstacles] = True
         phi = np.ma.MaskedArray(phi, mask)
-        d_map = skfmm.distance(phi, dx=dx)
+
+        dist_map = skfmm.distance(phi, dx=dx)
 
         return
 
     def static_potential(self):
+        logging.info("")
         pass
 
     def dynamic_potential(self):
+        logging.info("")
         pass
 
     def update(self):
@@ -50,9 +96,12 @@ class Navigation:
 
 
 class Orientation:
-    """Target orientation"""
-    def __init__(self, agent):
-        self.agent = agent
+    """
+    Target orientation
+    """
+    def __init__(self, simulation: Configuration):
+        self.simulation = simulation
 
     def update(self):
-        self.agent.target_angle[:] = angle_nx2(self.agent.target_direction)
+        self.simulation.agent.target_angle[:] = angle_nx2(
+            self.simulation.agent.target_direction)

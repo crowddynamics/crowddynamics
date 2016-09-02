@@ -1,8 +1,21 @@
 import numba
 import numpy as np
 
-from src.core.random import poisson_clock
 from src.core.vector2d import length_nx2
+
+
+@numba.jit(nopython=True)
+def poisson_clock(interval, dt):
+    """Probabilistic clock with expected frequency of update interval.
+
+    :param interval: Expected frequency of update.
+    :param dt: Discrete timestep
+    :return: Boolean whether strategy should be updated of not.
+    """
+    if dt >= interval:
+        return True
+    else:
+        return np.random.random() < (dt / interval)
 
 
 class SpatialGame(object):
