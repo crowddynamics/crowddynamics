@@ -1,7 +1,7 @@
 import numba
 import numpy as np
 
-from src.core.vector2d import length_nx2
+from src.core.vector2D import length_nx2
 
 
 @numba.jit(nopython=True)
@@ -116,6 +116,7 @@ class EgressGame(SpatialGame):
         self.interval = interval
 
     def agent_closer_to_exit(self, players):
+        # TODO: Numbify
         # values: distances from the door
         dist = length_nx2(self.exit_door.mid - self.agent.position[players])
         # players[values] = agents, indices = number of agents closer to exit

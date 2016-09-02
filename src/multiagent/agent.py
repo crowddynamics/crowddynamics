@@ -3,7 +3,7 @@ import numpy as np
 from numba import float64, int64, boolean
 from numba.types import UniTuple
 
-from src.core.vector2d import rotate270
+from src.core.vector2D import rotate270
 
 
 spec_agent = (

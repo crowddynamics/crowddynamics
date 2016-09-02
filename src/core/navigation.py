@@ -2,7 +2,7 @@ import logging
 import numpy as np
 
 from src.multiagent.simulation import Configuration
-from .vector2d import angle_nx2
+from .vector2D import angle_nx2
 
 
 class ExitSelection:
@@ -34,10 +34,13 @@ class Navigation:
         """
         Computes distance map for the simulation domain.
 
-        #) From rectangular grid from the bounding box of the polygonal domain
-        #) Set initial value of the grid to -1
-        #) Set values of points that contain exit to 1
-        #) Mask points that contain obstacle
+        * From rectangular grid from the bounding box of the polygonal domain
+        * Set initial value of the grid to -1
+        * Discretize linestring of obstacles and exits using *Bresenham's line algorithm* [1]_.
+        * Set values of points that contain exit to 1
+        * Mask points that contain obstacle
+
+        .. [1] https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
 
         :param step: Meshgrid cell size (width, height) in meters.
         :return:
@@ -46,7 +49,7 @@ class Navigation:
 
         import skfmm
 
-        # Discretize the domain
+        # Discretize the domain into a grid.
         x, y = self.simulation.domain.exterior.xy
         x, y = np.asarray(x), np.asarray(y)
 
@@ -59,12 +62,8 @@ class Navigation:
                            np.linspace(*lim[1], num=n[1]))
         values = grid[0].flatten(), grid[1].flatten()
 
-        points = np.vstack(values).T
-        tol = dx / 2
-        points_exit = np.asarray(self.simulation.exits)
-        points_obstacles = np.asarray(self.simulation.obstacles)
-
-        # Indices of exits and obstacles
+        # Indices of exits and obstacles.
+        # Bresenham's line algorithm
         indices_exit = None
         indices_obstacles = None
 

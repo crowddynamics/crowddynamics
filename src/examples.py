@@ -5,7 +5,7 @@ import numpy as np
 from shapely.geometry import Polygon, LineString, Point
 
 from src.core.game import EgressGame
-from src.core.vector2d import length, normalize, rotate90
+from src.core.vector2D import length, normalize, rotate90
 
 from src.multiagent.simulation import MultiAgentSimulation
 

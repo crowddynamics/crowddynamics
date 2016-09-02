@@ -18,7 +18,7 @@ from src.core.motion import force_adjust, force_fluctuation, \
     torque_adjust, torque_fluctuation
 from src.core.motion import integrator
 from src.core.navigation import Navigation, Orientation
-from src.core.vector2d import angle, length
+from src.core.vector2D import angle, length
 from src.io.hdfstore import HDFStore
 from src.multiagent.agent import Agent
 from src.multiagent.field import LinearObstacle

@@ -4,7 +4,7 @@ import numpy as np
 from .motion import force_contact
 from .power_law import force_social_circular, force_social_three_circle, \
     force_social_linear_wall
-from .vector2d import length, rotate270, cross2d
+from .vector2D import length, rotate270, cross2d
 
 
 @numba.jit(nopython=True, nogil=True)

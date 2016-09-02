@@ -3,7 +3,7 @@ import numpy as np
 from numba import f8
 from scipy.stats import truncnorm as tn
 
-from .vector2d import dot2d, wrap_to_pi, length_nx2
+from .vector2D import dot2d, wrap_to_pi, length_nx2
 
 
 def force_fluctuation(agent):

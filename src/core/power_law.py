@@ -2,7 +2,7 @@ import numba
 import numpy as np
 from numba import f8
 
-from .vector2d import dot2d, truncate
+from .vector2D import dot2d, truncate
 
 
 @numba.jit(f8(f8, f8), nopython=True, nogil=True)
