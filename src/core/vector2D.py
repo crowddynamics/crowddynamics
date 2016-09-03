@@ -31,7 +31,7 @@ def wrap_to_pi(rad):
         return rad_
 
 
-@numba.jit(f8[:](f8[:]), nopython=True, nogil=True, cache=True)
+@numba.jit(f8[:](f8[:]), nopython=True, nogil=True)
 def rotate90(vec2d):
     """90 degree counterclockwise rotation for 2D vector."""
     rot = np.zeros_like(vec2d)
@@ -40,7 +40,7 @@ def rotate90(vec2d):
     return rot
 
 
-@numba.jit(f8[:](f8[:]), nopython=True, nogil=True, cache=True)
+@numba.jit(f8[:](f8[:]), nopython=True, nogil=True)
 def rotate270(vec2d):
     """90 degree clockwise rotation for 2D vector."""
     rot = np.zeros_like(vec2d)
@@ -49,7 +49,7 @@ def rotate270(vec2d):
     return rot
 
 
-@numba.jit(f8(f8[:]), nopython=True, nogil=True, cache=True)
+@numba.jit(f8(f8[:]), nopython=True, nogil=True)
 def angle(vec2d):
     """Angle of 2d vector in radians.
     :param vec2d: 2D vector
@@ -58,13 +58,13 @@ def angle(vec2d):
     return np.arctan2(vec2d[1], vec2d[0])
 
 
-@numba.jit(f8[:](f8[:, :]), nopython=True, nogil=True, cache=True)
+@numba.jit(f8[:](f8[:, :]), nopython=True, nogil=True)
 def angle_nx2(vec2d):
     """Angle of 2d vectors in radians."""
     return np.arctan2(vec2d[:, 1], vec2d[:, 0])
 
 
-@numba.jit(f8(f8[:]), nopython=True, nogil=True, cache=True)
+@numba.jit(f8(f8[:]), nopython=True, nogil=True)
 def length(vec2d):
     """
     :param vec2d: 2D vector
@@ -73,34 +73,34 @@ def length(vec2d):
     return np.hypot(vec2d[0], vec2d[1])
 
 
-@numba.jit(f8[:](f8[:, :]), nopython=True, nogil=True, cache=True)
+@numba.jit(f8[:](f8[:, :]), nopython=True, nogil=True)
 def length_nx2(vec2d):
     return np.hypot(vec2d[:, 0], vec2d[:, 1])
 
 
-@numba.jit(f8(f8[:], f8[:]), nopython=True, nogil=True, cache=True)
+@numba.jit(f8(f8[:], f8[:]), nopython=True, nogil=True)
 def dot2d(v0, v1):
     """Dot product for 2D vectors."""
     return v0[0] * v1[0] + v0[1] * v1[1]
 
 
-@numba.jit(f8(f8[:], f8[:]), nopython=True, nogil=True, cache=True)
+@numba.jit(f8(f8[:], f8[:]), nopython=True, nogil=True)
 def cross2d(v0, v1):
     """Cross product for 2D vectors. Right corner from 3D cross product."""
     return v0[0] * v1[1] - v0[1] * v1[0]
 
 
-@numba.jit(f8[:](f8[:]), nopython=True, nogil=True, cache=True)
+@numba.jit(f8[:](f8[:]), nopython=True, nogil=True)
 def normalize(vec2d):
     return vec2d / np.hypot(vec2d[0], vec2d[1])
 
 
-@numba.jit(f8[:, :](f8[:, :]), nopython=True, nogil=True, cache=True)
+@numba.jit(f8[:, :](f8[:, :]), nopython=True, nogil=True)
 def normalize_nx2(vec2d):
     return vec2d / np.hypot(vec2d[:, 0], vec2d[:, 1]).reshape((len(vec2d), 1))
 
 
-@numba.jit(void(f8[:], f8), nopython=True, nogil=True, cache=True)
+@numba.jit(void(f8[:], f8), nopython=True, nogil=True)
 def truncate(vec2d, limit):
     l = length(vec2d)
     if l != 0 and l > limit:

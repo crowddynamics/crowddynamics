@@ -28,6 +28,8 @@ https://en.wikipedia.org/wiki/Point_in_polygon
 http://stackoverflow.com/questions/3654289/scipy-create-2d-polygon-mask
 
 https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
+http://scikit-image.org/docs/stable/api/skimage.draw.html?highlight=line#skimage.draw.line
+http://www.pypedia.com/index.php/bresenhamline
 
 # Map generation
 TODO: labyrinth

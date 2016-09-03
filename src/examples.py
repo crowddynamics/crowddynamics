@@ -162,7 +162,8 @@ class RoomEvacuation(MultiAgentSimulation):
                                 door_width,
                                 width,
                                 height)
-        self.set_navigation(navigation)
+        # self.set_navigation(navigation)
+        self.set_navigation()
         self.set_orientation()
 
         self.set_obstacles_to_linear_walls()

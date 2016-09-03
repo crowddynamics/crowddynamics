@@ -1,19 +1,28 @@
 import logging
+
 import numpy as np
 
-from src.multiagent.simulation import Configuration
+try:
+    import skfmm
+    import skimage.draw
+except ImportError:
+    print(Warning("Navigation algorithm cannot be used if scikit-fmm or "
+                  "scikit-image are not installed"))
+
 from .vector2D import angle_nx2
 
 
 class ExitSelection:
     """Exit selection policy."""
-    def __init__(self, simulation: Configuration):
+
+    def __init__(self, simulation):
         self.simulation = simulation
 
 
 class Navigation:
-    """
-    Target direction. Algorithm based on solving the continous shortest path
+    """Determining target direction of an agent in multi-agent simulation.
+
+    Algorithm based on solving the continous shortest path
     problem by solving eikonal equation. [1]_, [2]_
 
     There are at least two open source eikonal solvers. Fast marching method
@@ -27,59 +36,97 @@ class Navigation:
     .. [3] https://github.com/scikit-fmm/scikit-fmm
     .. [4] https://github.com/SCIInstitute/SCI-Solver_Eikonal
     """
-    def __init__(self, simulation: Configuration):
+
+    def __init__(self, simulation):
         self.simulation = simulation
 
+        self.grid = None
+        self.dmap = None
+
+    @staticmethod
+    def _dicretize_polygon_to_grid(polygon, step):
+        # Discretize the domain into a grid by its bounding box.
+        # TODO: mask areas not in polygon
+        x, y = polygon.exterior.xy
+        x, y = np.asarray(x), np.asarray(y)
+        grid = np.meshgrid(np.arange(x.min(), x.max() + step, step=step),
+                           np.arange(y.min(), y.max() + step, step=step), )
+        return grid
+
+    @staticmethod
+    def _linestrings_to_points(linestrings):
+        points = []
+        for linestring in linestrings:
+            a = np.asarray(linestring)
+            for i in range(len(a) - 1):
+                points.append(a[i:i + 2])
+        ret = np.array(points)
+        return ret
+
+    @staticmethod
+    def _set_line_value(points, out, value):
+        for args in points:
+            # TODO: Check correctness
+            i, j = skimage.draw.line(*args.flatten())
+            out[j, i] = value
+
     def distance_map(self, step=0.01):
-        """
-        Computes distance map for the simulation domain.
+        """Computes distance map for the simulation domain.
 
         * From rectangular grid from the bounding box of the polygonal domain
         * Set initial value of the grid to -1
-        * Discretize linestring of obstacles and exits using *Bresenham's line algorithm* [1]_.
+        * Discretize linestring of obstacles and exits using line drawing algorithm
         * Set values of points that contain exit to 1
         * Mask points that contain obstacle
-
-        .. [1] https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
 
         :param step: Meshgrid cell size (width, height) in meters.
         :return:
         """
         logging.info("")
 
-        import skfmm
+        target = self.simulation.exits
+        if not target:
+            target = [self.simulation.domain.exterior]
 
-        # Discretize the domain into a grid.
-        x, y = self.simulation.domain.exterior.xy
-        x, y = np.asarray(x), np.asarray(y)
+        # Discretize the domain into a grid by its bounding box.
+        grid = self._dicretize_polygon_to_grid(self.simulation.domain, step)
+        points = self._linestrings_to_points(target)
+        points2 = self._linestrings_to_points(self.simulation.obstacles)
 
-        # Bounding box of domain
-        lim = (x.min(), x.max()), (y.min(), y.max())
-        diff = np.array([np.diff(lim[0]), np.diff(lim[1])])
-        n = (diff / step).astype(int)
-        dx = diff / n
-        grid = np.meshgrid(np.linspace(*lim[0], num=n[0]),
-                           np.linspace(*lim[1], num=n[1]))
-        values = grid[0].flatten(), grid[1].flatten()
+        # FIXME
+        # Indices of the nearest points in the grid
+        indices_exits = np.round(points / step).astype(int)
+        indices_obstacle = np.round(points2 / step).astype(int)
 
-        # Indices of exits and obstacles.
-        # Bresenham's line algorithm
-        indices_exit = None
-        indices_obstacles = None
+        # Set of exits and obstacles with line drawing algorithm
+        phi = np.zeros_like(grid[0])  # Contour
+        obstacles = np.zeros_like(grid[0], dtype=bool)  # Obstacles
+        phi[:] = -1                   # Initial values
+        value_target = 1                    # Values to be set to be target
+        value_obstacle = True               # Value indicating an obstacle
 
-        # Set contour.
-        # Exits. Zero contour defines the exit.
-        # Obstacles are defined by masked values.
-        phi = np.zeros_like(grid[0])
-        phi[:] = -1
-        phi[indices_exit] = 1
-        mask = np.zeros_like(phi, dtype=bool)
-        mask[indices_obstacles] = True
-        phi = np.ma.MaskedArray(phi, mask)
+        self._set_line_value(indices_exits, phi, value_target)
+        self._set_line_value(indices_obstacle, obstacles, value_obstacle)
 
-        dist_map = skfmm.distance(phi, dx=dx)
+        phi = np.ma.MaskedArray(phi, obstacles)
+        dmap = skfmm.distance(phi, dx=step)
 
-        return
+        import matplotlib.pyplot as plt
+        import matplotlib.cm as cm
+        X, Y = grid
+        plt.figure(figsize=(12, 12))
+        plt.title('Distance map from exit.')
+        im = plt.imshow(dmap,
+                        interpolation='bilinear',
+                        origin='lower',
+                        cmap=cm.gray,
+                        extent=(X.min(), X.max(), Y.min(), Y.max()))
+        plt.contour(X, Y, dmap, 30, linewidths=1, colors='gray')
+        plt.contour(X, Y, phi.mask, [0], linewidths=1, colors='black')
+        plt.savefig("{}.pdf".format(self.simulation.name))
+
+        self.grid = grid
+        self.dmap = dmap
 
     def static_potential(self):
         logging.info("")
@@ -98,7 +145,8 @@ class Orientation:
     """
     Target orientation
     """
-    def __init__(self, simulation: Configuration):
+
+    def __init__(self, simulation):
         self.simulation = simulation
 
     def update(self):

@@ -25,7 +25,6 @@ from src.multiagent.field import LinearObstacle
 
 try:
     from shapely import speedups
-
     speedups.enable()
 except ImportError():
     pass
@@ -207,6 +206,7 @@ class Configuration:
         logging.info("")
         if custom is None:
             self.navigation = Navigation(self)
+            self.navigation.distance_map()
         else:
             self.navigation = custom
 

@@ -7,5 +7,6 @@ h5py
 pandas
 scipy
 skfmm
+skimage
 yaml
 ruamel
