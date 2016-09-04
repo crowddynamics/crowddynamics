@@ -6,6 +6,7 @@ from numbers import Number
 
 import numba
 import numpy as np
+from matplotlib.path import Path
 from scipy.spatial.qhull import Delaunay
 from scipy.stats import truncnorm
 from shapely.geometry import Polygon, Point
@@ -201,14 +202,38 @@ class Configuration:
         else:
             self._set_exit(linestring)
 
-    def set_navigation(self, custom=None):
-        """Default navigation algorithm"""
+    def set_navigation(self, arg=None):
+        """
+        Navigation algorithm.
+
+        =========== ==========================================================
+        **arg**
+
+        *None*      Agent follow the initial target directions and do not
+                    update their target directions.
+
+        *callable*  Custom class that has callable `update` function.
+
+        *"static"*  --
+
+        *"dynamic"* --
+        =========== ==========================================================
+
+        """
         logging.info("")
-        if custom is None:
-            self.navigation = Navigation(self)
-            self.navigation.distance_map()
+
+        if isinstance(arg, str):
+            if arg == "static":
+                self.navigation = Navigation(self)
+                self.navigation.static_potential()
+            elif arg == "dynamic":
+                self.navigation = Navigation(self)
+            else:
+                raise ValueError("")
+        elif hasattr(arg, "update") and callable(arg.update):
+            pass
         else:
-            self.navigation = custom
+            self.navigation = None
 
     def set_orientation(self, custom=None):
         """Default orientation algorithm"""
@@ -302,26 +327,33 @@ class Configuration:
         """Set spatial and rotational parameters.
 
         ================== ==========================
-        **Kwargs:**
+        **kwargs**
+
         *size*             Integer: Number of agent to be placed. \n
                            None: Places all agents
+
         *surface*          surface: Custom value \n
                            None: Domain
+
         *position*         ndarray: Custom values \n
                            "random": Uses Monte Carlo method to place agent
                            without overlapping with obstacles or other agents.
+
         *target_direction* ndarray: Custom value \n
                            "random": Uniformly distributed random value \n
                            "auto":
                            None: Default value
+
         *velocity*         ndarray: Custom value  \n
                            "random: Uniformly distributed random value, \n
                            "auto":
                            None: Default value
+
         *target_angle*     ndarray: Custom value  \n
                            "random": Uniformly distributed random value, \n
                            "auto":
                            None: Default value
+
         *orientation*      float: Custom value  \n
                            "random": Uniformly distributed random value, \n
                            "auto":
@@ -546,10 +578,11 @@ class MultiAgentSimulation(Process, Configuration):
     def update(self):
         logging.debug("")
 
-        # Path finding and rotation planning
+        # Path finding
         if self.navigation is not None:
             self.navigation.update()
 
+        # Rotation planning
         if self.orientation is not None and self.agent.orientable:
             self.orientation.update()
 
@@ -575,8 +608,9 @@ class MultiAgentSimulation(Process, Configuration):
             self.game.update(self.time_tot, self.dt_prev)
 
         # Check which agent are inside the domain aka active
-        # if self.domain is not None:
-        #     self.agent.active &= self.domain.contains(self.agent.position)
+        if self.domain is not None:
+            domain = Path(np.asarray(self.domain.exterior))
+            self.agent.active &= domain.contains_points(self.agent.position)
 
         # Check which agent have reached their desired goals
         # for goal in self.goals:
@@ -594,5 +628,6 @@ class MultiAgentSimulation(Process, Configuration):
             if self.iterations % 100 == 0:
                 self.hdfstore.dump_buffers()
 
-        data = self.queue_items.get()
-        self.queue.put(data)
+        if self.queue is not None:
+            data = self.queue_items.get()
+            self.queue.put(data)

@@ -1,4 +1,5 @@
 import argparse
+import importlib
 import logging
 import logging.config
 import os
@@ -6,6 +7,8 @@ import platform
 import sys
 
 import yaml
+
+from src.config import Load
 
 
 def man():
@@ -71,6 +74,28 @@ def user_info():
     logging.info("Platform: %s", platform.platform())
     logging.info("Path: %s", sys.path[0])
     logging.info("Python: %s", sys.version[0:5])
+
+
+def run_simulation(name):
+    setup_logging()
+    user_info()
+    logging.info("Starting")
+
+    load = Load()
+    configs = load.yaml("simulations")
+    simu_dict = configs["simulations"][name]
+    module_name = simu_dict["module"]
+    class_name = simu_dict["class"]
+    kwargs = simu_dict["kwargs"]
+
+    module = importlib.import_module(module_name)
+    simulation = getattr(module, class_name)
+    process = simulation(None, **kwargs)
+
+    process.update()
+    process.update()
+    process.update()
+    process.update()
 
 
 def run_gui():

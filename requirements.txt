@@ -1,3 +1,4 @@
+fastcache
 shapely
 numpy
 numba

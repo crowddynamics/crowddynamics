@@ -125,17 +125,13 @@ class RoomEvacuation(MultiAgentSimulation):
                         (width + exit_hall_width, (height + door_width) / 2),
                         (width + exit_hall_width, (height - door_width) / 2), ])
 
-        door = (
-            LineString([(width, (height - door_width) / 2),
-                        (width, (height + door_width) / 2), ]),
-            LineString([(width + exit_hall_width, (height - door_width) / 2),
-                        (width + exit_hall_width, (height + door_width) / 2), ])
-        )
+        door = LineString([(width + exit_hall_width, (height - door_width) / 2),
+                           (width + exit_hall_width,
+                            (height + door_width) / 2), ])
 
         domain = room | hall
         goals = hall
-        exit_door = door[0]
-        obstacles = (room | hall).exterior - door[1]
+        obstacles = (room | hall).exterior - door
 
         spawn = room
         if spawn_shape == "circ":
@@ -151,19 +147,20 @@ class RoomEvacuation(MultiAgentSimulation):
         self.set_domain(domain)
         self.set_goals(goals)
         self.set_obstacles(obstacles)
-        self.set_exits(exit_door)
+        self.set_exits(door)
         self.set_body(size, body)
         self.set_model(model)
         self.set(**kwargs)
 
-        target = np.asarray(exit_door)
-        navigation = Navigation(self.agent,
-                                target,
-                                door_width,
-                                width,
-                                height)
+        # target = np.asarray(exit_door)
+        # navigation = Navigation(self.agent,
+        #                         target,
+        #                         door_width,
+        #                         width,
+        #                         height)
         # self.set_navigation(navigation)
-        self.set_navigation()
+
+        self.set_navigation("static")
         self.set_orientation()
 
         self.set_obstacles_to_linear_walls()
@@ -177,5 +174,7 @@ class RoomEvacuationGame(RoomEvacuation):
             queue, size, width, height, model, body, spawn_shape, door_width,
             exit_hall_width)
         # FIXME: Exit door
-        self.game = EgressGame(self.agent, self.exits[0], t_aset_0, interval,
+        door = LineString([(width, (height - door_width) / 2),
+                           (width, (height + door_width) / 2), ]),
+        self.game = EgressGame(self.agent, door, t_aset_0, interval,
                                neighbor_radius, neighborhood_size)
