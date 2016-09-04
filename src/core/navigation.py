@@ -168,6 +168,8 @@ class Navigation:
 
     def dynamic_potential(self):
         logging.info("")
+
+
         raise NotImplementedError
 
     def update(self):
