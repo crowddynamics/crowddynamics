@@ -1,12 +1,7 @@
-from functools import partial
-
-import numba
 import numpy as np
 from shapely.geometry import Polygon, LineString, Point
 
 from src.core.game import EgressGame
-from src.core.vector2D import length, normalize, rotate90
-
 from src.multiagent.simulation import MultiAgentSimulation
 
 
@@ -23,13 +18,12 @@ class Outdoor(MultiAgentSimulation):
             "velocity": "auto",
         }
 
-        self.set_domain(domain)
+        self.set_field(domain)
+        self.set_algorithms()
+
         self.set_body(size, body)
         self.set_model(model)
-        self.set(**kwargs)
-
-        self.set_navigation()
-        self.set_orientation()
+        self.set_agents(**kwargs)
 
 
 class Hallway(MultiAgentSimulation):
@@ -48,11 +42,16 @@ class Hallway(MultiAgentSimulation):
         )
 
         spawn = (
-            Polygon([(1.1, 0), (1.1, height),
-                     (width // 2 - 1, height), (width // 2 - 1, 0)]),
-            Polygon([(width // 2 + 1, 0), (width // 2 + 1, height),
-                     (width - 1.1, height), (width - 1.1, 0)]),
+            Polygon([(1.1, 0),
+                     (1.1, height),
+                     (width // 2 - 1, height),
+                     (width // 2 - 1, 0)]),
+            Polygon([(width // 2 + 1, 0),
+                     (width // 2 + 1, height),
+                     (width - 1.1, height),
+                     (width - 1.1, 0)]),
         )
+
         kwargs = (
             {'size': size // 2,
              'surface': spawn[0],
@@ -64,18 +63,43 @@ class Hallway(MultiAgentSimulation):
              'orientation': np.pi},
         )
 
-        self.set_domain(domain)
-        self.set_goals(goals)
-        self.set_obstacles(obstacles)
+        self.set_field(domain, goals, obstacles)
+        self.set_algorithms()
+
         self.set_body(size, body)
         self.set_model(model)
         for kw in kwargs:
-            self.set(**kw)
+            self.set_agents(**kw)
 
-        self.set_navigation()
-        self.set_orientation()
 
-        self.set_obstacles_to_linear_walls()
+class Rounding(MultiAgentSimulation):
+    def __init__(self, queue, size, width, height, model, body):
+        super().__init__(queue)
+
+        domain = Polygon([(0, 0), (0, height), (width, height), (width, 0)])
+        exits = LineString([(0, height / 2), (0, height)])
+        obstacles = [
+            LineString([(0, height / 2), (width * 3 / 4, height / 2)]),
+            domain.exterior - exits
+        ]
+
+        spawn = Polygon([(0, 0),
+                         (0, height / 2),
+                         (width / 2, height / 2),
+                         (width / 2, 0)])
+        kwargs = {
+            'size': size,
+            'surface': spawn,
+            'target_direction': None,
+            'orientation': 0
+        }
+
+        self.set_field(domain, None, obstacles, exits)
+        self.set_algorithms(navigation="static")
+
+        self.set_body(size, body)
+        self.set_model(model)
+        self.set_agents(**kwargs)
 
 
 class RoomEvacuation(MultiAgentSimulation):
@@ -89,9 +113,10 @@ class RoomEvacuation(MultiAgentSimulation):
                         (width + exit_hall_width, (height + door_width) / 2),
                         (width + exit_hall_width, (height - door_width) / 2), ])
 
-        door = LineString([(width + exit_hall_width, (height - door_width) / 2),
-                           (width + exit_hall_width,
-                            (height + door_width) / 2), ])
+        door = LineString([
+            (width + exit_hall_width, (height - door_width) / 2),
+            (width + exit_hall_width, (height + door_width) / 2),
+        ])
 
         domain = room | hall
         goals = hall
@@ -108,18 +133,12 @@ class RoomEvacuation(MultiAgentSimulation):
             'orientation': 0
         }
 
-        self.set_domain(domain)
-        self.set_goals(goals)
-        self.set_obstacles(obstacles)
-        self.set_exits(door)
+        self.set_field(domain, goals, obstacles, door)
+        self.set_algorithms(navigation="static")
+
         self.set_body(size, body)
         self.set_model(model)
-        self.set(**kwargs)
-
-        self.set_navigation("static")
-        self.set_orientation()
-
-        self.set_obstacles_to_linear_walls()
+        self.set_agents(**kwargs)
 
 
 class RoomEvacuationGame(RoomEvacuation):

@@ -1,5 +1,4 @@
 import logging
-from collections import Iterable
 from copy import deepcopy
 from multiprocessing import Process, Event, Queue
 from numbers import Number
@@ -7,12 +6,14 @@ from numbers import Number
 import numba
 import numpy as np
 from matplotlib.path import Path
-from scipy.spatial.qhull import Delaunay
 from scipy.stats import truncnorm
+from shapely.geometry import LineString
 from shapely.geometry import Polygon, Point
 from shapely.ops import cascaded_union
 
 from src.config import Load
+from src.core.geometry import check_shapes, shapes_to_point_pairs
+from src.core.sampling import PolygonSample
 from src.core.interactions import agent_agent, agent_wall, \
     agent_agent_distance_three_circle
 from src.core.motion import force_adjust, force_fluctuation, \
@@ -24,108 +25,47 @@ from src.io.hdfstore import HDFStore
 from src.multiagent.agent import Agent
 from src.multiagent.field import LinearObstacle
 
-try:
-    from shapely import speedups
-    speedups.enable()
-except ImportError():
-    pass
-
-
-class PolygonSample:
-    """
-    Uniform sampling of a polygon
-    -----------------------------
-    Generates random uniform point from inside of polygon. [1]_
-
-    - Delaunay triangulation to break the polygon into triangular mesh. [2]_
-    - Draw random uniform triangle weighted by its area.
-    - Draw random uniform sample from inside the triangle.
-
-    .. [1] http://gis.stackexchange.com/questions/6412/generate-points-that-lie-inside-polygon
-    .. [2] https://en.wikipedia.org/wiki/Delaunay_triangulation
-    """
-
-    def __init__(self, polygon: Polygon):
-        """
-
-        :param polygon: Polygon to be sampled.
-        """
-        self.polygon = polygon
-        self.nodes = np.asarray(self.polygon.exterior)
-
-        # Triangular mesh
-        self.delaunay = Delaunay(self.nodes)
-        self.mesh = self.nodes[self.delaunay.simplices]
-
-        # Cumulative sum of areas of the triangles
-        self.weights = self._weights(self.mesh)
-
-    @staticmethod
-    def _weights(mesh):
-        """Computes cumulative sum of the areas of the triangle mesh.
-
-        :param mesh: Trianle mesh.
-        :return: Cumulative sum the area of the triangle mesh
-        """
-        area_tot = 0
-        weigths = np.zeros(mesh.shape[0])
-        # TODO: Speedup
-        for i, (a, b, c) in enumerate(mesh):
-            # Area of triangle
-            area_tot += np.abs(a[0] * (b[1] - c[1]) +
-                               b[0] * (c[1] - a[1]) +
-                               c[0] * (a[1] - b[1])) / 2
-            weigths[i] = area_tot
-        return weigths
-
-    @staticmethod
-    def random_sample_triangle(x):
-        """
-        Uniform sampling of a triangle
-        ------------------------------
-        Generate uniform random sample from a triangle defined by points A, B
-        and C [1]_, [2]_. Point inside the triangle is given
-
-        .. math::
-           P = (1 - \sqrt{r_1}) A + (\sqrt{r_1} (1 - r_2))  B + (r_2 \sqrt{r_1}) C,
-
-        where random variables are
-
-        .. math::
-           r_1, r_2 \sim \mathcal{U}(0, 1)
-
-        References
-        ----------
-        .. [1] http://math.stackexchange.com/questions/18686/uniform-random-point-in-triangle
-        .. [2] http://mathworld.wolfram.com/TrianglePointPicking.html
-
-        :param x: Three points defining a triangle (A, B, C).
-        :return: Uniformly distributed random point P.
-        """
-        r = np.random.uniform(size=2)  # Random variables
-        p = (1 - np.sqrt(r[0])) * x[0] + \
-            (np.sqrt(r[0]) * (1 - r[1])) * x[1] + \
-            r[1] * np.sqrt(r[0]) * x[2]
-        return p
-
-    def draw(self):
-        # Draw random triangle weighted by the area of the triangle
-        x = np.random.uniform(high=self.weights[-1])
-        i = np.searchsorted(self.weights, x)
-
-        # Random sample from the triangle
-        sample = self.random_sample_triangle(self.mesh[i])
-        return Point(sample)
-
 
 class Configuration:
-    """Set initial configuration for multi-agent simulation"""
+    """Set initial configuration for multi-agent simulation.
+
+    ==  ==========  ==============  =========  ====================================================================================
+     0
+     1  Field
+     2              domain
+     3
+     4              goals
+     5
+     6              obstacles
+     7
+     8              exits
+     9
+    10  Algorithms
+    11              navigation      None       Agent follow the initial target directions and do not update their target directions
+    12                              callable   Custom class that has callable `update` function
+    13                              “static”
+    14                              “dynamic”
+    15
+    16              orientation     None
+    17
+    18
+    19
+    20              exit_selection  None
+    21
+    22  Agent
+    23              size
+    24              body
+    25              model
+    26              …
+    ==  ==========  ==============  =========  ====================================================================================
+    """
+
     def __init__(self):
-        # Shapely
-        self.domain = None  # Shapely.Polygon
+        # Field
+        self.domain = None
         self.goals = []
-        self.obstacles = []  # shapely.LineString
-        self.exits = []  # shapely.LineString
+        self.obstacles = []
+        self.exits = []
 
         # Numpy + Numba. More computationally efficient forms
         self.agent = None
@@ -153,97 +93,95 @@ class Configuration:
         return mag * np.stack((np.cos(orientation), np.sin(orientation)),
                               axis=1)
 
-    def set_domain(self, polygon):
-        logging.info("")
-        if polygon.is_valid and polygon.is_simple:
-            self.domain = polygon
-        else:
-            logging.warning("Domain not valid.")
-
-    def _set_goal(self, polygon):
-        if polygon.is_valid and polygon.is_simple:
-            self.goals.append(polygon)
-        else:
-            logging.warning("Goal not valid.")
-
-    def _set_obstacle(self, linestring):
-        if linestring.is_valid and linestring.is_simple:
-            self.obstacles.append(linestring)
-        else:
-            logging.warning("Obstacle not valid.")
-
-    def _set_exit(self, linestring):
-        if linestring.is_valid and linestring.is_simple:
-            self.exits.append(linestring)
-        else:
-            logging.warning("Exit not valid.")
-
-    def set_goals(self, polygon):
-        logging.info("")
-        if isinstance(polygon, Iterable):
-            for poly in polygon:
-                self._set_goal(poly)
-        else:
-            self._set_goal(polygon)
-
-    def set_obstacles(self, linestring):
-        logging.info("")
-        if isinstance(linestring, Iterable):
-            for ls in linestring:
-                self._set_obstacle(ls)
-        else:
-            self._set_obstacle(linestring)
-
-    def set_exits(self, linestring):
-        logging.info("")
-        if isinstance(linestring, Iterable):
-            for ls in linestring:
-                self._set_exit(ls)
-        else:
-            self._set_exit(linestring)
-
-    def set_navigation(self, arg=None):
+    def set_field(self, domain=None, goals=None, obstacles=None, exits=None):
         """
-        Navigation algorithm.
+        Shapely BaseGeometry types
 
-        =========== ==========================================================
-        **arg**
+        - Point
+        - LineString
+        - LinearRing
+        - Polygon
+        - MultiPoint
+        - MultiLineString
+        - MultiPolygon
+        - GeometryCollection
 
-        *None*      Agent follow the initial target directions and do not
-                    update their target directions.
+        =========== ===========================================================
+        **Kwargs**
 
-        *callable*  Custom class that has callable `update` function.
+        *domain*    Polygon which contains all the other objects.
 
-        *"static"*  --
+        *goals*     --
 
-        *"dynamic"* --
-        =========== ==========================================================
+        *obstacles* Collection of polygons and LineStrings.
 
+        *exits*     Collection of polygons and LineStrings.
+
+        =========== ===========================================================
         """
         logging.info("")
 
-        if isinstance(arg, str):
-            if arg == "static":
+        # TODO: Conditions: is_valid, is_simple, ...
+        self.goals = check_shapes(goals, Polygon)
+        self.obstacles = check_shapes(obstacles, (Polygon, LineString))
+        self.exits = check_shapes(exits, (Polygon, LineString))
+
+        if isinstance(domain, Polygon):
+            self.domain = domain
+        elif domain is None:
+            # Construct polygon that bounds other objects
+            raise NotImplemented("")
+        else:
+            raise ValueError("")
+
+        points = shapes_to_point_pairs(self.obstacles)
+        if len(points) != 0:
+            self.walls = LinearObstacle(points)
+
+    def set_algorithms(self, navigation=None, orientation=None, exit_selection=None):
+        logging.info("")
+
+        # Navigation
+        # TODO: Navigation to different exits
+        if isinstance(navigation, str):
+            if navigation == "static":
                 self.navigation = Navigation(self)
                 self.navigation.static_potential()
-            elif arg == "dynamic":
+            elif navigation == "dynamic":
                 self.navigation = Navigation(self)
+                self.navigation.dynamic_potential()
             else:
                 raise ValueError("")
-        elif hasattr(arg, "update") and callable(arg.update):
+        elif hasattr(navigation, "update") and callable(navigation.update):
             pass
         else:
             self.navigation = None
 
-    def set_orientation(self, custom=None):
-        """Default orientation algorithm"""
-        logging.info("")
-        if custom is None:
+        # Orientation
+        if orientation is None:
             self.orientation = Orientation(self)
         else:
-            self.orientation = custom
+            self.orientation = orientation
+
+        # TODO: Exit Selection
+        pass
 
     def set_body(self, size, body):
+        """
+
+        ========================= ============================================
+        **Load values form csv**
+        *mass*                    --
+        *radius*                  --
+        *dr*                      --
+        *k_t*                     --
+        *k_s*                     --
+        *v*                       --
+        *dv*                      --
+        *inertia_rot*             --
+        *target_angular_velocity* --
+        ========================= ============================================
+        """
         logging.info("In: {}, {}".format(size, body))
 
         # noinspection PyUnusedLocal
@@ -267,8 +205,7 @@ class Configuration:
         torso_shoulder = body["k_ts"] * radius
         target_velocity = self.truncnorm(body['v'], body['dv'], size)
         inertia_rot = eval(values["inertia_rot"]) * np.ones(size)
-        target_angular_velocity = eval(values["target_angular_velocity"]) * \
-                                  np.ones(size)
+        target_angular_velocity = eval(values["target_angular_velocity"]) * np.ones(size)
 
         # Agent class
         self.agent = Agent(size, mass, radius, radius_torso, radius_shoulder,
@@ -284,10 +221,8 @@ class Configuration:
         else:
             logging.warning("")
             raise ValueError()
-        logging.info("Out")
 
-    def set_motion(self, i, target_direction, target_angle, velocity,
-                   orientation):
+    def set_motion(self, i, target_direction, target_angle, velocity, orientation):
         if target_direction is None:
             pass
         elif isinstance(target_direction, np.ndarray):
@@ -323,7 +258,9 @@ class Configuration:
         elif velocity == "auto":
             self.agent.angle[i] = angle(self.agent.velocity[i])
 
-    def set(self, **kwargs):
+    def set_agents(self, size=None, surface=None, position="random",
+                   velocity=None, orientation=None, target_direction="auto",
+                   target_angle="auto"):
         """Set spatial and rotational parameters.
 
         ================== ==========================
@@ -362,13 +299,8 @@ class Configuration:
         """
         logging.info("")
 
-        size = kwargs.get("size")
-        surface = kwargs.get("surface", self.domain)
-        position = kwargs.get("position", "random")
-        velocity = kwargs.get("velocity", None)
-        orientation = kwargs.get("orientation", None)
-        target_direction = kwargs.get("target_direction", "auto")
-        target_angle = kwargs.get("target_angle", "auto")
+        if surface is None:
+            surface = self.domain
 
         iterations = 0  # Number of iterations
         area_filled = 0  # Total area filled by agents
@@ -452,16 +384,6 @@ class Configuration:
             iterations += 1
 
         logging.info("Density: {}".format(area_filled / surface.area))
-
-    def set_obstacles_to_linear_walls(self):
-        points = []
-        for obstacle in self.obstacles:
-            a = np.asarray(obstacle)
-            for i in range(len(a) - 1):
-                points.append((a[i], a[i + 1]))
-        if points:
-            params = np.array(points)
-            self.walls = LinearObstacle(params)
 
 
 class QueueDict:

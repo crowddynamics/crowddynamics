@@ -23,6 +23,16 @@ simulations: !!omap
         - height: 5.0
         - width: 20.0
 
+  - rounding:
+      module: "src.examples"
+      class: "Rounding"
+      kwargs: !!omap
+        - size: 100
+        - model: "circular"
+        - body: "adult"
+        - height: 15.0
+        - width: 15.0
+
   - room_evacuation:
       module: "src.examples"
       class: "RoomEvacuation"

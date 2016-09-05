@@ -2,6 +2,8 @@ import logging
 
 import numpy as np
 
+from src.core.geometry import shapes_to_point_pairs
+
 try:
     import skfmm
     import skimage.draw
@@ -32,24 +34,13 @@ def plot_dmap(grid, dmap, phi, name):
     plt.savefig("distance_map_{}.pdf".format(name))
 
 
-def _dicretize_polygon_to_grid(polygon, step):
+def _to_grid(shape, step):
     # Discretize the domain into a grid by its bounding box.
     # TODO: mask areas not in polygon
-    x, y = polygon.exterior.xy
-    x, y = np.asarray(x), np.asarray(y)
-    grid = np.meshgrid(np.arange(x.min(), x.max() + step, step=step),
-                       np.arange(y.min(), y.max() + step, step=step), )
+    minx, miny, maxx, maxy = shape.bounds  # Bounding box
+    grid = np.meshgrid(np.arange(minx, maxx + step, step=step),
+                       np.arange(miny, maxy + step, step=step), )
     return grid
-
-
-def _linestrings_to_points(linestrings):
-    points = []
-    for linestring in linestrings:
-        a = np.asarray(linestring)
-        for i in range(len(a) - 1):
-            points.append(a[i:i + 2])
-    ret = np.array(points)
-    return ret
 
 
 def _set_line_value(points, out, value):
@@ -73,9 +64,9 @@ def distance_map(domain, exits=None, obstacles=None, step=0.01):
         obstacles = ()
 
     # Discretize the domain into a grid by its bounding box.
-    grid = _dicretize_polygon_to_grid(domain, step)
-    points_target = _linestrings_to_points(target)
-    obstacle_points = _linestrings_to_points(obstacles)
+    grid = _to_grid(domain, step)
+    points_target = shapes_to_point_pairs(target)
+    obstacle_points = shapes_to_point_pairs(obstacles)
 
     # Indices of the nearest points in the grid
     indices_exits = points_to_indices(points_target, step)
@@ -118,6 +109,7 @@ class Navigation:
     .. [3] https://github.com/scikit-fmm/scikit-fmm
     .. [4] https://github.com/SCIInstitute/SCI-Solver_Eikonal
     """
+    # TODO: take into account finite size of the agents (instead of threting them like point)
 
     def __init__(self, simulation):
         self.simulation = simulation

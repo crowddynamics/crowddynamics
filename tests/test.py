@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 from shapely.geometry import Polygon, Point
 
-from src.multiagent.simulation import PolygonSample
+from src.core.sampling import PolygonSample
 
 height = 1
 width = 1
