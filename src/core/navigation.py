@@ -109,7 +109,7 @@ class Navigation:
     .. [3] https://github.com/scikit-fmm/scikit-fmm
     .. [4] https://github.com/SCIInstitute/SCI-Solver_Eikonal
     """
-    # TODO: take into account finite size of the agents (instead of threting them like point)
+    # TODO: take into account radius of the agents
 
     def __init__(self, simulation):
         self.simulation = simulation
@@ -123,11 +123,11 @@ class Navigation:
     def distance_map(self, step=0.01):
         """Computes distance map for the simulation domain.
 
-        * From rectangular grid from the bounding box of the polygonal domain
-        * Set initial value of the grid to -1
-        * Discretize linestring of obstacles and exits using line drawing algorithm
-        * Set values of points that contain exit to 1
-        * Mask points that contain obstacle
+        - From rectangular grid from the bounding box of the polygonal domain
+        - Set initial value of the grid to -1
+        - Discretize linestring of obstacles and exits using line drawing algorithm
+        - Set values of points that contain exit to 1
+        - Mask points that contain obstacle
 
         :param step: Meshgrid cell size (width, height) in meters.
         :return:

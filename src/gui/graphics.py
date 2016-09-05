@@ -97,14 +97,6 @@ class MultiAgentPlot(pg.PlotItem):
                 item = pg.PlotDataItem(x, y)  # settings["domain"]["brush"]
                 # self.addItem(item)
 
-        if process.goals is not None:
-            logging.debug("goals")
-            goals = process.goals
-            for goal in goals:
-                if isinstance(goal, Polygon):
-                    # settings["goal"]["brush"]
-                    pass
-
         if process.exits is not None:
             logging.debug("exits")
             exits = process.exits

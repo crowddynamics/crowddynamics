@@ -63,7 +63,6 @@ class Configuration:
     def __init__(self):
         # Field
         self.domain = None
-        self.goals = []
         self.obstacles = []
         self.exits = []
 
@@ -93,7 +92,7 @@ class Configuration:
         return mag * np.stack((np.cos(orientation), np.sin(orientation)),
                               axis=1)
 
-    def set_field(self, domain=None, goals=None, obstacles=None, exits=None):
+    def set_field(self, domain=None, obstacles=None, exits=None):
         """
         Shapely BaseGeometry types
 
@@ -122,7 +121,6 @@ class Configuration:
         logging.info("")
 
         # TODO: Conditions: is_valid, is_simple, ...
-        self.goals = check_shapes(goals, Polygon)
         self.obstacles = check_shapes(obstacles, (Polygon, LineString))
         self.exits = check_shapes(exits, (Polygon, LineString))
 
@@ -414,7 +412,7 @@ class MultiAgentSimulation(Process, Configuration):
     """
     Class that calls numerical algorithms of the multi-agent simulation.
     """
-    structures = ("domain", "goals", "exits", "walls", "agent")
+    structures = ("domain", "exits", "walls", "agent")
     parameters = ("dt_min", "dt_max", "time_tot", "in_goal", "dt_prev")
 
     def __init__(self, queue: Queue = None):
@@ -532,14 +530,10 @@ class MultiAgentSimulation(Process, Configuration):
         # Check which agent are inside the domain aka active
         if self.domain is not None:
             domain = Path(np.asarray(self.domain.exterior))
+            num = -np.sum(self.agent.active)
             self.agent.active &= domain.contains_points(self.agent.position)
-
-        # Check which agent have reached their desired goals
-        # for goal in self.goals:
-        #     num = -np.sum(self.agent.goal_reached)
-        #     self.agent.goal_reached |= goal.contains(self.agent.position)
-        #     num += np.sum(self.agent.goal_reached)
-        #     self.in_goal += num
+            num += np.sum(self.agent.active)
+            self.in_goal += num
 
         # Raise iteration count
         self.iterations += 1

@@ -31,11 +31,6 @@ class Hallway(MultiAgentSimulation):
         super().__init__(queue)
         domain = Polygon([(0, 0), (0, height), (width, height), (width, 0)])
 
-        goals = (
-            Polygon([(0, 0), (0, height), (width, height), (1, width)]),
-            Polygon([(0, 0), (0, height), (1, height), (1, 0)]),
-        )
-
         obstacles = (
             LineString([(0, 0), (width, 0)]),
             LineString([(0, height), (width, height)]),
@@ -63,7 +58,7 @@ class Hallway(MultiAgentSimulation):
              'orientation': np.pi},
         )
 
-        self.set_field(domain, goals, obstacles)
+        self.set_field(domain=domain, obstacles=obstacles)
         self.set_algorithms()
 
         self.set_body(size, body)
@@ -119,7 +114,6 @@ class RoomEvacuation(MultiAgentSimulation):
         ])
 
         domain = room | hall
-        goals = hall
         obstacles = (room | hall).exterior - door
 
         spawn = room
@@ -133,7 +127,7 @@ class RoomEvacuation(MultiAgentSimulation):
             'orientation': 0
         }
 
-        self.set_field(domain, goals, obstacles, door)
+        self.set_field(domain=domain, obstacles=obstacles, exits=door)
         self.set_algorithms(navigation="static")
 
         self.set_body(size, body)
