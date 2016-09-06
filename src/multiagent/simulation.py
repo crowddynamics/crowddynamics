@@ -13,17 +13,40 @@ from shapely.ops import cascaded_union
 
 from src.config import Load
 from src.core.geometry import check_shapes, shapes_to_point_pairs
-from src.core.sampling import PolygonSample
 from src.core.interactions import agent_agent, agent_wall, \
     agent_agent_distance_three_circle
-from src.core.motion import force_adjust, force_fluctuation, \
-    torque_adjust, torque_fluctuation
-from src.core.motion import integrator
+from src.core.motion import force_adjust, force_fluctuation, torque_adjust, \
+    torque_fluctuation, integrator
 from src.core.navigation import Navigation, Orientation
+from src.core.sampling import PolygonSample
 from src.core.vector2D import angle, length
 from src.io.hdfstore import HDFStore
 from src.multiagent.agent import Agent
 from src.multiagent.field import LinearObstacle
+
+
+class QueueDict:
+    def __init__(self, producer):
+        self.producer = producer
+        self.dict = {}
+
+    def set(self, args):
+        self.dict.clear()
+        for key, attrs in args:
+            self.dict[key] = {}
+            for attr in attrs:
+                self.dict[key][attr] = None
+
+    def fill(self, d):
+        for key, attrs in d.items():
+            item = getattr(self.producer, key)
+            for attr in attrs.keys():
+                d[key][attr] = np.copy(getattr(item, attr))
+
+    def get(self):
+        d = deepcopy(self.dict)
+        self.fill(d)
+        return d
 
 
 class Configuration:
@@ -185,8 +208,8 @@ class Configuration:
         # noinspection PyUnusedLocal
         pi = np.pi
 
-        load = Load()
         # Load tabular values
+        load = Load()
         bodies = load.csv("body")
         try:
             body = bodies[body]
@@ -382,30 +405,6 @@ class Configuration:
             iterations += 1
 
         logging.info("Density: {}".format(area_filled / surface.area))
-
-
-class QueueDict:
-    def __init__(self, producer):
-        self.producer = producer
-        self.dict = {}
-
-    def set(self, args):
-        self.dict.clear()
-        for key, attrs in args:
-            self.dict[key] = {}
-            for attr in attrs:
-                self.dict[key][attr] = None
-
-    def fill(self, d):
-        for key, attrs in d.items():
-            item = getattr(self.producer, key)
-            for attr in attrs.keys():
-                d[key][attr] = np.copy(getattr(item, attr))
-
-    def get(self):
-        d = deepcopy(self.dict)
-        self.fill(d)
-        return d
 
 
 class MultiAgentSimulation(Process, Configuration):
