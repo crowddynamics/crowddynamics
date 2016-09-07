@@ -7,6 +7,7 @@ from src.core.vector2D import rotate270
 
 spec_agent = (
     ("size", int64),
+    ("ndim", int64),
     ("shape", UniTuple(int64, 2)),
 
     ("circular", boolean),
@@ -73,7 +74,8 @@ class Agent(object):
 
         # Array properties
         self.size = size  # Maximum number of agents
-        self.shape = (size, 2)  # Shape of 2D arrays
+        self.ndim = 2     # 2-Dimensional space
+        self.shape = (self.size, self.ndim)  # Shape of 2D arrays
 
         # Agent models (Only one can be active at time).
         self.circular = True
@@ -126,13 +128,14 @@ class Agent(object):
         self.sight_soc = 3.0  # Interaction distance with other agents
         self.sight_wall = 3.0  # Interaction distance with walls
 
-        # Tracking neighboring agents
+        # Tracking neighboring agents. Neighbors contains the indices of the
+        # neighboring agents. Negative value denotes missing value (if less than
+        # neighborhood_size of neighbors).
         self.neighbor_radius = np.nan
         self.neighborhood_size = 8
-        self.neighbors = np.ones((self.size, self.neighborhood_size),
-                                 dtype=np.int64)
-        self.neighbor_distances = np.ones((self.size, self.neighborhood_size))
-        self.neighbor_distances_max = np.ones(self.size)
+        self.neighbors = np.ones((self.size, self.neighborhood_size), dtype=np.int64)
+        self.neighbor_distances = np.zeros((self.size, self.neighborhood_size))
+        self.neighbor_distances_max = np.zeros(self.size)
         self.reset_neighbor()
 
     def set_circular(self):
@@ -150,11 +153,9 @@ class Agent(object):
         self.torque[:] = 0
 
     def reset_neighbor(self):
-        if self.neighbor_radius == 0:
-            return
-        self.neighbors[:, :] = -1  # np.nan
-        self.neighbor_distances[:, :] = self.neighbor_radius + 1.0  # np.inf
-        self.neighbor_distances_max[:] = self.neighbor_radius + 1.0  # np.inf
+        self.neighbors[:, :] = -1  # negative value denotes missing value
+        self.neighbor_distances[:, :] = np.inf
+        self.neighbor_distances_max[:] = np.inf
 
     def indices(self):
         """Indices of active agents."""

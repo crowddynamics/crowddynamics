@@ -52,7 +52,7 @@ def timed(func):
         start = timer()
         ret = func(*args, **kwargs)
         dt = timer() - start
-        print(func.__name__, format_time(dt), (1 / dt))
+        print(func.__name__, format_time(dt))
         return ret
     return wrapper
 

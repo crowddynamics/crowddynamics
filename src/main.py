@@ -92,10 +92,9 @@ def run_simulation(name):
     simulation = getattr(module, class_name)
     process = simulation(None, **kwargs)
 
-    process.update()
-    process.update()
-    process.update()
-    process.update()
+    process.initial_update()
+    for _ in range(100):
+        process.update()
 
 
 def run_gui():

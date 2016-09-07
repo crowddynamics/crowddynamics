@@ -110,11 +110,12 @@ class EgressGame(object):
 
         self.simulation = simulation
 
-        self.strategies = np.array((0, 1), dtype=int)
+        self.strategies = np.array((0, 1), dtype=np.int64)
         self.door = door
         self.t_aset_0 = t_aset_0
-        self.t_evac = np.zeros(self.simulation.agent.size, dtype=float)
-        self.strategy = np.ones(self.simulation.agent.size, dtype=int)
+        self.t_aset = t_aset_0
+        self.t_evac = np.zeros(self.simulation.agent.size, dtype=np.float64)
+        self.strategy = np.ones(self.simulation.agent.size, dtype=np.int64)
         self.interval = interval
         self.radius = np.max(self.simulation.agent.radius)
 
@@ -122,20 +123,21 @@ class EgressGame(object):
         self.simulation.agent.neighborhood_size = neighborhood_size
         self.simulation.agent.reset_neighbor()
 
+    def reset(self):
+        self.t_evac[:] = 0
+
     def update(self):
         """Update strategies for all agents.
 
         :param dt: Timestep used by integrator to update simulation.
         """
-
-        # Reset
-        self.t_evac[:] = 0.0
+        self.reset()
 
         # Indices of agents that are playing the game
         # Loop over agents and update strategies
         players = self.simulation.agent.indices()
-        t_aset = self.t_aset_0 - self.simulation.time_tot
+        self.t_aset = self.t_aset_0 - self.simulation.time_tot
         best_response_strategy(self.simulation.agent, players, self.door,
                                self.radius, self.strategy, self.strategies,
-                               t_aset, self.t_evac, self.interval,
+                               self.t_aset, self.t_evac, self.interval,
                                self.simulation.dt_prev)

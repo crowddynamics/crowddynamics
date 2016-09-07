@@ -1,5 +1,5 @@
 import logging
-from copy import deepcopy
+from copy import deepcopy, copy
 from multiprocessing import Process, Event, Queue
 from numbers import Number
 
@@ -20,6 +20,7 @@ from src.core.motion import force_adjust, force_fluctuation, torque_adjust, \
 from src.core.navigation import Navigation, Orientation
 from src.core.sampling import PolygonSample
 from src.core.vector2D import angle, length
+from src.functions import timed
 from src.io.hdfstore import HDFStore
 from src.multiagent.agent import Agent
 from src.multiagent.field import LineObstacle
@@ -530,3 +531,9 @@ class MultiAgentSimulation(Process, Configuration):
         if self.queue is not None:
             data = self.queue_items.get()
             self.queue.put(data)
+
+    func = deepcopy(update)
+    func.__name__ = "initial_update"
+    initial_update = timed(func)
+
+    update = profile(update)
