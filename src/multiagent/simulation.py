@@ -22,7 +22,7 @@ from src.core.sampling import PolygonSample
 from src.core.vector2D import angle, length
 from src.io.hdfstore import HDFStore
 from src.multiagent.agent import Agent
-from src.multiagent.field import LinearObstacle
+from src.multiagent.field import LineObstacle
 
 
 class QueueDict:
@@ -157,7 +157,7 @@ class Configuration:
 
         points = shapes_to_point_pairs(self.obstacles)
         if len(points) != 0:
-            self.walls = LinearObstacle(points)
+            self.walls = LineObstacle(points)
 
     def set_algorithms(self, navigation=None, orientation=None, exit_selection=None):
         logging.info("")
@@ -188,21 +188,6 @@ class Configuration:
         pass
 
     def set_body(self, size, body):
-        """
-
-        ========================= ============================================
-        **Load values form csv**
-        *mass*                    --
-        *radius*                  --
-        *dr*                      --
-        *k_t*                     --
-        *k_s*                     --
-        *v*                       --
-        *dv*                      --
-        *inertia_rot*             --
-        *target_angular_velocity* --
-        ========================= ============================================
-        """
         logging.info("In: {}, {}".format(size, body))
 
         # noinspection PyUnusedLocal
@@ -214,24 +199,23 @@ class Configuration:
         try:
             body = bodies[body]
         except:
-            raise KeyError(
-                "Body \"{}\" is not in bodies {}.".format(body, bodies))
+            raise KeyError("Body \"{}\" is not in bodies {}.".format(body, bodies))
         values = load.csv("agent")["value"]
 
         # Arguments for Agent
+        # TODO: Scaling inertia_rot
         mass = self.truncnorm(body["mass"], body["mass_scale"], size)
-        radius = self.truncnorm(body["radius"], body["dr"], size)
-        radius_torso = body["k_t"] * radius
-        radius_shoulder = body["k_s"] * radius
-        torso_shoulder = body["k_ts"] * radius
-        target_velocity = self.truncnorm(body['v'], body['dv'], size)
+        radius = self.truncnorm(body["radius"], body["radius_scale"], size)
+        ratio_rt = body["ratio_rt"]
+        ratio_rs = body["ratio_rs"]
+        ratio_ts = body["ratio_ts"]
+        target_velocity = self.truncnorm(body['velocity'], body['velocity_scale'], size)
         inertia_rot = eval(values["inertia_rot"]) * np.ones(size)
         target_angular_velocity = eval(values["target_angular_velocity"]) * np.ones(size)
 
         # Agent class
-        self.agent = Agent(size, mass, radius, radius_torso, radius_shoulder,
-                           torso_shoulder, inertia_rot, target_velocity,
-                           target_angular_velocity)
+        self.agent = Agent(size, mass, radius, ratio_rt, ratio_rs, ratio_ts,
+                           inertia_rot, target_velocity, target_angular_velocity)
 
     def set_model(self, model):
         logging.info("{}".format(model))
@@ -386,8 +370,7 @@ class Configuration:
             if agent_distance_condition(self.agent, start_index, self._index) \
                     and not agent.intersects(self._occupied):
                 density = area_filled / surface.area
-                logging.debug(
-                    "Agent {} | Density {}".format(self._index, density))
+                logging.debug("Agent {} | Density {}".format(self._index, density))
                 area_filled += agent.area
                 self.agent.active[self._index] = True
                 self._index += 1
@@ -425,14 +408,14 @@ class MultiAgentSimulation(Process, Configuration):
         self.game = None
 
         # Integrator timestep
-        self.dt_min = 0.001
-        self.dt_max = 0.01
+        self.dt_min = np.float64(0.001)
+        self.dt_max = np.float64(0.01)
 
-        # State of the simulation
-        self.iterations = 0  # Integer
-        self.time_tot = 0.0  # Float (types matter when saving to a file)
-        self.in_goal = 0  # Integer TODO: Move to area?
-        self.dt_prev = 0.1  # Float. Last used time step.
+        # State of the simulation (types matter when saving to a file)
+        self.iterations = np.int64(0)
+        self.time_tot = np.float64(0.0)
+        self.in_goal = np.int64(0)
+        self.dt_prev = np.float64(0.1)
 
         # Data flow
         self.hdfstore = None  # Sends data to hdf5 file
@@ -497,6 +480,10 @@ class MultiAgentSimulation(Process, Configuration):
     def update(self):
         logging.debug("")
 
+        # Reset
+        self.agent.reset_motion()
+        self.agent.reset_neighbor()
+
         # Path finding
         if self.navigation is not None:
             self.navigation.update()
@@ -506,9 +493,6 @@ class MultiAgentSimulation(Process, Configuration):
             self.orientation.update()
 
         # Computing motion (forces and torques) for the system
-        self.agent.reset_motion()
-        self.agent.reset_neighbor()
-
         force_adjust(self.agent)
         force_fluctuation(self.agent)
         if self.agent.orientable:
@@ -524,7 +508,7 @@ class MultiAgentSimulation(Process, Configuration):
 
         # Game theoretical model
         if self.game is not None:
-            self.game.update(self.time_tot, self.dt_prev)
+            self.game.update()
 
         # Check which agent are inside the domain aka active
         if self.domain is not None:

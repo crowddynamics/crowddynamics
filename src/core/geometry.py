@@ -31,6 +31,7 @@ def check_shapes(shapes, types):
         else:
             raise ValueError("shape {} not in types {}".format(_shapes, _types))
 
+    # TODO: Geometry Collection?
     coll = []
     _set_shape(shapes, types, coll)
     return coll
@@ -54,6 +55,8 @@ def shapes_to_point_pairs(shapes):
             a = np.asarray(_shapes)
             for i in range(len(a) - 1):
                 _points.append((a[i], a[i + 1]))
+        elif _shapes is None:
+            pass
         else:
             raise ValueError("")
 

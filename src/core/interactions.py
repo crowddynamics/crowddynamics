@@ -133,7 +133,6 @@ def agent_agent_interaction(i, j, agent):
             agent.torque[i] += cross2d(r_moment_i, force_i)
             agent.torque[j] += cross2d(r_moment_j, force_j)
 
-    # TODO: update neighborhood
     if agent.neighbor_radius > 0 and h < agent.neighbor_radius:
         if h < agent.neighbor_distances_max[i]:
             ind = np.argmax(agent.neighbor_distances[i])

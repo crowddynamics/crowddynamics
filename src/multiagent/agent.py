@@ -5,7 +5,6 @@ from numba.types import UniTuple
 
 from src.core.vector2D import rotate270
 
-
 spec_agent = (
     ("size", int64),
     ("shape", UniTuple(int64, 2)),
@@ -65,41 +64,15 @@ spec_agent_neighbour = (
 spec_agent += spec_agent_motion + spec_agent_neighbour
 
 
-@numba.jit(nopython=True)
-def require(cond):
-    if not np.all(cond):
-        raise Warning("All conditions are not met.")
-
-
 @numba.jitclass(spec_agent)
 class Agent(object):
-    """
-    Structure for agent parameters and variables.
-    """
+    """Structure for agent parameters and variables."""
 
-    def __init__(self,
-                 size,
-                 mass,
-                 radius,
-                 radius_torso,
-                 radius_shoulder,
-                 radius_torso_shoulder,
-                 inertia_rot,
-                 target_velocity,
-                 target_angular_velocity):
-
-        # Requirements
-        require(mass > 0)
-        require(radius > 0)
-        require(radius_torso > 0)
-        require(radius_shoulder > 0)
-        require(radius_torso_shoulder > 0)
-        require(inertia_rot > 0)
-        require(target_velocity >= 0)
-        require(target_angular_velocity >= 0)
+    def __init__(self, size, mass, radius, ratio_rt, ratio_rs, ratio_ts,
+                 inertia_rot, target_velocity, target_angular_velocity):
 
         # Array properties
-        self.size = size        # Maximum number of agents
+        self.size = size  # Maximum number of agents
         self.shape = (size, 2)  # Shape of 2D arrays
 
         # Agent models (Only one can be active at time).
@@ -109,15 +82,15 @@ class Agent(object):
         # Flags
         self.orientable = self.three_circle  # Orientable has rotational motion
         self.active = np.zeros(size, np.bool8)  # Initialise agents as inactive
-        self.goal_reached = np.zeros(size, np.bool8)
+        self.goal_reached = np.zeros(size, np.bool8)  # TODO: Deprecate
 
         # Constant properties
-        self.radius = radius               # Total radius
-        self.r_t = radius_torso            # Radius of torso
-        self.r_s = radius_shoulder         # Radius of shoulders
-        self.r_ts = radius_torso_shoulder  # Distance from torso to shoulder
+        self.radius = radius  # Total radius
+        self.r_t = ratio_rt * radius  # Radius of torso
+        self.r_s = ratio_rs * radius  # Radius of shoulders
+        self.r_ts = ratio_ts * radius  # Distance from torso to shoulder
         self.mass = mass.reshape(size, 1)  # Mass
-        self.inertia_rot = inertia_rot     # Moment of inertia
+        self.inertia_rot = inertia_rot  # Moment of inertia
 
         # Movement along x and y axis.
         self.position = np.zeros(self.shape)
@@ -135,28 +108,29 @@ class Agent(object):
 
         self.position_ls = np.zeros(self.shape)  # Left shoulder
         self.position_rs = np.zeros(self.shape)  # Right shoulder
-        self.front = np.zeros(self.shape)        # For plotting agents.
+        self.front = np.zeros(self.shape)  # For plotting agents.
         self.update_shoulder_positions()
 
         # Motion related parameters
-        self.tau_adj = 0.5          # Adjusting force
-        self.tau_rot = 0.2          # Adjusting torque
-        self.k_soc = 1.5            # Social force scaling
-        self.tau_0 = 3.0            # Social force interaction time horizon
-        self.mu = 1.2e5             # Contact force
-        self.kappa = 4e4            # Contact force
-        self.damping = 500          # Contact force
-        self.std_rand_force = 0.1   # Fluctuation force
+        self.tau_adj = 0.5  # Adjusting force
+        self.tau_rot = 0.2  # Adjusting torque
+        self.k_soc = 1.5  # Social force scaling
+        self.tau_0 = 3.0  # Social force interaction time horizon
+        self.mu = 1.2e5  # Contact force
+        self.kappa = 4e4  # Contact force
+        self.damping = 500  # Contact force
+        self.std_rand_force = 0.1  # Fluctuation force
         self.std_rand_torque = 0.1  # Fluctuation torque
-        self.f_soc_ij_max = 2e3     # Truncation value for social force
-        self.f_soc_iw_max = 2e3     # Truncation value for social force
-        self.sight_soc = 3.0        # Interaction distance with other agents
-        self.sight_wall = 3.0       # Interaction distance with walls
+        self.f_soc_ij_max = 2e3  # Truncation value for social force
+        self.f_soc_iw_max = 2e3  # Truncation value for social force
+        self.sight_soc = 3.0  # Interaction distance with other agents
+        self.sight_wall = 3.0  # Interaction distance with walls
 
         # Tracking neighboring agents
-        self.neighbor_radius = 0  # if less equal to 0 -> inactive
+        self.neighbor_radius = np.nan
         self.neighborhood_size = 8
-        self.neighbors = np.ones((self.size, self.neighborhood_size), dtype=np.int64)
+        self.neighbors = np.ones((self.size, self.neighborhood_size),
+                                 dtype=np.int64)
         self.neighbor_distances = np.ones((self.size, self.neighborhood_size))
         self.neighbor_distances_max = np.ones(self.size)
         self.reset_neighbor()

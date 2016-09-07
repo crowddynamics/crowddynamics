@@ -8,8 +8,8 @@ try:
     import skfmm
     import skimage.draw
 except ImportError:
-    print(Warning("Navigation algorithm cannot be used if scikit-fmm or "
-                  "scikit-image are not installed"))
+    raise Warning("Navigation algorithm cannot be used if scikit-fmm or "
+                  "scikit-image are not installed")
 
 from .vector2D import angle_nx2
 

@@ -2,9 +2,7 @@ import numpy as np
 from numba import float64, int64
 from numba import jitclass
 
-from src.core.vector2D import length
 from src.core.vector2D import rotate90, dot2d
-
 
 spec_linear = (
     ("params", float64[:, :, :]),
@@ -16,7 +14,7 @@ spec_linear = (
 
 
 @jitclass(spec_linear)
-class LinearObstacle(object):
+class LineObstacle(object):
     def __init__(self, linear_params):
         self.params = linear_params
         self.cols = 9
@@ -84,13 +82,3 @@ class LinearObstacle(object):
             n_iw = np.sign(l_n) * n_w
 
         return d_iw, n_iw
-
-
-class LinearExit(object):
-    def __init__(self, p0, p1, agent_radius):
-        """Linear Exit / Exit door / Target"""
-        self.p = np.array((p0, p1))
-        self.mid = (self.p[0] + self.p[1]) / 2.0
-        self.coeff = 1.0  # Agents per second
-        self.radius = length(self.p[1] - self.p[0]) / 2.0
-        self.capacity = self.coeff * self.radius // agent_radius

@@ -1,33 +1,19 @@
 import numba
+from numba import f8
 import numpy as np
 from scipy.spatial.qhull import Delaunay
 from shapely.geometry import Polygon, Point
 
 
-@numba.jit(nopython=True, nogil=True)
-def triangle_area_cumsum(mesh):
-    """Computes cumulative sum of the areas of the triangle mesh.
-
-    :param mesh: Trianle mesh.
-    :return: Cumulative sum the area of the triangle mesh
-    """
-    area = 0
-    rows = mesh.shape[0]
-    cumsum = np.zeros(rows)
-    for i in range(rows):
-        # Area of triangle
-        a = mesh[i][0, :]
-        b = mesh[i][1, :]
-        c = mesh[i][2, :]
-        area += np.abs(a[0] * (b[1] - c[1]) +
-                       b[0] * (c[1] - a[1]) +
-                       c[0] * (a[1] - b[1])) / 2
-        cumsum[i] = area
-    return cumsum
+@numba.jit(f8(f8[:], f8[:], f8[:]), nopython=True, nogil=True)
+def triangle_area(a, b, c):
+    return np.abs(a[0] * (b[1] - c[1]) +
+                  b[0] * (c[1] - a[1]) +
+                  c[0] * (a[1] - b[1])) / 2
 
 
-@numba.jit(nopython=True, nogil=True)
-def random_sample_triangle(verts):
+@numba.jit(f8[:](f8[:], f8[:], f8[:]), nopython=True, nogil=True)
+def random_sample_triangle(a, b, c):
     """
     Uniform sampling of a triangle
     ------------------------------
@@ -47,22 +33,40 @@ def random_sample_triangle(verts):
     .. [1] http://math.stackexchange.com/questions/18686/uniform-random-point-in-triangle
     .. [2] http://mathworld.wolfram.com/TrianglePointPicking.html
 
-    :param verts: Three points defining a triangle (A, B, C).
+    :param a: Vertex of the triangle
+    :param b: Vertex of the triangle
+    :param c: Vertex of the triangle
     :return: Uniformly distributed random point P.
     """
     # Random variables
-    r0 = np.random.random()
     r1 = np.random.random()
-    p = (1 - np.sqrt(r0)) * verts[0] + \
-        (np.sqrt(r0) * (1 - r1)) * verts[1] + \
-        r1 * np.sqrt(r0) * verts[2]
-    return p
+    r2 = np.random.random()
+    return (1 - np.sqrt(r1)) * a + \
+           np.sqrt(r1) * (1 - r2) * b + \
+           r2 * np.sqrt(r1) * c
+
+
+@numba.jit(nopython=True, nogil=True)
+def triangle_area_cumsum(mesh):
+    """Computes cumulative sum of the areas of the triangle mesh.
+
+    :param mesh: Trianle mesh.
+    :return: Cumulative sum the area of the triangle mesh
+    """
+    area = 0
+    rows = mesh.shape[0]
+    cumsum = np.zeros(rows)
+    for i in range(rows):
+        a, b, c = mesh[i, 0, :], mesh[i, 1, :], mesh[i, 2, :]
+        area += triangle_area(a, b, c)
+        cumsum[i] = area
+    return cumsum
 
 
 class PolygonSample:
     """
-    Uniform sampling of a polygon
-    -----------------------------
+    Uniform sampling of convex polygon
+    ----------------------------------
     Generates random uniform point from inside of polygon. [1]_
 
     - Delaunay triangulation to break the polygon into triangular mesh. [2]_
@@ -73,23 +77,31 @@ class PolygonSample:
     .. [2] https://en.wikipedia.org/wiki/Delaunay_triangulation
     """
 
-    def __init__(self, polygon: Polygon):
-        self.polygon = polygon
+    def __init__(self, polygon):
+        """Polygon to sample.
+
+        :param polygon: Shapely polygon or numpy array of polygon vertices.
+        """
+        if isinstance(polygon, Polygon):
+            self.vertices = np.asarray(polygon.exterior)
+        elif isinstance(polygon, np.ndarray):
+            self.vertices = polygon
+        else:
+            raise Exception("")
 
         # Triangular mesh by Delaunay triangulation algorithm
-        self.nodes = np.asarray(self.polygon.exterior)
-        self.delaunay = Delaunay(self.nodes)
-        self.mesh = self.nodes[self.delaunay.simplices]
+        self.delaunay = Delaunay(self.vertices)
+        self.mesh = self.vertices[self.delaunay.simplices]
 
         # Cumulative sum of areas of the triangles
         self.weights = triangle_area_cumsum(self.mesh)
         self.weights /= self.weights[-1]  # Normalize values to interval [0, 1]
 
     def draw(self):
-        # Draw random triangle weighted by the area of the triangle
+        # Draw random triangle weighted by the area of the triangle and draw
+        # random sample
         x = np.random.random()
         i = np.searchsorted(self.weights, x)
-
-        # Random sample from the triangle
-        sample = random_sample_triangle(self.mesh[i])
+        a, b, c = self.mesh[i]
+        sample = random_sample_triangle(a, b, c)
         return Point(sample)

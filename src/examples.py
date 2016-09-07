@@ -89,7 +89,7 @@ class Rounding(MultiAgentSimulation):
             'orientation': 0
         }
 
-        self.set_field(domain, None, obstacles, exits)
+        self.set_field(domain, obstacles, exits)
         self.set_algorithms(navigation="static")
 
         self.set_body(size, body)
@@ -143,7 +143,7 @@ class RoomEvacuationGame(RoomEvacuation):
             queue, size, width, height, model, body, spawn_shape, door_width,
             exit_hall_width)
         # FIXME: Exit door
-        door = LineString([(width, (height - door_width) / 2),
-                           (width, (height + door_width) / 2), ]),
-        self.game = EgressGame(self.agent, door, t_aset_0, interval,
-                               neighbor_radius, neighborhood_size)
+        door = np.array(([(width, (height - door_width) / 2),
+                          (width, (height + door_width) / 2), ]))
+        self.game = EgressGame(self, door, t_aset_0, interval, neighbor_radius,
+                               neighborhood_size)
