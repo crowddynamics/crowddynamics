@@ -161,7 +161,6 @@ class Navigation:
     def dynamic_potential(self):
         logging.info("")
 
-
         raise NotImplementedError
 
     def update(self):
@@ -170,7 +169,7 @@ class Navigation:
         indices = points_to_indices(points, self.step)
         indices = np.fliplr(indices)
         # http://docs.scipy.org/doc/numpy/reference/arrays.indexing.html
-        # TODO: Handle index out of bounds
+        # TODO: Handle index out of bounds -> numpy.take
         d = self.direction_map[indices[:, 0], indices[:, 1], :]
         self.simulation.agent.target_direction[i] = d
 
@@ -184,5 +183,6 @@ class Orientation:
         self.simulation = simulation
 
     def update(self):
-        self.simulation.agent.target_angle[:] = angle_nx2(
-            self.simulation.agent.target_direction)
+        if self.simulation.agent.orientable:
+            dir_to_orient = angle_nx2(self.simulation.agent.target_direction)
+            self.simulation.agent.target_angle[:] = dir_to_orient

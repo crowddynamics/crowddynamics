@@ -29,7 +29,8 @@ def payoff(s_our, s_neighbor, t_aset, t_evac_i, t_evac_j):
         if s_our == 0:
             average = (t_evac_i + t_evac_j) / 2
             if average == 0:
-                average = 4.0e-8
+                # average = 4.0e-8
+                return np.inf
             return t_aset / average
         elif s_our == 1:
             return 1
@@ -110,15 +111,19 @@ class EgressGame(object):
 
         self.simulation = simulation
 
+        # Game properties
         self.strategies = np.array((0, 1), dtype=np.int64)
+        self.interval = interval
         self.door = door
         self.t_aset_0 = t_aset_0
         self.t_aset = t_aset_0
         self.t_evac = np.zeros(self.simulation.agent.size, dtype=np.float64)
-        self.strategy = np.ones(self.simulation.agent.size, dtype=np.int64)
-        self.interval = interval
         self.radius = np.max(self.simulation.agent.radius)
 
+        # Agent states
+        self.strategy = np.ones(self.simulation.agent.size, dtype=np.int64)
+
+        # Set neigbourhood
         self.simulation.agent.neighbor_radius = neighbor_radius
         self.simulation.agent.neighborhood_size = neighborhood_size
         self.simulation.agent.reset_neighbor()

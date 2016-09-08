@@ -12,6 +12,7 @@ from src.multiagent.simulation import MultiAgentSimulation
 class Circular(pg.PlotDataItem):
     def __init__(self, radius):
         super(Circular, self).__init__()
+
         self.settings = Load().yaml("graphics")["agent"]
         self.radius = radius
 
@@ -19,19 +20,46 @@ class Circular(pg.PlotDataItem):
         symbol_pen = np.zeros_like(radius, dtype=object)
         symbol_brush = np.zeros_like(radius, dtype=object)
 
-        kwargs = dict(pxMode=False,
-                      pen=None,
-                      symbol='o',
-                      symbolSize=symbol_size,
-                      symbolPen=symbol_pen,
-                      symbolBrush=symbol_brush, )
+        kwargs = dict(
+            pxMode=False,
+            pen=None,
+            symbol='o',
+            symbolSize=symbol_size,
+            symbolPen=symbol_pen,
+            symbolBrush=symbol_brush,
+        )
 
         for key, val in self.settings["active"].items():
             kwargs[key][:] = val
 
         self.setData(**kwargs)
 
-    def set_data(self, position, active, **kwargs):
+    def set_data(self, position, **kwargs):
+        """
+        =========== ==
+        **Kwargs**
+
+        *active*    --
+        *strategy*  --
+        =========== ==
+
+        :param position: Positional data (x and y coordinates).
+        :param kwargs:
+        """
+        active = kwargs.get("active", None)
+        strategy = kwargs.get("strategy", None)
+
+        if strategy is not None:
+            # {0: "Impatient", 1: "Patient"}
+            impatient = strategy == 0
+            patient = strategy == 1
+
+            for key, val in self.settings["impatient"].items():
+                self.opts[key][impatient] = val
+
+            for key, val in self.settings["patient"].items():
+                self.opts[key][patient] = val
+
         for key, val in self.settings["active"].items():
             self.opts[key][active] = val
 
@@ -50,11 +78,11 @@ class ThreeCircle:
         self.orientation = None
         self.items = (self.left_shoulder, self.right_shoulder, self.torso)
 
-    def set_data(self, position, position_ls, position_rs, active, **kwargs):
+    def set_data(self, position, position_ls, position_rs, **kwargs):
         # TODO: orientation_indicator
-        self.left_shoulder.set_data(position_ls, active)
-        self.right_shoulder.set_data(position_rs, active)
-        self.torso.set_data(position, active)
+        self.left_shoulder.set_data(position=position_ls, **kwargs)
+        self.right_shoulder.set_data(position=position_rs, **kwargs)
+        self.torso.set_data(position=position, **kwargs)
 
 
 class MultiAgentPlot(pg.PlotItem):
@@ -113,12 +141,12 @@ class MultiAgentPlot(pg.PlotItem):
             if agent.three_circle:
                 model = ThreeCircle(agent.r_t, agent.r_s)
                 model.set_data(agent.position, agent.position_ls,
-                               agent.position_rs, agent.active)
+                               agent.position_rs, active=agent.active)
                 for item in model.items:
                     self.addItem(item)
             else:
                 model = Circular(agent.radius)
-                model.set_data(agent.position, agent.active)
+                model.set_data(agent.position, active=agent.active)
                 self.addItem(model)
             self.agent = model
 

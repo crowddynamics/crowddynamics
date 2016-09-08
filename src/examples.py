@@ -142,7 +142,7 @@ class RoomEvacuationGame(RoomEvacuation):
         super(RoomEvacuationGame, self).__init__(
             queue, size, width, height, model, body, spawn_shape, door_width,
             exit_hall_width)
-        # FIXME: Exit door
+
         door = np.array(([(width, (height - door_width) / 2),
                           (width, (height + door_width) / 2), ]))
         self.game = EgressGame(self, door, t_aset_0, interval, neighbor_radius,

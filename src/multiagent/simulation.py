@@ -16,7 +16,7 @@ from src.core.geometry import check_shapes, shapes_to_point_pairs
 from src.core.interactions import agent_agent, agent_wall, \
     agent_agent_distance_three_circle
 from src.core.motion import force_adjust, force_fluctuation, torque_adjust, \
-    torque_fluctuation, integrator
+    torque_fluctuation, integrate, Integrator
 from src.core.navigation import Navigation, Orientation
 from src.core.sampling import PolygonSample
 from src.core.vector2D import angle, length
@@ -98,6 +98,7 @@ class Configuration:
         # Angle and direction update algorithms
         self.navigation = None
         self.orientation = None
+        self.integrator = None
 
         # Current index of agent to be placed
         self._index = 0
@@ -163,7 +164,8 @@ class Configuration:
         if len(points) != 0:
             self.walls = LineObstacle(points)
 
-    def set_algorithms(self, navigation=None, orientation=None, exit_selection=None):
+    def set_algorithms(self, navigation=None, orientation=None,
+                       exit_selection=None, integrator=(0.001, 0.01)):
         logging.info("")
 
         # Navigation
@@ -191,6 +193,8 @@ class Configuration:
         # TODO: Exit Selection
         pass
 
+        self.integrator = Integrator(self, integrator)
+
     def set_body(self, size, body):
         logging.info("In: {}, {}".format(size, body))
 
@@ -203,7 +207,8 @@ class Configuration:
         try:
             body = bodies[body]
         except:
-            raise KeyError("Body \"{}\" is not in bodies {}.".format(body, bodies))
+            raise KeyError(
+                "Body \"{}\" is not in bodies {}.".format(body, bodies))
         values = load.csv("agent")["value"]
 
         # Arguments for Agent
@@ -213,13 +218,16 @@ class Configuration:
         ratio_rt = body["ratio_rt"]
         ratio_rs = body["ratio_rs"]
         ratio_ts = body["ratio_ts"]
-        target_velocity = self.truncnorm(body['velocity'], body['velocity_scale'], size)
+        target_velocity = self.truncnorm(body['velocity'],
+                                         body['velocity_scale'], size)
         inertia_rot = eval(values["inertia_rot"]) * np.ones(size)
-        target_angular_velocity = eval(values["target_angular_velocity"]) * np.ones(size)
+        target_angular_velocity = eval(
+            values["target_angular_velocity"]) * np.ones(size)
 
         # Agent class
         self.agent = Agent(size, mass, radius, ratio_rt, ratio_rs, ratio_ts,
-                           inertia_rot, target_velocity, target_angular_velocity)
+                           inertia_rot, target_velocity,
+                           target_angular_velocity)
 
     def set_model(self, model):
         logging.info("{}".format(model))
@@ -231,7 +239,8 @@ class Configuration:
             logging.warning("")
             raise ValueError()
 
-    def set_motion(self, i, target_direction, target_angle, velocity, orientation):
+    def set_motion(self, i, target_direction, target_angle, velocity,
+                   orientation):
         if target_direction is None:
             pass
         elif isinstance(target_direction, np.ndarray):
@@ -374,7 +383,8 @@ class Configuration:
             if agent_distance_condition(self.agent, start_index, self._index) \
                     and not agent.intersects(self._occupied):
                 density = area_filled / surface.area
-                logging.debug("Agent {} | Density {}".format(self._index, density))
+                logging.debug(
+                    "Agent {} | Density {}".format(self._index, density))
                 area_filled += agent.area
                 self.agent.active[self._index] = True
                 self._index += 1
@@ -398,8 +408,6 @@ class MultiAgentSimulation(Process, Configuration):
     """
     Class that calls numerical algorithms of the multi-agent simulation.
     """
-    structures = ("domain", "exits", "walls", "agent")
-    parameters = ("dt_min", "dt_max", "time_tot", "in_goal", "dt_prev")
 
     def __init__(self, queue: Queue = None):
         super(MultiAgentSimulation, self).__init__()  # Multiprocessing
@@ -410,10 +418,6 @@ class MultiAgentSimulation(Process, Configuration):
 
         # Additional models
         self.game = None
-
-        # Integrator timestep
-        self.dt_min = np.float64(0.001)
-        self.dt_max = np.float64(0.01)
 
         # State of the simulation (types matter when saving to a file)
         self.iterations = np.int64(0)
@@ -482,17 +486,21 @@ class MultiAgentSimulation(Process, Configuration):
             logging.info("Queue is not defined.")
 
     def update(self):
-        # Reset
-        self.agent.reset_motion()
-        self.agent.reset_neighbor()
-
         # Path finding
         if self.navigation is not None:
             self.navigation.update()
 
         # Rotation planning
-        if self.orientation is not None and self.agent.orientable:
+        if self.orientation is not None:
             self.orientation.update()
+
+        # Game theoretical model
+        if self.game is not None:
+            self.game.update()
+
+        # Reset
+        self.agent.reset_motion()
+        self.agent.reset_neighbor()
 
         # Computing motion (forces and torques) for the system
         force_adjust(self.agent)
@@ -505,12 +513,8 @@ class MultiAgentSimulation(Process, Configuration):
             agent_wall(self.agent, self.walls)
 
         # Integration of the system
-        self.dt_prev = integrator(self.agent, self.dt_min, self.dt_max)
-        self.time_tot += self.dt_prev
-
-        # Game theoretical model
-        if self.game is not None:
-            self.game.update()
+        if self.integrator is not None:
+            self.integrator.update()
 
         # Check which agent are inside the domain
         if self.domain is not None:
@@ -533,9 +537,7 @@ class MultiAgentSimulation(Process, Configuration):
             self.queue.put(data)
 
     # To measure JIT compilation time of numba decorated functions.
-    func = deepcopy(update)
-    func.__name__ = "initial_update"
-    initial_update = timed(func)
+    initial_update = timed(deepcopy(update))
 
     try:
         # If using line_profiler decorate function.

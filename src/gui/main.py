@@ -198,9 +198,13 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.enable_controls(True)
 
         # Plot Simulation
-        self.plot.configure(self.process)
         # TODO: better format
+        self.plot.configure(self.process)
         args = [("agent", ["position", "active", "position_ls", "position_rs"])]
+
+        # if self.process.game is not None:
+        #     args.append(("game", ["strategy"]))
+
         self.process.configure_queuing(args)
 
     def update_plots(self):

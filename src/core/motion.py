@@ -1,3 +1,6 @@
+from collections import Sequence
+from numbers import Number
+
 import numba
 import numpy as np
 from numba import f8
@@ -49,7 +52,7 @@ def force_contact(h, n, v, t, mu, kappa, damping):
 
 
 @numba.jit(nopython=True)
-def integrator(agent, dt_min, dt_max):
+def integrate(agent, dt_min, dt_max):
     """Verlet integration using adaptive timestep for integrating differential
     system.
 
@@ -86,3 +89,25 @@ def integrator(agent, dt_min, dt_max):
         agent.update_shoulder_positions()
 
     return dt
+
+
+class Integrator(object):
+    def __init__(self, simulation, dt):
+        """
+
+        :param simulation: Simulation class
+        :param dt: Tuple of minumum and maximum timestep (dt_min, dt_max).
+        """
+
+        self.simulation = simulation
+        self.dt = dt
+
+        self.time_tot = np.float64(0)
+        self.dt_prev = np.float64(np.nan)
+
+    def integrate(self):
+        self.dt_prev = integrate(self.simulation.agent, *self.dt)
+        self.time_tot += self.dt_prev
+        self.simulation.time_tot += self.dt_prev
+
+    update = integrate
