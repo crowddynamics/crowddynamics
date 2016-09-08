@@ -156,7 +156,7 @@ class Configuration:
             # Construct polygon that bounds other objects
             raise NotImplemented("")
         else:
-            raise ValueError("")
+            raise Exception("")
 
         self.omega = Path(np.asarray(self.domain.exterior))
 
@@ -420,10 +420,9 @@ class MultiAgentSimulation(Process, Configuration):
         self.game = None
 
         # State of the simulation (types matter when saving to a file)
-        self.iterations = np.int64(0)
-        self.time_tot = np.float64(0.0)
-        self.in_goal = np.int64(0)
-        self.dt_prev = np.float64(0.1)
+        self.iterations = int(0)
+        self.time_tot = float(0)
+        self.in_goal = int(0)
 
         # Data flow
         self.hdfstore = None  # Sends data to hdf5 file
@@ -504,10 +503,11 @@ class MultiAgentSimulation(Process, Configuration):
 
         # Computing motion (forces and torques) for the system
         force_adjust(self.agent)
+        torque_adjust(self.agent)
+
         force_fluctuation(self.agent)
-        if self.agent.orientable:
-            torque_adjust(self.agent)
-            torque_fluctuation(self.agent)
+        torque_fluctuation(self.agent)
+
         agent_agent(self.agent)
         if self.walls is not None:
             agent_wall(self.agent, self.walls)

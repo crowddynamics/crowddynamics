@@ -1,6 +1,3 @@
-from collections import Sequence
-from numbers import Number
-
 import numba
 import numpy as np
 from numba import f8
@@ -20,9 +17,10 @@ def force_fluctuation(agent):
 
 def torque_fluctuation(agent):
     """Random torque."""
-    i = agent.indices()
-    torque = tn.rvs(-3, 3, loc=0, scale=agent.std_rand_force, size=i.size)
-    agent.torque[i] += torque * agent.inertia_rot[i]
+    if agent.orientable:
+        i = agent.indices()
+        torque = tn.rvs(-3, 3, loc=0, scale=agent.std_rand_force, size=i.size)
+        agent.torque[i] += torque * agent.inertia_rot[i]
 
 
 @numba.jit(nopython=True, nogil=True)
@@ -38,10 +36,11 @@ def force_adjust(agent):
 @numba.jit(nopython=True, nogil=True)
 def torque_adjust(agent):
     """Adjusting torque."""
-    for i in agent.indices():
-        agent.torque[i] += agent.inertia_rot[i] / agent.tau_rot * (
-            wrap_to_pi(agent.target_angle[i] - agent.angle[i]) / np.pi *
-            agent.target_angular_velocity[i] - agent.angular_velocity[i])
+    if agent.orientable:
+        for i in agent.indices():
+            agent.torque[i] += agent.inertia_rot[i] / agent.tau_rot * (
+                wrap_to_pi(agent.target_angle[i] - agent.angle[i]) / np.pi *
+                agent.target_angular_velocity[i] - agent.angular_velocity[i])
 
 
 @numba.jit(f8[:](f8, f8[:], f8[:], f8[:], f8, f8, f8), nopython=True,

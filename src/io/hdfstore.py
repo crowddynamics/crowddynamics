@@ -114,8 +114,6 @@ class HDFStore(object):
           attr.name: buffer2
           ...
         """
-        logging.info("")
-
         buffers = {}
         for name, settings in attributes.items():
             if settings["resizable"]:
@@ -124,25 +122,18 @@ class HDFStore(object):
         self.buffers.append((struct, buffers))
 
     def update_buffers(self):
-        logging.debug("")
         for struct, buffers in self.buffers:
-            struct_name = struct.__class__.__name__.lower()
-            logging.debug(struct_name)
             for attr_name, buffer in buffers.items():
-                # logging.debug("")
                 value = getattr(struct, attr_name)
                 value = np.copy(value)
                 buffer.append(value)
 
     def dump_buffers(self):
-        logging.info("")
         with h5py.File(self.filepath, mode='a') as file:
             grp = file[self.group_name]
             for struct, buffers in self.buffers:
                 struct_name = struct.__class__.__name__.lower()
-                logging.debug(struct_name)
                 for attr_name, buffer in buffers.items():
-                    # logging.debug("")
                     dset = grp[struct_name][attr_name]
                     self.append_buffer_to_dataset(dset, buffer)
                     buffer.clear()

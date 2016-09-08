@@ -1,6 +1,5 @@
 import math
 import sys
-from collections import Iterable
 from functools import wraps
 from timeit import default_timer as timer
 
@@ -57,10 +56,9 @@ def timed(func):
     return wrapper
 
 
-def filter_none(*args):
-    """Make iterables and filter None values"""
-    if len(args) == 1:
-        arg = args[0]
-        if isinstance(arg, Iterable):
-            args = arg
-    return tuple(filter(None, args))
+class FpsTimer:
+    def __init__(self):
+        pass
+
+    def __call__(self, *args, **kwargs):
+        pass

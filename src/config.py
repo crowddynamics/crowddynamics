@@ -40,7 +40,7 @@ class Create:
         for item in graphics:
             data['agent'][item]['graphics'] = True
 
-        parameters = ("dt_min", "dt_max", "time_tot", "in_goal")
+        parameters = ("time_tot", "in_goal")
         for item in parameters:
             data['simulation'][item] = deepcopy(default)
 

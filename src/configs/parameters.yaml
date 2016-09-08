@@ -1,11 +1,5 @@
 !!omap
 - simulation: !!omap
-  - dt_min: !!omap
-    - resizable: false
-    - graphics: false
-  - dt_max: !!omap
-    - resizable: false
-    - graphics: false
   - time_tot: !!omap
     - resizable: true
     - graphics: false
@@ -14,6 +8,9 @@
     - graphics: false
 - agent: !!omap
   - size: !!omap
+    - resizable: false
+    - graphics: false
+  - ndim: !!omap
     - resizable: false
     - graphics: false
   - shape: !!omap
@@ -33,7 +30,7 @@
     - graphics: true
   - goal_reached: !!omap
     - resizable: false
-    - graphics: true
+    - graphics: false
   - mass: !!omap
     - resizable: false
     - graphics: false

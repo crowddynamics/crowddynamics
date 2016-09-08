@@ -1,4 +1,5 @@
 import logging
+from timeit import default_timer as timer
 
 import numpy as np
 import pyqtgraph as pg
@@ -95,6 +96,10 @@ class MultiAgentPlot(pg.PlotItem):
         self.showGrid(x=True, y=True, alpha=0.25)
         self.disableAutoRange()
 
+        # Timer for fps
+        self.last_time = timer()
+        self.fps = None
+
         # Dynamics plot items
         self.agent = None
 
@@ -164,3 +169,16 @@ class MultiAgentPlot(pg.PlotItem):
         """Update dynamic items."""
         for key, values in data.items():
             getattr(self, key).set_data(**values)
+
+        # Frames per second
+        now = timer()
+        dt = now - self.last_time
+        self.last_time = now
+        fps = 1.0 / dt
+
+        if self.fps is None:
+            self.fps = fps
+        else:
+            s = np.clip(3 * dt, 0, 1)
+            self.fps = self.fps * (1 - s) + fps * s
+        self.setTitle('%0.2f fps' % self.fps)
