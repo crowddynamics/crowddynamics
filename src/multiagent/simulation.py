@@ -93,6 +93,7 @@ class Configuration:
         # Numpy + Numba. More computationally efficient forms
         self.agent = None
         self.walls = None  # LinearWalls
+        self.omega = None
 
         # Angle and direction update algorithms
         self.navigation = None
@@ -155,6 +156,8 @@ class Configuration:
             raise NotImplemented("")
         else:
             raise ValueError("")
+
+        self.omega = Path(np.asarray(self.domain.exterior))
 
         points = shapes_to_point_pairs(self.obstacles)
         if len(points) != 0:
@@ -479,8 +482,6 @@ class MultiAgentSimulation(Process, Configuration):
             logging.info("Queue is not defined.")
 
     def update(self):
-        logging.debug("")
-
         # Reset
         self.agent.reset_motion()
         self.agent.reset_neighbor()
@@ -511,11 +512,10 @@ class MultiAgentSimulation(Process, Configuration):
         if self.game is not None:
             self.game.update()
 
-        # Check which agent are inside the domain aka active
+        # Check which agent are inside the domain
         if self.domain is not None:
-            domain = Path(np.asarray(self.domain.exterior))
             num = -np.sum(self.agent.active)
-            self.agent.active &= domain.contains_points(self.agent.position)
+            self.agent.active &= self.omega.contains_points(self.agent.position)
             num += np.sum(self.agent.active)
             self.in_goal += num
 
@@ -532,8 +532,13 @@ class MultiAgentSimulation(Process, Configuration):
             data = self.queue_items.get()
             self.queue.put(data)
 
+    # To measure JIT compilation time of numba decorated functions.
     func = deepcopy(update)
     func.__name__ = "initial_update"
     initial_update = timed(func)
 
-    update = profile(update)
+    try:
+        # If using line_profiler decorate function.
+        update = profile(update)
+    except NameError:
+        pass

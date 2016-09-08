@@ -57,7 +57,7 @@ def agent_closer_to_exit(points, position):
 def exit_capacity(points, agent_radius):
     """Capacity of narrow exit."""
     door_radius = length(points[1] - points[0]) / 2.0
-    capacity = door_radius // np.max(agent_radius)
+    capacity = door_radius // agent_radius
     return capacity
 
 
@@ -139,5 +139,4 @@ class EgressGame(object):
         self.t_aset = self.t_aset_0 - self.simulation.time_tot
         best_response_strategy(self.simulation.agent, players, self.door,
                                self.radius, self.strategy, self.strategies,
-                               self.t_aset, self.t_evac, self.interval,
-                               self.simulation.dt_prev)
+                               self.t_aset, self.interval, self.simulation.dt_prev)

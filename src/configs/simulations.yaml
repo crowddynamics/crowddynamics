@@ -46,22 +46,22 @@ simulations: !!omap
         - exit_hall_width: 2.0
         - spawn_shape: "circ"
 
-#  - room_evacuation_game:
-#      module: "src.examples"
-#      class: "RoomEvacuationGame"
-#      kwargs: !!omap
-#        - size: 300
-#        - model: "circular"
-#        - body: "adult"
-#        - height: 20.0
-#        - width: 10.0
-#        - door_width: 1.2
-#        - exit_hall_width: 2.0
-#        - spawn_shape: "circ"
-#        - t_aset_0: 200.0
-#        - interval: 0.1
-#        - neighbor_radius: 0.4
-#        - neighborhood_size: 8
+  - room_evacuation_game:
+      module: "src.examples"
+      class: "RoomEvacuationGame"
+      kwargs: !!omap
+        - size: 300
+        - model: "circular"
+        - body: "adult"
+        - height: 20.0
+        - width: 10.0
+        - door_width: 1.2
+        - exit_hall_width: 2.0
+        - spawn_shape: "circ"
+        - t_aset_0: 200.0
+        - interval: 0.1
+        - neighbor_radius: 0.4
+        - neighborhood_size: 8
 
 
 # Qt mappings for the kwargs

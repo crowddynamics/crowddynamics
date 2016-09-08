@@ -134,6 +134,5 @@ class MultiAgentPlot(pg.PlotItem):
 
     def update_data(self, data):
         """Update dynamic items."""
-        # logging.debug("")
         for key, values in data.items():
             getattr(self, key).set_data(**values)

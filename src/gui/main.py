@@ -205,7 +205,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
     def update_plots(self):
         """Updates the data in the plot(s)."""
-        logging.debug("")
         data = self.queue.get()
         if data is None:
             self.timer.stop()

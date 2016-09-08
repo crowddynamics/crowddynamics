@@ -76,7 +76,7 @@ def user_info():
     logging.info("Python: %s", sys.version[0:5])
 
 
-def run_simulation(name):
+def run_simulation(name, iterations=100):
     setup_logging()
     user_info()
     logging.info("Starting")
@@ -93,7 +93,7 @@ def run_simulation(name):
     process = simulation(None, **kwargs)
 
     process.initial_update()
-    for _ in range(100):
+    for _ in range(iterations):
         process.update()
 
 
