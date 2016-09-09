@@ -60,9 +60,9 @@ class Circular(pg.PlotDataItem):
 
             for key, val in self.settings["patient"].items():
                 self.opts[key][patient] = val
-
-        for key, val in self.settings["active"].items():
-            self.opts[key][active] = val
+        else:
+            for key, val in self.settings["active"].items():
+                self.opts[key][active] = val
 
         for key, val in self.settings["inactive"].items():
             self.opts[key][active ^ True] = val

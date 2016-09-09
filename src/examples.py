@@ -102,23 +102,27 @@ class RoomEvacuation(MultiAgentSimulation):
                  door_width, exit_hall_width):
         super(RoomEvacuation, self).__init__(queue)
 
-        room = Polygon([(0, 0), (0, height), (width, height), (width, 0), ])
-        hall = Polygon([(width, (height - door_width) / 2),
-                        (width, (height + door_width) / 2),
-                        (width + exit_hall_width, (height + door_width) / 2),
-                        (width + exit_hall_width, (height - door_width) / 2), ])
+        self.room = Polygon(
+            [(0, 0), (0, height), (width, height), (width, 0), ])
+        self.hall = Polygon([(width, (height - door_width) / 2),
+                             (width, (height + door_width) / 2),
+                             (width + exit_hall_width,
+                              (height + door_width) / 2),
+                             (width + exit_hall_width,
+                              (height - door_width) / 2), ])
+        self.door = np.array(([(width, (height - door_width) / 2),
+                               (width, (height + door_width) / 2), ]))
 
-        door = LineString([
+        exits = LineString([
             (width + exit_hall_width, (height - door_width) / 2),
             (width + exit_hall_width, (height + door_width) / 2),
         ])
+        domain = self.room | self.hall
+        obstacles = (self.room | self.hall).exterior - exits
 
-        domain = room | hall
-        obstacles = (room | hall).exterior - door
-
-        spawn = room
+        spawn = self.room
         if spawn_shape == "circ":
-            spawn = room & Point((width, height / 2)).buffer(height / 2)
+            spawn = self.room & Point((width, height / 2)).buffer(height / 2)
 
         kwargs = {
             'size': size,
@@ -127,7 +131,7 @@ class RoomEvacuation(MultiAgentSimulation):
             'orientation': 0
         }
 
-        self.set_field(domain=domain, obstacles=obstacles, exits=door)
+        self.set_field(domain=domain, obstacles=obstacles, exits=exits)
         self.set_algorithms(navigation="static")
 
         self.set_body(size, body)
@@ -143,7 +147,5 @@ class RoomEvacuationGame(RoomEvacuation):
             queue, size, width, height, model, body, spawn_shape, door_width,
             exit_hall_width)
 
-        door = np.array(([(width, (height - door_width) / 2),
-                          (width, (height + door_width) / 2), ]))
-        self.game = EgressGame(self, door, t_aset_0, interval, neighbor_radius,
-                               neighborhood_size)
+        self.game = EgressGame(self, self.door, self.room, t_aset_0, interval,
+                               neighbor_radius, neighborhood_size)

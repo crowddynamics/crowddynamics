@@ -107,6 +107,7 @@ class Integrator(object):
     def integrate(self):
         self.dt_prev = integrate(self.simulation.agent, *self.dt)
         self.time_tot += self.dt_prev
+        self.simulation.dt_prev = self.dt_prev
         self.simulation.time_tot += self.dt_prev
 
     update = integrate

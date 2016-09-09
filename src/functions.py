@@ -54,11 +54,3 @@ def timed(func):
         print(func.__name__, format_time(dt))
         return ret
     return wrapper
-
-
-class FpsTimer:
-    def __init__(self):
-        pass
-
-    def __call__(self, *args, **kwargs):
-        pass

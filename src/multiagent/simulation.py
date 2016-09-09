@@ -30,19 +30,22 @@ class QueueDict:
     def __init__(self, producer):
         self.producer = producer
         self.dict = {}
+        self.args = None
 
     def set(self, args):
+        self.args = args
+
         self.dict.clear()
-        for key, attrs in args:
-            self.dict[key] = {}
+        for (key, key2), attrs in self.args:
+            self.dict[key2] = {}
             for attr in attrs:
-                self.dict[key][attr] = None
+                self.dict[key2][attr] = None
 
     def fill(self, d):
-        for key, attrs in d.items():
+        for (key, key2), attrs in self.args:
             item = getattr(self.producer, key)
-            for attr in attrs.keys():
-                d[key][attr] = np.copy(getattr(item, attr))
+            for attr in attrs:
+                d[key2][attr] = np.copy(getattr(item, attr))
 
     def get(self):
         d = deepcopy(self.dict)
@@ -423,6 +426,7 @@ class MultiAgentSimulation(Process, Configuration):
         self.iterations = int(0)
         self.time_tot = float(0)
         self.in_goal = int(0)
+        self.dt_prev = float(0)
 
         # Data flow
         self.hdfstore = None  # Sends data to hdf5 file

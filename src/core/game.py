@@ -1,5 +1,7 @@
 import numba
 import numpy as np
+from matplotlib.path import Path
+from shapely.geometry import Polygon
 
 from src.core.vector2D import length_nx2, length
 
@@ -92,12 +94,13 @@ class EgressGame(object):
     .. [1] Heli??vaara, S., Ehtamo, H., Helbing, D., & Korhonen, T. (2013). Patient and impatient pedestrians in a spatial game for egress congestion. Physical Review E - Statistical, Nonlinear, and Soft Matter Physics. http://doi.org/10.1103/PhysRevE.87.012802
     """
 
-    def __init__(self, simulation, door, t_aset_0,
+    def __init__(self, simulation, door, room, t_aset_0,
                  interval=0.1, neighbor_radius=0.4, neighborhood_size=8):
         """
         Parameters
         ----------
         :param simulation: MultiAgent Simulation
+        :param room:
         :param door: numpy.ndarray
         :param t_aset_0: Initial available safe egress time.
         :param interval: Interval for updating strategies
@@ -111,10 +114,19 @@ class EgressGame(object):
 
         self.simulation = simulation
 
+        self.door = door
+        if isinstance(room, Polygon):
+            vertices = np.asarray(room.exterior)
+        elif isinstance(room, np.ndarray):
+            vertices = room
+        else:
+            raise Exception()
+
+        self.room = Path(vertices)  # Polygon vertices
+
         # Game properties
         self.strategies = np.array((0, 1), dtype=np.int64)
         self.interval = interval
-        self.door = door
         self.t_aset_0 = t_aset_0
         self.t_aset = t_aset_0
         self.t_evac = np.zeros(self.simulation.agent.size, dtype=np.float64)
@@ -140,8 +152,14 @@ class EgressGame(object):
 
         # Indices of agents that are playing the game
         # Loop over agents and update strategies
-        players = self.simulation.agent.indices()
+        agent = self.simulation.agent
+        mask = agent.active & self.room.contains_points(agent.position)
+        indices = np.arange(agent.size)[mask]
+
+        # Agents that are not playing anymore will be patient again
+        self.strategy[mask ^ True] = 1
+
         self.t_aset = self.t_aset_0 - self.simulation.time_tot
-        best_response_strategy(self.simulation.agent, players, self.door,
+        best_response_strategy(self.simulation.agent, indices, self.door,
                                self.radius, self.strategy, self.strategies,
                                self.t_aset, self.interval, self.simulation.dt_prev)

@@ -27,6 +27,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
     - Graphics layout widget (middle)
     - Control bar (bottom)
     """
+
     def __init__(self):
         super(MainWindow, self).__init__()
 
@@ -160,7 +161,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 widget.setCurrentIndex(index)
                 widget.currentIndexChanged[str].connect(update)
             else:
-                logging.warning("Value type not supported: {}".format(type(val)))
+                logging.warning(
+                    "Value type not supported: {}".format(type(val)))
 
             self.sidebarLeft.addWidget(label)
             self.sidebarLeft.addWidget(widget)
@@ -200,10 +202,11 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # Plot Simulation
         # TODO: better format
         self.plot.configure(self.process)
-        args = [("agent", ["position", "active", "position_ls", "position_rs"])]
+        args = [(("agent", "agent"),
+                 ["position", "active", "position_ls", "position_rs"])]
 
-        # if self.process.game is not None:
-        #     args.append(("game", ["strategy"]))
+        if self.process.game is not None:
+            args.append((("game", "agent"), ["strategy"]))
 
         self.process.configure_queuing(args)
 
