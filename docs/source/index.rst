@@ -8,22 +8,23 @@ Python package for crowd simulation.
 
 .. toctree::
    :numbered:
-   :maxdepth: 1
+   :maxdepth: 2
 
-   sections/overview.rst
-   sections/foundations.rst
-   sections/quantity.rst
-   sections/phenomena.rst
-   sections/model.rst
-   sections/adjusting.rst
-   sections/interactions.rst
-   sections/fluctuation.rst
-   sections/subgroup.rst
-   sections/neighborhood.rst
-   sections/egress.rst
-   sections/interface.rst
-   sections/simulations.rst
-   sections/appendix.rst
+   overview.rst
+
+   foundations/foundations.rst
+   foundations/quantity.rst
+   foundations/model.rst
+
+   multiagent/index.rst
+
+   code/interface.rst
+
+   research/phenomena.rst
+   research/simulations.rst
+
+   glossary.rst
+   appendix.rst
 
 
 Indices and tables

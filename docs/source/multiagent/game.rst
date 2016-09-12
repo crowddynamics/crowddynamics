@@ -1,8 +1,8 @@
-Spatial Game for Egress Congestion
-==================================
+Game Theoretical Models
+=======================
 
-Definition
-----------
+Spatial Game for Egress Congestion
+----------------------------------
 Spatial `game`_ for egress congestion between players :math:`P \subset A`
 
 .. math::
