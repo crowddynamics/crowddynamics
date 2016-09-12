@@ -12,16 +12,14 @@ Python package for crowd simulation.
 
    overview.rst
 
-   foundations/foundations.rst
-   foundations/quantity.rst
-   foundations/model.rst
+   foundations/index.rst
 
+   cellular/index.rst
    multiagent/index.rst
+   continuum/index.rst
 
-   code/interface.rst
-
-   research/phenomena.rst
-   research/simulations.rst
+   research/index.rst
+   api/index.rst
 
    glossary.rst
    appendix.rst
