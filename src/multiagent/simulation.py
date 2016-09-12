@@ -439,6 +439,7 @@ class MultiAgentSimulation(Process, Configuration):
     def stop(self):
         """Sets event to true in order to stop the simulation process."""
         logging.info("MultiAgent Exit...")
+        # self.queue.put(None)  # Poison pill. Ends simulation
         self.exit.set()
 
     def run(self):
@@ -448,6 +449,7 @@ class MultiAgentSimulation(Process, Configuration):
         logging.info("MultiAgent Starting")
         while not self.exit.is_set():
             self.update()
+
         self.queue.put(None)  # Poison pill. Ends simulation
         logging.info("MultiAgent Stopping")
 

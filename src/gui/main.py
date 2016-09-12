@@ -1,5 +1,6 @@
 import importlib
 import logging
+import sys
 from functools import partial
 from multiprocessing import Queue
 
@@ -10,6 +11,10 @@ from src.config import Load
 from src.multiagent.simulation import MultiAgentSimulation
 from .graphics import MultiAgentPlot
 from .ui.gui import Ui_MainWindow
+
+# Do not use multiprocessing in windows because of different semantics compared
+# to linux.
+enable_multiprocessing = not sys.platform.startswith('Windows')
 
 
 class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
@@ -216,7 +221,11 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         if data is None:
             self.timer.stop()
             self.enable_controls(False)
+            self.process = None
+            self.reset_buffers()
         else:
+            if not enable_multiprocessing:
+                self.process.update()  # Sequential processing
             self.plot.update_data(data)
 
     def start(self):
@@ -224,7 +233,12 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.startButton.setEnabled(False)
         if self.process is not None:
             logging.info("")
-            self.process.start()
+
+            if enable_multiprocessing:
+                self.process.start()
+            else:
+                self.process.update()
+
             self.timer.start(0.01 * 1000)  # same as dt used in simulation
         else:
             logging.info("Process is not set")
@@ -233,7 +247,10 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """Stops simulation process and updating the plot"""
         if self.process is not None:
             logging.info("")
-            self.process.stop()
-            self.process = None
+
+            if enable_multiprocessing:
+                self.process.stop()
+            else:
+                self.queue.put(None)
         else:
             logging.info("Process is not set")

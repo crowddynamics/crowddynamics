@@ -8,6 +8,8 @@ The aim is to keep the code highly modular and extendable so that new crowd dyna
 
 Graphical user interface using *PyQt4* and *pyqtgraph* for interactive visualization of the simulation.
 
+.. TODO: About architecture
+
 
 Contents
 
