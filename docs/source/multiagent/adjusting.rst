@@ -1,12 +1,12 @@
-Adjusting Motion
-================
+Adjusting
+=========
 
 Force
 -----
 *Adjusting* aka *driving* force accounts of agent's desire to reach a certain destination. In high crowd densities term *manoeuvring* is used.  Force affecting the agent takes form
 
 .. math::
-   \mathbf{f}_{adj} = \frac{m}{\tau_{adj}} (v_{0} \cdot \mathbf{\hat{e}_{0}} - \mathbf{v}),
+   \mathbf{f}_{adj} = \frac{m}{\tau_{adj}} (v_{0} \mathbf{\hat{e}_{0}} - \mathbf{v}),
 
 where
 

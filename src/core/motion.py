@@ -61,22 +61,26 @@ def integrate(agent, dt_min, dt_max):
     :return: Timestep that was used for integration
     """
     i = agent.indices()
-    acceleration = agent.force[i] / agent.mass[i]
-    dv = agent.velocity[i] + acceleration * dt_max
-    dx_max = 1.1 * np.max(agent.target_velocity[i]) * dt_max
+    a = agent.force[i] / agent.mass[i]  # Acceleration
 
-    dv_max = np.max(length_nx2(dv))
-    if dv_max == 0:
+    # Time step selection
+    v_max = np.max(length_nx2(agent.velocity))
+    dx_max = np.max(agent.target_velocity) * dt_max
+    dx_max *= 1.1
+
+    if v_max == 0:
+        # Static system
         dt = dt_max
     else:
-        dt = dx_max / dv_max
+        dt = dx_max / v_max
         if dt > dt_max:
             dt = dt_max
         elif dt < dt_min:
             dt = dt_min
 
-    agent.position[i] += agent.velocity[i] * dt + 0.5 * acceleration * dt ** 2
-    agent.velocity[i] += acceleration * dt
+    # Updating agents
+    agent.position[i] += agent.velocity[i] * dt + 0.5 * a * dt ** 2
+    agent.velocity[i] += a * dt
 
     if agent.orientable:
         angular_acceleration = agent.torque[i] / agent.inertia_rot[i]

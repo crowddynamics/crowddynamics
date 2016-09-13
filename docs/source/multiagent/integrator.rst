@@ -1,6 +1,16 @@
 Integrator
 ==========
-Differential system is integrated using numerical integration scheme using discrete adaptive time step :math:`\Delta t`.
+Differential system is integrated using numerical integration scheme using discrete adaptive time step.
+
+Selecting time step
+
+.. math::
+   \Delta t \in [\Delta t_{min}, \Delta t_{max}]
+
+.. math::
+   \Delta x = c \Delta t_{max} \max_{i\in A} v_i^0 \\
+   v_{max} = \max_{i \in A} v_i \\
+   \Delta t
 
 Acceleration on an agent
 
