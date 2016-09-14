@@ -1,5 +1,4 @@
 matplotlib
-fastcache
 shapely
 numpy
 numba

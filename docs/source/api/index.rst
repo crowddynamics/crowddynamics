@@ -2,14 +2,49 @@ API
 ===
 .. Source code and Python requirements information.
 
-Source is written using python version 3.4. Code uses *Numpy* for efficient numerical arrays and *Numba* to just-in-time compile Python functions into computationally efficient machine code. This keeps the source code readable and easily understandable.
+The aim is to keep the code modular and extensible so that new dynamical models can be easily integrated and tested.
 
-The aim is to keep the code highly modular and extendable so that new crowd dynamical models can be easily integrated and tested.
+Source is written using ``Python 3``
 
-Graphical user interface using *PyQt4* and *pyqtgraph* for interactive visualization of the simulation.
+Required external libraries
+
+#) Core numerical computations are done using
+
+   - ``numpy``
+   - ``scipy``
+   - ``numba``
+
+#) Setting simulation geometry with linestring and polygons
+
+   - ``shapely``
+
+#) Navigation algorithm
+
+   - ``scikit-fmm`` Fast Marching Method for Eikonal equation
+   - ``scikit-image`` Drawing shapes in discrete grid
+
+#) Storing data into hdf5 file format
+
+   - ``h5py``
+
+#) Config files
+
+   - ``yaml``
+   - ``ruamel.yaml``
+
+#) Data visualization
+
+   - ``matplotlib`` Static plots
+   - ``pyqt4`` Graphical user interface
+   - ``pyqtgraph`` Interactive plotting inside gui
+
+#) Data analysis
+
+   - ``pandas``
 
 .. TODO: About architecture
 
+----
 
 Contents
 
