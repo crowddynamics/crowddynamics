@@ -11,6 +11,7 @@ Python package for crowd simulation.
    :maxdepth: 2
 
    overview.rst
+   getting_started.rst
 
    foundations/index.rst
 
