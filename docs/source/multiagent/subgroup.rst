@@ -2,8 +2,8 @@
    This section is under construction and might contain errors and be subject to change.
 
 
-Subgroup Behaviour
-==================
+Subgroups
+=========
 Crowds in real life often have a number of smaller subgroups. Such as group of two or three friends walking together or couple with or without children.
 
 

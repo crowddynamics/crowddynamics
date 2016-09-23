@@ -50,9 +50,11 @@ Contents
    interactions.rst
    fluctuation.rst
    integrator.rst
-   subgroup.rst
-   neighborhood.rst
+
    navigation.rst
    orientation.rst
    exit_selection.rst
+
+   subgroup.rst
+   neighborhood.rst
    game.rst

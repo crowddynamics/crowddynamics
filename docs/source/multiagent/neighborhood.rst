@@ -1,5 +1,5 @@
-Neighborhood
-============
+Neighborhoods
+=============
 
 Neighborhood of agent :math:`i` is denoted :math:`N_i^{neigh} \subset N \setminus \{i\}` is a subset of agents whose distance from agent :math:`i` is smaller than :math:`d \geq 0`
 
