@@ -7,8 +7,8 @@ from multiprocessing import Queue
 import pyqtgraph as pg
 from PyQt4 import QtGui, QtCore
 
-from src.config import Load
-from src.multiagent.simulation import MultiAgentSimulation
+from crowddynamics.config import Load
+from crowddynamics.multiagent.simulation import MultiAgentSimulation
 from .graphics import MultiAgentPlot
 from .ui.gui import Ui_MainWindow
 

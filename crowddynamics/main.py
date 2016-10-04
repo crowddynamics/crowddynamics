@@ -8,7 +8,7 @@ import sys
 
 import yaml
 
-from src.config import Load
+from crowddynamics.config import Load
 
 
 def man():
@@ -104,7 +104,7 @@ def run_gui():
     """
     from PyQt4 import QtGui, QtCore
     sys.path.insert(0, os.path.abspath(".."))
-    from src.gui.main import MainWindow
+    from crowddynamics.gui.main import MainWindow
 
     args = man().parse_args()
     if args.logLevel:

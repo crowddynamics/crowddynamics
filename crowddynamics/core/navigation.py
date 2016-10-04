@@ -5,7 +5,7 @@ import numpy as np
 from shapely.geometry import LineString
 from shapely.geometry import Polygon
 
-from src.core.geometry import shapes_to_point_pairs
+from crowddynamics.core.geometry import shapes_to_point_pairs
 
 try:
     import skfmm

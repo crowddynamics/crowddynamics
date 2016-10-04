@@ -1,8 +1,8 @@
 import numpy as np
 from shapely.geometry import Polygon, LineString, Point
 
-from src.core.game import EgressGame
-from src.multiagent.simulation import MultiAgentSimulation
+from crowddynamics.core.game import EgressGame
+from crowddynamics.multiagent.simulation import MultiAgentSimulation
 
 
 class Outdoor(MultiAgentSimulation):

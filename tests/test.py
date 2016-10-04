@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from descartes import PolygonPatch
 from shapely.geometry import Polygon
 
-from src.core.sampling import PolygonSample
+from crowddynamics.core.sampling import PolygonSample
 
 
 a = np.random.uniform(size=(10, 2))

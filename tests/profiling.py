@@ -21,8 +21,8 @@ import logging.config
 
 sys.path.insert(0, "/home/jaan/Dropbox/Projects/CrowdDynamics")
 
-from src.main import setup_logging, user_info
-from src.config import Load
+from crowddynamics.main import setup_logging, user_info
+from crowddynamics.config import Load
 
 
 def run_simulation(name, iterations=100):

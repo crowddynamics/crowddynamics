@@ -3,7 +3,7 @@ import numpy as np
 from matplotlib.path import Path
 from shapely.geometry import Polygon
 
-from src.core.vector2D import length_nx2, length
+from crowddynamics.core.vector2D import length_nx2, length
 
 
 @numba.jit(nopython=True)

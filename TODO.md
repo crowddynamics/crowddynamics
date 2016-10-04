@@ -1,4 +1,7 @@
 # TODO
+## Version Control
+- [ ] https://guides.github.com/
+
 ## Documentation
 - [ ] Video Tutorial
 - [ ] Bokeh Plots

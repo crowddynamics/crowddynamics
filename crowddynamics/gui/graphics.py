@@ -6,8 +6,8 @@ import pyqtgraph as pg
 from shapely.geometry import LineString
 from shapely.geometry import Polygon
 
-from src.config import Load
-from src.multiagent.simulation import MultiAgentSimulation
+from crowddynamics.config import Load
+from crowddynamics.multiagent.simulation import MultiAgentSimulation
 
 
 class Circular(pg.PlotDataItem):

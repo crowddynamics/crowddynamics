@@ -2,7 +2,7 @@ import numpy as np
 from numba import float64, int64
 from numba import jitclass
 
-from src.core.vector2D import rotate90, dot2d
+from crowddynamics.core.vector2D import rotate90, dot2d
 
 spec_linear = (
     ("params", float64[:, :, :]),

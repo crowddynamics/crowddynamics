@@ -11,19 +11,19 @@ from shapely.geometry import LineString
 from shapely.geometry import Polygon, Point
 from shapely.ops import cascaded_union
 
-from src.config import Load
-from src.core.geometry import check_shapes, shapes_to_point_pairs
-from src.core.interactions import agent_agent, agent_wall, \
+from crowddynamics.config import Load
+from crowddynamics.core.geometry import check_shapes, shapes_to_point_pairs
+from crowddynamics.core.interactions import agent_agent, agent_wall, \
     agent_agent_distance_three_circle
-from src.core.motion import force_adjust, force_fluctuation, torque_adjust, \
+from crowddynamics.core.motion import force_adjust, force_fluctuation, torque_adjust, \
     torque_fluctuation, integrate, Integrator
-from src.core.navigation import Navigation, Orientation
-from src.core.sampling import PolygonSample
-from src.core.vector2D import angle, length
-from src.functions import timed
-from src.io.hdfstore import HDFStore
-from src.multiagent.agent import Agent
-from src.multiagent.field import LineObstacle
+from crowddynamics.core.navigation import Navigation, Orientation
+from crowddynamics.core.sampling import PolygonSample
+from crowddynamics.core.vector2D import angle, length
+from crowddynamics.functions import timed
+from crowddynamics.io.hdfstore import HDFStore
+from crowddynamics.multiagent.agent import Agent
+from crowddynamics.multiagent.field import LineObstacle
 
 
 class QueueDict:
