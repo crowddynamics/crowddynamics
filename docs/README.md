@@ -1,13 +1,21 @@
-Publishing Docs
-===============
-Make clean `hmtl` with *Sphinx* makefile
+Documentation
+=============
+
+HTML
+----
+For publishing, make a clean `hmtl` with *Sphinx* makefile
 
 ```
 make clean hmtl
 ```
 
-Import documentation to `gp-pages` branch with [ghp-import](https://github.com/davisp/ghp-import) package. Navigate to `build` directory and use command
+
+Publishing in GitHub Pages
+--------------------------
+Import documentation to `gh-pages` branch with [ghp-import](https://github.com/davisp/ghp-import) package.
+
+From `docs` directory and use command
 
 ```
-ghp-import -p html/
+ghp-import -p build/html/
 ```

@@ -6,6 +6,9 @@
 - [ ] Video Tutorial
 - [ ] Bokeh Plots
 - [ ] Fundamental Diagram
+- [ ] Bibliography
+- [ ] DOI
+- [ ] Citation
 
 ## Package
 - [ ] Buildscripts, Conda environment,
