@@ -4,7 +4,7 @@
 
 simulations: !!omap
   - outdoor:
-      module: "src.examples"
+      module: "crowddynamics.examples"
       class: "Outdoor"
       kwargs: !!omap
         - size: 100
@@ -14,7 +14,7 @@ simulations: !!omap
         - width: 20.0
 
   - hallway:
-      module: "src.examples"
+      module: "crowddynamics.examples"
       class: "Hallway"
       kwargs: !!omap
         - size: 100
@@ -24,7 +24,7 @@ simulations: !!omap
         - width: 20.0
 
   - rounding:
-      module: "src.examples"
+      module: "crowddynamics.examples"
       class: "Rounding"
       kwargs: !!omap
         - size: 100
@@ -34,7 +34,7 @@ simulations: !!omap
         - width: 15.0
 
   - room_evacuation:
-      module: "src.examples"
+      module: "crowddynamics.examples"
       class: "RoomEvacuation"
       kwargs: !!omap
         - size: 200
@@ -47,7 +47,7 @@ simulations: !!omap
         - spawn_shape: "circ"
 
   - room_evacuation_game:
-      module: "src.examples"
+      module: "crowddynamics.examples"
       class: "RoomEvacuationGame"
       kwargs: !!omap
         - size: 300

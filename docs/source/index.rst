@@ -2,11 +2,12 @@
    sphinx-quickstart on Sat Mar 26 15:35:19 2016.
    You can adapt this file completely to your liking, but it should at least contain the root `toctree` directive.
 
+Crowd Dynamics
+==============
 .. warning::
    Crowd Dynamics is in very early states of its development and a lot of changes can be made to source code and documentation.
 
-Crowd Dynamics 0.0.1
-====================
+
 Python package for crowd simulation.
 
 .. TODO: Embed youtube video to demonstrate the concept

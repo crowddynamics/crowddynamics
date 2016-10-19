@@ -1,6 +1,19 @@
 Documentation
 =============
 
+Installing dependensies for docs use commands
+
+```
+pip install -r requirements.txt
+```
+
+or with anaconda
+
+```
+conda config --add channels conda-forge
+conda install --file requirements.txt
+```
+
 HTML
 ----
 For publishing, make a clean `hmtl` with *Sphinx* makefile

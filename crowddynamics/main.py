@@ -6,7 +6,8 @@ import os
 import platform
 import sys
 
-import yaml
+from ruamel import yaml
+
 
 from crowddynamics.config import Load
 

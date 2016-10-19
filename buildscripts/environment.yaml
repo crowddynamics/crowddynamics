@@ -1,8 +1,10 @@
 name: crowd35
+channels:
+    - conda-forge
 dependencies:
-    - python=3.*
+    - python=3.5
     - numpy
-    - numba>=28.*
+    - numba
     - scipy
     - scikit-image
     - shapely
@@ -11,8 +13,7 @@ dependencies:
     - pyqtgraph
     - h5py
     - yaml
-    - ruamel
     - pandas
-
     - pip:
-        - skfmm # scikit-fmm
+        - ruamel.yaml
+        - scikit-fmm

@@ -9,6 +9,7 @@
 - [ ] Bibliography
 - [ ] DOI
 - [ ] Citation
+- [ ] Neighbourhood -> Sensory Region
 
 ## Package
 - [ ] Buildscripts, Conda environment,
@@ -33,3 +34,7 @@
 - [ ] Nearest Neighbors
 - [ ] Crowd Density
 - [ ] Navigation vizualization
+
+# Resources
+https://en.wikipedia.org/wiki/Nearest_neighbor_search
+https://en.wikipedia.org/wiki/R-tree
