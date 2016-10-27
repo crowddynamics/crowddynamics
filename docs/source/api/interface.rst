@@ -33,5 +33,3 @@ Simulation data is stored to hdf5 file.
  Visualizing physiological signals in real-time.
  PROC. OF THE 14th PYTHON IN SCIENCE CONF.
  Retrieved from https://github.com/ssepulveda/RTGraph
-
-

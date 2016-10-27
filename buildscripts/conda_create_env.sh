@@ -2,5 +2,7 @@
 
 # Create conda environment for crowd dynamics
 # conda config --add channels conda-forge
-conda env create -f environment.yaml --name crowd35
-source activate crowd35
+
+# Environment name will be crowd34
+conda env create -f environment.yaml
+source activate crowd34

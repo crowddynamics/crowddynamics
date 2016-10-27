@@ -36,6 +36,7 @@ extensions = [
     'sphinx.ext.mathjax',
     'sphinx.ext.viewcode',
     'sphinx.ext.ifconfig',
+    'sphinx.ext.graphviz',
     'sphinx.ext.githubpages',
     # 'sphinxcontrib.bibtex',
 ]

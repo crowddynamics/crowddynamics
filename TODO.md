@@ -34,7 +34,7 @@
 - [ ] Nearest Neighbors
 - [ ] Crowd Density
 - [ ] Navigation vizualization
-
-# Resources
-https://en.wikipedia.org/wiki/Nearest_neighbor_search
-https://en.wikipedia.org/wiki/R-tree
+- [ ] Update -> Evaluation Tree + Timing
+- [ ] Partitioning algoritm:
+    - Barnes-Hut http://arborjs.org/docs/barnes-hut
+    - Convex Hull   

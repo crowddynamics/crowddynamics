@@ -51,7 +51,13 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.timer = QtCore.QTimer(self)
         self.plot = None
 
-        # Configures
+        # Buttons
+        # RadioButton for initializing HDF5 saving for the simulation
+        self.savingButton = QtGui.QRadioButton("Save to HDF5Store")
+        # Button that initializes selected simulation
+        self.initButton = QtGui.QPushButton("Initialize Simulation")
+
+        # Configures. Should be last.
         self.configure_plot()
         self.configure_signals()
 
@@ -76,6 +82,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.timer.timeout.connect(self.update_plots)
         self.startButton.clicked.connect(self.start)
         self.stopButton.clicked.connect(self.stop)
+        self.initButton.clicked.connect(self.set_simulation)
 
         # Disable until simulation is set
         self.enable_controls(False)
@@ -172,26 +179,16 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             self.sidebarLeft.addWidget(label)
             self.sidebarLeft.addWidget(widget)
 
-        initButton = QtGui.QPushButton("Initialize Simulation")
-        initButton.clicked.connect(self.set_simulation)
-        self.sidebarLeft.addWidget(initButton)
-
-        def _clicked_saving(process):
-            if process is None:
-                pass
-            elif isinstance(process, MultiAgentSimulation):
-                process.configure_hdfstore()
-
-        savingButton = QtGui.QPushButton("Save to HDF5Store")
-        savingButton.clicked.connect(partial(_clicked_saving, self.process))
-        self.sidebarLeft.addWidget(savingButton)
+        self.sidebarLeft.addWidget(self.savingButton)
+        self.sidebarLeft.addWidget(self.initButton)
 
     def set_simulation(self):
         logging.info("")
 
         self.reset_buffers()
-        name = self.simulationsBox.currentText()
 
+        # Import simulation from examples and initializes it.
+        name = self.simulationsBox.currentText()
         simu_dict = self.configs["simulations"][name]
         module_name = simu_dict["module"]
         class_name = simu_dict["class"]
@@ -204,9 +201,12 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # Enable controls
         self.enable_controls(True)
 
-        # Plot Simulation
         # TODO: better format
+        # Plot Simulation
         self.plot.configure(self.process)
+
+        # Queing dictates what data is sent to graphics for display. For example
+        # positions of agents.
         args = [(("agent", "agent"),
                  ["position", "active", "position_ls", "position_rs"])]
 
@@ -214,6 +214,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             args.append((("game", "agent"), ["strategy"]))
 
         self.process.configure_queuing(args)
+        if self.savingButton.isChecked():
+            self.process.configure_hdfstore()
 
     def update_plots(self):
         """Updates the data in the plot(s)."""

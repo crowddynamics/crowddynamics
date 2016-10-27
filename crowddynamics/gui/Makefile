@@ -1,14 +1,18 @@
 # Make python file out of the ui files.
 
-DESIGNERDIR = designer
-BUILDDIR    = ui
+SOURCEDIR = designer
+BUILDDIR  = ui
 
-# Commands
 
-all: clean gui
+.PHONY: all
+all:
+	clean gui
 
-gui:
-	pyuic4 $(DESIGNERDIR)/gui.ui > $(BUILDDIR)/gui.py
-
+.PHONY: clean
 clean:
 	rm -rf $(BUILDDIR)/*
+
+.PHONY: gui
+gui:
+	pyuic4 $(SOURCEDIR)/gui.ui > $(BUILDDIR)/gui.py
+
