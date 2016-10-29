@@ -1,10 +1,6 @@
-User Interface
-==============
+Graphical User Interface
+========================
 
-.. image:: ../_static/gui1.png
-
-Graphics
---------
 Graphical user interface and simulation graphics for crowd dynamics. Main window is created
 
 - PyQt4 [pyqt4]_
@@ -13,13 +9,6 @@ Graphical user interface and simulation graphics for crowd dynamics. Main window
 
 Design of the gui is greatly inspired and aided by the design of [rtgraph]_.
 
-Communication
--------------
-Communication with simulation data.
-
-Input/Output
-------------
-Simulation data is stored to hdf5 file.
 
 ----
 

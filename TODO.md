@@ -15,8 +15,7 @@
 - [ ] Buildscripts, Conda environment,
 - [ ] Continuous Integration
 - [ ] Versioning
-- [ ] Python Packaging
-- [ ] Conda Package
+- [ ] Python and Conda Packaging, Setuptools
 
 ## General
 - [ ] Command line arguments
@@ -37,4 +36,5 @@
 - [ ] Update -> Evaluation Tree + Timing
 - [ ] Partitioning algoritm:
     - Barnes-Hut http://arborjs.org/docs/barnes-hut
-    - Convex Hull   
+    - Convex Hull
+- [ ] Static Object (Polygon) hashing and querying

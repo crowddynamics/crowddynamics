@@ -39,6 +39,8 @@ Documentation
    glossary.rst
    appendix.rst
 
+   bibliography.rst
+
 
 .. Indices and tables
 .. ==================
