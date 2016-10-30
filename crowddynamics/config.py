@@ -1,11 +1,8 @@
 import os
 from collections import OrderedDict
 from copy import deepcopy
-from functools import lru_cache
 
-import pandas as pd
 import ruamel.yaml as yaml
-
 
 root = os.path.abspath(__file__)
 root = os.path.split(root)[0]
@@ -64,20 +61,3 @@ class Create:
                       stream=file,
                       Dumper=yaml.RoundTripDumper,
                       default_flow_style=False)
-
-
-class Load:
-    @lru_cache()
-    def csv(self, name):
-        """Load csv with pandas."""
-        ext = ".csv"
-        path = os.path.join(root, folder, name + ext)
-        return pd.read_csv(path, index_col=[0])
-
-    @lru_cache()
-    def yaml(self, name):
-        """Load yaml with ordered loader."""
-        ext = ".yaml"
-        path = os.path.join(root, folder, name + ext)
-        with open(path) as f:
-            return yaml.load(f, Loader=yaml.Loader)

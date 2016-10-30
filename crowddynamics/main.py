@@ -1,5 +1,4 @@
 import argparse
-import importlib
 import logging
 import logging.config
 import os
@@ -8,58 +7,27 @@ import sys
 
 from ruamel import yaml
 
+from crowddynamics.functions import numpy_format, \
+    pandas_format
 
-from crowddynamics.config import Load
-
-
-def man():
-    parser = argparse.ArgumentParser(description="")
-    parser.add_argument("-l", "--log",
-                        dest="logLevel",
-                        choices=['DEBUG', 'INFO', 'WARNING', 'ERROR',
-                                 'CRITICAL'],
-                        help="Set the logging level")
-    return parser
+LOG_CFG = 'configs/logging.yaml'
 
 
-def setup_logging(default_path='configs/logging.yaml',
+def setup_logging(default_path=LOG_CFG,
                   default_level=logging.INFO,
                   env_key='LOG_CFG'):
-    """Setup logging configuration
-
-    Logging levels
-    --------------
-    CRITICAL 50
-    ERROR    40
-    WARNING  30
-    INFO     20
-    DEBUG    10
-    NOTSET    0
     """
-    try:
-        import numpy as np
-        np.set_printoptions(precision=5, threshold=6, edgeitems=3, linewidth=None,
-                            suppress=False, nanstr=None, infstr=None,
-                            formatter=None)
-    except ImportError():
-        pass
+    Setup logging configuration
+    """
 
-    try:
-        import pandas as pd
-        pandas_options = {'display.chop_threshold': None,
-                          'display.precision': 4,
-                          'display.max_columns': 8,
-                          'display.max_rows': 8,
-                          'display.max_info_columns': 8,
-                          'display.max_info_rows': 8}
-        for key, val in pandas_options.items():
-            pd.set_option(key, val)
-    except ImportError():
-        pass
-
+    # TODO: Change root logger -> custom logger
+    # Path to logging yaml configuration file.
     filepath = os.path.abspath(__file__)
     folderpath = os.path.split(filepath)[0]
     path = os.path.join(folderpath, default_path)
+
+    # Set-up logging
+    logger = logging.getLogger(__name__)
     value = os.getenv(env_key, None)
     if value:
         path = value
@@ -70,32 +38,36 @@ def setup_logging(default_path='configs/logging.yaml',
     else:
         logging.basicConfig(level=default_level)
 
+    # Nicer printing for numpy array and pandas tables
+    numpy_format()
+    pandas_format()
 
-def user_info():
+
+def init_crowddynamics():
+    """
+    Parse command line arguments
+    """
+    # Logging arguments
+    parser = argparse.ArgumentParser(description="")
+    loglevels = ['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL']
+    parser.add_argument("-l", "--log",
+                        dest="logLevel",
+                        choices=loglevels,
+                        help="Set the logging level")
+
+    # Parse arguments
+    args = parser.parse_args()
+    if args.logLevel:
+        log_level = args.logLevel
+    else:
+        log_level = logging.INFO
+
+    setup_logging(default_level=log_level)
+
+    # User info
     logging.info("Platform: %s", platform.platform())
     logging.info("Path: %s", sys.path[0])
     logging.info("Python: %s", sys.version[0:5])
-
-
-def run_simulation(name, iterations=100):
-    setup_logging()
-    user_info()
-    logging.info("Starting")
-
-    load = Load()
-    configs = load.yaml("simulations")
-    simu_dict = configs["simulations"][name]
-    module_name = simu_dict["module"]
-    class_name = simu_dict["class"]
-    kwargs = simu_dict["kwargs"]
-
-    module = importlib.import_module(module_name)
-    simulation = getattr(module, class_name)
-    process = simulation(None, **kwargs)
-
-    process.initial_update()
-    for _ in range(iterations):
-        process.update()
 
 
 def run_gui():
@@ -103,19 +75,13 @@ def run_gui():
     Parses command line arguments, setups logging functionality and launches
     graphical user interface for visualizing simulation.
     """
+    init_crowddynamics()
+
+    # Qt - Graphical User Interface
+    logging.info("Starting GUI")
     from PyQt4 import QtGui, QtCore
     sys.path.insert(0, os.path.abspath(".."))
     from crowddynamics.gui.main import MainWindow
-
-    args = man().parse_args()
-    if args.logLevel:
-        log_level = args.logLevel
-    else:
-        log_level = logging.INFO
-
-    setup_logging()
-    user_info()
-    logging.info("Starting")
 
     app = QtGui.QApplication(sys.argv)
     win = MainWindow()
@@ -125,9 +91,9 @@ def run_gui():
     if (sys.flags.interactive != 1) or not hasattr(QtCore, 'PYQT_VERSION'):
         app.exec()
     else:
-        logging.warning("Interactive mode or pyside are not supported.")
+        logging.warning("Interactive mode and pyside are not supported.")
 
-    logging.info("Finishing\n")
+    logging.info("Finishing GUI\n")
     logging.shutdown()
 
     win.close()

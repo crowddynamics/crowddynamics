@@ -15,6 +15,8 @@ dependencies:
     - h5py
     - yaml
     - pandas
+    - typing
+    - nose
     - pip:
         - ruamel.yaml
         - scikit-fmm

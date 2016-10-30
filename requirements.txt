@@ -11,3 +11,5 @@ yaml
 pandas
 ruamel.yaml
 scikit-fmm
+typing
+nose

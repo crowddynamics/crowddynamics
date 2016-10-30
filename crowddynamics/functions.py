@@ -1,7 +1,60 @@
+import importlib
 import math
+import os
 import sys
-from functools import wraps
+from functools import wraps, lru_cache
 from timeit import default_timer as timer
+
+import numpy as np
+import pandas as pd
+import ruamel.yaml as yaml
+
+# TODO: yaml
+numpy_options = {
+    'precision': 5,
+    'threshold': 6,
+    'edgeitems': 3,
+    'linewidth': None,
+    'suppress': False,
+    'nanstr': None,
+    'infstr': None,
+    'formatter': None
+}
+
+pandas_options = {
+    'display.chop_threshold': None,
+    'display.precision': 4,
+    'display.max_columns': 8,
+    'display.max_rows': 8,
+    'display.max_info_columns': 8,
+    'display.max_info_rows': 8
+}
+
+root = os.path.abspath(__file__)
+root = os.path.split(root)[0]
+
+
+@lru_cache()
+def load_config(filename):
+    configs_folder = os.path.join(root, "configs")
+    name, ext = os.path.splitext(filename)
+    path = os.path.join(configs_folder, filename)
+    if ext == ".csv":
+        return pd.read_csv(path, index_col=[0])
+    elif ext == ".yaml":
+        with open(path) as f:
+            return yaml.load(f, Loader=yaml.Loader)
+    else:
+        raise Exception("Filetype not supported.")
+
+
+def numpy_format():
+    np.set_printoptions(**numpy_options)
+
+
+def pandas_format():
+    for key, val in pandas_options.items():
+        pd.set_option(key, val)
 
 
 def format_time(timespan, precision=3):
@@ -53,4 +106,5 @@ def timed(func):
         dt = timer() - start
         print(func.__name__, format_time(dt))
         return ret
+
     return wrapper

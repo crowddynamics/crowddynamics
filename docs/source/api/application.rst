@@ -23,19 +23,23 @@ Configuration Files
 
 Command Line Arguments
 ----------------------
-
--l, --log  Set the logging level.
+-h, --help  Display help.
+-l, --log   Set the logging level.
 
 
 Logger
 ------
+Logging levels
 
 .. csv-table::
 
-   Logging levels,
-   CRITICAL,50
-   ERROR,40
-   WARNING,30
-   INFO,20
-   DEBUG,10
-   NOTSET,0
+   CRITICAL, 50
+   ERROR, 40
+   WARNING, 30
+   INFO, 20
+   DEBUG, 10
+   NOTSET, 0
+
+
+- https://fangpenlin.com/posts/2012/08/26/good-logging-practice-in-python/
+- https://docs.python.org/2/howto/logging-cookbook.html#logging-cookbook

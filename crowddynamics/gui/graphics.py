@@ -6,7 +6,7 @@ import pyqtgraph as pg
 from shapely.geometry import LineString
 from shapely.geometry import Polygon
 
-from crowddynamics.config import Load
+from crowddynamics.functions import load_config
 from crowddynamics.multiagent.simulation import MultiAgentSimulation
 
 
@@ -14,7 +14,7 @@ class Circular(pg.PlotDataItem):
     def __init__(self, radius):
         super(Circular, self).__init__()
 
-        self.settings = Load().yaml("graphics")["agent"]
+        self.settings = load_config("graphics.yaml")["agent"]
         self.radius = radius
 
         symbol_size = 2 * radius
@@ -91,6 +91,9 @@ class MultiAgentPlot(pg.PlotItem):
         """GraphicsItem for displaying simulation graphics."""
         super(MultiAgentPlot, self).__init__(parent)
 
+        # Logger
+        self.logger = logging.getLogger("crowddynamics.gui.graphics")
+
         # Plot settings
         self.setAspectLocked(lock=True, ratio=1)  # One to one scale
         self.showGrid(x=True, y=True, alpha=0.25)
@@ -110,17 +113,17 @@ class MultiAgentPlot(pg.PlotItem):
         :param process: Simulation process
         :return:
         """
-        logging.info("")
+        self.logger.info("")
 
         # Clear previous plots and items
         self.clearPlots()
         self.clear()
 
         # Setup plots
-        settings = Load().yaml("graphics")
+        settings = load_config("graphics.yaml")
 
         if process.domain is not None:
-            logging.debug("domain")
+            self.logger.debug("domain")
             domain = process.domain
             if isinstance(domain, Polygon):
                 x, y = domain.exterior.xy
@@ -131,7 +134,7 @@ class MultiAgentPlot(pg.PlotItem):
                 # self.addItem(item)
 
         if process.exits is not None:
-            logging.debug("exits")
+            self.logger.debug("exits")
             exits = process.exits
             for exit_ in exits:
                 if isinstance(exit_, LineString):
@@ -141,7 +144,7 @@ class MultiAgentPlot(pg.PlotItem):
                     # self.addItem(item)
 
         if process.agent is not None:
-            logging.debug("agent")
+            self.logger.debug("agent")
             agent = process.agent
             if agent.three_circle:
                 model = ThreeCircle(agent.r_t, agent.r_s)
@@ -156,7 +159,7 @@ class MultiAgentPlot(pg.PlotItem):
             self.agent = model
 
         if process.obstacles is not None:
-            logging.debug("Obstacles")
+            self.logger.debug("Obstacles")
             obstacles = process.obstacles
             for obstacle in obstacles:
                 if isinstance(obstacle, LineString):

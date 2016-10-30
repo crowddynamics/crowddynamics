@@ -9,9 +9,9 @@ Arhitecture
 - **Social force model** as a classical mechanics approach for modelling crowd movement.
 
 
-Structure
+Task graph
 
-.. figure:: evaluation_tree.png
+.. figure:: task_graph.png
 
 
 ----

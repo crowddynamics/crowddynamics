@@ -1,5 +1,5 @@
 import logging
-from copy import deepcopy, copy
+from copy import deepcopy
 from multiprocessing import Process, Event, Queue
 from numbers import Number
 
@@ -11,16 +11,15 @@ from shapely.geometry import LineString
 from shapely.geometry import Polygon, Point
 from shapely.ops import cascaded_union
 
-from crowddynamics.config import Load
 from crowddynamics.core.geometry import check_shapes, shapes_to_point_pairs
 from crowddynamics.core.interactions import agent_agent, agent_wall, \
     agent_agent_distance_three_circle
 from crowddynamics.core.motion import force_adjust, force_fluctuation, torque_adjust, \
-    torque_fluctuation, integrate, Integrator
+    torque_fluctuation, Integrator
 from crowddynamics.core.navigation import Navigation, Orientation
 from crowddynamics.core.sampling import PolygonSample
 from crowddynamics.core.vector2D import angle, length
-from crowddynamics.functions import timed
+from crowddynamics.functions import timed, load_config
 from crowddynamics.io.hdfstore import HDFStore
 from crowddynamics.multiagent.agent import Agent
 from crowddynamics.multiagent.field import LineObstacle
@@ -54,40 +53,18 @@ class QueueDict:
 
 
 class Configuration:
-    """Set initial configuration for multi-agent simulation.
+    """
+    Set initial configuration for multi-agent simulation.
 
-    ==  ==========  ==============  =========  ====================================================================================
-     0
-     1  Field
-     2              domain
-     3
-     4              goals
-     5
-     6              obstacles
-     7
-     8              exits
-     9
-    10  Algorithms
-    11              navigation      None       Agent follow the initial target directions and do not update their target directions
-    12                              callable   Custom class that has callable `update` function
-    13                              “static”
-    14                              “dynamic”
-    15
-    16              orientation     None
-    17
-    18
-    19
-    20              exit_selection  None
-    21
-    22  Agent
-    23              size
-    24              body
-    25              model
-    26              …
-    ==  ==========  ==============  =========  ====================================================================================
+    .. csv-table::
+       :file: configs/configuration.csv
+
     """
 
     def __init__(self):
+        # Logger
+        self.logger = logging.getLogger("crowddynamics.configuration")
+
         # Field
         self.domain = None
         self.obstacles = []
@@ -147,7 +124,7 @@ class Configuration:
 
         =========== ===========================================================
         """
-        logging.info("")
+        self.logger.info("")
 
         # TODO: Conditions: is_valid, is_simple, ...
         self.obstacles = check_shapes(obstacles, (Polygon, LineString))
@@ -169,7 +146,7 @@ class Configuration:
 
     def set_algorithms(self, navigation=None, orientation=None,
                        exit_selection=None, integrator=(0.001, 0.01)):
-        logging.info("")
+        self.logger.info("")
 
         # Navigation
         # TODO: Navigation to different exits
@@ -199,20 +176,19 @@ class Configuration:
         self.integrator = Integrator(self, integrator)
 
     def set_body(self, size, body):
-        logging.info("In: {}, {}".format(size, body))
+        self.logger.info("In: {}, {}".format(size, body))
 
         # noinspection PyUnusedLocal
         pi = np.pi
 
         # Load tabular values
-        load = Load()
-        bodies = load.csv("body")
+        bodies = load_config("body.csv")
         try:
             body = bodies[body]
         except:
             raise KeyError(
                 "Body \"{}\" is not in bodies {}.".format(body, bodies))
-        values = load.csv("agent")["value"]
+        values = load_config("agent.csv")["value"]
 
         # Arguments for Agent
         # TODO: Scaling inertia_rot
@@ -233,13 +209,13 @@ class Configuration:
                            target_angular_velocity)
 
     def set_model(self, model):
-        logging.info("{}".format(model))
+        self.logger.info("{}".format(model))
         if model == "circular":
             self.agent.set_circular()
         elif model == "three_circle":
             self.agent.set_three_circle()
         else:
-            logging.warning("")
+            self.logger.warning("")
             raise ValueError()
 
     def set_motion(self, i, target_direction, target_angle, velocity,
@@ -318,7 +294,7 @@ class Configuration:
                            None: Default value
         ================== ==========================
         """
-        logging.info("")
+        self.logger.info("")
 
         if surface is None:
             surface = self.domain
@@ -386,7 +362,7 @@ class Configuration:
             if agent_distance_condition(self.agent, start_index, self._index) \
                     and not agent.intersects(self._occupied):
                 density = area_filled / surface.area
-                logging.debug(
+                self.logger.debug(
                     "Agent {} | Density {}".format(self._index, density))
                 area_filled += agent.area
                 self.agent.active[self._index] = True
@@ -404,7 +380,7 @@ class Configuration:
 
             iterations += 1
 
-        logging.info("Density: {}".format(area_filled / surface.area))
+        self.logger.info("Density: {}".format(area_filled / surface.area))
 
 
 class MultiAgentSimulation(Process, Configuration):
@@ -416,6 +392,10 @@ class MultiAgentSimulation(Process, Configuration):
         super(MultiAgentSimulation, self).__init__()  # Multiprocessing
         Configuration.__init__(self)
 
+        # Logger
+        self.logger = logging.getLogger("crowddynamics.simulation")
+
+        # Multiprocessing
         self.queue = queue
         self.exit = Event()
 
@@ -438,7 +418,7 @@ class MultiAgentSimulation(Process, Configuration):
 
     def stop(self):
         """Sets event to true in order to stop the simulation process."""
-        logging.info("MultiAgent Exit...")
+        self.logger.info("MultiAgent Exit...")
         # self.queue.put(None)  # Poison pill. Ends simulation
         self.exit.set()
 
@@ -446,23 +426,22 @@ class MultiAgentSimulation(Process, Configuration):
         """Runs simulation process until is called. This calls the update method
         repeatedly. Finally at stop it puts poison pill (None) into the queue to
         denote last generated value."""
-        logging.info("MultiAgent Starting")
+        self.logger.info("MultiAgent Starting")
         while not self.exit.is_set():
             self.update()
 
         self.queue.put(None)  # Poison pill. Ends simulation
-        logging.info("MultiAgent Stopping")
+        self.logger.info("MultiAgent Stopping")
 
     def configure_hdfstore(self):
         if self.hdfstore is None:
-            logging.info("")
+            self.logger.info("")
 
             # Configure hdfstore file
             self.hdfstore = HDFStore(self.name)
 
             # Add dataset
-            load = Load()
-            parameters = load.yaml('parameters')
+            parameters = load_config('parameters.yaml')
 
             args = self.agent, parameters['agent']
             self.hdfstore.add_dataset(*args)
@@ -472,9 +451,9 @@ class MultiAgentSimulation(Process, Configuration):
             self.hdfstore.add_dataset(*args)
             self.hdfstore.add_buffers(*args)
 
-            logging.info("")
+            self.logger.info("")
         else:
-            logging.info("Already configured.")
+            self.logger.info("Already configured.")
 
     def configure_queuing(self, args):
         """
@@ -484,13 +463,15 @@ class MultiAgentSimulation(Process, Configuration):
         """
         # FIXME
         if self.queue is not None:
-            logging.info("")
+            self.logger.info("")
             self.queue_items = QueueDict(self)
             self.queue_items.set(args)
         else:
-            logging.info("Queue is not defined.")
+            self.logger.info("Queue is not defined.")
 
     def update(self):
+        # TODO: Task graph
+
         # Path finding
         if self.navigation is not None:
             self.navigation.update()
