@@ -36,17 +36,13 @@ handlers:
     backupCount: 20
     encoding: "utf8"
 
-  error_file_handler:
-    class: "logging.handlers.RotatingFileHandler"
-    formatter: plain
-    filename: "errors.log"
-    level: ERROR
-    maxBytes: 10485760  # 10 MB
-    backupCount: 20
-    encoding: "utf8"
-
 
 loggers:
+  crowddynamics:
+    level: INFO
+    handlers: [console, debug_file_handler, info_file_handler]
+    propagate: no
+
   crowddynamics.configuration:
     level: INFO
     handlers: [console, debug_file_handler, info_file_handler]

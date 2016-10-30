@@ -505,9 +505,9 @@ class MultiAgentSimulation(Process, Configuration):
 
         # Check which agent are inside the domain
         if self.domain is not None:
-            num = -np.sum(self.agent.active)
+            num = np.sum(self.agent.active)
             self.agent.active &= self.omega.contains_points(self.agent.position)
-            num += np.sum(self.agent.active)
+            num -= np.sum(self.agent.active)
             self.in_goal += num
 
         # Raise iteration count

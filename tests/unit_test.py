@@ -1,13 +1,11 @@
-import sys; sys.path.insert(0, "..")
 import importlib
 import unittest
-
 from multiprocessing import Queue
 
 from typing import Iterator
 
-from crowddynamics.multiagent.simulation import MultiAgentSimulation
 from crowddynamics.functions import load_config
+from crowddynamics.multiagent.simulation import MultiAgentSimulation
 
 
 def import_simulations(queue: Queue=None) -> Iterator[MultiAgentSimulation]:
@@ -15,9 +13,9 @@ def import_simulations(queue: Queue=None) -> Iterator[MultiAgentSimulation]:
     Yield all simulations from examples.py
     """
     configs = load_config("simulations.yaml")
-    d = configs["simulations"]
-    for name in d.keys():
-        d = d[name]
+    conf = configs["simulations"]
+    for name in conf.keys():
+        d = conf[name]
         module = importlib.import_module(d["module"])
         simulation = getattr(module, d["class"])
         process = simulation(queue, **d["kwargs"])
@@ -25,13 +23,12 @@ def import_simulations(queue: Queue=None) -> Iterator[MultiAgentSimulation]:
 
 
 class MyTestCase(unittest.TestCase):
-    def test_attributes(self):
-        self.assertTrue(True)
-
     def test_simulations(self):
         gen = import_simulations()
         for simulation in gen:
-            pass
+            simulation.initial_update()
+            simulation.update()
+            self.assertTrue(True)
 
 
 if __name__ == '__main__':

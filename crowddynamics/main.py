@@ -43,7 +43,37 @@ def setup_logging(default_path=LOG_CFG,
     pandas_format()
 
 
-def init_crowddynamics():
+def run_gui():
+    """
+    Parses command line arguments, setups logging functionality and launches
+    graphical user interface for visualizing simulation.
+    """
+    logger = logging.getLogger("crowddynamics.gui.mainwindow")
+
+    # Qt - Graphical User Interface
+    logger.info("Starting GUI")
+    from PyQt4 import QtGui, QtCore
+    from crowddynamics.gui.main import MainWindow
+
+    app = QtGui.QApplication(sys.argv)
+    win = MainWindow()
+    win.show()
+
+    # Start Qt event loop unless running in interactive mode or using pyside.
+    if (sys.flags.interactive != 1) or not hasattr(QtCore, 'PYQT_VERSION'):
+        app.exec()
+    else:
+        logger.warning("Interactive mode and pyside are not supported.")
+
+    logger.info("Finishing GUI\n")
+    logging.shutdown()
+
+    win.close()
+    app.exit()
+    sys.exit()
+
+
+def main(gui=True):
     """
     Parse command line arguments
     """
@@ -65,37 +95,13 @@ def init_crowddynamics():
     setup_logging(default_level=log_level)
 
     # User info
-    logging.info("Platform: %s", platform.platform())
-    logging.info("Path: %s", sys.path[0])
-    logging.info("Python: %s", sys.version[0:5])
+    logger = logging.getLogger("crowddynamics")
+    logger.info("Platform: %s", platform.platform())
+    logger.info("Path: %s", sys.path[0])
+    logger.info("Python: %s", sys.version[0:5])
 
-
-def run_gui():
-    """
-    Parses command line arguments, setups logging functionality and launches
-    graphical user interface for visualizing simulation.
-    """
-    init_crowddynamics()
-
-    # Qt - Graphical User Interface
-    logging.info("Starting GUI")
-    from PyQt4 import QtGui, QtCore
-    sys.path.insert(0, os.path.abspath(".."))
-    from crowddynamics.gui.main import MainWindow
-
-    app = QtGui.QApplication(sys.argv)
-    win = MainWindow()
-    win.show()
-
-    # Start Qt event loop unless running in interactive mode or using pyside.
-    if (sys.flags.interactive != 1) or not hasattr(QtCore, 'PYQT_VERSION'):
-        app.exec()
+    if gui:
+        run_gui()
     else:
-        logging.warning("Interactive mode and pyside are not supported.")
-
-    logging.info("Finishing GUI\n")
-    logging.shutdown()
-
-    win.close()
-    app.exit()
-    sys.exit()
+        # TODO: Run only simulation
+        raise NotImplementedError

@@ -1,9 +1,10 @@
 Simulation
 ==========
 
+.. Add references
+
 Agent
 -----
-.. references
 
 .. csv-table::
    :file: ../../../crowddynamics/configs/agent.csv
@@ -11,6 +12,11 @@ Agent
 
 .. csv-table::
    :file: ../../../crowddynamics/configs/body.csv
+
+
+.. csv-table::
+   :file: ../../../crowddynamics/configs/configuration.csv
+
 
 
 Multi-Agent Simulation
