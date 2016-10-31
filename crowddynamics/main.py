@@ -73,7 +73,7 @@ def gui():
     sys.exit()
 
 
-def main(gui=True):
+def main(run_gui=True):
     """
     Parse command line arguments
     """
@@ -100,7 +100,7 @@ def main(gui=True):
     logger.info("Path: %s", sys.path[0])
     logger.info("Python: %s", sys.version[0:5])
 
-    if gui:
+    if run_gui:
         gui()
     else:
         # TODO: Run only simulation
