@@ -2,7 +2,9 @@ Algorithms
 ==========
 .. - Algorithms:
       - Brute Force
-      - Barnes-Hut algorithm:
+      - Barnes-Hut algorithm
+      - Quad-Tree
+      - Fast multipole method
       - R-Tree
       - R*
       - Convex-Hull
@@ -13,6 +15,7 @@ N-Body Simulations
 ------------------
 Computing the interactions between agents takes up most of the computational time and resources. This section discusses the state of the problem and some solutions.
 
+.. _Fast Multipole Method: https://www.youtube.com/watch?v=qMLIyZi8Sz0
 
 Brute Force
 -----------
@@ -39,9 +42,9 @@ Spatial Partitioning Algorithms
 Computational complexity can be reduced by using spatial partitioning algorithms
 
 
-Barnes-Hut
-^^^^^^^^^^
-Partitioning into rectangles
+Quad-Tree
+^^^^^^^^^
+Partitioning into squares
 
 
 Convex Hull

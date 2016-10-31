@@ -1,6 +1,7 @@
 import numba
 import numpy as np
 from matplotlib.path import Path
+from numba.types import deferred_type
 from shapely.geometry import Polygon
 
 from crowddynamics.core.vector2D import length_nx2, length
@@ -31,7 +32,6 @@ def payoff(s_our, s_neighbor, t_aset, t_evac_i, t_evac_j):
         if s_our == 0:
             average = (t_evac_i + t_evac_j) / 2
             if average == 0:
-                # average = 4.0e-8
                 return np.inf
             return t_aset / average
         elif s_our == 1:
