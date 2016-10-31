@@ -43,7 +43,7 @@ def setup_logging(default_path=LOG_CFG,
     pandas_format()
 
 
-def run_gui():
+def gui():
     """
     Parses command line arguments, setups logging functionality and launches
     graphical user interface for visualizing simulation.
@@ -101,7 +101,7 @@ def main(gui=True):
     logger.info("Python: %s", sys.version[0:5])
 
     if gui:
-        run_gui()
+        gui()
     else:
         # TODO: Run only simulation
         raise NotImplementedError
