@@ -5,6 +5,7 @@ from numba.types import deferred_type
 from shapely.geometry import Polygon
 
 from crowddynamics.core.vector2D import length_nx2, length
+from crowddynamics.functions import public
 
 
 @numba.jit(nopython=True)
@@ -85,6 +86,7 @@ def best_response_strategy(agent, players, door, radius_max, strategy,
             loss[:] = 0  # Reset loss array
 
 
+@public
 class EgressGame(object):
     """
     Patient and impatient pedestrians in a spatial game for egress congestion

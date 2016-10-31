@@ -19,10 +19,35 @@ from crowddynamics.core.motion import force_adjust, force_fluctuation, torque_ad
 from crowddynamics.core.navigation import Navigation, Orientation
 from crowddynamics.core.sampling import PolygonSample
 from crowddynamics.core.vector2D import angle, length
-from crowddynamics.functions import timed, load_config
+from crowddynamics.functions import timed, load_config, public
 from crowddynamics.io.hdfstore import HDFStore
 from crowddynamics.multiagent.agent import Agent
 from crowddynamics.multiagent.field import LineObstacle
+
+
+@public
+class TaskNode:
+    """
+    Create task graphs. Task graphs are used to create order for function calls
+    in simulation and to evaluate functions in this order.
+    """
+    # TODO: Dask for parallelisation?
+
+    def __init__(self, task):
+        if not hasattr(task, "update"):
+            raise Exception("Task doesn't have attribute update.")
+        self._task = task
+        self._nodes = []
+
+    def add_child(self, child):
+        node = TaskNode(child)
+        self._nodes.append(node)
+        return node
+
+    def evaluate(self):
+        for node in self._nodes:
+            node.evaluate()
+        self._task.update()
 
 
 class QueueDict:
@@ -76,6 +101,8 @@ class Configuration:
         self.omega = None
 
         # Angle and direction update algorithms
+        self.task_graph = None
+
         self.navigation = None
         self.orientation = None
         self.integrator = None
@@ -383,6 +410,7 @@ class Configuration:
         self.logger.info("Density: {}".format(area_filled / surface.area))
 
 
+@public
 class MultiAgentSimulation(Process, Configuration):
     """
     Class that calls numerical algorithms of the multi-agent simulation.
@@ -470,38 +498,12 @@ class MultiAgentSimulation(Process, Configuration):
             self.logger.info("Queue is not defined.")
 
     def update(self):
-        # TODO: Task graph
-
-        # Path finding
-        if self.navigation is not None:
-            self.navigation.update()
-
-        # Rotation planning
-        if self.orientation is not None:
-            self.orientation.update()
-
-        # Game theoretical model
-        if self.game is not None:
-            self.game.update()
-
         # Reset
         self.agent.reset_motion()
         self.agent.reset_neighbor()
 
-        # Computing motion (forces and torques) for the system
-        force_adjust(self.agent)
-        torque_adjust(self.agent)
-
-        force_fluctuation(self.agent)
-        torque_fluctuation(self.agent)
-
-        agent_agent(self.agent)
-        if self.walls is not None:
-            agent_wall(self.agent, self.walls)
-
-        # Integration of the system
-        if self.integrator is not None:
-            self.integrator.update()
+        # TODO: root
+        self.task_graph.evaluate()
 
         # Check which agent are inside the domain
         if self.domain is not None:

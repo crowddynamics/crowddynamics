@@ -6,6 +6,7 @@ from shapely.geometry import LineString
 from shapely.geometry import Polygon
 
 from crowddynamics.core.geometry import shapes_to_point_pairs
+from crowddynamics.functions import public
 
 try:
     import skfmm
@@ -30,6 +31,7 @@ def plot_dmap(grid, dmap, phi, name):
     plt.savefig("distance_map_{}.pdf".format(name))
 
 
+@public
 class ExitSelection:
     """Exit selection policy."""
 
@@ -93,6 +95,7 @@ class NavigationMap(object):
         pass
 
 
+@public
 class Navigation(NavigationMap):
     """Determining target direction of an agent in multi-agent simulation.
 
@@ -113,12 +116,19 @@ class Navigation(NavigationMap):
 
     # TODO: take into account radius of the agents
 
-    def __init__(self, simulation):
+    def __init__(self, simulation, algorithm="static"):
         super().__init__(simulation.domain)
 
         self.simulation = simulation
         self.dist_map = None
         self.direction_map = None
+
+        if algorithm == "static":
+            self.static_potential()
+        elif algorithm == "dynamic":
+            raise NotImplementedError
+        else:
+            pass
 
     def static_potential(self):
         logging.info("")
@@ -156,6 +166,7 @@ class Navigation(NavigationMap):
         self.simulation.agent.target_direction[i] = d
 
 
+@public
 class Orientation:
     """
     Target orientation

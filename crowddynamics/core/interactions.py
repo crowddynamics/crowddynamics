@@ -1,10 +1,18 @@
 import numba
 import numpy as np
+from numba import f8
 
-from .motion import force_contact
+from crowddynamics.core.vector2D import dot2d
 from .power_law import force_social_circular, force_social_three_circle, \
     force_social_linear_wall
 from .vector2D import length, rotate270, cross2d
+
+
+@numba.jit(f8[:](f8, f8[:], f8[:], f8[:], f8, f8, f8), nopython=True,
+           nogil=True)
+def force_contact(h, n, v, t, mu, kappa, damping):
+    """Frictional contact force with damping."""
+    return - h * (mu * n - kappa * dot2d(v, t) * t) + damping * dot2d(v, n) * n
 
 
 @numba.jit(nopython=True, nogil=True)

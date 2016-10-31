@@ -2,7 +2,10 @@ import numpy as np
 from shapely.geometry import Polygon, LineString, Point
 
 from crowddynamics.core.game import EgressGame
-from crowddynamics.multiagent.simulation import MultiAgentSimulation
+from crowddynamics.core.motion import Integrator, Adjusting, \
+    AgentAgentInteractions, Fluctuation, AgentObstacleInteractions
+from crowddynamics.core.navigation import Navigation, Orientation
+from crowddynamics.multiagent.simulation import MultiAgentSimulation, TaskNode
 
 
 class Outdoor(MultiAgentSimulation):
@@ -19,7 +22,12 @@ class Outdoor(MultiAgentSimulation):
         }
 
         self.set_field(domain)
-        self.set_algorithms()
+
+        self.task_graph = TaskNode(Integrator(self, (0.001, 0.01)))
+        adjusting = self.task_graph.add_child(Adjusting(self))
+        adjusting.add_child(Orientation(self))
+        self.task_graph.add_child(AgentAgentInteractions(self))
+        self.task_graph.add_child(Fluctuation(self))
 
         self.set_body(size, body)
         self.set_model(model)
@@ -59,7 +67,13 @@ class Hallway(MultiAgentSimulation):
         )
 
         self.set_field(domain=domain, obstacles=obstacles)
-        self.set_algorithms()
+
+        self.task_graph = TaskNode(Integrator(self, (0.001, 0.01)))
+        adjusting = self.task_graph.add_child(Adjusting(self))
+        adjusting.add_child(Orientation(self))
+        self.task_graph.add_child(AgentAgentInteractions(self))
+        self.task_graph.add_child(AgentObstacleInteractions(self))
+        self.task_graph.add_child(Fluctuation(self))
 
         self.set_body(size, body)
         self.set_model(model)
@@ -90,7 +104,14 @@ class Rounding(MultiAgentSimulation):
         }
 
         self.set_field(domain, obstacles, exits)
-        self.set_algorithms(navigation="static")
+
+        self.task_graph = TaskNode(Integrator(self, (0.001, 0.01)))
+        adjusting = self.task_graph.add_child(Adjusting(self))
+        adjusting.add_child(Orientation(self))
+        adjusting.add_child(Navigation(self))
+        self.task_graph.add_child(AgentAgentInteractions(self))
+        self.task_graph.add_child(AgentObstacleInteractions(self))
+        self.task_graph.add_child(Fluctuation(self))
 
         self.set_body(size, body)
         self.set_model(model)
@@ -132,7 +153,14 @@ class RoomEvacuation(MultiAgentSimulation):
         }
 
         self.set_field(domain=domain, obstacles=obstacles, exits=exits)
-        self.set_algorithms(navigation="static")
+
+        self.task_graph = TaskNode(Integrator(self, (0.001, 0.01)))
+        adjusting = self.task_graph.add_child(Adjusting(self))
+        adjusting.add_child(Orientation(self))
+        adjusting.add_child(Navigation(self))
+        self.task_graph.add_child(AgentAgentInteractions(self))
+        self.task_graph.add_child(AgentObstacleInteractions(self))
+        self.task_graph.add_child(Fluctuation(self))
 
         self.set_body(size, body)
         self.set_model(model)
@@ -149,3 +177,12 @@ class RoomEvacuationGame(RoomEvacuation):
 
         self.game = EgressGame(self, self.door, self.room, t_aset_0, interval,
                                neighbor_radius, neighborhood_size)
+
+        self.task_graph = TaskNode(Integrator(self, (0.001, 0.01)))
+        adjusting = self.task_graph.add_child(Adjusting(self))
+        adjusting.add_child(Orientation(self))
+        adjusting.add_child(Navigation(self))
+        agent_agent = self.task_graph.add_child(AgentAgentInteractions(self))
+        agent_agent.add_child(self.game)
+        self.task_graph.add_child(AgentObstacleInteractions(self))
+        self.task_graph.add_child(Fluctuation(self))

@@ -1,9 +1,10 @@
 import numba
 import numpy as np
-from numba import f8
 from scipy.stats import truncnorm as tn
 
-from .vector2D import dot2d, wrap_to_pi, length_nx2
+from crowddynamics.core.interactions import agent_agent, agent_wall
+from crowddynamics.functions import public
+from .vector2D import wrap_to_pi, length_nx2
 
 
 def force_fluctuation(agent):
@@ -41,13 +42,6 @@ def torque_adjust(agent):
             agent.torque[i] += agent.inertia_rot[i] / agent.tau_rot * (
                 wrap_to_pi(agent.target_angle[i] - agent.angle[i]) / np.pi *
                 agent.target_angular_velocity[i] - agent.angular_velocity[i])
-
-
-@numba.jit(f8[:](f8, f8[:], f8[:], f8[:], f8, f8, f8), nopython=True,
-           nogil=True)
-def force_contact(h, n, v, t, mu, kappa, damping):
-    """Frictional contact force with damping."""
-    return - h * (mu * n - kappa * dot2d(v, t) * t) + damping * dot2d(v, n) * n
 
 
 @numba.jit(nopython=True)
@@ -94,6 +88,7 @@ def integrate(agent, dt_min, dt_max):
     return dt
 
 
+@public
 class Integrator(object):
     def __init__(self, simulation, dt):
         """
@@ -115,3 +110,41 @@ class Integrator(object):
         self.simulation.time_tot += self.dt_prev
 
     update = integrate
+
+
+@public
+class Fluctuation:
+    def __init__(self, simulation):
+        self.simulation = simulation
+
+    def update(self):
+        force_fluctuation(self.simulation.agent)
+        torque_fluctuation(self.simulation.agent)
+
+
+@public
+class Adjusting:
+    def __init__(self, simulation):
+        self.simulation = simulation
+
+    def update(self):
+        force_adjust(self.simulation.agent)
+        torque_adjust(self.simulation.agent)
+
+
+@public
+class AgentAgentInteractions:
+    def __init__(self, simulation):
+        self.simulation = simulation
+
+    def update(self):
+        agent_agent(self.simulation.agent)
+
+
+@public
+class AgentObstacleInteractions:
+    def __init__(self, simulation):
+        self.simulation = simulation
+
+    def update(self):
+        agent_wall(self.simulation.agent, self.simulation.walls)
