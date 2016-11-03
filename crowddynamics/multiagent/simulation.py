@@ -101,11 +101,8 @@ class Configuration:
         self.omega = None
 
         # Angle and direction update algorithms
+        # TODO: Add root node
         self.task_graph = None
-
-        self.navigation = None
-        self.orientation = None
-        self.integrator = None
 
         # Current index of agent to be placed
         self._index = 0
@@ -170,37 +167,6 @@ class Configuration:
         points = shapes_to_point_pairs(self.obstacles)
         if len(points) != 0:
             self.walls = LineObstacle(points)
-
-    def set_algorithms(self, navigation=None, orientation=None,
-                       exit_selection=None, integrator=(0.001, 0.01)):
-        self.logger.info("")
-
-        # Navigation
-        # TODO: Navigation to different exits
-        if isinstance(navigation, str):
-            if navigation == "static":
-                self.navigation = Navigation(self)
-                self.navigation.static_potential()
-            elif navigation == "dynamic":
-                self.navigation = Navigation(self)
-                self.navigation.dynamic_potential()
-            else:
-                raise ValueError("")
-        elif hasattr(navigation, "update") and callable(navigation.update):
-            pass
-        else:
-            self.navigation = None
-
-        # Orientation
-        if orientation is None:
-            self.orientation = Orientation(self)
-        else:
-            self.orientation = orientation
-
-        # TODO: Exit Selection
-        pass
-
-        self.integrator = Integrator(self, integrator)
 
     def set_body(self, size, body):
         self.logger.info("In: {}, {}".format(size, body))
@@ -427,9 +393,6 @@ class MultiAgentSimulation(Process, Configuration):
         self.queue = queue
         self.exit = Event()
 
-        # Additional models
-        self.game = None
-
         # State of the simulation (types matter when saving to a file)
         self.iterations = int(0)
         self.time_tot = float(0)
@@ -498,11 +461,8 @@ class MultiAgentSimulation(Process, Configuration):
             self.logger.info("Queue is not defined.")
 
     def update(self):
-        # Reset
         self.agent.reset_motion()
         self.agent.reset_neighbor()
-
-        # TODO: root
         self.task_graph.evaluate()
 
         # Check which agent are inside the domain

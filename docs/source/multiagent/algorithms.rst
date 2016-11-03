@@ -34,16 +34,16 @@ The number of iterations
 .. math::
    \sum_{i=0}^{N-1} (N-i-1) = \frac{(|N| - 1)^2}{2} \in \mathcal{O}(|N|^2)
 
-Since the complexity increases quadratically large simulations (when :math:`N \geq 300`) become much slower with brute force algorithm.  To scale the simulation into thousand we need more sophisticated methods.
-
+Since the complexity increases quadratically large simulations become much slower with brute force algorithm. To scale up we need spatial partitioning algorithms.
 
 Spatial Partitioning Algorithms
 -------------------------------
-Computational complexity can be reduced by using spatial partitioning algorithms
+Since crowd simulations are only dependent on interactions with agents close by we can partition the space into smaller chunch in order to avoid having to loop with agents far a away.
 
+Algorithm used to compute interactions with near agents is still brute force.
 
-Quad-Tree
-^^^^^^^^^
+Block List
+^^^^^^^^^^
 Partitioning into squares
 
 
@@ -61,6 +61,4 @@ Parallelisation
 
 Refences
 --------
-.. [Barnes-Hut] http://arborjs.org/docs/barnes-hut
-.. [R-tree] https://en.wikipedia.org/wiki/R-tree
 .. [partitioning] Vigueras, G., Lozano, M., Orduña, J. M., & Grimaldo, F. (2010). A comparative study of partitioning methods for crowd simulations. Applied Soft Computing Journal, 10(1), 225–235. http://doi.org/10.1016/j.asoc.2009.07.004

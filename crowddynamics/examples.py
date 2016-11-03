@@ -175,7 +175,8 @@ class RoomEvacuationGame(RoomEvacuation):
             queue, size, width, height, model, body, spawn_shape, door_width,
             exit_hall_width)
 
-        self.game = EgressGame(self, self.door, self.room, t_aset_0, interval,
+        # FIXME
+        game = EgressGame(self, self.door, self.room, t_aset_0, interval,
                                neighbor_radius, neighborhood_size)
 
         self.task_graph = TaskNode(Integrator(self, (0.001, 0.01)))
@@ -183,6 +184,6 @@ class RoomEvacuationGame(RoomEvacuation):
         adjusting.add_child(Orientation(self))
         adjusting.add_child(Navigation(self))
         agent_agent = self.task_graph.add_child(AgentAgentInteractions(self))
-        agent_agent.add_child(self.game)
+        agent_agent.add_child(game)
         self.task_graph.add_child(AgentObstacleInteractions(self))
         self.task_graph.add_child(Fluctuation(self))

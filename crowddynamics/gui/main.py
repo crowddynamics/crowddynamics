@@ -208,8 +208,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         args = [(("agent", "agent"),
                  ["position", "active", "position_ls", "position_rs"])]
 
-        if self.process.game is not None:
-            args.append((("game", "agent"), ["strategy"]))
+        # if self.process.game is not None:
+        #     args.append((("game", "agent"), ["strategy"]))
 
         self.process.configure_queuing(args)
         if self.savingButton.isChecked():
