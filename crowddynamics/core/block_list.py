@@ -77,11 +77,18 @@ spec = (
     ("offset", i8[:]),
     ("x_min", i8[:]),
     ("x_max", i8[:]),
+    ("shape", i8[:]),
 )
 
 
 @numba.jitclass(spec)
 class BlockList(object):
+    """
+    BlockList algorithm partitions space into squares and sorts points into
+    the square they belong. This allows fast neighbourhood search because we
+    only have to search current and neighbouring rectangles for points.
+    """
+
     def __init__(self, points, cell_width):
         index_list, count, offset, x_min, x_max = block_list(points, cell_width)
         self.cell_width = cell_width
@@ -90,11 +97,12 @@ class BlockList(object):
         self.offset = offset
         self.x_min = x_min
         self.x_max = x_max
+        self.shape = x_max + 1
 
     def get_block(self, indices):
         index = indices[0]
         for j in range(1, len(indices)):
-            index *= self.x_max[j] + 1
+            index *= self.shape[j]
             index += indices[j]
         start = self.offset[index]
         end = start + self.count[index]

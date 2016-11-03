@@ -2,7 +2,8 @@ import numba
 import numpy as np
 from scipy.stats import truncnorm as tn
 
-from crowddynamics.core.interactions import agent_agent, agent_wall
+from crowddynamics.core.interactions import agent_agent, agent_wall, \
+    agent_agent_block_list
 from crowddynamics.functions import public
 from .vector2D import wrap_to_pi, length_nx2
 
@@ -138,7 +139,8 @@ class AgentAgentInteractions:
         self.simulation = simulation
 
     def update(self):
-        agent_agent(self.simulation.agent)
+        # agent_agent(self.simulation.agent)
+        agent_agent_block_list(self.simulation.agent)
 
 
 @public

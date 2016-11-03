@@ -2,6 +2,7 @@ import numba
 import numpy as np
 from numba import f8
 
+from crowddynamics.core.block_list import BlockList
 from crowddynamics.core.vector2D import dot2d
 from .power_law import force_social_circular, force_social_three_circle, \
     force_social_linear_wall
@@ -13,6 +14,56 @@ from .vector2D import length, rotate270, cross2d
 def force_contact(h, n, v, t, mu, kappa, damping):
     """Frictional contact force with damping."""
     return - h * (mu * n - kappa * dot2d(v, t) * t) + damping * dot2d(v, n) * n
+
+
+@numba.jit(nopython=True, nogil=True)
+def agent_agent_brute(agent, indices):
+    """
+    Interaction forces between set of agents.
+    """
+    for l, i in enumerate(indices[:-1]):
+        for j in indices[l + 1:]:
+            agent_agent_interaction(i, j, agent)
+
+
+@numba.jit(nopython=True, nogil=True)
+def agent_agent_brute_disjoint(agent, indices, indices2):
+    """
+    Interaction forces between two disjoint sets of agents.
+    Assumes sets ``indices`` and ``indices2`` are disjoint
+    """
+    for i in indices:
+        for j in indices2:
+            agent_agent_interaction(i, j, agent)
+
+
+@numba.jit(nopython=True, nogil=True)
+def agent_agent_block_list(agent):
+    indices = agent.indices()
+    blocks = BlockList(agent.position[indices], agent.sight_soc)
+    n, m = blocks.shape
+
+    # Neighbouring blocks
+    nb = np.array(
+        ((1, 0), (1, 1), (0, 1), (1, -1)),
+        dtype=np.int64
+    )
+
+    for i in range(n):
+        for j in range(m):
+            # Agents in the block
+            ilist = blocks.get_block((i, j))
+            indices_block = indices[ilist]
+
+            # Forces between agents indices the block
+            agent_agent_brute(agent, indices_block)
+
+            # Forces between agent inside the block and neighbouring agents
+            for k in range(len(nb)):
+                i2, j2 = nb[k]
+                if 0 <= (i + i2) < n and 0 <= (j + j2) < m:
+                    ilist2 = blocks.get_block((i + i2, j + j2))
+                    agent_agent_brute_disjoint(agent, indices_block, indices[ilist2])
 
 
 @numba.jit(nopython=True, nogil=True)
