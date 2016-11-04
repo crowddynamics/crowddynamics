@@ -26,6 +26,7 @@ class MyTestCase(unittest.TestCase):
     def test_simulations(self):
         gen = import_simulations()
         for simulation in gen:
+            # simulation.configure_hdfstore()
             simulation.initial_update()
             simulation.update()
             self.assertTrue(True)

@@ -46,6 +46,19 @@ simulations: !!omap
         - exit_hall_width: 2.0
         - spawn_shape: "circ"
 
+  - room_evacuation_massive:
+      module: "crowddynamics.examples"
+      class: "RoomEvacuation"
+      kwargs: !!omap
+        - size: 1000
+        - model: "circular"
+        - body: "adult"
+        - height: 40.0
+        - width: 20.0
+        - door_width: 1.2
+        - exit_hall_width: 2.0
+        - spawn_shape: "circ"
+
   - room_evacuation_game:
       module: "crowddynamics.examples"
       class: "RoomEvacuationGame"

@@ -7,13 +7,9 @@ from multiprocessing import Queue
 import pyqtgraph as pg
 from PyQt4 import QtGui, QtCore
 
-from crowddynamics.functions import load_config
+from crowddynamics.functions import load_config, timed
 from .graphics import MultiAgentPlot
 from .ui.gui import Ui_MainWindow
-
-# Do not use multiprocessing in windows because of different semantics compared
-# to linux.
-enable_multiprocessing = not sys.platform.startswith('Windows')
 
 
 class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
@@ -61,6 +57,12 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # Configures. Should be last.
         self.configure_plot()
         self.configure_signals()
+
+        # Do not use multiprocessing in windows because of different semantics compared
+        # to linux.
+        self.enable_multiprocessing = not sys.platform.startswith('Windows')
+        self.logger.info("Multiprocessing Enabled: {}".format(
+            self.enable_multiprocessing))
 
     def enable_controls(self, boolean):
         self.startButton.setEnabled(boolean)
@@ -215,6 +217,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         if self.savingButton.isChecked():
             self.process.configure_hdfstore()
 
+    @timed("Update Plots")
     def update_plots(self):
         """Updates the data in the plot(s)."""
         data = self.queue.get()
@@ -224,7 +227,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             self.process = None
             self.reset_buffers()
         else:
-            if not enable_multiprocessing:
+            if not self.enable_multiprocessing:
                 self.process.update()  # Sequential processing
             self.plot.update_data(data)
 
@@ -234,12 +237,12 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         if self.process is not None:
             self.logger.info("")
 
-            if enable_multiprocessing:
+            if self.enable_multiprocessing:
                 self.process.start()
             else:
                 self.process.update()
 
-            self.timer.start(0.01 * 1000)  # same as dt used in simulation
+            self.timer.start(1)
         else:
             self.logger.info("Process is not set")
 
@@ -248,7 +251,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         if self.process is not None:
             self.logger.info("")
 
-            if enable_multiprocessing:
+            if self.enable_multiprocessing:
                 self.process.stop()
             else:
                 self.queue.put(None)

@@ -34,6 +34,9 @@ class HDFStore(object):
     ext = ".hdf5"
 
     def __init__(self, filepath):
+        # Logger
+        self.logger = logging.getLogger("crowddynamics.io")
+
         # Path to the HDF5 file
         self.filepath, _ = os.path.splitext(filepath)  # Remove extension
         self.filepath += self.ext  # Set extension
@@ -45,8 +48,7 @@ class HDFStore(object):
         # Configuration
         self.configure_file()
 
-    @staticmethod
-    def create_dataset(group: h5py.Group, name, values, resizable=False):
+    def create_dataset(self, group: h5py.Group, name, values, resizable=False):
         """
 
         :param group: h5py.Group
@@ -55,7 +57,7 @@ class HDFStore(object):
         :param resizable: If true values can be added to the dataset.
         :return:
         """
-        logging.info("")
+        self.logger.info("")
         values = np.array(values)
         kw = {}
         if resizable:
@@ -65,32 +67,31 @@ class HDFStore(object):
             values = np.expand_dims(values, axis=0)
         group.create_dataset(name, data=values, **kw)
 
-    @staticmethod
-    def append_buffer_to_dataset(dset: h5py.Dataset, buffer: ListBuffer):
+    def append_buffer_to_dataset(self, dset: h5py.Dataset, buffer: ListBuffer):
         """Append values to resizable h5py dataset."""
         if len(buffer):  # Buffer is not empty
-            logging.info("")
+            self.logger.info("")
             values = np.array(buffer)
             new_shape = (buffer.end,) + values.shape[1:]
             dset.resize(new_shape)
             dset[buffer.start:] = values
         else:
-            logging.warning("Buffer is empty.")
+            self.logger.warning("Buffer is empty.")
 
     def configure_file(self):
         """Configure and creates new HDF5 File."""
-        logging.info("")
+        self.logger.info("")
 
         timestamp = str(datetime.datetime.now())
         with h5py.File(self.filepath, mode='a') as file:
             self.group_name = timestamp.replace(" ", "_")  # HDF group name
             file.create_group(self.group_name)  # Create Group
 
-        logging.info(self.filepath)
-        logging.info(self.group_name)
+        self.logger.info(self.filepath)
+        self.logger.info(self.group_name)
 
     def add_dataset(self, struct, attributes, overwrite=False):
-        logging.info("")
+        self.logger.info("")
 
         with h5py.File(self.filepath, mode='a') as file:
             name = struct.__class__.__name__.lower()
@@ -104,7 +105,7 @@ class HDFStore(object):
                 value = np.copy(getattr(struct, name))
                 self.create_dataset(group, name, value, settings["resizable"])
 
-        logging.info("")
+        self.logger.info("")
 
     def add_buffers(self, struct, attributes):
         """

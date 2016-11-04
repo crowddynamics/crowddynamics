@@ -6,6 +6,10 @@ Install ``nose`` to your python installation to run unit tests.
 # Line Profiler
 
 ```
+conda install line_profiler
+```
+
+```
 kernprof -l profiling.py
 ```
 

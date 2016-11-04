@@ -12,11 +12,7 @@ from shapely.geometry import Polygon, Point
 from shapely.ops import cascaded_union
 
 from crowddynamics.core.geometry import check_shapes, shapes_to_point_pairs
-from crowddynamics.core.interactions import agent_agent, agent_wall, \
-    agent_agent_distance_three_circle
-from crowddynamics.core.motion import force_adjust, force_fluctuation, torque_adjust, \
-    torque_fluctuation, Integrator
-from crowddynamics.core.navigation import Navigation, Orientation
+from crowddynamics.core.interactions import agent_agent_distance_three_circle
 from crowddynamics.core.sampling import PolygonSample
 from crowddynamics.core.vector2D import angle, length
 from crowddynamics.functions import timed, load_config, public
@@ -407,6 +403,15 @@ class MultiAgentSimulation(Process, Configuration):
     def name(self):
         return self.__class__.__name__
 
+    def parameters(self):
+        params = (
+            "time_tot",
+            "in_goal",
+        )
+        for p in params:
+            assert hasattr(self, p),  "{cls} doesn't have attribute {attr}".format(cls=p, attr=p)
+        return params
+
     def stop(self):
         """Sets event to true in order to stop the simulation process."""
         self.logger.info("MultiAgent Exit...")
@@ -460,6 +465,7 @@ class MultiAgentSimulation(Process, Configuration):
         else:
             self.logger.info("Queue is not defined.")
 
+    @timed("Total Simulation Time")
     def update(self):
         self.agent.reset_motion()
         self.agent.reset_neighbor()
@@ -486,7 +492,7 @@ class MultiAgentSimulation(Process, Configuration):
             self.queue.put(data)
 
     # To measure JIT compilation time of numba decorated functions.
-    initial_update = timed(deepcopy(update))
+    initial_update = timed("Jit:")(deepcopy(update))
 
     try:
         # If using line_profiler decorate function.

@@ -1,7 +1,6 @@
 import numba
 import numpy as np
 from matplotlib.path import Path
-from numba.types import deferred_type
 from shapely.geometry import Polygon
 
 from crowddynamics.core.vector2D import length_nx2, length
@@ -95,7 +94,6 @@ class EgressGame(object):
 
     .. [1] Heli??vaara, S., Ehtamo, H., Helbing, D., & Korhonen, T. (2013). Patient and impatient pedestrians in a spatial game for egress congestion. Physical Review E - Statistical, Nonlinear, and Soft Matter Physics. http://doi.org/10.1103/PhysRevE.87.012802
     """
-
     def __init__(self, simulation, door, room, t_aset_0,
                  interval=0.1, neighbor_radius=0.4, neighborhood_size=8):
         """
@@ -141,6 +139,19 @@ class EgressGame(object):
         self.simulation.agent.neighbor_radius = neighbor_radius
         self.simulation.agent.neighborhood_size = neighborhood_size
         self.simulation.agent.reset_neighbor()
+
+    def parameters(self):
+        """Parameters that can be saved or plotted"""
+        params = (
+            "strategies",
+            "strategy",
+            "t_aset_0",
+            "t_evac",
+            "interval",
+        )
+        for p in params:
+            assert hasattr(self, p),  "{cls} doesn't have attribute {attr}".format(cls=p, attr=p)
+        return params
 
     def reset(self):
         self.t_evac[:] = 0

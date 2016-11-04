@@ -45,17 +45,6 @@ class Create:
         for item in resizable:
             data['simulation'][item]['resizable'] = True
 
-        game = (
-            "strategies",
-            "strategy",
-            "t_aset_0",
-            "t_evac",
-            "interval",
-        )
-        for item in game:
-            # data['game'][item]['resizable'] = True
-            pass
-
         with open(filepath, "w") as file:
             yaml.dump(data,
                       stream=file,

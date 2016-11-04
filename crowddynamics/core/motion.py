@@ -4,7 +4,7 @@ from scipy.stats import truncnorm as tn
 
 from crowddynamics.core.interactions import agent_agent, agent_wall, \
     agent_agent_block_list
-from crowddynamics.functions import public
+from crowddynamics.functions import public, timed
 from .vector2D import wrap_to_pi, length_nx2
 
 
@@ -138,6 +138,7 @@ class AgentAgentInteractions:
     def __init__(self, simulation):
         self.simulation = simulation
 
+    @timed("Agent-Agent Interaction")
     def update(self):
         # agent_agent(self.simulation.agent)
         agent_agent_block_list(self.simulation.agent)
@@ -148,5 +149,6 @@ class AgentObstacleInteractions:
     def __init__(self, simulation):
         self.simulation = simulation
 
+    @timed("Agent-Obstacle Interaction")
     def update(self):
         agent_wall(self.simulation.agent, self.simulation.walls)

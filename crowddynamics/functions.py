@@ -98,16 +98,24 @@ def format_time(timespan, precision=3):
     return u"{:.1f} {}".format(timespan * scaling[order], units[order])
 
 
-def timed(func):
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        start = timer()
-        ret = func(*args, **kwargs)
-        dt = timer() - start
-        print(func.__name__, format_time(dt))
-        return ret
+class timed:
+    def __init__(self, msg=""):
+        self.msg = msg
 
-    return wrapper
+    def __call__(self, f):
+        msg = self.msg
+
+        @wraps(f)
+        def wrapper(*args, **kwargs):
+            start = timer()
+            ret = f(*args, **kwargs)
+            dt = timer() - start
+
+            print(msg, format_time(dt))
+
+            return ret
+
+        return wrapper
 
 
 def public(f):

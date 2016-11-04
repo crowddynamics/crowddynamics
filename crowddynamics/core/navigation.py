@@ -6,7 +6,7 @@ from shapely.geometry import LineString
 from shapely.geometry import Polygon
 
 from crowddynamics.core.geometry import shapes_to_point_pairs
-from crowddynamics.functions import public
+from crowddynamics.functions import public, timed
 
 try:
     import skfmm
@@ -53,7 +53,7 @@ class NavigationMap(object):
                                 np.arange(miny, maxy + step, step=step), )
 
     def points_to_indices(self, points):
-        return np.round(points / self.step).astype(int)
+        return np.round(points / self.step).astype(np.int64)
 
     def set_values(self, shape, array, value):
         if isinstance(shape, Polygon):
@@ -155,6 +155,7 @@ class Navigation(NavigationMap):
 
         raise NotImplementedError
 
+    @timed("Navigation Time")
     def update(self):
         i = self.simulation.agent.indices()
         points = self.simulation.agent.position[i]
@@ -175,6 +176,7 @@ class Orientation:
     def __init__(self, simulation):
         self.simulation = simulation
 
+    @timed("Orientation Time")
     def update(self):
         if self.simulation.agent.orientable:
             dir_to_orient = angle_nx2(self.simulation.agent.target_direction)

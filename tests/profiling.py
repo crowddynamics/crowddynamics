@@ -23,10 +23,11 @@ def run_simulation(name, iterations=100):
     simulation = getattr(module, class_name)
     process = simulation(None, **kwargs)
 
-    process.configure_hdfstore()
+    # process.configure_hdfstore()
 
     process.initial_update()
     for _ in range(iterations):
         process.update()
 
-run_simulation("room_evacuation", 500)
+
+run_simulation("room_evacuation_massive", 100)

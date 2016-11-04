@@ -17,7 +17,8 @@ def setup_logging(default_path=LOG_CFG,
                   default_level=logging.INFO,
                   env_key='LOG_CFG'):
     """
-    Setup logging configuration
+    Setup logging configurations. These are defined as dictConfig from
+    ``configs/logging.yaml`` file.
     """
 
     # TODO: Change root logger -> custom logger

@@ -1,7 +1,7 @@
 import numpy as np
 from shapely.geometry import Polygon, LineString, Point
 
-from crowddynamics.core.game import EgressGame
+from crowddynamics.models.game import EgressGame
 from crowddynamics.core.motion import Integrator, Adjusting, \
     AgentAgentInteractions, Fluctuation, AgentObstacleInteractions
 from crowddynamics.core.navigation import Navigation, Orientation
