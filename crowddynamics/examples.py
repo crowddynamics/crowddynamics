@@ -2,9 +2,9 @@ import numpy as np
 from shapely.geometry import Polygon, LineString, Point
 
 from crowddynamics.models.game import EgressGame
-from crowddynamics.core.motion import Integrator, Adjusting, \
-    AgentAgentInteractions, Fluctuation, AgentObstacleInteractions
-from crowddynamics.core.navigation import Navigation, Orientation
+from crowddynamics.multiagent.algorithms import Navigation, Orientation, \
+    Integrator, Fluctuation, Adjusting, AgentAgentInteractions, \
+    AgentObstacleInteractions
 from crowddynamics.multiagent.simulation import MultiAgentSimulation
 
 
