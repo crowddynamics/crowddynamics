@@ -2,10 +2,13 @@ from collections import Iterable
 
 import matplotlib.cm as cm
 import matplotlib.pyplot as plt
+import numba
 import numpy as np
 import skfmm
 import skimage.draw
 from shapely.geometry import LineString, Polygon
+from shapely.geometry.base import BaseGeometry
+from typing import Optional
 
 from crowddynamics.core.geometry import shapes_to_point_pairs
 
@@ -29,10 +32,10 @@ def _set_values(grid, step, shape, value):
     Set values on discrete grid using ``scikit-image``.
 
     Args:
-        shape: Continuous shape (Polygon, LineString, ...)
-        grid: Grid to set values
-        value: Value to set to the grid points
-        step: Step size of the grid
+        shape (BaseGeometry): Shapely shape
+        grid (numpy.ndarray): Grid to set values
+        value (grid.dtype): Value to set to the grid points
+        step (float): Step size of the grid
 
     Returns:
         None. Values are set to grid.
@@ -53,25 +56,28 @@ def _set_values(grid, step, shape, value):
     elif isinstance(shape, Iterable):
         for shape_ in shape:
             _set_values(grid, step, shape_, value)
+    elif shape is None:
+        # If shape is None do nothing.
+        pass
     else:
         raise Exception("Type of shape is not valid.")
 
 
-def distance_map(domain: Polygon,
-                 obstacles: LineString,
-                 targets: LineString,
-                 step: float):
+def distance_map(step: float, domain: Polygon,
+                 targets: Optional[LineString] = None,
+                 obstacles: Optional[LineString] = None):
     """
     Solve distance map using Fast Marching Method (FMM) from ``scikit-fmm``.
 
     Args:
         domain (Polygon): Domain containing obstacles and targets
-        obstacles (LineString): Impassable regions in the domain
-        targets (LineString): Target regions in the domain
+        obstacles (LineString, optional): Impassable regions in the domain
+        targets (LineString, optional): Target regions in the domain
         step (float): Step size for the meshgrid.
 
     Return:
-        -
+        (numpy.meshgrid, numpy.ndarray, numpy.ma.MaskedArray):
+            (mgrid, dmap, phi)
 
     """
     # Numerical values for objects in the domain
@@ -103,19 +109,21 @@ def distance_map(domain: Polygon,
 
 def direction_map(dmap):
     """
-    Gradient of direction map. Normalization of the gradient is not required
-    because the distance map is already normal due to the initial values
-    used to solve the distance map.
+    Normalized gradient of distance map.
+
+    Args:
+        dmap (numpy.ndarray): Distance map.
 
     Returns:
-        Direction Map
+        numpy.ndarray: Direction map. Array of shape: ``dmap.shape + (2,)``
 
     """
     u, v = np.gradient(dmap)
     dir_map = np.zeros(u.shape + (2,))
-    l = np.hypot(u, v)
 
     # Flip order from (row, col) to (x, y)
+    l = np.hypot(u, v)
+    # TODO: handle l == 0
     dir_map[:, :, 0] = v / l
     dir_map[:, :, 1] = u / l
     return dir_map
@@ -128,7 +136,7 @@ def plot_distance_map(mgrid, dmap, phi):
     Args:
         mgrid (numpy.meshgrid):
         dmap (numpy.ndarray):
-        phi np.ma.MaskedArray:
+        phi (numpy.ma.MaskedArray):
 
     """
     X, Y = mgrid
@@ -148,3 +156,67 @@ def plot_distance_map(mgrid, dmap, phi):
 
     # plt.savefig("distance_map_{}.pdf".format(name))
     ax.show()
+
+
+@numba.jit(nopython=True)
+def merge_dir_maps(dmap, dir_map1, dir_map2, radius, value):
+    """
+
+    Args:
+        dmap:
+        dir_map1:
+        dir_map2:
+        radius (float): Radius
+        value (float): Value between (0, 1). Value denoting the strength of
+            dir_map1 at distance of radius.
+
+    Returns:
+        numpy.ndarray:
+
+    """
+    merged = np.copy(dir_map2)
+
+    n, m = dmap.shape
+    for i in range(n):
+        for j in range(m):
+            x = np.abs(dmap[i, j])
+
+            # Decreasing function
+            # f(x) = value ** (x / radius)
+            if x < 2 * radius:
+                k = value ** (x / radius)
+                merged[i, j] = - k * dir_map1[i, j] + (1 - k) * dir_map2[i, j]
+            else:
+                # Does not change value
+                pass
+
+    return merged
+
+
+def static_potential(step: float, domain: Polygon,
+                     exits: Optional[LineString] = None,
+                     obstacles: Optional[LineString] = None,
+                     radius=0.3,
+                     value=0.1):
+    """
+
+    Args:
+        step:
+        domain:
+        exits:
+        obstacles:
+        value:
+        radius:
+
+    Returns:
+
+    """
+    _, dmap_exits, _ = distance_map(step, domain, exits, obstacles)
+    _, dmap_obs, _ = distance_map(step, domain, obstacles, None)
+
+    dir_map_exits = direction_map(dmap_exits)
+    dir_map_obs = direction_map(dmap_obs)
+
+    dir_map = merge_dir_maps(dmap_obs, dir_map_obs, dir_map_exits, radius, value)
+
+    return dir_map

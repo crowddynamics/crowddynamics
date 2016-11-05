@@ -22,6 +22,20 @@ from numba import f8, i8
 
 @numba.jit(nopython=True)
 def block_list(points, cell_width):
+    """
+
+    Args:
+        points (numpy.ndarray): Array of points (points.ndim == 2).
+        cell_width (float): Width/height of the rectangular mesh.
+
+    Returns:
+        index_list:
+        count:
+        offset:
+        x_min:
+        x_max:
+
+    """
     assert points.ndim == 2
     n, m = points.shape
 
@@ -107,10 +121,3 @@ class BlockList(object):
         start = self.offset[index]
         end = start + self.count[index]
         return self.index_list[start:end]
-
-
-def _test():
-    n = 10 ** 4
-    points = np.random.uniform(0, 100, size=(n, 2))
-    cell_width = 1
-    bl = BlockList(points, cell_width)

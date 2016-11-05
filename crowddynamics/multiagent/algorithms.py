@@ -5,7 +5,7 @@ from crowddynamics.core.motion import integrate, force_fluctuation, \
     torque_fluctuation, force_adjust, torque_adjust
 
 from crowddynamics.core.navigation import distance_map, direction_map, \
-    _to_indices
+    _to_indices, static_potential
 from crowddynamics.core.vector2D import angle_nx2
 from crowddynamics.functions import public, timed
 from crowddynamics.task_graph import TaskNode
@@ -120,19 +120,20 @@ class Navigation(TaskNode):
         self.simulation = simulation
 
         self.step = step
-        self.distance_map = None
         self.direction_map = None
 
         if algorithm == "static":
             # self.static_potential()
-            mgrid, dmap, phi = distance_map(
-                self.simulation.domain,
-                self.simulation.obstacles,
-                self.simulation.exits,
-                self.step
-            )
-            self.distance_map = dmap
-            self.direction_map = direction_map(dmap)
+            # mgrid, dmap, phi = distance_map(self.step,
+            #                                 self.simulation.domain,
+            #                                 self.simulation.exits,
+            #                                 self.simulation.obstacles)
+            # self.direction_map = direction_map(dmap)
+
+            self.direction_map = static_potential(self.step,
+                                                  self.simulation.domain,
+                                                  self.simulation.exits,
+                                                  self.simulation.obstacles)
         elif algorithm == "dynamic":
             raise NotImplementedError
         else:
