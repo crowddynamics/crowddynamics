@@ -1,102 +1,160 @@
 import logging
 from collections import Iterable
 
+import matplotlib.cm as cm
+import matplotlib.pyplot as plt
 import numpy as np
-from shapely.geometry import LineString
-from shapely.geometry import Polygon
+import skfmm
+import skimage.draw
+from shapely.geometry import LineString, Polygon
 
 from crowddynamics.core.geometry import shapes_to_point_pairs
 from crowddynamics.functions import public, timed
-
-try:
-    import skfmm
-    import skimage.draw
-except ImportError:
-    raise Warning("Navigation algorithm cannot be used if scikit-fmm or "
-                  "scikit-image are not installed")
-
 from .vector2D import angle_nx2
 
 
-def plot_dmap(grid, dmap, phi, name):
-    import matplotlib.pyplot as plt
-    import matplotlib.cm as cm
-    X, Y = grid
-    plt.figure(figsize=(12, 12))
-    plt.title('Distance map from exit.')
-    plt.imshow(dmap, interpolation='bilinear', origin='lower', cmap=cm.gray,
-               extent=(X.min(), X.max(), Y.min(), Y.max()))
-    plt.contour(X, Y, dmap, 30, linewidths=1, colors='gray')
-    plt.contour(X, Y, phi.mask, [0], linewidths=1, colors='black')
-    plt.savefig("distance_map_{}.pdf".format(name))
+def _to_indices(points, step):
+    """
+
+    Args:
+        points (numpy.ndarray): Points on a continuous grid
+        step (float): Step size of the grid
+
+    Returns:
+        Array of integers. Indices of a point in discrete grid.
+
+    """
+    return np.round(points / step).astype(np.int64)
+
+
+def _set_values(grid, step, shape, value):
+    """
+    Set values on discrete grid using ``scikit-image``.
+
+    Args:
+        shape: Continuous shape (Polygon, LineString, ...)
+        grid: Grid to set values
+        value: Value to set to the grid points
+        step: Step size of the grid
+
+    Returns:
+        None. Values are set to grid.
+
+    """
+    if isinstance(shape, Polygon):
+        points = np.asarray(shape.exterior)
+        points = _to_indices(points, step)
+        x, y = points[:, 0], points[:, 1]
+        j, i = skimage.draw.polygon(x, y)
+        grid[i, j] = value
+    elif isinstance(shape, LineString):
+        points = shapes_to_point_pairs(shape)
+        points = _to_indices(points, step)
+        for args in points:
+            j, i = skimage.draw.line(*args.flatten())
+            grid[i, j] = value
+    elif isinstance(shape, Iterable):
+        for shape_ in shape:
+            _set_values(grid, step, shape_, value)
+    else:
+        raise Exception("Type of shape is not valid.")
+
+
+def distance_map(domain: Polygon,
+                 obstacles: LineString,
+                 targets: LineString,
+                 step: float):
+    """
+    Solve distance map using Fast Marching Method (FMM) from ``scikit-fmm``.
+
+    Args:
+        domain (Polygon): Domain containing obstacles and targets
+        obstacles (LineString): Impassable regions in the domain
+        targets (LineString): Target regions in the domain
+        step (float): Step size for the meshgrid.
+
+    Return:
+        -
+
+    """
+    # Numerical values for objects in the domain
+    initial_value = -1.0  # Empty regions
+    target_value = 1.0  # Target regions
+    obstacle_value = True  # Obstacle regions
+
+    # Form the meshgrid
+    minx, miny, maxx, maxy = domain.bounds  # Bounding box
+    x = np.arange(minx, maxx + step, step=step)  # x-axis
+    y = np.arange(miny, maxy + step, step=step)  # y-axis
+    mgrid = np.meshgrid(x, y)  # (X, Y)
+
+    # Contour used for solving distance map
+    # Mask for masked values that represent obstacles for the solver
+    contour = np.full_like(mgrid[0], initial_value, dtype=np.float64)
+    mask = np.full_like(mgrid[0], False, dtype=np.bool_)
+
+    _set_values(contour, step, targets, target_value)
+    _set_values(mask, step, obstacles, obstacle_value)
+
+    phi = np.ma.MaskedArray(contour, mask)
+
+    # Solve distance map using Fast-Marching Method (FMM)
+    dmap = skfmm.distance(phi, dx=step)
+
+    return mgrid, dmap, phi
+
+
+def direction_map(dmap):
+    """
+    Gradient of direction map. Normalization of the gradient is not required
+    because the distance map is already normal due to the initial values
+    used to solve the distance map.
+
+    Returns:
+        Direction Map
+
+    """
+    u, v = np.gradient(dmap)
+    dir_map = np.zeros(u.shape + (2,))
+    l = np.hypot(u, v)
+
+    # Flip order from (row, col) to (x, y)
+    dir_map[:, :, 0] = v / l
+    dir_map[:, :, 1] = u / l
+    return dir_map
+
+
+def plot_distance_map(mgrid, dmap, phi):
+    """
+    Plot distance map
+
+    Args:
+        mgrid (numpy.meshgrid):
+        dmap (numpy.ndarray):
+        phi np.ma.MaskedArray:
+
+    """
+    X, Y = mgrid
+    bbox = (X.min(), X.max(), Y.min(), Y.max())
+
+    opts = dict(
+        figsize=(12, 12),
+    )
+
+    fig, ax = plt.subplots(**opts)
+
+    # Distance map plot
+    ax.imshow(dmap, interpolation='bilinear', origin='lower', cmap=cm.gray,
+              extent=bbox)
+    ax.contour(X, Y, dmap, 30, linewidths=1, colors='gray')  # Contour lines
+    ax.contour(X, Y, phi.mask, [0], linewidths=1, colors='black')  # Obstacles
+
+    # plt.savefig("distance_map_{}.pdf".format(name))
+    ax.show()
 
 
 @public
-class ExitSelection:
-    """Exit selection policy."""
-
-    def __init__(self, simulation):
-        self.simulation = simulation
-
-
-class NavigationMap(object):
-    initial = -1.0
-    target = 1.0
-    obstacle = True
-
-    def __init__(self, domain, step=0.01):
-        self.domain = domain
-        self.step = step
-
-        minx, miny, maxx, maxy = domain.bounds  # Bounding box
-        self.grid = np.meshgrid(np.arange(minx, maxx + step, step=step),
-                                np.arange(miny, maxy + step, step=step), )
-
-    def points_to_indices(self, points):
-        return np.round(points / self.step).astype(np.int64)
-
-    def set_values(self, shape, array, value):
-        if isinstance(shape, Polygon):
-            points = np.asarray(shape.exterior)
-            points = self.points_to_indices(points)
-            x, y = points[:, 0], points[:, 1]
-            j, i = skimage.draw.polygon(x, y)
-            array[i, j] = value
-        elif isinstance(shape, LineString):
-            points = shapes_to_point_pairs(shape)
-            points = self.points_to_indices(points)
-            for args in points:
-                j, i = skimage.draw.line(*args.flatten())
-                array[i, j] = value
-        elif isinstance(shape, Iterable):
-            for shape_ in shape:
-                self.set_values(shape_, array, value)
-        else:
-            raise Exception()
-
-    def distance_map(self, obstacles, targets):
-        contour = np.full_like(self.grid[0], self.initial, dtype=np.float64)
-        self.set_values(targets, contour, self.target)
-
-        mask = np.full_like(self.grid[0], False, dtype=np.bool_)
-        self.set_values(obstacles, mask, self.obstacle)
-
-        contour = np.ma.MaskedArray(contour, mask)
-        dmap = skfmm.distance(contour, dx=self.step)
-        return dmap, contour
-
-    def travel_time_map(self):
-        pass
-
-    def static(self):
-        pass
-
-    def dynamic(self, obstacles, targets, dynamic):
-        pass
-
-
-@public
-class Navigation(NavigationMap):
+class Navigation:
     """Determining target direction of an agent in multi-agent simulation.
 
     Algorithm based on solving the continous shortest path
@@ -116,50 +174,41 @@ class Navigation(NavigationMap):
 
     # TODO: take into account radius of the agents
 
-    def __init__(self, simulation, algorithm="static"):
-        super().__init__(simulation.domain)
+    def __init__(self, simulation, algorithm="static", step=0.01):
+        """
 
+        Args:
+            simulation:
+            algorithm:
+            step:
+        """
         self.simulation = simulation
-        self.dist_map = None
+
+        self.step = step
+        self.distance_map = None
         self.direction_map = None
 
         if algorithm == "static":
-            self.static_potential()
+            # self.static_potential()
+            mgrid, dmap, phi = distance_map(
+                self.simulation.domain,
+                self.simulation.obstacles,
+                self.simulation.exits,
+                self.step
+            )
+            self.distance_map = dmap
+            self.direction_map = direction_map(dmap)
         elif algorithm == "dynamic":
             raise NotImplementedError
         else:
             pass
 
-    def static_potential(self):
-        logging.info("")
-
-        if self.dist_map is None:
-            self.dist_map, contour = self.distance_map(
-                self.simulation.obstacles,
-                self.simulation.exits,
-            )
-
-        u, v = np.gradient(self.dist_map)
-        l = np.hypot(u, v)  # Normalize
-        direction = np.zeros(u.shape + (2,))
-        # Flip order from (row, col) to (x, y)
-        direction[:, :, 0] = v / l
-        direction[:, :, 1] = u / l
-        self.direction_map = direction
-
-    def distance_map_agents(self):
-        pass
-
-    def dynamic_potential(self):
-        logging.info("")
-
-        raise NotImplementedError
-
     @timed("Navigation Time")
     def update(self):
         i = self.simulation.agent.indices()
         points = self.simulation.agent.position[i]
-        indices = self.points_to_indices(points)
+        # indices = self.points_to_indices(points)
+        indices = _to_indices(points, self.step)
         indices = np.fliplr(indices)
         # http://docs.scipy.org/doc/numpy/reference/arrays.indexing.html
         # TODO: Handle index out of bounds -> numpy.take
@@ -181,3 +230,11 @@ class Orientation:
         if self.simulation.agent.orientable:
             dir_to_orient = angle_nx2(self.simulation.agent.target_direction)
             self.simulation.agent.target_angle[:] = dir_to_orient
+
+
+@public
+class ExitSelection:
+    """Exit selection policy."""
+
+    def __init__(self, simulation):
+        self.simulation = simulation

@@ -69,19 +69,15 @@ Target direction
    \hat{\mathbf{e}}_{T} = -\frac{\nabla T(\mathbf{x})}{\| \nabla T(\mathbf{x}) \|}
 
 
-Numerical solving
------------------
-- Fast Marching Method.
-   - `scikit-fmm`_
-- Fast Iterative Method
+Implementation
+--------------
+.. Fast Marching Method.
+.. Fast Iterative Method
 
-.. _scikit-fmm: https://github.com/scikit-fmm/scikit-fmm
-
+Discretize the domain :math:`\Omega` into meshgrid.
 
 
-
-----
-
-.. [quickpath2011] Kretz, T., Große, A., Hengst, S., Kautzsch, L., Pohlmann, A., & Vortisch, P. (2011). Quickest Paths in Simulations of Pedestrians. Advances in Complex Systems, 14(5), 733–759. http://doi.org/10.1142/S0219525911003281
-
-.. [dense2016] Stüvel, S. A. (2016). Dense Crowds of Virtual Humans.
+References
+----------
+..
+   .. bibliography:: ../bibliography/CrowdDynamics-Navigation.bib
