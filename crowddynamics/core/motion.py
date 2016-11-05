@@ -5,6 +5,7 @@ from scipy.stats import truncnorm as tn
 from crowddynamics.core.interactions import agent_agent, agent_wall, \
     agent_agent_block_list
 from crowddynamics.functions import public, timed
+from crowddynamics.task_graph import TaskNode
 from .vector2D import wrap_to_pi, length_nx2
 
 
@@ -90,13 +91,14 @@ def integrate(agent, dt_min, dt_max):
 
 
 @public
-class Integrator(object):
+class Integrator(TaskNode):
     def __init__(self, simulation, dt):
         """
 
         :param simulation: Simulation class
         :param dt: Tuple of minumum and maximum timestep (dt_min, dt_max).
         """
+        super().__init__()
 
         self.simulation = simulation
         self.dt = dt
@@ -104,18 +106,24 @@ class Integrator(object):
         self.time_tot = np.float64(0)
         self.dt_prev = np.float64(np.nan)
 
-    def integrate(self):
+    def update(self):
+        """
+        Integrates the system.
+
+        Returns:
+            None
+
+        """
         self.dt_prev = integrate(self.simulation.agent, *self.dt)
         self.time_tot += self.dt_prev
         self.simulation.dt_prev = self.dt_prev
         self.simulation.time_tot += self.dt_prev
 
-    update = integrate
-
 
 @public
-class Fluctuation:
+class Fluctuation(TaskNode):
     def __init__(self, simulation):
+        super().__init__()
         self.simulation = simulation
 
     def update(self):
@@ -124,8 +132,9 @@ class Fluctuation:
 
 
 @public
-class Adjusting:
+class Adjusting(TaskNode):
     def __init__(self, simulation):
+        super().__init__()
         self.simulation = simulation
 
     def update(self):
@@ -134,8 +143,9 @@ class Adjusting:
 
 
 @public
-class AgentAgentInteractions:
+class AgentAgentInteractions(TaskNode):
     def __init__(self, simulation):
+        super().__init__()
         self.simulation = simulation
 
     @timed("Agent-Agent Interaction")
@@ -145,8 +155,9 @@ class AgentAgentInteractions:
 
 
 @public
-class AgentObstacleInteractions:
+class AgentObstacleInteractions(TaskNode):
     def __init__(self, simulation):
+        super().__init__()
         self.simulation = simulation
 
     @timed("Agent-Obstacle Interaction")

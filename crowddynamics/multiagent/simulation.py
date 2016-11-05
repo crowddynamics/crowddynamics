@@ -21,31 +21,6 @@ from crowddynamics.multiagent.agent import Agent
 from crowddynamics.multiagent.field import LineObstacle
 
 
-@public
-class TaskNode:
-    """
-    Create task graphs. Task graphs are used to create order for function calls
-    in simulation and to evaluate functions in this order.
-    """
-    # TODO: Dask for parallelisation?
-
-    def __init__(self, task):
-        if not hasattr(task, "update"):
-            raise Exception("Task doesn't have attribute update.")
-        self._task = task
-        self._nodes = []
-
-    def add_child(self, child):
-        node = TaskNode(child)
-        self._nodes.append(node)
-        return node
-
-    def evaluate(self):
-        for node in self._nodes:
-            node.evaluate()
-        self._task.update()
-
-
 class QueueDict:
     def __init__(self, producer):
         self.producer = producer

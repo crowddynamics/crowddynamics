@@ -10,6 +10,7 @@ from shapely.geometry import LineString, Polygon
 
 from crowddynamics.core.geometry import shapes_to_point_pairs
 from crowddynamics.functions import public, timed
+from crowddynamics.task_graph import TaskNode
 from .vector2D import angle_nx2
 
 
@@ -154,7 +155,7 @@ def plot_distance_map(mgrid, dmap, phi):
 
 
 @public
-class Navigation:
+class Navigation(TaskNode):
     """Determining target direction of an agent in multi-agent simulation.
 
     Algorithm based on solving the continous shortest path
@@ -180,8 +181,10 @@ class Navigation:
         Args:
             simulation:
             algorithm:
-            step:
+            step (float): Step size for the grid.
+
         """
+        super().__init__()
         self.simulation = simulation
 
         self.step = step
@@ -205,6 +208,13 @@ class Navigation:
 
     @timed("Navigation Time")
     def update(self):
+        """
+        Changes target directions of active agents.
+
+        Returns:
+            None.
+
+        """
         i = self.simulation.agent.indices()
         points = self.simulation.agent.position[i]
         # indices = self.points_to_indices(points)
@@ -217,12 +227,13 @@ class Navigation:
 
 
 @public
-class Orientation:
+class Orientation(TaskNode):
     """
     Target orientation
     """
 
     def __init__(self, simulation):
+        super().__init__()
         self.simulation = simulation
 
     @timed("Orientation Time")
@@ -233,8 +244,9 @@ class Orientation:
 
 
 @public
-class ExitSelection:
+class ExitSelection(TaskNode):
     """Exit selection policy."""
 
     def __init__(self, simulation):
+        super().__init__()
         self.simulation = simulation

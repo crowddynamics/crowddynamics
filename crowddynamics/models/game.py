@@ -5,6 +5,7 @@ from shapely.geometry import Polygon
 
 from crowddynamics.core.vector2D import length_nx2, length
 from crowddynamics.functions import public
+from crowddynamics.task_graph import TaskNode
 
 
 @numba.jit(nopython=True)
@@ -86,7 +87,7 @@ def best_response_strategy(agent, players, door, radius_max, strategy,
 
 
 @public
-class EgressGame(object):
+class EgressGame(TaskNode):
     """
     Patient and impatient pedestrians in a spatial game for egress congestion
     -------------------------------------------------------------------------
