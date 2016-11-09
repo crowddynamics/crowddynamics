@@ -2,17 +2,49 @@ import numba
 import numpy as np
 from numba import f8
 
-from crowddynamics.core.block_list import BlockList
-from crowddynamics.core.vector2D import dot2d
+from .block_list import BlockList
 from .power_law import force_social_circular, force_social_three_circle, \
     force_social_linear_wall
-from .vector2D import length, rotate270, cross2d
+from .vector2D import length, rotate270, cross2d, dot2d
+
+
+@numba.jit(f8[:](f8, f8[:], f8, f8), nopython=True, nogil=True)
+def force_social_helbing(h, n, a, b):
+    """
+    Helbing's model's original social force. Independent of the velocity or
+    direction of the agent.
+
+    Args:
+        h (float): Skin-to-skin distance between agents
+        n (numpy.ndarray): Normal vector
+        a (float): Constant: :math:`A = 2 \cdot 10^{3} \,\mathrm{N}`
+        b (float): Constant: :math:`B = 0.08 \,\mathrm{m}`
+
+    Returns:
+        numpy.ndarray: Social force
+    """
+    return np.exp(- h / b) * a * n
 
 
 @numba.jit(f8[:](f8, f8[:], f8[:], f8[:], f8, f8, f8), nopython=True,
            nogil=True)
 def force_contact(h, n, v, t, mu, kappa, damping):
-    """Frictional contact force with damping."""
+    """
+    Frictional contact force with damping. Helbings original model did not
+    include damping, which was added by Langston.
+
+    Args:
+        h (float): Skin-to-skin distance between agents
+        n (numpy.ndarray): Normal vector
+        v (numpy.ndarray): Velocity vector
+        t (numpy.ndarray): Tangent vetor
+        mu (float): Constant: :math:`1.2 \cdot 10^{5}\,\mathrm{kg\,s^{-2}}`
+        kappa (float): Constant: :math:`4.0 \cdot 10^{4}\,\mathrm{kg\,m^{-1}s^{-1}}`
+        damping (float): Constant: :math:`500 \,\mathrm{N}`
+
+    Returns:
+        numpy.ndarray: Contact force
+    """
     return - h * (mu * n - kappa * dot2d(v, t) * t) + damping * dot2d(v, n) * n
 
 
@@ -85,12 +117,8 @@ def agent_wall(agent, wall):
 
 @numba.jit(nopython=True, nogil=True)
 def agent_agent_distance_three_circle(agent, i, j):
-    """Distance between two three-circle models.
-
-    :param agent:
-    :param i:
-    :param j:
-    :return:
+    """
+    Distance between two three-circle models.
     """
     # Positions: center, left, right
     x_i = (agent.position[i], agent.position_ls[i], agent.position_rs[i])
@@ -126,13 +154,8 @@ def agent_agent_distance_three_circle(agent, i, j):
 
 @numba.jit(nopython=True, nogil=True)
 def agent_wall_distance(agent, wall, i, w):
-    """Distance between three-circle model and a line.
-
-    :param agent:
-    :param wall:
-    :param i:
-    :param w:
-    :return:
+    """
+    Distance between three-circle model and a line.
     """
     x_i = (agent.position[i], agent.position_ls[i], agent.position_rs[i])
     r_i = (agent.r_t[i], agent.r_s[i], agent.r_s[i])
@@ -216,6 +239,7 @@ def agent_wall_interaction(i, w, agent, wall):
     d, n = wall.distance_with_normal(w, x)
     h = d - r_tot  # Relative distance
 
+    # FIXME: remove memory allocation inside loops
     if h <= agent.sight_wall:
         if agent.three_circle:
             h, n, r_moment_i = agent_wall_distance(agent, wall, i, w)

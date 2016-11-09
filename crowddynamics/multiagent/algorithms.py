@@ -3,9 +3,7 @@ import numpy as np
 from crowddynamics.core.interactions import agent_agent_block_list, agent_wall
 from crowddynamics.core.motion import integrate, force_fluctuation, \
     torque_fluctuation, force_adjust, torque_adjust
-
-from crowddynamics.core.navigation import distance_map, direction_map, \
-    _to_indices, static_potential
+from crowddynamics.core.navigation import _to_indices, static_potential
 from crowddynamics.core.vector2D import angle_nx2
 from crowddynamics.functions import public, timed
 from crowddynamics.task_graph import TaskNode
@@ -88,24 +86,9 @@ class AgentObstacleInteractions(TaskNode):
 
 @public
 class Navigation(TaskNode):
-    """Determining target direction of an agent in multi-agent simulation.
-
-    Algorithm based on solving the continous shortest path
-    problem by solving eikonal equation. [1]_, [2]_
-
-    There are at least two open source eikonal solvers. Fast marching method
-    (FMM) [3]_ for rectangular and tetrahedral meshes using Python and C++ and
-    fast iterative method (FIM) [4]_ for triangular meshes using c++ and CUDA.
-
-    In this implementation we use the FMM algorithm because it is simpler.
-
-    .. [1] Kretz, T., Große, A., Hengst, S., Kautzsch, L., Pohlmann, A., & Vortisch, P. (2011). Quickest Paths in Simulations of Pedestrians. Advances in Complex Systems, 14(5), 733–759. http://doi.org/10.1142/S0219525911003281
-    .. [2] Cristiani, E., & Peri, D. (2015). Handling obstacles in pedestrian simulations: Models and optimization. Retrieved from http://arxiv.org/abs/1512.08528
-    .. [3] https://github.com/scikit-fmm/scikit-fmm
-    .. [4] https://github.com/SCIInstitute/SCI-Solver_Eikonal
     """
-
-    # TODO: take into account radius of the agents
+    Handles navigation in multi-agent simulation.
+    """
 
     def __init__(self, simulation, algorithm="static", step=0.01):
         """
@@ -123,13 +106,6 @@ class Navigation(TaskNode):
         self.direction_map = None
 
         if algorithm == "static":
-            # self.static_potential()
-            # mgrid, dmap, phi = distance_map(self.step,
-            #                                 self.simulation.domain,
-            #                                 self.simulation.exits,
-            #                                 self.simulation.obstacles)
-            # self.direction_map = direction_map(dmap)
-
             self.direction_map = static_potential(self.step,
                                                   self.simulation.domain,
                                                   self.simulation.exits,

@@ -6,7 +6,12 @@ from .vector2D import wrap_to_pi, length_nx2
 
 
 def force_fluctuation(agent):
-    """Truncated normal distribution with standard deviation of 3."""
+    """
+    Truncated normal distribution with standard deviation of 3.
+
+    Args:
+        agent (multiagent.Agent):
+    """
     i = agent.indices()
     magnitude = tn.rvs(0, 3, loc=0, scale=agent.std_rand_force, size=i.size)
     angle = np.random.uniform(0, 2 * np.pi, size=i.size)
@@ -15,7 +20,12 @@ def force_fluctuation(agent):
 
 
 def torque_fluctuation(agent):
-    """Random torque."""
+    """
+    Random torque.
+
+    Args:
+        agent (multiagent.Agent):
+    """
     if agent.orientable:
         i = agent.indices()
         torque = tn.rvs(-3, 3, loc=0, scale=agent.std_rand_force, size=i.size)
@@ -24,7 +34,12 @@ def torque_fluctuation(agent):
 
 @numba.jit(nopython=True, nogil=True)
 def force_adjust(agent):
-    """Force that adjust movement towards target direction."""
+    """
+    Force that adjust movement towards target direction.
+
+    Args:
+        agent (multiagent.Agent):
+    """
     for i in agent.indices():
         force = (agent.mass[i] / agent.tau_adj) * \
                 (agent.target_velocity[i] * agent.target_direction[i] -
@@ -34,7 +49,12 @@ def force_adjust(agent):
 
 @numba.jit(nopython=True, nogil=True)
 def torque_adjust(agent):
-    """Adjusting torque."""
+    """
+    Adjusting torque.
+
+    Args:
+        agent (multiagent.Agent):
+    """
     if agent.orientable:
         for i in agent.indices():
             agent.torque[i] += agent.inertia_rot[i] / agent.tau_rot * (
@@ -44,13 +64,17 @@ def torque_adjust(agent):
 
 @numba.jit(nopython=True)
 def integrate(agent, dt_min, dt_max):
-    """Verlet integration using adaptive timestep for integrating differential
+    """
+    Verlet integration using adaptive timestep for integrating differential
     system.
 
-    :param dt_min: Minimum timestep for adaptive integration
-    :param dt_max: Maximum timestep for adaptive integration
-    :param agent: Agent class
-    :return: Timestep that was used for integration
+    Args:
+        agent (multiagent.Agent):
+        dt_min: Minimum timestep for adaptive integration
+        dt_max: Maximum timestep for adaptive integration
+
+    Returns:
+        Timestep that was used for integration
     """
     i = agent.indices()
     a = agent.force[i] / agent.mass[i]  # Acceleration

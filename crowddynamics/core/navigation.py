@@ -64,8 +64,8 @@ def _set_values(grid, step, shape, value):
 
 
 def distance_map(step: float, domain: Polygon,
-                 targets: Optional[LineString] = None,
-                 obstacles: Optional[LineString] = None):
+                 targets: Optional[LineString],
+                 obstacles: Optional[LineString]):
     """
     Solve distance map using Fast Marching Method (FMM) from ``scikit-fmm``.
 
