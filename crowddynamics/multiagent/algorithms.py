@@ -133,7 +133,9 @@ class Navigation(TaskNode):
             self.direction_map = static_potential(self.step,
                                                   self.simulation.domain,
                                                   self.simulation.exits,
-                                                  self.simulation.obstacles)
+                                                  self.simulation.obstacles,
+                                                  radius=0.3,
+                                                  value=0.3)
         elif algorithm == "dynamic":
             raise NotImplementedError
         else:

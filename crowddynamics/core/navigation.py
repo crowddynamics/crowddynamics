@@ -181,23 +181,19 @@ def merge_dir_maps(dmap, dir_map1, dir_map2, radius, value):
         for j in range(m):
             x = np.abs(dmap[i, j])
 
-            # Decreasing function
-            # f(x) = value ** (x / radius)
-            if x < 2 * radius:
-                k = value ** (x / radius)
+            if x < 1.1 * radius:
+                k = value ** (x / radius)  # Decreasing function
                 merged[i, j] = - k * dir_map1[i, j] + (1 - k) * dir_map2[i, j]
-            else:
-                # Does not change value
-                pass
 
     return merged
 
 
-def static_potential(step: float, domain: Polygon,
-                     exits: Optional[LineString] = None,
-                     obstacles: Optional[LineString] = None,
-                     radius=0.3,
-                     value=0.1):
+def static_potential(step: float,
+                     domain: Polygon,
+                     exits: Optional[LineString],
+                     obstacles: Optional[LineString],
+                     radius: float,
+                     value: float):
     """
 
     Args:
