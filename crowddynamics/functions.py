@@ -58,8 +58,9 @@ def pandas_format():
 
 
 def format_time(timespan, precision=3):
-    """Jupyter notebook timeit time formatting.
-    Formats the timespan in a human readable form"""
+    """ Jupyter notebook timeit time formatting.
+    Formats the timespan in a human readable form
+    """
 
     if timespan >= 60.0:
         # we have more than a minute, format that in a human readable form
@@ -98,8 +99,17 @@ def format_time(timespan, precision=3):
     return u"{:.1f} {}".format(timespan * scaling[order], units[order])
 
 
-class timed:
+class Timed:
+    """
+    Decorator for timing function execution time.
+    """
+
     def __init__(self, msg=""):
+        """
+
+        Args:
+            msg (str): Message to be printed when function is executed.
+        """
         self.msg = msg
 
     def __call__(self, f):
@@ -127,7 +137,14 @@ def public(f):
     http://groups.google.com/group/comp.lang.python/msg/3d400fb22d8a42e1
 
     See StackOverflow post:
+
     https://stackoverflow.com/questions/6206089/is-it-a-good-practice-to-add-names-to-all-using-a-decorator
+
+    Args:
+        f (object): Object to be set
+
+    Returns:
+        object:
     """
     all = sys.modules[f.__module__].__dict__.setdefault('__all__', [])
     if f.__name__ not in all:  # Prevent duplicates if run from an IDE.

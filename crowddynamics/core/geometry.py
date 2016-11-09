@@ -15,9 +15,14 @@ except ImportError():
 def check_shapes(shapes, types):
     """Checks type and flattens shapes.
 
-    :param shapes: Shapes of type shapely.BaseGeometry
-    :param types: Allowed types of subclass shapely.BaseGeometry
-    :return: List of shapes.
+    Args:
+        shapes (shapely.geometry.base.BaseGeometry):
+            Shapes
+        types (shapely.geometry.base.BaseGeometry):
+            Allowed types of subclass shapely.BaseGeometry
+
+    Returns:
+        List: List of shapes
     """
 
     def _set_shape(_shapes, _types, _coll):
@@ -41,8 +46,11 @@ def shapes_to_point_pairs(shapes):
     """Converts shapes to pairs of points representing the line segments of the
     shapes.
 
-    :param shapes: Shapes of type shapely.BaseGeometry
-    :return: Numpy array of point pairs.
+    Args:
+        shapes (shapely.geometry.base.BaseGeometry): Shapes
+
+    Returns:
+        numpy.ndarray: Numpy array of point pairs.
     """
 
     def _shapes_to_points(_shapes, _points):

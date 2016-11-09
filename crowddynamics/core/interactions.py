@@ -52,6 +52,19 @@ def force_contact(h, n, v, t, mu, kappa, damping):
 def agent_agent_brute(agent, indices):
     """
     Interaction forces between set of agents.
+
+    Computational complexity (number of iterations)
+
+    .. math::
+        n - 1 + n - 2 + ... + 1 = n^{2} / 2 \in \mathcal{O}(n^2)
+
+    Args:
+        agent (Agent):
+        indices: Subset of ``agent.indices``. If equal to ``agent.indices`` then
+            brute force over all agents.
+
+    Returns:
+        None: Inplace function.
     """
     for l, i in enumerate(indices[:-1]):
         for j in indices[l + 1:]:
@@ -96,15 +109,6 @@ def agent_agent_block_list(agent):
                 if 0 <= (i + i2) < n and 0 <= (j + j2) < m:
                     ilist2 = blocks.get_block((i + i2, j + j2))
                     agent_agent_brute_disjoint(agent, indices_block, indices[ilist2])
-
-
-@numba.jit(nopython=True, nogil=True)
-def agent_agent(agent):
-    # n - 1 + n - 2 + ... + 1 = n^2 / 2 in O(n^2)
-    ind = agent.indices()
-    for l, i in enumerate(ind[:-1]):
-        for j in ind[l + 1:]:
-            agent_agent_interaction(i, j, agent)
 
 
 @numba.jit(nopython=True, nogil=True)

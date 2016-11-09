@@ -5,7 +5,7 @@ from crowddynamics.core.motion import integrate, force_fluctuation, \
     torque_fluctuation, force_adjust, torque_adjust
 from crowddynamics.core.navigation import _to_indices, static_potential
 from crowddynamics.core.vector2D import angle_nx2
-from crowddynamics.functions import public, timed
+from crowddynamics.functions import public, Timed
 from crowddynamics.task_graph import TaskNode
 
 
@@ -67,7 +67,7 @@ class AgentAgentInteractions(TaskNode):
         super().__init__()
         self.simulation = simulation
 
-    @timed("Agent-Agent Interaction")
+    @Timed("Agent-Agent Interaction")
     def update(self):
         # agent_agent(self.simulation.agent)
         agent_agent_block_list(self.simulation.agent)
@@ -79,7 +79,7 @@ class AgentObstacleInteractions(TaskNode):
         super().__init__()
         self.simulation = simulation
 
-    @timed("Agent-Obstacle Interaction")
+    @Timed("Agent-Obstacle Interaction")
     def update(self):
         agent_wall(self.simulation.agent, self.simulation.walls)
 
@@ -117,7 +117,7 @@ class Navigation(TaskNode):
         else:
             pass
 
-    @timed("Navigation Time")
+    @Timed("Navigation Time")
     def update(self):
         """
         Changes target directions of active agents.
@@ -147,7 +147,7 @@ class Orientation(TaskNode):
         super().__init__()
         self.simulation = simulation
 
-    @timed("Orientation Time")
+    @Timed("Orientation Time")
     def update(self):
         if self.simulation.agent.orientable:
             dir_to_orient = angle_nx2(self.simulation.agent.target_direction)

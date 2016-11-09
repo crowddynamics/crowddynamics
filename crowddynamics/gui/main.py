@@ -7,7 +7,7 @@ from multiprocessing import Queue
 import pyqtgraph as pg
 from PyQt4 import QtGui, QtCore
 
-from crowddynamics.functions import load_config, timed
+from crowddynamics.functions import load_config, Timed
 from .graphics import MultiAgentPlot
 from .ui.gui import Ui_MainWindow
 
@@ -217,7 +217,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         if self.savingButton.isChecked():
             self.process.configure_hdfstore()
 
-    @timed("Update Plots")
+    @Timed("Update Plots")
     def update_plots(self):
         """Updates the data in the plot(s)."""
         data = self.queue.get()

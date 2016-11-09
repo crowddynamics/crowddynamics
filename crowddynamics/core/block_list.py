@@ -20,21 +20,19 @@ from numba import f8, i8
 # index: x0 * n1 * n2 + x1 * n2 + x2
 #       (x0 * n1 + x1) * n2 + x2
 
+
 @numba.jit(nopython=True)
 def block_list(points, cell_width):
     """
+    Block list
 
     Args:
         points (numpy.ndarray): Array of points (points.ndim == 2).
         cell_width (float): Width/height of the rectangular mesh.
 
     Returns:
-        index_list:
-        count:
-        offset:
-        x_min:
-        x_max:
-
+        (numpy.ndarray, numpy.ndarray, numpy.ndarray, float, float):
+        (index_list, count, offset, x_min, x_max)
     """
     assert points.ndim == 2
     n, m = points.shape
@@ -104,6 +102,12 @@ class BlockList(object):
     """
 
     def __init__(self, points, cell_width):
+        """
+
+        Args:
+            points (numpy.ndarray):
+            cell_width (float):
+        """
         index_list, count, offset, x_min, x_max = block_list(points, cell_width)
         self.cell_width = cell_width
         self.index_list = index_list
@@ -114,6 +118,14 @@ class BlockList(object):
         self.shape = x_max + 1
 
     def get_block(self, indices):
+        """
+
+        Args:
+            indices (numpy.ndarray):
+
+        Returns:
+            numpy.ndarray:
+        """
         index = indices[0]
         for j in range(1, len(indices)):
             index *= self.shape[j]

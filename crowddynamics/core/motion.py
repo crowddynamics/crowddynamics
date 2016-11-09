@@ -10,7 +10,7 @@ def force_fluctuation(agent):
     Truncated normal distribution with standard deviation of 3.
 
     Args:
-        agent (multiagent.Agent):
+        agent (Agent):
     """
     i = agent.indices()
     magnitude = tn.rvs(0, 3, loc=0, scale=agent.std_rand_force, size=i.size)
@@ -24,7 +24,7 @@ def torque_fluctuation(agent):
     Random torque.
 
     Args:
-        agent (multiagent.Agent):
+        agent (Agent):
     """
     if agent.orientable:
         i = agent.indices()
@@ -38,7 +38,7 @@ def force_adjust(agent):
     Force that adjust movement towards target direction.
 
     Args:
-        agent (multiagent.Agent):
+        agent (Agent):
     """
     for i in agent.indices():
         force = (agent.mass[i] / agent.tau_adj) * \
@@ -53,7 +53,7 @@ def torque_adjust(agent):
     Adjusting torque.
 
     Args:
-        agent (multiagent.Agent):
+        agent (Agent):
     """
     if agent.orientable:
         for i in agent.indices():
@@ -69,7 +69,7 @@ def integrate(agent, dt_min, dt_max):
     system.
 
     Args:
-        agent (multiagent.Agent):
+        agent (Agent):
         dt_min: Minimum timestep for adaptive integration
         dt_max: Maximum timestep for adaptive integration
 

@@ -15,7 +15,7 @@ from crowddynamics.core.geometry import check_shapes, shapes_to_point_pairs
 from crowddynamics.core.interactions import agent_agent_distance_three_circle
 from crowddynamics.core.sampling import PolygonSample
 from crowddynamics.core.vector2D import angle, length
-from crowddynamics.functions import timed, load_config, public
+from crowddynamics.functions import Timed, load_config, public
 from crowddynamics.io.hdfstore import HDFStore
 from crowddynamics.multiagent.agent import Agent
 from crowddynamics.multiagent.field import LineObstacle
@@ -440,7 +440,7 @@ class MultiAgentSimulation(Process, Configuration):
         else:
             self.logger.info("Queue is not defined.")
 
-    @timed("Total Simulation Time")
+    @Timed("Total Simulation Time")
     def update(self):
         self.agent.reset_motion()
         self.agent.reset_neighbor()
@@ -467,7 +467,7 @@ class MultiAgentSimulation(Process, Configuration):
             self.queue.put(data)
 
     # To measure JIT compilation time of numba decorated functions.
-    initial_update = timed("Jit:")(deepcopy(update))
+    initial_update = Timed("Jit:")(deepcopy(update))
 
     try:
         # If using line_profiler decorate function.
