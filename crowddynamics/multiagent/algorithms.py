@@ -69,7 +69,6 @@ class AgentAgentInteractions(TaskNode):
 
     @Timed("Agent-Agent Interaction")
     def update(self):
-        # agent_agent(self.simulation.agent)
         agent_agent_block_list(self.simulation.agent)
 
 

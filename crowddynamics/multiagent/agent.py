@@ -7,7 +7,6 @@ from crowddynamics.core.vector2D import rotate270
 
 spec_agent = (
     ("size", int64),
-    ("ndim", int64),
     ("shape", UniTuple(int64, 2)),
 
     ("circular", boolean),
@@ -67,15 +66,33 @@ spec_agent += spec_agent_motion + spec_agent_neighbour
 
 @numba.jitclass(spec_agent)
 class Agent(object):
-    """Structure for agent parameters and variables."""
+    """
+    Structure for agent parameters and variables.
+    """
 
     def __init__(self, size, mass, radius, ratio_rt, ratio_rs, ratio_ts,
                  inertia_rot, target_velocity, target_angular_velocity):
+        """
+        Initialise the agent structure.
+
+        Args:
+            size (int): Number of agents.
+            mass (numpy.ndarray): Masses of the agents
+            radius (numpy.ndarray): Total radii of the agents
+            ratio_rt (float): Ratio of the total radius and torso radius.
+                :math:`[0, 1]`
+            ratio_rs (float): Ratio of the total radius and shoulder radius.
+                :math:`[0, 1]`
+            ratio_ts (float): Ratio of the torso radius and torso radius.
+                :math:`[0, 1]`
+            inertia_rot (numpy.ndarray):
+            target_velocity (numpy.ndarray):
+            target_angular_velocity (numpy.ndarray):
+        """
 
         # Array properties
         self.size = size  # Maximum number of agents
-        self.ndim = 2     # 2-Dimensional space
-        self.shape = (self.size, self.ndim)  # Shape of 2D arrays
+        self.shape = (self.size, 2)  # Shape of 2D arrays
 
         # Agent models (Only one can be active at time).
         self.circular = True
@@ -128,6 +145,7 @@ class Agent(object):
         self.sight_soc = 3.0  # Interaction distance with other agents
         self.sight_wall = 3.0  # Interaction distance with walls
 
+        # TODO: Move
         # Tracking neighboring agents. Neighbors contains the indices of the
         # neighboring agents. Negative value denotes missing value (if less than
         # neighborhood_size of neighbors).

@@ -60,11 +60,11 @@ def agent_agent_brute(agent, indices):
 
     Args:
         agent (Agent):
-        indices: Subset of ``agent.indices``. If equal to ``agent.indices`` then
+        indices (numpy.ndarray): Subset of ``agent.indices``. If equal to ``agent.indices`` then
             brute force over all agents.
 
     Returns:
-        None: Inplace function.
+        None: Inplace operation.
     """
     for l, i in enumerate(indices[:-1]):
         for j in indices[l + 1:]:
@@ -72,18 +72,39 @@ def agent_agent_brute(agent, indices):
 
 
 @numba.jit(nopython=True, nogil=True)
-def agent_agent_brute_disjoint(agent, indices, indices2):
+def agent_agent_brute_disjoint(agent, indices_0, indices_1):
     """
-    Interaction forces between two disjoint sets of agents.
-    Assumes sets ``indices`` and ``indices2`` are disjoint
+    Interaction forces between two disjoint sets of agents. Assumes sets
+    ``indices`` (:math:`S_{0}`) and ``indices2`` (:math:`S_{1}`) should be
+    disjoint
+
+    .. math::
+       S_{0} \cap S_{1} = \emptyset
+
+    Args:
+        agent (Agent):
+        indices_0 (numpy.ndarray):
+        indices_1 (numpy.ndarray):
+
+    Returns:
+        None: Inplace operation.
     """
-    for i in indices:
-        for j in indices2:
+    for i in indices_0:
+        for j in indices_1:
             agent_agent_interaction(i, j, agent)
 
 
 @numba.jit(nopython=True, nogil=True)
 def agent_agent_block_list(agent):
+    """
+    Iteration over all agents using block list algorithm.
+
+    Args:
+        agent (Agent):
+
+    Returns:
+        None: Inplace operation.
+    """
     indices = agent.indices()
     blocks = BlockList(agent.position[indices], agent.sight_soc)
     n, m = blocks.shape

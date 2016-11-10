@@ -70,11 +70,11 @@ def integrate(agent, dt_min, dt_max):
 
     Args:
         agent (Agent):
-        dt_min: Minimum timestep for adaptive integration
-        dt_max: Maximum timestep for adaptive integration
+        dt_min (float): Minimum timestep for adaptive integration
+        dt_max (float): Maximum timestep for adaptive integration
 
     Returns:
-        Timestep that was used for integration
+        float: Timestep that was used for integration
     """
     i = agent.indices()
     a = agent.force[i] / agent.mass[i]  # Acceleration

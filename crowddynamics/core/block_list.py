@@ -121,7 +121,7 @@ class BlockList(object):
         """
 
         Args:
-            indices (numpy.ndarray):
+            indices (numpy.ndarray, tuple):
 
         Returns:
             numpy.ndarray:
