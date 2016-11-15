@@ -2,6 +2,8 @@ import numba
 import numpy as np
 from numba import f8
 
+from crowddynamics.core.distance import distance_circle_circle, \
+    distance_circle_line, distance_three_circle_line, distance_three_circle
 from .block_list import BlockList
 from .power_law import force_social_circular, force_social_three_circle, \
     force_social_linear_wall
@@ -140,7 +142,89 @@ def agent_wall(agent, wall):
             agent_wall_interaction(i, w, agent, wall)
 
 """
-Replace below
+New functions
+"""
+
+
+@numba.jit(nopython=True, nogil=True)
+def agent_agent_interaction_circle(i, j, agent):
+    """
+    Interaction between two agents.
+    """
+    h, n = distance_circle_circle(agent.position[i], agent.radius[i],
+                                  agent.position[j], agent.radius[j])
+    force_i, force_j = force_social_circular(agent, i, j)
+
+    if h < 0:
+        t = rotate270(n)  # Tangent vector
+        v = agent.velocity[i] - agent.velocity[j]  # Relative velocity
+        force_c = force_contact(h, n, v, t, agent.mu, agent.kappa,
+                                agent.damping)
+        force_i += force_c
+        force_j -= force_c
+
+    agent.force[i] += force_i
+    agent.force[j] += force_j
+
+
+@numba.jit(nopython=True, nogil=True)
+def agent_agent_interaction_three_circle(i, j, agent):
+    h, n, r_moment_i, r_moment_j = distance_three_circle(
+        (agent.position[i], agent.position_ls[i], agent.position_rs[i]),
+        (agent.r_t[i], agent.r_s[i], agent.r_s[i]),
+        (agent.position[j], agent.position_ls[j], agent.position_rs[j]),
+        (agent.r_t[j], agent.r_s[j], agent.r_s[j])
+    )
+    force_i, force_j = force_social_three_circle(agent, i, j)
+
+    if h < 0:
+        t = rotate270(n)  # Tangent vector
+        v = agent.velocity[i] - agent.velocity[j]  # Relative velocity
+        force_c = force_contact(h, n, v, t, agent.mu, agent.kappa,
+                                agent.damping)
+        force_i += force_c
+        force_j -= force_c
+
+    agent.force[i] += force_i
+    agent.force[j] += force_j
+
+    agent.torque[i] += cross2d(r_moment_i, force_i)
+    agent.torque[j] += cross2d(r_moment_j, force_j)
+
+
+@numba.jit(nopython=True, nogil=True)
+def agent_obstacle_interaction_circle(i, w, agent, wall):
+    h, n = distance_circle_line(agent.position[i], agent.radius[i], wall[w])
+    force = force_social_linear_wall(i, w, agent, wall)
+
+    if h < 0:
+        t = rotate270(n)  # Tangent
+        v = agent.velocity[i]
+        force += force_contact(h, n, v, t, agent.mu, agent.kappa, agent.damping)
+
+    agent.force[i] += force
+
+
+@numba.jit(nopython=True, nogil=True)
+def agent_obstacle_interaction_three_circle(i, w, agent, wall):
+    h, n, r_moment = distance_three_circle_line(
+        (agent.position[i], agent.position_ls[i], agent.position_rs[i]),
+        (agent.r_t[i], agent.r_s[i], agent.r_s[i]),
+        wall[w]
+    )
+    force = force_social_linear_wall(i, w, agent, wall)
+
+    if h < 0:
+        t = rotate270(n)  # Tangent
+        v = agent.velocity[i]
+        force += force_contact(h, n, v, t, agent.mu, agent.kappa, agent.damping)
+
+    agent.force[i] += force
+    agent.torque[i] += cross2d(r_moment, force)
+
+
+"""
+Delete below
 """
 
 
