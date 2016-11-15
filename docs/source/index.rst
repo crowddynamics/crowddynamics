@@ -36,6 +36,8 @@ Documentation
    research/index.rst
    api/index.rst
 
+   developers.rst
+
    glossary.rst
    appendix.rst
 

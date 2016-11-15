@@ -7,23 +7,74 @@ from .vector2D import dot2d, truncate
 
 @numba.jit(f8(f8, f8), nopython=True, nogil=True)
 def magnitude(tau, tau_0):
-    """Magnitude of social force."""
-    return (2.0 / tau + 1.0 / tau_0) * np.exp(-tau / tau_0) / tau ** 2.0
+    r"""
+    Magnitude of social force.
+
+    .. math::
+       \left(\frac{1}{\tau^{2}}\right) \left(\frac{2}{\tau} + \frac{1}{\tau_{0}}\right) \exp\left (-\frac{\tau}{\tau_{0}}\right )
+
+    Args:
+        tau (float): Time-to-collision
+        tau_0 (float): Interaction time horizon
+
+    Returns:
+        float: Magnitude
+    """
+    return (2.0 / tau + 1.0 / tau_0) * np.exp(-tau / tau_0) / tau ** 2
 
 
 @numba.jit(f8[:](f8[:], f8[:], f8, f8, f8), nopython=True, nogil=True)
 def gradient_circle_circle(x_rel, v_rel, a, b, d):
+    r"""
+    Gradient of :math:`\tau` between two circles.
+
+    Args:
+        x_rel (numpy.ndarray): Relative position of the centers of mass.
+            :math:`\tilde{x} = x_i - x_j`
+        v_rel (numpy.ndarray): Relative velocity between two agents.
+            :math:`\tilde{v} = v_i - v_j`
+        a (float):
+        b (float):
+        d (float):
+
+    Returns:
+        numpy.ndarray:
+
+    """
     return (v_rel - (v_rel * b + x_rel * a) / d) / a
 
 
 @numba.jit(f8[:](f8[:], f8[:], f8[:], f8, f8, f8), nopython=True, nogil=True)
 def gradient_three_circle(x_rel, v_rel, r_off, a, b, d):
-    """Gradient of tau."""
+    r"""
+    Gradient of :math:`\tau` between two three-circle representations.
+
+    Args:
+        x_rel (numpy.ndarray):
+        v_rel (numpy.ndarray):
+        r_off (numpy.ndarray):
+        a (float):
+        b (float):
+        d (float):
+
+    Returns:
+        numpy.ndarray:
+
+    """
     return (v_rel - (a * (x_rel + 2 * r_off) + b * v_rel) / d) / a
 
 
 @numba.jit(f8[:](f8[:], f8[:]), nopython=True, nogil=True)
 def gradient_circle_line(v, n):
+    """
+
+    Args:
+        v:
+        n:
+
+    Returns:
+
+    """
     return n / dot2d(v, n)
 
 
@@ -69,7 +120,13 @@ def time_to_collision_circle_line(x_rel, v_rel, r_tot, n):
 
 @numba.jit(nopython=True, nogil=True)
 def force_social_circular(agent, i, j):
-    """Social force based on human anticipatory behaviour."""
+    """Social force based on human anticipatory behaviour.
+
+    Args:
+        agent:
+        i:
+        j:
+    """
     x_rel = agent.position[i] - agent.position[j]
     v_rel = agent.velocity[i] - agent.velocity[j]
     r_tot = agent.radius[i] + agent.radius[j]

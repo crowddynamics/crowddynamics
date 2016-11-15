@@ -56,6 +56,9 @@ def block_list(points, cell_width):
 
     x_max = x_max - x_min
 
+    # TODO: Implementation for sparse block lists.
+    #       Maximum amount of blocks == len(points)
+
     # Count how many points go into each point
     size = np.prod(x_max+1)
     count = np.zeros(size, dtype=np.int64)
@@ -118,10 +121,10 @@ class BlockList(object):
         self.shape = x_max + 1
 
     def get_block(self, indices):
-        """
+        r"""
 
         Args:
-            indices (numpy.ndarray, tuple):
+            indices (numpy.ndarray | tuple):
 
         Returns:
             numpy.ndarray:

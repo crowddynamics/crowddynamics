@@ -10,7 +10,7 @@ from .vector2D import length, rotate270, cross2d, dot2d
 
 @numba.jit(f8[:](f8, f8[:], f8, f8), nopython=True, nogil=True)
 def force_social_helbing(h, n, a, b):
-    """
+    r"""
     Helbing's model's original social force. Independent of the velocity or
     direction of the agent.
 
@@ -29,7 +29,7 @@ def force_social_helbing(h, n, a, b):
 @numba.jit(f8[:](f8, f8[:], f8[:], f8[:], f8, f8, f8), nopython=True,
            nogil=True)
 def force_contact(h, n, v, t, mu, kappa, damping):
-    """
+    r"""
     Frictional contact force with damping. Helbings original model did not
     include damping, which was added by Langston.
 
@@ -73,7 +73,7 @@ def agent_agent_brute(agent, indices):
 
 @numba.jit(nopython=True, nogil=True)
 def agent_agent_brute_disjoint(agent, indices_0, indices_1):
-    """
+    r"""
     Interaction forces between two disjoint sets of agents. Assumes sets
     ``indices`` (:math:`S_{0}`) and ``indices2`` (:math:`S_{1}`) should be
     disjoint
@@ -96,7 +96,7 @@ def agent_agent_brute_disjoint(agent, indices_0, indices_1):
 
 @numba.jit(nopython=True, nogil=True)
 def agent_agent_block_list(agent):
-    """
+    r"""
     Iteration over all agents using block list algorithm.
 
     Args:
@@ -206,6 +206,19 @@ def agent_wall_distance(agent, wall, i, w):
 
 @numba.jit(nopython=True, nogil=True)
 def agent_agent_interaction(i, j, agent):
+    """
+    Interaction between two agents.
+
+    Args:
+        i:
+        j:
+        agent:
+
+    Returns:
+
+    """
+    # TODO: memory allocation outside loops
+
     # Function params
     x = agent.position[i] - agent.position[j]  # Relative positions
     d = length(x)  # Distance
@@ -258,13 +271,25 @@ def agent_agent_interaction(i, j, agent):
 
 @numba.jit(nopython=True, nogil=True)
 def agent_wall_interaction(i, w, agent, wall):
+    """
+    Interaction between agent and obstacle.
+
+    Args:
+        i:
+        w:
+        agent:
+        wall:
+
+    Returns:
+
+    """
+
     # Function params
     x = agent.position[i]
     r_tot = agent.radius[i]
     d, n = wall.distance_with_normal(w, x)
     h = d - r_tot  # Relative distance
 
-    # FIXME: remove memory allocation inside loops
     if h <= agent.sight_wall:
         if agent.three_circle:
             h, n, r_moment_i = agent_wall_distance(agent, wall, i, w)
