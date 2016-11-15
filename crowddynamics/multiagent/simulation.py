@@ -68,7 +68,6 @@ class Configuration:
 
         # Numpy + Numba. More computationally efficient forms
         self.agent = None
-        self.walls = None  # LinearWalls
         self.omega = None
 
         # Angle and direction update algorithms
@@ -133,11 +132,8 @@ class Configuration:
         else:
             raise Exception("")
 
+        # TODO: Move to own task node
         self.omega = Path(np.asarray(self.domain.exterior))
-
-        points = shapes_to_point_pairs(self.obstacles)
-        if len(points) != 0:
-            self.walls = LineObstacle(points)
 
     def set_body(self, size, body):
         self.logger.info("In: {}, {}".format(size, body))
@@ -297,7 +293,7 @@ class Configuration:
         while self._index < limit and iterations < iter_limit:
             # Random point inside spawn surface. Center of mass for an agent.
             if position == "random":
-                point = random_sample.draw()
+                point = Point(random_sample.draw())
                 self.agent.position[self._index] = np.asarray(point)
             elif isinstance(position, np.ndarray):
                 point = Point(position[self._index])
@@ -446,6 +442,7 @@ class MultiAgentSimulation(Process, Configuration):
         self.agent.reset_neighbor()
         self.task_graph.evaluate()
 
+        # TODO: TaskNode
         # Check which agent are inside the domain
         if self.domain is not None:
             num = np.sum(self.agent.active)

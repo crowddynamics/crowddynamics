@@ -1,11 +1,13 @@
 import numpy as np
 
+from crowddynamics.core.geometry import shapes_to_point_pairs
 from crowddynamics.core.interactions import agent_agent_block_list, agent_wall
 from crowddynamics.core.motion import integrate, force_fluctuation, \
     torque_fluctuation, force_adjust, torque_adjust
 from crowddynamics.core.navigation import _to_indices, static_potential
 from crowddynamics.core.vector2D import angle_nx2
 from crowddynamics.functions import public, Timed
+from crowddynamics.multiagent.field import LineObstacle
 from crowddynamics.task_graph import TaskNode
 
 
@@ -78,9 +80,13 @@ class AgentObstacleInteractions(TaskNode):
         super().__init__()
         self.simulation = simulation
 
+        # TODO: Expects that field is set prior to initialisation
+        points = shapes_to_point_pairs(self.simulation.obstacles)
+        self.walls = LineObstacle(points)
+
     @Timed("Agent-Obstacle Interaction")
     def update(self):
-        agent_wall(self.simulation.agent, self.simulation.walls)
+        agent_wall(self.simulation.agent, self.walls)
 
 
 @public

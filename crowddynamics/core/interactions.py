@@ -139,6 +139,10 @@ def agent_wall(agent, wall):
         for w in range(wall.size):
             agent_wall_interaction(i, w, agent, wall)
 
+"""
+Replace below
+"""
+
 
 @numba.jit(nopython=True, nogil=True)
 def agent_agent_distance_three_circle(agent, i, j):
@@ -208,14 +212,6 @@ def agent_wall_distance(agent, wall, i, w):
 def agent_agent_interaction(i, j, agent):
     """
     Interaction between two agents.
-
-    Args:
-        i:
-        j:
-        agent:
-
-    Returns:
-
     """
     # TODO: memory allocation outside loops
 
@@ -253,6 +249,7 @@ def agent_agent_interaction(i, j, agent):
             agent.torque[i] += cross2d(r_moment_i, force_i)
             agent.torque[j] += cross2d(r_moment_j, force_j)
 
+    # TODO: Move to a better place
     if agent.neighbor_radius > 0 and h < agent.neighbor_radius:
         if h < agent.neighbor_distances_max[i]:
             ind = np.argmax(agent.neighbor_distances[i])
@@ -273,15 +270,6 @@ def agent_agent_interaction(i, j, agent):
 def agent_wall_interaction(i, w, agent, wall):
     """
     Interaction between agent and obstacle.
-
-    Args:
-        i:
-        w:
-        agent:
-        wall:
-
-    Returns:
-
     """
 
     # Function params

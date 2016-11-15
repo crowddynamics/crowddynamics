@@ -16,6 +16,7 @@ spec_linear = (
 @jitclass(spec_linear)
 class LineObstacle(object):
     def __init__(self, linear_params):
+        # TODO: Deprecate and replace with numpy array of points
         self.params = linear_params
         self.cols = 9
         self.rows = len(self.params)

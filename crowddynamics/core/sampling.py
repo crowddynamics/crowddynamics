@@ -4,6 +4,8 @@ import numpy as np
 from scipy.spatial.qhull import Delaunay
 from shapely.geometry import Polygon, Point
 
+from crowddynamics.functions import public
+
 
 @numba.jit(f8(f8[:], f8[:], f8[:]), nopython=True, nogil=True)
 def triangle_area(a, b, c):
@@ -50,7 +52,6 @@ def random_sample_triangle(a, b, c):
 
     .. [1] http://math.stackexchange.com/questions/18686/uniform-random-point-in-triangle
     .. [2] http://mathworld.wolfram.com/TrianglePointPicking.html
-
     """
     # Random variables
     r1 = np.random.random()
@@ -62,10 +63,10 @@ def random_sample_triangle(a, b, c):
 
 @numba.jit(nopython=True, nogil=True)
 def triangle_area_cumsum(mesh):
-    """Computes cumulative sum of the areas of the triangle mesh.
+    r"""Computes cumulative sum of the areas of the triangle mesh.
 
     Args:
-        mesh (numpy.ndarray): Trianle mesh
+        mesh (numpy.ndarray): Triangle mesh
 
     Returns:
         numpy.ndarray: Cumulative sum the area of the triangle mesh
@@ -80,6 +81,7 @@ def triangle_area_cumsum(mesh):
     return cumsum
 
 
+@public
 class PolygonSample:
     r"""
     Uniform sampling of convex polygon
@@ -91,11 +93,14 @@ class PolygonSample:
     3) Draw random uniform sample from inside the triangle.
 
     .. _Delaunay triangulation: https://en.wikipedia.org/wiki/Delaunay_triangulation
+
+    References
+
     .. [1] http://gis.stackexchange.com/questions/6412/generate-points-that-lie-inside-polygon
     """
 
     def __init__(self, polygon):
-        """
+        r"""
         Convex Polygon to sample. (Non convex polygon will be treated as convex)
 
         Args:
@@ -118,15 +123,15 @@ class PolygonSample:
         self.weights /= self.weights[-1]  # Normalize values to interval [0, 1]
 
     def draw(self):
-        """
+        r"""
         Draw random triangle weighted by the area of the triangle and draw
         random sample
 
         Returns:
-            Point: Uniformly sampled point inside the polygon
+            numpy.ndarray: Uniformly sampled point inside the polygon
         """
         x = np.random.random()
         i = np.searchsorted(self.weights, x)
         a, b, c = self.mesh[i]
         sample = random_sample_triangle(a, b, c)
-        return Point(sample)
+        return sample
