@@ -10,7 +10,7 @@ from crowddynamics.core.vector2D import length, rotate90, dot2d
 
 @numba.jit(nopython=True, nogil=True)
 def distance_circle_circle(x0, r0, x1, r1):
-    """
+    r"""
     Skin-to-Skin distance with normal
 
     Args:
@@ -20,7 +20,7 @@ def distance_circle_circle(x0, r0, x1, r1):
         r1 (float):
 
     Returns:
-        (float, float): (skin-to-skin distance, normal vector)
+        (float, numpy.ndarray): (skin-to-skin distance, normal vector)
     """
     x = x0 - x1
     d = length(x)
@@ -33,7 +33,7 @@ def distance_circle_circle(x0, r0, x1, r1):
 
 @numba.jit(nopython=True, nogil=True)
 def distance_three_circle(x0, r0, x1, r1):
-    """
+    r"""
     Distance between two three-circle models.
 
     Args:
@@ -43,7 +43,7 @@ def distance_three_circle(x0, r0, x1, r1):
         r1 ((float, float, float)):
 
     Returns:
-        (float, float, numpy.ndarray, numpy.ndarray):
+        (float, numpy.ndarray, numpy.ndarray, numpy.ndarray):
     """
     h_min = np.nan
     normal = np.zeros(2)
@@ -67,15 +67,15 @@ def distance_three_circle(x0, r0, x1, r1):
 
 @numba.jit(nopython=True, nogil=True)
 def distance_circle_line(x, r, p):
-    """
+    r"""
 
     Args:
         x (numpy.ndarray):
-        r (float:
+        r (float):
         p (numpy.ndarray):
 
     Returns:
-        (float, float): (skin-to-skin distance, normal vector)
+        (float, numpy.ndarray): (skin-to-skin distance, normal vector)
     """
     d = p[1] - p[0]
     l_w = length(d)
@@ -103,7 +103,7 @@ def distance_circle_line(x, r, p):
 
 @numba.jit(nopython=True, nogil=True)
 def distance_three_circle_line(x, r, p):
-    """
+    r"""
 
     Args:
         x ((numpy.ndarray, numpy.ndarray, numpy.ndarray)):
@@ -118,8 +118,7 @@ def distance_three_circle_line(x, r, p):
     i_min = 0
 
     for i, (x_, r_) in enumerate(zip(x, r)):
-        d, n = distance_circle_line(x_, r_, p)
-        h = d - r_
+        h, n = distance_circle_line(x_, r_, p)
         if h < h_min or np.isnan(h_min):
             h_min = h
             normal = n

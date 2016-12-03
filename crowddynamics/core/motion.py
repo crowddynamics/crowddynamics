@@ -1,110 +1,207 @@
 import numba
 import numpy as np
-from scipy.stats import truncnorm as tn
+from numba import f8
+from scipy.stats import truncnorm
 
-from .vector2D import wrap_to_pi, length_nx2
+from crowddynamics.core.vector2D import dot2d
+from .vector2D import wrap_to_pi
 
 
-def force_fluctuation(agent):
-    """
+def force_fluctuation(mass, scale):
+    r"""
     Truncated normal distribution with standard deviation of 3.
 
-    Args:
-        agent (Agent):
-    """
-    i = agent.indices()
-    magnitude = tn.rvs(0, 3, loc=0, scale=agent.std_rand_force, size=i.size)
-    angle = np.random.uniform(0, 2 * np.pi, size=i.size)
-    force = magnitude * np.array((np.cos(angle), np.sin(angle)))
-    agent.force[i] += force.T * agent.mass[i]
+    .. math::
+       \boldsymbol{\xi} = \xi \cdot \mathbf{\hat{e}}(\varphi)
 
+    where
 
-def torque_fluctuation(agent):
-    """
-    Random torque.
+    .. math::
+       \xi \sim \mathcal{N}(\mu, \sigma^{2}) \\
+       \varphi \sim \mathcal{U}(-\pi, \pi)
 
     Args:
-        agent (Agent):
-    """
-    if agent.orientable:
-        i = agent.indices()
-        torque = tn.rvs(-3, 3, loc=0, scale=agent.std_rand_force, size=i.size)
-        agent.torque[i] += torque * agent.inertia_rot[i]
+        mass (numpy.ndarray):
+            Mass
 
-
-@numba.jit(nopython=True, nogil=True)
-def force_adjust(agent):
-    """
-    Force that adjust movement towards target direction.
-
-    Args:
-        agent (Agent):
-    """
-    for i in agent.indices():
-        force = (agent.mass[i] / agent.tau_adj) * \
-                (agent.target_velocity[i] * agent.target_direction[i] -
-                 agent.velocity[i])
-        agent.force[i] += force
-
-
-@numba.jit(nopython=True, nogil=True)
-def torque_adjust(agent):
-    """
-    Adjusting torque.
-
-    Args:
-        agent (Agent):
-    """
-    if agent.orientable:
-        for i in agent.indices():
-            agent.torque[i] += agent.inertia_rot[i] / agent.tau_rot * (
-                wrap_to_pi(agent.target_angle[i] - agent.angle[i]) / np.pi *
-                agent.target_angular_velocity[i] - agent.angular_velocity[i])
-
-
-@numba.jit(nopython=True)
-def integrate(agent, dt_min, dt_max):
-    """
-    Verlet integration using adaptive timestep for integrating differential
-    system.
-
-    Args:
-        agent (Agent):
-        dt_min (float): Minimum timestep for adaptive integration
-        dt_max (float): Maximum timestep for adaptive integration
+        scale (float):
+            Standard deviation of truncated normal distribution
 
     Returns:
-        float: Timestep that was used for integration
+        numpy.ndarray: Fluctuation force
     """
-    i = agent.indices()
-    a = agent.force[i] / agent.mass[i]  # Acceleration
+    size = len(mass)
+    magnitude = truncnorm.rvs(0.0, 3.0, loc=0.0, scale=scale, size=size)
+    angle = np.random.uniform(0.0, 2.0 * np.pi, size=size)
+    force = magnitude * np.array((np.cos(angle), np.sin(angle)))
+    return force.T * mass
 
-    # Time step selection
-    v_max = np.max(length_nx2(agent.velocity))
-    dx_max = np.max(agent.target_velocity) * dt_max
-    dx_max *= 1.1
 
-    if v_max == 0:
-        # Static system
-        dt = dt_max
-    else:
-        dt = dx_max / v_max
-        if dt > dt_max:
-            dt = dt_max
-        elif dt < dt_min:
-            dt = dt_min
+def torque_fluctuation(inertia_rot, scale):
+    r"""
+    Random torque.
 
-    # Updating agents
-    agent.position[i] += agent.velocity[i] * dt + 0.5 * a * dt ** 2
-    agent.velocity[i] += a * dt
+    .. math::
+       \eta \sim \mathcal{N}(\mu, \sigma^{2})
 
-    if agent.orientable:
-        angular_acceleration = agent.torque[i] / agent.inertia_rot[i]
-        agent.angle[i] += agent.angular_velocity[i] * dt + \
-                          angular_acceleration * 0.5 * dt ** 2
-        agent.angular_velocity[i] += angular_acceleration * dt
-        agent.angle[:] = wrap_to_pi(agent.angle)
+    Args:
+        inertia_rot (numpy.ndarray):
+            Rotational intertial
 
-        agent.update_shoulder_positions()
+        scale (float):
+            Standard deviation of truncated normal distribution
 
-    return dt
+    Returns:
+        numpy.ndarray: Fluctuation torque
+    """
+    size = len(inertia_rot)
+    torque = truncnorm.rvs(-3.0, 3.0, loc=0.0, scale=scale, size=size)
+    return torque * inertia_rot
+
+
+@numba.jit(nopython=True, nogil=True)
+def force_adjust(mass, tau_adj, v0, e0, v):
+    r"""
+    *Adjusting* aka *driving* force accounts of agent's desire to reach a
+    certain destination. In high crowd densities term *manoeuvring* is used.
+    Force affecting the agent takes form
+
+    .. math::
+       \mathbf{f}_{adj} = \frac{m}{\tau_{adj}} (v_{0} \mathbf{\hat{e}_{0}} - \mathbf{v}),
+
+    Args:
+        mass (float):
+            Mass
+
+        tau_adj (float):
+            Characteristic time :math:`\tau_{adj}` time for agent to adjust it
+            movement. Value :math:`0.5` is often used, but for example impatient
+            agent that tend to push other agent more this value can be reduced.
+
+        v0 (numpy.ndarray):
+            Target velocity :math:`v_{0}` is usually *average walking speed* for
+            agent in its current situation.
+
+        e0 (numpy.ndarray):
+            Target direction :math:`\mathbf{\hat{e}_{0}}` is solved by
+            *navigation* or *path planning* algorithm. More details in the
+            navigation section.
+
+        v (numpy.ndarray):
+            Velocity
+
+    Returns:
+        numpy.ndarray:
+    """
+    return (mass / tau_adj) * (v0 * e0 - v)
+
+
+@numba.jit(nopython=True, nogil=True)
+def torque_adjust(inertia_rot, tau_rot, phi_0, phi, omega_0, omega):
+    r"""
+    Adjusting torque account for agent's desire to rotate it orientation.
+
+    .. math::
+       M_{adj} = \frac{I_{rot}}{\tau_{rot}} \left( \omega_{0} \left (
+                 \frac{\varphi - \varphi_{0}}{\pi} \right ) - \omega\right),
+
+    Angular difference :math:`\varphi - \varphi_{0}` is wrapped between interval
+    :math:`[-\pi, \pi]` so that division by :math:`\pi` returns value between
+    :math:`[-1, 1]`. This gives direction and magnitude for the torque.
+
+    Args:
+        inertia_rot (float):
+            Rotational inertia
+
+        tau_rot (float):
+            Characteristic time :math:`\tau_{rot}` time for agent to adjust it
+            orientation.
+
+        phi_0 (float):
+            Target orientation :math:`\varphi_{0}`. In low and medium crowd
+            densities the angle of the target direction can be sufficient for
+            target orientation. In high crowd densities agents may twist their
+            body differently for example to try to squeeze through narrow
+            spaces, requiring more sophisticated algorithms.
+
+        phi (float):
+            Current orientation :math:`\varphi`
+
+        omega_0 (float):
+            Maximum angular velocity :math:`\omega_{0}`.
+
+        omega (float):
+
+    Returns:
+        float:
+    """
+    return inertia_rot / tau_rot * \
+           (wrap_to_pi(phi_0 - phi) / np.pi * omega_0 - omega)
+
+
+@numba.jit(f8[:](f8, f8[:], f8, f8), nopython=True, nogil=True)
+def force_social_helbing(h, n, a, b):
+    r"""
+    Helbing's model's original social force. Independent of the velocity or
+    direction of the agent.
+
+    .. math::
+       A \exp(-h / B) \mathbf{\hat{n}}
+
+    Args:
+        h (float):
+            Skin-to-skin distance between agents
+
+        n (numpy.ndarray):
+            Normal unit vector
+
+        a (float):
+            Constant :math:`A = 2 \cdot 10^{3} \,\mathrm{N}`
+
+        b (float):
+            Constant :math:`B = 0.08 \,\mathrm{m}`
+
+    Returns:
+        numpy.ndarray: Social force
+    """
+    return a * np.exp(- h / b) * n
+
+
+@numba.jit(f8[:](f8, f8[:], f8[:], f8[:], f8, f8, f8), nopython=True,
+           nogil=True)
+def force_contact(h, n, v, t, mu, kappa, damping):
+    r"""
+    Physical contact force with damping. Helbing's original model did not
+    include damping, which was added by Langston.
+
+    .. math::
+       \mathbf{f}^{c} = - h \cdot \left(\mu \cdot \hat{\mathbf{n}} -
+       \kappa \cdot (\mathbf{v} \cdot \hat{\mathbf{t}}) \hat{\mathbf{t}}\right) +
+       c_{n} \cdot (\mathbf{v} \cdot \hat{\mathbf{n}}) \hat{\mathbf{n}}
+
+    Args:
+        h (float):
+            Skin-to-skin distance between agents
+
+        n (numpy.ndarray):
+            Normal vector
+
+        v (numpy.ndarray):
+            Velocity vector
+
+        t (numpy.ndarray):
+            Tangent vector
+
+        mu (float):
+            Constant :math:`1.2 \cdot 10^{5}\,\mathrm{kg\,s^{-2}}`
+
+        kappa (float):
+            Constant :math:`4.0 \cdot 10^{4}\,\mathrm{kg\,m^{-1}s^{-1}}`
+
+        damping (float):
+            Constant :math:`500 \,\mathrm{N}`
+
+    Returns:
+        numpy.ndarray: Contact force
+    """
+    return - h * (mu * n - kappa * dot2d(v, t) * t) + damping * dot2d(v, n) * n

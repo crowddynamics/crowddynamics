@@ -11,14 +11,13 @@ from shapely.geometry import LineString
 from shapely.geometry import Polygon, Point
 from shapely.ops import cascaded_union
 
-from crowddynamics.core.geometry import check_shapes, shapes_to_point_pairs
-from crowddynamics.core.interactions import agent_agent_distance_three_circle
+from crowddynamics.core.distance import distance_three_circle
+from crowddynamics.core.geometry import check_shapes
 from crowddynamics.core.sampling import PolygonSample
 from crowddynamics.core.vector2D import angle, length
 from crowddynamics.functions import Timed, load_config, public
 from crowddynamics.io.hdfstore import HDFStore
 from crowddynamics.multiagent.agent import Agent
-from crowddynamics.multiagent.field import LineObstacle
 
 
 class QueueDict:
@@ -269,26 +268,37 @@ class Configuration:
         limit = start_index + size
         iter_limit = size * 5
 
+        # FIXME
         @numba.jit(nopython=True)
         def agent_distance_condition(agent, start_index, i):
             """Test function for determining if agents are overlapping."""
-            condition = True
             if agent.three_circle:
+                condition = True
                 for j in range(start_index, i):
                     if condition:
-                        t = agent_agent_distance_three_circle(agent, i, j)
+                        t = distance_three_circle(
+                            (agent.position[i], agent.position_ls[i],
+                             agent.position_rs[i]),
+                            (agent.r_t[i], agent.r_s[i], agent.r_s[i]),
+                            (agent.position[j], agent.position_ls[j],
+                             agent.position_rs[j]),
+                            (agent.r_t[j], agent.r_s[j], agent.r_s[j])
+                        )
+                        # FIXME: cannot unify bool and array(bool, 1d, C) for 'condition'
                         condition &= t[1] > 0
                     else:
                         break
+                return condition
             else:
+                condition2 = True
                 for j in range(start_index, i):
-                    if condition:
+                    if condition2:
                         d = agent.position[i] - agent.position[j]
                         s = length(d) - agent.radius[i] - agent.radius[j]
-                        condition &= s > 0
+                        condition2 &= s > 0
                     else:
                         break
-            return condition
+                return condition2
 
         while self._index < limit and iterations < iter_limit:
             # Random point inside spawn surface. Center of mass for an agent.
@@ -380,7 +390,9 @@ class MultiAgentSimulation(Process, Configuration):
             "in_goal",
         )
         for p in params:
-            assert hasattr(self, p),  "{cls} doesn't have attribute {attr}".format(cls=p, attr=p)
+            assert hasattr(self,
+                           p), "{cls} doesn't have attribute {attr}".format(
+                cls=p, attr=p)
         return params
 
     def stop(self):

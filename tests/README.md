@@ -17,6 +17,9 @@ kernprof -l profiling.py
 python -m line_profiler profiling.py.lprof
 ```
 
+```
+python unit_tests.py PolygonSampleTest
+```
 
 # Resources
 

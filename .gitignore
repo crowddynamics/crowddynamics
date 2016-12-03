@@ -4,6 +4,7 @@
 *.mp4
 *.hdf5
 *.old
+tests/output/
 
 # Folders
 /docs/build/

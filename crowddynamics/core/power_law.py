@@ -2,7 +2,7 @@ import numba
 import numpy as np
 from numba import f8
 
-from .vector2D import dot2d, truncate
+from .vector2D import dot2d, truncate, rotate90
 
 
 @numba.jit(f8(f8, f8), nopython=True, nogil=True)
@@ -265,7 +265,15 @@ def force_social_linear_wall(i, w, agent, wall):
     tau = np.zeros(3)
     grad = np.zeros((3, 2))
 
-    p_0, p_1, t_w, n_w, l_w = wall.deconstruct(w)
+    # p_0, p_1, t_w, n_w, l_w = wall.deconstruct(w)
+
+    p_0 = wall[w, 0, :]
+    p_1 = wall[w, 1, :]
+    d = p_1 - p_0  # Vector from p_0 to p_1
+    l_w = np.hypot(d[1], d[0])  # Length of the wall
+    t_w = d / l_w  # Tangential unit-vector
+    n_w = rotate90(t_w)  # Normal unit-vector
+
     x_rel0 = agent.position[i] - p_0
     x_rel1 = agent.position[i] - p_1
     v_rel = agent.velocity[i]

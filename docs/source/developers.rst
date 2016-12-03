@@ -7,7 +7,14 @@ Developers Guide
 
 IDE
 ---
+Pycharm
+^^^^^^^
+
+
+Atom
+^^^^
 
 
 Style Guide
 -----------
+Google style docstrings

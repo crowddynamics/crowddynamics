@@ -2,12 +2,12 @@ import numpy as np
 
 from crowddynamics.core.geometry import shapes_to_point_pairs
 from crowddynamics.core.interactions import agent_agent_block_list, agent_wall
-from crowddynamics.core.motion import integrate, force_fluctuation, \
+from crowddynamics.core.motion import force_fluctuation, \
     torque_fluctuation, force_adjust, torque_adjust
+from crowddynamics.core.integrator import integrate
 from crowddynamics.core.navigation import _to_indices, static_potential
 from crowddynamics.core.vector2D import angle_nx2
 from crowddynamics.functions import public, Timed
-from crowddynamics.multiagent.field import LineObstacle
 from crowddynamics.task_graph import TaskNode
 
 
@@ -48,8 +48,14 @@ class Fluctuation(TaskNode):
         self.simulation = simulation
 
     def update(self):
-        force_fluctuation(self.simulation.agent)
-        torque_fluctuation(self.simulation.agent)
+        agent = self.simulation.agent
+        i = agent.indices()
+
+        agent.force[i] = force_fluctuation(agent.mass[i], agent.std_rand_force)
+
+        if agent.orientable:
+            agent.torque[i] = torque_fluctuation(agent.inertia_rot[i],
+                                                 agent.std_rand_torque)
 
 
 @public
@@ -59,8 +65,21 @@ class Adjusting(TaskNode):
         self.simulation = simulation
 
     def update(self):
-        force_adjust(self.simulation.agent)
-        torque_adjust(self.simulation.agent)
+        agent = self.simulation.agent
+        i = agent.indices
+
+        agent.force[i] = force_adjust(agent.mass[i],
+                                      agent.tau_adj,
+                                      agent.target_velocity[i],
+                                      agent.target_direction[i],
+                                      agent.velocity[i])
+        if agent.orientable:
+            agent.torque[i] = torque_adjust(agent.inertia_rot[i],
+                                            agent.tau_rot,
+                                            agent.target_angle[i],
+                                            agent.angle[i],
+                                            agent.target_angle[i],
+                                            agent.angular_velocity[i])
 
 
 @public
@@ -81,8 +100,7 @@ class AgentObstacleInteractions(TaskNode):
         self.simulation = simulation
 
         # TODO: Expects that field is set prior to initialisation
-        points = shapes_to_point_pairs(self.simulation.obstacles)
-        self.walls = LineObstacle(points)
+        self.walls = shapes_to_point_pairs(self.simulation.obstacles)
 
     @Timed("Agent-Obstacle Interaction")
     def update(self):

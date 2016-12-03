@@ -1,8 +1,8 @@
 import numba
-from numba import f8
 import numpy as np
+from numba import f8
 from scipy.spatial.qhull import Delaunay
-from shapely.geometry import Polygon, Point
+from shapely.geometry import Polygon
 
 from crowddynamics.functions import public
 
@@ -63,7 +63,8 @@ def random_sample_triangle(a, b, c):
 
 @numba.jit(nopython=True, nogil=True)
 def triangle_area_cumsum(mesh):
-    r"""Computes cumulative sum of the areas of the triangle mesh.
+    r"""
+    Computes cumulative sum of the areas of the triangle mesh.
 
     Args:
         mesh (numpy.ndarray): Triangle mesh
