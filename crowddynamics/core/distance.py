@@ -26,7 +26,10 @@ def distance_circle_circle(x0, r0, x1, r1):
     d = length(x)
     r_tot = r0 + r1
     h = d - r_tot
-    n = x / d
+    if d == 0.0:
+        n = np.zeros(2)
+    else:
+        n = x / d
 
     return h, n
 
@@ -96,9 +99,9 @@ def distance_circle_line(x, r, p):
         d_iw = np.abs(l_n)
         n_iw = np.sign(l_n) * n_w
 
-    d_iw -= r
+    h_iw = d_iw - r
 
-    return d_iw, n_iw
+    return h_iw, n_iw
 
 
 @numba.jit(nopython=True, nogil=True)

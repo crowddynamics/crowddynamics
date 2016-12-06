@@ -167,7 +167,9 @@ def normalize(vec2d):
     Returns:
         numpy.ndarray:
     """
-    return vec2d / np.hypot(vec2d[0], vec2d[1])
+    if np.all(vec2d == 0.0):
+        return np.zeros(2)
+    return vec2d / length(vec2d)
 
 
 @numba.jit(f8[:, :](f8[:, :]), nopython=True, nogil=True)

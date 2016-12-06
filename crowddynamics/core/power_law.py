@@ -2,7 +2,7 @@ import numba
 import numpy as np
 from numba import f8
 
-from .vector2D import dot2d, truncate, rotate90
+from crowddynamics.core.vector2D import dot2d, truncate, rotate90
 
 
 @numba.jit(f8(f8, f8), nopython=True, nogil=True)

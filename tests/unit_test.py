@@ -10,7 +10,6 @@ import os
 import sys
 import unittest
 
-import numpy as np
 from bokeh.plotting import figure, output_file, save
 
 sys.path.insert(0, "..")
@@ -98,44 +97,6 @@ def import_simulations(queue=None):
 # -----------------------------------------------------------------------------
 
 
-class Vector2DTest(unittest.TestCase):
-    def test_wrap_to_pi(self):
-        self.assertEqual(wrap_to_pi(0.0), 0.0)
-        self.assertEqual(wrap_to_pi(np.pi), np.pi)
-        self.assertEqual(wrap_to_pi(-np.pi), -np.pi)
-        self.assertEqual(wrap_to_pi(2 * np.pi), 0)
-        self.assertEqual(wrap_to_pi(-2 * np.pi), 0)
-
-    def test_rotate90(self):
-        self.assertTrue(np.all(rotate90(np.array([0.0, 0.0])) == np.array([0.0, 0.0])))
-        self.assertTrue(np.all(rotate90(np.array([1.0, 1.0])) == np.array([-1.0, 1.0])))
-
-    def test_rotate270(self):
-        self.assertEqual(rotate270(np.array([0.0, 0.0])), np.array([0.0, 0.0]))
-        self.assertEqual(rotate270(np.array([1.0, 1.0])), np.array([1.0, -1.0]))
-
-    def test_angle(self):
-        self.assertEqual(angle(np.array([0.0, 0.0])), 0.0)
-        x = np.array([-1, +1, +1, -1])
-        y = np.array([-1, -1, +1, +1])
-        ref = np.array([-135., -45., 45., 135.])
-        for x1, y1, deg in zip(x, y, ref):
-            vec = np.array([x1, y1])
-            self.assertEqual(angle(vec) * 180 / np.pi, deg)
-
-    def test_length(self):
-        pass
-
-    def test_dot(self):
-        pass
-
-    def test_cross(self):
-        pass
-
-    def test_normalize(self):
-        pass
-
-
 class MultiAgentSimulationTest(unittest.TestCase):
     def test_simulations(self):
         gen = import_simulations()
@@ -174,10 +135,6 @@ class PolygonSampleTest(unittest.TestCase):
             self.assertTrue(polygon.contains(p), "Point not in polygon")
 
         save_plot("polygon_sample_complex", polygon, points)
-
-
-class MotionTest(unittest.TestCase):
-    pass
 
 
 class NavigationTest(unittest.TestCase):

@@ -1,13 +1,13 @@
 import numba
 import numpy as np
 
+from crowddynamics.core.block_list import BlockList
 from crowddynamics.core.distance import distance_circle_circle, \
     distance_circle_line, distance_three_circle_line, distance_three_circle
 from crowddynamics.core.motion import force_contact
-from .block_list import BlockList
-from .power_law import force_social_circular, force_social_three_circle, \
+from crowddynamics.core.power_law import force_social_circular, force_social_three_circle, \
     force_social_linear_wall
-from .vector2D import rotate270, cross2d
+from crowddynamics.core.vector2D import rotate270, cross2d
 
 
 @numba.jit(nopython=True, nogil=True)

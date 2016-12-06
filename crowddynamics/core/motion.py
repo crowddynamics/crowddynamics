@@ -3,8 +3,7 @@ import numpy as np
 from numba import f8
 from scipy.stats import truncnorm
 
-from crowddynamics.core.vector2D import dot2d
-from .vector2D import wrap_to_pi
+from crowddynamics.core.vector2D import dot2d, wrap_to_pi
 
 
 def force_fluctuation(mass, scale):
@@ -21,7 +20,7 @@ def force_fluctuation(mass, scale):
        \varphi \sim \mathcal{U}(-\pi, \pi)
 
     Args:
-        mass (numpy.ndarray):
+        mass (float):
             Mass
 
         scale (float):
@@ -30,7 +29,13 @@ def force_fluctuation(mass, scale):
     Returns:
         numpy.ndarray: Fluctuation force
     """
-    size = len(mass)
+    if isinstance(mass, np.ndarray):
+        size = len(mass)
+    elif isinstance(scale, np.ndarray):
+        size = len(scale)
+    else:
+        size = 1
+
     magnitude = truncnorm.rvs(0.0, 3.0, loc=0.0, scale=scale, size=size)
     angle = np.random.uniform(0.0, 2.0 * np.pi, size=size)
     force = magnitude * np.array((np.cos(angle), np.sin(angle)))
@@ -45,7 +50,7 @@ def torque_fluctuation(inertia_rot, scale):
        \eta \sim \mathcal{N}(\mu, \sigma^{2})
 
     Args:
-        inertia_rot (numpy.ndarray):
+        inertia_rot (float):
             Rotational intertial
 
         scale (float):
@@ -54,7 +59,13 @@ def torque_fluctuation(inertia_rot, scale):
     Returns:
         numpy.ndarray: Fluctuation torque
     """
-    size = len(inertia_rot)
+    if isinstance(inertia_rot, np.ndarray):
+        size = len(inertia_rot)
+    elif isinstance(scale, np.ndarray):
+        size = len(scale)
+    else:
+        size = 1
+
     torque = truncnorm.rvs(-3.0, 3.0, loc=0.0, scale=scale, size=size)
     return torque * inertia_rot
 
@@ -78,7 +89,7 @@ def force_adjust(mass, tau_adj, v0, e0, v):
             movement. Value :math:`0.5` is often used, but for example impatient
             agent that tend to push other agent more this value can be reduced.
 
-        v0 (numpy.ndarray):
+        v0 (float):
             Target velocity :math:`v_{0}` is usually *average walking speed* for
             agent in its current situation.
 

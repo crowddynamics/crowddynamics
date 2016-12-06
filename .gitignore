@@ -5,6 +5,7 @@
 *.hdf5
 *.old
 tests/output/
+*.hypothesis
 
 # Folders
 /docs/build/

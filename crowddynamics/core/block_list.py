@@ -111,6 +111,8 @@ class BlockList(object):
             points (numpy.ndarray):
             cell_width (float):
         """
+        assert cell_width > 0
+
         index_list, count, offset, x_min, x_max = block_list(points, cell_width)
         self.cell_width = cell_width
         self.index_list = index_list
