@@ -2,16 +2,20 @@ import unittest
 from unittest.case import skip
 
 import hypothesis.strategies as st
+import numpy as np
 from hypothesis import given
 from hypothesis.extra.numpy import arrays, ArrayStrategy
 
+from crowddynamics.core.block_list import block_list
 from crowddynamics.core.distance import distance_circle_circle, \
     distance_three_circle, distance_circle_line, distance_three_circle_line
 from crowddynamics.core.motion import force_fluctuation, torque_fluctuation, \
     force_adjust, torque_adjust, force_social_helbing, force_contact
-from crowddynamics.core.vector2D import cross2d, np, wrap_to_pi, truncate, \
+from crowddynamics.core.vector2D import cross2d, wrap_to_pi, truncate, \
     rotate270, normalize, length, angle, rotate90, dot2d
 
+
+# TODO: numpy.testing
 
 # ----------
 # Strategies
@@ -30,21 +34,32 @@ def real():
     return st.floats(None, None, False, False)
 
 
-def positive():
-    return st.floats(0, None, False, False)
+def positive(include_zero=True):
+    strategy = st.floats(0, None, False, False)
+    if include_zero:
+        return strategy
+    else:
+        return strategy.filter(lambda x: x != 0.0)
 
 
-def vector():
-    return arrays(np.float64, 2, st.floats(None, None, False, False))
+def vector(dim=2):
+    return arrays(np.float64, dim, real())
 
 
-def unit_vector(start=0, end=2*np.pi):
+@st.composite
+def vectors(draw, elements=real(), maxsize=100, dim=2):
+    size = draw(st.integers(1, maxsize))
+    values = draw(arrays(np.float64, (size, dim), elements))
+    return values
+
+
+def unit_vector(start=0, end=2*np.pi, dim=2):
     phi = st.floats(start, end, False, False)
-    return UnitVectorStrategy(phi, 2, np.float64)
+    return UnitVectorStrategy(phi, dim, np.float64)
 
 
-def line():
-    return arrays(np.float64, (2, 2), st.floats(None, None, False, False))
+def line(dim=2):
+    return arrays(np.float64, (dim, dim), st.floats(None, None, False, False))
 
 
 def three_vectors():
@@ -218,7 +233,25 @@ class DistanceTest(unittest.TestCase):
 
 
 class TestBlockList(unittest.TestCase):
-    pass
+    @given(points=vectors(elements=st.floats(0.0, 1.0)),
+           cell_width=st.floats(0.1, 1.0))
+    def test_block_list(self, points, cell_width):
+        index_list, count, offset, x_min, x_max = block_list(points, cell_width)
+
+        self.assertIsInstance(index_list, np.ndarray)
+        self.assertIs(index_list.dtype.type, np.int64)
+
+        self.assertIsInstance(count, np.ndarray)
+        self.assertIs(count.dtype.type, np.int64)
+
+        self.assertIsInstance(offset, np.ndarray)
+        self.assertIs(offset.dtype.type, np.int64)
+
+        self.assertIsInstance(x_min, np.ndarray)
+        self.assertIs(x_min.dtype.type, np.int64)
+
+        self.assertIsInstance(x_max, np.ndarray)
+        self.assertIs(x_max.dtype.type, np.int64)
 
 
 if __name__ == '__main__':

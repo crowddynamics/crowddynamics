@@ -3,38 +3,26 @@ import numba
 from numba import f8, i8
 
 
-# Multidimensional indexing
-# 1-D: [...]
-# dims: n0
-# key: x0
-# index: x0
-#
-# 2-D: [[...], [...]]
-# dims: (n0, n1)
-# key: (x0, x1)
-# index: x0 * n1 + x1
-#
-# 3-D: [[[...], [...]], [[...], [...]]]
-# dims: (n0, n1, n2)
-# key:(x0, x1, x2)
-# index: x0 * n1 * n2 + x1 * n2 + x2
-#       (x0 * n1 + x1) * n2 + x2
-
-
 @numba.jit(nopython=True)
 def block_list(points, cell_width):
     """
     Block list
 
     Args:
-        points (numpy.ndarray): Array of points (points.ndim == 2).
-        cell_width (float): Width/height of the rectangular mesh.
+        points (numpy.ndarray):
+            Array of points
+
+        cell_width (float):
+            Width/height of the rectangular mesh.
 
     Returns:
-        (numpy.ndarray, numpy.ndarray, numpy.ndarray, float, float):
+        (numpy.ndarray, numpy.ndarray, numpy.ndarray, numpy.ndarray, numpy.ndarray):
         (index_list, count, offset, x_min, x_max)
     """
+    assert cell_width > 0
     assert points.ndim == 2
+    assert points.shape[1] == 2
+
     n, m = points.shape
 
     x_min = (points[0, :] / cell_width).astype(np.int64)
@@ -60,7 +48,7 @@ def block_list(points, cell_width):
     #       Maximum amount of blocks == len(points)
 
     # Count how many points go into each point
-    size = np.prod(x_max+1)
+    size = np.prod(x_max + 1)
     count = np.zeros(size, dtype=np.int64)
     for i in range(n):
         index = indices[i, 0]
@@ -109,9 +97,13 @@ class BlockList(object):
 
         Args:
             points (numpy.ndarray):
+
             cell_width (float):
+                Positive real number, the width of the cell
         """
         assert cell_width > 0
+        assert points.ndim == 2
+        assert points.shape[1] == 2
 
         index_list, count, offset, x_min, x_max = block_list(points, cell_width)
         self.cell_width = cell_width
@@ -124,6 +116,23 @@ class BlockList(object):
 
     def get_block(self, indices):
         r"""
+        Multidimensional indexing
+
+        1-D: [...]
+        dims: n0
+        key: x0
+        index: x0
+
+        2-D: [[...], [...]]
+        dims: (n0, n1)
+        key: (x0, x1)
+        index: x0 * n1 + x1
+
+        3-D: [[[...], [...]], [[...], [...]]]
+        dims: (n0, n1, n2)
+        key:(x0, x1, x2)
+        index: x0 * n1 * n2 + x1 * n2 + x2
+              (x0 * n1 + x1) * n2 + x2
 
         Args:
             indices (numpy.ndarray | tuple):
