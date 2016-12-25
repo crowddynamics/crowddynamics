@@ -1,0 +1,6 @@
+# Testing
+pytest
+hypothesis
+nose
+line_profiler
+bokeh
