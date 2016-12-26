@@ -4,7 +4,6 @@ from unittest.case import skip
 import hypothesis.strategies as st
 import numpy as np
 from hypothesis import given
-from hypothesis.extra.numpy import arrays, ArrayStrategy
 
 from crowddynamics.core.block_list import block_list
 from crowddynamics.core.distance import distance_circle_circle, \
@@ -13,61 +12,7 @@ from crowddynamics.core.motion import force_fluctuation, torque_fluctuation, \
     force_adjust, torque_adjust, force_social_helbing, force_contact
 from crowddynamics.core.vector2D import cross2d, wrap_to_pi, truncate, \
     rotate270, normalize, length, angle, rotate90, dot2d
-
-
-# TODO: numpy.testing
-
-# ----------
-# Strategies
-# ----------
-
-
-class UnitVectorStrategy(ArrayStrategy):
-    def do_draw(self, data):
-        if self.array_size != 2:
-            raise NotImplementedError
-        phi = self.element_strategy.do_draw(data)
-        return np.array((np.cos(phi), np.sin(phi)), dtype=self.dtype)
-
-
-def real():
-    return st.floats(None, None, False, False)
-
-
-def positive(include_zero=True):
-    strategy = st.floats(0, None, False, False)
-    if include_zero:
-        return strategy
-    else:
-        return strategy.filter(lambda x: x != 0.0)
-
-
-def vector(dim=2):
-    return arrays(np.float64, dim, real())
-
-
-@st.composite
-def vectors(draw, elements=real(), maxsize=100, dim=2):
-    size = draw(st.integers(1, maxsize))
-    values = draw(arrays(np.float64, (size, dim), elements))
-    return values
-
-
-def unit_vector(start=0, end=2*np.pi, dim=2):
-    phi = st.floats(start, end, False, False)
-    return UnitVectorStrategy(phi, dim, np.float64)
-
-
-def line(dim=2):
-    return arrays(np.float64, (dim, dim), st.floats(None, None, False, False))
-
-
-def three_vectors():
-    return st.tuples(*(vector() for _ in range(3)))
-
-
-def three_positive():
-    return st.tuples(*(positive() for _ in range(3)))
+from tests.strategies import real, positive, vector, vectors, line, three_vectors, three_positive
 
 
 # -----
@@ -252,7 +197,3 @@ class TestBlockList(unittest.TestCase):
 
         self.assertIsInstance(x_max, np.ndarray)
         self.assertIs(x_max.dtype.type, np.int64)
-
-
-if __name__ == '__main__':
-    unittest.main()

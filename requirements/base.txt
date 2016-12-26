@@ -8,9 +8,12 @@ numba
 scipy
 scikit-image
 shapely
-matplotlib
 pandas
 scikit-fmm
+
+# Vizualisation
+matplotlib
+bokeh
 
 # IO
 h5py

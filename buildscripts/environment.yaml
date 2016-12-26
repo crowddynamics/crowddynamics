@@ -14,9 +14,8 @@ dependencies:
     - pyqtgraph
     - h5py
     - yaml
+    - ruamel_yaml
     - pandas
     - typing
-    - nose
     - pip:
-        - ruamel.yaml
         - scikit-fmm

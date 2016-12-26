@@ -1,6 +1,9 @@
 # Testing
 pytest
+pytest-cov
+pytest-xdist
+coverage
 hypothesis
 nose
-line_profiler
-bokeh
+
+#line_profiler

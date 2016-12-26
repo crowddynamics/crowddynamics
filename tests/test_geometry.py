@@ -1,22 +1,15 @@
 """
 UnitTests and property based testing using
-
-- Unittests
-- `Hypothesis <https://hypothesis.readthedocs.io/en/latest/index.html>`_
-
 """
-import importlib
 import os
-import sys
 import unittest
 
 from bokeh.plotting import figure, output_file, save
-
-sys.path.insert(0, "..")
 from shapely.geometry import Polygon, Point
-from crowddynamics.functions import load_config
+
 from crowddynamics.core.sampling import PolygonSample
 from crowddynamics.core.vector2D import *
+from tests.strategies import generate_polygon
 
 OUTPUT_FOLDER = "output"
 
@@ -55,56 +48,9 @@ def save_plot(name, polygon, points):
     save(p, filename, title=title)
 
 
-def generate_polygon(low=0.0, high=1.0, max_verts=5):
-    """
-    Generate a random polygon.
-
-    Args:
-        low:
-        high:
-        max_verts:
-
-    Returns:
-        Polygon: Random convex polygon
-    """
-    points = np.random.uniform(low=low, high=high, size=(max_verts, 2))
-    polygon = Polygon(points).convex_hull
-    return polygon
-
-
-def import_simulations(queue=None):
-    """
-    Yield all simulations from examples.py
-
-    Args:
-        queue (multiprocessing.Queue, optional):
-
-    Yields:
-        MultiAgentSimulation:
-    """
-    configs = load_config("simulations.yaml")
-    conf = configs["simulations"]
-    for name in conf.keys():
-        d = conf[name]
-        module = importlib.import_module(d["module"])
-        simulation = getattr(module, d["class"])
-        process = simulation(queue, **d["kwargs"])
-        yield process
-
-
 # -----------------------------------------------------------------------------
 # Unittests
 # -----------------------------------------------------------------------------
-
-
-class MultiAgentSimulationTest(unittest.TestCase):
-    def test_simulations(self):
-        gen = import_simulations()
-        for simulation in gen:
-            # simulation.configure_hdfstore()
-            simulation.initial_update()
-            simulation.update()
-            self.assertTrue(True)
 
 
 class PolygonSampleTest(unittest.TestCase):
@@ -135,15 +81,3 @@ class PolygonSampleTest(unittest.TestCase):
             self.assertTrue(polygon.contains(p), "Point not in polygon")
 
         save_plot("polygon_sample_complex", polygon, points)
-
-
-class NavigationTest(unittest.TestCase):
-    pass
-
-
-class OrientationTest(unittest.TestCase):
-    pass
-
-
-if __name__ == '__main__':
-    unittest.main()
