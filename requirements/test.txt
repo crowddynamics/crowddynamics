@@ -1,9 +1,10 @@
 # Testing
 pytest
-pytest-cov
-pytest-xdist
 coverage
 hypothesis
-nose
+pytest-cov
+pytest-xdist
 
+
+# Profiling
 #line_profiler

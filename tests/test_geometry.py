@@ -1,17 +1,17 @@
 """
 UnitTests and property based testing using
 """
-import os
-import unittest
+import numpy as np
+import pytest
 
 from bokeh.plotting import figure, output_file, save
+from hypothesis import given
 from shapely.geometry import Polygon, Point
 
-from crowddynamics.core.sampling import PolygonSample
-from crowddynamics.core.vector2D import *
-from tests.strategies import generate_polygon
-
-OUTPUT_FOLDER = "output"
+from crowddynamics.core.sampling import PolygonSample, triangle_area, \
+    random_sample_triangle, triangle_area_cumsum
+from tests.conf import *
+from tests.strategies import polygons, vector
 
 
 def save_plot(name, polygon, points):
@@ -25,8 +25,9 @@ def save_plot(name, polygon, points):
     Returns:
         None:
     """
+    # TODO: name unique
     ext = ".html"
-    os.makedirs(OUTPUT_FOLDER, exist_ok=True)
+    os.makedirs(os.path.join(BASE_DIR, OUTPUT_FOLDER), exist_ok=True)
     filename = os.path.join(OUTPUT_FOLDER, name) + ext
     title = name.replace("_", "").capitalize()
 
@@ -48,36 +49,40 @@ def save_plot(name, polygon, points):
     save(p, filename, title=title)
 
 
-# -----------------------------------------------------------------------------
-# Unittests
-# -----------------------------------------------------------------------------
+@given(vector(), vector(), vector())
+def test_triangle_area(a, b, c):
+    # triangle = Polygon((a, b, c))
+    area = triangle_area(a, b, c)
+    assert isinstance(area, float)
+    if np.isnan(area):
+        assert True
+    else:
+        assert area >= 0.0
 
 
-class PolygonSampleTest(unittest.TestCase):
-    """
-    Test case for PolygonSample.
-    """
+@given(vector(), vector(), vector())
+def test_random_sample_triangle(a, b, c):
+    triangle = Polygon((a, b, c))
+    # Touches instead of contains behaves well is triangle.area is zero.
+    if triangle_area(a, b, c) == 0.0:
+        with pytest.raises(Exception):
+            random_sample_triangle(a, b, c)
+    else:
+        p = random_sample_triangle(a, b, c)
+        assert isinstance(p, np.ndarray)
+        assert triangle.contains(Point(p))
 
-    def test_simple(self, num=100):
-        polygon = generate_polygon()
-        sample = PolygonSample(polygon)
-        points = []
 
-        for i in range(num):
-            p = Point(sample.draw())
-            points.append(p)
-            self.assertTrue(polygon.contains(p), "Point not in polygon")
+# @given()
+# def test_triangle_area_cumsum(trimesh):
+#     cumsum = triangle_area_cumsum(trimesh)
+#     assert True
 
-        save_plot("polygon_sample_simple", polygon, points)
 
-    def test_complex(self, num=100):
-        polygon = generate_polygon().buffer(0.1)
-        sample = PolygonSample(polygon)
-        points = []
-
-        for i in range(num):
-            p = Point(sample.draw())
-            points.append(p)
-            self.assertTrue(polygon.contains(p), "Point not in polygon")
-
-        save_plot("polygon_sample_complex", polygon, points)
+@given(polygons)
+def test_polygon_sampling(polygon):
+    num = 100
+    sample = PolygonSample(polygon)
+    points = [Point(sample.draw()) for _ in range(num)]
+    # save_plot("???", polygon, points)
+    assert all(polygon.contains(p) for p in points)

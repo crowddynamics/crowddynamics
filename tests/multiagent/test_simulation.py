@@ -1,10 +1,11 @@
 import importlib
-import unittest
+
+import pytest
 
 from crowddynamics.functions import load_config
 
 
-def import_simulations(queue=None):
+def simulations(queue=None):
     """
     Yield all simulations from examples.py
 
@@ -24,11 +25,10 @@ def import_simulations(queue=None):
         yield process
 
 
-class MultiAgentSimulationTest(unittest.TestCase):
-    def test_simulations(self):
-        gen = import_simulations()
-        for simulation in gen:
-            # simulation.configure_hdfstore()
-            simulation.initial_update()
-            simulation.update()
-            self.assertTrue(True)
+@pytest.mark.skip
+def test_simulation():
+    for simulation in simulations():
+        # simulation.configure_hdfstore()
+        simulation.initial_update()
+        simulation.update()
+        assert True

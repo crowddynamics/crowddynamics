@@ -1,5 +1,5 @@
 typing
-ruamel.yaml
+ruamel_yaml
 yaml
 
 # Core

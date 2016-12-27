@@ -30,7 +30,7 @@ def triangle_area(a, b, c):
 def random_sample_triangle(a, b, c):
     r"""
     Generate uniform random sample from inside of a triangle defined by points
-    A, B and C [1]_, [2]_.
+    A, B and C [1]_, [2]_. Does not work for triangles that have area of zero!
 
     .. math::
        P = (1 - \sqrt{r_1}) A + (\sqrt{r_1} (1 - r_2))  B + (r_2 \sqrt{r_1}) C,
@@ -53,7 +53,8 @@ def random_sample_triangle(a, b, c):
     .. [1] http://math.stackexchange.com/questions/18686/uniform-random-point-in-triangle
     .. [2] http://mathworld.wolfram.com/TrianglePointPicking.html
     """
-    # Random variables
+    if triangle_area(a, b, c) == 0.0:
+        raise Exception("Area of the triangle should not be zero.")
     r1 = np.random.random()
     r2 = np.random.random()
     return (1 - np.sqrt(r1)) * a + \
@@ -62,21 +63,21 @@ def random_sample_triangle(a, b, c):
 
 
 @numba.jit(nopython=True, nogil=True)
-def triangle_area_cumsum(mesh):
+def triangle_area_cumsum(trimesh):
     r"""
     Computes cumulative sum of the areas of the triangle mesh.
 
     Args:
-        mesh (numpy.ndarray): Triangle mesh
+        trimesh (numpy.ndarray): Triangle mesh
 
     Returns:
         numpy.ndarray: Cumulative sum the area of the triangle mesh
     """
     area = 0
-    rows = mesh.shape[0]
+    rows = trimesh.shape[0]
     cumsum = np.zeros(rows)
     for i in range(rows):
-        a, b, c = mesh[i, 0, :], mesh[i, 1, :], mesh[i, 2, :]
+        a, b, c = trimesh[i, 0, :], trimesh[i, 1, :], trimesh[i, 2, :]
         area += triangle_area(a, b, c)
         cumsum[i] = area
     return cumsum

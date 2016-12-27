@@ -113,7 +113,7 @@ class MotionTest(unittest.TestCase):
         else:
             ans = torque_adjust(inertia_rot, tau_rot, phi_0, phi, omega_0,
                                 omega)
-            self.assertIsInstance(ans, np.ndarray)
+            self.assertIsInstance(ans, float)
 
     @given(h=real(), n=vector(), a=positive(), b=positive())
     def test_force_social_helbing(self, h, n, a, b):

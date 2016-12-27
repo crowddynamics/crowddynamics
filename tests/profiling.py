@@ -28,6 +28,3 @@ def run_simulation(name, iterations=100):
     process.initial_update()
     for _ in range(iterations):
         process.update()
-
-
-run_simulation("room_evacuation_massive", 100)
