@@ -12,15 +12,27 @@ class ListBuffer(list):
     """
 
     def __init__(self, start=0, end=0):
+        """
+        Args:
+            start (int):
+            end (int):
+        """
         super(ListBuffer, self).__init__()
         self.start = start
         self.end = end
 
     def append(self, p_object):
+        """
+        Append
+
+        Args:
+            p_object (object):
+        """
         super(ListBuffer, self).append(p_object)
         self.end += 1
 
     def clear(self):
+        """Clear"""
         super(ListBuffer, self).clear()
         self.start = self.end
 
@@ -34,7 +46,10 @@ class HDFStore(object):
     ext = ".hdf5"
 
     def __init__(self, filepath):
-        # Logger
+        """
+        Args:
+            filepath (str):
+        """
         self.logger = logging.getLogger("crowddynamics.io")
 
         # Path to the HDF5 file
@@ -48,14 +63,18 @@ class HDFStore(object):
         # Configuration
         self.configure_file()
 
-    def create_dataset(self, group: h5py.Group, name, values, resizable=False):
+    def create_dataset(self, group, name, values, resizable=False):
         """
+        Create dataset
 
-        :param group: h5py.Group
-        :param name: Name
-        :param values: Values to be stored. Goes through np.array(value).
-        :param resizable: If true values can be added to the dataset.
-        :return:
+        Args:
+            group (h5py.Group):
+            name (str):
+                Name
+            values (numpy.ndarray):
+                Values to be stored. Goes through np.array(value).
+            resizable (Boolean):
+                If true values can be added to the dataset.
         """
         self.logger.info("")
         values = np.array(values)
@@ -67,8 +86,14 @@ class HDFStore(object):
             values = np.expand_dims(values, axis=0)
         group.create_dataset(name, data=values, **kw)
 
-    def append_buffer_to_dataset(self, dset: h5py.Dataset, buffer: ListBuffer):
-        """Append values to resizable h5py dataset."""
+    def append_buffer_to_dataset(self, dset, buffer):
+        """
+        Append values to resizable h5py dataset.
+
+        Args:
+            dset (h5py.Dataset):
+            buffer (ListBuffer):
+        """
         if len(buffer):  # Buffer is not empty
             self.logger.info("")
             values = np.array(buffer)
@@ -91,6 +116,13 @@ class HDFStore(object):
         self.logger.info(self.group_name)
 
     def add_dataset(self, struct, attributes, overwrite=False):
+        """
+
+        Args:
+            struct:
+            attributes:
+            overwrite (Boolean):
+        """
         self.logger.info("")
 
         with h5py.File(self.filepath, mode='a') as file:
@@ -114,6 +146,10 @@ class HDFStore(object):
           attr.name: buffer1
           attr.name: buffer2
           ...
+
+        Args:
+            struct:
+            attributes:
         """
         buffers = {}
         for name, settings in attributes.items():
@@ -123,6 +159,7 @@ class HDFStore(object):
         self.buffers.append((struct, buffers))
 
     def update_buffers(self):
+        """Update buffers"""
         for struct, buffers in self.buffers:
             for attr_name, buffer in buffers.items():
                 value = getattr(struct, attr_name)
@@ -130,6 +167,7 @@ class HDFStore(object):
                 buffer.append(value)
 
     def dump_buffers(self):
+        """Dump buffers"""
         with h5py.File(self.filepath, mode='a') as file:
             grp = file[self.group_name]
             for struct, buffers in self.buffers:

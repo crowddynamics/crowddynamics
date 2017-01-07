@@ -225,9 +225,7 @@ class EgressGame(TaskNode):
         self.simulation.agent.reset_neighbor()
 
     def parameters(self):
-        """
-        Parameters that can be saved or plotted.
-        """
+        """Parameters that can be saved or plotted."""
         params = (
             "strategies",
             "strategy",
@@ -240,9 +238,7 @@ class EgressGame(TaskNode):
         return params
 
     def reset(self):
-        """
-        Reset
-        """
+        """Reset"""
         self.t_evac[:] = 0
 
     def update(self):
