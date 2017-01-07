@@ -4,7 +4,3 @@ pytest-cov
 pytest-xdist
 coverage
 hypothesis
-
-
-# Profiling
-#line_profiler

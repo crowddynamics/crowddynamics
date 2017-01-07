@@ -4,5 +4,5 @@ source = crowddynamics
 omit =
     */__init__.py,
     *conftest.py,
-    tests/*,
-    docs/*
+    *tests/*,
+    docs/*,

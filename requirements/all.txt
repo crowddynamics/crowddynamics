@@ -1,4 +1,0 @@
-# https://pip.pypa.io/en/stable/reference/pip_install/#requirements-file-format
--r base.txt
--r test.txt
--r docs.txt
