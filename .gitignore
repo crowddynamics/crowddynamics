@@ -4,13 +4,13 @@
 *.mp4
 *.hdf5
 *.old
-tests/output/
 *.hypothesis
 
 # Folders
+crowddynamics/tests/output/
 /docs/build/
-clean.sh
 notebooks/
+ENV/
 
 
 # Created by .ignore support plugin (hsz.mobi)
@@ -268,4 +268,18 @@ sympy-plots-for-*.tex/
 # LibreOffice locks
 .~lock.*#
 
+
+### VirtualEnv template
+# Virtualenv
+# http://iamzed.com/2009/05/07/a-primer-on-virtualenv/
+.Python
+[Bb]in
+[Ii]nclude
+[Ll]ib
+[Ll]ib64
+[Ll]ocal
+[Ss]cripts
+pyvenv.cfg
+.venv
+pip-selfcheck.json
 

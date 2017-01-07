@@ -30,7 +30,7 @@ def triangle_area(a, b, c):
 def random_sample_triangle(a, b, c):
     r"""
     Generate uniform random sample from inside of a triangle defined by points
-    A, B and C [1]_, [2]_. Does not work for triangles that have area of zero!
+    A, B and C [1]_, [2]_. Does not work for triangles that have area of zero.
 
     .. math::
        P = (1 - \sqrt{r_1}) A + (\sqrt{r_1} (1 - r_2))  B + (r_2 \sqrt{r_1}) C,
@@ -53,8 +53,7 @@ def random_sample_triangle(a, b, c):
     .. [1] http://math.stackexchange.com/questions/18686/uniform-random-point-in-triangle
     .. [2] http://mathworld.wolfram.com/TrianglePointPicking.html
     """
-    if triangle_area(a, b, c) == 0.0:
-        raise Exception("Area of the triangle should not be zero.")
+    # assume triangle.area is not close to 0.0
     r1 = np.random.random()
     r2 = np.random.random()
     return (1 - np.sqrt(r1)) * a + \

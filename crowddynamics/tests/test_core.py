@@ -12,7 +12,7 @@ from crowddynamics.core.motion import force_fluctuation, torque_fluctuation, \
     force_adjust, torque_adjust, force_social_helbing, force_contact
 from crowddynamics.core.vector2D import cross2d, wrap_to_pi, truncate, \
     rotate270, normalize, length, angle, rotate90, dot2d
-from tests.strategies import real, positive, vector, vectors, line, three_vectors, three_positive
+from crowddynamics.tests.strategies import real, positive, vector, vectors, line, three_vectors, three_positive
 
 
 # -----

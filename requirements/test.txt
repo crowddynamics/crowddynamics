@@ -1,9 +1,9 @@
 # Testing
 pytest
-coverage
-hypothesis
 pytest-cov
 pytest-xdist
+coverage
+hypothesis
 
 
 # Profiling

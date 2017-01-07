@@ -1,3 +1,0 @@
-# Gui
-pyqt
-pyqtgraph

@@ -1,0 +1,6 @@
+include AUTHORS LICENSE README.md
+
+recursive-include requirements *
+
+prune buildscripts
+prune docs/build

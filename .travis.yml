@@ -1,0 +1,30 @@
+# Outline of this travis setup is modified from numba's setup
+# http://numba.pydata.org/
+#
+# Resources
+# https://lint.travis-ci.org/
+# https://gist.github.com/dan-blanchard/7045057
+# https://docs.travis-ci.com/user/trusty-ci-environment/
+
+dist: trusty
+
+matrix:
+    include:
+        - env: CONDA_ENV=crowd34 BUILD_DOC=yes
+
+branches:
+    only:
+        - master
+
+before_install:
+    - buildscripts/install_miniconda.sh
+    - export PATH=$HOME/miniconda3/bin:$PATH
+    - buildscripts/setup_conda_environment.sh
+install:
+    - buildscripts/build.sh
+
+script:
+    - buildscripts/test.sh
+
+#after_success:
+#    - buildscripts/after_success.sh
