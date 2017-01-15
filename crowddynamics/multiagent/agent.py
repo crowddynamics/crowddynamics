@@ -76,15 +76,18 @@ class Agent(object):
         Initialise the agent structure.
 
         Args:
-            size (int): Number of agents.
-            mass (numpy.ndarray): Masses of the agents
-            radius (numpy.ndarray): Total radii of the agents
-            ratio_rt (float): Ratio of the total radius and torso radius.
-                :math:`[0, 1]`
-            ratio_rs (float): Ratio of the total radius and shoulder radius.
-                :math:`[0, 1]`
-            ratio_ts (float): Ratio of the torso radius and torso radius.
-                :math:`[0, 1]`
+            size (int):
+                Number of agents.
+            mass (numpy.ndarray):
+                Masses of the agents
+            radius (numpy.ndarray):
+                Total radii of the agents
+            ratio_rt (float):
+                Ratio of the total radius and torso radius. :math:`[0, 1]`
+            ratio_rs (float):
+                Ratio of the total radius and shoulder radius. :math:`[0, 1]`
+            ratio_ts (float):
+                Ratio of the torso radius and torso radius. :math:`[0, 1]`
             inertia_rot (numpy.ndarray):
             target_velocity (numpy.ndarray):
             target_angular_velocity (numpy.ndarray):
