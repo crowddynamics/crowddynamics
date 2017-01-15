@@ -1,10 +1,11 @@
 ## Should not be installed through pip
 ## Recommended to use Conda package manager instead
 
+
 typing
 ruamel.yaml
 
-# Core
+## Core
 numpy
 numba
 scipy
@@ -13,11 +14,11 @@ shapely
 pandas
 scikit-fmm
 
-# Gui and Vizualisation
+## IO
+h5py
+
+## Gui and Vizualisation
 pyqt
 pyqtgraph
 matplotlib
 bokeh
-
-# IO
-h5py
