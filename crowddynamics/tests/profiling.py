@@ -6,7 +6,7 @@ import sys
 sys.path.insert(0, "..")
 
 from crowddynamics.main import setup_logging
-from crowddynamics.functions import load_config
+from crowddynamics.functions import load_config, setup_logging
 
 
 def run_simulation(name, iterations=100):

@@ -1,15 +1,16 @@
-import importlib
+import logging
+import logging.config
 import math
 import os
+import platform
 import sys
 from functools import wraps, lru_cache
 from timeit import default_timer as timer
 
 import numpy as np
 import pandas as pd
-import ruamel.yaml as yaml
+from ruamel import yaml
 
-# TODO: yaml
 numpy_options = {
     'precision': 5,
     'threshold': 6,
@@ -32,6 +33,9 @@ pandas_options = {
 
 root = os.path.abspath(__file__)
 root = os.path.split(root)[0]
+
+BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+LOG_CFG = os.path.join(BASE_DIR, 'logging.yaml')
 
 
 @lru_cache()
@@ -150,3 +154,35 @@ def public(f):
     if f.__name__ not in all:  # Prevent duplicates if run from an IDE.
         all.append(f.__name__)
     return f
+
+
+def setup_logging(default_path=LOG_CFG,
+                  default_level=logging.INFO,
+                  env_key='LOG_CFG'):
+    """Setup logging configurations. These are defined as dictConfig in
+    ``default_path``."""
+    # Path to logging yaml configuration file.
+    path = default_path
+
+    # Set-up logging
+    # logger = logging.getLogger(__name__)
+    value = os.getenv(env_key, None)
+    if value:
+        path = value
+    if os.path.exists(path):
+        with open(path, 'rt') as file:
+            config = yaml.safe_load(file.read())
+        logging.config.dictConfig(config)
+    else:
+        logging.basicConfig(level=default_level)
+
+    # Nicer printing for numpy array and pandas tables
+    numpy_format()
+    pandas_format()
+
+
+def user_info():
+    logger = logging.getLogger("crowddynamics")
+    logger.info("Platform: %s", platform.platform())
+    logger.info("Path: %s", sys.path[0])
+    logger.info("Python: %s", sys.version[0:5])
