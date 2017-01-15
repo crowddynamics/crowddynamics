@@ -1,7 +1,9 @@
 ## Should not be installed through pip
 ## Recommended to use Conda package manager instead
 
-
+## Package
+setuptools
+versioneer
 typing
 ruamel.yaml
 
