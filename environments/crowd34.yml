@@ -3,17 +3,19 @@ channels:
     - conda-forge
 dependencies:
     - python=3.4
+    - typing
     - numpy
     - numba
     - scipy
     - scikit-image
     - shapely
-    - matplotlib
+    - pandas
+    - h5py
     - pyqt
     - pyqtgraph
-    - h5py
-    - pandas
-    - typing
+    - matplotlib
+    - bokeh
     - pip:
         - ruamel.yaml
         - scikit-fmm
+        - click

@@ -5,6 +5,9 @@
 typing
 ruamel.yaml
 
+## Command-line interface
+click
+
 ## Core
 numpy
 numba
