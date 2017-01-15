@@ -1,7 +1,13 @@
-include AUTHORS LICENSE README.md
+include MANIFEST.in
+include AUTHORS LICENSE CONTRIBUTING README.md
+include setup.py versioneer.py
 
+recursive-include crowddynamics *
+recursive-include docs *
 recursive-include requirements *
-recursive-include environments *
 
-prune buildscripts
 prune docs/build
+
+recursive-exclude * __pycache__
+recursive-exclude * *.py[co]
+include crowddynamics/_version.py
