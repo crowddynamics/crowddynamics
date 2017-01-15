@@ -16,8 +16,9 @@ class Integrator(TaskNode):
     def __init__(self, simulation, dt):
         """
 
-        :param simulation: Simulation class
-        :param dt: Tuple of minumum and maximum timestep (dt_min, dt_max).
+        Args:
+            simulation: Simulation class
+            dt: Tuple of minumum and maximum timestep (dt_min, dt_max).
         """
         super().__init__()
 
