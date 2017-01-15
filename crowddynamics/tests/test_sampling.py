@@ -1,6 +1,9 @@
 """
 UnitTests and property based testing using
 """
+import os
+import sys
+
 import numpy as np
 import pytest
 from bokeh.plotting import figure, output_file, save
@@ -10,7 +13,12 @@ from shapely.geometry import Polygon, Point
 from crowddynamics.core.sampling import PolygonSample, triangle_area, \
     random_sample_triangle, triangle_area_cumsum
 from crowddynamics.tests.strategies import polygons, vector
-from crowddynamics.tests.conftest import *
+
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+OUTPUT_FOLDER = "output"
+
+EPSILON = sys.float_info.epsilon
 
 
 def save_plot(name, polygon, points):
