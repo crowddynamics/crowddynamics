@@ -10,7 +10,8 @@ from ruamel import yaml
 from crowddynamics.functions import numpy_format, \
     pandas_format
 
-LOG_CFG = 'configs/logging.yaml'
+BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+LOG_CFG = os.path.join(BASE_DIR, 'logging.yaml')
 
 
 def setup_logging(default_path=LOG_CFG,
@@ -28,7 +29,7 @@ def setup_logging(default_path=LOG_CFG,
     path = os.path.join(folderpath, default_path)
 
     # Set-up logging
-    logger = logging.getLogger(__name__)
+    # logger = logging.getLogger(__name__)
     value = os.getenv(env_key, None)
     if value:
         path = value
