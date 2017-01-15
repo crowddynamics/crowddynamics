@@ -7,9 +7,7 @@ import numpy as np
 
 
 class ListBuffer(list):
-    """
-    List that tracks start and end indices of added items.
-    """
+    """List that tracks start and end indices of added items."""
 
     def __init__(self, start=0, end=0):
         """
@@ -53,8 +51,7 @@ class HDFStore(object):
         self.logger = logging.getLogger("crowddynamics.io")
 
         # Path to the HDF5 file
-        self.filepath, _ = os.path.splitext(filepath)  # Remove extension
-        self.filepath += self.ext  # Set extension
+        self.filepath = os.path.splitext(filepath)[0] + self.ext
         self.group_name = None
 
         # Appending data
@@ -62,6 +59,18 @@ class HDFStore(object):
 
         # Configuration
         self.configure_file()
+
+    def configure_file(self):
+        """Configure and creates new HDF5 File."""
+        self.logger.info("")
+
+        timestamp = str(datetime.datetime.now())
+        with h5py.File(self.filepath, mode='a') as file:
+            self.group_name = timestamp.replace(" ", "_")  # HDF group name
+            file.create_group(self.group_name)  # Create Group
+
+        self.logger.info(self.filepath)
+        self.logger.info(self.group_name)
 
     def create_dataset(self, group, name, values, resizable=False):
         """
@@ -102,18 +111,6 @@ class HDFStore(object):
             dset[buffer.start:] = values
         else:
             self.logger.warning("Buffer is empty.")
-
-    def configure_file(self):
-        """Configure and creates new HDF5 File."""
-        self.logger.info("")
-
-        timestamp = str(datetime.datetime.now())
-        with h5py.File(self.filepath, mode='a') as file:
-            self.group_name = timestamp.replace(" ", "_")  # HDF group name
-            file.create_group(self.group_name)  # Create Group
-
-        self.logger.info(self.filepath)
-        self.logger.info(self.group_name)
 
     def add_dataset(self, struct, attributes, overwrite=False):
         """
