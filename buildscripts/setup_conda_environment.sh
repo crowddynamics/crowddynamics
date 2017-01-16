@@ -14,4 +14,4 @@ conda list
 #  `conda env remove` issue)
 conda remove --all -q -y -n $CONDA_ENV
 # Scipy, CFFI, jinja2 and IPython are optional dependencies, but exercised in the test suite
-conda env create -f environments/$CONDA_ENV.yml -q -y
+conda env create $PYTHON -n $CONDA_ENV -f buildscripts/environment.yml -q -y

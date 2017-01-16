@@ -1,8 +1,8 @@
-name: crowd34
+# conda env create python3.x -n crowd3x -f environment.yml
+
 channels:
     - conda-forge
 dependencies:
-    - python=3.4
     - setuptools
     - versioneer
     - typing
