@@ -4,12 +4,20 @@ import math
 import os
 import platform
 import sys
+from collections import OrderedDict
+from copy import deepcopy
 from functools import wraps, lru_cache
 from timeit import default_timer as timer
 
 import numpy as np
 import pandas as pd
 from ruamel import yaml
+
+from crowddynamics.multiagent.agent import spec_agent
+
+BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+CFG_DIR = os.path.join(BASE_DIR, 'crowddynamics', 'configs')
+LOG_CFG = os.path.join(BASE_DIR, 'logging.yaml')
 
 numpy_options = {
     'precision': 5,
@@ -31,18 +39,11 @@ pandas_options = {
     'display.max_info_rows': 8
 }
 
-root = os.path.abspath(__file__)
-root = os.path.split(root)[0]
-
-BASE_DIR = os.path.dirname(os.path.dirname(__file__))
-LOG_CFG = os.path.join(BASE_DIR, 'logging.yaml')
-
 
 @lru_cache()
 def load_config(filename):
-    configs_folder = os.path.join(root, "configs")
     name, ext = os.path.splitext(filename)
-    path = os.path.join(configs_folder, filename)
+    path = os.path.join(CFG_DIR, filename)
     if ext == ".csv":
         return pd.read_csv(path, index_col=[0])
     elif ext == ".yaml":
@@ -50,6 +51,46 @@ def load_config(filename):
             return yaml.load(f, Loader=yaml.Loader)
     else:
         raise Exception("Filetype not supported.")
+
+
+def create_parameters():
+    ext = ".yaml"
+    name = "parameters"
+    filepath = os.path.join(CFG_DIR, name + ext)
+
+    # TODO: Add Comments
+    default = OrderedDict([("resizable", False),
+                           ("graphics", False)])
+
+    data = OrderedDict([('simulation', OrderedDict()),
+                        ('agent', OrderedDict()), ])
+
+    for item in spec_agent:
+        data['agent'][item[0]] = deepcopy(default)
+
+    # Mutable values that are stored
+    resizable = ("position", "angle", "active")
+    for item in resizable:
+        data['agent'][item]['resizable'] = True
+
+    # Values to be updated in graphics
+    graphics = ("position", "angle", "active")
+    for item in graphics:
+        data['agent'][item]['graphics'] = True
+
+    parameters = ("time_tot", "in_goal")
+    for item in parameters:
+        data['simulation'][item] = deepcopy(default)
+
+    resizable = ("time_tot", "in_goal")
+    for item in resizable:
+        data['simulation'][item]['resizable'] = True
+
+    with open(filepath, "w") as file:
+        yaml.dump(data,
+                  stream=file,
+                  Dumper=yaml.RoundTripDumper,
+                  default_flow_style=False)
 
 
 def numpy_format():
