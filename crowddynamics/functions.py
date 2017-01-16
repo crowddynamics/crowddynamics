@@ -1,4 +1,4 @@
-import logging
+import importlib
 import logging.config
 import math
 import os
@@ -199,7 +199,8 @@ def public(f):
 
 def setup_logging(default_path=LOG_CFG,
                   default_level=logging.INFO,
-                  env_key='LOG_CFG'):
+                  env_key='LOG_CFG',
+                  logdir='.logs'):
     """Setup logging configurations. These are defined as dictConfig in
     ``default_path``."""
     # Path to logging yaml configuration file.
@@ -211,8 +212,18 @@ def setup_logging(default_path=LOG_CFG,
     if value:
         path = value
     if os.path.exists(path):
+        # Load configs
         with open(path, 'rt') as file:
             config = yaml.safe_load(file.read())
+        # Direct all logs into ``logdir`` directory
+        if not os.path.exists(logdir):
+            os.mkdir(logdir)
+        handlers_ = config['handlers']
+        for name in handlers_:
+            handler = handlers_[name]
+            if 'filename' in handler:
+                handler['filename'] = os.path.join(logdir, handler['filename'])
+        # Configure logger
         logging.config.dictConfig(config)
     else:
         logging.basicConfig(level=default_level)
@@ -227,3 +238,29 @@ def user_info():
     logger.info("Platform: %s", platform.platform())
     logger.info("Path: %s", sys.path[0])
     logger.info("Python: %s", sys.version[0:5])
+
+
+def run_simulation(name, iterations, save=False):
+    """
+
+    Args:
+        name (str):
+        iterations (int):
+        save (Boolean):
+    """
+    configs = load_config("simulations.yaml")
+    simu_dict = configs["simulations"][name]
+    module_name = simu_dict["module"]
+    class_name = simu_dict["class"]
+    kwargs = simu_dict["kwargs"]
+
+    module = importlib.import_module(module_name)
+    simulation = getattr(module, class_name)
+    process = simulation(None, **kwargs)
+
+    if save:
+        process.configure_hdfstore()
+
+    process.initial_update()
+    for _ in range(iterations):
+        process.update()

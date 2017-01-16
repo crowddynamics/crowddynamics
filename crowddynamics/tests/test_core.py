@@ -1,7 +1,6 @@
-import unittest
-import pytest
 import hypothesis.strategies as st
 import numpy as np
+import pytest
 from hypothesis import given
 
 from crowddynamics.core.block_list import block_list

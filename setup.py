@@ -46,7 +46,7 @@ setup(
         ]
     },
     include_package_data=True,
-    install_requires=requirements('package.txt'),
+    install_requires='',  #requirements('package.txt'),
     zip_safe=False,
     keywords='',
     classifiers=[

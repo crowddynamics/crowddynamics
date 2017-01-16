@@ -7,6 +7,8 @@ from crowddynamics.multiagent.algorithms import Navigation, Orientation, \
     AgentObstacleInteractions
 from crowddynamics.multiagent.simulation import MultiAgentSimulation
 
+# TODO: Convert examples into test and validation simulations
+
 
 class Outdoor(MultiAgentSimulation):
     def __init__(self, queue, size, width, height, model, body):

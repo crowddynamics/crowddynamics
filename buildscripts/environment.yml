@@ -1,8 +1,11 @@
+# Dependencies should be same as in ``requirements/package.txt``
+# Install env with command:
 # conda env create python3.x -n crowd3x -f environment.yml
 
 channels:
     - conda-forge
 dependencies:
+    ## Package
     - setuptools
     - versioneer
     - typing
@@ -18,6 +21,20 @@ dependencies:
     - matplotlib
     - bokeh
     - pip:
+        ## Package
         - ruamel.yaml
         - scikit-fmm
         - click
+        ## Testing
+        - pytest
+        - pytest-cov
+        - pytest-xdist
+        - coverage
+        - hypothesis
+        ## Documentation
+        - sphinx
+        - sphinx_rtd_theme
+        - sphinxcontrib-napoleon
+        - sphinxcontrib-bibtex
+        - ghp-import
+        - graphviz

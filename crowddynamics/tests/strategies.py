@@ -1,5 +1,6 @@
 """
-Module to generate various input values for testing code.
+Module to generate various input values for testing code using ``Hypothesis``
+library.
 """
 import numpy as np
 from hypothesis import strategies as st
@@ -16,7 +17,12 @@ class UnitVectorStrategy(ArrayStrategy):
 
 
 def real():
-    return st.floats(None, None, False, False)
+    """
+    Real number strategy using 64-bit floating point numbers excluding ``nan``
+    and ``inf``.
+    """
+    strategy = st.floats(None, None, False, False)
+    return strategy
 
 
 def positive(include_zero=True):
@@ -27,8 +33,8 @@ def positive(include_zero=True):
         return strategy.filter(lambda x: x != 0.0)
 
 
-def vector(dim=2, elements=real()):
-    return arrays(np.float64, dim, elements)
+def vector(dim=2, dtype=np.float64, elements=real()):
+    return arrays(dtype, dim, elements)
 
 
 @st.composite
