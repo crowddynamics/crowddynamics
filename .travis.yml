@@ -10,7 +10,8 @@ dist: trusty
 
 matrix:
     include:
-        - env: CONDA_ENV=crowd34 BUILD_DOC=yes
+        - env: CONDA_ENV=crowd34 PYTHON=python3.4 BUILD_DOC=yes
+#        - env: CONDA_ENV=crowd35 PYTHON=python3.5 BUILD_DOC=yes
 
 branches:
     only:
@@ -26,5 +27,6 @@ install:
 script:
     - buildscripts/test.sh
 
+# TODO: Build and publish documentation
 #after_success:
 #    - buildscripts/after_success.sh
