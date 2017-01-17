@@ -12,20 +12,23 @@ Python package for crowd simulation.
 
 .. TODO: Embed youtube video to demonstrate the concept
 
+
 History
 -------
 This project was created in summer 2016 for Systems Analysis Laboratory (SAL) in Aalto University in Finland. The main goal was to study game theoretical model for egress congestion using existing multi-agent simulation models as a base for creating movement.
 
 Current goals are to improve and generalize multi-agent model and also include cellular automata and continuum flow models.
 
+
 Documentation
 =============
 
 .. toctree::
    :numbered:
-   :maxdepth: 1
+   :maxdepth: 2
 
-   getting_started.rst
+   installation.rst
+   usage.rst
 
    foundations/index.rst
 
@@ -35,18 +38,3 @@ Documentation
 
    research/index.rst
    api/index.rst
-
-   developers.rst
-
-   glossary.rst
-   appendix.rst
-
-   bibliography.rst
-
-
-.. Indices and tables
-.. ==================
-..
-.. * :ref:`genindex`
-.. * :ref:`modindex`
-.. * :ref:`search`

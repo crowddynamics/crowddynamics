@@ -87,6 +87,8 @@ class ThreeCircle:
 
 
 class MultiAgentPlot(pg.PlotItem):
+    """Multiagentplot"""
+
     def __init__(self, parent=None):
         """GraphicsItem for displaying simulation graphics."""
         super(MultiAgentPlot, self).__init__(parent)

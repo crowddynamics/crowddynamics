@@ -33,12 +33,12 @@ import os
 # ones.
 extensions = [
     'sphinx.ext.autodoc',
-    'sphinxcontrib.napoleon',
     'sphinx.ext.mathjax',
     'sphinx.ext.viewcode',
     'sphinx.ext.ifconfig',
     'sphinx.ext.graphviz',
     'sphinx.ext.githubpages',
+    'sphinxcontrib.napoleon',
     # 'sphinxcontrib.bibtex',
 ]
 

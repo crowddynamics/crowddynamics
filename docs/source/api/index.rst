@@ -43,8 +43,6 @@ Required external libraries
    - ``pandas``
 
 
-
-
 ----
 
 Contents
@@ -52,6 +50,7 @@ Contents
 .. toctree::
 
    application.rst
-   interface.rst
-   simulation.rst
+   core.rst
    io.rst
+   simulation.rst
+   interface.rst
