@@ -1,5 +1,5 @@
 import numpy as np
-from hypothesis import given
+from hypothesis import given, assume
 
 from crowddynamics.core.distance import distance_circle_circle, \
     distance_three_circle, distance_circle_line, distance_three_circle_line
@@ -11,23 +11,19 @@ from crowddynamics.tests.strategies import vector, positive, three_vectors, \
 @given(x0=vector(), r0=positive(), x1=vector(), r1=positive())
 def test_distance_circle_circle(x0, r0, x1, r1):
     h, n = distance_circle_circle(x0, r0, x1, r1)
-
-    assert isinstance(h, float)
-    assert isinstance(n, np.ndarray)
-
     x = x0 - x1
     r_tot = r0 + r1
 
+    assume(not np.allclose(x, 0.0))
+
+    assert isinstance(h, float)
+    assert isinstance(n, np.ndarray)
     assert h >= -r_tot
 
     if np.all(x == 0.0):
         assert np.isclose(length(n), 0.0)
-    elif np.allclose(x, 0.0):
-        # Very small floats cause trouble
-        # Don't know if it can be easily fixed
-        pass
     else:
-        assert np.allclose(length(n), 1.0)
+        assert np.isclose(length(n), 1.0)
 
 
 @given(x0=three_vectors(), r0=three_positive(),

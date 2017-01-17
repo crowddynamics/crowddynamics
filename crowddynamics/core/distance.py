@@ -37,7 +37,7 @@ def distance_circle_circle(x0, r0, x1, r1):
 @numba.jit(nopython=True, nogil=True)
 def distance_three_circle(x0, r0, x1, r1):
     r"""
-    Distance between two three-circle models.
+    Skin-to-Skin distance between two three-circle models.
 
     Args:
         x0 ((numpy.ndarray, numpy.ndarray, numpy.ndarray)):
@@ -71,6 +71,7 @@ def distance_three_circle(x0, r0, x1, r1):
 @numba.jit(nopython=True, nogil=True)
 def distance_circle_line(x, r, p):
     r"""
+    Skin-to-Skin distance between circle and line
 
     Args:
         x (numpy.ndarray):
@@ -107,6 +108,7 @@ def distance_circle_line(x, r, p):
 @numba.jit(nopython=True, nogil=True)
 def distance_three_circle_line(x, r, p):
     r"""
+    Skin-to-Skin distance between three circle model and line
 
     Args:
         x ((numpy.ndarray, numpy.ndarray, numpy.ndarray)):

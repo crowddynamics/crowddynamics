@@ -202,7 +202,12 @@ def setup_logging(default_path=LOG_CFG,
                   env_key='LOG_CFG',
                   logdir='.logs'):
     """Setup logging configurations. These are defined as dictConfig in
-    ``default_path``."""
+    ``default_path``.
+
+    References:
+
+    .. [1] https://fangpenlin.com/posts/2012/08/26/good-logging-practice-in-python/
+    """
     # Path to logging yaml configuration file.
     path = default_path
 

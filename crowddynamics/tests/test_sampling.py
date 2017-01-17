@@ -10,10 +10,9 @@ from bokeh.plotting import figure, output_file, save
 from hypothesis import given, note, assume
 from shapely.geometry import Polygon, Point
 
-from crowddynamics.core.sampling import PolygonSample, triangle_area, \
+from crowddynamics.sampling import PolygonSample, triangle_area, \
     random_sample_triangle, triangle_area_cumsum
 from crowddynamics.tests.strategies import polygons, vector
-
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 OUTPUT_FOLDER = "output"

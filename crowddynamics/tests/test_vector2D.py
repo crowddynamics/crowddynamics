@@ -1,10 +1,14 @@
+import sys
 import numpy as np
-from copy import deepcopy
-from hypothesis import given
+from hypothesis import given, assume
 
 from crowddynamics.core.vector2D import cross2d, wrap_to_pi, truncate, \
     rotate270, normalize, length, angle, rotate90, dot2d
 from crowddynamics.tests.strategies import real, vector
+
+
+
+EPSILON = sys.float_info.epsilon
 
 
 @given(phi=real())
@@ -59,7 +63,9 @@ def test_cross(a, b):
 
 @given(a=vector())
 def test_normalize(a):
-    # FIXME: floats close to zero
+    assume(not np.allclose(a, 0.0) or np.all(a == 0.0))
+    assume(not length(a) > 10**8)
+
     ans = normalize(a)
     assert isinstance(ans, np.ndarray)
     l = length(ans)
@@ -71,5 +77,8 @@ def test_normalize(a):
 
 @given(a=vector(), b=real())
 def test_truncate(a, b):
+    assume(not np.allclose(a, 0.0))
+    assume(not np.isclose(b, 0.0))
+
     truncate(a, b)
     assert length(a) <= b

@@ -10,7 +10,7 @@ from shapely.geometry import LineString, Polygon
 from shapely.geometry.base import BaseGeometry
 from typing import Optional
 
-from crowddynamics.core.geometry import shapes_to_point_pairs
+from crowddynamics.geometry import shapes_to_point_pairs
 
 
 def _to_indices(points, step):

@@ -12,12 +12,12 @@ from shapely.geometry import Polygon, Point
 from shapely.ops import cascaded_union
 
 from crowddynamics.core.distance import distance_three_circle
-from crowddynamics.core.geometry import check_shapes
-from crowddynamics.core.sampling import PolygonSample
 from crowddynamics.core.vector2D import angle, length
 from crowddynamics.functions import Timed, load_config, public
+from crowddynamics.geometry import check_shapes
 from crowddynamics.io.hdfstore import HDFStore
 from crowddynamics.multiagent.agent import Agent
+from crowddynamics.sampling import PolygonSample
 
 
 class QueueDict:
