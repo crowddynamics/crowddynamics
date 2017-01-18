@@ -21,7 +21,14 @@ from crowddynamics.sampling import PolygonSample
 
 
 class QueueDict:
+    """Queue dict"""
+
     def __init__(self, producer):
+        """
+
+        Args:
+            producer:
+        """
         self.producer = producer
         self.dict = {}
         self.args = None
@@ -57,7 +64,7 @@ class Configuration:
     """
 
     def __init__(self):
-        # Logger
+        """Configuration"""
         self.logger = logging.getLogger("crowddynamics.configuration")
 
         # Field
@@ -353,13 +360,18 @@ class Configuration:
         self.logger.info("Density: {}".format(area_filled / surface.area))
 
 
-@public
 class MultiAgentSimulation(Process, Configuration):
     """
     Class that calls numerical algorithms of the multi-agent simulation.
     """
 
     def __init__(self, queue: Queue = None):
+        """
+        MultiAgentSimulation
+
+        Args:
+            queue:
+        """
         super(MultiAgentSimulation, self).__init__()  # Multiprocessing
         Configuration.__init__(self)
 
@@ -450,6 +462,7 @@ class MultiAgentSimulation(Process, Configuration):
 
     @Timed("Total Simulation Time")
     def update(self):
+        """Update"""
         self.agent.reset_motion()
         self.agent.reset_neighbor()
         self.task_graph.evaluate()

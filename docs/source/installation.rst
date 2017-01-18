@@ -1,6 +1,13 @@
 Installation
 ============
 
+Simple
+------
+
+.. note::
+   To be written
+
+
 Developers
 ----------
 

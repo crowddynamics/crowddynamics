@@ -4,13 +4,12 @@ from matplotlib.path import Path
 from shapely.geometry import Polygon
 
 from crowddynamics.core.vector2D import length_nx2, length
-from crowddynamics.functions import public
 from crowddynamics.task_graph import TaskNode
 
 
 @numba.jit(nopython=True)
 def clock(interval, dt):
-    """
+    r"""
     Probabilistic clock with expected frequency of update interval.
 
     Args:
@@ -19,6 +18,7 @@ def clock(interval, dt):
 
     Returns:
         Boolean: Whether strategy should be updated of not.
+
     """
     if dt >= interval:
         return True
@@ -28,9 +28,18 @@ def clock(interval, dt):
 
 @numba.jit(nopython=True)
 def poisson_clock(interval, dt):
-    """
+    r"""
     Poisson process that simulates when agents will change their strategies.
 
+    .. math::
+
+       \tau_i \sim \operatorname{Exp}(\lambda)
+
+    .. math::
+    
+       \operatorname{E}(\tau) = \frac{1}{\lambda} = interval
+    
+    
     Args:
         interval (float):
             Expected frequency of update
@@ -43,15 +52,16 @@ def poisson_clock(interval, dt):
             Moments in the time window when the strategies should be updated.
 
     References:
+
     .. [#] https://en.wikipedia.org/wiki/Poisson_distribution
     .. [#] https://en.wikipedia.org/wiki/Poisson_point_process
     .. [#] http://preshing.com/20111007/how-to-generate-random-timings-for-a-poisson-process/
     """
-    lamda = dt / interval
+    scale = 1 / interval
     times = []
     tsum = 0.0
     while True:
-        time = np.random.poisson(lamda)
+        time = np.random.exponential(scale)
         tsum += time
         if tsum < dt:
             times.append(time)
@@ -74,6 +84,7 @@ def payoff(s_our, s_neighbor, t_aset, t_evac_i, t_evac_j):
 
     Returns:
         float:
+
     """
     if s_neighbor == 0:
         if s_our == 0:
@@ -95,6 +106,8 @@ def payoff(s_our, s_neighbor, t_aset, t_evac_i, t_evac_j):
 @numba.jit(nopython=True)
 def agent_closer_to_exit(points, position):
     """
+    Agent closer to exit.
+
     Args:
         points (numpy.ndarray):
         position (numpy.ndarray):
@@ -103,6 +116,7 @@ def agent_closer_to_exit(points, position):
         numpy.ndarray:
             Array where indices denote agents and value how many agents are
             closer to the exit.
+
     """
     mid = (points[0] + points[1]) / 2.0
     dist = length_nx2(mid - position)
@@ -124,6 +138,7 @@ def exit_capacity(points, agent_radius):
 
     Returns:
         float:
+
     """
     return length(points[1] - points[0]) // (2 * agent_radius)
 
@@ -147,6 +162,7 @@ def best_response_strategy(agent, players, door, radius_max, strategy,
 
     Returns:
         None:
+
     """
     x = agent.position[players]
     t_evac = agent_closer_to_exit(door, x) / exit_capacity(door, radius_max)
@@ -165,17 +181,20 @@ def best_response_strategy(agent, players, door, radius_max, strategy,
             loss[:] = 0  # Reset loss array
 
 
-@public
 class EgressGame(TaskNode):
+    """EgressGame"""
+
     def __init__(self, simulation, door, room, t_aset_0,
                  interval=0.1, neighbor_radius=0.4, neighborhood_size=8):
         """
         Patient and impatient pedestrians in a spatial game for egress congestion
 
-        Strategies: {
-            0: "Impatient",
-            1: "Patient"
-        }
+        Strategies
+
+        .. csv-table::
+
+            0, "Impatient"
+            1, "Patient"
 
         Args:
             simulation: MultiAgent Simulation
@@ -186,10 +205,13 @@ class EgressGame(TaskNode):
             neighbor_radius:
             neighborhood_size:
 
+        References:
+
         .. [1] Heli??vaara, S., Ehtamo, H., Helbing, D., & Korhonen, T. (2013).
            Patient and impatient pedestrians in a spatial game for egress
            congestion. Physical Review E - Statistical, Nonlinear, and Soft
            Matter Physics. http://doi.org/10.1103/PhysRevE.87.012802
+
         """
         super().__init__()
         # TODO: Not include agent that have reached their goals
@@ -247,6 +269,7 @@ class EgressGame(TaskNode):
 
         Returns:
             None:
+
         """
         self.reset()
 

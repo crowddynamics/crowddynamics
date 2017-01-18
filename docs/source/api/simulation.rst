@@ -1,8 +1,6 @@
 Simulation
 ==========
 
-.. Add references
-
 Agent
 -----
 Agent properties
@@ -17,13 +15,9 @@ Body types
    :file: ../../../crowddynamics/configs/body.csv
 
 
-
 Multi-Agent
 -----------
 
-Configuration
-^^^^^^^^^^^^^
-
-
-Simulation
-^^^^^^^^^^
+.. automodule:: crowddynamics.multiagent
+   :members:
+   :special-members:

@@ -1,5 +1,5 @@
 # Research project for Aalto University, System Analysis Laboratory
-CREATED_DATE = "2016-06-01"
+# CREATED_DATE = "2016-06-01"
 
 # Module metadata variables
 __author__ = "Jaan Tollander de Balsch"
@@ -12,3 +12,5 @@ __date__ = None
 from ._version import get_versions
 __version__ = get_versions()['version']
 del get_versions
+
+# __all__= []

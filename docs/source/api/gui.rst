@@ -10,12 +10,9 @@ Graphical user interface and simulation graphics for crowd dynamics. Main window
 Design of the gui is greatly inspired and aided by the design of [rtgraph]_.
 
 
-.. automodule:: crowddynamics.gui.main
+.. automodule:: crowddynamics.gui
    :members:
-
-
-.. automodule:: crowddynamics.gui.graphics
-   :members:
+   :special-members:
 
 
 ----

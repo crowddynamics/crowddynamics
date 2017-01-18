@@ -1,5 +1,6 @@
 IO
 ==
 
-.. automodule:: crowddynamics.io.hdfstore
+.. automodule:: crowddynamics.io
    :members:
+   :special-members:
