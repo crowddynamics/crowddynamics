@@ -13,7 +13,7 @@ import numpy as np
 import pandas as pd
 from ruamel import yaml
 
-from crowddynamics.multiagent.agent import spec_agent
+
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 CFG_DIR = os.path.join(BASE_DIR, 'crowddynamics', 'configs')
@@ -54,6 +54,8 @@ def load_config(filename):
 
 
 def create_parameters():
+    from crowddynamics.multiagent.agent import spec_agent
+
     ext = ".yaml"
     name = "parameters"
     filepath = os.path.join(CFG_DIR, name + ext)

@@ -104,6 +104,7 @@ def angle_nx2(vec2d):
 @numba.jit(f8(f8[:]), nopython=True, nogil=True)
 def length(vec2d):
     r"""
+    Length
 
     Args:
         vec2d (numpy.ndarray): 2D vector
@@ -117,6 +118,7 @@ def length(vec2d):
 @numba.jit(f8[:](f8[:, :]), nopython=True, nogil=True)
 def length_nx2(vec2d):
     r"""
+    Length
 
     Args:
         vec2d (numpy.ndarray):
@@ -160,6 +162,7 @@ def cross2d(v0, v1):
 @numba.jit(f8[:](f8[:]), nopython=True, nogil=True)
 def normalize(vec2d):
     r"""
+    Normalize
 
     Args:
         vec2d (numpy.ndarray):
@@ -175,6 +178,7 @@ def normalize(vec2d):
 @numba.jit(f8[:, :](f8[:, :]), nopython=True, nogil=True)
 def normalize_nx2(vec2d):
     r"""
+    Normalize
 
     Args:
         vec2d (numpy.ndarray):
@@ -188,6 +192,7 @@ def normalize_nx2(vec2d):
 @numba.jit(void(f8[:], f8), nopython=True, nogil=True)
 def truncate(vec2d, limit):
     r"""
+    Truncate
 
     Args:
         vec2d (numpy.ndarray):

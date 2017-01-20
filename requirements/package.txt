@@ -9,6 +9,7 @@ ruamel.yaml
 
 ## Command-line interface
 click
+colorama
 
 ## Core
 numpy

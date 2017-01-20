@@ -6,12 +6,11 @@ from crowddynamics.core.motion import force_fluctuation, \
     torque_fluctuation, force_adjust, torque_adjust
 from crowddynamics.core.navigation import _to_indices, static_potential
 from crowddynamics.core.vector2D import angle_nx2
-from crowddynamics.functions import public, Timed
+from crowddynamics.functions import Timed
 from crowddynamics.geometry import shapes_to_point_pairs
 from crowddynamics.task_graph import TaskNode
 
 
-@public
 class Integrator(TaskNode):
     def __init__(self, simulation, dt):
         """
@@ -42,7 +41,6 @@ class Integrator(TaskNode):
         self.simulation.time_tot += self.dt_prev
 
 
-@public
 class Fluctuation(TaskNode):
     def __init__(self, simulation):
         super().__init__()
@@ -59,7 +57,6 @@ class Fluctuation(TaskNode):
                                                  agent.std_rand_torque)
 
 
-@public
 class Adjusting(TaskNode):
     def __init__(self, simulation):
         super().__init__()
@@ -83,7 +80,6 @@ class Adjusting(TaskNode):
                                             agent.angular_velocity[i])
 
 
-@public
 class AgentAgentInteractions(TaskNode):
     def __init__(self, simulation):
         super().__init__()
@@ -94,7 +90,6 @@ class AgentAgentInteractions(TaskNode):
         agent_agent_block_list(self.simulation.agent)
 
 
-@public
 class AgentObstacleInteractions(TaskNode):
     def __init__(self, simulation):
         super().__init__()
@@ -108,7 +103,6 @@ class AgentObstacleInteractions(TaskNode):
         agent_wall(self.simulation.agent, self.walls)
 
 
-@public
 class Navigation(TaskNode):
     """
     Handles navigation in multi-agent simulation.
@@ -161,7 +155,6 @@ class Navigation(TaskNode):
         self.simulation.agent.target_direction[i] = d
 
 
-@public
 class Orientation(TaskNode):
     """
     Target orientation
@@ -178,7 +171,6 @@ class Orientation(TaskNode):
             self.simulation.agent.target_angle[:] = dir_to_orient
 
 
-@public
 class ExitSelection(TaskNode):
     """Exit selection policy."""
 

@@ -4,10 +4,11 @@ Command-line interface for running ``crowddynamics``.
 import click
 
 from crowddynamics.functions import setup_logging, user_info
-from crowddynamics.gui.run import run_gui
+from crowddynamics.gui import run_gui
 
 
 # TODO: Add colors to commands
+# http://click.pocoo.org/5/utils/#ansi-colors
 
 
 @click.group()

@@ -25,6 +25,7 @@ dependencies:
         - ruamel.yaml
         - scikit-fmm
         - click
+        - colorama
         ## Testing
         - pytest
         - pytest-cov

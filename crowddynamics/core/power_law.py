@@ -67,6 +67,7 @@ def gradient_three_circle(x_rel, v_rel, r_off, a, b, d):
 @numba.jit(f8[:](f8[:], f8[:]), nopython=True, nogil=True)
 def gradient_circle_line(v, n):
     """
+    Circle line
 
     Args:
         v:
@@ -126,6 +127,9 @@ def force_social_circular(agent, i, j):
         agent:
         i:
         j:
+
+    Returns:
+
     """
     x_rel = agent.position[i] - agent.position[j]
     v_rel = agent.velocity[i] - agent.velocity[j]
@@ -164,7 +168,17 @@ def force_social_circular(agent, i, j):
 
 @numba.jit(nopython=True, nogil=True)
 def force_social_three_circle(agent, i, j):
-    """Minimium time-to-collision for two circles of relative displacements."""
+    """
+    Minimium time-to-collision for two circles of relative displacements.
+
+    Args:
+        agent:
+        i:
+        j:
+
+    Returns:
+
+    """
     # Forces for agent i and j
     force = np.zeros(2), np.zeros(2)
 
@@ -261,6 +275,18 @@ def force_social_three_circle(agent, i, j):
 
 @numba.jit(nopython=True, nogil=True)
 def force_social_linear_wall(i, w, agent, wall):
+    """
+    Force social linear wall
+
+    Args:
+        i:
+        w:
+        agent:
+        wall:
+
+    Returns:
+
+    """
     force = np.zeros(2)
     tau = np.zeros(3)
     grad = np.zeros((3, 2))

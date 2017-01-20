@@ -8,76 +8,112 @@ from crowddynamics.task_graph import TaskNode
 
 
 @numba.jit(nopython=True)
-def clock(interval, dt):
-    r"""
-    Probabilistic clock with expected frequency of update interval.
-
-    Args:
-        interval: Expected frequency of update
-        dt: Discrete timestep
-
-    Returns:
-        Boolean: Whether strategy should be updated of not.
-
-    """
-    if dt >= interval:
-        return True
-    else:
-        return np.random.random() < (dt / interval)
-
-
-@numba.jit(nopython=True)
 def poisson_clock(interval, dt):
     r"""
     Poisson process that simulates when agents will change their strategies.
+    Time between updates are independent random variables defined
 
     .. math::
 
        \tau_i \sim \operatorname{Exp}(\lambda)
 
+    Where the ``rate`` parameter is
+
+    .. math::
+
+       \operatorname{E}(\tau) = \frac{1}{\lambda} = interval
+
+    Times when agent updates its strategy
+    
     .. math::
     
-       \operatorname{E}(\tau) = \frac{1}{\lambda} = interval
+       \begin{split}\begin{cases}
+       T_n = \tau_1 + \ldots + \tau_n, & n \geq 1 \\
+       T_0 = 0
+       \end{cases}\end{split}
+
+    Sequence of update times
+
+    .. math::
+
+       \{T_1, T_2, T_3, \ldots, T_n\}, \quad T_n < \Delta t
+
+    Number of arrivals by the :math:`s`
     
+    .. math::
     
+       N(s) &= \max\{n : T_n \leq s\} \\
+       N(s) &\sim \operatorname{Poi}(\lambda)
+
     Args:
         interval (float):
-            Expected frequency of update
+            Expected frequency of update.
 
         dt (float):
-            Discrete timestep aka time window
+            Discrete timestep :math:`\Delta t` aka time window.
 
-    Returns:
-        list:
+    Yields:
+        float:
             Moments in the time window when the strategies should be updated.
 
-    References:
-
-    .. [#] https://en.wikipedia.org/wiki/Poisson_distribution
-    .. [#] https://en.wikipedia.org/wiki/Poisson_point_process
-    .. [#] http://preshing.com/20111007/how-to-generate-random-timings-for-a-poisson-process/
     """
-    scale = 1 / interval
-    times = []
-    tsum = 0.0
+    t_tot = 0.0
     while True:
-        time = np.random.exponential(scale)
-        tsum += time
-        if tsum < dt:
-            times.append(time)
+        # Numpy exponential distribution's scale parameter is equal to
+        # 1/lambda which is why we can supply interval directly into the
+        # function.
+        time = np.random.exponential(scale=interval)
+        t_tot += time
+        if t_tot < dt:
+            yield t_tot
         else:
             break
-    return times
 
 
 @numba.jit(nopython=True)
-def payoff(s_our, s_neighbor, t_aset, t_evac_i, t_evac_j):
-    """
-    Payout from game matrix.
+def poisson_timings(players, interval, dt):
+    r"""
+    Update times for all agent in the game using Poisson clock.
 
     Args:
-        s_our (int): Our strategy
-        s_neighbor (int): Neighbor strategy
+        players (numpy.ndarray):
+            Indices of the players.
+
+        interval (float):
+        dt (float):
+
+    Returns:
+        list: List of indices of agents sorted by their update times.
+    """
+    times = []
+    indices = []
+    indices_sorted = []
+
+    # Mix the agents
+    np.random.shuffle(players)
+
+    # Compute update times for all agents
+    for i in players:
+        for t in poisson_clock(interval, dt):
+            times.append(t)
+            indices.append(i)
+
+    # Sort the indices by the update times
+    for j in np.argsort(np.array(times)):
+        indices_sorted.append(indices[j])
+
+    # Return indices sorted by the update times
+    return indices_sorted
+
+
+@numba.jit(nopython=True)
+def payoff(s_i, s_j, t_aset, t_evac_i, t_evac_j):
+    r"""
+    Payoff matrix of the game.
+
+    Args:
+        s_i (int): Our strategy
+        s_j (int): Neighbor strategy
         t_aset (float): Available safe egress time.
         t_evac_i (float): Time to evacuate for agent i.
         t_evac_j (float): Time to evacuate for agent j.
@@ -86,18 +122,18 @@ def payoff(s_our, s_neighbor, t_aset, t_evac_i, t_evac_j):
         float:
 
     """
-    if s_neighbor == 0:
-        if s_our == 0:
+    if s_j == 0:
+        if s_i == 0:
             average = (t_evac_i + t_evac_j) / 2
             if average == 0:
                 return np.inf
             return t_aset / average
-        elif s_our == 1:
+        elif s_i == 1:
             return 1.0
-    elif s_neighbor == 1:
-        if s_our == 0:
+    elif s_j == 1:
+        if s_i == 0:
             return -1.0
-        elif s_our == 1:
+        elif s_i == 1:
             return 0.0
     else:
         raise Exception("Not valid strategy.")
@@ -105,12 +141,57 @@ def payoff(s_our, s_neighbor, t_aset, t_evac_i, t_evac_j):
 
 @numba.jit(nopython=True)
 def agent_closer_to_exit(points, position):
-    """
-    Agent closer to exit.
+    r"""
+    Agent closer to exit
+
+    Function mapping players to number of agents that are closer to the exit is denoted
+
+    .. math::
+       \lambda : P \mapsto [0, | P | - 1].
+
+    Ordering is defined as the distances between the exit and an agent
+
+    .. math::
+       d(\mathcal{E}_i, \mathbf{x}_{i})
+
+    where
+
+    - :math:`\mathcal{E}_i` is the exit the agent is trying to reach
+    - :math:`\mathbf{x}_{i}` is the center of the mass of an agent
+
+    For narrow bottlenecks we can approximate the distance
+
+    .. math::
+       d(\mathcal{E}_i, \mathbf{x}_{i}) \approx \| \mathbf{c} - \mathbf{x}_{i} \|
+
+    where
+
+    - :math:`\| \cdot \|` is euclidean `metric`_
+    - :math:`\mathbf{c}` is the center of the exit.
+
+    .. _metric: https://en.wikipedia.org/wiki/Metric_(mathematics)
+
+    .. Then we sort the distances by indices to get the order of agent indices from closest to the exit door to farthest, sorting by indices again gives us number of agents closer to the exit door
+
+    Algorithm
+
+    #) Sort by distances to map number of closer agents to player
+
+       .. math::
+           \boldsymbol{\lambda}^{-1} = \underset{i \in P}{\operatorname{arg\,sort}} \left( d(\mathcal{E}_i, \mathbf{x}_{i}) \right)
+
+    #) Sort by players to map player to number of closer agents
+
+    .. math::
+       \boldsymbol{\lambda} = \operatorname{arg\,sort} (\boldsymbol{\lambda}^{-1})
+
 
     Args:
         points (numpy.ndarray):
+            Array [[x1, y2], [x2, y2]]
+
         position (numpy.ndarray):
+            Positions of the agents.
 
     Returns:
         numpy.ndarray:
@@ -129,8 +210,9 @@ def agent_closer_to_exit(points, position):
 
 @numba.jit(nopython=True)
 def exit_capacity(points, agent_radius):
-    """
-    Capacity of narrow exit. Narrow exit means :math:`3\,\mathrm{m}` wide.
+    r"""
+    Estimation of the capacity of narrow exit. Narrow exit is defined max
+    :math:`3\,\mathrm{m}` wide.
 
     Args:
         points (numpy.ndarray):
@@ -146,8 +228,18 @@ def exit_capacity(points, agent_radius):
 @numba.jit(nopython=True)
 def best_response_strategy(agent, players, door, radius_max, strategy,
                            strategies, t_aset, interval, dt):
-    """
-    Best response strategy. Minimizes loss.
+    r"""
+    New strategy is selected using best response dynamics which finds the
+    strategy that minimizes loss using the payoff function
+
+    .. math::
+       s_{i} = \underset{s \in S}{\arg \min} \sum_{j \in N_{i}^{neigh}} f(s, s_{j})
+
+    where
+
+    - :math:`N_{i}^{neigh} \subset P \setminus \{P_{i}\}` set is eight closes
+      agents excluding the agent itself at maximum skin-to-skin distance of
+      :math:`0.40 \ \mathrm{m}` from agent :math:`i`.
 
     Args:
         agent:
@@ -166,35 +258,67 @@ def best_response_strategy(agent, players, door, radius_max, strategy,
     """
     x = agent.position[players]
     t_evac = agent_closer_to_exit(door, x) / exit_capacity(door, radius_max)
-
     loss = np.zeros(2)  # values: loss, indices: strategy
-    np.random.shuffle(players)
-    for i in players:
-        if clock(interval, dt):
-            for j in agent.neighbors[i]:
-                if j < 0:
-                    continue
-                for s_our in strategies:
-                    loss[s_our] += payoff(s_our, strategy[j], t_aset, t_evac[i],
-                                          t_evac[j])
-            strategy[i] = np.argmin(loss)  # Update strategy
-            loss[:] = 0  # Reset loss array
+    for i in poisson_timings(players, interval, dt):
+        for j in agent.neighbors[i]:
+            if j < 0:
+                continue
+            for s_our in strategies:
+                loss[s_our] += payoff(s_our, strategy[j], t_aset, t_evac[i],
+                                      t_evac[j])
+        strategy[i] = np.argmin(loss)  # Update strategy
+        loss[:] = 0  # Reset loss array
 
 
 class EgressGame(TaskNode):
-    """EgressGame"""
+    r"""
+    Patient and impatient pedestrians in a spatial game :math:`(S, f)` for
+    egress congestion between players :math:`P \subset A` with set of strategies 
+    :math:`S` and payoff function :math:`f : S \times S \mapsto \mathbb{R}`.
+
+    Set of strategies
+
+    .. math::
+       S &= \{ \text{Impatient}, \text{Patient} \} \\
+         &= \{ 0, 1 \}
+
+    Payoff matrix / function
+
+    .. math::
+       f(s_i, s_j) = \left[\begin{matrix}\left ( \frac{T_{aset}}{T_{ij}}, \quad \frac{T_{aset}}{T_{ij}}\right ) & \left ( -1, \quad 1\right )\\\left ( 1, \quad -1\right ) & \left ( 0, \quad 0\right )\end{matrix}\right]
+
+    Estimated evacuation time for an agent
+
+    .. math::
+       T_i = \frac{\lambda_i}{\beta},
+
+    where
+
+    - :math:`\beta` is the capacity of the exit door
+    - :math:`\lambda_i` number of other agents closer to the exit.
+
+    Average evacuation time
+
+    .. math::
+       T_{ij} = \frac{(T_i + T_j)}{2}.
+
+    Effect on agents
+
+    - :math:`k`
+    - :math:`\tau_{adj}`
+    - :math:`\sigma_{force}`
+
+    References
+
+    .. [game2013] Heli??vaara, S., Ehtamo, H., Helbing, D., & Korhonen, T. (2013). Patient and impatient pedestrians in a spatial game for egress congestion. Physical Review E - Statistical, Nonlinear, and Soft Matter Physics. http://doi.org/10.1103/PhysRevE.87.012802
+    .. [game2014] Von Schantz, A., & Ehtamo, H. (2014). Cellular automaton evacuation model coupled with a spatial game. In Lecture Notes in Computer Science (including subseries Lecture Notes in Artificial Intelligence and Lecture Notes in Bioinformatics). http://doi.org/10.1007/978-3-319-09912-5_31
+
+    """
 
     def __init__(self, simulation, door, room, t_aset_0,
                  interval=0.1, neighbor_radius=0.4, neighborhood_size=8):
-        """
-        Patient and impatient pedestrians in a spatial game for egress congestion
-
-        Strategies
-
-        .. csv-table::
-
-            0, "Impatient"
-            1, "Patient"
+        r"""
+        EgressGame
 
         Args:
             simulation: MultiAgent Simulation
@@ -204,13 +328,6 @@ class EgressGame(TaskNode):
             interval: Interval for updating strategies
             neighbor_radius:
             neighborhood_size:
-
-        References:
-
-        .. [1] Heli??vaara, S., Ehtamo, H., Helbing, D., & Korhonen, T. (2013).
-           Patient and impatient pedestrians in a spatial game for egress
-           congestion. Physical Review E - Statistical, Nonlinear, and Soft
-           Matter Physics. http://doi.org/10.1103/PhysRevE.87.012802
 
         """
         super().__init__()
@@ -247,7 +364,7 @@ class EgressGame(TaskNode):
         self.simulation.agent.reset_neighbor()
 
     def parameters(self):
-        """Parameters that can be saved or plotted."""
+        r"""Parameters that can be saved or plotted."""
         params = (
             "strategies",
             "strategy",
@@ -260,17 +377,11 @@ class EgressGame(TaskNode):
         return params
 
     def reset(self):
-        """Reset"""
+        r"""Reset"""
         self.t_evac[:] = 0
 
     def update(self):
-        """
-        Update strategies for all agents.
-
-        Returns:
-            None:
-
-        """
+        r"""Update strategies for all agents."""
         self.reset()
 
         # Indices of agents that are playing the game

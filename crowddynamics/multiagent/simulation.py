@@ -1,6 +1,6 @@
 import logging
 from copy import deepcopy
-from multiprocessing import Process, Event, Queue
+from multiprocessing import Process, Event
 from numbers import Number
 
 import numba
@@ -13,7 +13,7 @@ from shapely.ops import cascaded_union
 
 from crowddynamics.core.distance import distance_three_circle
 from crowddynamics.core.vector2D import angle, length
-from crowddynamics.functions import Timed, load_config, public
+from crowddynamics.functions import Timed, load_config
 from crowddynamics.geometry import check_shapes
 from crowddynamics.io.hdfstore import HDFStore
 from crowddynamics.multiagent.agent import Agent
@@ -57,10 +57,6 @@ class QueueDict:
 class Configuration:
     """
     Set initial configuration for multi-agent simulation.
-
-    .. csv-table::
-       :file: configs/configuration.csv
-
     """
 
     def __init__(self):
@@ -365,12 +361,12 @@ class MultiAgentSimulation(Process, Configuration):
     Class that calls numerical algorithms of the multi-agent simulation.
     """
 
-    def __init__(self, queue: Queue = None):
+    def __init__(self, queue=None):
         """
         MultiAgentSimulation
 
         Args:
-            queue:
+            queue (multiprocessing.Queue):
         """
         super(MultiAgentSimulation, self).__init__()  # Multiprocessing
         Configuration.__init__(self)

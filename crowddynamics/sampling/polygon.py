@@ -4,8 +4,6 @@ from numba import f8
 from scipy.spatial.qhull import Delaunay
 from shapely.geometry import Polygon
 
-from crowddynamics.functions import public
-
 
 @numba.jit(f8(f8[:], f8[:], f8[:]), nopython=True, nogil=True)
 def triangle_area(a, b, c):
@@ -24,6 +22,27 @@ def triangle_area(a, b, c):
     return np.abs(a[0] * (b[1] - c[1]) +
                   b[0] * (c[1] - a[1]) +
                   c[0] * (a[1] - b[1])) / 2
+
+
+@numba.jit(nopython=True, nogil=True)
+def triangle_area_cumsum(trimesh):
+    r"""
+    Computes cumulative sum of the areas of the triangle mesh.
+
+    Args:
+        trimesh (numpy.ndarray): Triangle mesh
+
+    Returns:
+        numpy.ndarray: Cumulative sum the area of the triangle mesh
+    """
+    area = 0
+    rows = trimesh.shape[0]
+    cumsum = np.zeros(rows)
+    for i in range(rows):
+        a, b, c = trimesh[i, 0, :], trimesh[i, 1, :], trimesh[i, 2, :]
+        area += triangle_area(a, b, c)
+        cumsum[i] = area
+        return cumsum
 
 
 @numba.jit(f8[:](f8[:], f8[:], f8[:]), nopython=True, nogil=True)
@@ -61,32 +80,10 @@ def random_sample_triangle(a, b, c):
            r2 * np.sqrt(r1) * c
 
 
-@numba.jit(nopython=True, nogil=True)
-def triangle_area_cumsum(trimesh):
-    r"""
-    Computes cumulative sum of the areas of the triangle mesh.
-
-    Args:
-        trimesh (numpy.ndarray): Triangle mesh
-
-    Returns:
-        numpy.ndarray: Cumulative sum the area of the triangle mesh
-    """
-    area = 0
-    rows = trimesh.shape[0]
-    cumsum = np.zeros(rows)
-    for i in range(rows):
-        a, b, c = trimesh[i, 0, :], trimesh[i, 1, :], trimesh[i, 2, :]
-        area += triangle_area(a, b, c)
-        cumsum[i] = area
-    return cumsum
-
-
-@public
 class PolygonSample:
     r"""
     Uniform sampling of convex polygon
-    ----------------------------------
+
     Generates random uniform point from inside of polygon. [1]_
 
     1) `Delaunay triangulation`_ to break the polygon into triangular mesh.

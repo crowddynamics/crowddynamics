@@ -1,7 +1,3 @@
-from crowddynamics.functions import public
-
-
-@public
 class TaskNode:
     """
     Create task graphs. Task graphs are used to create order for function calls

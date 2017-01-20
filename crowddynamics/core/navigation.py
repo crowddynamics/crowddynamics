@@ -15,6 +15,7 @@ from crowddynamics.geometry import shapes_to_point_pairs
 
 def _to_indices(points, step):
     """
+    To indices
 
     Args:
         points (numpy.ndarray): Points on a continuous grid
@@ -161,6 +162,7 @@ def plot_distance_map(mgrid, dmap, phi):
 @numba.jit(nopython=True)
 def merge_dir_maps(dmap, dir_map1, dir_map2, radius, value):
     """
+    Merge dir maps
 
     Args:
         dmap:
@@ -195,6 +197,7 @@ def static_potential(step: float,
                      radius: float,
                      value: float):
     """
+    Static potential
 
     Args:
         step:
