@@ -1,51 +1,19 @@
 import logging
 from numbers import Number
 
-import numba
 import numpy as np
 from matplotlib.path import Path
 from scipy.stats import truncnorm
 from shapely.geometry import Polygon, LineString, Point
 from shapely.ops import cascaded_union
 
-from crowddynamics.core.interactions import distance_three_circle
+from crowddynamics.core.interactions import overlapping_circle_circle, \
+    overlapping_three_circle
 from crowddynamics.core.vector2D import angle, length
 from crowddynamics.functions import load_config
 from crowddynamics.geometry import check_shapes
 from crowddynamics.multiagent import Agent
 from crowddynamics.sampling import PolygonSample
-
-
-@numba.jit(nopython=True)
-def agent_distance_condition(agent, start_index, i):
-    """Test function for determining if agents are overlapping."""
-    if agent.three_circle:
-        condition = True
-        for j in range(start_index, i):
-            if condition:
-                t = distance_three_circle(
-                    (agent.position[i], agent.position_ls[i],
-                     agent.position_rs[i]),
-                    (agent.r_t[i], agent.r_s[i], agent.r_s[i]),
-                    (agent.position[j], agent.position_ls[j],
-                     agent.position_rs[j]),
-                    (agent.r_t[j], agent.r_s[j], agent.r_s[j])
-                )
-                # FIXME: cannot unify bool and array(bool, 1d, C) for 'condition'
-                condition &= t[1] > 0
-            else:
-                break
-        return condition
-    else:
-        condition2 = True
-        for j in range(start_index, i):
-            if condition2:
-                d = agent.position[i] - agent.position[j]
-                s = length(d) - agent.radius[i] - agent.radius[j]
-                condition2 &= s > 0
-            else:
-                break
-        return condition2
 
 
 class Configuration:
@@ -294,8 +262,19 @@ class Configuration:
                 agent = point.buffer(self.agent.radius[self._index])
 
             # Check if agent intersects with other agents or obstacles
-            if agent_distance_condition(self.agent, start_index, self._index) \
-                    and not agent.intersects(self._occupied):
+            if self.agent.three_circle:
+                overlapping = overlapping_three_circle(
+                    (self.agent.position, self.agent.position_ls, self.agent.position_rs),
+                    (self.agent.r_t, self.agent.r_s, self.agent.r_s),
+                    start_index, self._index
+                )
+            else:
+                overlapping = overlapping_circle_circle(
+                    self.agent.position, self.agent.radius,
+                    start_index, self._index
+                )
+
+            if not overlapping and not agent.intersects(self._occupied):
                 density = area_filled / surface.area
                 self.logger.debug(
                     "Agent {} | Density {}".format(self._index, density))

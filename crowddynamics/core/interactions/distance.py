@@ -107,6 +107,7 @@ def distance_circle_line(x, r, p):
     Returns:
         (float, numpy.ndarray): (skin-to-skin distance, normal vector)
     """
+    # TODO: More docs
     d = p[1] - p[0]
     l_w = length(d)
     t_w = d / l_w
@@ -144,6 +145,7 @@ def distance_three_circle_line(x, r, p):
     Returns:
         (float, numpy.ndarray, numpy.ndarray)
     """
+    # TODO: More docs
     h_min = np.nan
     normal = np.zeros(2)
     i_min = 0
@@ -176,9 +178,8 @@ def overlapping_circle_circle(x, r, start_index, i):
 
     """
     for j in range(start_index, i):
-        h, _ = distance_circle_circle(x[i], x[j], r[i], r[j])
-        # FIXME: For some reason h < 0 is np.ndarray
-        if np.all(h < 0.0):
+        h, _ = distance_circle_circle(x[i], r[i], x[j],  r[j])
+        if h < 0.0:
             return True
     return False
 

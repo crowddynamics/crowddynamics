@@ -42,15 +42,3 @@ def vectors(draw, elements=real(), maxsize=100, dim=2):
 def unit_vector(draw, start=0, end=2 * np.pi):
     phi = draw(st.floats(start, end, False, False))
     return np.array((np.cos(phi), np.sin(phi)), dtype=np.float64)
-
-
-def line(dim=2):
-    return arrays(np.float64, (dim, dim), st.floats(None, None, False, False))
-
-
-def three_vectors():
-    return st.tuples(*3 * [vector()])
-
-
-def three_positive():
-    return st.tuples(*3 * [real(min_value=0)])
