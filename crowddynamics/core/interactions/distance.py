@@ -132,3 +132,61 @@ def distance_three_circle_line(x, r, p):
     r_moment = x[i_min] - r[i_min] * normal - x[0]
 
     return h_min, normal, r_moment
+
+
+@numba.jit(nopython=True, nogil=True)
+def overlapping_circle_circle(x, r, start_index, i):
+    """
+    Test if two circles are overlapping.
+
+    Args:
+        x:
+        r:
+        start_index:
+        i:
+
+    Returns:
+        Boolean:
+
+    """
+    for j in range(start_index, i):
+        h, _ = distance_circle_circle(x[i], x[j], r[i], r[j])
+        if h < 0:
+            return True
+    return False
+
+
+@numba.jit(nopython=True, nogil=True)
+def overlapping_three_circle(x, r, start_index, i):
+    """
+    Test if two three-circle models are overlapping.
+
+    Args:
+        x (collections.namedtuple):
+            Attributes:
+            - position=numpy.ndarray
+            - position_ls=numpy.ndarray
+            - position_rs=numpy.ndarray
+
+        r (collections.namedtuple):
+            Attributes:
+            - r_t
+            - r_s
+
+        start_index:
+        i:
+
+    Returns:
+        Boolean:
+
+    """
+    for j in range(start_index, i):
+        h, _, _, _ = distance_three_circle(
+            (x.position[i], x.position_ls[i], x.position_rs[i]),
+            (r.r_t[i], r.r_s[i], r.r_s[i]),
+            (x.position[j], x.position_ls[j], x.position_rs[j]),
+            (r.r_t[j], r.r_s[j], r.r_s[j])
+        )
+        if h < 0:
+            return True
+    return False

@@ -7,6 +7,8 @@ distance_circle_circle
 distance_three_circle
 distance_circle_line
 distance_three_circle_line
+overlapping_circle_circle
+overlapping_three_circle
 block_list
 BlockList
 agent_agent_brute

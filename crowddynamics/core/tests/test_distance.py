@@ -50,3 +50,11 @@ def test_distance_three_circle_line(x, r, p):
     assert isinstance(h, float)
     assert isinstance(n, np.ndarray)
     assert isinstance(r_moment, np.ndarray)
+
+
+def test_overlapping_circle_circle():
+    assert True
+
+
+def test_overlapping_three_circle():
+    assert True
