@@ -72,9 +72,10 @@ def test_random_sample_triangle(a, b, c):
 
 @given(polygons())
 def test_polygon_sampling(polygon):
-    assume(not np.isclose(polygon.area, 0.0))
+    # Numerical error is too great if area of the polygon is too small
+    assume(polygon.area > 0.01)
 
-    sample_size = 10
+    sample_size = 20
     sample = PolygonSample(polygon)
     for point in sample.generator(sample_size):
         assert polygon.contains(Point(point))

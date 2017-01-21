@@ -65,7 +65,7 @@ class Adjusting(TaskNode):
 
     def update(self):
         agent = self.simulation.agent
-        i = agent.indices
+        i = agent.indices()
 
         agent.force[i] = force_adjust(agent.mass[i],
                                       agent.tau_adj,
