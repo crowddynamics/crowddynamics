@@ -86,7 +86,7 @@ class PolygonSample:
     r"""
     Uniform sampling of convex polygon
 
-    Generates random uniform point from inside of polygon. [1]_
+    Generates random uniform point from inside of polygon.
 
     1) `Delaunay triangulation`_ to break the polygon into triangular mesh.
     2) Draw random uniform triangle weighted by its area.
@@ -94,9 +94,10 @@ class PolygonSample:
 
     .. _Delaunay triangulation: https://en.wikipedia.org/wiki/Delaunay_triangulation
 
-    References
+    References:
 
-    .. [1] http://gis.stackexchange.com/questions/6412/generate-points-that-lie-inside-polygon
+    - http://gis.stackexchange.com/questions/6412/generate-points-that-lie-inside-polygon
+
     """
 
     def __init__(self, polygon):

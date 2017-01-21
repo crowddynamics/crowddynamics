@@ -27,8 +27,8 @@ def real(min_value=None, max_value=None, exclude_zero=None):
     return strategy
 
 
-def vector(dtype=np.float64, dim=2, elements=real()):
-    return arrays(dtype, dim, elements)
+def vector(dtype=np.float64, shape=2, elements=real()):
+    return arrays(dtype, shape, elements)
 
 
 @st.composite

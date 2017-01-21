@@ -11,7 +11,13 @@ from crowddynamics.core.vector2D import length, rotate90, dot2d
 @numba.jit(nopython=True, nogil=True)
 def distance_circle_circle(x0, r0, x1, r1):
     r"""
-    Skin-to-Skin distance with normal
+    Skin-to-Skin distance :math:`h`  with normal :math:`\mathbf{\hat{n}}`
+    between two circles.
+
+    .. math::
+
+       h &= \|\mathbf{x}_0 - \mathbf{x}_1\| - (r_0 + r_1) \\
+       \mathbf{\hat{n}} &= \frac{\mathbf{x}_0 - \mathbf{x}_1}{\|\mathbf{x}_0 - \mathbf{x}_1\|}
 
     Args:
         x0 (numpy.ndarray):
@@ -37,7 +43,27 @@ def distance_circle_circle(x0, r0, x1, r1):
 @numba.jit(nopython=True, nogil=True)
 def distance_three_circle(x0, r0, x1, r1):
     r"""
-    Skin-to-Skin distance between two three-circle models.
+    Skin-to-Skin distance :math:`h` with normal :math:`\mathbf{\hat{n}}` and
+    rotational moments :math:`\mathbf{r}_{\mathrm{moment}_i}` between two three-circle
+    models with.
+
+    .. math::
+
+       X_i &= \{\mathbf{x}_{torso}, \mathbf{x}_{left shoulder}, \mathbf{x}_{right shoulder} \} \\
+       R_i &= \{r_{torso}, r_{shoulder}, r_{shoulder} \}
+
+    .. math::
+    
+       h = \min_{(\mathbf{x}_0, r_0) \in (X_0, R_0)} \min_{(\mathbf{x}_1, r_1) \in (X_1, R_1)} \left( \|\mathbf{x}_0 - \mathbf{x}_1\| - (r_0 + r_1) \right)
+
+    With minimized values of :math:`\mathbf{x}_0`, :math:`\mathbf{x}_1`,
+    :math:`r_0` and :math:`r_1` compute
+
+    .. math::
+
+       \mathbf{\hat{n}} &= \frac{\mathbf{x}_0 - \mathbf{x}_1}{\|\mathbf{x}_0 - \mathbf{x}_1\|} \\
+       \mathbf{r}_{\mathrm{moment}_0} &= \mathbf{x}_0 + r_0 \mathbf{\hat{n}} - \mathbf{x}_{\mathrm{torso}} \\
+       \mathbf{r}_{\mathrm{moment}_1} &= \mathbf{x}_1 - r_1 \mathbf{\hat{n}} - \mathbf{x}_{\mathrm{torso}}
 
     Args:
         x0 ((numpy.ndarray, numpy.ndarray, numpy.ndarray)):
@@ -151,7 +177,8 @@ def overlapping_circle_circle(x, r, start_index, i):
     """
     for j in range(start_index, i):
         h, _ = distance_circle_circle(x[i], x[j], r[i], r[j])
-        if h < 0:
+        # FIXME: For some reason h < 0 is np.ndarray
+        if np.all(h < 0.0):
             return True
     return False
 
@@ -181,11 +208,17 @@ def overlapping_three_circle(x, r, start_index, i):
 
     """
     for j in range(start_index, i):
+        # h, _, _, _ = distance_three_circle(
+        #     (x.position[i], x.position_ls[i], x.position_rs[i]),
+        #     (r.r_t[i], r.r_s[i], r.r_s[i]),
+        #     (x.position[j], x.position_ls[j], x.position_rs[j]),
+        #     (r.r_t[j], r.r_s[j], r.r_s[j])
+        # )
         h, _, _, _ = distance_three_circle(
-            (x.position[i], x.position_ls[i], x.position_rs[i]),
-            (r.r_t[i], r.r_s[i], r.r_s[i]),
-            (x.position[j], x.position_ls[j], x.position_rs[j]),
-            (r.r_t[j], r.r_s[j], r.r_s[j])
+            (x[0][i], x[1][i], x[2][i]),
+            (r[0][i], r[1][i], r[2][i]),
+            (x[0][j], x[1][j], x[2][j]),
+            (r[0][j], r[1][j], r[2][j])
         )
         if h < 0:
             return True
