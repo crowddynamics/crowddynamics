@@ -1,5 +1,3 @@
-import sys
-
 import numpy as np
 from hypothesis import given, assume
 
@@ -7,7 +5,8 @@ from crowddynamics.core.vector2D.vector2D import cross2d, wrap_to_pi, truncate, 
     rotate270, normalize, length, angle, rotate90, dot2d
 from crowddynamics.testing import real, vector
 
-EPSILON = sys.float_info.epsilon
+
+# TODO: Use numpy.testing
 
 
 @given(phi=real())
@@ -74,10 +73,11 @@ def test_normalize(a):
         assert np.isclose(l, 1.0)
 
 
-@given(a=vector(), b=real())
+@given(
+    a=vector(elements=real(exclude_zero='near')),
+    b=real(min_value=0, exclude_zero='near')
+)
 def test_truncate(a, b):
-    assume(not np.allclose(a, 0.0))
-    assume(not np.isclose(b, 0.0))
-
     truncate(a, b)
-    assert length(a) <= b
+    l = length(a)
+    assert l <= b or np.isclose(l, b)

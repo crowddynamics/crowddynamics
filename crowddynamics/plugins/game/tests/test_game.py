@@ -59,11 +59,10 @@ def test_agent_closer_to_exit(points, position):
 
 
 @given(
-    points=arrays(np.float64, (2, 2), st.floats(allow_nan=False, allow_infinity=False)),
-    agent_radius=st.floats(min_value=0.0, allow_nan=False, allow_infinity=False)
+    points=arrays(np.float64, (2, 2), st.floats(min_value=-10, max_value=10, allow_nan=False, allow_infinity=False)),
+    agent_radius=st.floats(min_value=0.1, max_value=1.0, allow_nan=False, allow_infinity=False)
 )
 def test_exit_capacity(points, agent_radius):
-    assume(agent_radius != 0.0)
     capacity = exit_capacity(points, agent_radius)
     assert capacity >= 0.0
 
