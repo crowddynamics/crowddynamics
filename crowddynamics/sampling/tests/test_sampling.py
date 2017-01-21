@@ -1,58 +1,39 @@
 """
 UnitTests and property based testing using
 """
-import os
-import sys
-
+import hypothesis.strategies as st
 import numpy as np
-import pytest
-from bokeh.plotting import figure, output_file, save
-from hypothesis import given, note, assume
+from hypothesis import given, assume
+from hypothesis import note
+from hypothesis.extra.numpy import arrays
+from shapely.geometry import LineString
 from shapely.geometry import Polygon, Point
 
 from crowddynamics.sampling import PolygonSample, triangle_area, \
     random_sample_triangle, triangle_area_cumsum
-from crowddynamics.tests.strategies import polygons, vector
-
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-OUTPUT_FOLDER = "output"
-
-EPSILON = sys.float_info.epsilon
+from crowddynamics.testing import vector, real, vectors
 
 
-def save_plot(name, polygon, points):
+@st.composite
+def polygons(draw, min_value=-1.0, max_value=1.0, num_points=5):
     """
+    Generate a random polygon. Polygon should have area > 0.
 
     Args:
-        name (str):
-        polygon (Polygon):
-        points (List[Point]):
+        draw:
+        min_value (float):
+        max_value (float):
+        num_points (int):
 
     Returns:
-        None:
+        Polygon: Random convex polygon
+
     """
-    # TODO: name unique
-    ext = ".html"
-    os.makedirs(os.path.join(BASE_DIR, OUTPUT_FOLDER), exist_ok=True)
-    filename = os.path.join(OUTPUT_FOLDER, name) + ext
-    title = name.replace("_", "").capitalize()
-
-    output_file(filename, title)
-
-    # Figure
-    p = figure()
-
-    # Polygon as a patch
-    values = np.asarray(polygon.exterior)
-    p.patch(values[:, 0], values[:, 1], alpha=0.5, line_width=0.1)
-
-    # Points as circles
-    for point in points:
-        x, y = point.xy
-        p.circle(x, y)
-
-    # TODO: save html
-    save(p, filename, title=title)
+    points = draw(arrays(np.float64, (num_points, 2),
+                         real(min_value, max_value, exclude_zero='near')))
+    buffer = draw(real(0.1, 0.2))
+    # FIXME: Remove convex hull when sampling support None convex polygons
+    return LineString(points).buffer(buffer).convex_hull
 
 
 @given(vector(), vector(), vector())
@@ -62,7 +43,19 @@ def test_triangle_area(a, b, c):
     assert np.isnan(area) or area >= 0.0
 
 
-@given(vector(), vector(), vector())
+@given(arrays(np.float64, (10, 3, 2), st.floats(-100, 100, False, False)))
+def test_triangle_area_cumsum(trimesh):
+    cumsum = triangle_area_cumsum(trimesh)
+    assert isinstance(cumsum, np.ndarray)
+    assert cumsum.dtype.type is np.float64
+    assert np.all(np.sort(cumsum) == cumsum)
+
+
+@given(
+    vector(elements=real(min_value=-100, max_value=100)),
+    vector(elements=real(min_value=-100, max_value=100)),
+    vector(elements=real(min_value=-100, max_value=100)),
+)
 def test_random_sample_triangle(a, b, c):
     # Assume that the area of the triangle is not zero.
     area = triangle_area(a, b, c)
@@ -72,31 +65,16 @@ def test_random_sample_triangle(a, b, c):
     p = random_sample_triangle(a, b, c)
     point = Point(p)
     distance = triangle.distance(point)
-    note(
-        r"""
-        area: {}
-        a: {}
-        b: {}
-        c: {}
-        p: {}
-        distance: {}
-        """.format(area, a, b, c, p, distance)
-    )
+
     assert isinstance(p, np.ndarray)
     assert triangle.intersects(point) or np.isclose(distance, 0.0)
 
 
-@pytest.mark.skip
-def test_triangle_area_cumsum(trimesh):
-    cumsum = triangle_area_cumsum(trimesh)
-    assert True
-
-
-@pytest.mark.skip
-@given(polygons)
+@given(polygons())
 def test_polygon_sampling(polygon):
-    num = 100
+    assume(not np.isclose(polygon.area, 0.0))
+
+    sample_size = 10
     sample = PolygonSample(polygon)
-    points = [Point(sample.draw()) for _ in range(num)]
-    # save_plot("???", polygon, points)
-    assert all(polygon.contains(p) for p in points)
+    for point in sample.generator(sample_size):
+        assert polygon.contains(Point(point))

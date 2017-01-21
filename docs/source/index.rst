@@ -27,14 +27,11 @@ Documentation
    :numbered:
    :maxdepth: 2
 
-   installation.rst
-   usage.rst
-
-   foundations/index.rst
-
-   cellular/index.rst
-   multiagent/index.rst
-   continuum/index.rst
-
-   research/index.rst
-   api/index.rst
+   installation
+   usage
+   foundations/index
+   cellular/index
+   multiagent/index
+   continuum/index
+   research/index
+   api/index

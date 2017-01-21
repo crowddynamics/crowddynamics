@@ -1,7 +1,7 @@
 import numba
 import numpy as np
 
-from crowddynamics.core.vector2D import length_nx2, wrap_to_pi
+from crowddynamics.core.vector2D.vector2D import length_nx2, wrap_to_pi
 
 
 @numba.jit(nopython=True)

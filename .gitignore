@@ -7,7 +7,7 @@
 *.hypothesis
 
 # Folders
-.logs/
+*.logs/
 crowddynamics/tests/output/
 /docs/build/
 notebooks/

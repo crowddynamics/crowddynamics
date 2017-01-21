@@ -30,19 +30,21 @@ def triangle_area_cumsum(trimesh):
     Computes cumulative sum of the areas of the triangle mesh.
 
     Args:
-        trimesh (numpy.ndarray): Triangle mesh
+        trimesh (numpy.ndarray):
+            Triangle mesh array of shape=(n, 3, 2)
 
     Returns:
-        numpy.ndarray: Cumulative sum the area of the triangle mesh
+        numpy.ndarray:
+            Cumulative sum the area of the triangle mesh
     """
-    area = 0
+    area = 0.0
     rows = trimesh.shape[0]
     cumsum = np.zeros(rows)
     for i in range(rows):
         a, b, c = trimesh[i, 0, :], trimesh[i, 1, :], trimesh[i, 2, :]
         area += triangle_area(a, b, c)
         cumsum[i] = area
-        return cumsum
+    return cumsum
 
 
 @numba.jit(f8[:](f8[:], f8[:], f8[:]), nopython=True, nogil=True)
@@ -104,15 +106,16 @@ class PolygonSample:
         Args:
             polygon (Polygon | numpy.ndarray): Shapely polygon or numpy array of
                 polygon vertices.
+
         """
         if isinstance(polygon, Polygon):
             self.vertices = np.asarray(polygon.exterior)
-        elif isinstance(polygon, np.ndarray):
-            self.vertices = polygon
         else:
-            raise Exception()
+            # Should be numpy.ndarray
+            self.vertices = polygon
 
-        # Triangular mesh by Delaunay triangulation algorithm
+        # Triangular mesh using Delaunay triangulation algorithm
+        # FIXME: Delaunay only works for convex polygon
         self.delaunay = Delaunay(self.vertices)
         self.mesh = self.vertices[self.delaunay.simplices]
 
@@ -127,9 +130,26 @@ class PolygonSample:
 
         Returns:
             numpy.ndarray: Uniformly sampled point inside the polygon
+
         """
         x = np.random.random()
         i = np.searchsorted(self.weights, x)
         a, b, c = self.mesh[i]
         sample = random_sample_triangle(a, b, c)
         return sample
+
+    def generator(self, num=None):
+        """
+        Generator that generates ``num`` amount of draws.
+
+        Args:
+            num (int, optional):
+                Number of draws, if None returns infinite generator.
+
+        Returns:
+            Generator:
+        """
+        i = 0
+        while num is None or i < num:
+            yield self.draw()
+            i += 1

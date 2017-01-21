@@ -27,4 +27,3 @@ Task graph
    navigation.rst
    orientation.rst
    exit_selection.rst
-   game.rst

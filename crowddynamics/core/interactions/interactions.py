@@ -1,13 +1,16 @@
 import numba
 import numpy as np
 
-from crowddynamics.core.block_list import BlockList
-from crowddynamics.core.distance import distance_circle_circle, \
-    distance_circle_line, distance_three_circle_line, distance_three_circle
-from crowddynamics.core.motion import force_contact
-from crowddynamics.core.power_law import force_social_circular, force_social_three_circle, \
-    force_social_linear_wall
+from crowddynamics.core.interactions import distance_circle_circle, \
+    distance_circle_line, distance_three_circle_line, distance_three_circle, \
+    BlockList
+from crowddynamics.core.motion import force_social_circular, \
+    force_social_three_circle, force_social_linear_wall, force_contact
 from crowddynamics.core.vector2D import rotate270, cross2d
+
+
+# TODO: Rework walls
+# TODO: Toggle helbing/power law
 
 
 @numba.jit(nopython=True, nogil=True)
@@ -27,6 +30,7 @@ def agent_agent_brute(agent, indices):
 
     Returns:
         None: Inplace operation.
+
     """
     for l, i in enumerate(indices[:-1]):
         for j in indices[l + 1:]:
@@ -53,6 +57,7 @@ def agent_agent_brute_disjoint(agent, indices_0, indices_1):
 
     Returns:
         None: Inplace operation.
+
     """
     for i in indices_0:
         for j in indices_1:
@@ -72,6 +77,7 @@ def agent_agent_block_list(agent):
 
     Returns:
         None: Inplace operation.
+
     """
     indices = agent.indices()
     blocks = BlockList(agent.position[indices], agent.sight_soc)
@@ -99,14 +105,18 @@ def agent_agent_block_list(agent):
 
 @numba.jit(nopython=True, nogil=True)
 def agent_wall(agent, wall):
+    """
+    Agent wall
+
+    Args:
+        agent:
+        wall:
+
+    """
     ind = agent.indices()
     for i in ind:
         for w in range(len(wall)):
             agent_obstacle_interaction_circle(i, w, agent, wall)
-
-
-# TODO: Rework walls
-# TODO: Toggle helbing/power law
 
 
 @numba.jit(nopython=True, nogil=True)
@@ -118,8 +128,6 @@ def agent_agent_interaction_circle(i, j, agent):
         i:
         j:
         agent:
-
-    Returns:
 
     """
     h, n = distance_circle_circle(agent.position[i], agent.radius[i],
@@ -187,8 +195,6 @@ def agent_obstacle_interaction_circle(i, w, agent, wall):
         agent:
         wall:
 
-    Returns:
-
     """
     h, n = distance_circle_line(agent.position[i], agent.radius[i], wall[w])
     if h < agent.sight_wall:
@@ -212,8 +218,6 @@ def agent_obstacle_interaction_three_circle(i, w, agent, wall):
         w:
         agent:
         wall:
-
-    Returns:
 
     """
     h, n, r_moment = distance_three_circle_line(

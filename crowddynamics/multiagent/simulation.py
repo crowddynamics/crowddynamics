@@ -11,8 +11,8 @@ from shapely.geometry import LineString
 from shapely.geometry import Polygon, Point
 from shapely.ops import cascaded_union
 
-from crowddynamics.core.distance import distance_three_circle
-from crowddynamics.core.vector2D import angle, length
+from crowddynamics.core.interactions.distance import distance_three_circle
+from crowddynamics.core.vector2D.vector2D import angle, length
 from crowddynamics.functions import Timed, load_config
 from crowddynamics.geometry import check_shapes
 from crowddynamics.io.hdfstore import HDFStore

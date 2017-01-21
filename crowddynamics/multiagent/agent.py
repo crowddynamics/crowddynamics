@@ -3,7 +3,7 @@ import numpy as np
 from numba import float64, int64, boolean
 from numba.types import UniTuple
 
-from crowddynamics.core.vector2D import rotate270
+from crowddynamics.core.vector2D.vector2D import rotate270
 
 spec_agent = (
     ("size", int64),

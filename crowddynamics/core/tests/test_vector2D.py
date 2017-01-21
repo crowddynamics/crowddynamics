@@ -1,12 +1,11 @@
 import sys
+
 import numpy as np
 from hypothesis import given, assume
 
-from crowddynamics.core.vector2D import cross2d, wrap_to_pi, truncate, \
+from crowddynamics.core.vector2D.vector2D import cross2d, wrap_to_pi, truncate, \
     rotate270, normalize, length, angle, rotate90, dot2d
-from crowddynamics.tests.strategies import real, vector
-
-
+from crowddynamics.testing import real, vector
 
 EPSILON = sys.float_info.epsilon
 

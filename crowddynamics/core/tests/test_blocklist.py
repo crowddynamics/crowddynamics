@@ -1,9 +1,9 @@
-import numpy as np
 import hypothesis.strategies as st
+import numpy as np
 from hypothesis import given
 
-from crowddynamics.core.block_list import block_list
-from crowddynamics.tests.strategies import vectors
+from crowddynamics.core.interactions.block_list import block_list
+from crowddynamics.testing import vectors
 
 
 @given(points=vectors(elements=st.floats(0.0, 1.0)),

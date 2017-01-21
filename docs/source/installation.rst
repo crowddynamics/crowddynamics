@@ -28,8 +28,8 @@ Developers
 
   .. code-block:: bash
 
-     conda env create python3.4 -n crowd34 -f environment.yml
-     source activate crowd34
+     conda env create python3.5 -n crowd35 -f environment.yml
+     source activate crowd35
 
 3) Then install ``crowddynamics`` itself in ``editable`` mode using following ``pip`` command
 

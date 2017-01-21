@@ -1,14 +1,14 @@
 import numpy as np
 from hypothesis import given, assume
 
-from crowddynamics.core.distance import distance_circle_circle, \
+from crowddynamics.core.interactions.distance import distance_circle_circle, \
     distance_three_circle, distance_circle_line, distance_three_circle_line
-from crowddynamics.core.vector2D import length
-from crowddynamics.tests.strategies import vector, positive, three_vectors, \
-    three_positive, line
+from crowddynamics.core.vector2D.vector2D import length
+from crowddynamics.testing import vector, three_vectors, \
+    three_positive, line, real
 
 
-@given(x0=vector(), r0=positive(), x1=vector(), r1=positive())
+@given(x0=vector(), r0=real(min_value=0), x1=vector(), r1=real(min_value=0))
 def test_distance_circle_circle(x0, r0, x1, r1):
     h, n = distance_circle_circle(x0, r0, x1, r1)
     x = x0 - x1
@@ -37,7 +37,7 @@ def test_distance_three_circle(x0, r0, x1, r1):
     assert isinstance(r_moment1, np.ndarray)
 
 
-@given(x=vector(), r=positive(), p=line(), )
+@given(x=vector(), r=real(min_value=0), p=line(), )
 def test_distance_circle_line(x, r, p):
     h, n = distance_circle_line(x, r, p)
     assert isinstance(h, float)
