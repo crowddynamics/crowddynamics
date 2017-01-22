@@ -241,7 +241,7 @@ def setup_logging(default_path=LOG_CFG,
 
 
 def user_info():
-    logger = logging.getLogger("crowddynamics")
+    logger = logging.getLogger(__name__)
     logger.info("Platform: %s", platform.platform())
     logger.info("Path: %s", sys.path[0])
     logger.info("Python: %s", sys.version[0:5])

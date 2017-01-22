@@ -20,6 +20,8 @@ dependencies:
     - pyqtgraph
     - matplotlib
     - bokeh
+    ## Documentation
+    - graphviz
     - pip:
         ## Package
         - ruamel.yaml

@@ -32,6 +32,6 @@ Steering
 Integrator
 ----------
 
-.. automodule:: crowddynamics.core
+.. automodule:: crowddynamics.core.integrator
    :members:
    :special-members:

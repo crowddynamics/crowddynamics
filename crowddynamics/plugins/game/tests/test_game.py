@@ -16,10 +16,11 @@ def test_poisson_clock(interval, dt):
     # Limit the ratio so test doesn't run forever
     assume(1/100 < interval / dt < 100)
 
-    times = [time for time in poisson_clock(interval, dt)]
-    assert isinstance(times, list)
-    assert np.all(np.array(times) < dt)
-    assert sorted(times) == times
+    time_prev = 0.0
+    for time in poisson_clock(interval, dt):
+        assert isinstance(time, float)
+        assert time_prev < time < dt
+        time_prev = time
 
 
 @given(
@@ -27,12 +28,13 @@ def test_poisson_clock(interval, dt):
     interval=st.floats(0.001, 0.01, allow_nan=False, allow_infinity=False),
     dt=st.floats(0.001, 0.01, allow_nan=False, allow_infinity=False),
 )
-def test_timings(players, interval, dt):
+def test_poisson_timings(players, interval, dt):
     # Limit the ratio so test doesn't run forever
     assume(1 / 100 < interval / dt < 100)
 
-    indices = poisson_timings(players, interval, dt)
-    assert isinstance(indices, list)
+    for index in poisson_timings(players, interval, dt):
+        assert isinstance(index, int)
+        assert index in players
 
 
 @given(

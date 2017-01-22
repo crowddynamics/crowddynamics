@@ -32,7 +32,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         super(MainWindow, self).__init__()
 
         # Logger
-        self.logger = logging.getLogger("crowddynamics.gui.mainwindow")
+        self.logger = logging.getLogger(__name__)
 
         # Load ui files
         self.setupUi(self)

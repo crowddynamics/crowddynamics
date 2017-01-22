@@ -59,7 +59,7 @@ class MultiAgentSimulation(Process, Configuration):
         Configuration.__init__(self)
 
         # Logger
-        self.logger = logging.getLogger("crowddynamics.simulation")
+        self.logger = logging.getLogger(__name__)
 
         # Multiprocessing
         self.queue = queue

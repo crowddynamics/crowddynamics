@@ -2,7 +2,7 @@ import numba
 import numpy as np
 from scipy.stats import truncnorm
 
-from crowddynamics.core import wrap_to_pi
+from crowddynamics.core.vector2D import wrap_to_pi
 
 
 def torque_fluctuation(inertia_rot, scale):

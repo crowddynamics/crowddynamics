@@ -1,29 +1,20 @@
 Multi-Agent
 ===========
-.. Struture Tree, GraphViz, Architeture
 
-Arhitecture
+.. csv-table:: Model Specification
 
-- **Microscopic** in nature. Agents are modelled as rigid bodies.
-- **Continuous space**, :math:`\mathbb{R}^2`
-- **Social force model** as a classical mechanics approach for modelling crowd movement.
-
-
-Task graph
-
-.. figure:: task_graph.png
-
+   "Microscopic", "Agents are modelled as rigid bodies."
+   "Continuous Space", ":math:`\mathbb{R}^2`"
+   "Social Force Model", "Classical mechanics for modelling movement."
 
 ----
 
 .. toctree::
 
-   algorithms.rst
    social_force_model.rst
+   algorithms.rst
    adjusting.rst
    interactions.rst
    fluctuation.rst
    integrator.rst
    navigation.rst
-   orientation.rst
-   exit_selection.rst

@@ -37,3 +37,7 @@ where
 * Adjusting torque :math:`M_{i}^{adj}`
 * Social torque :math:`M_{ij}^{soc}` and :math:`M_{iw}^{soc}`
 * Contact torque :math:`M_{ij}^{c}` and :math:`M_{iw}^{c}`
+
+
+.. graphviz:: task_graph.dot
+

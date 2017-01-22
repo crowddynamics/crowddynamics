@@ -1,6 +1,16 @@
+"""
+Spatial partitioning algorithms.
+
+- BlockList
+- ConvexHull
+
+"""
 import numpy as np
 import numba
 from numba import f8, i8
+
+
+# TODO: Convex hull algorithm: http://doi.org/10.1016/j.asoc.2009.07.004
 
 
 @numba.jit(nopython=True)

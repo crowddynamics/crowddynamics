@@ -1,7 +1,11 @@
 Cellular Automata
 =================
-- Microscopic
-- Discrete lattice
 
-.. note::
-   To be written
+.. csv-table:: Model Specification
+
+   "Microscopic", ""
+   "Discrete lattice", ""
+
+----
+
+.. toctree::

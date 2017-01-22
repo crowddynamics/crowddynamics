@@ -1,8 +1,12 @@
 Continuum Flow
 ==============
-- Macroscopic
-- Continuous space
-- Conservation of density
 
-.. note::
-   To be written
+.. csv-table:: Model Specification
+
+   "Macroscopic", ""
+   "Continuous Space", ""
+   "Conservation of Density", ""
+
+----
+
+.. toctree::

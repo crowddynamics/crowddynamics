@@ -23,7 +23,7 @@ class Configuration:
 
     def __init__(self):
         """Configuration"""
-        self.logger = logging.getLogger("crowddynamics.configuration")
+        self.logger = logging.getLogger(__name__)
 
         # Field
         self.domain = None

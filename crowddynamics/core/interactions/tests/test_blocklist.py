@@ -2,7 +2,7 @@ import hypothesis.strategies as st
 import numpy as np
 from hypothesis import given
 
-from crowddynamics.core.interactions.block_list import block_list
+from crowddynamics.core.interactions.partitioning import block_list
 from crowddynamics.testing import vectors
 
 

@@ -49,25 +49,16 @@ loggers:
     handlers: [console, debug_file_handler, info_file_handler]
     propagate: no
 
-  crowddynamics.configuration:
-    level: INFO
-    handlers: [console, debug_file_handler, info_file_handler]
-    propagate: no
-
   crowddynamics.simulation:
     level: INFO
     handlers: [console, debug_file_handler, info_file_handler]
     propagate: no
 
-  crowddynamics.gui.mainwindow:
+  crowddynamics.gui:
     level: INFO
     handlers: [console, debug_file_handler, info_file_handler]
     propagate: no
 
-  crowddynamics.gui.graphics:
-    level: INFO
-    handlers: [console, debug_file_handler, info_file_handler]
-    propagate: no
 
 
 root:

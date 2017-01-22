@@ -8,7 +8,7 @@ from crowddynamics.gui.main import MainWindow
 
 def run_gui():
     """Launches the graphical user interface for visualizing simulation."""
-    logger = logging.getLogger("crowddynamics.gui.mainwindow")
+    logger = logging.getLogger(__name__)
 
     # Qt - Graphical User Interface
     logger.info("Starting GUI")

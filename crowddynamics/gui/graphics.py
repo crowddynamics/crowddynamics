@@ -94,7 +94,7 @@ class MultiAgentPlot(pg.PlotItem):
         super(MultiAgentPlot, self).__init__(parent)
 
         # Logger
-        self.logger = logging.getLogger("crowddynamics.gui.graphics")
+        self.logger = logging.getLogger(__name__)
 
         # Plot settings
         self.setAspectLocked(lock=True, ratio=1)  # One to one scale

@@ -73,7 +73,7 @@ class HDFStore(object):
                 Filepath to the ``hdf5`` file where data should be saved.
 
         """
-        self.logger = logging.getLogger("crowddynamics.io")
+        self.logger = logging.getLogger(__name__)
 
         # Time
         self.timestamp = datetime.datetime.now()

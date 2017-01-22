@@ -1,15 +1,20 @@
 Installation
 ============
+.. attention::
 
-Simple
-------
+   CrowdDynamics is currently only tested *Linux* and functionality on *Windows* and *OS X* cannot be guaranteed.
 
+.. TODO: Youtube video tutorials on installation
+
+Conda
+-----
 .. note::
-   To be written
+
+   Not yet implemented
 
 
-Developers
-----------
+From Source
+-----------
 
 .. note::
 

@@ -1,0 +1,17 @@
+digraph foo {
+      "Integrator" -> "Social Force Model";
+      "Social Force Model" -> {
+          "Interactions";
+          "Adjusting";
+          "Fluctuation";
+      }
+      "Adjusting" -> {
+        "Navigation";
+        "Orientation";
+      }
+      "Navigation" -> "Exit Selection";
+      "Interactions" -> {
+        "Agent-Agent";
+        "Agent-Obstacle"
+      }
+    }

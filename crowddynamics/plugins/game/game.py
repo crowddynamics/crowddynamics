@@ -57,17 +57,13 @@ def poisson_clock(interval, dt):
             Moments in the time window when the strategies should be updated.
 
     """
-    t_tot = 0.0
-    while True:
-        # Numpy exponential distribution's scale parameter is equal to
-        # 1/lambda which is why we can supply interval directly into the
-        # function.
-        time = np.random.exponential(scale=interval)
-        t_tot += time
-        if t_tot < dt:
-            yield t_tot
-        else:
-            break
+    # Numpy exponential distribution's scale parameter is equal to
+    # 1/lambda which is why we can supply interval directly into the
+    # np.random.exponential.
+    t_tot = np.random.exponential(scale=interval)
+    while t_tot < dt:
+        yield t_tot
+        t_tot += np.random.exponential(scale=interval)
 
 
 @numba.jit(nopython=True)
@@ -84,26 +80,22 @@ def poisson_timings(players, interval, dt):
 
     Returns:
         list: List of indices of agents sorted by their update times.
+
     """
+    # Compute update times for all agents.
     times = []
     indices = []
-    indices_sorted = []
-
-    # Mix the agents
+    # TODO: check shuffle doesn't cause any side effects
     np.random.shuffle(players)
-
-    # Compute update times for all agents
     for i in players:
         for t in poisson_clock(interval, dt):
             times.append(t)
             indices.append(i)
 
     # Sort the indices by the update times
+    # noinspection PyTypeChecker
     for j in np.argsort(np.array(times)):
-        indices_sorted.append(indices[j])
-
-    # Return indices sorted by the update times
-    return indices_sorted
+        yield indices[j]
 
 
 @numba.jit(nopython=True)

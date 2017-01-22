@@ -7,6 +7,9 @@ from hypothesis import strategies as st
 from hypothesis.extra.numpy import arrays
 
 
+# TODO: Namedtuple agent strategy
+
+
 def real(min_value=None, max_value=None, exclude_zero=None):
     """Real number strategy using 64-bit floating point numbers excluding
     ``nan`` and ``inf``.

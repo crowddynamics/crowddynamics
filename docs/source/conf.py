@@ -40,8 +40,14 @@ extensions = [
     'sphinx.ext.githubpages',
     'sphinxcontrib.napoleon',
     'sphinxcontrib.programoutput',
+    # 'sphinxcontrib.youtube',
     # 'sphinxcontrib.bibtex',
 ]
+
+# Graphviz Settings
+# graphviz_dot = 'dot'
+graphviz_dot_args = []
+graphviz_output_format = 'png'  # svg
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
