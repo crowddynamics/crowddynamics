@@ -10,3 +10,4 @@ API
    cli
    gui
    game
+   testing

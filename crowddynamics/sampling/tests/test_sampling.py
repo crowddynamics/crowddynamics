@@ -4,36 +4,12 @@ UnitTests and property based testing using
 import hypothesis.strategies as st
 import numpy as np
 from hypothesis import given, assume
-from hypothesis import note
 from hypothesis.extra.numpy import arrays
-from shapely.geometry import LineString
 from shapely.geometry import Polygon, Point
 
 from crowddynamics.sampling import PolygonSample, triangle_area, \
     random_sample_triangle, triangle_area_cumsum
-from crowddynamics.testing import vector, real, vectors
-
-
-@st.composite
-def polygons(draw, min_value=-1.0, max_value=1.0, num_points=5):
-    """
-    Generate a random polygon. Polygon should have area > 0.
-
-    Args:
-        draw:
-        min_value (float):
-        max_value (float):
-        num_points (int):
-
-    Returns:
-        Polygon: Random convex polygon
-
-    """
-    points = draw(arrays(np.float64, (num_points, 2),
-                         real(min_value, max_value, exclude_zero='near')))
-    buffer = draw(real(0.1, 0.2))
-    # FIXME: Remove convex hull when sampling support None convex polygons
-    return LineString(points).buffer(buffer).convex_hull
+from crowddynamics.testing import vector, real, polygons
 
 
 @given(vector(), vector(), vector())
@@ -70,7 +46,7 @@ def test_random_sample_triangle(a, b, c):
     assert triangle.intersects(point) or np.isclose(distance, 0.0)
 
 
-@given(polygons())
+@given(polygons(min_value=-1.0, max_value=1.0, num_points=5, convex_hull=True))
 def test_polygon_sampling(polygon):
     # Numerical error is too great if area of the polygon is too small
     assume(polygon.area > 0.01)
