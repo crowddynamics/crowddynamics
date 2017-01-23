@@ -1,12 +1,15 @@
 API
 ===
-
 .. toctree::
 
-   core
+   vector2D
+   motion
+   interactions
+   steering
+   integrator
    io
    sampling
-   simulation
+   multiagent
    cli
    gui
    game

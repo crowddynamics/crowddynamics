@@ -1,36 +1,44 @@
 import numba
 import numpy as np
-from scipy.stats import truncnorm
 
 from crowddynamics.core.vector2D import wrap_to_pi
 
 
-def torque_fluctuation(inertia_rot, scale):
+@numba.jit(nopython=True, nogil=True)
+def force_adjust(mass, tau_adj, v0, e0, v):
     r"""
-    Random torque.
+    *Adjusting* aka *driving* force accounts of agent's desire to reach a
+    certain destination. In high crowd densities term *manoeuvring* is used.
+    Force affecting the agent takes form
 
     .. math::
-       \eta \sim \mathcal{N}(\mu, \sigma^{2})
+       \mathbf{f}_{adj} = \frac{m}{\tau_{adj}} (v_{0} \mathbf{\hat{e}_{0}} - \mathbf{v}),
 
     Args:
-        inertia_rot (float):
-            Rotational intertial
+        mass (float):
+            Mass
 
-        scale (float):
-            Standard deviation of truncated normal distribution
+        tau_adj (float):
+            Characteristic time :math:`\tau_{adj}` time for agent to adjust it
+            movement. Value :math:`0.5` is often used, but for example impatient
+            agent that tend to push other agent more this value can be reduced.
+
+        v0 (float):
+            Target velocity :math:`v_{0}` is usually *average walking speed* for
+            agent in its current situation.
+
+        e0 (numpy.ndarray):
+            Target direction :math:`\mathbf{\hat{e}_{0}}` is solved by
+            *navigation* or *path planning* algorithm. More details in the
+            navigation section.
+
+        v (numpy.ndarray):
+            Velocity
 
     Returns:
-        numpy.ndarray: Fluctuation torque
+        numpy.ndarray:
     """
-    if isinstance(inertia_rot, np.ndarray):
-        size = len(inertia_rot)
-    elif isinstance(scale, np.ndarray):
-        size = len(scale)
-    else:
-        size = 1
-
-    torque = truncnorm.rvs(-3.0, 3.0, loc=0.0, scale=scale, size=size)
-    return torque * inertia_rot
+    return (mass / tau_adj) * (v0 * e0 - v)
 
 
 @numba.jit(nopython=True, nogil=True)

@@ -1,3 +1,29 @@
+r"""
+Psychological force based on human anticipatory behaviour. Interaction potential
+between two agents is defined
+
+.. math::
+   E(\tau) = \frac{k}{\tau^{2}} \exp \left( -\frac{\tau}{\tau_{0}} \right), \quad \tau_{0} > 0, \tau > 0
+
+where coefficient
+
+- :math:`k=1.5 m_i` scales the magnitude
+- :math:`\tau_{0}` is interaction time horizon.
+- Time-to-collision :math:`\tau` is obtained by linearly extrapolating current
+  trajectories and finding where or if agents collide i.e skin-to-skin distance
+  :math:`h` equals zero.
+
+Force affecting agent can be derived by taking spatial gradient of the energy,
+where time-to-collision :math:`\tau` is function of the relative displacement
+of the mass centers :math:`\tilde{\mathbf{x}}`
+
+.. math::
+   \mathbf{f}^{soc} &= -\nabla_{\tilde{\mathbf{x}}} E(\tau) \\
+   &= - k \cdot m \left(\frac{1}{\tau^{2}}\right) \left(\frac{2}{\tau} + \frac{1}{\tau_{0}}\right) \exp\left (-\frac{\tau}{\tau_{0}}\right ) \nabla_{\tilde{\mathbf{x}}} \tau
+
+If :math:`\tau < 0` or :math:`\tau` is undefined [#]_ trajectories are not
+colliding and social force is :math:`\mathbf{0}`.
+"""
 import numba
 import numpy as np
 from numba import f8

@@ -1,3 +1,8 @@
+"""
+Interaction module has algorithms for computing the interactions between agents.
+Interactions are computationally expensive, thus sophisticated algorithms are
+required to efficiently compute them. Interactions are N-body problem.
+"""
 import numba
 import numpy as np
 
@@ -15,13 +20,13 @@ from crowddynamics.core.vector2D import rotate270, cross2d
 
 @numba.jit(nopython=True, nogil=True)
 def agent_agent_brute(agent, indices):
-    """
+    r"""
     Interaction forces between set of agents.
 
     Computational complexity (number of iterations)
 
     .. math::
-        n - 1 + n - 2 + ... + 1 = n^{2} / 2 \in \mathcal{O}(n^2)
+        n - 1 + n - 2 + ... + 1 =  \frac{(|N| - 1)^2}{2} \in \mathcal{O}(n^2)
 
     Args:
         agent (Agent):

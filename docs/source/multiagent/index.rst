@@ -12,9 +12,4 @@ Multi-Agent
 .. toctree::
 
    social_force_model.rst
-   algorithms.rst
-   adjusting.rst
    interactions.rst
-   fluctuation.rst
-   integrator.rst
-   navigation.rst

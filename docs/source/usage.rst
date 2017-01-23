@@ -2,7 +2,7 @@ Usage
 =====
 
 .. note::
-   To be written
+   This section is unfinished
 
 .. Video tutorial and demonstration
 

@@ -4,6 +4,9 @@ Spatial partitioning algorithms.
 - BlockList
 - ConvexHull
 
+Since crowd simulations are only dependent on interactions with agents close by
+we can partition the space into smaller chunk in order to avoid having to loop
+with agents far a away.
 """
 import numpy as np
 import numba

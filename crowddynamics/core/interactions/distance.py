@@ -1,5 +1,10 @@
 r"""
-Distance functions for potentials
+Distance functions for potentials. Some of the functions also compute rotational
+moments for computing torque like
+
+.. math::
+   \mathbf{M} &= \mathbf{r}_{\mathrm{moment}} \times (\mathbf{f}_{}^{soc} + \mathbf{f}_{}^{c})
+
 """
 
 import numba

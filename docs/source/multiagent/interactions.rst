@@ -1,15 +1,5 @@
 Interactions
 ============
-Interaction between agents is modeled using social and contact forces.
-
-Social Force
-------------
-Psychological force for collision avoidance.
-
-----
-
-.. TODO: Figure on how tau is calculated.
-
 Algorithm based on human anticipatory behaviour. Interaction potential between two agents
 
 .. math::
@@ -183,30 +173,3 @@ If positive inside absolute value
 .. math::
    \mathbf{q}_w \cdot \mathbf{\hat{t}_w} \\
    \mathbf{q}_w \cdot \mathbf{\hat{n}_w}
-
-----
-
-Physical Contact
-----------------
-Physical contact force
-
-.. math::
-   \mathbf{f}^{c} = - h \cdot \left(\mu \cdot \hat{\mathbf{n}} - \kappa \cdot (\mathbf{v} \cdot \hat{\mathbf{t}}) \hat{\mathbf{t}}\right) + c_{n} \cdot (\mathbf{v} \cdot \hat{\mathbf{n}}) \hat{\mathbf{n}} , \quad h < 0
-
-Torque
-------
-Torque from social forces acting with other agent or wall
-
-.. math::
-   \mathbf{M}_{}^{soc} = \mathbf{r}_{}^{soc} \times \mathbf{f}_{}^{soc}
-
-Torque from contact forces acting with other agent or wall
-
-.. math::
-   \mathbf{M}_{}^{c} = \mathbf{r}_{}^{c} \times \mathbf{f}_{}^{c}
-
-We can concatenate these because both radii for social and contact forces are the same
-
-.. math::
-   \mathbf{r} &= \mathbf{r}_{}^{soc} = \mathbf{r}_{}^{c} \\
-   \mathbf{M} &= \mathbf{r} \times (\mathbf{f}_{}^{soc} + \mathbf{f}_{}^{c})

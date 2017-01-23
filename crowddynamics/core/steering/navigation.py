@@ -1,3 +1,16 @@
+r"""
+Navigation aka path planning is related to *continuos shortest path* problem.
+
+- :math:`\Omega` Domain
+- :math:`\mathcal{A}` Area occupied by agent
+- :math:`\mathcal{O}` Area occupied by obstacle
+- :math:`\mathcal{E}` Area occupied by exit
+- :math:`\Omega \setminus (\mathcal{O} \cup \mathcal{A})` Unoccupied area
+
+https://en.wikipedia.org/wiki/Eikonal_equation
+Fast Marching Method.
+Fast Iterative Method
+"""
 from collections import Iterable
 
 import numba
@@ -92,7 +105,8 @@ def distance_map(step, domain, targets, obstacles):
 
     Args:
         step (float):
-            Step size for the meshgrid.
+            Step size for the meshgrid. Should be positive float.
+            Reference value :math:`0.01\,\mathrm{m}`.
 
         domain (Polygon):
             Domain :math:`\Omega` containing obstacles and targets.
@@ -137,7 +151,8 @@ def distance_map(step, domain, targets, obstacles):
 
 def travel_time_map(step, domain, targets, obstacles, agents):
     r"""
-    Dynamics potential takes into account the positions of the agents in the field. Equation
+    Dynamics potential takes into account the positions of the agents in the
+    field. Equation
 
     .. math::
        \left \| \nabla T(\mathbf{x}) \right \| = \frac{1}{f(\mathbf{x})}, \quad \mathbf{x} \in \Omega

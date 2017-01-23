@@ -3,8 +3,7 @@ import numpy as np
 from crowddynamics.core.integrator import integrate
 from crowddynamics.core.interactions.interactions import agent_agent_block_list, agent_wall
 from crowddynamics.core.motion import force_fluctuation, \
-    force_adjust
-from crowddynamics.core.motion.torque import torque_fluctuation, torque_adjust
+    force_adjust, torque_adjust, torque_fluctuation
 from crowddynamics.core.steering.navigation import _to_indices, static_potential
 from crowddynamics.core.vector2D.vector2D import angle_nx2
 from crowddynamics.functions import Timed
@@ -14,7 +13,8 @@ from crowddynamics.task_graph import TaskNode
 
 class Integrator(TaskNode):
     def __init__(self, simulation, dt):
-        """
+        r"""
+        Integrator
 
         Args:
             simulation: Simulation class
@@ -29,13 +29,7 @@ class Integrator(TaskNode):
         self.dt_prev = np.float64(np.nan)
 
     def update(self):
-        """
-        Integrates the system.
-
-        Returns:
-            None
-
-        """
+        """Integrates the system."""
         self.dt_prev = integrate(self.simulation.agent, *self.dt)
         self.time_tot += self.dt_prev
         self.simulation.dt_prev = self.dt_prev
@@ -44,6 +38,7 @@ class Integrator(TaskNode):
 
 class Fluctuation(TaskNode):
     def __init__(self, simulation):
+        r"""Fluctuation"""
         super().__init__()
         self.simulation = simulation
 
@@ -60,6 +55,7 @@ class Fluctuation(TaskNode):
 
 class Adjusting(TaskNode):
     def __init__(self, simulation):
+        r"""Adjusting"""
         super().__init__()
         self.simulation = simulation
 
@@ -83,6 +79,7 @@ class Adjusting(TaskNode):
 
 class AgentAgentInteractions(TaskNode):
     def __init__(self, simulation):
+        r"""AgentAgentInteractions"""
         super().__init__()
         self.simulation = simulation
 
@@ -93,6 +90,7 @@ class AgentAgentInteractions(TaskNode):
 
 class AgentObstacleInteractions(TaskNode):
     def __init__(self, simulation):
+        r"""AgentObstacleInteractions"""
         super().__init__()
         self.simulation = simulation
 
@@ -105,12 +103,9 @@ class AgentObstacleInteractions(TaskNode):
 
 
 class Navigation(TaskNode):
-    """
-    Handles navigation in multi-agent simulation.
-    """
-
     def __init__(self, simulation, algorithm="static", step=0.01):
         """
+        Handles navigation in multi-agent simulation.
 
         Args:
             simulation:
@@ -157,11 +152,8 @@ class Navigation(TaskNode):
 
 
 class Orientation(TaskNode):
-    """
-    Target orientation
-    """
-
     def __init__(self, simulation):
+        r"""Target orientation"""
         super().__init__()
         self.simulation = simulation
 
@@ -173,9 +165,8 @@ class Orientation(TaskNode):
 
 
 class ExitSelection(TaskNode):
-    """Exit selection policy."""
-
     def __init__(self, simulation):
+        """Exit selection policy."""
         super().__init__()
         self.simulation = simulation
 

@@ -66,9 +66,7 @@ spec_agent += spec_agent_motion + spec_agent_neighbour
 
 @numba.jitclass(spec_agent)
 class Agent(object):
-    """
-    Structure for agent parameters and variables.
-    """
+    """Structure for agent parameters and variables."""
 
     def __init__(self, size, mass, radius, ratio_rt, ratio_rs, ratio_ts,
                  inertia_rot, target_velocity, target_angular_velocity):
@@ -78,19 +76,28 @@ class Agent(object):
         Args:
             size (int):
                 Number of agents.
+
             mass (numpy.ndarray):
                 Masses of the agents
+
             radius (numpy.ndarray):
                 Total radii of the agents
+
             ratio_rt (float):
                 Ratio of the total radius and torso radius. :math:`[0, 1]`
+
             ratio_rs (float):
                 Ratio of the total radius and shoulder radius. :math:`[0, 1]`
+
             ratio_ts (float):
                 Ratio of the torso radius and torso radius. :math:`[0, 1]`
+
             inertia_rot (numpy.ndarray):
+
             target_velocity (numpy.ndarray):
+
             target_angular_velocity (numpy.ndarray):
+
         """
 
         # Array properties

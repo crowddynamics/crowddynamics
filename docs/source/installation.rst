@@ -10,7 +10,7 @@ Conda
 -----
 .. note::
 
-   Not yet implemented
+   This section is unfinished
 
 
 From Source
