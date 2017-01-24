@@ -1,5 +1,7 @@
-from .integrator import integrate
+from .integrator import adaptive_timestep, euler_integration, velocity_verlet
 
 __all__ = """
-integrate
+adaptive_timestep
+euler_integration
+velocity_verlet
 """.split()

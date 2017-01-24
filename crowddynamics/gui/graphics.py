@@ -87,10 +87,10 @@ class ThreeCircle:
 
 
 class MultiAgentPlot(pg.PlotItem):
-    """Multiagentplot"""
+    r"""GraphicsItem for displaying simulation graphics"""
 
     def __init__(self, parent=None):
-        """GraphicsItem for displaying simulation graphics."""
+        r"""Initialize MultiAgentPlot."""
         super(MultiAgentPlot, self).__init__(parent)
 
         # Logger
@@ -108,12 +108,13 @@ class MultiAgentPlot(pg.PlotItem):
         # Dynamics plot items
         self.agent = None
 
-    def configure(self, process: MultiAgentSimulation):
-        """Configure static plot items and initial configuration of dynamic
-        plot items (agents).
+    def configure(self, process):
+        r"""
+        Configure static plot items and initial configuration of dynamic plot
+        items (agents).
 
-        :param process: Simulation process
-        :return:
+        Args:
+            process (MultiAgentSimulation): Simulation process
         """
         self.logger.info("")
 
@@ -171,7 +172,12 @@ class MultiAgentPlot(pg.PlotItem):
                     self.addItem(item)
 
     def update_data(self, data):
-        """Update dynamic items."""
+        r"""
+        Update dynamic items.
+
+        Args:
+            data:
+        """
         for key, values in data.items():
             getattr(self, key).set_data(**values)
 

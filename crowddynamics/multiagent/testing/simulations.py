@@ -8,10 +8,31 @@ from crowddynamics.multiagent.algorithms import Navigation, Orientation, \
 from crowddynamics.multiagent.simulation import MultiAgentSimulation
 
 # TODO: Convert examples into test and validation simulations
+# TODO: Move simulations.yaml configuration parameter into the classes
 
 
 class Outdoor(MultiAgentSimulation):
+    r"""
+    Outdoor
+
+    Simulation for testing collision avoidance generally.
+
+    - Multi-directional flow
+    - Periodic boundaries
+    """
     def __init__(self, queue, size, width, height, model, body):
+        """
+        Init
+
+        Args:
+            queue:
+            size:
+            width:
+            height:
+            model:
+            body:
+
+        """
         # TODO: Periodic boundaries
         super().__init__(queue)
 
@@ -40,6 +61,18 @@ class Outdoor(MultiAgentSimulation):
 
 
 class Hallway(MultiAgentSimulation):
+    r"""
+    Hallway
+
+    - Low / medium / high crowd density
+    - Overtaking
+    - Counterflow
+
+    Variables
+
+    #) Bidirectional flow
+    #) Unidirectional flow
+    """
     def __init__(self, queue, size, width, height, model, body):
         super().__init__(queue)
         domain = Polygon([(0, 0), (0, height), (width, height), (width, 0)])
@@ -87,7 +120,23 @@ class Hallway(MultiAgentSimulation):
             self.set_agents(**kw)
 
 
+class Crossing(MultiAgentSimulation):
+    r"""
+    Crossing
+
+    - Orthogonal flow
+    """
+    pass
+
+
 class Rounding(MultiAgentSimulation):
+    r"""
+    Rounding
+
+    Simulation for testing navigation algorithm.
+
+    - Unidirectional flow
+    """
     def __init__(self, queue, size, width, height, model, body):
         super().__init__(queue)
 
@@ -134,6 +183,22 @@ class Rounding(MultiAgentSimulation):
 
 
 class RoomEvacuation(MultiAgentSimulation):
+    r"""
+    Room Evacuation
+
+    - Unidirectional flow
+    - Door width
+    - Door capacity
+    - Herding
+    - Exit selection
+
+    Variables
+
+    - Number of exits
+    - One exit
+    - Two exits
+    - Multiple exits
+    """
     def __init__(self, queue, size, width, height, model, body, spawn_shape,
                  door_width, exit_hall_width):
         super(RoomEvacuation, self).__init__(queue)
@@ -184,6 +249,9 @@ class RoomEvacuation(MultiAgentSimulation):
 
 
 class RoomEvacuationGame(RoomEvacuation):
+    r"""
+    Room Evacuation Game
+    """
     def __init__(self, queue, size, width, height, model, body, spawn_shape,
                  door_width, exit_hall_width, t_aset_0, interval,
                  neighbor_radius, neighborhood_size):

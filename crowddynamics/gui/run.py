@@ -7,7 +7,7 @@ from crowddynamics.gui.main import MainWindow
 
 
 def run_gui():
-    """Launches the graphical user interface for visualizing simulation."""
+    r"""Launches the graphical user interface for visualizing simulation."""
     logger = logging.getLogger(__name__)
 
     # Qt - Graphical User Interface

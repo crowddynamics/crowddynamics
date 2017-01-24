@@ -4,7 +4,8 @@ Usage
 .. note::
    This section is unfinished
 
-.. Video tutorial and demonstration
+.. todo::
+   Video tutorial and demonstration
 
 
 Basic Architecture

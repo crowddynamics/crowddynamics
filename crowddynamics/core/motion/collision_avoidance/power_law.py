@@ -1,28 +1,6 @@
 r"""
-Psychological force based on human anticipatory behaviour. Interaction potential
-between two agents is defined
 
-.. math::
-   E(\tau) = \frac{k}{\tau^{2}} \exp \left( -\frac{\tau}{\tau_{0}} \right), \quad \tau_{0} > 0, \tau > 0
 
-where coefficient
-
-- :math:`k=1.5 m_i` scales the magnitude
-- :math:`\tau_{0}` is interaction time horizon.
-- Time-to-collision :math:`\tau` is obtained by linearly extrapolating current
-  trajectories and finding where or if agents collide i.e skin-to-skin distance
-  :math:`h` equals zero.
-
-Force affecting agent can be derived by taking spatial gradient of the energy,
-where time-to-collision :math:`\tau` is function of the relative displacement
-of the mass centers :math:`\tilde{\mathbf{x}}`
-
-.. math::
-   \mathbf{f}^{soc} &= -\nabla_{\tilde{\mathbf{x}}} E(\tau) \\
-   &= - k \cdot m \left(\frac{1}{\tau^{2}}\right) \left(\frac{2}{\tau} + \frac{1}{\tau_{0}}\right) \exp\left (-\frac{\tau}{\tau_{0}}\right ) \nabla_{\tilde{\mathbf{x}}} \tau
-
-If :math:`\tau < 0` or :math:`\tau` is undefined [#]_ trajectories are not
-colliding and social force is :math:`\mathbf{0}`.
 """
 import numba
 import numpy as np
@@ -31,17 +9,60 @@ from numba import f8
 from crowddynamics.core.vector2D import dot2d, truncate, rotate90
 
 
+@numba.jit(nopython=True, nogil=True)
+def potential(k, tau, tau_0):
+    r"""
+    Psychological force based on human anticipatory behaviour. Interaction potential
+    between two agents is defined
+
+    .. math::
+       E(\tau) = m \frac{k}{\tau^{2}} \exp \left( -\frac{\tau}{\tau_{0}} \right)
+
+    Args:
+        k (float):
+            Scaling parameter for the magnitude. Reference value of
+            :math:`k=1.5`.
+
+        tau (float):
+            Time-to-collision :math:`\tau > 0` is obtained by linearly extrapolating
+            current trajectories and finding where or if agents collide i.e
+            skin-to-skin distance :math:`h` equals zero.
+
+        tau_0 (float): Interaction time horizon :math:`\tau_{0} > 0`.
+
+    Returns:
+        float: Interaction potential
+
+    """
+    return k / tau**2 * np.exp(-tau / tau_0)
+
+
 @numba.jit(f8(f8, f8), nopython=True, nogil=True)
 def magnitude(tau, tau_0):
     r"""
+    Force affecting agent can be derived by taking spatial gradient of the energy,
+    where time-to-collision :math:`\tau` is function of the relative displacement
+    of the mass centers :math:`\tilde{\mathbf{x}} = \mathbf{x}_i - \mathbf{x}_j`
+
+    .. math::
+       \mathbf{f}^{soc} &= -\nabla_{\tilde{\mathbf{x}}} E(\tau) \\
+       &= - k \cdot m \left(\frac{1}{\tau^{2}}\right) \left(\frac{2}{\tau} + \frac{1}{\tau_{0}}\right) \exp\left (-\frac{\tau}{\tau_{0}}\right ) \nabla_{\tilde{\mathbf{x}}} \tau
+
+    If :math:`\tau < 0` or :math:`\tau` is undefined trajectories are not
+    colliding and social force is :math:`\mathbf{0}`.
+
     Magnitude of social force.
 
     .. math::
        \left(\frac{1}{\tau^{2}}\right) \left(\frac{2}{\tau} + \frac{1}{\tau_{0}}\right) \exp\left (-\frac{\tau}{\tau_{0}}\right )
 
     Args:
-        tau (float): Time-to-collision
-        tau_0 (float): Interaction time horizon
+        tau (float):
+            Time-to-collision :math:`\tau > 0` is obtained by linearly extrapolating
+            current trajectories and finding where or if agents collide i.e
+            skin-to-skin distance :math:`h` equals zero.
+
+        tau_0 (float): Interaction time horizon :math:`\tau_{0} > 0`.
 
     Returns:
         float: Magnitude
@@ -93,7 +114,7 @@ def gradient_three_circle(x_rel, v_rel, r_off, a, b, d):
 @numba.jit(f8[:](f8[:], f8[:]), nopython=True, nogil=True)
 def gradient_circle_line(v, n):
     """
-    Circle line
+    Gradient circle line
 
     Args:
         v:
@@ -108,6 +129,47 @@ def gradient_circle_line(v, n):
 @numba.jit(numba.types.Tuple((f8, f8[:]))(f8[:], f8[:], f8),
            nopython=True, nogil=True)
 def time_to_collision_circle_circle(x_rel, v_rel, r_tot):
+    r"""
+    Time-to-collision of two circles. From *skin-to-skin* distance
+
+    .. math::
+       h(\tau) = \| \tau \tilde{\mathbf{v}} + \mathbf{c} \| - \tilde{r}.
+
+    Solve for root
+
+    .. math::
+       h(\tau) &= 0 \\
+       \| \mathbf{c} + \tau \tilde{\mathbf{v}} \| &= \tilde{r} \\
+       \| \mathbf{c} + \tau \tilde{\mathbf{v}} \|^2 &= \tilde{r}^2
+
+    Quadratic equation is obtained
+
+    .. math::
+       \tau^2 (\tilde{\mathbf{v}} \cdot \tilde{\mathbf{v}}) + 2 \tau (\mathbf{c} \cdot \tilde{\mathbf{v}}) + \mathbf{c} \cdot \mathbf{c} - \tilde{r}^2 =0
+
+    Solution with quadratic formula gives us
+
+    .. math::
+       a &= \tilde{\mathbf{v}} \cdot \tilde{\mathbf{v}} \\
+       b &= -\mathbf{c} \cdot \tilde{\mathbf{v}} \\
+       c &= \mathbf{c} \cdot \mathbf{c} - \tilde{r}^{2}\\
+       d &= \sqrt{b^{2} - a c} \\
+       \tau &= \frac{b - d}{a}.
+
+    Args:
+        x_rel (numpy.ndarray):
+            Relative center of mass :math:`\mathbf{c}`.
+
+        v_rel (numpy.ndarray):
+            Relative velocity :math:`\mathbf{\tilde{v}}`.
+
+        r_tot (float):
+            Total radius of :math:`\tilde{r} = \mathrm{constant}`.
+
+    Returns:
+        (float, numpy.ndarray):
+
+    """
     a = dot2d(v_rel, v_rel)
     b = -dot2d(x_rel, v_rel)
     c = dot2d(x_rel, x_rel) - r_tot ** 2
@@ -128,6 +190,18 @@ def time_to_collision_circle_circle(x_rel, v_rel, r_tot):
 
 @numba.jit(nopython=True, nogil=True)
 def time_to_collision_circle_line(x_rel, v_rel, r_tot, n):
+    r"""
+    Time-to-collision of circle with line.
+
+    Args:
+        x_rel:
+        v_rel:
+        r_tot:
+        n:
+
+    Returns:
+
+    """
     dot_vn = dot2d(v_rel, n)
     if dot_vn == 0:
         return np.nan, np.zeros(2)

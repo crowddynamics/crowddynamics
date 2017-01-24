@@ -11,5 +11,9 @@ Multi-Agent
 
 .. toctree::
 
-   social_force_model.rst
-   interactions.rst
+   social_force_model
+   motion
+   interactions
+   steering
+   integrator
+   multiagent

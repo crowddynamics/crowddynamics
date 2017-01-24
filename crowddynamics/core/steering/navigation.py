@@ -224,7 +224,8 @@ def merge_dir_maps(dmap, dir_map1, dir_map2, radius, value):
     r"""
     Function that merges two direction maps together. Let distance map from
     obstacles be :math:`\Phi(\mathbf{x})` and :math:`\lambda(\Phi(\mathbf{x}))`
-    be any decreasing function of distance from obstacles such that
+    be any decreasing function :math:`\lambda^{\prime}(\Phi(\mathbf{x})) < 0` of
+    distance from obstacles such that
 
     .. math::
        \lambda(\Phi) &=
@@ -267,7 +268,8 @@ def merge_dir_maps(dmap, dir_map1, dir_map2, radius, value):
 
 def static_potential(step, domain, exits, obstacles, radius, value):
     r"""
-    Static potential
+    Static potential is navigation algorithm that does not take into account
+    the space that is occupied by dynamic agents (aka agents).
 
     Args:
         step (float):
@@ -292,5 +294,8 @@ def static_potential(step, domain, exits, obstacles, radius, value):
 
 
 def dynamic_potential():
-    r"""Dynamic potential"""
+    r"""
+    Dynamic potential is navigation algorithm that takes into account the space
+    that is occupied by dynamic agents (aka agents).
+    """
     return NotImplementedError

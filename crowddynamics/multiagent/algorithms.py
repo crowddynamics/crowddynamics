@@ -1,6 +1,6 @@
 import numpy as np
 
-from crowddynamics.core.integrator import integrate
+from crowddynamics.core.integrator import euler_integration
 from crowddynamics.core.interactions.interactions import agent_agent_block_list, agent_wall
 from crowddynamics.core.motion import force_fluctuation, \
     force_adjust, torque_adjust, torque_fluctuation
@@ -30,7 +30,7 @@ class Integrator(TaskNode):
 
     def update(self):
         """Integrates the system."""
-        self.dt_prev = integrate(self.simulation.agent, *self.dt)
+        self.dt_prev = euler_integration(self.simulation.agent, *self.dt)
         self.time_tot += self.dt_prev
         self.simulation.dt_prev = self.dt_prev
         self.simulation.time_tot += self.dt_prev

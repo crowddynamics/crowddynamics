@@ -1,5 +1,5 @@
 from .collision_avoidance.power_law import magnitude, gradient_circle_circle, \
-    gradient_three_circle, gradient_circle_line, \
+    gradient_three_circle, gradient_circle_line, potential, \
     time_to_collision_circle_circle, time_to_collision_circle_line, \
     force_social_circular, force_social_three_circle, force_social_linear_wall
 from .collision_avoidance.helbing import force_social_helbing
@@ -15,6 +15,7 @@ force_social_helbing
 force_contact
 torque_fluctuation
 torque_adjust
+potential
 magnitude
 gradient_circle_circle
 gradient_three_circle

@@ -13,7 +13,7 @@ from .ui.gui import Ui_MainWindow
 
 
 class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
-    """
+    r"""
     Main window for the grahical user interface. Layout is created by using
     qtdesigner and the files can be found in the *designer* folder. Makefile
     to generate python code from the designer files can be used with command::
@@ -26,9 +26,13 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
     - Sidebar (left)
     - Graphics layout widget (middle)
     - Control bar (bottom)
+
     """
 
     def __init__(self):
+        r"""
+        MainWindow
+        """
         super(MainWindow, self).__init__()
 
         # Logger
@@ -38,6 +42,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.setupUi(self)
 
         # Loading data from configs
+        # TODO: replace with better way to find simulations
         self.configs = load_config("simulations.yaml")
 
         # Simulation with multiprocessing
@@ -65,6 +70,12 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             self.enable_multiprocessing))
 
     def enable_controls(self, boolean):
+        """
+        Enable controls
+
+        Args:
+            boolean (Boolean):
+        """
         self.startButton.setEnabled(boolean)
         self.stopButton.setEnabled(boolean)
         self.saveButton.setEnabled(boolean)
@@ -97,11 +108,13 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.simulationsBox.currentIndexChanged[str].connect(self.set_sidebar)
 
     def reset_buffers(self):
+        r"""Reset buffers"""
         self.logger.info("")
         while not self.queue.empty():
             self.queue.get()
 
     def clear_sidebar(self):
+        r"""Clear sidebar"""
         # http://stackoverflow.com/questions/4528347/clear-all-widgets-in-a-layout-in-pyqt
         self.logger.info("")
         layout = self.sidebarLeft
@@ -112,6 +125,13 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             layout.itemAt(i).widget().setParent(None)
 
     def set_sidebar(self, name):
+        """
+        Set sidebar
+
+        Args:
+            name (str):
+
+        """
         self.logger.info(name)
 
         self.clear_sidebar()
@@ -186,6 +206,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.sidebarLeft.addWidget(self.initButton)
 
     def set_simulation(self):
+        r"""Set simulation"""
         self.logger.info("")
 
         self.reset_buffers()
@@ -219,6 +240,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
     @Timed("Update Plots")
     def update_plots(self):
+        r"""Update plots"""
         """Updates the data in the plot(s)."""
         data = self.queue.get()
         if data is None:

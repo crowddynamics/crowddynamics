@@ -8,8 +8,8 @@ from hypothesis.extra.numpy import arrays
 
 from shapely.geometry import LineString
 
-# TODO: Namedtuple agent strategy
-from crowddynamics.core.vector2D import length
+from crowddynamics.multiagent import Agent
+from crowddynamics.core.vector2D import length, wrap_to_pi
 
 
 def real(min_value=None, max_value=None, exclude_zero=None):
@@ -27,12 +27,22 @@ def real(min_value=None, max_value=None, exclude_zero=None):
     # TODO: Maybe use assume instead?
     if exclude_zero == 'exact':
         return strategy.filter(lambda x: x != 0.0)
-    elif exclude_zero == 'near':
+    if exclude_zero == 'near':
         return strategy.filter(lambda x: not np.isclose(x, 0.0))
     return strategy
 
 
 def vector(dtype=np.float64, shape=2, elements=real()):
+    """
+
+    Args:
+        dtype (type):
+        shape (int|Tuple[Int]):
+        elements (SearchStrategy):
+
+    Returns:
+
+    """
     return arrays(dtype, shape, elements)
 
 
@@ -108,3 +118,40 @@ def field(draw, domain_strategy=polygons(), min_target_length=0.1):
         i += 1
 
     return domain, targets, obstacles
+
+
+@st.composite
+def agent(draw, size):
+    r"""
+    Agent SearchStrategy
+
+    Args:
+        draw:
+        size (int):
+
+    Returns:
+        SearchStrategy:
+
+    """
+    kwargs = dict(
+        size=size,
+        mass=draw(vector(shape=size, elements=real(1.0, 100.0))),
+        radius=draw(vector(shape=size, elements=real(0.1, 1.0))),
+        ratio_rt=draw(vector(shape=size, elements=real(0.1, 1.0))),
+        ratio_rs=draw(vector(shape=size, elements=real(0.1, 1.0))),
+        ratio_ts=draw(vector(shape=size, elements=real(0.1, 1.0))),
+        inertia_rot=draw(vector(shape=size, elements=real())),
+        target_velocity=draw(vector(shape=size, elements=real())),
+        target_angular_velocity=draw(vector(shape=size, elements=real(-10, 10)))
+    )
+    agent = Agent(**kwargs)
+    agent.position[:] = draw(vector(shape=(size, 2), elements=real(-100, 100)))
+    agent.velocity[:] = draw(vector(shape=(size, 2), elements=real(-100, 100)))
+    agent.force[:] = draw(vector(shape=(size, 2), elements=real(-100, 100)))
+
+    agent.angle[:] = draw(vector(shape=size, elements=real(-np.pi, np.pi)))
+    agent.angular_velocity[:] = draw(vector(shape=size, elements=real(-100, 100)))
+    agent.torque[:] = draw(vector(shape=size, elements=real(-100, 100)))
+
+    agent.update_shoulder_positions()
+    return agent

@@ -9,7 +9,7 @@ from shapely.ops import cascaded_union
 
 from crowddynamics.core.interactions import overlapping_circle_circle, \
     overlapping_three_circle
-from crowddynamics.core.vector2D import angle, length
+from crowddynamics.core.vector2D import angle
 from crowddynamics.functions import load_config
 from crowddynamics.geometry import check_shapes
 from crowddynamics.multiagent import Agent

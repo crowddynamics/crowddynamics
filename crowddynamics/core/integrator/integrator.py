@@ -5,14 +5,11 @@ from crowddynamics.core.vector2D.vector2D import length_nx2, wrap_to_pi
 
 
 @numba.jit(nopython=True)
-def integrate(agent, dt_min, dt_max):
+def adaptive_timestep(dt_min, dt_max, velocity, target_velocity):
     r"""
-    Differential system is integrated using numerical integration scheme using
-    discrete adaptive time step.
-
-    Timestep :math:`\Delta t` is selected from interval
-    :math:`[\Delta t_{min}, \Delta t_{max}]` by bounding the maximum step size
-    :math:`\Delta x` an agent can take per iteration cycle, obtained from
+    Timestep is selected from interval :math:`[\Delta t_{min}, \Delta t_{max}]`
+    by bounding the maximum step size :math:`\Delta x` an agent can take per
+    iteration cycle, obtained from
 
     .. math::
        \Delta x = c \Delta t_{max} \max_{i\in A} v_i^0 \\
@@ -38,6 +35,45 @@ def integrate(agent, dt_min, dt_max):
 
     - :math:`v_i` is agent's current velocity
 
+
+    Args:
+        dt_min:
+            Minimum timestep :math:`\Delta x_{min}` for adaptive integration.
+
+        dt_max:
+            Maximum timestep :math:`\Delta x_{max}` for adaptive integration.
+
+        velocity:
+
+        target_velocity:
+
+    Returns:
+        float:
+
+    References
+
+    https://en.wikipedia.org/wiki/Adaptive_stepsize
+    """
+    v_max = np.max(length_nx2(velocity))
+    if v_max == 0.0:
+        return dt_max
+    c = 1.1
+    dx_max = c * np.max(target_velocity) * dt_max
+    dt = dx_max / v_max
+    if dt > dt_max:
+        return dt_max
+    elif dt < dt_min:
+        return dt_min
+    else:
+        return dt
+
+
+@numba.jit(nopython=True)
+def euler_integration(agent, dt_min, dt_max):
+    r"""
+    Differential system is integrated using numerical integration scheme using
+    discrete adaptive timestep :math:`\Delta t`.
+
     Acceleration on an agent
 
     .. math::
@@ -54,8 +90,10 @@ def integrate(agent, dt_min, dt_max):
 
     Args:
         agent (Agent):
+
         dt_min (float):
             Minimum timestep :math:`\Delta x_{min}` for adaptive integration.
+
         dt_max (float):
             Maximum timestep :math:`\Delta x_{max}` for adaptive integration.
 
@@ -63,36 +101,71 @@ def integrate(agent, dt_min, dt_max):
         float: Timestep :math:`\Delta t` that was used for integration.
 
     """
-    # TODO: Velocity Verlet?
     i = agent.indices()
-    a = agent.force[i] / agent.mass[i]  # Acceleration
 
     # Time step selection
-    v_max = np.max(length_nx2(agent.velocity))
-    dx_max = np.max(agent.target_velocity) * dt_max
-    dx_max *= 1.1
-
-    if v_max == 0:
-        # Static system
-        dt = dt_max
-    else:
-        dt = dx_max / v_max
-        if dt > dt_max:
-            dt = dt_max
-        elif dt < dt_min:
-            dt = dt_min
+    dt = adaptive_timestep(dt_min, dt_max, agent.velocity[i],
+                           agent.target_velocity[i])
 
     # Updating agents
-    agent.position[i] += agent.velocity[i] * dt + 0.5 * a * dt ** 2
+    a = agent.force[i] / agent.mass[i]  # Acceleration
+    agent.position[i] += agent.velocity[i] * dt + a / 2 * dt ** 2
     agent.velocity[i] += a * dt
 
     if agent.orientable:
         angular_acceleration = agent.torque[i] / agent.inertia_rot[i]
         agent.angle[i] += agent.angular_velocity[i] * dt + \
-                          angular_acceleration * 0.5 * dt ** 2
+                          angular_acceleration / 2 * dt ** 2
         agent.angular_velocity[i] += angular_acceleration * dt
         agent.angle[:] = wrap_to_pi(agent.angle)
 
         agent.update_shoulder_positions()
 
     return dt
+
+
+@numba.jit(nopython=True)
+def velocity_verlet(agent, dt_min, dt_max):
+    r"""
+    Velocity verlet
+
+    .. math::
+        \mathbf{v}_{k+1/2} &= \mathbf{v}_{k} + \frac{1}{2} a_{k} \Delta t \\
+        \mathbf{x}_{k+1} &= \mathbf{x}_{k} + \mathbf{v}_{k+1/2} \Delta t \\
+        a_{k+1} &= \mathbf{f}_{k+1} / m \\
+        \mathbf{v}_{k+1} &= \mathbf{v}_{k+1/2} + \frac{1}{2} a_{k+1} \Delta t
+
+    References
+
+    https://en.wikipedia.org/wiki/Verlet_integration#Velocity_Verlet
+
+    Args:
+        agent (Agent):
+
+        dt_min (float):
+            Minimum timestep :math:`\Delta x_{min}` for adaptive integration.
+
+        dt_max (float):
+            Maximum timestep :math:`\Delta x_{max}` for adaptive integration.
+
+    Yields:
+        float: Timestep :math:`\Delta t` that was used for integration.
+
+    """
+    i = agent.indices()
+    dt = adaptive_timestep(dt_min, dt_max, agent.velocity[i], agent.target_velocity[i])
+    a = agent.force[i] / agent.mass[i]
+    agent.position[i] += agent.velocity[i] * dt + a / 2 * dt ** 2
+    yield dt
+
+    while True:
+        i = agent.indices()
+
+        # Time step selection
+        dt = adaptive_timestep(dt_min, dt_max, agent.velocity[i], agent.target_velocity[i])
+
+        a2 = agent.force[i] / agent.mass[i]
+        agent.velocity[i] += (a + a2) / 2 * dt
+        agent.position[i] += agent.velocity[i] * dt + a2 / 2 * dt ** 2
+        a = a2
+        yield dt

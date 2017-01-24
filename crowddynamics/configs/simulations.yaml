@@ -79,7 +79,7 @@ simulations: !!omap
 
 # Qt mappings for the kwargs
 # int    -> QSpinBox        [min, max]
-# float -> QDoubleSpinBox  [min, max]
+# float  -> QDoubleSpinBox  [min, max]
 # string -> QComboBox       [string,...]
 # bool   -> QRadioButton    {true, false}
 kwarg_mapping:

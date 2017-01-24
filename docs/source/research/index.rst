@@ -33,5 +33,4 @@ We break crowd research down to
 .. toctree::
 
    phenomena.rst
-   simulations.rst
    applications.rst

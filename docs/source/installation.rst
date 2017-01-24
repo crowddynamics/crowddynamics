@@ -4,7 +4,8 @@ Installation
 
    CrowdDynamics is currently only tested *Linux* and functionality on *Windows* and *OS X* cannot be guaranteed.
 
-.. TODO: Youtube video tutorials on installation
+.. todo::
+   Youtube video tutorial on installation
 
 Conda
 -----
