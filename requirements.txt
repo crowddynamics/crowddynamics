@@ -1,7 +1,7 @@
 matplotlib==2.0.0
 shapely==1.5.17.post1
 numpy==1.12.0
-numba
+numba==0.30.1
 PyQt4==4.11.4
 pyqtgraph==0.10.0
 h5py==2.6.0
