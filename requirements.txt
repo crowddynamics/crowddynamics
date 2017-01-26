@@ -3,7 +3,7 @@ shapely
 numpy
 numba
 PyQt4
-pyqtgraph
+pyqtgraph==0.10.0
 h5py
 pandas==0.19.2
 scipy==0.18.1
