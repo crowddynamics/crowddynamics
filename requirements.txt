@@ -6,7 +6,7 @@ PyQt4
 pyqtgraph
 h5py
 pandas
-scipy
+scipy==0.18.1
 skfmm
 skimage
 yaml
