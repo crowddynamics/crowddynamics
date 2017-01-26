@@ -4,7 +4,7 @@ numpy==1.12.0
 numba
 PyQt4==4.11.4
 pyqtgraph==0.10.0
-h5py
+h5py==2.6.0
 pandas==0.19.2
 scipy==0.18.1
 skfmm
