@@ -2,7 +2,7 @@ matplotlib
 shapely
 numpy
 numba
-PyQt4
+PyQt4==4.11.4
 pyqtgraph==0.10.0
 h5py
 pandas==0.19.2
