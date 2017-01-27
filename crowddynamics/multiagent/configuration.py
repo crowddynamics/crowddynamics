@@ -8,6 +8,8 @@ from crowddynamics.core.interactions import overlapping_circle_circle, \
     overlapping_three_circle
 from crowddynamics.core.random.sampling import PolygonSample
 from crowddynamics.multiagent import Agent
+from crowddynamics.multiagent.agent import positions
+from crowddynamics.multiagent.parameters import Parameters
 
 
 def agent_polygon(position, radius):
@@ -123,7 +125,7 @@ class Configuration:
         self.targets -= target
         self._occupied -= target
 
-    def add_agents(self, num, surface, iterations_limit=100):
+    def add_agents(self, num, surface, body_type='adult', iterations_limit=100):
         r"""
         Add multiple agents at once.
 
@@ -143,34 +145,60 @@ class Configuration:
                   domain
                 - ``None``: Domain
 
+            body_type (str):
+                Choice from ``Parameter.body_types``.
+
             iterations_limit (int):
                 Limits iterations to ``max_iter = iterations_limit * num``.
+
+        Returns:
+            int: Number of agents placed
 
         """
         # Draw random uniformly distributed points from the set on points
         # that belong to the surface. These are used as possible new position
         # for an agents (if it does not overlap other agents).
+        ret = 0  # Number of agents places so far
         iterations = 0
         sampling = PolygonSample(surface)
-        while num > 0 and iterations <= iterations_limit * num:
-            position = sampling.draw()
-            mass = None
-            radius = None
-            ratio_rt = None
-            ratio_rs = None
-            ratio_ts = None
-            inertia_rot = None
-            max_velocity = None
-            max_angular_velocity = None
+        parameters = Parameters(body_type=body_type)
 
-            # TODO: test overlapping with obstacles
-            if not overlapping(self.agent, position, radius):
+        while num > 0 and iterations <= iterations_limit * num:
+            # Parameters
+            position = sampling.draw()
+            mass = parameters.mass.default()
+            radius = parameters.radius.default()
+            ratio_rt = parameters.radius_torso.default()
+            ratio_rs = parameters.radius_shoulder.default()
+            ratio_ts = parameters.radius_torso_shoulder.default()
+            inertia_rot = parameters.moment_of_inertia.default()
+            max_velocity = parameters.maximum_velocity.default()
+            max_angular_velocity = parameters.maximum_angular_velocity.default()
+
+            # Polygon of the agent
+            if self.agent.three_circle:
+                r_t = ratio_rt * radius
+                r_s = ratio_rs * radius
+                poly = agent_polygon(
+                    positions(position, 0.0, ratio_rt * radius),
+                    (r_t, r_s, r_s)
+                )
+            else:
+                poly = agent_polygon(position, radius)
+
+            # Conditions
+            overlapping_agents = overlapping(self.agent, position, radius)
+            overlapping_obstacles = self._occupied.intersects(poly)
+            if not overlapping_agents and not overlapping_obstacles:
+                # Add new agent
                 success = self.agent.add(
                     position, mass, radius, ratio_rt, ratio_rs, ratio_ts,
                     inertia_rot, max_velocity, max_angular_velocity
                 )
                 if success:
                     num -= 1
+                    ret += 1
                 else:
                     break
             iterations += 1
+        return ret

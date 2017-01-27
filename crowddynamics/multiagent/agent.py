@@ -5,6 +5,21 @@ from numba.types import UniTuple
 
 from crowddynamics.core.vector2D.vector2D import rotate270
 
+
+@numba.jit(nopython=True, nogil=True)
+def positions(position, angle, radius_ts):
+    """Center and shoulder positions"""
+    n = np.array((np.cos(angle), np.sin(angle)))
+    t = rotate270(n)
+    offset = t * radius_ts
+
+    position = position
+    position_ls = position - offset
+    position_rs = position + offset
+
+    return position, position_ls, position_rs
+
+
 spec_agent = (
     ("size", int64),
     ("shape", UniTuple(int64, 2)),
@@ -32,9 +47,9 @@ spec_agent = (
     ("target_angle", float64[:]),
     ("target_angular_velocity", float64[:]),
     ("torque", float64[:]),
-    ("position_ls", float64[:, :]),
-    ("position_rs", float64[:, :]),
-    ("front", float64[:, :]),
+    # ("position_ls", float64[:, :]),
+    # ("position_rs", float64[:, :]),
+    # ("front", float64[:, :]),
 )
 
 spec_agent_motion = (
@@ -106,16 +121,16 @@ class Agent(object):
         self.force = np.zeros(self.shape)
 
         # Rotational movement. Three circles agent model
-        self.angle = np.zeros(self.size)
+        self.angle = np.zeros(self.size)  # TODO: rename to orientation?
         self.angular_velocity = np.zeros(self.size)
         self.target_angle = np.zeros(self.size)
         self.target_angular_velocity = np.zeros(self.size)
         self.torque = np.zeros(self.size)
 
-        self.position_ls = np.zeros(self.shape)  # Left shoulder
-        self.position_rs = np.zeros(self.shape)  # Right shoulder
-        self.front = np.zeros(self.shape)  # For plotting agents.
-        self.update_shoulder_positions()
+        # self.position_ls = np.zeros(self.shape)  # Left shoulder
+        # self.position_rs = np.zeros(self.shape)  # Right shoulder
+        # self.front = np.zeros(self.shape)  # For plotting agents.
+        # self.update_shoulder_positions()
 
         # Motion related parameters
         # TODO: arrays
@@ -209,15 +224,16 @@ class Agent(object):
         """
         self.active[index] = False
 
-    def positions(self):
-        return self.position[self.active], \
-               self.position_ls[self.active], \
-               self.position_rs[self.active],
+    def positions(self, i):
+        return positions(self.position[i], self.angle[i], self.r_ts[i])
 
-    def radii(self):
-        return self.r_t[self.active], \
-               self.r_s[self.active], \
-               self.r_s[self.active],
+    def radii(self, i):
+        return self.r_t[i], self.r_s[i], self.r_s[i],
+
+    def front(self, i):
+        n = np.array((np.cos(self.angle[i]), np.sin(self.angle[i])))
+        position = self.position[i]
+        return position + n * self.r_t[i]
 
     def set_circular(self):
         self.circular = True
@@ -243,15 +259,3 @@ class Agent(object):
         # TODO: Other masks
         all_indices = np.arange(self.size)
         return all_indices[self.active]
-
-    def update_shoulder_position(self, i):
-        n = np.array((np.cos(self.angle[i]), np.sin(self.angle[i])))
-        t = rotate270(n)
-        offset = t * self.r_ts[i]
-        self.position_ls[i] = self.position[i] - offset
-        self.position_rs[i] = self.position[i] + offset
-        self.front[i] = self.position[i] + n * self.r_t[i]
-
-    def update_shoulder_positions(self):
-        for i in self.indices():
-            self.update_shoulder_position(i)

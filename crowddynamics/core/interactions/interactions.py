@@ -166,10 +166,8 @@ def agent_agent_interaction_three_circle(i, j, agent):
 
     """
     h, n, r_moment_i, r_moment_j = distance_three_circle(
-        (agent.position[i], agent.position_ls[i], agent.position_rs[i]),
-        (agent.r_t[i], agent.r_s[i], agent.r_s[i]),
-        (agent.position[j], agent.position_ls[j], agent.position_rs[j]),
-        (agent.r_t[j], agent.r_s[j], agent.r_s[j])
+        agent.positions(i), agent.radii(i),
+        agent.positions(j), agent.radii(j)
     )
     if h < agent.sight_soc:
         force_i, force_j = force_social_three_circle(agent, i, j)
@@ -226,9 +224,7 @@ def agent_obstacle_interaction_three_circle(i, w, agent, wall):
 
     """
     h, n, r_moment = distance_three_circle_line(
-        (agent.position[i], agent.position_ls[i], agent.position_rs[i]),
-        (agent.r_t[i], agent.r_s[i], agent.r_s[i]),
-        wall[w]
+        agent.positions(i), agent.radii(i), wall[w]
     )
     if h < agent.sight_wall:
         force = force_social_linear_wall(i, w, agent, wall)
