@@ -7,4 +7,5 @@ vectors
 unit_vector
 polygons
 field
+agent
 """.split()

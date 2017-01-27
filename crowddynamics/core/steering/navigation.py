@@ -67,11 +67,6 @@ def _set_values(grid, step, shape, value):
     elif isinstance(shape, Iterable):
         for shape_ in shape:
             _set_values(grid, step, shape_, value)
-    elif shape is None:
-        # If shape is None do nothing.
-        pass
-    else:
-        raise Exception("Type of shape is not valid.")
 
 
 def distance_map(step, domain, targets, obstacles):
@@ -282,6 +277,7 @@ def static_potential(step, domain, exits, obstacles, radius, value):
     Returns:
         numpy.ndarray:
     """
+    # TODO: interpolation
     _, dmap_exits, _ = distance_map(step, domain, exits, obstacles)
     _, dmap_obs, _ = distance_map(step, domain, obstacles, None)
 

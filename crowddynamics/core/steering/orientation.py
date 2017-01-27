@@ -1,3 +1,7 @@
+"""
+Minimun energy principle
+"""
+
 
 def orientation():
     r"""

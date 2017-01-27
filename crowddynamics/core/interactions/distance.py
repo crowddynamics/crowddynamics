@@ -168,63 +168,48 @@ def distance_three_circle_line(x, r, p):
 
 
 @numba.jit(nopython=True, nogil=True)
-def overlapping_circle_circle(x, r, start_index, i):
+def overlapping_circle_circle(x1, r1, x2, r2):
     """
     Test if two circles are overlapping.
 
     Args:
-        x:
-        r:
-        start_index:
-        i:
+        x1: Positions of other agents
+        r1: Radii of other agents
+        x2: Position of agent that is tested
+        r2: Radius of agent that is tested
 
     Returns:
         Boolean:
 
     """
-    for j in range(start_index, i):
-        h, _ = distance_circle_circle(x[i], r[i], x[j],  r[j])
+    for i in range(len(x1)):
+        h, _ = distance_circle_circle(x1[i], r1[i], x2,  r2)
         if h < 0.0:
             return True
     return False
 
 
 @numba.jit(nopython=True, nogil=True)
-def overlapping_three_circle(x, r, start_index, i):
+def overlapping_three_circle(x1, r1, x2, r2):
     """
     Test if two three-circle models are overlapping.
 
     Args:
-        x (collections.namedtuple):
-            Attributes:
-            - position=numpy.ndarray
-            - position_ls=numpy.ndarray
-            - position_rs=numpy.ndarray
-
-        r (collections.namedtuple):
-            Attributes:
-            - r_t
-            - r_s
-
-        start_index:
-        i:
+        x1: Positions of other agents
+        r1: Radii of other agents
+        x2: Position of agent that is tested
+        r2: Radius of agent that is tested
 
     Returns:
         Boolean:
 
     """
-    for j in range(start_index, i):
-        # h, _, _, _ = distance_three_circle(
-        #     (x.position[i], x.position_ls[i], x.position_rs[i]),
-        #     (r.r_t[i], r.r_s[i], r.r_s[i]),
-        #     (x.position[j], x.position_ls[j], x.position_rs[j]),
-        #     (r.r_t[j], r.r_s[j], r.r_s[j])
-        # )
+    for i in range(len(x1)):
         h, _, _, _ = distance_three_circle(
-            (x[0][i], x[1][i], x[2][i]),
-            (r[0][i], r[1][i], r[2][i]),
-            (x[0][j], x[1][j], x[2][j]),
-            (r[0][j], r[1][j], r[2][j])
+            (x1[0][i], x1[1][i], x1[2][i]),
+            (r1[0][i], r1[1][i], r1[2][i]),
+            (x2[0], x2[1], x2[2]),
+            (r2[0], r2[1], r2[2])
         )
         if h < 0:
             return True

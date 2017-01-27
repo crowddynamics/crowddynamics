@@ -14,6 +14,7 @@ class QueueDict:
 
     def __init__(self, producer):
         """
+        Init queue dict
 
         Args:
             producer:

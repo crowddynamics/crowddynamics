@@ -1,15 +1,21 @@
 """
 Module to generate various input values for testing code using ``Hypothesis``
-library.
+library [#]_.
+
+.. [#] https://hypothesis.readthedocs.io/en/latest/data.html?highlight=example
 """
+from itertools import chain
+
 import numpy as np
 from hypothesis import strategies as st
 from hypothesis.extra.numpy import arrays
-
+from hypothesis.searchstrategy.strategies import SearchStrategy
 from shapely.geometry import LineString
+import random
+
+from shapely.geometry import Polygon
 
 from crowddynamics.multiagent import Agent
-from crowddynamics.core.vector2D import length, wrap_to_pi
 
 
 def real(min_value=None, max_value=None, exclude_zero=None):
@@ -60,15 +66,19 @@ def unit_vector(draw, start=0, end=2 * np.pi):
 
 
 @st.composite
-def polygons(draw, min_value=-1.0, max_value=1.0, num_points=5,
-             buffer=real(0.1, 0.2), convex_hull=False):
-    """
+def polygon(draw, a=-1.0, b=1.0, num_points=5, buffer=real(0.1, 0.2),
+            convex_hull=False):
+    r"""
     Generate a random polygon. Polygon should have area > 0.
 
     Args:
         draw:
-        min_value (float):
-        max_value (float):
+        a (float):
+            Minimum value of the bounding box
+
+        b (float):
+           Maximum value of the bounding box
+
         num_points (int):
         buffer (SearchStrategy):
         convex_hull (Boolean):
@@ -77,10 +87,12 @@ def polygons(draw, min_value=-1.0, max_value=1.0, num_points=5,
         Polygon: Random polygon
 
     """
+    c = draw(buffer)
     points = draw(arrays(np.float64, (num_points, 2),
-                         real(min_value, max_value, exclude_zero='near')))
-    l = draw(buffer)
-    poly = LineString(points).buffer(l)
+                         real(a + c, b - c, exclude_zero='near')))
+    # points *= (1 - c / abs(b - a))
+    lines = LineString(points)
+    poly = lines.buffer(c)
     if convex_hull:
         return poly.convex_hull
     else:
@@ -88,35 +100,46 @@ def polygons(draw, min_value=-1.0, max_value=1.0, num_points=5,
 
 
 @st.composite
-def field(draw, domain_strategy=polygons(), min_target_length=0.1):
-    """
+def field(draw,
+          domain_strategy=polygon(),
+          target_length_strategy=real(0.3, 0.5)):
+    r"""
     SearchStrategy that generates a domain, targets and obstacles. Domain
-    is created as polygon, then targets are chosen from the exterior of the
-    polygon and rest of the exterior is obstacles.
+    is created as polygon, then targets are chosen from the ``domain.exterior``
+    of the polygon and rest of the exterior and ``domain.interior`` is made to
+    obstacle.
 
     Args:
         draw:
         domain_strategy:
+        target_length:
 
     Returns:
-        (Polygon, LineString, LineString):
+        (Polygon, MultiLineString, MultiLineString):
+            - domain
+            - targets
+            - obstacles
 
     """
+    target_length = draw(target_length_strategy)
     domain = draw(domain_strategy)
-    targets = None
-    obstacles = None
+    targets = LineString()
+    obstacles = domain.exterior
+    for obs in domain.interiors:
+        obstacles |= obs
 
-    pts = np.asarray(domain.exterior)
-    lens = [length(pts[j], pts[j+1]) for j in range(len(pts) - 1)]
-    i = np.random.uniform(0, len(pts) - 1)
+    # Select a continuous line segment from the domain.exterior as a target.
+    def shifted_range(start, stop):
+        shift = random.randrange(start, stop)
+        return chain(range(shift, stop), range(start, shift))
 
-    l = 0
-    target_pts = []
-    obstacle_pts = []
-    while l < min_target_length:
-        target_pts += pts[i]
-        i += 1
+    coords = domain.exterior.coords
+    for i in shifted_range(0, len(coords)):
+        targets |= LineString([coords[i], coords[i]])
+        if targets.length < target_length:
+            break
 
+    obstacles -= targets
     return domain, targets, obstacles
 
 

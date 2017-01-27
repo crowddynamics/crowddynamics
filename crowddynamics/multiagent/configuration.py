@@ -1,297 +1,176 @@
 import logging
-from numbers import Number
 
-import numpy as np
-from matplotlib.path import Path
-from scipy.stats import truncnorm
-from shapely.geometry import Polygon, LineString, Point
+from shapely.geometry import Point
+from shapely.geometry import Polygon, GeometryCollection
 from shapely.ops import cascaded_union
 
 from crowddynamics.core.interactions import overlapping_circle_circle, \
     overlapping_three_circle
-from crowddynamics.core.vector2D import angle
-from crowddynamics.functions import load_config
-from crowddynamics.geometry import check_shapes
+from crowddynamics.core.random.sampling import PolygonSample
 from crowddynamics.multiagent import Agent
-from crowddynamics.sampling import PolygonSample
+
+
+def agent_polygon(position, radius):
+    if isinstance(position, tuple):
+        return cascaded_union((
+            Point(position[0]).buffer(radius[0]),
+            Point(position[1]).buffer(radius[1]),
+            Point(position[2]).buffer(radius[2]),
+        ))
+    else:
+        return Point(position).buffer(radius)
+
+
+def overlapping(agent, position, radius):
+    """
+    Overlapping
+
+    Args:
+        agent (Agent):
+        position:
+        radius:
+
+    Returns:
+        Boolean:
+
+    """
+    if agent.three_circle:
+        return overlapping_three_circle(
+            agent.positions(),
+            agent.radii(),
+            position,
+            radius,
+        )
+    else:
+        active = agent.active
+        return overlapping_circle_circle(
+            agent.position[active],
+            agent.radius[active],
+            position,
+            radius
+        )
 
 
 class Configuration:
-    """
-    Set initial configuration for multi-agent simulation.
+    r"""
+    MultiAgent simulation setup
+
+    1) Set the Field
+       - Domain
+       - Obstacles
+       - Targets (aka exits)
+
+    2) Initialise Agents
+       - Set maximum number of agents. This is the limit of the size of array
+         inside ``Agent`` class.
+       - Select Agent model.
+
+    3) Place Agents into any surface that is contained by the domain.
+       - Body type
+       - Number of agents that is placed into the surface
+
     """
 
-    def __init__(self):
-        """Configuration"""
+    def __init__(self, domain, agent_max_num, agent_model):
+        r"""
+        Simulation setup
+
+        Args:
+            domain (Polygon):
+            agent_max_num (int):
+            agent_model (str):
+        """
         self.logger = logging.getLogger(__name__)
 
         # Field
-        self.domain = None
-        self.obstacles = []
-        self.exits = []
+        self.domain = domain
+        self.obstacles = GeometryCollection()
+        self.targets = GeometryCollection()
+        self._occupied = Polygon()  # Currently occupied surface
 
-        # Numpy + Numba. More computationally efficient forms
-        self.agent = None
-        self.omega = None
-
-        # Angle and direction update algorithms
-        # TODO: Add root node
-        self.task_graph = None
-
-        # Current index of agent to be placed
-        self._index = 0
-
-        # Surfaces that is occupied by obstacles, exits, or other agents
-        self._occupied = cascaded_union(())  # Empty initially
-
-    @staticmethod
-    def truncnorm(loc, abs_scale, size, std=3.0):
-        """Scaled symmetrical truncated normal distribution."""
-        scale = abs_scale / std
-        return truncnorm.rvs(-std, std, loc=loc, scale=scale, size=size)
-
-    @staticmethod
-    def random_vector(size, orient=(0.0, 2.0 * np.pi), mag=1.0):
-        orientation = np.random.uniform(orient[0], orient[1], size=size)
-        return mag * np.stack((np.cos(orientation), np.sin(orientation)),
-                              axis=1)
-
-    def set_field(self, domain=None, obstacles=None, exits=None):
-        """
-        Shapely BaseGeometry types
-
-        - Point
-        - LineString
-        - LinearRing
-        - Polygon
-        - MultiPoint
-        - MultiLineString
-        - MultiPolygon
-        - GeometryCollection
-
-        =========== ===========================================================
-        **Kwargs**
-
-        *domain*    Polygon which contains all the other objects.
-
-        *goals*     --
-
-        *obstacles* Collection of polygons and LineStrings.
-
-        *exits*     Collection of polygons and LineStrings.
-
-        =========== ===========================================================
-        """
-        self.logger.info("")
-
-        # TODO: Conditions: is_valid, is_simple, ...
-        self.obstacles = check_shapes(obstacles, (Polygon, LineString))
-        self.exits = check_shapes(exits, (Polygon, LineString))
-
-        if isinstance(domain, Polygon):
-            self.domain = domain
-        elif domain is None:
-            # Construct polygon that bounds other objects
-            raise NotImplemented("")
-        else:
-            raise Exception("")
-
-        # TODO: Move to own task node
-        self.omega = Path(np.asarray(self.domain.exterior))
-
-    def set_body(self, size, body):
-        self.logger.info("In: {}, {}".format(size, body))
-
-        # noinspection PyUnusedLocal
-        pi = np.pi
-
-        # Load tabular values
-        bodies = load_config("body.csv")
-        try:
-            body = bodies[body]
-        except:
-            raise KeyError(
-                "Body \"{}\" is not in bodies {}.".format(body, bodies))
-        values = load_config("agent.csv")["value"]
-
-        # Arguments for Agent
-        # TODO: Scaling inertia_rot
-        mass = self.truncnorm(body["mass"], body["mass_scale"], size)
-        radius = self.truncnorm(body["radius"], body["radius_scale"], size)
-        ratio_rt = body["ratio_rt"]
-        ratio_rs = body["ratio_rs"]
-        ratio_ts = body["ratio_ts"]
-        target_velocity = self.truncnorm(body['velocity'],
-                                         body['velocity_scale'], size)
-        inertia_rot = eval(values["inertia_rot"]) * np.ones(size)
-        target_angular_velocity = eval(
-            values["target_angular_velocity"]) * np.ones(size)
-
-        # Agent class
-        self.agent = Agent(size, mass, radius, ratio_rt, ratio_rs, ratio_ts,
-                           inertia_rot, target_velocity,
-                           target_angular_velocity)
-
-    def set_model(self, model):
-        self.logger.info("{}".format(model))
-        if model == "circular":
-            self.agent.set_circular()
-        elif model == "three_circle":
+        # Agents
+        self.agent = Agent(agent_max_num)
+        if agent_model == 'three_circle':
             self.agent.set_three_circle()
         else:
-            self.logger.warning("")
-            raise ValueError()
+            self.agent.set_circular()
 
-    def set_motion(self, i, target_direction, target_angle, velocity,
-                   orientation):
-        if target_direction is None:
-            pass
-        elif isinstance(target_direction, np.ndarray):
-            self.agent.target_direction[i] = target_direction
-        elif target_direction == "random":
-            self.agent.target_direction[i] = self.random_vector(1)
-
-        if velocity is None:
-            pass
-        elif isinstance(velocity, np.ndarray):
-            self.agent.velocity[i] = velocity
-        elif velocity == "random":
-            self.agent.velocity[i] = self.random_vector(1)
-        elif velocity == "auto":
-            self.agent.velocity[i] = self.agent.target_direction[i]
-            self.agent.velocity[i] *= self.agent.target_velocity[i]
-
-        if target_angle is None:
-            pass
-        elif isinstance(target_angle, np.ndarray):
-            self.agent.target_angle[i] = target_angle
-        elif target_angle == "random":
-            self.agent.target_angle[i] = self.random_vector(1)
-        elif velocity == "auto":
-            self.agent.target_angle[i] = angle(self.agent.target_direction[i])
-
-        if orientation is None:
-            pass
-        elif isinstance(orientation, Number):
-            self.agent.angle[i] = orientation
-        elif orientation == "random":
-            self.agent.angle[i] = np.random.random()
-        elif velocity == "auto":
-            self.agent.angle[i] = angle(self.agent.velocity[i])
-
-    def set_agents(self, size=None, surface=None, position="random",
-                   velocity=None, orientation=None, target_direction="auto",
-                   target_angle="auto"):
-        """Set spatial and rotational parameters.
-
-        ================== ==========================
-        **kwargs**
-
-        *size*             Integer: Number of agent to be placed. \n
-                           None: Places all agents
-
-        *surface*          surface: Custom value \n
-                           None: Domain
-
-        *position*         ndarray: Custom values \n
-                           "random": Uses Monte Carlo method to place agent
-                           without overlapping with obstacles or other agents.
-
-        *target_direction* ndarray: Custom value \n
-                           "random": Uniformly distributed random value \n
-                           "auto":
-                           None: Default value
-
-        *velocity*         ndarray: Custom value  \n
-                           "random: Uniformly distributed random value, \n
-                           "auto":
-                           None: Default value
-
-        *target_angle*     ndarray: Custom value  \n
-                           "random": Uniformly distributed random value, \n
-                           "auto":
-                           None: Default value
-
-        *orientation*      float: Custom value  \n
-                           "random": Uniformly distributed random value, \n
-                           "auto":
-                           None: Default value
-        ================== ==========================
+    def add_obstacle(self, obstacle):
         """
-        self.logger.info("")
+        Add new ``obstacle`` to the Field
 
-        if surface is None:
-            surface = self.domain
+        Args:
+            obstacle (BaseGeometry):
+        """
+        self.obstacles |= obstacle
+        self._occupied |= obstacle
 
-        iterations = 0  # Number of iterations
-        area_filled = 0  # Total area filled by agents
-        random_sample = PolygonSample(surface)
+    def remove_obstacle(self, obstacle):
+        self.obstacles -= obstacle
+        self._occupied -= obstacle
 
-        self._occupied = cascaded_union(self.obstacles + self.exits)
+    def add_target(self, target):
+        """
+        Add new ``target`` to the Field
 
-        start_index = self._index
-        limit = start_index + size
-        iter_limit = size * 5
+        Args:
+            target (BaseGeometry):
+        """
+        self.targets |= target
+        self._occupied |= target
 
-        while self._index < limit and iterations < iter_limit:
-            # Random point inside spawn surface. Center of mass for an agent.
-            if position == "random":
-                point = Point(random_sample.draw())
-                self.agent.position[self._index] = np.asarray(point)
-            elif isinstance(position, np.ndarray):
-                point = Point(position[self._index])
-                self.agent.position[self._index] = position[self._index]
-            else:
-                raise ValueError()
+    def remove_target(self, target):
+        self.targets -= target
+        self._occupied -= target
 
-            self.set_motion(self._index, target_direction, target_angle,
-                            velocity, orientation)
+    def add_agents(self, num, surface, iterations_limit=100):
+        r"""
+        Add multiple agents at once.
 
-            # Geometry of the agent
-            if self.agent.three_circle:
-                self.agent.update_shoulder_position(self._index)
+        1) Sample new position from ``PolygonSample``
+        2) Check if agent in new position is overlapping with existing ones
+        3) Add new agent if there is no overlapping
 
-                point_ls = Point(self.agent.position_ls[self._index])
-                point_rs = Point(self.agent.position_rs[self._index])
-                agent = cascaded_union((
-                    point.buffer(self.agent.r_t[self._index]),
-                    point_ls.buffer(self.agent.r_s[self._index]),
-                    point_rs.buffer(self.agent.r_s[self._index]),
-                ))
-            else:
-                agent = point.buffer(self.agent.radius[self._index])
+        Args:
+            num (int, optional):
+                - Number of agents to be placed into the ``surface``. If given
+                  amount of agents does not fit into the ``surface`` only the
+                  amount that fits will be placed.
+                - ``None``: Places maximum size of agents
 
-            # Check if agent intersects with other agents or obstacles
-            if self.agent.three_circle:
-                overlapping = overlapping_three_circle(
-                    (self.agent.position, self.agent.position_ls, self.agent.position_rs),
-                    (self.agent.r_t, self.agent.r_s, self.agent.r_s),
-                    start_index, self._index
+            surface (Polygon, optional):
+                - ``Polygon``: Custom polygon that is contained inside the
+                  domain
+                - ``None``: Domain
+
+            iterations_limit (int):
+                Limits iterations to ``max_iter = iterations_limit * num``.
+
+        """
+        # Draw random uniformly distributed points from the set on points
+        # that belong to the surface. These are used as possible new position
+        # for an agents (if it does not overlap other agents).
+        iterations = 0
+        sampling = PolygonSample(surface)
+        while num > 0 and iterations <= iterations_limit * num:
+            position = sampling.draw()
+            mass = None
+            radius = None
+            ratio_rt = None
+            ratio_rs = None
+            ratio_ts = None
+            inertia_rot = None
+            max_velocity = None
+            max_angular_velocity = None
+
+            # TODO: test overlapping with obstacles
+            if not overlapping(self.agent, position, radius):
+                success = self.agent.add(
+                    position, mass, radius, ratio_rt, ratio_rs, ratio_ts,
+                    inertia_rot, max_velocity, max_angular_velocity
                 )
-            else:
-                overlapping = overlapping_circle_circle(
-                    self.agent.position, self.agent.radius,
-                    start_index, self._index
-                )
-
-            if not overlapping and not agent.intersects(self._occupied):
-                density = area_filled / surface.area
-                self.logger.debug(
-                    "Agent {} | Density {}".format(self._index, density))
-                area_filled += agent.area
-                self.agent.active[self._index] = True
-                self._index += 1
-            else:
-                # Reset
-                self.agent.position[self._index] = 0
-                self.agent.position_ls[self._index] = 0
-                self.agent.position_rs[self._index] = 0
-                self.agent.velocity[self._index] = 0
-                self.agent.angle[self._index] = 0
-                self.agent.target_angle[self._index] = 0
-                self.agent.target_direction[self._index] = 0
-                self.agent.front[self._index] = 0
-
+                if success:
+                    num -= 1
+                else:
+                    break
             iterations += 1
-
-        self.logger.info("Density: {}".format(area_filled / surface.area))

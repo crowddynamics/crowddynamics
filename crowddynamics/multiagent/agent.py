@@ -14,7 +14,7 @@ spec_agent = (
 
     ("orientable", boolean),
     ("active", boolean[:]),
-    ("goal_reached", boolean[:]),
+    # ("goal_reached", boolean[:]),
     ("mass", float64[:, :]),
     ("radius", float64[:]),
     ("r_t", float64[:]),
@@ -66,65 +66,42 @@ spec_agent += spec_agent_motion + spec_agent_neighbour
 
 @numba.jitclass(spec_agent)
 class Agent(object):
-    """Structure for agent parameters and variables."""
+    r"""Structure for agent parameters and variables."""
 
-    def __init__(self, size, mass, radius, ratio_rt, ratio_rs, ratio_ts,
-                 inertia_rot, target_velocity, target_angular_velocity):
-        """
+    def __init__(self, size):
+        r"""
         Initialise the agent structure.
 
         Args:
             size (int):
                 Number of agents.
 
-            mass (numpy.ndarray):
-                Masses of the agents
-
-            radius (numpy.ndarray):
-                Total radii of the agents
-
-            ratio_rt (float):
-                Ratio of the total radius and torso radius. :math:`[0, 1]`
-
-            ratio_rs (float):
-                Ratio of the total radius and shoulder radius. :math:`[0, 1]`
-
-            ratio_ts (float):
-                Ratio of the torso radius and torso radius. :math:`[0, 1]`
-
-            inertia_rot (numpy.ndarray):
-
-            target_velocity (numpy.ndarray):
-
-            target_angular_velocity (numpy.ndarray):
-
         """
-
         # Array properties
         self.size = size  # Maximum number of agents
         self.shape = (self.size, 2)  # Shape of 2D arrays
 
-        # Agent models (Only one can be active at time).
-        self.circular = True
-        self.three_circle = False
-
         # Flags
+        # Agent models (Only one can be active at time).
+        self.three_circle = False
+        self.circular = False
         self.orientable = self.three_circle  # Orientable has rotational motion
         self.active = np.zeros(size, np.bool8)  # Initialise agents as inactive
-        self.goal_reached = np.zeros(size, np.bool8)  # TODO: Deprecate
+        # self.indices = np.arange(self.size)
+        # self.goal_reached = np.zeros(size, np.bool8)  # TODO: Deprecate
 
         # Constant properties
-        self.radius = radius  # Total radius
-        self.r_t = ratio_rt * radius  # Radius of torso
-        self.r_s = ratio_rs * radius  # Radius of shoulders
-        self.r_ts = ratio_ts * radius  # Distance from torso to shoulder
-        self.mass = mass.reshape(size, 1)  # Mass
-        self.inertia_rot = inertia_rot  # Moment of inertia
+        self.radius = np.zeros(self.size)       # Total radius
+        self.r_t = np.zeros(self.size)          # Radius of torso
+        self.r_s = np.zeros(self.size)          # Radius of shoulders
+        self.r_ts = np.zeros(self.size)         # Distance from torso to shoulder
+        self.mass = np.zeros((self.size, 1))    # Mass
+        self.inertia_rot = np.zeros(self.size)  # Moment of inertia
 
         # Movement along x and y axis.
         self.position = np.zeros(self.shape)
         self.velocity = np.zeros(self.shape)
-        self.target_velocity = target_velocity.reshape(size, 1)
+        self.target_velocity = np.zeros((size, 1))
         self.target_direction = np.zeros(self.shape)
         self.force = np.zeros(self.shape)
 
@@ -132,7 +109,7 @@ class Agent(object):
         self.angle = np.zeros(self.size)
         self.angular_velocity = np.zeros(self.size)
         self.target_angle = np.zeros(self.size)
-        self.target_angular_velocity = target_angular_velocity
+        self.target_angular_velocity = np.zeros(self.size)
         self.torque = np.zeros(self.size)
 
         self.position_ls = np.zeros(self.shape)  # Left shoulder
@@ -141,6 +118,7 @@ class Agent(object):
         self.update_shoulder_positions()
 
         # Motion related parameters
+        # TODO: arrays
         self.tau_adj = 0.5  # Adjusting force
         self.tau_rot = 0.2  # Adjusting torque
         self.k_soc = 1.5  # Social force scaling
@@ -155,16 +133,91 @@ class Agent(object):
         self.sight_soc = 3.0  # Interaction distance with other agents
         self.sight_wall = 3.0  # Interaction distance with walls
 
-        # TODO: Move
         # Tracking neighboring agents. Neighbors contains the indices of the
         # neighboring agents. Negative value denotes missing value (if less than
         # neighborhood_size of neighbors).
+        # TODO: move to interactions
         self.neighbor_radius = np.nan
         self.neighborhood_size = 8
         self.neighbors = np.ones((self.size, self.neighborhood_size), dtype=np.int64)
         self.neighbor_distances = np.zeros((self.size, self.neighborhood_size))
         self.neighbor_distances_max = np.zeros(self.size)
         self.reset_neighbor()
+
+    def add(self, position, mass, radius, ratio_rt, ratio_rs, ratio_ts,
+            inertia_rot, max_velocity, max_angular_velocity):
+        """
+        Add new agent to next free index if there is space left.
+
+        Args:
+            position (numpy.ndarray):
+                Position of the agent
+
+            mass (float):
+                Mass of the agent
+
+            radius (float):
+                Total radius of the agent
+
+            ratio_rt (float):
+                Ratio of the total radius and torso radius. :math:`[0, 1]`
+
+            ratio_rs (float):
+                Ratio of the total radius and shoulder radius. :math:`[0, 1]`
+
+            ratio_ts (float):
+                Ratio of the torso radius and torso radius. :math:`[0, 1]`
+
+            inertia_rot (float):
+
+            max_velocity (float):
+
+            max_angular_velocity (float):
+
+        Returns:
+            Boolean: Boolean indicating whether addition was successful.
+
+        """
+        # mass, radius, ratio_rt, ratio_rs, ratio_ts,
+        # inertia_rot, target_velocity, target_angular_velocity
+
+        # Find first inactive agent
+        for i, state in enumerate(self.active):
+            if state:
+                continue
+            else:
+                self.active[i] = True
+                self.position[i] = position
+                self.mass[i] = mass
+                self.radius[i] = radius
+                self.r_t[i] = ratio_rt * radius
+                self.r_s[i] = ratio_rs * radius
+                self.r_ts[i] = ratio_ts * radius
+                self.inertia_rot[i] = inertia_rot
+                self.target_velocity[i] = max_velocity
+                self.target_angular_velocity[i] = max_angular_velocity
+                return True
+        return False
+
+    def remove(self, index):
+        """
+        Remove agent of ``index``.
+        - Set agent inactive
+
+        Args:
+            index (int):
+        """
+        self.active[index] = False
+
+    def positions(self):
+        return self.position[self.active], \
+               self.position_ls[self.active], \
+               self.position_rs[self.active],
+
+    def radii(self):
+        return self.r_t[self.active], \
+               self.r_s[self.active], \
+               self.r_s[self.active],
 
     def set_circular(self):
         self.circular = True

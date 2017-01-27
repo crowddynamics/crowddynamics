@@ -77,20 +77,22 @@ def test_distance_three_circle_line(x, r, p):
 
 
 @given(
-    x=vector(shape=(5, 2), elements=real(-10, 10)),
-    r=vector(shape=5, elements=real(min_value=0, max_value=1))
+    x1=vector(shape=(5, 2), elements=real(-10, 10)),
+    r1=vector(shape=5, elements=real(min_value=0, max_value=1)),
+    x2=vector(shape=2, elements=real(-10, 10)),
+    r2=real(min_value=0, max_value=1)
 )
-def test_overlapping_circle_circle(x, r):
-    n = len(x) - 1
-    flag = overlapping_circle_circle(x, r, n-1, n)
+def test_overlapping_circle_circle(x1, r1, x2, r2):
+    flag = overlapping_circle_circle(x1, r1, x2, r2)
     assert isinstance(flag, bool)
 
 
 @given(
-    x=st.tuples(*3 * [vector(shape=(5, 2), elements=real(-10, 10))]),
-    r=st.tuples(*3 * [vector(shape=5, elements=real(min_value=0, max_value=1))])
+    x1=st.tuples(*3 * [vector(shape=(5, 2), elements=real(-10, 10))]),
+    r1=st.tuples(*3 * [vector(shape=5, elements=real(min_value=0, max_value=1))]),
+    x2=st.tuples(*3 * [vector(shape=2, elements=real(-10, 10))]),
+    r2=st.tuples(*3 * [real(min_value=0, max_value=1)])
 )
-def test_overlapping_three_circle(x, r):
-    n = len(x) - 1
-    flag = overlapping_three_circle(x, r, n - 1, n)
+def test_overlapping_three_circle(x1, r1, x2, r2):
+    flag = overlapping_three_circle(x1, r1, x2, r2)
     assert isinstance(flag, bool)

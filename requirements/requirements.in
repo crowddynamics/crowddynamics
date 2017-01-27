@@ -2,8 +2,6 @@
 ## Recommended to use Conda package manager instead
 
 ## Package
-setuptools
-versioneer
 typing
 ruamel.yaml
 
@@ -24,7 +22,7 @@ scikit-fmm
 h5py
 
 ## Gui and Vizualisation
-pyqt
+pyqt  # pyqt4
 pyqtgraph
 matplotlib
 bokeh

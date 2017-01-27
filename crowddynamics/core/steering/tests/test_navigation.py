@@ -1,6 +1,6 @@
-import pytest
-from hypothesis import given
 import numpy as np
+import pytest
+from hypothesis import assume, given
 
 import crowddynamics.testing.strategies as st
 from crowddynamics.core.steering import distance_map
@@ -9,10 +9,12 @@ from crowddynamics.core.steering import distance_map
 @pytest.mark.skip
 @given(
     step=st.real(min_value=0.001, max_value=0.01),
-    field=st.field(),
+    field=st.field(domain_strategy=st.polygon(a=-10.0, b=10.0)),
 )
 def test_distance_map(step, field):
     domain, targets, obstacles = field
+    # assume(domain.area > 1.0)
+
     mgrid, dmap, phi = distance_map(step, domain, targets, obstacles)
 
     assert isinstance(mgrid, np.ndarray)

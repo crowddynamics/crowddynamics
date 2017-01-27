@@ -4,7 +4,7 @@ Continuum Flow
 .. csv-table:: Model Specification
 
    "Macroscopic", ""
-   "Continuous Space", ""
+   "Continuous Space", ":math:`\mathbb{R}^2`"
    "Conservation of Density", ""
 
 ----

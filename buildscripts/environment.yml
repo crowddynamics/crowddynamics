@@ -22,6 +22,8 @@ dependencies:
     - bokeh
     ## Documentation
     - graphviz
+    ## Dev
+    - jupyter
     - pip:
         ## Package
         - ruamel.yaml
@@ -42,3 +44,5 @@ dependencies:
         - sphinxcontrib-programoutput
         - ghp-import
         - graphviz
+        ## Dev
+        - pip-tools

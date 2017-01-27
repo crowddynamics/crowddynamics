@@ -13,36 +13,40 @@ import numba
 from numba import f8, i8
 
 
-# TODO: Convex hull algorithm: http://doi.org/10.1016/j.asoc.2009.07.004
-
-
 @numba.jit(nopython=True)
-def block_list(points, cell_width):
+def block_list(points, cell_size):
     """
     Block list
 
     Args:
         points (numpy.ndarray):
-            Array of points
+            Array of ``shape=(size, 2)`` to be block listed.
 
-        cell_width (float):
-            Width/height of the rectangular mesh.
+        cell_size (float):
+            Positive real number. Width and height of the rectangular mesh.
 
     Returns:
         (numpy.ndarray, numpy.ndarray, numpy.ndarray, numpy.ndarray, numpy.ndarray):
-        (index_list, count, offset, x_min, x_max)
+            - ``index_list``
+            - ``count``
+            - ``offset``
+            - ``x_min``
+            - ``x_max``
+
     """
-    assert cell_width > 0
+    assert cell_size > 0
     assert points.ndim == 2
     assert points.shape[1] == 2
 
+    # Dimensions (rows, columns)
     n, m = points.shape
 
-    x_min = (points[0, :] / cell_width).astype(np.int64)
-    x_max = (points[0, :] / cell_width).astype(np.int64)
+    # Compute index ranges for indices
+    x_min = (points[0, :] / cell_size).astype(np.int64)
+    x_max = (points[0, :] / cell_size).astype(np.int64)
     for i in range(1, n):
         for j in range(m):
-            x = np.int64(points[i, j] / cell_width)
+            x = np.int64(points[i, j] / cell_size)
             if x < x_min[j]:
                 x_min[j] = x
             if x > x_max[j]:
@@ -52,9 +56,10 @@ def block_list(points, cell_width):
     indices = np.zeros(shape=points.shape, dtype=np.int64)
     for i in range(n):
         for j in range(m):
-            x = np.int64(points[i, j] / cell_width) - x_min[j]
+            x = np.int64(points[i, j] / cell_size) - x_min[j]
             indices[i, j] = x
 
+    #
     x_max = x_max - x_min
 
     # TODO: Implementation for sparse block lists.
@@ -105,21 +110,13 @@ class BlockList(object):
     only have to search current and neighbouring rectangles for points.
     """
 
-    def __init__(self, points, cell_width):
-        """
-
-        Args:
-            points (numpy.ndarray):
-
-            cell_width (float):
-                Positive real number, the width of the cell
-        """
-        assert cell_width > 0
+    def __init__(self, points, cell_size):
+        assert cell_size > 0
         assert points.ndim == 2
         assert points.shape[1] == 2
 
-        index_list, count, offset, x_min, x_max = block_list(points, cell_width)
-        self.cell_width = cell_width
+        index_list, count, offset, x_min, x_max = block_list(points, cell_size)
+        self.cell_width = cell_size
         self.index_list = index_list
         self.count = count
         self.offset = offset
@@ -160,3 +157,12 @@ class BlockList(object):
         start = self.offset[index]
         end = start + self.count[index]
         return self.index_list[start:end]
+
+
+class ConvexHull(object):
+    r"""
+    Convex hull algorithm
+
+    http://doi.org/10.1016/j.asoc.2009.07.004
+    """
+    pass
