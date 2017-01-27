@@ -3,7 +3,7 @@ import sys
 
 from PyQt4 import QtGui, QtCore
 
-from crowddynamics.gui.main import MainWindow
+from crowddynamics.plugins.gui.main import MainWindow
 
 
 def run_gui():
