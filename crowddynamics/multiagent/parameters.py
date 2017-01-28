@@ -58,8 +58,11 @@ class Mass(Parameter):
     """Mass :math:`m > 0` of the agent."""
 
     def value(self, mean, mass_scale, size=1):
-        return truncnorm(-3.0, 3.0, loc=mean, abs_scale=mass_scale,
-                         size=size)
+        v =  truncnorm(-3.0, 3.0, loc=mean, abs_scale=mass_scale, size=size)
+        if size == 1:
+            return np.asscalar(v)
+        else:
+            return v
 
     def default(self, size=1):
         body = self.parameters.body()
@@ -70,8 +73,11 @@ class Radius(Parameter):
     """Total radius :math:`r > 0` of the agent."""
 
     def value(self, mean, radius_scale, size=1):
-        return truncnorm(-3.0, 3.0, loc=mean, abs_scale=radius_scale,
-                         size=size)
+        v = truncnorm(-3.0, 3.0, loc=mean, abs_scale=radius_scale, size=size)
+        if size == 1:
+            return np.asscalar(v)
+        else:
+            return v
 
     def default(self, size=1):
         body = self.parameters.body()
@@ -131,8 +137,11 @@ class MaximumVelocity(Parameter):
     """Maximum/Target velocity of the agent."""
 
     def value(self, mean, velocity_scale, size=1):
-        return truncnorm(-3.0, 3.0, loc=mean, abs_scale=velocity_scale,
-                         size=size)
+        v = truncnorm(-3.0, 3.0, loc=mean, abs_scale=velocity_scale, size=size)
+        if size == 1:
+            return np.asscalar(v)
+        else:
+            return v
 
     def default(self, size=1):
         body = self.parameters.body()

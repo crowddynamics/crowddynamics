@@ -4,17 +4,25 @@ from hypothesis import given
 
 from crowddynamics.core.motion import force_fluctuation, force_adjust, \
     force_social_helbing, force_contact
-from crowddynamics.testing import vector, real
+from crowddynamics.testing import real
 
 
-@given(mass=real(min_value=0), scale=real(min_value=0))
+@given(
+    mass=real(min_value=0),
+    scale=real(min_value=0)
+)
 def test_force_fluctuation(mass, scale):
     ans = force_fluctuation(mass, scale)
     assert isinstance(ans, np.ndarray)
 
 
-@given(mass=real(min_value=0), tau_adj=real(min_value=0), v0=real(min_value=0),
-       e0=vector(), v=vector())
+@given(
+    mass=real(min_value=0),
+    tau_adj=real(min_value=0),
+    v0=real(min_value=0),
+    e0=real(shape=2),
+    v=real(shape=2)
+)
 def test_force_adjust(mass, tau_adj, v0, e0, v):
     if tau_adj == 0.0:
         with pytest.raises(ZeroDivisionError):
@@ -24,7 +32,12 @@ def test_force_adjust(mass, tau_adj, v0, e0, v):
         assert isinstance(ans, np.ndarray)
 
 
-@given(h=real(), n=vector(), a=real(min_value=0), b=real(min_value=0))
+@given(
+    h=real(),
+    n=real(shape=2),
+    a=real(min_value=0),
+    b=real(min_value=0)
+)
 def test_force_social_helbing(h, n, a, b):
     if b == 0.0:
         with pytest.raises(ZeroDivisionError):
@@ -34,8 +47,15 @@ def test_force_social_helbing(h, n, a, b):
         assert isinstance(ans, np.ndarray)
 
 
-@given(h=real(), n=vector(), v=vector(), t=vector(), mu=real(min_value=0),
-       kappa=real(min_value=0), damping=real(min_value=0))
+@given(
+    h=real(),
+    n=real(shape=2),
+    v=real(shape=2),
+    t=real(shape=2),
+    mu=real(min_value=0),
+    kappa=real(min_value=0),
+    damping=real(min_value=0)
+)
 def test_force_contact(h, n, v, t, mu, kappa, damping):
     ans = force_contact(h, n, v, t, mu, kappa, damping)
     assert isinstance(ans, np.ndarray)

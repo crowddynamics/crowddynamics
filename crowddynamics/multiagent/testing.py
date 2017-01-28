@@ -20,7 +20,7 @@ class Outdoor(MultiAgentSimulation):
     - Multi-directional flow
     - Periodic boundaries
     """
-    def __init__(self, queue, size, width, height, model, body):
+    def __init__(self, queue, size, width, height, model, body_type):
         """
         Init
 
@@ -30,34 +30,25 @@ class Outdoor(MultiAgentSimulation):
             width:
             height:
             model:
-            body:
+            body_type:
 
         """
         # TODO: Periodic boundaries
         super().__init__(queue)
 
         domain = Polygon([(0, 0), (0, height), (width, height), (width, 0)])
-        kwargs = {
-            "size": size,
-            "surface": domain,
-            "target_direction": "random",
-            "velocity": "auto",
-        }
+        self.init_domain(domain)
+        self.init_agents(size, model)
 
-        self.set_field(domain)
-
-        root = Integrator(self, (0.001, 0.01))
+        self.task_graph = Integrator(self, (0.001, 0.01))
         adjusting = Adjusting(self)
         adjusting += Orientation(self)
-        root += adjusting
-        root += AgentAgentInteractions(self)
-        root += Fluctuation(self)
+        self.task_graph += adjusting
+        self.task_graph += AgentAgentInteractions(self)
+        self.task_graph += Fluctuation(self)
 
-        self.task_graph = root
-
-        self.set_body(size, body)
-        self.set_model(model)
-        self.set_agents(**kwargs)
+        for i in self.add_agents(size, domain, body_type):
+            pass
 
 
 class Hallway(MultiAgentSimulation):
@@ -73,16 +64,14 @@ class Hallway(MultiAgentSimulation):
     #) Bidirectional flow
     #) Unidirectional flow
     """
-    def __init__(self, queue, size, width, height, model, body):
+    def __init__(self, queue, size, width, height, model, body_type):
         super().__init__(queue)
         domain = Polygon([(0, 0), (0, height), (width, height), (width, 0)])
-
         obstacles = (
             LineString([(0, 0), (width, 0)]),
             LineString([(0, height), (width, height)]),
         )
-
-        spawn = (
+        spawns = (
             Polygon([(1.1, 0),
                      (1.1, height),
                      (width // 2 - 1, height),
@@ -92,19 +81,22 @@ class Hallway(MultiAgentSimulation):
                      (width - 1.1, height),
                      (width - 1.1, 0)]),
         )
-
         kwargs = (
             {'size': size // 2,
-             'surface': spawn[0],
+             'spawn': spawns[0],
              'target_direction': np.array((1.0, 0.0)),
              'orientation': 0},
             {'size': size // 2,
-             'surface': spawn[1],
+             'spawn': spawns[1],
              'target_direction': np.array((-1.0, 0.0)),
              'orientation': np.pi},
         )
 
-        self.set_field(domain=domain, obstacles=obstacles)
+        self.init_domain(domain)
+        self.init_agents(size, model)
+
+        for obs in obstacles:
+            self.add_obstacle(obs)
 
         self.task_graph = Integrator(self, (0.001, 0.01))
         adjusting = Adjusting(self)
@@ -114,10 +106,12 @@ class Hallway(MultiAgentSimulation):
         self.task_graph += AgentObstacleInteractions(self)
         self.task_graph += Fluctuation(self)
 
-        self.set_body(size, body)
-        self.set_model(model)
         for kw in kwargs:
-            self.set_agents(**kw)
+            for i in self.add_agents(kw['size'], kw['spawn'], body_type):
+                self.agent.set_motion(
+                    i, kw['orientation'], np.zeros(2), 0.0,
+                    kw['target_direction'], kw['orientation']
+                )
 
 
 class Crossing(MultiAgentSimulation):
@@ -137,7 +131,7 @@ class Rounding(MultiAgentSimulation):
 
     - Unidirectional flow
     """
-    def __init__(self, queue, size, width, height, model, body):
+    def __init__(self, queue, size, width, height, model, body_type):
         super().__init__(queue)
 
         domain = Polygon([(0, 0), (0, height), (width, height), (width, 0)])
@@ -146,27 +140,21 @@ class Rounding(MultiAgentSimulation):
             LineString([(0, height / 2), (width * 3 / 4, height / 2)]),
             domain.exterior - exits
         ]
-
         spawn = Polygon([(0, 0),
                          (0, height / 2),
                          (width / 2, height / 2),
                          (width / 2, 0)])
-        kwargs = {
+        kwargs = [{
             'size': size,
-            'surface': spawn,
+            'spawn': spawn,
             'target_direction': None,
             'orientation': 0
-        }
+        }]
 
-        self.set_field(domain, obstacles, exits)
-
-        # self.task_graph = TaskNode(Integrator(self, (0.001, 0.01)))
-        # adjusting = self.task_graph.add_child(Adjusting(self))
-        # adjusting.add_child(Orientation(self))
-        # adjusting.add_child(Navigation(self))
-        # self.task_graph.add_child(AgentAgentInteractions(self))
-        # self.task_graph.add_child(AgentObstacleInteractions(self))
-        # self.task_graph.add_child(Fluctuation(self))
+        self.init_domain(domain)
+        self.init_agents(size, model)
+        for obs in obstacles:
+            self.add_obstacle(obs)
 
         self.task_graph = Integrator(self, (0.001, 0.01))
         adjusting = Adjusting(self)
@@ -177,9 +165,12 @@ class Rounding(MultiAgentSimulation):
         self.task_graph += AgentObstacleInteractions(self)
         self.task_graph += Fluctuation(self)
 
-        self.set_body(size, body)
-        self.set_model(model)
-        self.set_agents(**kwargs)
+        for kw in kwargs:
+            for i in self.add_agents(kw['size'], kw['spawn'], body_type):
+                self.agent.set_motion(
+                    i, kw['orientation'], np.zeros(2), 0.0,
+                    kw['target_direction'], kw['orientation']
+                )
 
 
 class RoomEvacuation(MultiAgentSimulation):
@@ -225,14 +216,18 @@ class RoomEvacuation(MultiAgentSimulation):
         if spawn_shape == "circ":
             spawn = self.room & Point((width, height / 2)).buffer(height / 2)
 
-        kwargs = {
+        kwargs = [{
             'size': size,
-            'surface': spawn,
+            'spawn': spawn,
             'target_direction': None,
             'orientation': 0
-        }
+        }]
 
-        self.set_field(domain=domain, obstacles=obstacles, exits=exits)
+        self.init_domain(domain)
+        self.init_agents(size, model)
+        for obs in obstacles:
+            self.add_obstacle(obs)
+        self.add_target(exits)
 
         self.task_graph = Integrator(self, (0.001, 0.01))
         adjusting = Adjusting(self)
@@ -243,9 +238,12 @@ class RoomEvacuation(MultiAgentSimulation):
         self.task_graph += AgentObstacleInteractions(self)
         self.task_graph += Fluctuation(self)
 
-        self.set_body(size, body)
-        self.set_model(model)
-        self.set_agents(**kwargs)
+        for kw in kwargs:
+            for i in self.add_agents(kw['size'], kw['spawn'], body_type):
+                self.agent.set_motion(
+                    i, kw['orientation'], np.zeros(2), 0.0,
+                    kw['target_direction'], kw['orientation']
+                )
 
 
 class RoomEvacuationGame(RoomEvacuation):

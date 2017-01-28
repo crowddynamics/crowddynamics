@@ -18,38 +18,34 @@ from shapely.geometry import Polygon
 from crowddynamics.multiagent import Agent
 
 
-def real(min_value=None, max_value=None, exclude_zero=None):
+def real(min_value=None, max_value=None, exclude_zero=None, shape=None):
     """Real number strategy using 64-bit floating point numbers excluding
     ``nan`` and ``inf``.
 
     Args:
-        min_value:
-        max_value:
+        min_value (Number, optional):
+        max_value (Number, optional):
         exclude_zero (str, optional):
             Choices: (None, 'exact', 'near')
-
+        shape (int|tuple, optiona):
+            - None: Scalar output
+            - int|tuple: Vector output of shape
     """
-    strategy = st.floats(min_value, max_value, False, False)
+    dtype = np.float64
+    elements = st.floats(min_value, max_value, False, False)
+
+    # Excluded values
     # TODO: Maybe use assume instead?
     if exclude_zero == 'exact':
-        return strategy.filter(lambda x: x != 0.0)
+        return elements.filter(lambda x: x != 0.0)
     if exclude_zero == 'near':
-        return strategy.filter(lambda x: not np.isclose(x, 0.0))
-    return strategy
+        return elements.filter(lambda x: not np.isclose(x, 0.0))
 
-
-def vector(dtype=np.float64, shape=2, elements=real()):
-    """
-
-    Args:
-        dtype (type):
-        shape (int|Tuple[Int]):
-        elements (SearchStrategy):
-
-    Returns:
-
-    """
-    return arrays(dtype, shape, elements)
+    # Strategy
+    if shape is not None:
+        return arrays(dtype, shape, elements)
+    else:
+        return elements
 
 
 @st.composite
@@ -93,6 +89,7 @@ def polygon(draw, a=-1.0, b=1.0, num_points=5, buffer=real(0.1, 0.2),
     # points *= (1 - c / abs(b - a))
     lines = LineString(points)
     poly = lines.buffer(c)
+    # assume(poly.area > 0)
     if convex_hull:
         return poly.convex_hull
     else:
@@ -156,25 +153,26 @@ def agent(draw, size):
         SearchStrategy:
 
     """
-    kwargs = dict(
-        size=size,
-        mass=draw(vector(shape=size, elements=real(1.0, 100.0))),
-        radius=draw(vector(shape=size, elements=real(0.1, 1.0))),
-        ratio_rt=draw(vector(shape=size, elements=real(0.1, 1.0))),
-        ratio_rs=draw(vector(shape=size, elements=real(0.1, 1.0))),
-        ratio_ts=draw(vector(shape=size, elements=real(0.1, 1.0))),
-        inertia_rot=draw(vector(shape=size, elements=real())),
-        target_velocity=draw(vector(shape=size, elements=real())),
-        target_angular_velocity=draw(vector(shape=size, elements=real(-10, 10)))
-    )
-    agent = Agent(**kwargs)
-    agent.position[:] = draw(vector(shape=(size, 2), elements=real(-100, 100)))
-    agent.velocity[:] = draw(vector(shape=(size, 2), elements=real(-100, 100)))
-    agent.force[:] = draw(vector(shape=(size, 2), elements=real(-100, 100)))
+    agent = Agent(size=size)
 
-    agent.angle[:] = draw(vector(shape=size, elements=real(-np.pi, np.pi)))
-    agent.angular_velocity[:] = draw(vector(shape=size, elements=real(-100, 100)))
-    agent.torque[:] = draw(vector(shape=size, elements=real(-100, 100)))
-
-    agent.update_shoulder_positions()
+    for i in range(size):
+        index = agent.add(
+            draw(real(-100, 100, shape=2)),
+            draw(real(1.0, 100.0)),
+            draw(real(0.1, 1.0)),
+            draw(real(0.1, 1.0)),
+            draw(real(0.1, 1.0)),
+            draw(real(0.1, 1.0)),
+            draw(real()),
+            draw(real()),
+            draw(real(-10, 10)),
+        )
+        agent.set_motion(
+            index,
+            draw(real(-np.pi, np.pi)),
+            draw(real(-100, 100, shape=2)),
+            draw(real(-100, 100)),
+            draw(unit_vector()),
+            draw(real(-np.pi, np.pi))
+        )
     return agent

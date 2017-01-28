@@ -11,9 +11,7 @@ Usage
 Basic Architecture
 ------------------
 
-.. figure:: architecture_simple.png
-
-   *Simple graph of the architecture*
+.. graphviz:: architecture.dot
 
 Two main processes are
 
@@ -34,6 +32,7 @@ Command-line Interface
 ----------------------
 
 .. program-output:: crowddynamics --help
+
 
 Configuration
 -------------

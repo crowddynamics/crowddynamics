@@ -168,7 +168,7 @@ def distance_three_circle_line(x, r, p):
 
 
 @numba.jit(nopython=True, nogil=True)
-def overlapping_circle_circle(x1, r1, x2, r2):
+def overlapping_circle_circle(agent, indices, x2, r2):
     """
     Test if two circles are overlapping.
 
@@ -182,15 +182,17 @@ def overlapping_circle_circle(x1, r1, x2, r2):
         Boolean:
 
     """
-    for i in range(len(x1)):
-        h, _ = distance_circle_circle(x1[i], r1[i], x2,  r2)
+    for i in indices:
+        h, _ = distance_circle_circle(
+            agent.position[i], agent.radius[i], x2, r2
+        )
         if h < 0.0:
             return True
     return False
 
 
 @numba.jit(nopython=True, nogil=True)
-def overlapping_three_circle(x1, r1, x2, r2):
+def overlapping_three_circle(agent, indices, x2, r2):
     """
     Test if two three-circle models are overlapping.
 
@@ -204,12 +206,9 @@ def overlapping_three_circle(x1, r1, x2, r2):
         Boolean:
 
     """
-    for i in range(len(x1)):
+    for i in indices:
         h, _, _, _ = distance_three_circle(
-            (x1[0][i], x1[1][i], x1[2][i]),
-            (r1[0][i], r1[1][i], r1[2][i]),
-            (x2[0], x2[1], x2[2]),
-            (r2[0], r2[1], r2[2])
+            agent.positions(i), agent.radii(i), x2, r2
         )
         if h < 0:
             return True

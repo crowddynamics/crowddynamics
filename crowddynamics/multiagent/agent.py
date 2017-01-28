@@ -1,23 +1,48 @@
 import numba
 import numpy as np
-from numba import float64, int64, boolean
+from numba import float64, int64, boolean, f8
 from numba.types import UniTuple
 
-from crowddynamics.core.vector2D.vector2D import rotate270
+from crowddynamics.core.vector2D.vector2D import rotate270, wrap_to_pi
+
+
+@numba.jit(UniTuple(f8[:], 3)(f8[:], f8, f8), nopython=True, nogil=True)
+def positions(position, orientation, radius_ts):
+    """Center and shoulder positions"""
+    x = np.cos(orientation)
+    y = np.sin(orientation)
+    n = np.array((x, y))
+    t = rotate270(n)
+    offset = t * radius_ts
+    position_ls = position - offset
+    position_rs = position + offset
+    return position, position_ls, position_rs
 
 
 @numba.jit(nopython=True, nogil=True)
-def positions(position, angle, radius_ts):
+def positions_vector(position, orientation, radius_ts):
     """Center and shoulder positions"""
-    n = np.array((np.cos(angle), np.sin(angle)))
-    t = rotate270(n)
+    x = np.cos(orientation)
+    y = np.sin(orientation)
+    t = np.stack((y, -x), axis=1)
     offset = t * radius_ts
-
-    position = position
     position_ls = position - offset
     position_rs = position + offset
-
     return position, position_ls, position_rs
+
+
+# @numba.generated_jit(nopython=True, nogil=True)
+# def positions(position, orientation, radius_ts):
+#     if isinstance(orientation, numba.types.Float):
+#         return lambda position, orientation, radius_ts: \
+#             positions_scalar(position, orientation, radius_ts)
+#     elif isinstance(orientation, numba.types.Array):
+#         return lambda position, orientation, radius_ts: \
+#             positions_vector(position, orientation, radius_ts)
+
+
+def resize():
+    return NotImplementedError
 
 
 spec_agent = (
@@ -29,7 +54,6 @@ spec_agent = (
 
     ("orientable", boolean),
     ("active", boolean[:]),
-    # ("goal_reached", boolean[:]),
     ("mass", float64[:, :]),
     ("radius", float64[:]),
     ("r_t", float64[:]),
@@ -42,14 +66,11 @@ spec_agent = (
     ("target_direction", float64[:, :]),
     ("force", float64[:, :]),
     ("inertia_rot", float64[:]),
-    ("angle", float64[:]),
+    ("orientation", float64[:]),
     ("angular_velocity", float64[:]),
-    ("target_angle", float64[:]),
+    ("target_orientation", float64[:]),
     ("target_angular_velocity", float64[:]),
     ("torque", float64[:]),
-    # ("position_ls", float64[:, :]),
-    # ("position_rs", float64[:, :]),
-    # ("front", float64[:, :]),
 )
 
 spec_agent_motion = (
@@ -69,11 +90,11 @@ spec_agent_motion = (
 )
 
 spec_agent_neighbour = (
-    ("neighbor_radius", float64),
-    ("neighborhood_size", int64),
-    ("neighbors", int64[:, :]),
-    ("neighbor_distances", float64[:, :]),
-    ("neighbor_distances_max", float64[:]),
+    # ("neighbor_radius", float64),
+    # ("neighborhood_size", int64),
+    # ("neighbors", int64[:, :]),
+    # ("neighbor_distances", float64[:, :]),
+    # ("neighbor_distances_max", float64[:]),
 )
 
 spec_agent += spec_agent_motion + spec_agent_neighbour
@@ -89,7 +110,7 @@ class Agent(object):
 
         Args:
             size (int):
-                Number of agents.
+                Maximum number of agents that can be placed into the structure.
 
         """
         # Array properties
@@ -99,11 +120,9 @@ class Agent(object):
         # Flags
         # Agent models (Only one can be active at time).
         self.three_circle = False
-        self.circular = False
-        self.orientable = self.three_circle  # Orientable has rotational motion
+        self.circular = True
+        self.orientable = self.three_circle     # Orientable has rotational motion
         self.active = np.zeros(size, np.bool8)  # Initialise agents as inactive
-        # self.indices = np.arange(self.size)
-        # self.goal_reached = np.zeros(size, np.bool8)  # TODO: Deprecate
 
         # Constant properties
         self.radius = np.zeros(self.size)       # Total radius
@@ -121,16 +140,11 @@ class Agent(object):
         self.force = np.zeros(self.shape)
 
         # Rotational movement. Three circles agent model
-        self.angle = np.zeros(self.size)  # TODO: rename to orientation?
+        self.orientation = np.zeros(self.size)
         self.angular_velocity = np.zeros(self.size)
-        self.target_angle = np.zeros(self.size)
+        self.target_orientation = np.zeros(self.size)
         self.target_angular_velocity = np.zeros(self.size)
         self.torque = np.zeros(self.size)
-
-        # self.position_ls = np.zeros(self.shape)  # Left shoulder
-        # self.position_rs = np.zeros(self.shape)  # Right shoulder
-        # self.front = np.zeros(self.shape)  # For plotting agents.
-        # self.update_shoulder_positions()
 
         # Motion related parameters
         # TODO: arrays
@@ -152,21 +166,21 @@ class Agent(object):
         # neighboring agents. Negative value denotes missing value (if less than
         # neighborhood_size of neighbors).
         # TODO: move to interactions
-        self.neighbor_radius = np.nan
-        self.neighborhood_size = 8
-        self.neighbors = np.ones((self.size, self.neighborhood_size), dtype=np.int64)
-        self.neighbor_distances = np.zeros((self.size, self.neighborhood_size))
-        self.neighbor_distances_max = np.zeros(self.size)
-        self.reset_neighbor()
+        # self.neighbor_radius = np.nan
+        # self.neighborhood_size = 8
+        # self.neighbors = np.ones((self.size, self.neighborhood_size), dtype=np.int64)
+        # self.neighbor_distances = np.zeros((self.size, self.neighborhood_size))
+        # self.neighbor_distances_max = np.zeros(self.size)
+        # self.reset_neighbor()
 
     def add(self, position, mass, radius, ratio_rt, ratio_rs, ratio_ts,
             inertia_rot, max_velocity, max_angular_velocity):
-        """
+        r"""
         Add new agent to next free index if there is space left.
 
         Args:
             position (numpy.ndarray):
-                Position of the agent
+                Initial position of the agent
 
             mass (float):
                 Mass of the agent
@@ -190,7 +204,8 @@ class Agent(object):
             max_angular_velocity (float):
 
         Returns:
-            Boolean: Boolean indicating whether addition was successful.
+            int: Integer indicating the index of agent that was added.
+                 Returns -1 if addition was unsuccessful.
 
         """
         # mass, radius, ratio_rt, ratio_rs, ratio_ts,
@@ -211,29 +226,18 @@ class Agent(object):
                 self.inertia_rot[i] = inertia_rot
                 self.target_velocity[i] = max_velocity
                 self.target_angular_velocity[i] = max_angular_velocity
-                return True
-        return False
+                return i
+        return -1
 
-    def remove(self, index):
-        """
+    def remove(self, i):
+        r"""
         Remove agent of ``index``.
         - Set agent inactive
 
         Args:
-            index (int):
+            i (int):
         """
-        self.active[index] = False
-
-    def positions(self, i):
-        return positions(self.position[i], self.angle[i], self.r_ts[i])
-
-    def radii(self, i):
-        return self.r_t[i], self.r_s[i], self.r_s[i],
-
-    def front(self, i):
-        n = np.array((np.cos(self.angle[i]), np.sin(self.angle[i])))
-        position = self.position[i]
-        return position + n * self.r_t[i]
+        self.active[i] = False
 
     def set_circular(self):
         self.circular = True
@@ -245,17 +249,83 @@ class Agent(object):
         self.three_circle = True
         self.orientable = self.three_circle
 
+    def set_motion(self, i, orientation, velocity, angular_velocity,
+                   target_direction, target_orientation):
+        r"""
+        Set motion parameters for agent.
+
+        Args:
+
+            i:
+
+            orientation (float):
+                Initial orientation :math:`\varphi = [\-pi, \pi]` of the agent.
+
+            velocity (numpy.ndarray):
+                Initial velocity
+
+            angular_velocity (float):
+
+            target_direction (numpy.ndarray):
+
+        Returns:
+            Boolean:
+
+        """
+        if self.active[i]:
+            self.orientation[i] = wrap_to_pi(orientation)
+            self.velocity[i] = velocity
+            self.angular_velocity[i] = angular_velocity
+            self.target_direction[i] = target_direction
+            self.target_orientation[i] = target_orientation
+            return True
+        else:
+            return False
+
+    def positions(self, i):
+        r"""
+        Positions of the center of mass, left- and right shoulders
+
+        Args:
+            i (int):
+
+        Returns:
+            (numpy.ndarray, numpy.ndarray, numpy.ndarray):
+                - Center of mass
+                - Left shoulder
+                - Right shoulder
+        """
+        return positions(self.position[i], self.orientation[i], self.r_ts[i])
+
+    def radii(self, i):
+        r"""
+        Radii of torso and shoulders.
+
+        Args:
+            i:
+
+        Returns:
+            (float, float, float):
+                - Radius torso
+                - Radius left shoulder
+                - Radius right shoulder
+        """
+        return self.r_t[i], self.r_s[i], self.r_s[i]
+
+    def front(self, i):
+        n = np.array((np.cos(self.orientation[i]), np.sin(self.orientation[i])))
+        position = self.position[i]
+        return position + n * self.r_t[i]
+
     def reset_motion(self):
         self.force[:] = 0
         self.torque[:] = 0
 
-    def reset_neighbor(self):
-        self.neighbors[:, :] = -1  # negative value denotes missing value
-        self.neighbor_distances[:, :] = np.inf
-        self.neighbor_distances_max[:] = np.inf
+    # def reset_neighbor(self):
+    #     self.neighbors[:, :] = -1  # negative value denotes missing value
+    #     self.neighbor_distances[:, :] = np.inf
+    #     self.neighbor_distances_max[:] = np.inf
 
     def indices(self):
         """Indices of active agents."""
-        # TODO: Other masks
-        all_indices = np.arange(self.size)
-        return all_indices[self.active]
+        return np.arange(self.size)[self.active]

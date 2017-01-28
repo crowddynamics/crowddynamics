@@ -9,10 +9,10 @@ from shapely.geometry import Polygon, Point
 
 from crowddynamics.core.random.sampling import PolygonSample, triangle_area, \
     random_sample_triangle, triangle_area_cumsum
-from crowddynamics.testing import vector, real, polygon
+from crowddynamics.testing import real, polygon
 
 
-@given(vector(), vector(), vector())
+@given(real(shape=2), real(shape=2), real(shape=2))
 def test_triangle_area(a, b, c):
     area = triangle_area(a, b, c)
     assert isinstance(area, float)
@@ -28,9 +28,9 @@ def test_triangle_area_cumsum(trimesh):
 
 
 @given(
-    vector(elements=real(min_value=-100, max_value=100)),
-    vector(elements=real(min_value=-100, max_value=100)),
-    vector(elements=real(min_value=-100, max_value=100)),
+    real(min_value=-100, max_value=100, shape=2),
+    real(min_value=-100, max_value=100, shape=2),
+    real(min_value=-100, max_value=100, shape=2),
 )
 def test_random_sample_triangle(a, b, c):
     # Assume that the area of the triangle is not zero.

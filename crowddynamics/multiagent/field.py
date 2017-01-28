@@ -1,5 +1,6 @@
 import logging
 
+import numpy as np
 from shapely.geometry import Point
 from shapely.geometry import Polygon, GeometryCollection
 from shapely.ops import cascaded_union
@@ -23,37 +24,7 @@ def agent_polygon(position, radius):
         return Point(position).buffer(radius)
 
 
-def overlapping(agent, position, radius):
-    """
-    Overlapping
-
-    Args:
-        agent (Agent):
-        position:
-        radius:
-
-    Returns:
-        Boolean:
-
-    """
-    if agent.three_circle:
-        return overlapping_three_circle(
-            agent.positions(),
-            agent.radii(),
-            position,
-            radius,
-        )
-    else:
-        active = agent.active
-        return overlapping_circle_circle(
-            agent.position[active],
-            agent.radius[active],
-            position,
-            radius
-        )
-
-
-class Configuration:
+class Field:
     r"""
     MultiAgent simulation setup
 
@@ -73,59 +44,79 @@ class Configuration:
 
     """
 
-    def __init__(self, domain, agent_max_num, agent_model):
-        r"""
-        Simulation setup
-
-        Args:
-            domain (Polygon):
-            agent_max_num (int):
-            agent_model (str):
-        """
+    def __init__(self):
         self.logger = logging.getLogger(__name__)
-
         # Field
-        self.domain = domain
+        self.domain = Polygon()
         self.obstacles = GeometryCollection()
         self.targets = GeometryCollection()
-        self._occupied = Polygon()  # Currently occupied surface
+        self.agent = None
+        # Currently occupied surface by Agents and Obstacles
+        self._occupied = Polygon()
 
-        # Agents
-        self.agent = Agent(agent_max_num)
-        if agent_model == 'three_circle':
-            self.agent.set_three_circle()
-        else:
-            self.agent.set_circular()
+    def init_domain(self, domain):
+        """
+        Initialize domain
 
-    def add_obstacle(self, obstacle):
+        Args:
+            domain (Polygon, optional):
+                - ``Polygon``: Subset of real domain
+                  :math:`\Omega \subset \mathbb{R}^{2}`.
+                - ``None``: Real domain :math:`\Omega = \mathbb{R}^{2}`.
+        """
+        self.domain = domain
+
+    def add_obstacle(self, geom):
         """
         Add new ``obstacle`` to the Field
 
         Args:
-            obstacle (BaseGeometry):
+            geom (BaseGeometry):
         """
-        self.obstacles |= obstacle
-        self._occupied |= obstacle
+        self.obstacles |= geom
+        self._occupied |= geom
 
-    def remove_obstacle(self, obstacle):
-        self.obstacles -= obstacle
-        self._occupied -= obstacle
+    def remove_obstacle(self, geom):
+        """Remove obstacle"""
+        self.obstacles -= geom
+        self._occupied -= geom
 
-    def add_target(self, target):
+    def add_target(self, geom):
         """
         Add new ``target`` to the Field
 
         Args:
-            target (BaseGeometry):
+            geom (BaseGeometry):
         """
-        self.targets |= target
-        self._occupied |= target
+        self.targets |= geom
 
-    def remove_target(self, target):
-        self.targets -= target
-        self._occupied -= target
+    def remove_target(self, geom):
+        """Remove target"""
+        self.targets -= geom
 
-    def add_agents(self, num, surface, body_type='adult', iterations_limit=100):
+    def init_agents(self, max_size, model):
+        """
+        Initialize agents
+
+        Args:
+            max_size (int, optional):
+                - ``int``: Maximum number of agents.
+                - ``None``: Dynamically increase the size when adding new agents
+
+            model (str):
+                Choice from:
+                - ``circular``
+                - ``three_circle``
+        """
+        if max_size is None:
+            raise NotImplemented
+        self.agent = Agent(max_size)
+        if model == 'three_circle':
+            self.agent.set_three_circle()
+        else:
+            self.agent.set_circular()
+
+    def add_agents(self, num, spawn, body_type, iterations_limit=100):
         r"""
         Add multiple agents at once.
 
@@ -140,27 +131,31 @@ class Configuration:
                   amount that fits will be placed.
                 - ``None``: Places maximum size of agents
 
-            surface (Polygon, optional):
+            spawn (Polygon, optional):
                 - ``Polygon``: Custom polygon that is contained inside the
                   domain
                 - ``None``: Domain
 
             body_type (str):
-                Choice from ``Parameter.body_types``.
+                Choice from ``Parameter.body_types``:
+                - 'adult'
+                - 'male'
+                - 'female'
+                - 'child'
+                - 'eldery'
 
             iterations_limit (int):
                 Limits iterations to ``max_iter = iterations_limit * num``.
 
-        Returns:
-            int: Number of agents placed
+        Yields:
+            int: Index of agent that was placed.
 
         """
         # Draw random uniformly distributed points from the set on points
         # that belong to the surface. These are used as possible new position
         # for an agents (if it does not overlap other agents).
-        ret = 0  # Number of agents places so far
         iterations = 0
-        sampling = PolygonSample(surface)
+        sampling = PolygonSample(spawn)
         parameters = Parameters(body_type=body_type)
 
         while num > 0 and iterations <= iterations_limit * num:
@@ -176,29 +171,43 @@ class Configuration:
             max_angular_velocity = parameters.maximum_angular_velocity.default()
 
             # Polygon of the agent
-            if self.agent.three_circle:
-                r_t = ratio_rt * radius
-                r_s = ratio_rs * radius
-                poly = agent_polygon(
-                    positions(position, 0.0, ratio_rt * radius),
-                    (r_t, r_s, r_s)
-                )
-            else:
-                poly = agent_polygon(position, radius)
+            overlapping_agents = False
+            overlapping_obstacles = False
+            num_active_agents = np.sum(self.agent.active)
+            if num_active_agents > 0:
+                # Conditions
+                if self.agent.three_circle:
+                    r_t = ratio_rt * radius
+                    r_s = ratio_rs * radius
+                    orientation = 0.0
+                    poly = agent_polygon(
+                        positions(position, orientation, ratio_rt * radius),
+                        (r_t, r_s, r_s)
+                    )
+                    overlapping_agents = overlapping_three_circle(
+                        self.agent, self.agent.indices(),
+                        positions(position, orientation, ratio_rt * radius),
+                        (r_t, r_s, r_s),
+                    )
+                else:
+                    poly = agent_polygon(position, radius)
+                    overlapping_agents = overlapping_circle_circle(
+                        self.agent, self.agent.indices(),
+                        position,
+                        radius
+                    )
+                overlapping_obstacles = self.obstacles.intersects(poly)
 
-            # Conditions
-            overlapping_agents = overlapping(self.agent, position, radius)
-            overlapping_obstacles = self._occupied.intersects(poly)
             if not overlapping_agents and not overlapping_obstacles:
                 # Add new agent
-                success = self.agent.add(
+                index = self.agent.add(
                     position, mass, radius, ratio_rt, ratio_rs, ratio_ts,
                     inertia_rot, max_velocity, max_angular_velocity
                 )
-                if success:
+                if index >= 0:
+                    # Yield index of an agent that was successfully placed.
                     num -= 1
-                    ret += 1
+                    yield index
                 else:
                     break
             iterations += 1
-        return ret

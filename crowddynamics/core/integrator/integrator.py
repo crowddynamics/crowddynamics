@@ -114,12 +114,10 @@ def euler_integration(agent, dt_min, dt_max):
 
     if agent.orientable:
         angular_acceleration = agent.torque[i] / agent.inertia_rot[i]
-        agent.angle[i] += agent.angular_velocity[i] * dt + \
-                          angular_acceleration / 2 * dt ** 2
+        agent.orientation[i] += agent.angular_velocity[i] * dt + \
+                                angular_acceleration / 2 * dt ** 2
         agent.angular_velocity[i] += angular_acceleration * dt
-        agent.angle[:] = wrap_to_pi(agent.angle)
-
-        agent.update_shoulder_positions()
+        agent.orientation[:] = wrap_to_pi(agent.orientation)
 
     return dt
 
@@ -153,7 +151,8 @@ def velocity_verlet(agent, dt_min, dt_max):
 
     """
     i = agent.indices()
-    dt = adaptive_timestep(dt_min, dt_max, agent.velocity[i], agent.target_velocity[i])
+    dt = adaptive_timestep(dt_min, dt_max, agent.velocity[i],
+                           agent.target_velocity[i])
     a = agent.force[i] / agent.mass[i]
     agent.position[i] += agent.velocity[i] * dt + a / 2 * dt ** 2
     yield dt
@@ -162,7 +161,8 @@ def velocity_verlet(agent, dt_min, dt_max):
         i = agent.indices()
 
         # Time step selection
-        dt = adaptive_timestep(dt_min, dt_max, agent.velocity[i], agent.target_velocity[i])
+        dt = adaptive_timestep(dt_min, dt_max, agent.velocity[i],
+                               agent.target_velocity[i])
 
         a2 = agent.force[i] / agent.mass[i]
         agent.velocity[i] += (a + a2) / 2 * dt

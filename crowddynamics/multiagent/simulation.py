@@ -6,11 +6,12 @@ import numpy as np
 
 from crowddynamics.functions import Timed, load_config
 from crowddynamics.io.hdfstore import HDFStore
-from crowddynamics.multiagent.configuration import Configuration
+from crowddynamics.multiagent.field import Field
 
 
 class QueueDict:
     """Queue dict"""
+    # TODO: Communication module
 
     def __init__(self, producer):
         """
@@ -44,8 +45,8 @@ class QueueDict:
         return d
 
 
-class MultiAgentSimulation(Process, Configuration):
-    """
+class MultiAgentSimulation(Process, Field):
+    r"""
     Class that calls numerical algorithms of the multi-agent simulation.
     """
 
@@ -57,7 +58,7 @@ class MultiAgentSimulation(Process, Configuration):
             queue (multiprocessing.Queue):
         """
         super(MultiAgentSimulation, self).__init__()  # Multiprocessing
-        Configuration.__init__(self)
+        Field.__init__(self)
 
         # Logger
         self.logger = logging.getLogger(__name__)
@@ -71,6 +72,9 @@ class MultiAgentSimulation(Process, Configuration):
         self.time_tot = float(0)
         self.in_goal = int(0)
         self.dt_prev = float(0)
+
+        # Algorithms
+        self.task_graph = None
 
         # Data flow
         self.hdfstore = None  # Sends data to hdf5 file
@@ -146,31 +150,34 @@ class MultiAgentSimulation(Process, Configuration):
 
     @Timed("Total Simulation Time")
     def update(self):
-        """Update"""
+        r"""Execute new iteration cycle of the simulation."""
         self.agent.reset_motion()
         self.agent.reset_neighbor()
         self.task_graph.evaluate()
 
         # TODO: TaskNode
         # Check which agent are inside the domain
-        if self.domain is not None:
-            num = np.sum(self.agent.active)
-            self.agent.active &= self.omega.contains_points(self.agent.position)
-            num -= np.sum(self.agent.active)
-            self.in_goal += num
-
-        # Raise iteration count
-        self.iterations += 1
+        # if self.domain is not None:
+        #     num = np.sum(self.agent.active)
+        #     self.agent.active &= self.omega.contains_points(self.agent.position)
+        #     num -= np.sum(self.agent.active)
+        #     self.in_goal += num
 
         # Stores the simulation data into buffers and dumps buffer into file
+        # TODO: TaskNode?
         if self.hdfstore is not None:
             self.hdfstore.update_buffers()
             if self.iterations % 100 == 0:
                 self.hdfstore.dump_buffers()
 
+        # TODO: TaskNode?
         if self.queue is not None:
             data = self.queue_items.get()
             self.queue.put(data)
+
+        # Raise iteration count
+        self.iterations += 1
+        return self.iterations
 
     # To measure JIT compilation time of numba decorated functions.
     initial_update = Timed("Jit:")(deepcopy(update))

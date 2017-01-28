@@ -154,3 +154,8 @@ class PolygonSample:
         while num is None or i < num:
             yield self.draw()
             i += 1
+
+
+class LineStringSample:
+    # TODO: LineStringSampling
+    pass

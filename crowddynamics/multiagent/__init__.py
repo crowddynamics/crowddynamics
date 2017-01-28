@@ -1,5 +1,5 @@
 from .agent import Agent
-from .configuration import Configuration
+from .field import Field
 from .simulation import MultiAgentSimulation, QueueDict
 from .algorithms import Integrator, Fluctuation, Adjusting, \
     AgentAgentInteractions, AgentObstacleInteractions, Navigation, Orientation, \
@@ -7,7 +7,7 @@ from .algorithms import Integrator, Fluctuation, Adjusting, \
 
 __all__ = """
 Agent
-Configuration
+Field
 MultiAgentSimulation
 QueueDict
 Integrator
