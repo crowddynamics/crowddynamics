@@ -7,7 +7,7 @@ from crowddynamics.core.vector2D.vector2D import rotate270, wrap_to_pi
 
 
 @numba.jit(UniTuple(f8[:], 3)(f8[:], f8, f8), nopython=True, nogil=True)
-def positions(position, orientation, radius_ts):
+def positions_scalar(position, orientation, radius_ts):
     """Center and shoulder positions"""
     x = np.cos(orientation)
     y = np.sin(orientation)
@@ -19,7 +19,7 @@ def positions(position, orientation, radius_ts):
     return position, position_ls, position_rs
 
 
-@numba.jit(nopython=True, nogil=True)
+@numba.jit(UniTuple(f8[:, :], 3)(f8[:, :], f8[:], f8[:]), nopython=True, nogil=True)
 def positions_vector(position, orientation, radius_ts):
     """Center and shoulder positions"""
     x = np.cos(orientation)
@@ -31,14 +31,16 @@ def positions_vector(position, orientation, radius_ts):
     return position, position_ls, position_rs
 
 
-# @numba.generated_jit(nopython=True, nogil=True)
-# def positions(position, orientation, radius_ts):
-#     if isinstance(orientation, numba.types.Float):
-#         return lambda position, orientation, radius_ts: \
-#             positions_scalar(position, orientation, radius_ts)
-#     elif isinstance(orientation, numba.types.Array):
-#         return lambda position, orientation, radius_ts: \
-#             positions_vector(position, orientation, radius_ts)
+@numba.generated_jit(nopython=True, nogil=True)
+def positions(position, orientation, radius_ts):
+    if isinstance(orientation, numba.types.Float):
+        return lambda position, orientation, radius_ts: \
+            positions_scalar(position, orientation, radius_ts)
+    elif isinstance(orientation, numba.types.Array):
+        return lambda position, orientation, radius_ts: \
+            positions_vector(position, orientation, radius_ts)
+    else:
+        raise Exception()
 
 
 def resize():
@@ -269,7 +271,7 @@ class Agent(object):
             target_direction (numpy.ndarray):
 
         Returns:
-            Boolean:
+            bool:
 
         """
         if self.active[i]:

@@ -1,4 +1,10 @@
 digraph foo {
+      "Reset" -> {
+          "GuiCommunication";
+          "Save";
+      };
+      "GuiCommunication" -> "Integrator";
+      "Save" -> "Integrator";
       "Integrator" -> "Social Force Model";
       "Social Force Model" -> {
           "Interactions";

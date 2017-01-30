@@ -295,12 +295,16 @@ def force_social_three_circle(agent, i, j):
     # 2 = right shoulder
 
     # Positions: center, left, right
-    x_i = (agent.position[i], agent.position_ls[i], agent.position_rs[i])
-    x_j = (agent.position[j], agent.position_ls[j], agent.position_rs[j])
+    # x_i = (agent.position[i], agent.position_ls[i], agent.position_rs[i])
+    # x_j = (agent.position[j], agent.position_ls[j], agent.position_rs[j])
+    x_i = agent.positions(i)
+    x_j = agent.positions(j)
 
     # Radii of torso and shoulders
-    r_i = (agent.r_t[i], agent.r_s[i], agent.r_s[i])
-    r_j = (agent.r_t[j], agent.r_s[j], agent.r_s[j])
+    # r_i = (agent.r_t[i], agent.r_s[i], agent.r_s[i])
+    # r_j = (agent.r_t[j], agent.r_s[j], agent.r_s[j])
+    r_i = agent.radii(i)
+    r_j = agent.radii(j)
 
     # Parts that will be first in contact for agents i and j if colliding.
     contact_i = np.int64(0)
@@ -342,17 +346,17 @@ def force_social_three_circle(agent, i, j):
 
     # TODO: Fix signs
     if contact_i == 1:
-        phi = agent.angle[i]
+        phi = agent.orientation[i]
         r_off_i += agent.r_ts[i] * np.array((np.sin(phi), -np.cos(phi)))
     elif contact_i == 2:
-        phi = agent.angle[i]
+        phi = agent.orientation[i]
         r_off_i -= agent.r_ts[i] * np.array((np.sin(phi), -np.cos(phi)))
 
     if contact_j == 1:
-        phi = agent.angle[j]
+        phi = agent.orientation[j]
         r_off_j += agent.r_ts[j] * np.array((np.sin(phi), -np.cos(phi)))
     elif contact_j == 2:
-        phi = agent.angle[j]
+        phi = agent.orientation[j]
         r_off_j -= agent.r_ts[j] * np.array((np.sin(phi), -np.cos(phi)))
 
     x_rel = agent.position[i] - agent.position[j]

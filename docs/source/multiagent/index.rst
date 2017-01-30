@@ -9,6 +9,10 @@ Multi-Agent
 
 ----
 
+.. graphviz:: task_graph.dot
+
+----
+
 .. toctree::
 
    social_force_model
@@ -17,3 +21,4 @@ Multi-Agent
    steering
    integrator
    multiagent
+   tables

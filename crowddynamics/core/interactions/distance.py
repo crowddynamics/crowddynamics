@@ -179,7 +179,7 @@ def overlapping_circle_circle(agent, indices, x2, r2):
         r2: Radius of agent that is tested
 
     Returns:
-        Boolean:
+        bool:
 
     """
     for i in indices:
@@ -203,7 +203,7 @@ def overlapping_three_circle(agent, indices, x2, r2):
         r2: Radius of agent that is tested
 
     Returns:
-        Boolean:
+        bool:
 
     """
     for i in indices:

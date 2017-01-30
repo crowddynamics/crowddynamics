@@ -74,10 +74,14 @@ def test_normalize(a):
 
 
 @given(
-    a=real(exclude_zero='near', shape=2),
-    b=real(min_value=0, exclude_zero='near')
+    v=real(-1.0, 1.0, exclude_zero='near', shape=2),
+    l=real(0.0, 1.0, exclude_zero='near')
 )
-def test_truncate(a, b):
-    truncate(a, b)
-    l = length(a)
-    assert l <= b or np.isclose(l, b)
+def test_truncate(v, l):
+    vlen = length(v)
+
+    truncate(v, l)
+    if vlen > l:
+        assert np.isclose(length(v), l)
+    else:
+        assert length(v) <= l

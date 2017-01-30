@@ -9,8 +9,8 @@ from crowddynamics.core.integrator.integrator import velocity_verlet
 @given(
     dt_min=st2.real(min_value=0, max_value=10.0),
     dt_max=st2.real(min_value=0, max_value=10.0),
-    velocity=st2.vectors(maxsize=10, elements=st2.real(-10, 10)),
-    target_velocity=st2.vectors(maxsize=10, elements=st2.real(-10, 10))
+    velocity=st2.real(-10, 10, shape=(10, 2)),
+    target_velocity=st2.real(-10, 10, shape=(10, 2))
 )
 def test_adaptive_timestep(dt_min, dt_max, velocity, target_velocity):
     assume(0 < dt_min < dt_max)

@@ -18,58 +18,84 @@ import numpy as np
 import skfmm
 import skimage.draw
 from shapely.geometry import LineString, Polygon
+from shapely.geometry import Point
 from shapely.geometry.base import BaseGeometry
 
 from crowddynamics.geometry import shapes_to_point_pairs
 
 
-def _to_indices(points, step):
+def to_indices(points, step):
     """
     To indices
 
     Args:
-        points (numpy.ndarray): Points on a continuous grid
-        step (float): Step size of the grid
+        points (numpy.ndarray):
+            Points on a continuous grid
+
+        step (float):
+            Step size of the grid
 
     Returns:
-        Array of integers. Indices of a point in discrete grid.
+        np.ndarray:
+            Array of integers. Indices of a point in discrete grid.
 
     """
     return np.round(points / step).astype(np.int64)
 
 
-def _set_values(grid, step, shape, value):
+def set_values_to_grid(grid, step, shape, value):
     """
     Set values on discrete grid using ``scikit-image``.
 
     Args:
-        shape (BaseGeometry): Shapely shape
-        grid (numpy.ndarray): Grid to set values
-        value (grid.dtype): Value to set to the grid points
-        step (float): Step size of the grid
+        shape (BaseGeometry):
+            Shapely shape
+
+        grid (numpy.ndarray):
+            Grid to set values
+
+        value (grid.dtype):
+            Value to set to the grid points
+
+        step (float):
+            Step size of the grid
 
     Returns:
         None. Values are set to grid.
-
     """
-    if isinstance(shape, Polygon):
-        points = np.asarray(shape.exterior)
-        points = _to_indices(points, step)
-        x, y = points[:, 0], points[:, 1]
-        j, i = skimage.draw.polygon(x, y)
-        grid[i, j] = value
+    if isinstance(shape, Point):
+        pass
     elif isinstance(shape, LineString):
         points = shapes_to_point_pairs(shape)
-        points = _to_indices(points, step)
+        points = to_indices(points, step)
         for args in points:
             j, i = skimage.draw.line(*args.flatten())
             grid[i, j] = value
+    elif isinstance(shape, Polygon):
+        points = np.asarray(shape.exterior)
+        points = to_indices(points, step)
+        x, y = points[:, 0], points[:, 1]
+        j, i = skimage.draw.polygon(x, y)
+        grid[i, j] = value
     elif isinstance(shape, Iterable):
         for shape_ in shape:
-            _set_values(grid, step, shape_, value)
+            set_values_to_grid(grid, step, shape_, value)
 
 
-def distance_map(step, domain, targets, obstacles):
+def meshgrid(step, minx, miny, maxx, maxy):
+    """
+    2-Dimensional meshgrid with inclusive end points ``maxx`` and ``maxy``.
+
+    Returns:
+        numpy.ndarray:
+    """
+    # TODO: matrix indexing='ij'
+    x = np.arange(minx, maxx + step, step=step)
+    y = np.arange(miny, maxy + step, step=step)
+    return np.meshgrid(x, y, indexing='xy')
+
+
+def distance_map(domain, targets, obstacles, step):
     r"""
     Distance map :math:`S(\mathbf{x})` is obtained by solving *Eikonal equation*
     using fast marching *Fast Marching Method (FMM)* (``scikit-fmm``).
@@ -94,53 +120,51 @@ def distance_map(step, domain, targets, obstacles):
 
     .. math::
        \begin{cases}
-       f(\mathbf{x}) &= 1, & \mathbf{x} \in \Omega \setminus \mathcal{O} \\
-       f(\mathbf{x}) &\to 0, & \mathbf{x} \in \mathcal{O}
+       f(\mathbf{x}) = 1, & \mathbf{x} \in \Omega \setminus \mathcal{O} \\
+       f(\mathbf{x}) \to 0, & \mathbf{x} \in \mathcal{O}
        \end{cases}
 
     Args:
-        step (float):
-            Step size for the meshgrid. Should be positive float.
-            Reference value :math:`0.01\,\mathrm{m}`.
-
         domain (Polygon):
             Domain :math:`\Omega` containing obstacles and targets.
 
-        obstacles (LineString, optional):
+        obstacles (BaseGeometry, optional):
             Impassable regions :math:`\mathcal{O}` in the domain.
 
-        targets (LineString, optional):
+        targets (BaseGeometry, optional):
             Target regions :math:`\mathcal{E}` in the domain.
 
-    Return:
-        (numpy.meshgrid, numpy.ndarray, numpy.ma.MaskedArray):
-            (mgrid, dmap, phi)
+        step (float):
+            - Positive float
+            - Step size for the meshgrid.
+            - Reference value :math:`0.01\,\mathrm{m}`.
 
+    Return:
+        (numpy.ndarray, numpy.ndarray, numpy.ma.MaskedArray):
+            Tuple of
+            - ``mgrid``
+            - ``dmap``
+            - ``phi``
     """
+    mgrid = meshgrid(step, *domain.bounds)
+
     # Numerical values for objects in the domain
     empty_region = -1.0
     target_region = 1.0
     obstacle_region = True
-
-    # Form the meshgrid
-    minx, miny, maxx, maxy = domain.bounds  # Bounding box
-    x = np.arange(minx, maxx + step, step=step)  # x-axis
-    y = np.arange(miny, maxy + step, step=step)  # y-axis
-    mgrid = np.meshgrid(x, y)  # (X, Y)
+    non_obstacle_region = False
 
     # Contour used for solving distance map
     # Mask for masked values that represent obstacles for the solver
     contour = np.full_like(mgrid[0], empty_region, dtype=np.float64)
-    mask = np.full_like(mgrid[0], False, dtype=np.bool_)
+    mask = np.full_like(mgrid[0], non_obstacle_region, dtype=np.bool_)
 
-    _set_values(contour, step, targets, target_region)
-    _set_values(mask, step, obstacles, obstacle_region)
-
-    phi = np.ma.MaskedArray(contour, mask)
+    set_values_to_grid(contour, step, targets, target_region)
+    set_values_to_grid(mask, step, obstacles, obstacle_region)
 
     # Solve distance map using Fast-Marching Method (FMM)
+    phi = np.ma.MaskedArray(contour, mask)
     dmap = skfmm.distance(phi, dx=step)
-
     return mgrid, dmap, phi
 
 
@@ -261,7 +285,7 @@ def merge_dir_maps(dmap, dir_map1, dir_map2, radius, value):
     return merged
 
 
-def static_potential(step, domain, exits, obstacles, radius, value):
+def static_potential(step, domain, targets, obstacles, radius, value):
     r"""
     Static potential is navigation algorithm that does not take into account
     the space that is occupied by dynamic agents (aka agents).
@@ -269,7 +293,7 @@ def static_potential(step, domain, exits, obstacles, radius, value):
     Args:
         step (float):
         domain (Polygon):
-        exits (LineString, optional):
+        targets (LineString, optional):
         obstacles (LineString, optional):
         value (float):
         radius (float):
@@ -278,8 +302,8 @@ def static_potential(step, domain, exits, obstacles, radius, value):
         numpy.ndarray:
     """
     # TODO: interpolation
-    _, dmap_exits, _ = distance_map(step, domain, exits, obstacles)
-    _, dmap_obs, _ = distance_map(step, domain, obstacles, None)
+    _, dmap_exits, _ = distance_map(domain, targets, obstacles, step)
+    _, dmap_obs, _ = distance_map(domain, obstacles, None, step)
 
     dir_map_exits = direction_map(dmap_exits)
     dir_map_obs = direction_map(dmap_obs)

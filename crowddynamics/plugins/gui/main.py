@@ -74,7 +74,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         Enable controls
 
         Args:
-            boolean (Boolean):
+            boolean (bool):
         """
         self.startButton.setEnabled(boolean)
         self.stopButton.setEnabled(boolean)
@@ -234,9 +234,12 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # if self.process.game is not None:
         #     args.append((("game", "agent"), ["strategy"]))
 
-        self.process.configure_queuing(args)
+        # TODO: simulation Communication
+        # self.process.configure_queuing(args)
         if self.savingButton.isChecked():
-            self.process.configure_hdfstore()
+            pass
+            # TODO: simulation IO
+            # self.process.configure_hdfstore()
 
     @Timed("Update Plots")
     def update_plots(self):

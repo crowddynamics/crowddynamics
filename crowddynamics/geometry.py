@@ -4,13 +4,6 @@ import numpy as np
 from shapely.geometry import Polygon
 from shapely.geometry.base import BaseGeometry
 
-try:
-    from shapely import speedups
-
-    speedups.enable()
-except ImportError():
-    pass
-
 
 def check_shapes(shapes, types):
     """Checks type and flattens shapes.

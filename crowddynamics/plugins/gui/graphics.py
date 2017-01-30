@@ -7,6 +7,7 @@ from shapely.geometry import LineString
 from shapely.geometry import Polygon
 
 from crowddynamics.functions import load_config, Timed
+from crowddynamics.multiagent.agent import positions
 from crowddynamics.multiagent.simulation import MultiAgentSimulation
 
 
@@ -136,9 +137,9 @@ class MultiAgentPlot(pg.PlotItem):
                 item = pg.PlotDataItem(x, y)  # settings["domain"]["brush"]
                 # self.addItem(item)
 
-        if process.exits is not None:
+        if process.targets is not None:
             self.logger.debug("exits")
-            exits = process.exits
+            exits = process.targets
             for exit_ in exits:
                 if isinstance(exit_, LineString):
                     x, y = exit_.xy
@@ -151,8 +152,9 @@ class MultiAgentPlot(pg.PlotItem):
             agent = process.agent
             if agent.three_circle:
                 model = ThreeCircle(agent.r_t, agent.r_s)
-                model.set_data(agent.position, agent.position_ls,
-                               agent.position_rs, active=agent.active)
+                # FIXME
+                position, position_ls, position_rs = agent.positions(agent.indices())
+                model.set_data(position, position_ls, position_rs, active=agent.active)
                 for item in model.items:
                     self.addItem(item)
             else:

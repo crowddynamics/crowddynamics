@@ -3,7 +3,7 @@ Command-line interface for running ``crowddynamics``.
 """
 import click
 
-from crowddynamics.functions import setup_logging, user_info
+from crowddynamics.logging import setup_logging, user_info
 from crowddynamics.plugins.gui import run_gui
 
 

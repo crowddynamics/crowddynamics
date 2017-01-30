@@ -5,7 +5,7 @@ from hypothesis.strategies import data
 import crowddynamics.testing.strategies as st
 from crowddynamics.multiagent import Agent
 from crowddynamics.multiagent.agent import positions_vector, \
-    positions
+    positions, positions_scalar
 
 
 def add_agent(agent, data):
@@ -25,7 +25,7 @@ def add_agent(agent, data):
 @given(data())
 def test_positions(data):
     # scalar
-    out = positions(
+    out = positions_scalar(
         position=data.draw(st.real(-10.0, 10.0, shape=2)),
         orientation=data.draw(st.real(-np.pi, np.pi)),
         radius_ts=data.draw(st.real(0.01, 0.1))
@@ -50,29 +50,29 @@ def test_positions(data):
         assert arr.shape == (size, 2)
 
     # scalar
-    # out = positions(
-    #     position=data.draw(st.real(-10.0, 10.0, shape=2)),
-    #     orientation=data.draw(st.real(-np.pi, np.pi)),
-    #     radius_ts=data.draw(st.real(0.01, 0.1))
-    # )
-    # assert isinstance(out, tuple)
-    # for i in range(3):
-    #     arr = out[i]
-    #     assert isinstance(arr, np.ndarray)
-    #     assert arr.shape == (2,)
-    #
-    # # vector
-    # size = 2
-    # out = positions(
-    #     position=data.draw(st.real(-10.0, 10.0, shape=(size, 2))),
-    #     orientation=data.draw(st.real(-np.pi, np.pi, shape=size)),
-    #     radius_ts=data.draw(st.real(0.01, 0.1, shape=size))
-    # )
-    # assert isinstance(out, tuple)
-    # for i in range(3):
-    #     arr = out[i]
-    #     assert isinstance(arr, np.ndarray)
-    #     assert arr.shape == (size, 2)
+    out = positions(
+        position=data.draw(st.real(-10.0, 10.0, shape=2)),
+        orientation=data.draw(st.real(-np.pi, np.pi)),
+        radius_ts=data.draw(st.real(0.01, 0.1))
+    )
+    assert isinstance(out, tuple)
+    for i in range(3):
+        arr = out[i]
+        assert isinstance(arr, np.ndarray)
+        assert arr.shape == (2,)
+
+    # vector
+    size = 2
+    out = positions(
+        position=data.draw(st.real(-10.0, 10.0, shape=(size, 2))),
+        orientation=data.draw(st.real(-np.pi, np.pi, shape=size)),
+        radius_ts=data.draw(st.real(0.01, 0.1, shape=size))
+    )
+    assert isinstance(out, tuple)
+    for i in range(3):
+        arr = out[i]
+        assert isinstance(arr, np.ndarray)
+        assert arr.shape == (size, 2)
 
 
 @given(data())

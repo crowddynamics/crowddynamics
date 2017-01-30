@@ -19,7 +19,7 @@ Classes
 
 Simulations
 -----------
-.. automodule:: crowddynamics.multiagent.testing
+.. automodule:: crowddynamics.multiagent.examples
    :members:
    :special-members:
    :private-members:

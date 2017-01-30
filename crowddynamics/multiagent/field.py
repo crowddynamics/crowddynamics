@@ -8,6 +8,7 @@ from shapely.ops import cascaded_union
 from crowddynamics.core.interactions import overlapping_circle_circle, \
     overlapping_three_circle
 from crowddynamics.core.random.sampling import PolygonSample
+from crowddynamics.logging import log_with
 from crowddynamics.multiagent import Agent
 from crowddynamics.multiagent.agent import positions
 from crowddynamics.multiagent.parameters import Parameters
@@ -29,31 +30,36 @@ class Field:
     MultiAgent simulation setup
 
     1) Set the Field
+
        - Domain
        - Obstacles
        - Targets (aka exits)
 
     2) Initialise Agents
+
        - Set maximum number of agents. This is the limit of the size of array
          inside ``Agent`` class.
        - Select Agent model.
 
     3) Place Agents into any surface that is contained by the domain.
+
        - Body type
        - Number of agents that is placed into the surface
 
     """
+    logger = logging.getLogger(__name__)
 
     def __init__(self):
-        self.logger = logging.getLogger(__name__)
         # Field
         self.domain = Polygon()
         self.obstacles = GeometryCollection()
         self.targets = GeometryCollection()
+        # self.agents = dict()
         self.agent = None
         # Currently occupied surface by Agents and Obstacles
         self._occupied = Polygon()
 
+    @log_with(logger)
     def init_domain(self, domain):
         """
         Initialize domain
@@ -64,36 +70,10 @@ class Field:
                   :math:`\Omega \subset \mathbb{R}^{2}`.
                 - ``None``: Real domain :math:`\Omega = \mathbb{R}^{2}`.
         """
+        self.logger.info("")
         self.domain = domain
 
-    def add_obstacle(self, geom):
-        """
-        Add new ``obstacle`` to the Field
-
-        Args:
-            geom (BaseGeometry):
-        """
-        self.obstacles |= geom
-        self._occupied |= geom
-
-    def remove_obstacle(self, geom):
-        """Remove obstacle"""
-        self.obstacles -= geom
-        self._occupied -= geom
-
-    def add_target(self, geom):
-        """
-        Add new ``target`` to the Field
-
-        Args:
-            geom (BaseGeometry):
-        """
-        self.targets |= geom
-
-    def remove_target(self, geom):
-        """Remove target"""
-        self.targets -= geom
-
+    @log_with(logger)
     def init_agents(self, max_size, model):
         """
         Initialize agents
@@ -108,6 +88,7 @@ class Field:
                 - ``circular``
                 - ``three_circle``
         """
+        self.logger.info("")
         if max_size is None:
             raise NotImplemented
         self.agent = Agent(max_size)
@@ -116,6 +97,43 @@ class Field:
         else:
             self.agent.set_circular()
 
+    @log_with(logger)
+    def add_obstacle(self, geom):
+        """
+        Add new ``obstacle`` to the Field
+
+        Args:
+            geom (BaseGeometry):
+        """
+        self.logger.info("")
+        self.obstacles |= geom
+        self._occupied |= geom
+
+    @log_with(logger)
+    def remove_obstacle(self, geom):
+        """Remove obstacle"""
+        self.logger.info("")
+        self.obstacles -= geom
+        self._occupied -= geom
+
+    @log_with(logger)
+    def add_target(self, geom):
+        """
+        Add new ``target`` to the Field
+
+        Args:
+            geom (BaseGeometry):
+        """
+        self.logger.info("")
+        self.targets |= geom
+
+    @log_with(logger)
+    def remove_target(self, geom):
+        """Remove target"""
+        self.logger.info("")
+        self.targets -= geom
+
+    @log_with(logger)
     def add_agents(self, num, spawn, body_type, iterations_limit=100):
         r"""
         Add multiple agents at once.
@@ -207,7 +225,11 @@ class Field:
                 if index >= 0:
                     # Yield index of an agent that was successfully placed.
                     num -= 1
+                    # self.agents[index] = poly
                     yield index
                 else:
                     break
             iterations += 1
+
+    def remove_agents(self, indices):
+        pass

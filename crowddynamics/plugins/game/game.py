@@ -4,7 +4,7 @@ from matplotlib.path import Path
 from shapely.geometry import Polygon
 
 from crowddynamics.core.vector2D.vector2D import length_nx2, length
-from crowddynamics.task_graph import TaskNode
+from crowddynamics.taskgraph import TaskNode
 
 
 @numba.jit(nopython=True)

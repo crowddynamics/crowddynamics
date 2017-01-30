@@ -3,11 +3,11 @@ import numpy as np
 from hypothesis import given
 
 from crowddynamics.core.interactions.partitioning import block_list
-from crowddynamics.testing import vectors, real
+from crowddynamics.testing import real
 
 
 @given(
-    points=vectors(elements=real(-10.0, 10.0), dim=2, maxsize=30),
+    points=real(-10.0, 10.0, shape=(10, 2)),
     cell_width=st.floats(0.1, 1.0)
 )
 def test_block_list(points, cell_width):

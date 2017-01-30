@@ -46,12 +46,13 @@ def test_random_sample_triangle(a, b, c):
     assert triangle.intersects(point) or np.isclose(distance, 0.0)
 
 
-@given(polygon(a=-1.0, b=1.0, num_points=5, convex_hull=True))
-def test_polygon_sampling(polygon):
+@given(polygon(a=-1.0, b=1.0, num_points=5))
+def test_polygon_sampling(poly):
     # Numerical error is too great if area of the polygon is too small
-    assume(polygon.area > 0.01)
+    poly = poly.convex_hull
+    assume(poly.area > 0.01)
 
     sample_size = 20
-    sample = PolygonSample(polygon)
+    sample = PolygonSample(poly)
     for point in sample.generator(sample_size):
-        assert polygon.contains(Point(point))
+        assert poly.contains(Point(point))

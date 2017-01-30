@@ -31,28 +31,23 @@ def real(min_value=None, max_value=None, exclude_zero=None, shape=None):
             - None: Scalar output
             - int|tuple: Vector output of shape
     """
+    # TODO: size as strategy
     dtype = np.float64
     elements = st.floats(min_value, max_value, False, False)
 
     # Excluded values
     # TODO: Maybe use assume instead?
     if exclude_zero == 'exact':
-        return elements.filter(lambda x: x != 0.0)
+        elements = elements.filter(lambda x: x != 0.0)
+
     if exclude_zero == 'near':
-        return elements.filter(lambda x: not np.isclose(x, 0.0))
+        elements = elements.filter(lambda x: not np.isclose(x, 0.0))
 
     # Strategy
-    if shape is not None:
+    if isinstance(shape, (int, tuple)):
         return arrays(dtype, shape, elements)
     else:
         return elements
-
-
-@st.composite
-def vectors(draw, elements=real(), maxsize=100, dim=2):
-    size = draw(st.integers(1, maxsize))
-    values = draw(arrays(np.float64, (size, dim), elements))
-    return values
 
 
 @st.composite
@@ -62,8 +57,7 @@ def unit_vector(draw, start=0, end=2 * np.pi):
 
 
 @st.composite
-def polygon(draw, a=-1.0, b=1.0, num_points=5, buffer=real(0.1, 0.2),
-            convex_hull=False):
+def polygon(draw, a=-1.0, b=1.0, num_points=5, buffer=real(0.1, 0.2)):
     r"""
     Generate a random polygon. Polygon should have area > 0.
 
@@ -76,49 +70,53 @@ def polygon(draw, a=-1.0, b=1.0, num_points=5, buffer=real(0.1, 0.2),
            Maximum value of the bounding box
 
         num_points (int):
-        buffer (SearchStrategy):
-        convex_hull (Boolean):
+        buffer (SearchStrategy|Number):
+        convex_hull (bool):
 
     Returns:
         Polygon: Random polygon
 
     """
-    c = draw(buffer)
+    # TODO: input strategies
+    if isinstance(buffer, SearchStrategy):
+        c = draw(buffer)
+    else:
+        c = buffer
     points = draw(arrays(np.float64, (num_points, 2),
                          real(a + c, b - c, exclude_zero='near')))
-    # points *= (1 - c / abs(b - a))
     lines = LineString(points)
     poly = lines.buffer(c)
+    # TODO: assume poly.area
     # assume(poly.area > 0)
-    if convex_hull:
-        return poly.convex_hull
-    else:
-        return poly
+    return poly
 
 
 @st.composite
 def field(draw,
-          domain_strategy=polygon(),
-          target_length_strategy=real(0.3, 0.5)):
-    r"""
-    SearchStrategy that generates a domain, targets and obstacles. Domain
-    is created as polygon, then targets are chosen from the ``domain.exterior``
+          domain_strategy=polygon(a=-10.0, b=10.0, buffer=1.0),
+          target_length_strategy=1.0):
+    r"""SearchStrategy that generates ``domain``, ``targets`` and ``obstacles``
+    for testing.
+
+    Domain is created as polygon, then targets are chosen from the ``domain.exterior``
     of the polygon and rest of the exterior and ``domain.interior`` is made to
     obstacle.
 
     Args:
         draw:
         domain_strategy:
-        target_length:
+        target_length_strategy:
 
     Returns:
-        (Polygon, MultiLineString, MultiLineString):
-            - domain
-            - targets
-            - obstacles
-
+        (Polygon, BaseGeometry, BaseGeometry):
+            - ``domain``
+            - ``targets``
+            - ``obstacles``
     """
-    target_length = draw(target_length_strategy)
+    if isinstance(target_length_strategy, SearchStrategy):
+        target_length = draw(target_length_strategy)
+    else:
+        target_length = target_length_strategy
     domain = draw(domain_strategy)
     targets = LineString()
     obstacles = domain.exterior
@@ -131,9 +129,9 @@ def field(draw,
         return chain(range(shift, stop), range(start, shift))
 
     coords = domain.exterior.coords
-    for i in shifted_range(0, len(coords)):
-        targets |= LineString([coords[i], coords[i]])
-        if targets.length < target_length:
+    for i in shifted_range(0, len(coords) - 1):
+        targets |= LineString([coords[i], coords[i+1]])
+        if targets.length > target_length:
             break
 
     obstacles -= targets

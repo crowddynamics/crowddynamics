@@ -190,17 +190,24 @@ def normalize_nx2(vec2d):
 
 
 @numba.jit(void(f8[:], f8), nopython=True, nogil=True)
-def truncate(vec2d, limit):
+def truncate(v, l):
     r"""
-    Truncate
+    Truncate vector :math:`\mathbf{v}` to length :math:`l > 0` if
+    :math:`\|\mathbf{v}\| > l`.
+    
+    .. math::
+        \begin{cases}
+        l \frac{\mathbf{v}}{\|\mathbf{v}\|} & \|\mathbf{v}\| > l \\
+        \mathbf{v} & \|\mathbf{v}\| \leq l \\
+        \end{cases}
 
     Args:
-        vec2d (numpy.ndarray):
-        limit (float):
+        v (numpy.ndarray):
+        l (float):
 
     Returns:
         None:
     """
-    l = length(vec2d)
-    if l != 0 and l > limit:
-        vec2d *= limit / l
+    vlen = length(v)
+    if vlen > l:
+        v *= l / vlen

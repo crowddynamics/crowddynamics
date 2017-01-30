@@ -106,7 +106,7 @@ class HDFStore(object):
             values (numpy.ndarray):
                 Values to be stored. Goes through np.array(value).
 
-            resizable (Boolean):
+            resizable (bool):
                 If true new values can be added to the dataset.
 
         """
@@ -149,7 +149,7 @@ class HDFStore(object):
             attributes (dict[str, dict]):
                 Dictionary of ``attribute_name: settings``
 
-            overwrite (Boolean):
+            overwrite (bool):
                 If True allows to overwrite existing dataset.
 
         Raises:

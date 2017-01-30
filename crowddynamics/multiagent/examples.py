@@ -2,9 +2,9 @@ import numpy as np
 from shapely.geometry import Polygon, LineString, Point
 
 from crowddynamics.plugins.game import EgressGame
-from crowddynamics.multiagent.algorithms import Navigation, Orientation, \
+from crowddynamics.multiagent.tasks import Navigation, Orientation, \
     Integrator, Fluctuation, Adjusting, AgentAgentInteractions, \
-    AgentObstacleInteractions
+    AgentObstacleInteractions, Reset
 from crowddynamics.multiagent.simulation import MultiAgentSimulation
 
 # TODO: Convert examples into test and validation simulations
@@ -19,6 +19,15 @@ class Outdoor(MultiAgentSimulation):
 
     - Multi-directional flow
     - Periodic boundaries
+
+    Tasks
+
+    - Reset
+        - Integrator
+            - Adjusting
+                - Orientation
+            - AgentAgentInteractions
+            - Fluctuation
     """
     def __init__(self, queue, size, width, height, model, body_type):
         """
@@ -40,12 +49,16 @@ class Outdoor(MultiAgentSimulation):
         self.init_domain(domain)
         self.init_agents(size, model)
 
-        self.task_graph = Integrator(self, (0.001, 0.01))
+        reset = Reset(self)
+        integrator = Integrator(self)
+        reset += integrator
         adjusting = Adjusting(self)
         adjusting += Orientation(self)
-        self.task_graph += adjusting
-        self.task_graph += AgentAgentInteractions(self)
-        self.task_graph += Fluctuation(self)
+        integrator += adjusting
+        integrator += AgentAgentInteractions(self)
+        integrator += Fluctuation(self)
+
+        self.tasks += reset
 
         for i in self.add_agents(size, domain, body_type):
             pass
@@ -98,13 +111,17 @@ class Hallway(MultiAgentSimulation):
         for obs in obstacles:
             self.add_obstacle(obs)
 
-        self.task_graph = Integrator(self, (0.001, 0.01))
+        reset = Reset(self)
+        integrator = Integrator(self, (0.001, 0.01))
+        reset += integrator
         adjusting = Adjusting(self)
         adjusting += Orientation(self)
-        self.task_graph += adjusting
-        self.task_graph += AgentAgentInteractions(self)
-        self.task_graph += AgentObstacleInteractions(self)
-        self.task_graph += Fluctuation(self)
+        integrator += adjusting
+        integrator += AgentAgentInteractions(self)
+        integrator += AgentObstacleInteractions(self)
+        integrator += Fluctuation(self)
+
+        self.tasks += reset
 
         for kw in kwargs:
             for i in self.add_agents(kw['size'], kw['spawn'], body_type):
@@ -156,14 +173,18 @@ class Rounding(MultiAgentSimulation):
         for obs in obstacles:
             self.add_obstacle(obs)
 
-        self.task_graph = Integrator(self, (0.001, 0.01))
+        reset = Reset(self)
+        integrator = Integrator(self, (0.001, 0.01))
+        reset += integrator
         adjusting = Adjusting(self)
         adjusting += Orientation(self)
         adjusting += Navigation(self)
-        self.task_graph += adjusting
-        self.task_graph += AgentAgentInteractions(self)
-        self.task_graph += AgentObstacleInteractions(self)
-        self.task_graph += Fluctuation(self)
+        integrator += adjusting
+        integrator += AgentAgentInteractions(self)
+        integrator += AgentObstacleInteractions(self)
+        integrator += Fluctuation(self)
+
+        self.tasks += reset
 
         for kw in kwargs:
             for i in self.add_agents(kw['size'], kw['spawn'], body_type):
@@ -229,14 +250,18 @@ class RoomEvacuation(MultiAgentSimulation):
             self.add_obstacle(obs)
         self.add_target(exits)
 
-        self.task_graph = Integrator(self, (0.001, 0.01))
+        reset = Reset(self)
+        integrator = Integrator(self, (0.001, 0.01))
+        reset += integrator
         adjusting = Adjusting(self)
         adjusting += Orientation(self)
         adjusting += Navigation(self)
-        self.task_graph += adjusting
-        self.task_graph += AgentAgentInteractions(self)
-        self.task_graph += AgentObstacleInteractions(self)
-        self.task_graph += Fluctuation(self)
+        integrator += adjusting
+        integrator += AgentAgentInteractions(self)
+        integrator += AgentObstacleInteractions(self)
+        integrator += Fluctuation(self)
+
+        self.tasks += reset
 
         for kw in kwargs:
             for i in self.add_agents(kw['size'], kw['spawn'], body_type):

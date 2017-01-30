@@ -1,5 +1,6 @@
 ---
 # All loggers are defined here
+# Asynchronous logging
 
 version: 1
 disable_existing_loggers: False

@@ -25,10 +25,9 @@ def simulations(queue=None):
         yield process
 
 
-@pytest.mark.skip
+# @pytest.mark.skip
 def test_simulation():
     for simulation in simulations():
-        # simulation.configure_hdfstore()
         simulation.initial_update()
         simulation.update()
         assert True

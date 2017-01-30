@@ -1,43 +1,17 @@
 import importlib
-import logging.config
 import math
 import os
-import platform
 import sys
 from collections import OrderedDict
 from copy import deepcopy
 from functools import wraps, lru_cache
 from timeit import default_timer as timer
 
-import numpy as np
 import pandas as pd
 from ruamel import yaml
 
-
-
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 CFG_DIR = os.path.join(BASE_DIR, 'crowddynamics', 'configs')
-LOG_CFG = os.path.join(BASE_DIR, 'logging.yaml')
-
-numpy_options = {
-    'precision': 5,
-    'threshold': 6,
-    'edgeitems': 3,
-    'linewidth': None,
-    'suppress': False,
-    'nanstr': None,
-    'infstr': None,
-    'formatter': None
-}
-
-pandas_options = {
-    'display.chop_threshold': None,
-    'display.precision': 4,
-    'display.max_columns': 8,
-    'display.max_rows': 8,
-    'display.max_info_columns': 8,
-    'display.max_info_rows': 8
-}
 
 
 @lru_cache()
@@ -95,57 +69,6 @@ def create_parameters():
                   default_flow_style=False)
 
 
-def numpy_format():
-    np.set_printoptions(**numpy_options)
-
-
-def pandas_format():
-    for key, val in pandas_options.items():
-        pd.set_option(key, val)
-
-
-def format_time(timespan, precision=3):
-    """ Jupyter notebook timeit time formatting.
-    Formats the timespan in a human readable form
-    """
-
-    if timespan >= 60.0:
-        # we have more than a minute, format that in a human readable form
-        # Idea from http://snipplr.com/view/5713/
-        parts = [("d", 60 * 60 * 24), ("h", 60 * 60), ("min", 60), ("s", 1)]
-        time = []
-        leftover = timespan
-        for suffix, length in parts:
-            value = int(leftover / length)
-            if value > 0:
-                leftover %= length
-                time.append(u'%s%s' % (str(value), suffix))
-            if leftover < 1:
-                break
-        return " ".join(time)
-
-    # Unfortunately the unicode 'micro' symbol can cause problems in
-    # certain terminals.
-    # See bug: https://bugs.launchpad.net/ipython/+bug/348466
-    # Try to prevent crashes by being more secure than it needs to
-    # E.g. eclipse is able to print a µ, but has no sys.stdout.encoding set.
-    units = [u"s", u"ms", u'us', "ns"]  # the recordable value
-    if hasattr(sys.stdout, 'encoding') and sys.stdout.encoding:
-        try:
-            u'\xb5'.encode(sys.stdout.encoding)
-            units = [u"s", u"ms", u'\xb5s', "ns"]
-        except:
-            pass
-    scaling = [1, 1e3, 1e6, 1e9]
-
-    if timespan > 0:
-        order = min(-int(math.floor(math.log10(timespan)) // 3), 3)
-    else:
-        order = 3
-    # return u"%.*g %s" % (precision, timespan * scaling[order], units[order])
-    return u"{:.1f} {}".format(timespan * scaling[order], units[order])
-
-
 class Timed:
     """
     Decorator for timing function execution time.
@@ -199,61 +122,13 @@ def public(f):
     return f
 
 
-def setup_logging(default_path=LOG_CFG,
-                  default_level=logging.INFO,
-                  env_key='LOG_CFG',
-                  logdir='.logs'):
-    """Setup logging configurations. These are defined as dictConfig in
-    ``default_path``.
-
-    References:
-
-    .. [1] https://fangpenlin.com/posts/2012/08/26/good-logging-practice-in-python/
+def run_simulation(name, iterations):
     """
-    # Path to logging yaml configuration file.
-    path = default_path
-
-    # Set-up logging
-    # logger = logging.getLogger(__name__)
-    value = os.getenv(env_key, None)
-    if value:
-        path = value
-    if os.path.exists(path):
-        # Load configs
-        with open(path, 'rt') as file:
-            config = yaml.safe_load(file.read())
-        # Direct all logs into ``logdir`` directory
-        if not os.path.exists(logdir):
-            os.mkdir(logdir)
-        handlers_ = config['handlers']
-        for name in handlers_:
-            handler = handlers_[name]
-            if 'filename' in handler:
-                handler['filename'] = os.path.join(logdir, handler['filename'])
-        # Configure logger
-        logging.config.dictConfig(config)
-    else:
-        logging.basicConfig(level=default_level)
-
-    # Nicer printing for numpy array and pandas tables
-    numpy_format()
-    pandas_format()
-
-
-def user_info():
-    logger = logging.getLogger(__name__)
-    logger.info("Platform: %s", platform.platform())
-    logger.info("Path: %s", sys.path[0])
-    logger.info("Python: %s", sys.version[0:5])
-
-
-def run_simulation(name, iterations, save=False):
-    """
+    Run simulation
 
     Args:
         name (str):
         iterations (int):
-        save (Boolean):
     """
     configs = load_config("simulations.yaml")
     simu_dict = configs["simulations"][name]
@@ -265,9 +140,48 @@ def run_simulation(name, iterations, save=False):
     simulation = getattr(module, class_name)
     process = simulation(None, **kwargs)
 
-    if save:
-        process.configure_hdfstore()
-
     process.initial_update()
     for _ in range(iterations):
         process.update()
+
+
+def format_time(timespan, precision=3):
+    """ Jupyter notebook timeit time formatting.
+    Formats the timespan in a human readable form
+    """
+
+    if timespan >= 60.0:
+        # we have more than a minute, format that in a human readable form
+        # Idea from http://snipplr.com/view/5713/
+        parts = [("d", 60 * 60 * 24), ("h", 60 * 60), ("min", 60), ("s", 1)]
+        time = []
+        leftover = timespan
+        for suffix, length in parts:
+            value = int(leftover / length)
+            if value > 0:
+                leftover %= length
+                time.append(u'%s%s' % (str(value), suffix))
+            if leftover < 1:
+                break
+        return " ".join(time)
+
+    # Unfortunately the unicode 'micro' symbol can cause problems in
+    # certain terminals.
+    # See bug: https://bugs.launchpad.net/ipython/+bug/348466
+    # Try to prevent crashes by being more secure than it needs to
+    # E.g. eclipse is able to print a µ, but has no sys.stdout.encoding set.
+    units = [u"s", u"ms", u'us', "ns"]  # the recordable value
+    if hasattr(sys.stdout, 'encoding') and sys.stdout.encoding:
+        try:
+            u'\xb5'.encode(sys.stdout.encoding)
+            units = [u"s", u"ms", u'\xb5s', "ns"]
+        except:
+            pass
+    scaling = [1, 1e3, 1e6, 1e9]
+
+    if timespan > 0:
+        order = min(-int(math.floor(math.log10(timespan)) // 3), 3)
+    else:
+        order = 3
+    # return u"%.*g %s" % (precision, timespan * scaling[order], units[order])
+    return u"{:.1f} {}".format(timespan * scaling[order], units[order])

@@ -28,8 +28,13 @@ Eventually also include cellular automata and continuum flow models.
    multiagent/index
    cellular/index
    continuum/index
+
+.. toctree::
+   :caption: Developers
+   :maxdepth: 2
+
+   contributing
    api/index
-   tables
 
 .. toctree::
    :caption: Theory

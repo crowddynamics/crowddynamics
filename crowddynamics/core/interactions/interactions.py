@@ -89,7 +89,7 @@ def agent_agent_block_list(agent):
     n, m = blocks.shape
 
     # Neighbouring blocks
-    nb = np.array(((1, 0), (1, 1), (0, 1), (1, -1)),dtype=np.int64)
+    nb = np.array(((1, 0), (1, 1), (0, 1), (1, -1)), dtype=np.int64)
 
     for i in range(n):
         for j in range(m):
