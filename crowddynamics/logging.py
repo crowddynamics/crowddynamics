@@ -1,12 +1,13 @@
-import logging.config
 import os
 import platform
 import sys
+import logging.config
 
 import functools
 import numpy as np
 import pandas as pd
 from ruamel import yaml
+
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 CFG_DIR = os.path.join(BASE_DIR, 'crowddynamics', 'configs')

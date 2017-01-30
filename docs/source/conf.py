@@ -41,8 +41,8 @@ extensions = [
     'sphinx.ext.githubpages',
     'sphinxcontrib.napoleon',
     'sphinxcontrib.programoutput',
+    'sphinxcontrib.bibtex',
     # 'sphinxcontrib.youtube',
-    # 'sphinxcontrib.bibtex',
 ]
 
 # Graphviz Settings

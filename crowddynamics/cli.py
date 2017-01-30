@@ -2,6 +2,7 @@
 Command-line interface for running ``crowddynamics``.
 """
 import click
+import colorama
 
 from crowddynamics.logging import setup_logging, user_info
 from crowddynamics.plugins.gui import run_gui
@@ -9,6 +10,9 @@ from crowddynamics.plugins.gui import run_gui
 
 # TODO: Add colors to commands
 # http://click.pocoo.org/5/utils/#ansi-colors
+
+# Enable colors on windows
+colorama.init()
 
 
 @click.group()

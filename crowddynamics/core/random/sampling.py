@@ -1,3 +1,6 @@
+"""
+Sampling
+"""
 import numba
 import numpy as np
 from numba import f8

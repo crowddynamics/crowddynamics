@@ -1,33 +1,40 @@
-import importlib
+from crowddynamics.multiagent.examples import Outdoor, Hallway, Rounding, \
+    RoomEvacuation
+from crowddynamics.multiagent.parameters import Parameters
 
-import pytest
-
-from crowddynamics.functions import load_config
-
-
-def simulations(queue=None):
-    """
-    Yield all simulations from examples.py
-
-    Args:
-        queue (multiprocessing.Queue, optional):
-
-    Yields:
-        MultiAgentSimulation:
-    """
-    configs = load_config("simulations.yaml")
-    conf = configs["simulations"]
-    for name in conf.keys():
-        d = conf[name]
-        module = importlib.import_module(d["module"])
-        simulation = getattr(module, d["class"])
-        process = simulation(queue, **d["kwargs"])
-        yield process
+parameters = Parameters()
+models = parameters.model.values
+body_types = parameters.body_types
 
 
-# @pytest.mark.skip
-def test_simulation():
-    for simulation in simulations():
+def test_outdoor():
+    for model in models:
+        simulation = Outdoor(None, 10, 10, 10, model, 'adult')
+        simulation.initial_update()
+        simulation.update()
+        assert True
+
+
+def test_hallway():
+    for model in models:
+        simulation = Hallway(None, 10, 10, 10, model, 'adult')
+        simulation.initial_update()
+        simulation.update()
+        assert True
+
+
+def test_rounding():
+    for model in models:
+        simulation = Rounding(None, 10, 10, 10, model, 'adult')
+        simulation.initial_update()
+        simulation.update()
+        assert True
+
+
+def test_roomevacuation():
+    for model in models:
+        simulation = RoomEvacuation(None, 10, 10, 10, model, 'adult',
+                                    'circ', 1.2, 1.5)
         simulation.initial_update()
         simulation.update()
         assert True

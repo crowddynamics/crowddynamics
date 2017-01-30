@@ -1,15 +1,16 @@
-Usage
-=====
 
 .. note::
    This section is unfinished
+
+Usage
+=====
 
 .. todo::
    Video tutorial and demonstration
 
 
-Basic Architecture
-------------------
+Architecture
+------------
 
 .. graphviz:: architecture.dot
 
@@ -32,9 +33,3 @@ Command-line Interface
 ----------------------
 
 .. program-output:: crowddynamics --help
-
-
-Configuration
--------------
-
-

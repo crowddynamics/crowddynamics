@@ -30,6 +30,7 @@ dependencies:
         - scikit-fmm
         - click
         - colorama
+        - colorlog
         ## Testing
         - pytest
         - pytest-cov

@@ -14,8 +14,8 @@ Conda
    This section is unfinished
 
 
-From Source
------------
+Source
+------
 
 .. note::
 

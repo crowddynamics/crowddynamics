@@ -1,2 +1,2 @@
-Command-line Interface
+Command-Line Interface
 ======================

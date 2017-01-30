@@ -1,11 +1,11 @@
 import numpy as np
 from shapely.geometry import Polygon, LineString, Point
 
-from crowddynamics.plugins.game import EgressGame
+from crowddynamics.multiagent.simulation import MultiAgentSimulation
 from crowddynamics.multiagent.tasks import Navigation, Orientation, \
     Integrator, Fluctuation, Adjusting, AgentAgentInteractions, \
     AgentObstacleInteractions, Reset
-from crowddynamics.multiagent.simulation import MultiAgentSimulation
+
 
 # TODO: Convert examples into test and validation simulations
 # TODO: Move simulations.yaml configuration parameter into the classes
@@ -211,8 +211,8 @@ class RoomEvacuation(MultiAgentSimulation):
     - Two exits
     - Multiple exits
     """
-    def __init__(self, queue, size, width, height, model, body, spawn_shape,
-                 door_width, exit_hall_width):
+    def __init__(self, queue, size, width, height, model, body_type,
+                 spawn_shape, door_width, exit_hall_width):
         super(RoomEvacuation, self).__init__(queue)
 
         self.room = Polygon(
@@ -269,30 +269,3 @@ class RoomEvacuation(MultiAgentSimulation):
                     i, kw['orientation'], np.zeros(2), 0.0,
                     kw['target_direction'], kw['orientation']
                 )
-
-
-class RoomEvacuationGame(RoomEvacuation):
-    r"""
-    Room Evacuation Game
-    """
-    def __init__(self, queue, size, width, height, model, body, spawn_shape,
-                 door_width, exit_hall_width, t_aset_0, interval,
-                 neighbor_radius, neighborhood_size):
-        super(RoomEvacuationGame, self).__init__(
-            queue, size, width, height, model, body, spawn_shape, door_width,
-            exit_hall_width)
-
-        # FIXME
-        game = EgressGame(self, self.door, self.room, t_aset_0, interval,
-                          neighbor_radius, neighborhood_size)
-
-        self.task_graph = Integrator(self, (0.001, 0.01))
-        adjusting = Adjusting(self)
-        adjusting += Orientation(self)
-        adjusting += Navigation(self)
-        self.task_graph += adjusting
-        agent_agent_interactions = AgentAgentInteractions(self)
-        agent_agent_interactions += game
-        self.task_graph += agent_agent_interactions
-        self.task_graph += AgentObstacleInteractions(self)
-        self.task_graph += Fluctuation(self)
