@@ -303,9 +303,6 @@ class Agent(object):
         # inertia_rot, target_velocity, target_angular_velocity
 
         # Find first inactive agent
-        assert mass > 0 and radius > 0 and ratio_rt > 0 and ratio_rs > 0 and \
-               ratio_ts > 0 and inertia_rot > 0
-
         for i, state in enumerate(self.active):
             if state:
                 continue
