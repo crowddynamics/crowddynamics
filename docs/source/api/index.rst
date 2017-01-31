@@ -7,5 +7,5 @@ API
    sampling
    cli
    gui
-   game
    testing
+   game

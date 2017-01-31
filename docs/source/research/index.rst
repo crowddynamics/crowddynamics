@@ -1,8 +1,5 @@
 Research
 ========
-.. Section of talking why crowd simulation model should be developed and where they can be applied to.
-
-Keith still wrote on his thesis
 
 .. epigraph::
 
@@ -10,27 +7,12 @@ Keith still wrote on his thesis
 
    -- *Prof. Dr. G. Keith Still*
 
-We break crowd research down to
+Section of talking why crowd simulation model should be developed and where they can be applied to.
 
-.. glossary::
-
-   Crowd Psychology
-      How crowd of people behaves.
-
-   Crowd Dynamics
-      How crowd of people moves and acts in respect of time.
-
-   Crowd Simulation
-      Based on group dynamics and crowd psychology.
-
-   Experimental
-      Experimental study of behaviour of crowds. Experimental data serves as a base for simulations.
-
-   Analysis
-      Methods for analysing experimental or simulation data.
-
+----
 
 .. toctree::
 
-   phenomena.rst
-   applications.rst
+   glossary
+   phenomena
+   applications

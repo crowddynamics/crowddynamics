@@ -1,3 +1,13 @@
+"""Main window for crowddynamics graphical user interface.
+
+Graphical user interface and simulation graphics for crowddynamics implemented
+using PyQt and pyqtgraph. Layout for the main window is created by using Qt
+designer. :cite:`Hess2013`, :cite:`Sepulveda2014`
+
+Design of the gui was inspired by the design of RtGraph
+:cite:`campagnola2012pyqtgraph`.
+
+"""
 import importlib
 import logging
 import sys

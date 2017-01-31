@@ -3,8 +3,8 @@ Multi-Agent
 
 .. csv-table:: Model Specification
 
-   "Microscopic", "Agents are modelled as rigid bodies."
    "Continuous Space", ":math:`\mathbb{R}^2`"
+   "Microscopic", "Agents are modelled as rigid bodies."
    "Social Force Model", "Classical mechanics for modelling movement."
 
 ----
@@ -20,5 +20,7 @@ Multi-Agent
    interactions
    steering
    integrator
-   multiagent
+   agent
+   field
+   simulation
    tables

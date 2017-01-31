@@ -1,3 +1,23 @@
+r"""Agent model for multiagent simulation
+
+**Circular model**
+
+Simplest of the models is circular model without orientation. Circle is defined
+with radius :math:`r > 0` from the center of mass.
+
+**Three circle model** :cite:`Langston2006`
+
+Three circle model models agent with three circles which represent torso and two
+shoulders. Torso has radius of :math:`r_t` and is centered at center of mass
+:math:`\mathbf{x}` and shoulder have both radius of  :math:`r_s` and are
+centered at :math:`\mathbf{x} \pm r_{ts} \mathbf{\hat{e}_t}` where normal and
+tangent vectors
+
+.. math::
+   \mathbf{\hat{e}_n} &= [\cos(\varphi), \sin(\varphi)] \\
+   \mathbf{\hat{e}_t} &= [\sin(\varphi), -\cos(\varphi)]
+
+"""
 import numba
 import numpy as np
 from numba import float64, int64, boolean, f8
@@ -50,10 +70,8 @@ def resize():
 spec_agent = (
     ("size", int64),
     ("shape", UniTuple(int64, 2)),
-
     ("circular", boolean),
     ("three_circle", boolean),
-
     ("orientable", boolean),
     ("active", boolean[:]),
     ("mass", float64[:, :]),
@@ -61,7 +79,6 @@ spec_agent = (
     ("r_t", float64[:]),
     ("r_s", float64[:]),
     ("r_ts", float64[:]),
-
     ("position", float64[:, :]),
     ("velocity", float64[:, :]),
     ("target_velocity", float64[:, :]),
@@ -99,31 +116,103 @@ spec_agent_neighbour = (
     # ("neighbor_distances_max", float64[:]),
 )
 
-spec_agent += spec_agent_motion + spec_agent_neighbour
+spec_agent += spec_agent_motion  # + spec_agent_neighbour
 
 
 @numba.jitclass(spec_agent)
 class Agent(object):
-    r"""Structure for agent parameters and variables."""
+    r"""Structure for agent parameters and variables.
+
+    Args:
+        size (int):
+            Maximum number of agents :math:`N`.
+        shape (tuple):
+            Shape of 2D arrays :math:`(N, 2)`.
+        circular (bool):
+            Boolean indicating if agent is modeled as a circle
+        three_circle (bool):
+            Boolean indicating if agent is modeled as three circles
+        orientable (bool):
+            Boolean indicating if agent is orientable (has rotational motion).
+        active:
+        radius:
+            Radius :math:`r > 0`
+        r_t:
+            Radius of torso :math:`r_t > 0`
+        r_s:
+            Radius of shoulder :math:`t_s > 0`
+        r_ts:
+            Distance from torso to shoulder :math:`r_{ts}`
+        mass:
+            Mass :math:`m > 0`
+        inertia_rot:
+            Moment of inertia :math:`I_{rot} > 0`
+        position:
+            Center of the mass :math:`\mathbf{x}`
+        velocity:
+            Velocity :math:`\mathbf{v}`
+        target_velocity:
+            Target velocity :math:`v_{0}`
+        target_direction:
+            Target direction :math:`\mathbf{e}_0`
+        force:
+            Force :math:`\mathbf{f}`
+        orientation:
+            Orientation :math:`\varphi \in [-\pi, \pi]`
+        angular_velocity:
+            Angular velocity :math:`\omega`
+        target_orientation:
+            Target orientation :math:`\varphi_0 \in [-\pi, \pi]`
+        target_angular_velocity:
+            Target Angular velocity :math:`\omega_0`
+        torque:
+            Torque :math:`M`
+        tau_adj:
+            Characteristic time for agent adjusting its movement
+        tau_rot:
+            Characteristic time for agent adjusting its rotational movement
+        k_soc:
+            Social force scaling constant
+        tau_0:
+            Interaction time horizon
+        mu:
+            Compression counteraction constant
+        kappa:
+            Sliding friction constant
+        damping:
+            Damping coefficient for contact force
+        std_rand_force:
+            Standard deviation for random force from truncated normal
+            distribution
+        std_rand_torque:
+            Standard deviation for random torque from truncated normal
+            distribution
+        f_soc_ij_max:
+            Truncation for social force with agent to agent interaction
+        f_soc_iw_max:
+            Truncation for social force with agent to wall interaction
+        sight_soc:
+            Maximum distance for social force to effect
+        sight_wall:
+            Maximum distance for social force to effect
+
+    """
 
     def __init__(self, size):
-        r"""
-        Initialise the agent structure.
+        r"""Initialise the agent structure.
 
         Args:
             size (int):
                 Maximum number of agents that can be placed into the structure.
 
         """
-        # Array properties
-        self.size = size  # Maximum number of agents
-        self.shape = (self.size, 2)  # Shape of 2D arrays
+        self.size = size
+        self.shape = (self.size, 2)
 
         # Flags
-        # Agent models (Only one can be active at time).
-        self.three_circle = False
         self.circular = True
-        self.orientable = self.three_circle     # Orientable has rotational motion
+        self.three_circle = False
+        self.orientable = False
         self.active = np.zeros(size, np.bool8)  # Initialise agents as inactive
 
         # Constant properties
@@ -214,6 +303,9 @@ class Agent(object):
         # inertia_rot, target_velocity, target_angular_velocity
 
         # Find first inactive agent
+        assert mass > 0 and radius > 0 and ratio_rt > 0 and ratio_rs > 0 and \
+               ratio_ts > 0 and inertia_rot > 0
+
         for i, state in enumerate(self.active):
             if state:
                 continue

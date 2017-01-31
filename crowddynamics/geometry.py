@@ -1,3 +1,8 @@
+"""Functions for manipulating Shapely geometry objects
+
+References:
+    - http://toblerity.org/shapely/manual.html
+"""
 from collections import Iterable
 
 import numpy as np

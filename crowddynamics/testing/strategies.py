@@ -18,7 +18,8 @@ from shapely.geometry import Polygon
 from crowddynamics.multiagent import Agent
 
 
-def real(min_value=None, max_value=None, exclude_zero=None, shape=None):
+def real(min_value=None, max_value=None, exclude_zero=None, shape=None,
+         dtype=float):
     """Real number strategy using 64-bit floating point numbers excluding
     ``nan`` and ``inf``.
 
@@ -30,13 +31,25 @@ def real(min_value=None, max_value=None, exclude_zero=None, shape=None):
         shape (int|tuple, optiona):
             - None: Scalar output
             - int|tuple: Vector output of shape
-    """
-    # TODO: size as strategy
-    dtype = np.float64
-    elements = st.floats(min_value, max_value, False, False)
+        dtype (type):
+            Choice
+            - float: Floats
+            - int: Integers
 
-    # Excluded values
-    # TODO: Maybe use assume instead?
+    Todo:
+        - size as strategy
+        - filtering values with assume?
+    """
+    if dtype is float:
+        dtype = np.float64
+        elements = st.floats(min_value, max_value, False, False)
+    elif dtype is int:
+        dtype = np.int64
+        elements = st.integers(min_value, max_value)
+    else:
+        raise Exception("")
+
+    # Filter values
     if exclude_zero == 'exact':
         elements = elements.filter(lambda x: x != 0.0)
 

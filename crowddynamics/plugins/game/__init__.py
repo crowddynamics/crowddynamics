@@ -7,5 +7,5 @@ poisson_clock
 poisson_timings
 payoff
 agent_closer_to_exit
-exit_capacity
+narrow_exit_capacity
 """.split()

@@ -1,5 +1,6 @@
 import numba
 import numpy as np
+from numba import f8, optional
 from matplotlib.path import Path
 from shapely.geometry import Polygon
 
@@ -200,21 +201,58 @@ def agent_closer_to_exit(points, position):
     return num
 
 
-@numba.jit(nopython=True)
-def exit_capacity(points, agent_radius):
-    r"""
-    Estimation of the capacity of narrow exit. Narrow exit is defined max
-    :math:`3\,\mathrm{m}` wide.
+@numba.jit(f8(f8, f8, optional(f8), f8), nopython=True)
+def narrow_exit_capacity(d_door, d_agent, d_layer=None, coeff=1.0):
+    r"""Estimation of the capacity of narrow exit.
+
+    Capacity estimation :math:`\beta` of unidirectional flow through narrow
+    bottleneck. Capacity of the bottleneck increases in stepwise manner.
+
+    Simple estimation
+
+    .. math::
+       \beta_{simple} = c \left \lfloor \frac{d_{door}}{d_{agent}} \right \rfloor
+
+    More sophisticated estimation :cite:`Hoogendoorn2005a`, :cite:`Seyfried2007a`
+
+    .. math::
+       \beta_{hoogen} = c \left \lfloor \frac{d_{door} - (d_{agent} - d_{layer})}{d_{layer}} \right \rfloor
+
+    We have relationship between simple and hoogendoorn's estimation
+
+    .. math::
+       \beta_{hoogen} = \beta_{simple}, \quad d_{layer} = d_{agent}
 
     Args:
-        points (numpy.ndarray):
-        agent_radius (float):
+        d_door (float):
+            Width of the door :math:`0\,\mathrm{m} < d_{door} < 3\,\mathrm{m}`.
+            Also width of the door must be larger than width of the agent
+             :math:`d_{door} > d_{agent}`.
+
+        d_agent (float):
+            Width of the agent :math:`d_{agent} > 0\,\mathrm{m}`.
+
+        d_layer (float, optional):
+            Width of layer :math:`d_{layer}`. Reference value:
+            :math:`0.45\,\mathrm{m}`
+
+        coeff (float):
+            Scaling coefficient :math:`c > 0` for the estimation.
 
     Returns:
         float:
+            Depending on the value of ``d_layer`` either simple or hoogen
+            estimation is returned
+
+            - ``None``: Uses simple estimation :math:`\beta_{simple}`
+            - ``float``: Uses Hoogendoorn's estimation :math:`\beta_{hoogen}`
 
     """
-    return length(points[1] - points[0]) // (2 * agent_radius)
+    assert d_door >= d_agent > 0
+    if d_layer is None:
+        return coeff * (d_door // d_agent)
+    else:
+        return coeff * ((d_door - (d_agent - d_layer)) // d_layer)
 
 
 @numba.jit(nopython=True)
@@ -249,7 +287,9 @@ def best_response_strategy(agent, players, door, radius_max, strategy,
 
     """
     x = agent.position[players]
-    t_evac = agent_closer_to_exit(door, x) / exit_capacity(door, radius_max)
+    d_door = length(door[1] - door[0])
+    t_evac = agent_closer_to_exit(door, x) / \
+             narrow_exit_capacity(d_door, 2 * radius_max, 0.45, 1.0)
     loss = np.zeros(2)  # values: loss, indices: strategy
     for i in poisson_timings(players, interval, dt):
         for j in agent.neighbors[i]:
@@ -267,6 +307,7 @@ class EgressGame(TaskNode):
     Patient and impatient pedestrians in a spatial game :math:`(S, f)` for
     egress congestion between players :math:`P \subset A` with set of strategies 
     :math:`S` and payoff function :math:`f : S \times S \mapsto \mathbb{R}`.
+    :cite:`Heliovaara2013,VonSchantz2014`
 
     Set of strategies
 
@@ -299,11 +340,6 @@ class EgressGame(TaskNode):
     - :math:`k`
     - :math:`\tau_{adj}`
     - :math:`\sigma_{force}`
-
-    References
-
-    .. [game2013] Heli??vaara, S., Ehtamo, H., Helbing, D., & Korhonen, T. (2013). Patient and impatient pedestrians in a spatial game for egress congestion. Physical Review E - Statistical, Nonlinear, and Soft Matter Physics. http://doi.org/10.1103/PhysRevE.87.012802
-    .. [game2014] Von Schantz, A., & Ehtamo, H. (2014). Cellular automaton evacuation model coupled with a spatial game. In Lecture Notes in Computer Science (including subseries Lecture Notes in Artificial Intelligence and Lecture Notes in Bioinformatics). http://doi.org/10.1007/978-3-319-09912-5_31
 
     """
 

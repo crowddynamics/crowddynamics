@@ -1,13 +1,6 @@
-r"""
-Navigation aka path planning is related to *continuos shortest path* problem.
+"""Navigation/path-planning algorithms
 
-- :math:`\Omega` Domain
-- :math:`\mathcal{A}` Area occupied by agent
-- :math:`\mathcal{O}` Area occupied by obstacle
-- :math:`\mathcal{E}` Area occupied by exit
-- :math:`\Omega \setminus (\mathcal{O} \cup \mathcal{A})` Unoccupied area
-
-https://en.wikipedia.org/wiki/Eikonal_equation
+Continuos shortest path problem
 Fast Marching Method.
 Fast Iterative Method
 """
@@ -25,8 +18,7 @@ from crowddynamics.geometry import shapes_to_point_pairs
 
 
 def to_indices(points, step):
-    """
-    To indices
+    """To indices
 
     Args:
         points (numpy.ndarray):
@@ -44,8 +36,7 @@ def to_indices(points, step):
 
 
 def set_values_to_grid(grid, step, shape, value):
-    """
-    Set values on discrete grid using ``scikit-image``.
+    """Set values on discrete grid using ``scikit-image``.
 
     Args:
         shape (BaseGeometry):
@@ -83,8 +74,7 @@ def set_values_to_grid(grid, step, shape, value):
 
 
 def meshgrid(step, minx, miny, maxx, maxy):
-    """
-    2-Dimensional meshgrid with inclusive end points ``maxx`` and ``maxy``.
+    """2-Dimensional meshgrid with inclusive end points ``maxx`` and ``maxy``.
 
     Returns:
         numpy.ndarray:
@@ -96,7 +86,8 @@ def meshgrid(step, minx, miny, maxx, maxy):
 
 
 def distance_map(domain, targets, obstacles, step):
-    r"""
+    r"""Distance map
+
     Distance map :math:`S(\mathbf{x})` is obtained by solving *Eikonal equation*
     using fast marching *Fast Marching Method (FMM)* (``scikit-fmm``).
 

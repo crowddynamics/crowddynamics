@@ -3,14 +3,15 @@ import numpy as np
 import pytest
 from hypothesis import given, assume
 from hypothesis.extra.numpy import arrays
+from crowddynamics.testing.strategies import real
 
 from crowddynamics.plugins.game.game import poisson_clock, poisson_timings, \
-    payoff, agent_closer_to_exit, exit_capacity
+    payoff, agent_closer_to_exit, narrow_exit_capacity
 
 
 @given(
-    interval=st.floats(0.001, 0.01, allow_nan=False, allow_infinity=False),
-    dt=st.floats(0.001, 0.01, allow_nan=False, allow_infinity=False),
+    interval=real(0.001, 0.01),
+    dt=real(0.001, 0.01),
 )
 def test_poisson_clock(interval, dt):
     # Limit the ratio so test doesn't run forever
@@ -24,9 +25,9 @@ def test_poisson_clock(interval, dt):
 
 
 @given(
-    players=arrays(np.int64, 10, st.integers(0, 10**7)),
-    interval=st.floats(0.001, 0.01, allow_nan=False, allow_infinity=False),
-    dt=st.floats(0.001, 0.01, allow_nan=False, allow_infinity=False),
+    players=real(0, 10**7, shape=10, dtype=int),
+    interval=real(0.001, 0.01),
+    dt=real(0.001, 0.01),
 )
 def test_poisson_timings(players, interval, dt):
     # Limit the ratio so test doesn't run forever
@@ -40,9 +41,9 @@ def test_poisson_timings(players, interval, dt):
 @given(
     s_i=st.integers(0, 1),
     s_j=st.integers(0, 1),
-    t_aset=st.floats(0, allow_nan=False, allow_infinity=False),
-    t_evac_i=st.floats(0, allow_nan=False, allow_infinity=False),
-    t_evac_j=st.floats(0, allow_nan=False, allow_infinity=False),
+    t_aset=real(0),
+    t_evac_i=real(0),
+    t_evac_j=real(0),
 )
 def test_payoff(s_i, s_j, t_aset, t_evac_i, t_evac_j):
     value = payoff(s_i, s_j, t_aset, t_evac_i, t_evac_j)
@@ -51,8 +52,8 @@ def test_payoff(s_i, s_j, t_aset, t_evac_i, t_evac_j):
 
 
 @given(
-    points=arrays(np.float64, (2, 2), st.floats(allow_nan=False, allow_infinity=False)),
-    position=arrays(np.float64, (10, 2), st.floats(allow_nan=False, allow_infinity=False)),
+    points=real(shape=(2, 2)),
+    position=real(shape=(10, 2)),
 )
 def test_agent_closer_to_exit(points, position):
     indices = agent_closer_to_exit(points, position)
@@ -61,11 +62,15 @@ def test_agent_closer_to_exit(points, position):
 
 
 @given(
-    points=arrays(np.float64, (2, 2), st.floats(min_value=-10, max_value=10, allow_nan=False, allow_infinity=False)),
-    agent_radius=st.floats(min_value=0.1, max_value=1.0, allow_nan=False, allow_infinity=False)
+    d_door=real(0.0, 3.0, exclude_zero='near'),
+    d_agent=real(0.0, 3.0, exclude_zero='near'),
+    d_layer=real(0.0, 1.0, exclude_zero='near') | st.none(),
+    coeff=real(0.0, 3.0, exclude_zero='near')
 )
-def test_exit_capacity(points, agent_radius):
-    capacity = exit_capacity(points, agent_radius)
+def test_narrow_exit_capacity(d_door, d_agent, d_layer, coeff):
+    assume(d_door > d_agent)
+    capacity = narrow_exit_capacity(d_door, d_agent, d_layer, coeff)
+    assert isinstance(capacity, float)
     assert capacity >= 0.0
 
 

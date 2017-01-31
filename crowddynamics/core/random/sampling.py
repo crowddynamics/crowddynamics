@@ -11,7 +11,11 @@ from shapely.geometry import Polygon
 @numba.jit(f8(f8[:], f8[:], f8[:]), nopython=True, nogil=True)
 def triangle_area(a, b, c):
     r"""
-    Area of a triangle given by points a, b, and c.
+    Area of a triangle given by points :math:`\mathbf{a}`, :math:`\mathbf{b}`,
+    and :math:`\mathbf{c}`.
+
+    .. math::
+       \frac{|a_0 (b_1 - c_1) + b_0 (c_1 - a_1) + c_0 (a_1 - b_1)|}{2}
 
     Args:
         a (numpy.ndarray): Vertex of the triangle
@@ -54,15 +58,18 @@ def triangle_area_cumsum(trimesh):
 def random_sample_triangle(a, b, c):
     r"""
     Generate uniform random sample from inside of a triangle defined by points
-    A, B and C [1]_, [2]_. Does not work for triangles that have area of zero.
+    :math:`a`, :math:`b` and :math:`c`. [1]_
 
     .. math::
-       P = (1 - \sqrt{r_1}) A + (\sqrt{r_1} (1 - r_2))  B + (r_2 \sqrt{r_1}) C,
+       P = (1 - \sqrt{R_1}) \mathbf{a} + (\sqrt{R_1} (1 - R_2)) \mathbf{b} +
+       (R_2 \sqrt{R_1}) \mathbf{c},
 
     where uniformly distributed random variables are
 
     .. math::
-       r_1, r_2 \sim \mathcal{U}(0, 1)
+       R_1, R_2 \sim \mathcal{U}(0, 1)
+
+    Does not work for triangles that have area of zero.
 
     Args:
         a (numpy.ndarray): Vertex of the triangle
@@ -72,10 +79,8 @@ def random_sample_triangle(a, b, c):
     Returns:
         numpy.ndarray: Uniformly distributed random point P
 
-    References
-
-    .. [1] http://math.stackexchange.com/questions/18686/uniform-random-point-in-triangle
-    .. [2] http://mathworld.wolfram.com/TrianglePointPicking.html
+    References:
+        .. [1] http://math.stackexchange.com/questions/18686/uniform-random-point-in-triangle
     """
     # assume triangle.area is not close to 0.0
     r1 = np.random.random()
@@ -99,10 +104,8 @@ class PolygonSample:
 
     References:
 
-    - http://gis.stackexchange.com/questions/6412/generate-points-that-lie-inside-polygon
-
+        http://gis.stackexchange.com/questions/6412/generate-points-that-lie-inside-polygon
     """
-
     def __init__(self, polygon):
         r"""
         Convex Polygon to sample. (Non convex polygon will be treated as convex)
@@ -143,7 +146,7 @@ class PolygonSample:
         return sample
 
     def generator(self, num=None):
-        """
+        r"""
         Generator that generates ``num`` amount of draws.
 
         Args:

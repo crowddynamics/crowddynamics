@@ -1,6 +1,7 @@
 Quantities
 ==========
 
+
 Density
 -------
 Defined
@@ -17,6 +18,9 @@ Number of agent per unit of area :math:`\rho(\mathbf{x}, t)` of unit :math:`\mat
 - Congested :math:`\rho \geq 5`
 
 Another way to define density in unit-less quantity is to define it to be the percentage of area occupied. This has value range :math:`0` to :math:`1`.
+
+http://www.gkstill.com/Support/crowd-density/CrowdDensity-1.html
+
 
 Flow
 ----
@@ -80,7 +84,3 @@ Crowd pressure :math:`p` created by contact forces when multiple agents press on
 Fundamental Diagram
 -------------------
 Relationship between crowd density and flow rate.
-
-----
-
-.. [gkstill] FIPM, P. (2016). Standing Crowd Density | Prof. Dr. G. Keith Still. Gkstill.com. Retrieved 31 July 2016, from http://www.gkstill.com/Support/crowd-density/CrowdDensity-1.html
