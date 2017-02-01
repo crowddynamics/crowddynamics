@@ -13,7 +13,7 @@ class MultiAgentSimulation(Field):
     """Class that calls numerical algorithms of the multi-agent simulation."""
     logger = logging.getLogger(__name__)
 
-    def __init__(self, queue=None, name=None):
+    def __init__(self, queue=None, name="MultiAgentSimulation"):
         """Init MultiAgentSimulation
 
         Args:

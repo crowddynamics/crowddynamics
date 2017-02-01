@@ -45,7 +45,7 @@ class Outdoor(MultiAgentSimulation):
             body_type:
 
         """
-        super().__init__(queue)
+        super().__init__(queue, "Outdoor")
 
         domain = Polygon([(0, 0), (0, height), (width, height), (width, 0)])
         self.init_domain(domain)
@@ -80,7 +80,7 @@ class Hallway(MultiAgentSimulation):
     #) Unidirectional flow
     """
     def __init__(self, queue, size, width, height, model, body_type):
-        super().__init__(queue)
+        super().__init__(queue, "Hallway")
         domain = Polygon([(0, 0), (0, height), (width, height), (width, 0)])
         obstacles = (
             LineString([(0, 0), (width, 0)]),
@@ -151,7 +151,7 @@ class Rounding(MultiAgentSimulation):
     - Unidirectional flow
     """
     def __init__(self, queue, size, width, height, model, body_type):
-        super().__init__(queue)
+        super().__init__(queue, "Rounding")
 
         domain = Polygon([(0, 0), (0, height), (width, height), (width, 0)])
         exits = LineString([(0, height / 2), (0, height)])
@@ -166,7 +166,7 @@ class Rounding(MultiAgentSimulation):
         kwargs = [{
             'size': size,
             'spawn': spawn,
-            'target_direction': None,
+            'target_direction': np.array((1, 0)),
             'orientation': 0
         }]
 
@@ -174,6 +174,7 @@ class Rounding(MultiAgentSimulation):
         self.init_agents(size, model)
         for obs in obstacles:
             self.add_obstacle(obs)
+        self.add_target(exits)
 
         reset = Reset(self)
         integrator = Integrator(self, (0.001, 0.01))
@@ -215,7 +216,7 @@ class RoomEvacuation(MultiAgentSimulation):
     """
     def __init__(self, queue, size, width, height, model, body_type,
                  spawn_shape, door_width, exit_hall_width):
-        super(RoomEvacuation, self).__init__(queue)
+        super(RoomEvacuation, self).__init__(queue, "RoomEvacuation")
 
         self.room = Polygon(
             [(0, 0), (0, height), (width, height), (width, 0), ])
@@ -242,7 +243,7 @@ class RoomEvacuation(MultiAgentSimulation):
         kwargs = [{
             'size': size,
             'spawn': spawn,
-            'target_direction': None,
+            'target_direction': np.array((1, 0)),
             'orientation': 0
         }]
 

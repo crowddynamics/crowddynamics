@@ -1,5 +1,9 @@
 Theory
 ======
+
+.. todo::
+   General description about the theory and mathematics behind crowd simulations.
+
 - Time :math:`t \in \mathbb{R}^{+}`
 - Domain :math:`\Omega \subset \mathbb{R}^{2}` is surface that contains all objects in the simulation such as agents and obstacles. Agents that outside the domain will turn inactive.
 - Area occupied by agent :math:`\mathcal{A}`.

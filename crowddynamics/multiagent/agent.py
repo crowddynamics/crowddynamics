@@ -358,6 +358,7 @@ class Agent(object):
             angular_velocity (float):
 
             target_direction (numpy.ndarray):
+                Unit vector to desired direction
 
         Returns:
             bool:
