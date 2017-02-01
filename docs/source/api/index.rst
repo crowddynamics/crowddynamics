@@ -8,4 +8,5 @@ API
    cli
    gui
    testing
+   evacuation
    game

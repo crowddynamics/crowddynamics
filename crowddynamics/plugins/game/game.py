@@ -120,7 +120,8 @@ def best_response_strategy(agent, players, door, radius_max, strategy,
     d_door = length(door[1] - door[0])
     d_agent = 2 * radius_max
     coeff = 1.0
-    t_evac = agent_closer_to_exit(door, x) / \
+    c_door = (door[0] + door[1]) / 2.0
+    t_evac = agent_closer_to_exit(c_door, x) / \
              narrow_exit_capacity(d_door, d_agent, d_layer, coeff)
 
     loss = np.zeros(2)  # values: loss, indices: strategy
