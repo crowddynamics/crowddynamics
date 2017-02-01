@@ -1,3 +1,10 @@
+"""Example multiagent simulations
+
+Todo:
+    - Periodic boundaries
+    - Convert examples into test and validation simulations
+    - Move simulations.yaml configuration parameter into the classes
+"""
 import numpy as np
 from shapely.geometry import Polygon, LineString, Point
 
@@ -5,10 +12,6 @@ from crowddynamics.multiagent.simulation import MultiAgentSimulation
 from crowddynamics.multiagent.tasks import Navigation, Orientation, \
     Integrator, Fluctuation, Adjusting, AgentAgentInteractions, \
     AgentObstacleInteractions, Reset
-
-
-# TODO: Convert examples into test and validation simulations
-# TODO: Move simulations.yaml configuration parameter into the classes
 
 
 class Outdoor(MultiAgentSimulation):
@@ -42,7 +45,6 @@ class Outdoor(MultiAgentSimulation):
             body_type:
 
         """
-        # TODO: Periodic boundaries
         super().__init__(queue)
 
         domain = Polygon([(0, 0), (0, height), (width, height), (width, 0)])

@@ -23,12 +23,12 @@ pandas_options = {
 }
 
 
-def pandas_format(opts=pandas_options):
+def format_pandas(opts=pandas_options):
     for key, val in opts.items():
         pd.set_option(key, val)
 
 
-def numpy_format(precision=5, threshold=6, edgeitems=3, linewidth=None,
+def format_numpy(precision=5, threshold=6, edgeitems=3, linewidth=None,
                  suppress=False, nanstr=None, infstr=None, formatter=None):
     np.set_printoptions(precision, threshold, edgeitems, linewidth, suppress,
                         nanstr, infstr, formatter)
@@ -71,8 +71,8 @@ def setup_logging(default_path=LOG_CFG,
         logging.basicConfig(level=default_level)
 
     # Nicer printing for numpy array and pandas tables
-    numpy_format()
-    pandas_format()
+    format_numpy()
+    format_pandas()
 
 
 def user_info():

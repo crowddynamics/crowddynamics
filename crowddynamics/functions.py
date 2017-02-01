@@ -1,9 +1,6 @@
-import importlib
 import math
 import os
 import sys
-from collections import OrderedDict
-from copy import deepcopy
 from functools import wraps, lru_cache
 from timeit import default_timer as timer
 
@@ -27,46 +24,44 @@ def load_config(filename):
         raise Exception("Filetype not supported.")
 
 
-def create_parameters():
-    from crowddynamics.multiagent.agent import spec_agent
+def format_time(timespan, precision=3):
+    """Formats the timespan in a human readable form"""
 
-    ext = ".yaml"
-    name = "parameters"
-    filepath = os.path.join(CFG_DIR, name + ext)
+    if timespan >= 60.0:
+        # we have more than a minute, format that in a human readable form
+        # Idea from http://snipplr.com/view/5713/
+        parts = [("d", 60 * 60 * 24), ("h", 60 * 60), ("min", 60), ("s", 1)]
+        time = []
+        leftover = timespan
+        for suffix, length in parts:
+            value = int(leftover / length)
+            if value > 0:
+                leftover %= length
+                time.append(u'%s%s' % (str(value), suffix))
+            if leftover < 1:
+                break
+        return " ".join(time)
 
-    # TODO: Add Comments
-    default = OrderedDict([("resizable", False),
-                           ("graphics", False)])
+    # Unfortunately the unicode 'micro' symbol can cause problems in
+    # certain terminals.
+    # See bug: https://bugs.launchpad.net/ipython/+bug/348466
+    # Try to prevent crashes by being more secure than it needs to
+    # E.g. eclipse is able to print a µ, but has no sys.stdout.encoding set.
+    units = [u"s", u"ms", u'us', "ns"]  # the recordable value
+    if hasattr(sys.stdout, 'encoding') and sys.stdout.encoding:
+        try:
+            u'\xb5'.encode(sys.stdout.encoding)
+            units = [u"s", u"ms", u'\xb5s', "ns"]
+        except:
+            pass
+    scaling = [1, 1e3, 1e6, 1e9]
 
-    data = OrderedDict([('simulation', OrderedDict()),
-                        ('agent', OrderedDict()), ])
-
-    for item in spec_agent:
-        data['agent'][item[0]] = deepcopy(default)
-
-    # Mutable values that are stored
-    resizable = ("position", "angle", "active")
-    for item in resizable:
-        data['agent'][item]['resizable'] = True
-
-    # Values to be updated in graphics
-    graphics = ("position", "angle", "active")
-    for item in graphics:
-        data['agent'][item]['graphics'] = True
-
-    parameters = ("time_tot", "in_goal")
-    for item in parameters:
-        data['simulation'][item] = deepcopy(default)
-
-    resizable = ("time_tot", "in_goal")
-    for item in resizable:
-        data['simulation'][item]['resizable'] = True
-
-    with open(filepath, "w") as file:
-        yaml.dump(data,
-                  stream=file,
-                  Dumper=yaml.RoundTripDumper,
-                  default_flow_style=False)
+    if timespan > 0:
+        order = min(-int(math.floor(math.log10(timespan)) // 3), 3)
+    else:
+        order = 3
+    # return u"%.*g %s" % (precision, timespan * scaling[order], units[order])
+    return u"{:.1f} {}".format(timespan * scaling[order], units[order])
 
 
 class Timed:
@@ -120,68 +115,3 @@ def public(f):
     if f.__name__ not in all:  # Prevent duplicates if run from an IDE.
         all.append(f.__name__)
     return f
-
-
-def run_simulation(name, iterations):
-    """
-    Run simulation
-
-    Args:
-        name (str):
-        iterations (int):
-    """
-    configs = load_config("simulations.yaml")
-    simu_dict = configs["simulations"][name]
-    module_name = simu_dict["module"]
-    class_name = simu_dict["class"]
-    kwargs = simu_dict["kwargs"]
-
-    module = importlib.import_module(module_name)
-    simulation = getattr(module, class_name)
-    process = simulation(None, **kwargs)
-
-    process.initial_update()
-    for _ in range(iterations):
-        process.update()
-
-
-def format_time(timespan, precision=3):
-    """ Jupyter notebook timeit time formatting.
-    Formats the timespan in a human readable form
-    """
-
-    if timespan >= 60.0:
-        # we have more than a minute, format that in a human readable form
-        # Idea from http://snipplr.com/view/5713/
-        parts = [("d", 60 * 60 * 24), ("h", 60 * 60), ("min", 60), ("s", 1)]
-        time = []
-        leftover = timespan
-        for suffix, length in parts:
-            value = int(leftover / length)
-            if value > 0:
-                leftover %= length
-                time.append(u'%s%s' % (str(value), suffix))
-            if leftover < 1:
-                break
-        return " ".join(time)
-
-    # Unfortunately the unicode 'micro' symbol can cause problems in
-    # certain terminals.
-    # See bug: https://bugs.launchpad.net/ipython/+bug/348466
-    # Try to prevent crashes by being more secure than it needs to
-    # E.g. eclipse is able to print a µ, but has no sys.stdout.encoding set.
-    units = [u"s", u"ms", u'us', "ns"]  # the recordable value
-    if hasattr(sys.stdout, 'encoding') and sys.stdout.encoding:
-        try:
-            u'\xb5'.encode(sys.stdout.encoding)
-            units = [u"s", u"ms", u'\xb5s', "ns"]
-        except:
-            pass
-    scaling = [1, 1e3, 1e6, 1e9]
-
-    if timespan > 0:
-        order = min(-int(math.floor(math.log10(timespan)) // 3), 3)
-    else:
-        order = 3
-    # return u"%.*g %s" % (precision, timespan * scaling[order], units[order])
-    return u"{:.1f} {}".format(timespan * scaling[order], units[order])

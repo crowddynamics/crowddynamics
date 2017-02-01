@@ -1,7 +1,14 @@
-"""
+"""Interactions
+
 Interaction module has algorithms for computing the interactions between agents.
 Interactions are computationally expensive, thus sophisticated algorithms are
 required to efficiently compute them. Interactions are N-body problem.
+
+Todo:
+    - Rework walls
+    - Toggleable helbing/power law
+    - Neighborhood
+
 """
 import numba
 import numpy as np
@@ -12,10 +19,6 @@ from crowddynamics.core.interactions import distance_circle_circle, \
 from crowddynamics.core.motion import force_social_circular, \
     force_social_three_circle, force_social_linear_wall, force_contact
 from crowddynamics.core.vector2D import rotate270, cross2d
-
-
-# TODO: Rework walls
-# TODO: Toggle helbing/power law
 
 
 @numba.jit(nopython=True, nogil=True)

@@ -1,12 +1,14 @@
-"""
-Task Graph
+"""Task Graph
+
+https://www.python.org/doc/essays/graphs/
 """
 
 
 class TaskNode:
-    """
-    Create task graphs. Task graphs are used to create order for function calls
-    in simulation and to evaluate functions in this order.
+    """TaskNode
+
+    Create task graphs with TaskNodes for evaluating simulation algorithms
+    in the right order and possibly parallel.
     """
 
     def __init__(self):
