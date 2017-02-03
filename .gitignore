@@ -8,8 +8,8 @@
 
 # Folders
 *.logs/
+*_build/
 crowddynamics/tests/output/
-/docs/build/
 notebooks/
 ENV/
 
