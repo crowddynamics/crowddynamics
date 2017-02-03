@@ -12,8 +12,11 @@ serve to show the default.
 """
 
 from __future__ import print_function
-import sys
+
 import os
+import sys
+
+import crowddynamics
 
 sys.path.insert(0, os.path.abspath('..'))
 
@@ -45,9 +48,8 @@ project = 'Crowd Dynamics'
 copyright = '2016, Jaan Tollander de Balsch'
 author = 'Jaan Tollander de Balsch'
 
-# FIXME: versioneer
-version = '0.1'
-release = '1'
+version = '.'.join(crowddynamics.__version__.split('.')[:2])
+release = crowddynamics.__version__
 
 language = 'en'
 today_fmt = '%Y-%m-%d'
