@@ -2,10 +2,9 @@
 
 Graphical user interface and simulation graphics for crowddynamics implemented
 using PyQt and pyqtgraph. Layout for the main window is created by using Qt
-designer. :cite:`Hess2013`, :cite:`Sepulveda2014`
+designer. [Hess2013]_, [Sepulveda2014]_
 
-Design of the gui was inspired by the design of RtGraph
-:cite:`campagnola2012pyqtgraph`.
+Design of the gui was inspired by the design of RtGraph [campagnola2012]_
 
 """
 import importlib
@@ -17,7 +16,7 @@ from multiprocessing import Queue
 import pyqtgraph as pg
 from PyQt4 import QtGui, QtCore
 
-from crowddynamics.functions import load_config, Timed
+from crowddynamics.functions import load_config, timed
 from .graphics import MultiAgentPlot
 from .ui.gui import Ui_MainWindow
 
@@ -251,7 +250,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             # TODO: simulation IO
             # self.process.configure_hdfstore()
 
-    @Timed("Update Plots")
+    @timed("Update Plots")
     def update_plots(self):
         r"""Update plots"""
         """Updates the data in the plot(s)."""

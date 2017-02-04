@@ -1,0 +1,4 @@
+## Profiling
+line_profiler
+memory_profiler
+objgraph

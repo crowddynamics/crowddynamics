@@ -1,6 +1,6 @@
-r"""
+r"""Universal power law governing pedestrian
 
-
+[Karamouzas2014b]_
 """
 import numba
 import numpy as np

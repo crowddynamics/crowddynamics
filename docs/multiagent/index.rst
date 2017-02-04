@@ -18,4 +18,5 @@ Multi-Agent
    integrator
    agent
    simulation
-   tables
+   tasks
+   examples

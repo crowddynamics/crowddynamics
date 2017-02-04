@@ -6,7 +6,7 @@ import pyqtgraph as pg
 from shapely.geometry import LineString
 from shapely.geometry import Polygon
 
-from crowddynamics.functions import load_config, Timed
+from crowddynamics.functions import load_config, timed
 from crowddynamics.multiagent.agent import positions
 from crowddynamics.multiagent.simulation import MultiAgentSimulation
 

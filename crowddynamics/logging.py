@@ -1,3 +1,4 @@
+import inspect
 import os
 import platform
 import sys
@@ -43,7 +44,7 @@ def setup_logging(default_path=LOG_CFG,
 
     References:
 
-    .. [1] https://fangpenlin.com/posts/2012/08/26/good-logging-practice-in-python/
+    .. [#] https://fangpenlin.com/posts/2012/08/26/good-logging-practice-in-python/
     """
     # Path to logging yaml configuration file.
     path = default_path
@@ -95,23 +96,34 @@ class log_with(object):
         self.entry_msg = entry_msg
         self.exit_msg = exit_msg
 
-    def __call__(self, func):
+    def __call__(self, function):
         """
         Returns a wrapper that wraps func. The wrapper will log the entry
         and exit points of the function with logging.INFO level.
         """
         # set logger if it was not set earlier
         if not self.logger:
-            self.logger = logging.getLogger(func.__module__)
+            self.logger = logging.getLogger(function.__module__)
+        sig = inspect.signature(function)
+        arg_names = sig.parameters.keys()
 
-        @functools.wraps(func)
+        # FIXME
+        def message(args, kwargs):
+            for i, name in enumerate(arg_names):
+                try:
+                    value = args[i]
+                except IndexError:
+                    value = kwargs[name]
+                yield str(name) + ': ' + str(value)
+
+        @functools.wraps(function)
         def wrapper(*args, **kwargs):
-            msg = "\nArgs:   {}\nKwargs: {}".format(args, kwargs)
+            msg = "\n".join(message(args, kwargs))
 
             self.logger.info(msg)
             if self.entry_msg:
                 self.logger.info(self.entry_msg)
-            f_result = func(*args, **kwargs)
+            f_result = function(*args, **kwargs)
             if self.exit_msg:
                 self.logger.info(self.exit_msg)
             return f_result

@@ -15,41 +15,17 @@ from crowddynamics.multiagent.tasks import Navigation, Orientation, \
 
 
 class Outdoor(MultiAgentSimulation):
-    r"""
-    Outdoor
+    r"""Outdoor
 
     Simulation for testing collision avoidance generally.
 
     - Multi-directional flow
     - Periodic boundaries
 
-    Tasks
-
-    - Reset
-        - Integrator
-            - Adjusting
-                - Orientation
-            - AgentAgentInteractions
-            - Fluctuation
     """
-    def __init__(self, queue, size, width, height, model, body_type):
-        """
-        Init
 
-        Args:
-            queue:
-            size:
-            width:
-            height:
-            model:
-            body_type:
-
-        """
-        super().__init__(queue, "Outdoor")
-
-        domain = Polygon([(0, 0), (0, height), (width, height), (width, 0)])
-        self.init_domain(domain)
-        self.init_agents(size, model)
+    def set(self, size, width, height, model, body_type):
+        self.set_name('Outdoor')
 
         reset = Reset(self)
         integrator = Integrator(self)
@@ -59,16 +35,17 @@ class Outdoor(MultiAgentSimulation):
         integrator += adjusting
         integrator += AgentAgentInteractions(self)
         integrator += Fluctuation(self)
+        self.set_tasks(reset)
 
-        self.tasks += reset
-
-        for i in self.add_agents(size, domain, body_type):
+        domain = Polygon([(0, 0), (0, height), (width, height), (width, 0)])
+        self.init_domain(domain)
+        self.init_agents(size, model)
+        for i in self.add_agents(size, self.domain, body_type):
             pass
 
 
 class Hallway(MultiAgentSimulation):
-    r"""
-    Hallway
+    r"""Hallway
 
     - Low / medium / high crowd density
     - Overtaking
@@ -79,8 +56,11 @@ class Hallway(MultiAgentSimulation):
     #) Bidirectional flow
     #) Unidirectional flow
     """
-    def __init__(self, queue, size, width, height, model, body_type):
-        super().__init__(queue, "Hallway")
+
+    def set(self, size, width, height, model, body_type):
+        super().__init__()
+        self.set_name('Hallway')
+
         domain = Polygon([(0, 0), (0, height), (width, height), (width, 0)])
         obstacles = (
             LineString([(0, 0), (width, 0)]),
@@ -123,7 +103,7 @@ class Hallway(MultiAgentSimulation):
         integrator += AgentObstacleInteractions(self)
         integrator += Fluctuation(self)
 
-        self.tasks += reset
+        self.set_tasks(reset)
 
         for kw in kwargs:
             for i in self.add_agents(kw['size'], kw['spawn'], body_type):
@@ -134,24 +114,25 @@ class Hallway(MultiAgentSimulation):
 
 
 class Crossing(MultiAgentSimulation):
-    r"""
-    Crossing
+    r"""Crossing
 
     - Orthogonal flow
     """
-    pass
+    def set(self, *args, **kwargs):
+        pass
 
 
 class Rounding(MultiAgentSimulation):
-    r"""
-    Rounding
+    r"""Rounding
 
     Simulation for testing navigation algorithm.
 
     - Unidirectional flow
     """
-    def __init__(self, queue, size, width, height, model, body_type):
-        super().__init__(queue, "Rounding")
+
+    def set(self, size, width, height, model, body_type):
+        super().__init__()
+        self.set_name('Rounding')
 
         domain = Polygon([(0, 0), (0, height), (width, height), (width, 0)])
         exits = LineString([(0, height / 2), (0, height)])
@@ -187,7 +168,7 @@ class Rounding(MultiAgentSimulation):
         integrator += AgentObstacleInteractions(self)
         integrator += Fluctuation(self)
 
-        self.tasks += reset
+        self.set_tasks(reset)
 
         for kw in kwargs:
             for i in self.add_agents(kw['size'], kw['spawn'], body_type):
@@ -198,8 +179,7 @@ class Rounding(MultiAgentSimulation):
 
 
 class RoomEvacuation(MultiAgentSimulation):
-    r"""
-    Room Evacuation
+    r"""Room Evacuation
 
     - Unidirectional flow
     - Door width
@@ -214,9 +194,11 @@ class RoomEvacuation(MultiAgentSimulation):
     - Two exits
     - Multiple exits
     """
-    def __init__(self, queue, size, width, height, model, body_type,
+
+    def set(self, size, width, height, model, body_type,
                  spawn_shape, door_width, exit_hall_width):
-        super(RoomEvacuation, self).__init__(queue, "RoomEvacuation")
+        super(RoomEvacuation, self).__init__()
+        self.set_name("RoomEvacuation")
 
         self.room = Polygon(
             [(0, 0), (0, height), (width, height), (width, 0), ])
@@ -264,7 +246,7 @@ class RoomEvacuation(MultiAgentSimulation):
         integrator += AgentObstacleInteractions(self)
         integrator += Fluctuation(self)
 
-        self.tasks += reset
+        self.set_tasks(reset)
 
         for kw in kwargs:
             for i in self.add_agents(kw['size'], kw['spawn'], body_type):

@@ -5,7 +5,7 @@ r"""Agent model for multiagent simulation
 Simplest of the models is circular model without orientation. Circle is defined
 with radius :math:`r > 0` from the center of mass.
 
-**Three circle model** :cite:`Langston2006`
+**Three circle model** [Langston2006]_
 
 Three circle model models agent with three circles which represent torso and two
 shoulders. Torso has radius of :math:`r_t` and is centered at center of mass
@@ -63,60 +63,51 @@ def positions(position, orientation, radius_ts):
         raise Exception()
 
 
-def resize():
-    return NotImplementedError
-
-
 spec_agent = (
-    ("size", int64),
-    ("shape", UniTuple(int64, 2)),
-    ("circular", boolean),
-    ("three_circle", boolean),
-    ("orientable", boolean),
-    ("active", boolean[:]),
-    ("mass", float64[:, :]),
-    ("radius", float64[:]),
-    ("r_t", float64[:]),
-    ("r_s", float64[:]),
-    ("r_ts", float64[:]),
-    ("position", float64[:, :]),
-    ("velocity", float64[:, :]),
-    ("target_velocity", float64[:, :]),
-    ("target_direction", float64[:, :]),
-    ("force", float64[:, :]),
-    ("inertia_rot", float64[:]),
-    ("orientation", float64[:]),
-    ("angular_velocity", float64[:]),
-    ("target_orientation", float64[:]),
-    ("target_angular_velocity", float64[:]),
-    ("torque", float64[:]),
-)
-
-spec_agent_motion = (
-    ("tau_adj", float64),
-    ("tau_rot", float64),
-    ("k_soc", float64),
-    ("tau_0", float64),
-    ("mu", float64),
-    ("kappa", float64),
-    ("damping", float64),
-    ("std_rand_force", float64),
-    ("std_rand_torque", float64),
-    ("f_soc_ij_max", float64),
-    ("f_soc_iw_max", float64),
-    ("sight_soc", float64),
-    ("sight_wall", float64),
+    ('size', int64),
+    ('shape', UniTuple(int64, 2)),
+    ('circular', boolean),
+    ('three_circle', boolean),
+    ('orientable', boolean),
+    ('active', boolean[:]),
+    ('mass', float64[:, :]),
+    ('radius', float64[:]),
+    ('r_t', float64[:]),
+    ('r_s', float64[:]),
+    ('r_ts', float64[:]),
+    ('position', float64[:, :]),
+    ('velocity', float64[:, :]),
+    ('target_velocity', float64[:, :]),
+    ('target_direction', float64[:, :]),
+    ('force', float64[:, :]),
+    ('inertia_rot', float64[:]),
+    ('orientation', float64[:]),
+    ('angular_velocity', float64[:]),
+    ('target_orientation', float64[:]),
+    ('target_angular_velocity', float64[:]),
+    ('torque', float64[:]),
+    ('tau_adj', float64),
+    ('tau_rot', float64),
+    ('k_soc', float64),
+    ('tau_0', float64),
+    ('mu', float64),
+    ('kappa', float64),
+    ('damping', float64),
+    ('std_rand_force', float64),
+    ('std_rand_torque', float64),
+    ('f_soc_ij_max', float64),
+    ('f_soc_iw_max', float64),
+    ('sight_soc', float64),
+    ('sight_wall', float64),
 )
 
 spec_agent_neighbour = (
-    # ("neighbor_radius", float64),
-    # ("neighborhood_size", int64),
-    # ("neighbors", int64[:, :]),
-    # ("neighbor_distances", float64[:, :]),
-    # ("neighbor_distances_max", float64[:]),
+    # ('neighbor_radius', float64),
+    # ('neighborhood_size', int64),
+    # ('neighbors', int64[:, :]),
+    # ('neighbor_distances', float64[:, :]),
+    # ('neighbor_distances_max', float64[:]),
 )
-
-spec_agent += spec_agent_motion  # + spec_agent_neighbour
 
 
 @numba.jitclass(spec_agent)
@@ -421,3 +412,7 @@ class Agent(object):
     def indices(self):
         """Indices of active agents."""
         return np.arange(self.size)[self.active]
+
+
+def resize():
+    return NotImplementedError

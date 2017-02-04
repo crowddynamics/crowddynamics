@@ -91,10 +91,7 @@ def polygon(draw, a=-1.0, b=1.0, num_points=5, buffer=real(0.1, 0.2)):
 
     """
     # TODO: input strategies
-    if isinstance(buffer, SearchStrategy):
-        c = draw(buffer)
-    else:
-        c = buffer
+    c = draw(buffer)
     points = draw(arrays(np.float64, (num_points, 2),
                          real(a + c, b - c, exclude_zero='near')))
     lines = LineString(points)
@@ -106,8 +103,8 @@ def polygon(draw, a=-1.0, b=1.0, num_points=5, buffer=real(0.1, 0.2)):
 
 @st.composite
 def field(draw,
-          domain_strategy=polygon(a=-10.0, b=10.0, buffer=1.0),
-          target_length_strategy=1.0):
+          domain_strategy=polygon(a=-10.0, b=10.0, buffer=st.just(1.0)),
+          target_length_strategy=st.just(1.0)):
     r"""SearchStrategy that generates ``domain``, ``targets`` and ``obstacles``
     for testing.
 
@@ -126,10 +123,7 @@ def field(draw,
             - ``targets``
             - ``obstacles``
     """
-    if isinstance(target_length_strategy, SearchStrategy):
-        target_length = draw(target_length_strategy)
-    else:
-        target_length = target_length_strategy
+    target_length = draw(target_length_strategy)
     domain = draw(domain_strategy)
     targets = LineString()
     obstacles = domain.exterior

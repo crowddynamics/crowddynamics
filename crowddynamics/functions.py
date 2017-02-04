@@ -64,7 +64,7 @@ def format_time(timespan, precision=3):
     return u"{:.1f} {}".format(timespan * scaling[order], units[order])
 
 
-class Timed:
+class timed:
     """
     Decorator for timing function execution time.
     """
@@ -78,18 +78,13 @@ class Timed:
         self.msg = msg
 
     def __call__(self, f):
-        msg = self.msg
-
         @wraps(f)
         def wrapper(*args, **kwargs):
             start = timer()
             ret = f(*args, **kwargs)
             dt = timer() - start
-
-            print(msg, format_time(dt))
-
+            print(self.msg, format_time(dt))
             return ret
-
         return wrapper
 
 
@@ -115,3 +110,15 @@ def public(f):
     if f.__name__ not in all:  # Prevent duplicates if run from an IDE.
         all.append(f.__name__)
     return f
+
+
+def line_profiler(func):
+    """Line profiler decorator
+
+    Decorates a function with ``profile`` if it is in the namespace
+    https://github.com/rkern/line_profiler
+    """
+    try:
+        return profile(func)
+    except NameError:
+        return func

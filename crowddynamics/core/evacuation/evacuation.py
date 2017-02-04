@@ -18,7 +18,7 @@ def narrow_exit_capacity(d_door, d_agent, d_layer=None, coeff=1.0):
     .. math::
        \beta_{simple} = c \left \lfloor \frac{d_{door}}{d_{agent}} \right \rfloor
 
-    More sophisticated estimation :cite:`Hoogendoorn2005a`, :cite:`Seyfried2007a`
+    More sophisticated estimation [Hoogendoorn2005a]_, [Seyfried2007a]_
     when :math:`d_{door} \geq d_{agent}`
 
     .. math::

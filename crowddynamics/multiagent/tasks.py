@@ -6,41 +6,40 @@ from crowddynamics.core.motion import force_fluctuation, \
     force_adjust, torque_adjust, torque_fluctuation
 from crowddynamics.core.steering.navigation import to_indices, static_potential
 from crowddynamics.core.vector2D.vector2D import angle_nx2
-from crowddynamics.functions import Timed
+from crowddynamics.functions import timed
 from crowddynamics.geometry import shapes_to_point_pairs
 from crowddynamics.io import HDFStore
 from crowddynamics.taskgraph import TaskNode
 
 
 class Integrator(TaskNode):
+    r"""Integrator
+
+    Args:
+        simulation (MultiAgentSimulation):
+            Simulation class
+
+        dt (tuple[float]):
+            Tuple of minimum and maximum timestep (dt_min, dt_max).
+
+    """
+
     def __init__(self, simulation, dt=(0.001, 0.01)):
-        r"""
-        Integrator
-
-        Args:
-            simulation (MultiAgentSimulation):
-                Simulation class
-
-            dt (tuple[float]):
-                Tuple of minimum and maximum timestep (dt_min, dt_max).
-        """
         super().__init__()
-
         self.simulation = simulation
         self.dt = dt
-
         self.time_tot = np.float64(0)
         self.dt_prev = np.float64(np.nan)
 
     def update(self):
-        """Integrates the system."""
         self.dt_prev = euler_integration(self.simulation.agent, *self.dt)
         self.time_tot += self.dt_prev
 
 
 class Fluctuation(TaskNode):
+    r"""Fluctuation"""
+
     def __init__(self, simulation):
-        r"""Fluctuation"""
         super().__init__()
         self.simulation = simulation
 
@@ -56,8 +55,9 @@ class Fluctuation(TaskNode):
 
 
 class Adjusting(TaskNode):
+    r"""Adjusting"""
+
     def __init__(self, simulation):
-        r"""Adjusting"""
         super().__init__()
         self.simulation = simulation
 
@@ -80,41 +80,44 @@ class Adjusting(TaskNode):
 
 
 class AgentAgentInteractions(TaskNode):
+    r"""AgentAgentInteractions"""
+
     def __init__(self, simulation):
-        r"""AgentAgentInteractions"""
         super().__init__()
         self.simulation = simulation
 
-    @Timed("Agent-Agent Interaction")
+    @timed("Agent-Agent Interaction")
     def update(self):
         agent_agent_block_list(self.simulation.agent)
 
 
 class AgentObstacleInteractions(TaskNode):
+    r"""AgentObstacleInteractions"""
+
     def __init__(self, simulation):
-        r"""AgentObstacleInteractions"""
         super().__init__()
         self.simulation = simulation
 
         # TODO: Expects that field is set prior to initialisation
         self.walls = shapes_to_point_pairs(self.simulation.obstacles)
 
-    @Timed("Agent-Obstacle Interaction")
+    @timed("Agent-Obstacle Interaction")
     def update(self):
         agent_wall(self.simulation.agent, self.walls)
 
 
 class Navigation(TaskNode):
+    """
+    Handles navigation in multi-agent simulation.
+
+    Args:
+        simulation:
+        algorithm:
+        step (float): Step size for the grid.
+
+    """
+
     def __init__(self, simulation, algorithm="static", step=0.01):
-        """
-        Handles navigation in multi-agent simulation.
-
-        Args:
-            simulation:
-            algorithm:
-            step (float): Step size for the grid.
-
-        """
         super().__init__()
         self.simulation = simulation
 
@@ -133,15 +136,8 @@ class Navigation(TaskNode):
         else:
             pass
 
-    @Timed("Navigation Time")
+    @timed("Navigation Time")
     def update(self):
-        """
-        Changes target directions of active agents.
-
-        Returns:
-            None.
-
-        """
         i = self.simulation.agent.indices()
         points = self.simulation.agent.position[i]
         # indices = self.points_to_indices(points)
@@ -154,12 +150,13 @@ class Navigation(TaskNode):
 
 
 class Orientation(TaskNode):
+    r"""Target orientation"""
+
     def __init__(self, simulation):
-        r"""Target orientation"""
         super().__init__()
         self.simulation = simulation
 
-    @Timed("Orientation Time")
+    @timed("Orientation Time")
     def update(self):
         if self.simulation.agent.orientable:
             dir_to_orient = angle_nx2(self.simulation.agent.target_direction)
@@ -167,8 +164,9 @@ class Orientation(TaskNode):
 
 
 class ExitSelection(TaskNode):
+    """Exit selection policy."""
+
     def __init__(self, simulation):
-        """Exit selection policy."""
         super().__init__()
         self.simulation = simulation
 
@@ -177,6 +175,8 @@ class ExitSelection(TaskNode):
 
 
 class Reset(TaskNode):
+    r"""Reset"""
+
     def __init__(self, simulation):
         super().__init__()
         self.simulation = simulation
@@ -186,7 +186,9 @@ class Reset(TaskNode):
         # self.agent.reset_neighbor()
 
 
-class Save(TaskNode):
+class IO(TaskNode):
+    r"""IO"""
+
     def __init__(self, simulation, structs, attribute_list):
         super().__init__()
         self.simulation = simulation
@@ -205,8 +207,10 @@ class Save(TaskNode):
 
 
 class GuiCommunication(TaskNode):
+    """GuiCommunication"""
     pass
 
 
 class Contains(TaskNode):
+    """Contains"""
     pass

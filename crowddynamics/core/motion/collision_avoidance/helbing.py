@@ -7,7 +7,7 @@ from numba import f8
 def force_social_helbing(h, n, a, b):
     r"""
     Helbing's model's original social force. Independent of the velocity or
-    direction of the agent.
+    direction of the agent. [Helbing2000a]_
 
     .. math::
        A \exp(-\frac{h}{B}) \mathbf{\hat{n}}

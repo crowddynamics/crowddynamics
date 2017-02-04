@@ -2,10 +2,11 @@ import numpy as np
 import pytest
 from hypothesis import given
 from hypothesis import settings
+from hypothesis.core import example
 from hypothesis.strategies import just
 
 import crowddynamics.testing.strategies as st
-from crowddynamics.core.steering import distance_map
+from crowddynamics.core.steering import direction_map, distance_map
 
 
 @given(step=just(0.01), field=st.field())
@@ -20,6 +21,7 @@ def test_distance_map(step, field):
 
     assert isinstance(dmap, np.ndarray)
     assert dmap.dtype.type is np.float64
+    assert len(dmap.shape) == 2
 
     assert isinstance(phi, np.ma.MaskedArray)
 
@@ -29,14 +31,23 @@ def test_travel_time_map():
     assert True
 
 
-def test_direction_map():
-    assert True
+@given(dmap=st.real(-1.0, 1.0, shape=(10, 10)))
+@example(dmap=np.zeros((10, 10)))
+@example(dmap=np.ones((10, 10)))
+def test_direction_map(dmap):
+    dir_map = direction_map(dmap)
+
+    assert isinstance(dir_map, np.ndarray)
+    assert dmap.dtype.type is np.float64
+    assert len(dir_map.shape) == 3
 
 
+@pytest.mark.skip
 def test_merge_dir_maps():
     assert True
 
 
+@pytest.mark.skip
 def test_static_potential():
     assert True
 

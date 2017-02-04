@@ -3,7 +3,8 @@ r"""Patient and impatient pedestrians in a spatial game.
 Patient and impatient pedestrians in a spatial game :math:`(S, f)` for
 egress congestion between players :math:`P \subset A` with set of strategies
 :math:`S` and payoff function :math:`f : S \times S \mapsto \mathbb{R}`.
-:cite:`Heliovaara2013,VonSchantz2014`
+
+[Heliovaara2013]_, [VonSchantz2014]_
 
 Set of strategies
 

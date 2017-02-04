@@ -58,7 +58,7 @@ class Mass(Parameter):
     """Mass :math:`m > 0` of the agent."""
 
     def value(self, mean, mass_scale, size=1):
-        v =  truncnorm(-3.0, 3.0, loc=mean, abs_scale=mass_scale, size=size)
+        v = truncnorm(-3.0, 3.0, loc=mean, abs_scale=mass_scale, size=size)
         if size == 1:
             return np.asscalar(v)
         else:
@@ -124,6 +124,7 @@ class MomentOfInertia(Parameter):
     radius :math:`0.27` m.
     https://en.wikipedia.org/wiki/Moment_of_inertia
     """
+
     # TODO: scaling
 
     def value(self):
@@ -161,6 +162,7 @@ class MaximumAngularVelocity(Parameter):
 
 class Parameters:
     """Agent parameters"""
+
     def __init__(self, body_type='adult'):
         self.bodies = load_config("body.csv")
         self.body_types = ('adult', 'male', 'female', 'child', 'eldery')

@@ -1,8 +1,16 @@
 """Navigation/path-planning algorithms
 
 Continuos shortest path problem
+
 Fast Marching Method.
+
+https://github.com/scikit-fmm/scikit-fmm
+
 Fast Iterative Method
+
+https://github.com/SCIInstitute/SCI-Solver_Eikonal
+
+
 """
 from collections import Iterable
 
@@ -119,10 +127,10 @@ def distance_map(domain, targets, obstacles, step):
         domain (Polygon):
             Domain :math:`\Omega` containing obstacles and targets.
 
-        obstacles (BaseGeometry, optional):
+        obstacles (shapely.geometry.base.BaseGeometry, optional):
             Impassable regions :math:`\mathcal{O}` in the domain.
 
-        targets (BaseGeometry, optional):
+        targets (shapely.geometry.base.BaseGeometry, optional):
             Target regions :math:`\mathcal{E}` in the domain.
 
         step (float):
@@ -132,7 +140,7 @@ def distance_map(domain, targets, obstacles, step):
 
     Return:
         (numpy.ndarray, numpy.ndarray, numpy.ma.MaskedArray):
-            Tuple of
+            List of
             - ``mgrid``
             - ``dmap``
             - ``phi``
@@ -219,11 +227,10 @@ def direction_map(dmap):
 
     """
     u, v = np.gradient(dmap)
-    dir_map = np.zeros(u.shape + (2,))
-
-    # Flip order from (row, col) to (x, y)
     l = np.hypot(u, v)
-    # TODO: handle l == 0
+    l[l == 0] = 1.0  # Handles l == 0 to avoid zero division
+    # Flip order from (row, col) to (x, y)
+    dir_map = np.zeros(u.shape + (2,))
     dir_map[:, :, 0] = v / l
     dir_map[:, :, 1] = u / l
     return dir_map
