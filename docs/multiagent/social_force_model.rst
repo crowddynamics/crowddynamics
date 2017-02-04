@@ -6,7 +6,7 @@ Dirk Helbing, a pioneer of social force model, describes social forces
 
    *These forces are not directly exerted by the pedestrians’ personal environment, but they are a measure for the internal motivations of the individuals to perform certain actions (movements).*
 
-Law's of motion are given as coupled `Langevin equations`_ where translational motion and rotational motion
+Law's of motion are given as coupled `Langevin equations`_ where translational motion and rotational motion [Helbing2000a]_
 
 .. _Langevin equations: https://en.wikipedia.org/wiki/Langevin_equation
 

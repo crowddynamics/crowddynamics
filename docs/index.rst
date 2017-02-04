@@ -10,9 +10,6 @@ Crowd Dynamics |version|
 ========================
 Crowddynamics is a Python package for crowd simulation. The project was created in summer 2016 for Systems Analysis Laboratory (SAL) in Aalto University in Finland. Initial goal of the project was to study game theoretical model for egress congestion using existing multi-agent simulation models as a base for creating movement.
 
-Current goals are to improve and generalize multi-agent model.
-
-Eventually also include cellular automata and continuum flow models.
 
 .. toctree::
    :caption: First Steps
@@ -26,15 +23,15 @@ Eventually also include cellular automata and continuum flow models.
    :maxdepth: 2
 
    theory
-   quantities
 
 .. toctree::
    :caption: Simulation Models
    :maxdepth: 2
 
    multiagent/index
-   cellular/index
-   continuum/index
+   cellular_automata/index
+   continuum_flow/index
+   optimal_control/index
 
 .. toctree::
    :caption: Developers

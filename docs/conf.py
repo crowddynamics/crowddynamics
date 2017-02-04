@@ -33,10 +33,13 @@ extensions = [
 ]
 
 extensions += [
-    'sphinxcontrib.programoutput',
-    'sphinxcontrib.bibtex',
+    # 'sphinxcontrib.programoutput',
+    # 'sphinxcontrib.bibtex',
     # 'sphinxcontrib.youtube',
 ]
+
+
+
 
 templates_path = ['_templates']
 source_suffix = '.rst'
@@ -55,6 +58,15 @@ language = 'en'
 today_fmt = '%Y-%m-%d'
 pygments_style = 'sphinx'
 todo_include_todos = True
+
+# -- Bokeh -----------------------------------------------------------
+# http://bokeh.pydata.org/en/latest/docs/reference/sphinxext.html#bokeh-sphinxext-bokeh-plot
+
+# FIXME
+# os.environ.setdefault('BOKEH_DOCS_MISSING_API_KEY_OK', 'yes')
+# extensions += [
+#     'bokeh.sphinxext.bokeh_plot'
+# ]
 
 # -- Napoleon --------------------------------------------------------
 # http://www.sphinx-doc.org/en/stable/ext/napoleon.html
@@ -124,7 +136,7 @@ html_static_path = ['_static']
 
 # If not '', a 'Last updated on:' timestamp is inserted at every page bottom,
 # using the given strftime format.
-html_last_updated_fmt = '%b %d, %Y'
+html_last_updated_fmt = '%Y-%m-%d'
 
 # If true, SmartyPants will be used to convert quotes and dashes to
 # typographically correct entities.
@@ -204,25 +216,7 @@ latex_documents = [
      'report'),
 ]
 
-# The name of an image file (relative to this directory) to place at the top of
-# the title page.
-# latex_logo = None
-
-# For "manual" documents, if this is true, then toplevel headings are parts,
-# not chapters.
-# latex_use_parts = False
-
-# If true, show page references after internal links.
-# latex_show_pagerefs = False
-
-# If true, show URL addresses after external links.
-# latex_show_urls = False
-
-# Documents to _append as an appendix to all manuals.
-# latex_appendices = []
-
-# If false, no module index is generated.
-# latex_domain_indices = True
+latex_logo = None
 
 
 # -- Options for manual page output ---------------------------------------

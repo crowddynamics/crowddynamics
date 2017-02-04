@@ -14,7 +14,7 @@ Multi-Agent
    social_force_model
    motion
    interactions
-   steering
+   navigation
    integrator
    agent
    simulation

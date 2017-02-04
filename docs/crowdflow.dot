@@ -1,0 +1,40 @@
+digraph crowdmotion {
+    /* Entities */
+    motion [label="Crowd Motion"]
+
+    uni [label="Uni-Directional"]
+    straight [label="Straight flow"]
+    rounding [label="Rouding a corner"]
+    entering [label="Entering"]
+    exiting [label="Exiting"]
+
+    multi [label="Multi-Directional"]
+    parallel [label="Parallel flows"]
+    bidirectional [label="Bi-directional"]
+    crossing [label="Crossing flows"]
+    focalpoint [label="Focal point"]
+    twoflows [label="2 Flows"]
+    moretwoflows [label="More than 2 flows"]
+    random [label="Random"]
+
+    /* Relationships */
+    motion -> uni;
+    motion -> multi;
+    uni -> {
+        straight;
+        rounding;
+        entering;
+        exiting;
+    }
+    multi -> {
+        parallel;
+        crossing;
+    }
+    parallel -> bidirectional;
+    crossing -> {
+        focalpoint;
+        random;
+    }
+    focalpoint -> twoflows;
+    focalpoint -> moretwoflows;
+}
