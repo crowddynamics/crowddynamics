@@ -47,11 +47,11 @@ class Fluctuation(TaskNode):
         agent = self.simulation.agent
         i = agent.indices()
 
-        agent.force[i] = force_fluctuation(agent.mass[i], agent.std_rand_force)
+        agent.force[i] = force_fluctuation(agent.mass[i], agent.std_rand_force[i])
 
         if agent.orientable:
             agent.torque[i] = torque_fluctuation(agent.inertia_rot[i],
-                                                 agent.std_rand_torque)
+                                                 agent.std_rand_torque[i])
 
 
 class Adjusting(TaskNode):
@@ -66,13 +66,13 @@ class Adjusting(TaskNode):
         i = agent.indices()
 
         agent.force[i] = force_adjust(agent.mass[i],
-                                      agent.tau_adj,
+                                      agent.tau_adj[i],
                                       agent.target_velocity[i],
                                       agent.target_direction[i],
                                       agent.velocity[i])
         if agent.orientable:
             agent.torque[i] = torque_adjust(agent.inertia_rot[i],
-                                            agent.tau_rot,
+                                            agent.tau_rot[i],
                                             agent.target_orientation[i],
                                             agent.orientation[i],
                                             agent.target_angular_velocity[i],
@@ -107,8 +107,7 @@ class AgentObstacleInteractions(TaskNode):
 
 
 class Navigation(TaskNode):
-    """
-    Handles navigation in multi-agent simulation.
+    r"""Handles navigation in multi-agent simulation.
 
     Args:
         simulation:

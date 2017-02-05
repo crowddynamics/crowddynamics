@@ -84,8 +84,11 @@ def user_info():
 
 
 class log_with(object):
-    """
-    Logging decorator that allows you to log with a specific logger.
+    """Logging decorator that allows you to log with a specific logger.
+
+    Todo:
+        - Set loglevel
+        - Pretty formatting
     """
     def __init__(self, logger=None, loglevel=logging.INFO,
                  entry_msg=None, exit_msg=None):
@@ -107,18 +110,23 @@ class log_with(object):
         sig = inspect.signature(function)
         arg_names = sig.parameters.keys()
 
-        # FIXME
         def message(args, kwargs):
             for i, name in enumerate(arg_names):
                 try:
                     value = args[i]
                 except IndexError:
-                    value = kwargs[name]
+                    # FIXME: Default values in kwargs
+                    try:
+                        value = kwargs[name]
+                    except KeyError:
+                        continue
                 yield str(name) + ': ' + str(value)
 
         @functools.wraps(function)
         def wrapper(*args, **kwargs):
-            msg = "\n".join(message(args, kwargs))
+            msg = function.__name__
+            msg += "\n"
+            msg += "\n".join(message(args, kwargs))
 
             self.logger.info(msg)
             if self.entry_msg:

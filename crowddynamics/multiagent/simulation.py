@@ -242,9 +242,11 @@ class MultiAgentSimulation:
                     break
             iterations += 1
 
+    @log_with(logger)
     def remove_agents(self, indices):
         pass
 
+    @log_with(logger)
     def set_tasks(self, tasks):
         """Set task graph
 
@@ -253,6 +255,7 @@ class MultiAgentSimulation:
         """
         self.tasks = tasks
 
+    @log_with(logger)
     def set_queue(self, queue):
         """Set queue for the simulation
 
@@ -270,10 +273,6 @@ class MultiAgentSimulation:
         """Execute new iteration cycle of the simulation."""
         self.tasks.evaluate()
         self.iterations += 1
-
-    def register(self):
-        """Register simulation in order to make it visible to CLI and GUI."""
-        REGISTERED_SIMULATIONS.append(self)
 
     def __str__(self):
         return self.name
@@ -322,6 +321,16 @@ class MultiAgentProcess(Process):
         self.exit.set()
 
 
+@log_with()
+def register(simulation):
+    """Register simulation in order to make it visible to CLI and GUI."""
+    if isinstance(simulation, MultiAgentSimulation):
+        raise InvalidArgument("Argument simulation should be instance of"
+                              "MultiAgentSimulation")
+    REGISTERED_SIMULATIONS.append(simulation)
+
+
+@log_with()
 def run_simulations(simulations):
     """Run multiagent simulations as a new process
 

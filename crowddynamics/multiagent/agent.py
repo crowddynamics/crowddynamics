@@ -86,27 +86,19 @@ spec_agent = (
     ('target_orientation', float64[:]),
     ('target_angular_velocity', float64[:]),
     ('torque', float64[:]),
-    ('tau_adj', float64),
-    ('tau_rot', float64),
-    ('k_soc', float64),
-    ('tau_0', float64),
-    ('mu', float64),
-    ('kappa', float64),
-    ('damping', float64),
-    ('std_rand_force', float64),
-    ('std_rand_torque', float64),
+    ('tau_adj', float64[:, :]),
+    ('tau_rot', float64[:, :]),
+    ('k_soc', float64[:]),
+    ('tau_0', float64[:]),
+    ('mu', float64[:]),
+    ('kappa', float64[:]),
+    ('damping', float64[:]),
+    ('std_rand_force', float64[:]),
+    ('std_rand_torque', float64[:]),
     ('f_soc_ij_max', float64),
     ('f_soc_iw_max', float64),
     ('sight_soc', float64),
     ('sight_wall', float64),
-)
-
-spec_agent_neighbour = (
-    # ('neighbor_radius', float64),
-    # ('neighborhood_size', int64),
-    # ('neighbors', int64[:, :]),
-    # ('neighbor_distances', float64[:, :]),
-    # ('neighbor_distances_max', float64[:]),
 )
 
 
@@ -195,7 +187,6 @@ class Agent(object):
         Args:
             size (int):
                 Maximum number of agents that can be placed into the structure.
-
         """
         self.size = size
         self.shape = (self.size, 2)
@@ -204,15 +195,15 @@ class Agent(object):
         self.circular = True
         self.three_circle = False
         self.orientable = False
-        self.active = np.zeros(size, np.bool8)  # Initialise agents as inactive
+        self.active = np.zeros(size, np.bool8)
 
         # Constant properties
-        self.radius = np.zeros(self.size)       # Total radius
-        self.r_t = np.zeros(self.size)          # Radius of torso
-        self.r_s = np.zeros(self.size)          # Radius of shoulders
-        self.r_ts = np.zeros(self.size)         # Distance from torso to shoulder
-        self.mass = np.zeros((self.size, 1))    # Mass
-        self.inertia_rot = np.zeros(self.size)  # Moment of inertia
+        self.radius = np.zeros(self.size)
+        self.r_t = np.zeros(self.size)
+        self.r_s = np.zeros(self.size)
+        self.r_ts = np.zeros(self.size)
+        self.mass = np.zeros((self.size, 1))
+        self.inertia_rot = np.zeros(self.size)
 
         # Movement along x and y axis.
         self.position = np.zeros(self.shape)
@@ -229,31 +220,21 @@ class Agent(object):
         self.torque = np.zeros(self.size)
 
         # Motion related parameters
-        # TODO: arrays
-        self.tau_adj = 0.5  # Adjusting force
-        self.tau_rot = 0.2  # Adjusting torque
-        self.k_soc = 1.5  # Social force scaling
-        self.tau_0 = 3.0  # Social force interaction time horizon
-        self.mu = 1.2e5  # Contact force
-        self.kappa = 4e4  # Contact force
-        self.damping = 500  # Contact force
-        self.std_rand_force = 0.1  # Fluctuation force
-        self.std_rand_torque = 0.1  # Fluctuation torque
-        self.f_soc_ij_max = 2e3  # Truncation value for social force
-        self.f_soc_iw_max = 2e3  # Truncation value for social force
-        self.sight_soc = 3.0  # Interaction distance with other agents
-        self.sight_wall = 3.0  # Interaction distance with walls
+        self.tau_adj = 0.5 * np.zeros((self.size, 1))
+        self.tau_rot = 0.2 * np.zeros((self.size, 1))
+        self.k_soc = 1.5 * np.zeros(self.size)
+        self.tau_0 = 3.0 * np.zeros(self.size)
+        self.mu = 1.2e5 * np.zeros(self.size)
+        self.kappa = 4e4 * np.zeros(self.size)
+        self.damping = 500 * np.zeros(self.size)
+        self.std_rand_force = 0.1 * np.zeros(self.size)
+        self.std_rand_torque = 0.1 * np.zeros(self.size)
 
-        # Tracking neighboring agents. Neighbors contains the indices of the
-        # neighboring agents. Negative value denotes missing value (if less than
-        # neighborhood_size of neighbors).
-        # TODO: move to interactions
-        # self.neighbor_radius = np.nan
-        # self.neighborhood_size = 8
-        # self.neighbors = np.ones((self.size, self.neighborhood_size), dtype=np.int64)
-        # self.neighbor_distances = np.zeros((self.size, self.neighborhood_size))
-        # self.neighbor_distances_max = np.zeros(self.size)
-        # self.reset_neighbor()
+        # Limits
+        self.sight_soc = 3.0
+        self.sight_wall = 3.0
+        self.f_soc_ij_max = 2e3
+        self.f_soc_iw_max = 2e3
 
     def add(self, position, mass, radius, ratio_rt, ratio_rs, ratio_ts,
             inertia_rot, max_velocity, max_angular_velocity):
@@ -404,14 +385,39 @@ class Agent(object):
         self.force[:] = 0
         self.torque[:] = 0
 
-    # def reset_neighbor(self):
-    #     self.neighbors[:, :] = -1  # negative value denotes missing value
-    #     self.neighbor_distances[:, :] = np.inf
-    #     self.neighbor_distances_max[:] = np.inf
-
     def indices(self):
         """Indices of active agents."""
         return np.arange(self.size)[self.active]
+
+
+spec_agent_neighbour = (
+    ('neighbor_radius', float64),
+    ('neighborhood_size', int64),
+    ('neighbors', int64[:, :]),
+    ('neighbor_distances', float64[:, :]),
+    ('neighbor_distances_max', float64[:]),
+)
+
+
+class NeighborHood(object):
+    # Tracking neighboring agents. Neighbors contains the indices of the
+    # neighboring agents. Negative value denotes missing value (if less than
+    # neighborhood_size of neighbors).
+    # TODO: move to interactions
+
+    def __init__(self, size):
+        self.size = size
+        self.neighbor_radius = np.nan
+        self.neighborhood_size = 8
+        self.neighbors = np.ones((self.size, self.neighborhood_size), dtype=np.int64)
+        self.neighbor_distances = np.zeros((self.size, self.neighborhood_size))
+        self.neighbor_distances_max = np.zeros(self.size)
+        self.reset_neighbor()
+
+    def reset_neighbor(self):
+        self.neighbors[:, :] = -1  # negative value denotes missing value
+        self.neighbor_distances[:, :] = np.inf
+        self.neighbor_distances_max[:] = np.inf
 
 
 def resize():

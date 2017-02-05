@@ -29,7 +29,8 @@ def test_field():
 
 def test_outdoor():
     for model in models:
-        simulation = Outdoor(10, 10, 10, model, 'adult')
+        simulation = Outdoor()
+        simulation.set(10, 10, 10, model, 'adult')
         simulation.update()
         simulation.update()
         assert True
@@ -37,7 +38,8 @@ def test_outdoor():
 
 def test_hallway():
     for model in models:
-        simulation = Hallway(10, 10, 10, model, 'adult')
+        simulation = Hallway()
+        simulation.set(10, 10, 10, model, 'adult')
         simulation.update()
         simulation.update()
         assert True
@@ -45,7 +47,8 @@ def test_hallway():
 
 def test_rounding():
     for model in models:
-        simulation = Rounding(10, 10, 10, model, 'adult')
+        simulation = Rounding()
+        simulation.set(10, 10, 10, model, 'adult')
         simulation.update()
         simulation.update()
         assert True
@@ -53,8 +56,8 @@ def test_rounding():
 
 def test_roomevacuation():
     for model in models:
-        simulation = RoomEvacuation(10, 10, 10, model, 'adult', 'circ', 1.2,
-                                    1.5)
+        simulation = RoomEvacuation()
+        simulation.set(10, 10, 10, model, 'adult', 'circ', 1.2, 1.5)
         simulation.update()
         simulation.update()
         assert True

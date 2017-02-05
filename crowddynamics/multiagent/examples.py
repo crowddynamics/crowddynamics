@@ -8,7 +8,8 @@ Todo:
 import numpy as np
 from shapely.geometry import Polygon, LineString, Point
 
-from crowddynamics.multiagent.simulation import MultiAgentSimulation
+from crowddynamics.logging import log_with
+from crowddynamics.multiagent.simulation import MultiAgentSimulation, register
 from crowddynamics.multiagent.tasks import Navigation, Orientation, \
     Integrator, Fluctuation, Adjusting, AgentAgentInteractions, \
     AgentObstacleInteractions, Reset
@@ -24,6 +25,7 @@ class Outdoor(MultiAgentSimulation):
 
     """
 
+    @log_with()
     def set(self, size, width, height, model, body_type):
         self.set_name('Outdoor')
 
@@ -39,6 +41,7 @@ class Outdoor(MultiAgentSimulation):
 
         domain = Polygon([(0, 0), (0, height), (width, height), (width, 0)])
         self.init_domain(domain)
+
         self.init_agents(size, model)
         for i in self.add_agents(size, self.domain, body_type):
             pass
@@ -57,6 +60,7 @@ class Hallway(MultiAgentSimulation):
     #) Unidirectional flow
     """
 
+    @log_with()
     def set(self, size, width, height, model, body_type):
         super().__init__()
         self.set_name('Hallway')
@@ -118,6 +122,8 @@ class Crossing(MultiAgentSimulation):
 
     - Orthogonal flow
     """
+
+    @log_with()
     def set(self, *args, **kwargs):
         pass
 
@@ -130,6 +136,7 @@ class Rounding(MultiAgentSimulation):
     - Unidirectional flow
     """
 
+    @log_with()
     def set(self, size, width, height, model, body_type):
         super().__init__()
         self.set_name('Rounding')
@@ -195,8 +202,9 @@ class RoomEvacuation(MultiAgentSimulation):
     - Multiple exits
     """
 
+    @log_with()
     def set(self, size, width, height, model, body_type,
-                 spawn_shape, door_width, exit_hall_width):
+            spawn_shape, door_width, exit_hall_width):
         super(RoomEvacuation, self).__init__()
         self.set_name("RoomEvacuation")
 
@@ -254,3 +262,11 @@ class RoomEvacuation(MultiAgentSimulation):
                     i, kw['orientation'], np.zeros(2), 0.0,
                     kw['target_direction'], kw['orientation']
                 )
+
+
+def init():
+    register(Outdoor)
+    register(Hallway)
+    register(Crossing)
+    # register(Rounding)
+    # register(RoomEvacuation)

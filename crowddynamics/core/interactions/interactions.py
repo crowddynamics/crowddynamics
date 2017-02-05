@@ -146,10 +146,8 @@ def agent_agent_interaction_circle(i, j, agent):
         if h < 0:
             t = rotate270(n)  # Tangent vector
             v = agent.velocity[i] - agent.velocity[j]  # Relative velocity
-            force_c = force_contact(h, n, v, t, agent.mu, agent.kappa,
-                                    agent.damping)
-            force_i += force_c
-            force_j -= force_c
+            force_i += force_contact(h, n, v, t, agent.mu[i], agent.kappa[i], agent.damping[i])
+            force_j -= force_contact(h, n, v, t, agent.mu[j], agent.kappa[j], agent.damping[j])
 
         agent.force[i] += force_i
         agent.force[j] += force_j
@@ -178,10 +176,10 @@ def agent_agent_interaction_three_circle(i, j, agent):
         if h < 0:
             t = rotate270(n)  # Tangent vector
             v = agent.velocity[i] - agent.velocity[j]  # Relative velocity
-            force_c = force_contact(h, n, v, t, agent.mu, agent.kappa,
-                                    agent.damping)
-            force_i += force_c
-            force_j -= force_c
+            force_i += force_contact(h, n, v, t, agent.mu[i], agent.kappa[i],
+                                     agent.damping[i])
+            force_j -= force_contact(h, n, v, t, agent.mu[j], agent.kappa[j],
+                                     agent.damping[j])
 
         agent.force[i] += force_i
         agent.force[j] += force_j
@@ -209,7 +207,8 @@ def agent_obstacle_interaction_circle(i, w, agent, wall):
         if h < 0:
             t = rotate270(n)  # Tangent
             v = agent.velocity[i]
-            force += force_contact(h, n, v, t, agent.mu, agent.kappa, agent.damping)
+            force += force_contact(h, n, v, t, agent.mu[i], agent.kappa[i],
+                                   agent.damping[i])
 
         agent.force[i] += force
 
@@ -235,7 +234,8 @@ def agent_obstacle_interaction_three_circle(i, w, agent, wall):
         if h < 0:
             t = rotate270(n)  # Tangent
             v = agent.velocity[i]
-            force += force_contact(h, n, v, t, agent.mu, agent.kappa, agent.damping)
+            force += force_contact(h, n, v, t, agent.mu[i], agent.kappa[i],
+                                   agent.damping[i])
 
         agent.force[i] += force
         agent.torque[i] += cross2d(r_moment, force)

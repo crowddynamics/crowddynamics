@@ -253,11 +253,11 @@ def force_social_circular(agent, i, j):
         return force
 
     # Force is returned negative as repulsive force
-    mag = magnitude(tau, agent.tau_0)
     grad = gradient_circle_circle(x_rel, v_rel, a, b, d)
-    coeff = agent.k_soc * mag * grad
-    force[0][:] += - agent.mass[i] * coeff
-    force[1][:] -= - agent.mass[j] * coeff
+    force[0][:] += - agent.mass[i] * agent.k_soc[i] * grad * \
+                   magnitude(tau, agent.tau_0[i])
+    force[1][:] -= - agent.mass[j] * agent.k_soc[j] * grad * \
+                   magnitude(tau, agent.tau_0[j])
 
     # Truncation for small tau
     truncate(force[0], agent.f_soc_ij_max)
@@ -363,13 +363,11 @@ def force_social_three_circle(agent, i, j):
     r_off = r_off_i - r_off_j
 
     # Force
-    mag = magnitude(tau, agent.tau_0)
     grad = gradient_three_circle(x_rel, v_rel, r_off, a, b_min, d_min)
-    f = -agent.k_soc * mag * grad
-
-    # Truncation for small tau
-    force[0][:] += agent.mass[i] * f
-    force[1][:] -= agent.mass[j] * f
+    force[0][:] += - agent.mass[i] * agent.k_soc[i] * grad * \
+                   magnitude(tau, agent.tau_0[i])
+    force[1][:] -= - agent.mass[j] * agent.k_soc[j] * grad * \
+                   magnitude(tau, agent.tau_0[j])
 
     truncate(force[0], agent.f_soc_ij_max)
     truncate(force[1], agent.f_soc_ij_max)
@@ -422,13 +420,13 @@ def force_social_linear_wall(i, w, agent, wall):
     tau[2], grad[2] = time_to_collision_circle_line(x_rel0, v_rel, r_tot, n_w)
 
     if not np.isnan(tau[0]) and tau[0] <= tau_t0:
-        mag = magnitude(tau[0], agent.tau_0)
+        mag = magnitude(tau[0], agent.tau_0[i])
         force[:] = - agent.mass[i] * agent.k_soc * mag * grad[0]
     elif not np.isnan(tau[1]) and tau[1] > tau_t1:
-        mag = magnitude(tau[1], agent.tau_0)
+        mag = magnitude(tau[1], agent.tau_0[i])
         force[:] = - agent.mass[i] * agent.k_soc * mag * grad[1]
     elif not np.isnan(tau[2]):
-        mag = magnitude(tau[2], agent.tau_0)
+        mag = magnitude(tau[2], agent.tau_0[i])
         force[:] = - agent.mass[i] * agent.k_soc * mag * grad[2]
 
     truncate(force, agent.f_soc_iw_max)

@@ -10,7 +10,7 @@ def force_social_helbing(h, n, a, b):
     direction of the agent. [Helbing2000a]_
 
     .. math::
-       A \exp(-\frac{h}{B}) \mathbf{\hat{n}}
+       A \exp\left(-\frac{h}{B}\right) \mathbf{\hat{n}}
 
     Args:
         h (float):

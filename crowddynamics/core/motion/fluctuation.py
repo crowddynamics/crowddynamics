@@ -1,4 +1,5 @@
-r"""
+r"""Fluctuation force and torque
+
 Fluctuation force and torque are stochastic in nature and analogous to heat in
 particle systems. For modeling fluctuation we use :math:`\mathcal{U}(a, b)` for
 continuous uniform distribution and :math:`\mathcal{N}(\mu, \sigma^{2})` for
@@ -39,10 +40,10 @@ def force_fluctuation(mass, scale):
     else:
         size = 1
 
-    magnitude = truncnorm.rvs(0.0, 3.0, loc=0.0, scale=scale, size=size)
-    angle = np.random.uniform(0.0, 2.0 * np.pi, size=size)
-    force = magnitude * np.array((np.cos(angle), np.sin(angle)))
-    return force.T * mass
+    phi = np.random.uniform(0.0, 2.0 * np.pi, size=size)
+    magnitude = truncnorm.rvs(0.0, 3.0, loc=0.0, scale=scale, size=size) * \
+                np.array((np.cos(phi), np.sin(phi)))
+    return mass * magnitude.T
 
 
 def torque_fluctuation(inertia_rot, scale):
@@ -69,5 +70,5 @@ def torque_fluctuation(inertia_rot, scale):
     else:
         size = 1
 
-    torque = truncnorm.rvs(-3.0, 3.0, loc=0.0, scale=scale, size=size)
-    return torque * inertia_rot
+    return inertia_rot * \
+           truncnorm.rvs(-3.0, 3.0, loc=0.0, scale=scale, size=size)
