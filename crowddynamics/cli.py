@@ -4,16 +4,18 @@ Todo:
     - debug
     - loglevel
 """
+import inspect
+from collections import namedtuple
+
 import click
 import colorama
 
 import crowddynamics
-from crowddynamics.exceptions import CrowdDynamicsException
+from crowddynamics.exceptions import CrowdDynamicsException, InvalidArgument
 from crowddynamics.logging import setup_logging, user_info
 from crowddynamics.multiagent import examples
 from crowddynamics.multiagent.simulation import REGISTERED_SIMULATIONS
 from crowddynamics.plugins.gui import run_gui
-from crowddynamics.validation import parse_signature
 
 colorama.init()  # Enable colors
 examples.init()
@@ -37,6 +39,58 @@ def run():
 def gui():
     """Run graphical user interface."""
     run_gui()
+
+
+ArgSpec = namedtuple('ArgSpec', ('name', 'default', 'type', 'annotation'))
+
+
+def mkspec(parameter):
+    if isinstance(parameter.default, inspect.Parameter.empty):
+        raise InvalidArgument('Default argument should not be empty.')
+    return ArgSpec(name=parameter.name,
+                   default=parameter.default,
+                   type=type(parameter.default),
+                   annotation=parameter.annotation)
+
+
+def parse_signature(function):
+    """Parse signature
+
+    .. list-table::
+       :header-rows: 1
+
+       * - Type
+         - Validation
+         - Click option
+         - Qt widget
+       * - int
+         - interval
+         - IntRange
+         - QSpinBox
+       * - float
+         - interval
+         - float with callback
+         - QDoubleSpinBox
+       * - bool
+         - flag
+         - Boolean flag
+         - QRadioButton
+       * - str
+         - choice
+         - Choice
+         - QComboBox
+
+    Args:
+        function:
+
+    Yields:
+        ArgSpec:
+
+    """
+    sig = inspect.signature(function)
+    for name, p in sig.parameters.items():
+        if name != 'self':
+            yield mkspec(p)
 
 
 def mkoption(spec):
@@ -64,11 +118,12 @@ def mkoption(spec):
 
 
 def mkcommand(simulation):
-    # TODO: help
+    # TODO: help text
     # Callback function that is called when the command is executed
     def callback(*args, **kwargs):
         simu = simulation()
         simu.set(*args, **kwargs)
+        simu.update()
 
     # Command
     name = simulation.__name__
