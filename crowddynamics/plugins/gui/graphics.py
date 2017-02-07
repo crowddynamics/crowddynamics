@@ -7,6 +7,7 @@ from shapely.geometry import LineString
 from shapely.geometry import Polygon
 
 from crowddynamics.functions import load_config, timed
+from crowddynamics.logging import log_with
 from crowddynamics.multiagent.agent import positions
 from crowddynamics.multiagent.simulation import MultiAgentSimulation
 
@@ -88,14 +89,13 @@ class ThreeCircle:
 
 
 class MultiAgentPlot(pg.PlotItem):
-    r"""GraphicsItem for displaying simulation graphics"""
+    r"""MultiAgentPlot is GraphicsItem for displaying simulation graphics.
+
+    """
+    logger = logging.getLogger(__name__)
 
     def __init__(self, parent=None):
-        r"""Initialize MultiAgentPlot."""
         super(MultiAgentPlot, self).__init__(parent)
-
-        # Logger
-        self.logger = logging.getLogger(__name__)
 
         # Plot settings
         self.setAspectLocked(lock=True, ratio=1)  # One to one scale
@@ -109,6 +109,7 @@ class MultiAgentPlot(pg.PlotItem):
         # Dynamics plot items
         self.agent = None
 
+    @log_with(logger)
     def configure(self, process):
         r"""
         Configure static plot items and initial configuration of dynamic plot
@@ -117,14 +118,9 @@ class MultiAgentPlot(pg.PlotItem):
         Args:
             process (MultiAgentSimulation): Simulation process
         """
-        self.logger.info("")
-
         # Clear previous plots and items
         self.clearPlots()
         self.clear()
-
-        # Setup plots
-        settings = load_config("graphics.yaml")
 
         if process.domain is not None:
             self.logger.debug("domain")

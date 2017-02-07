@@ -1,11 +1,9 @@
-"""Validation using Schematics
-
-https://schematics.readthedocs.io/en/latest/index.html
-"""
+"""Simulation input validation"""
 import functools
 import inspect
+from collections import namedtuple
 
-from crowddynamics.errors import InvalidArgument, ValidationError
+from crowddynamics.exceptions import InvalidArgument, ValidationError
 
 
 def validate(stype, value):
@@ -96,3 +94,55 @@ class validator(object):
             return result
 
         return wrapper
+
+
+ArgSpec = namedtuple('ArgSpec', ('name', 'default', 'type', 'annotation'))
+
+
+def mkspec(parameter):
+    if isinstance(parameter.default, inspect.Parameter.empty):
+        raise InvalidArgument('Default argument should not be empty.')
+    return ArgSpec(name=parameter.name,
+                   default=parameter.default,
+                   type=type(parameter.default),
+                   annotation=parameter.annotation)
+
+
+def parse_signature(function):
+    """Parse signature
+
+    .. list-table::
+       :header-rows: 1
+
+       * - Type
+         - Validation
+         - Click option
+         - Qt widget
+       * - int
+         - interval
+         - IntRange
+         - QSpinBox
+       * - float
+         - interval
+         - float with callback
+         - QDoubleSpinBox
+       * - bool
+         - flag
+         - Boolean flag
+         - QRadioButton
+       * - str
+         - choice
+         - Choice
+         - QComboBox
+
+    Args:
+        function:
+
+    Yields:
+        ArgSpec:
+
+    """
+    sig = inspect.signature(function)
+    for name, p in sig.parameters.items():
+        if name != 'self':
+            yield mkspec(p)

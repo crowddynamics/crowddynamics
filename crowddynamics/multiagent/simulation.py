@@ -10,7 +10,7 @@ from shapely.ops import cascaded_union
 from crowddynamics.core.interactions import overlapping_three_circle, \
     overlapping_circle_circle
 from crowddynamics.core.random.sampling import PolygonSample
-from crowddynamics.errors import CrowdDynamicsException, InvalidArgument
+from crowddynamics.exceptions import CrowdDynamicsException, InvalidArgument
 
 from crowddynamics.functions import timed
 from crowddynamics.logging import log_with
@@ -20,6 +20,8 @@ from crowddynamics.multiagent.parameters import Parameters
 from crowddynamics.taskgraph import TaskNode
 
 REGISTERED_SIMULATIONS = []
+AGENT_MODELS = ['circular', 'three_circle']
+BODY_TYPES = ['adult', 'male', 'female', 'child', 'eldery']
 
 
 def agent_polygon(position, radius):
@@ -59,27 +61,24 @@ class MultiAgentSimulation:
     logger = logging.getLogger(__name__)
 
     def __init__(self):
-        self.name = 'MultiAgentSimulation'
         # Field
         self.domain = Polygon()
         self.obstacles = GeometryCollection()
         self.targets = GeometryCollection()
-        # self.agents = dict()
         self.agent = None
+
         # Currently occupied surface by Agents and Obstacles
         self._occupied = Polygon()
+
         # Algorithms
         self.queue = None
         self.tasks = None
         self.iterations = int(0)
 
-    def set_name(self, name):
-        """Set name for the simulation
-
-        Args:
-            name (str): Name string
-        """
-        self.name = name
+    @property
+    def name(self):
+        """Name of the simulation"""
+        return self.__class__.__name__
 
     @log_with(logger)
     def init_domain(self, domain):

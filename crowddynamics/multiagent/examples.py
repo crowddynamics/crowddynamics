@@ -9,7 +9,8 @@ import numpy as np
 from shapely.geometry import Polygon, LineString, Point
 
 from crowddynamics.logging import log_with
-from crowddynamics.multiagent.simulation import MultiAgentSimulation, register
+from crowddynamics.multiagent.simulation import MultiAgentSimulation, register, \
+    AGENT_MODELS, BODY_TYPES
 from crowddynamics.multiagent.tasks import Navigation, Orientation, \
     Integrator, Fluctuation, Adjusting, AgentAgentInteractions, \
     AgentObstacleInteractions, Reset
@@ -26,8 +27,12 @@ class Outdoor(MultiAgentSimulation):
     """
 
     @log_with()
-    def set(self, size, width, height, model, body_type):
-        self.set_name('Outdoor')
+    def set(self,
+            size: (1, None) = 100,
+            width: (1.0, None) = 20.0,
+            height: (1.0, None) = 20.0,
+            model: AGENT_MODELS = 'three_circle',
+            body_type: BODY_TYPES = 'adult'):
 
         reset = Reset(self)
         integrator = Integrator(self)
@@ -61,9 +66,12 @@ class Hallway(MultiAgentSimulation):
     """
 
     @log_with()
-    def set(self, size, width, height, model, body_type):
-        super().__init__()
-        self.set_name('Hallway')
+    def set(self,
+            size: (1, None) = 100,
+            width: (1.0, None) = 20.0,
+            height: (1.0, None) = 5.0,
+            model: AGENT_MODELS = 'three_circle',
+            body_type: BODY_TYPES = 'adult'):
 
         domain = Polygon([(0, 0), (0, height), (width, height), (width, 0)])
         obstacles = (
@@ -137,9 +145,12 @@ class Rounding(MultiAgentSimulation):
     """
 
     @log_with()
-    def set(self, size, width, height, model, body_type):
-        super().__init__()
-        self.set_name('Rounding')
+    def set(self,
+            size: (1, None) = 100,
+            width: (1.0, None) = 15.0,
+            height: (1.0, None) = 15.0,
+            model: AGENT_MODELS = 'circular',
+            body_type: BODY_TYPES = 'adult'):
 
         domain = Polygon([(0, 0), (0, height), (width, height), (width, 0)])
         exits = LineString([(0, height / 2), (0, height)])
@@ -203,10 +214,15 @@ class RoomEvacuation(MultiAgentSimulation):
     """
 
     @log_with()
-    def set(self, size, width, height, model, body_type,
-            spawn_shape, door_width, exit_hall_width):
-        super(RoomEvacuation, self).__init__()
-        self.set_name("RoomEvacuation")
+    def set(self,
+            size: (1, None) = 100,
+            width: (1.0, None) = 10.0,
+            height: (1.0, None) = 20.0,
+            model: AGENT_MODELS = 'circular',
+            body_type: BODY_TYPES = 'adult',
+            spawn_shape: ('circ',) = 'circ',
+            door_width: (0.5, None) = 1.2,
+            exit_hall_width: (0.0, None) = 2.0):
 
         self.room = Polygon(
             [(0, 0), (0, height), (width, height), (width, 0), ])
@@ -267,6 +283,6 @@ class RoomEvacuation(MultiAgentSimulation):
 def init():
     register(Outdoor)
     register(Hallway)
-    register(Crossing)
-    # register(Rounding)
+    # register(Crossing)
+    register(Rounding)
     # register(RoomEvacuation)
