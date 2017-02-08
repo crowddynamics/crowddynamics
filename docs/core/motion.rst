@@ -1,9 +1,31 @@
 Motion
 ======
 
-.. automodule:: crowddynamics.core.motion
+Adjusting
+---------
+.. automodule:: crowddynamics.core.motion.adjusting
    :members:
-   :special-members:
+
+
+Contact
+-------
+.. automodule:: crowddynamics.core.motion.contact
+   :members:
+
+
+Fluctuation
+-----------
+.. automodule:: crowddynamics.core.motion.fluctuation
+   :members:
+
+
+Collision Avoidance
+-------------------
+.. automodule:: crowddynamics.core.motion.collision_avoidance.helbing
+   :members:
+
+.. automodule:: crowddynamics.core.motion.collision_avoidance.power_law
+   :members:
 
 ----
 

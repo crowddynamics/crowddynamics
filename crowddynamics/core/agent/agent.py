@@ -63,7 +63,7 @@ def positions(position, orientation, radius_ts):
         raise Exception()
 
 
-spec_agent = (
+AGENT_SPEC = (
     ('size', int64),
     ('shape', UniTuple(int64, 2)),
     ('circular', boolean),
@@ -100,9 +100,10 @@ spec_agent = (
     ('sight_soc', float64),
     ('sight_wall', float64),
 )
+AGENT_PARAMS = [item[0] for item in AGENT_SPEC]
 
 
-@numba.jitclass(spec_agent)
+@numba.jitclass(AGENT_SPEC)
 class Agent(object):
     r"""Structure for agent parameters and variables.
 
@@ -390,7 +391,11 @@ class Agent(object):
         return np.arange(self.size)[self.active]
 
 
-spec_agent_neighbour = (
+def resize_agent():
+    return NotImplementedError
+
+
+NEIGHBORHOOD_SPEC = (
     ('neighbor_radius', float64),
     ('neighborhood_size', int64),
     ('neighbors', int64[:, :]),
@@ -418,7 +423,3 @@ class NeighborHood(object):
         self.neighbors[:, :] = -1  # negative value denotes missing value
         self.neighbor_distances[:, :] = np.inf
         self.neighbor_distances_max[:] = np.inf
-
-
-def resize():
-    return NotImplementedError

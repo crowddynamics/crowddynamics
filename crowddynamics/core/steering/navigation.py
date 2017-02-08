@@ -22,7 +22,7 @@ from shapely.geometry import LineString, Polygon
 from shapely.geometry import Point
 from shapely.geometry.base import BaseGeometry
 
-from crowddynamics.geometry import shapes_to_point_pairs
+from crowddynamics.core.geometry import shapes_to_point_pairs
 
 
 def to_indices(points, step):

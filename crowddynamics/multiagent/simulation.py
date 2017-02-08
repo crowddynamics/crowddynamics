@@ -1,21 +1,18 @@
 """MultiAgent Simulation"""
 import logging
+from collections import Iterable
 from multiprocessing import Process, Event
 
 import numpy as np
-from collections import Iterable
 from shapely.geometry import Point, Polygon, GeometryCollection
 from shapely.ops import cascaded_union
 
+from crowddynamics.core.agent.agent import Agent, positions
 from crowddynamics.core.interactions import overlapping_three_circle, \
     overlapping_circle_circle
 from crowddynamics.core.random.sampling import PolygonSample
 from crowddynamics.exceptions import CrowdDynamicsException, InvalidArgument
-
-from crowddynamics.functions import timed
 from crowddynamics.logging import log_with
-from crowddynamics.multiagent import Agent
-from crowddynamics.multiagent.agent import positions
 from crowddynamics.multiagent.parameters import Parameters
 from crowddynamics.taskgraph import TaskNode
 
@@ -267,7 +264,7 @@ class MultiAgentSimulation:
         """Method for subclasses to overwrite for setting up simulation."""
         raise NotImplementedError
 
-    @timed()
+    @log_with(logger)
     def update(self):
         """Execute new iteration cycle of the simulation."""
         self.tasks.evaluate()

@@ -12,17 +12,20 @@ Crowddynamics is a Python package for crowd simulation. The project was created 
 
 
 .. toctree::
-   :caption: First Steps
+   :caption: General
    :maxdepth: 2
 
    installation
    usage
+   contributing
+
 
 .. toctree::
    :caption: Foundations & Theory
    :maxdepth: 2
 
    theory
+
 
 .. toctree::
    :caption: Simulation Models
@@ -33,12 +36,25 @@ Crowddynamics is a Python package for crowd simulation. The project was created 
    continuum_flow/index
    optimal_control/index
 
+
 .. toctree::
-   :caption: Developers
+   :caption: Api
    :maxdepth: 2
 
-   contributing
-   api/index
+   core/index
+   api/taskgraph
+   api/io
+   api/cli
+   api/testing
+
+
+.. toctree::
+   :caption: Simulation Models
+   :maxdepth: 2
+
+   plugins/gui
+   plugins/game
+
 
 .. toctree::
    :caption: Research

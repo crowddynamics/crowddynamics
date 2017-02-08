@@ -3,9 +3,8 @@ from hypothesis import given
 from hypothesis.strategies import data
 
 import crowddynamics.testing.strategies as st
-from crowddynamics.multiagent import Agent
-from crowddynamics.multiagent.agent import positions_vector, \
-    positions, positions_scalar
+from crowddynamics.core.agent.agent import positions_vector, \
+    positions, positions_scalar, Agent
 
 
 def add_agent(agent, data):

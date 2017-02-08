@@ -12,11 +12,6 @@ Multi-Agent
 .. toctree::
 
    social_force_model
-   motion
-   interactions
-   navigation
-   integrator
-   agent
    simulation
    tasks
    examples

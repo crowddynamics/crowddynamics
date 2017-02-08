@@ -1,6 +1,8 @@
 """Task Graph
 
 https://www.python.org/doc/essays/graphs/
+http://dask.pydata.org/en/latest/
+http://dask.pydata.org/en/latest/graphs.html
 """
 
 
@@ -27,8 +29,7 @@ class TaskNode:
         self.update()
 
     def add(self, node):
-        """
-        Add new child node.
+        """Add new child node.
 
         Args:
             node: TaskNode
@@ -36,8 +37,7 @@ class TaskNode:
         self._children.append(node)
 
     def __iadd__(self, other):
-        """
-        Syntactic sugar for adding new child nodes.
+        """Syntactic sugar for adding new child nodes.
 
         Args:
             other: TaskNode

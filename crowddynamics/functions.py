@@ -1,11 +1,8 @@
-import math
 import os
 import sys
-from functools import wraps, lru_cache
-from timeit import default_timer as timer
+from functools import lru_cache
 
 import pandas as pd
-from ruamel import yaml
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 CFG_DIR = os.path.join(BASE_DIR, 'crowddynamics', 'configs')
@@ -17,88 +14,22 @@ def load_config(filename):
     path = os.path.join(CFG_DIR, filename)
     if ext == ".csv":
         return pd.read_csv(path, index_col=[0])
-    elif ext == ".yaml":
-        with open(path) as f:
-            return yaml.load(f, Loader=yaml.Loader)
     else:
         raise Exception("Filetype not supported.")
 
 
-def format_time(timespan, precision=3):
-    """Formats the timespan in a human readable form"""
-
-    if timespan >= 60.0:
-        # we have more than a minute, format that in a human readable form
-        # Idea from http://snipplr.com/view/5713/
-        parts = [("d", 60 * 60 * 24), ("h", 60 * 60), ("min", 60), ("s", 1)]
-        time = []
-        leftover = timespan
-        for suffix, length in parts:
-            value = int(leftover / length)
-            if value > 0:
-                leftover %= length
-                time.append(u'%s%s' % (str(value), suffix))
-            if leftover < 1:
-                break
-        return " ".join(time)
-
-    # Unfortunately the unicode 'micro' symbol can cause problems in
-    # certain terminals.
-    # See bug: https://bugs.launchpad.net/ipython/+bug/348466
-    # Try to prevent crashes by being more secure than it needs to
-    # E.g. eclipse is able to print a µ, but has no sys.stdout.encoding set.
-    units = [u"s", u"ms", u'us', "ns"]  # the recordable value
-    if hasattr(sys.stdout, 'encoding') and sys.stdout.encoding:
-        try:
-            u'\xb5'.encode(sys.stdout.encoding)
-            units = [u"s", u"ms", u'\xb5s', "ns"]
-        except:
-            pass
-    scaling = [1, 1e3, 1e6, 1e9]
-
-    if timespan > 0:
-        order = min(-int(math.floor(math.log10(timespan)) // 3), 3)
-    else:
-        order = 3
-    # return u"%.*g %s" % (precision, timespan * scaling[order], units[order])
-    return u"{:.1f} {}".format(timespan * scaling[order], units[order])
-
-
-class timed:
-    """
-    Decorator for timing function execution time.
-    """
-
-    def __init__(self, msg=""):
-        """
-
-        Args:
-            msg (str): Message to be printed when function is executed.
-        """
-        self.msg = msg
-
-    def __call__(self, f):
-        @wraps(f)
-        def wrapper(*args, **kwargs):
-            start = timer()
-            ret = f(*args, **kwargs)
-            dt = timer() - start
-            print(self.msg, format_time(dt))
-            return ret
-        return wrapper
-
-
 def public(f):
-    """Use a decorator to avoid retyping function/class names.
+    """Use a decorator to avoid retyping function/class names. [#]_
 
     * Based on an idea by Duncan Booth:
-    http://groups.google.com/group/comp.lang.python/msg/11cbb03e09611b8a
+      http://groups.google.com/group/comp.lang.python/msg/11cbb03e09611b8a
+
     * Improved via a suggestion by Dave Angel:
-    http://groups.google.com/group/comp.lang.python/msg/3d400fb22d8a42e1
+      http://groups.google.com/group/comp.lang.python/msg/3d400fb22d8a42e1
 
-    See StackOverflow post:
+    References:
 
-    https://stackoverflow.com/questions/6206089/is-it-a-good-practice-to-add-names-to-all-using-a-decorator
+    .. [#] https://stackoverflow.com/questions/6206089/is-it-a-good-practice-to-add-names-to-all-using-a-decorator
 
     Args:
         f (object): Object to be set
@@ -114,6 +45,9 @@ def public(f):
 
 def line_profiler(func):
     """Line profiler decorator
+
+    - Line profiler (kernprof)
+    - Memory profiler
 
     Decorates a function with ``profile`` if it is in the namespace
     https://github.com/rkern/line_profiler

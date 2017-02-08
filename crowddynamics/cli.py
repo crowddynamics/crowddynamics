@@ -41,7 +41,10 @@ def gui():
     run_gui()
 
 
-ArgSpec = namedtuple('ArgSpec', ('name', 'default', 'type', 'annotation'))
+ArgSpec = namedtuple(
+    'ArgSpec',
+    ('name', 'default', 'type', 'annotation')
+)
 
 
 def mkspec(parameter):
@@ -123,7 +126,8 @@ def mkcommand(simulation):
     def callback(*args, **kwargs):
         simu = simulation()
         simu.set(*args, **kwargs)
-        simu.update()
+        for _ in range(10):
+            simu.update()
 
     # Command
     name = simulation.__name__

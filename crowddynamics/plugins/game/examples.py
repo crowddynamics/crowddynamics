@@ -1,4 +1,4 @@
-from crowddynamics.multiagent import Integrator, Adjusting, Orientation, \
+from crowddynamics.multiagent.tasks import Integrator, Adjusting, Orientation, \
     Navigation, AgentAgentInteractions, AgentObstacleInteractions, Fluctuation
 from crowddynamics.multiagent.examples import RoomEvacuation
 from crowddynamics.plugins.game import EgressGame

@@ -1,13 +1,12 @@
 import numpy as np
 
+from crowddynamics.core.geometry import shapes_to_point_pairs
 from crowddynamics.core.integrator import euler_integration
 from crowddynamics.core.interactions.interactions import agent_agent_block_list, agent_wall
 from crowddynamics.core.motion import force_fluctuation, \
     force_adjust, torque_adjust, torque_fluctuation
 from crowddynamics.core.steering.navigation import to_indices, static_potential
 from crowddynamics.core.vector2D.vector2D import angle_nx2
-from crowddynamics.functions import timed
-from crowddynamics.geometry import shapes_to_point_pairs
 from crowddynamics.io import HDFStore
 from crowddynamics.taskgraph import TaskNode
 
@@ -15,24 +14,23 @@ from crowddynamics.taskgraph import TaskNode
 class Integrator(TaskNode):
     r"""Integrator
 
-    Args:
+    Attributes:
         simulation (MultiAgentSimulation):
             Simulation class
 
         dt (tuple[float]):
             Tuple of minimum and maximum timestep (dt_min, dt_max).
-
     """
 
-    def __init__(self, simulation, dt=(0.001, 0.01)):
+    def __init__(self, simulation):
         super().__init__()
         self.simulation = simulation
-        self.dt = dt
-        self.time_tot = np.float64(0)
+        self.dt = (0.001, 0.01)
+        self.time_tot = np.float64(0.0)
         self.dt_prev = np.float64(np.nan)
 
     def update(self):
-        self.dt_prev = euler_integration(self.simulation.agent, *self.dt)
+        self.dt_prev = euler_integration(self.simulation.agent, self.dt[0], self.dt[0])
         self.time_tot += self.dt_prev
 
 
@@ -86,7 +84,6 @@ class AgentAgentInteractions(TaskNode):
         super().__init__()
         self.simulation = simulation
 
-    @timed("Agent-Agent Interaction")
     def update(self):
         agent_agent_block_list(self.simulation.agent)
 
@@ -101,7 +98,6 @@ class AgentObstacleInteractions(TaskNode):
         # TODO: Expects that field is set prior to initialisation
         self.walls = shapes_to_point_pairs(self.simulation.obstacles)
 
-    @timed("Agent-Obstacle Interaction")
     def update(self):
         agent_wall(self.simulation.agent, self.walls)
 
@@ -109,33 +105,33 @@ class AgentObstacleInteractions(TaskNode):
 class Navigation(TaskNode):
     r"""Handles navigation in multi-agent simulation.
 
-    Args:
+    Attributes:
         simulation:
         algorithm:
         step (float): Step size for the grid.
 
     """
 
-    def __init__(self, simulation, algorithm="static", step=0.01):
+    def __init__(self, simulation):
         super().__init__()
         self.simulation = simulation
 
-        self.step = step
+        self.step = 0.01
         self.direction_map = None
+        self.algorithm = "static"
 
-        if algorithm == "static":
+        if self.algorithm == "static":
             self.direction_map = static_potential(self.step,
                                                   self.simulation.domain,
                                                   self.simulation.targets,
                                                   self.simulation.obstacles,
                                                   radius=0.3,
                                                   value=0.3)
-        elif algorithm == "dynamic":
+        elif self.algorithm == "dynamic":
             raise NotImplementedError
         else:
             pass
 
-    @timed("Navigation Time")
     def update(self):
         i = self.simulation.agent.indices()
         points = self.simulation.agent.position[i]
@@ -155,7 +151,6 @@ class Orientation(TaskNode):
         super().__init__()
         self.simulation = simulation
 
-    @timed("Orientation Time")
     def update(self):
         if self.simulation.agent.orientable:
             dir_to_orient = angle_nx2(self.simulation.agent.target_direction)

@@ -15,7 +15,7 @@ import random
 
 from shapely.geometry import Polygon
 
-from crowddynamics.multiagent import Agent
+from crowddynamics.core.agent.agent import Agent
 
 
 def real(min_value=None, max_value=None, exclude_zero=None, shape=None,
