@@ -3,8 +3,9 @@
 Todo:
     - Periodic boundaries
     - Convert examples into test and validation simulations
-    - Move simulations.yaml configuration parameter into the classes
 """
+from collections import namedtuple
+
 import numpy as np
 from shapely.geometry import Polygon, LineString, Point
 
@@ -16,6 +17,11 @@ from crowddynamics.multiagent.simulation import MultiAgentSimulation, register, 
 from crowddynamics.multiagent.tasks import Navigation, Orientation, \
     Integrator, Fluctuation, Adjusting, AgentAgentInteractions, \
     AgentObstacleInteractions, Reset, HDFNode
+
+
+# Annotations
+interval = namedtuple('interval', ['start', 'end', 'help'])
+choices = namedtuple('choices', ['values', 'help'])
 
 
 class Outdoor(MultiAgentSimulation):
@@ -240,17 +246,6 @@ class Rounding(MultiAgentSimulation):
         self.set_tasks(root)
 
 
-class Crossing(MultiAgentSimulation):
-    r"""Crossing
-
-    - Orthogonal flow
-    """
-
-    @log_with()
-    def set(self, *args, **kwargs):
-        pass
-
-
 class RoomEvacuation(MultiAgentSimulation):
     r"""Room Evacuation
 
@@ -356,10 +351,20 @@ class RoomEvacuation(MultiAgentSimulation):
         self.set_tasks(root)
 
 
+class Crossing(MultiAgentSimulation):
+    r"""Crossing
+
+    - Orthogonal flow
+    """
+
+    @log_with()
+    def set(self, *args, **kwargs):
+        pass
+
 
 def init():
     register(Outdoor)
     register(Hallway)
-    # register(Crossing)
     register(Rounding)
-    # register(RoomEvacuation)
+    register(RoomEvacuation)
+    # register(Crossing)

@@ -2,7 +2,15 @@
 
 Todo:
     - debug
+    - help text
     - loglevel
+    - Launch multiple simulation in parallel
+    - Scheduler
+    - Iterations limit
+    - Time limit
+    - Simulation time limit
+    - Read simulation configs from file
+
 """
 import inspect
 from collections import namedtuple
@@ -25,19 +33,21 @@ examples.init()
 @click.version_option(crowddynamics.__version__)
 def main():
     """Main commands."""
-    setup_logging()
-    user_info()
+    pass
 
 
 @main.group()
 def run():
     """Run simulation from the command-line."""
-    pass
+    setup_logging()
+    user_info()
 
 
 @main.command()
 def gui():
     """Run graphical user interface."""
+    setup_logging()
+    user_info()
     run_gui()
 
 
@@ -121,7 +131,6 @@ def mkoption(spec):
 
 
 def mkcommand(simulation):
-    # TODO: help text
     # Callback function that is called when the command is executed
     def callback(*args, **kwargs):
         simu = simulation()

@@ -200,6 +200,7 @@ class HDFStore(object):
                 value = np.copy(getattr(buffer.object, list_buffer.name))
                 list_buffer.append(value)
 
+    @log_with(logger)
     def dump_buffers(self):
         """Dump values in the buffers into hdf5 file."""
         if not self.buffers:

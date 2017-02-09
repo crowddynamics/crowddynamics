@@ -207,7 +207,7 @@ class Agent(object):
         self.circular = True
         self.three_circle = False
         self.orientable = False
-        self.active = np.zeros(size, np.bool8)
+        self.active = np.zeros(self.size, np.bool8)
 
         # Agent properties
         self.radius = np.zeros(self.size)

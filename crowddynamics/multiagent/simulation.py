@@ -264,7 +264,7 @@ class MultiAgentSimulation:
         """Method for subclasses to overwrite for setting up simulation."""
         raise NotImplementedError
 
-    @log_with(logger)
+    # @log_with(logger)
     def update(self):
         """Execute new iteration cycle of the simulation."""
         self.tasks.evaluate()

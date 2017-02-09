@@ -1,4 +1,5 @@
 import numpy as np
+from matplotlib.path import Path
 
 from crowddynamics.core.geometry import shapes_to_point_pairs
 from crowddynamics.core.integrator import euler_integration
@@ -209,11 +210,25 @@ class HDFNode(TaskNode):
             self.hdfstore.dump_buffers()
 
 
-class GuiCommunication(TaskNode):
-    """GuiCommunication"""
-    pass
-
-
 class Contains(TaskNode):
     """Contains"""
-    pass
+
+    def __init__(self, simulation):
+        super().__init__()
+        self.simulation = simulation
+
+        self.path = None
+        self.inside = np.zeros(self.simulation.agent.size, np.bool8)
+
+    def set(self, polygon):
+        self.path = Path(np.asarray(polygon.exterior))
+        self.update()
+
+    def update(self, *args, **kwargs):
+        position = self.simulation.agent.position
+        inside = self.path.contains_points(position)
+        # out: True  -> False
+        # in:  False -> True
+        changed = self.inside ^ inside
+        self.inside = inside
+        diff = np.sum(changed)

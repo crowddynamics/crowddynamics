@@ -1,39 +1,34 @@
-from copy import deepcopy
+"""Communication between the GUI and simulation."""
+from collections import namedtuple
 
 import numpy as np
 
+from crowddynamics.taskgraph import TaskNode
 
-class QueueDict:
-    """Queue dict"""
-    # TODO: Communication module
+Config = namedtuple('Config', ['object', 'attributes'])
 
-    def __init__(self, producer):
-        """
-        Init queue dict
 
-        Args:
-            producer:
-        """
-        self.producer = producer
-        self.dict = {}
-        self.args = None
+class GuiCommunication(TaskNode):
+    """GuiCommunication"""
 
-    def set(self, args):
-        self.args = args
+    def __init__(self, simulation):
+        super().__init__()
+        self.simulation = simulation
+        self.configs = []
+        self.messages = []
 
-        self.dict.clear()
-        for (key, key2), attrs in self.args:
-            self.dict[key2] = {}
-            for attr in attrs:
-                self.dict[key2][attr] = None
+    def set(self, configs):
+        self.configs = configs
+        for config in configs:
+            self.messages.append(
+                namedtuple(config.object.__name__, config.attributes)
+            )
 
-    def fill(self, d):
-        for (key, key2), attrs in self.args:
-            item = getattr(self.producer, key)
-            for attr in attrs:
-                d[key2][attr] = np.copy(getattr(item, attr))
-
-    def get(self):
-        d = deepcopy(self.dict)
-        self.fill(d)
-        return d
+    def update(self):
+        messages = []
+        for config, message in zip(self.configs, self.messages):
+            messages.append(
+                message(*(np.copy(getattr(config.object, attr))
+                          for attr in config.attributes))
+            )
+        self.simulation.queue.put(messages)
