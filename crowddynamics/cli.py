@@ -126,7 +126,7 @@ def mkcommand(simulation):
     def callback(*args, **kwargs):
         simu = simulation()
         simu.set(*args, **kwargs)
-        for _ in range(10):
+        for _ in range(100):
             simu.update()
 
     # Command
@@ -137,6 +137,7 @@ def mkcommand(simulation):
     # Options
     for spec in parse_signature(simulation.set):
         cmd.params.append(mkoption(spec))
+    return cmd
 
 
 for simu in REGISTERED_SIMULATIONS:

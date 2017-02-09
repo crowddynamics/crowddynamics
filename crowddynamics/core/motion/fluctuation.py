@@ -6,7 +6,8 @@ continuous uniform distribution and :math:`\mathcal{N}(\mu, \sigma^{2})` for
 truncated normal distribution.
 """
 import numpy as np
-from scipy.stats import truncnorm
+
+from crowddynamics.core.random.random import truncnorm
 
 
 def force_fluctuation(mass, scale):
@@ -41,9 +42,9 @@ def force_fluctuation(mass, scale):
         size = 1
 
     phi = np.random.uniform(0.0, 2.0 * np.pi, size=size)
-    magnitude = truncnorm.rvs(0.0, 3.0, loc=0.0, scale=scale, size=size) * \
-                np.array((np.cos(phi), np.sin(phi)))
-    return mass * magnitude.T
+    unit_vector = np.array((np.cos(phi), np.sin(phi)))
+    magnitude = truncnorm(0.0, 3.0, loc=0.0, scale=scale, size=size)
+    return mass * (magnitude * unit_vector).T
 
 
 def torque_fluctuation(inertia_rot, scale):
@@ -70,5 +71,4 @@ def torque_fluctuation(inertia_rot, scale):
     else:
         size = 1
 
-    return inertia_rot * \
-           truncnorm.rvs(-3.0, 3.0, loc=0.0, scale=scale, size=size)
+    return inertia_rot * truncnorm(-3.0, 3.0, loc=0.0, scale=scale, size=size)

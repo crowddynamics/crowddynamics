@@ -1,3 +1,8 @@
+"""Random
+
+Todo:
+    - control the random state for reproducibility
+"""
 import logging
 
 import numba
@@ -5,10 +10,10 @@ import numpy as np
 import scipy.stats
 
 logger = logging.getLogger()
-# TODO: control the random state for reproducibility
 
 
-def truncnorm(start, end, loc=0.0, scale=1.0, abs_scale=None, size=1, random_state=None):
+def truncnorm(start, end, loc=0.0, scale=1.0, abs_scale=None, size=1,
+              random_state=None):
     """
     Truncated normal distribution from ``scipy.stats``.
 
@@ -28,9 +33,11 @@ def truncnorm(start, end, loc=0.0, scale=1.0, abs_scale=None, size=1, random_sta
 
     https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.truncnorm.html
     https://en.wikipedia.org/wiki/Truncated_normal_distribution
+
+    Todo:
+        - control std
+        - logger stats
     """
-    # TODO: control std
-    # TODO: logger stats
     if abs_scale:
         scale = abs_scale / max(abs(start), abs(end))
     tn = scipy.stats.truncnorm.rvs(

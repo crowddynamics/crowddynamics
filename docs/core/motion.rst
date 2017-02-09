@@ -21,11 +21,15 @@ Fluctuation
 
 Collision Avoidance
 -------------------
+
+
 .. automodule:: crowddynamics.core.motion.collision_avoidance.helbing
    :members:
 
+
 .. automodule:: crowddynamics.core.motion.collision_avoidance.power_law
    :members:
+
 
 ----
 

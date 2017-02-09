@@ -36,9 +36,6 @@ def agent_agent_brute(agent, indices):
         indices (numpy.ndarray): Subset of ``agent.indices``. If equal to ``agent.indices`` then
             brute force over all agents.
 
-    Returns:
-        None: Inplace operation.
-
     """
     for l, i in enumerate(indices[:-1]):
         for j in indices[l + 1:]:
@@ -63,9 +60,6 @@ def agent_agent_brute_disjoint(agent, indices_0, indices_1):
         indices_0 (numpy.ndarray):
         indices_1 (numpy.ndarray):
 
-    Returns:
-        None: Inplace operation.
-
     """
     for i in indices_0:
         for j in indices_1:
@@ -77,14 +71,10 @@ def agent_agent_brute_disjoint(agent, indices_0, indices_1):
 
 @numba.jit(nopython=True, nogil=True)
 def agent_agent_block_list(agent):
-    r"""
-    Iteration over all agents using block list algorithm.
+    r"""Iteration over all agents using block list algorithm.
 
     Args:
         agent (Agent):
-
-    Returns:
-        None: Inplace operation.
 
     """
     indices = agent.indices()

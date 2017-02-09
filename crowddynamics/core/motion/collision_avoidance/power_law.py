@@ -421,13 +421,13 @@ def force_social_linear_wall(i, w, agent, wall):
 
     if not np.isnan(tau[0]) and tau[0] <= tau_t0:
         mag = magnitude(tau[0], agent.tau_0[i])
-        force[:] = - agent.mass[i] * agent.k_soc * mag * grad[0]
+        force[:] = - agent.mass[i] * agent.k_soc[i] * mag * grad[0]
     elif not np.isnan(tau[1]) and tau[1] > tau_t1:
         mag = magnitude(tau[1], agent.tau_0[i])
-        force[:] = - agent.mass[i] * agent.k_soc * mag * grad[1]
+        force[:] = - agent.mass[i] * agent.k_soc[i] * mag * grad[1]
     elif not np.isnan(tau[2]):
         mag = magnitude(tau[2], agent.tau_0[i])
-        force[:] = - agent.mass[i] * agent.k_soc * mag * grad[2]
+        force[:] = - agent.mass[i] * agent.k_soc[i] * mag * grad[2]
 
     truncate(force, agent.f_soc_iw_max)
 

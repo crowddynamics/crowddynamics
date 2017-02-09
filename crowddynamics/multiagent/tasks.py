@@ -8,6 +8,7 @@ from crowddynamics.core.motion import force_fluctuation, \
 from crowddynamics.core.steering.navigation import to_indices, static_potential
 from crowddynamics.core.vector2D.vector2D import angle_nx2
 from crowddynamics.io import HDFStore
+from crowddynamics.io import Record
 from crowddynamics.taskgraph import TaskNode
 
 
@@ -180,24 +181,32 @@ class Reset(TaskNode):
         # self.agent.reset_neighbor()
 
 
-class IO(TaskNode):
-    r"""IO"""
+class HDFNode(TaskNode):
+    r"""Saves data to hdf5 file.
 
-    def __init__(self, simulation, structs, attribute_list):
+    - Agent data
+    - Game data
+    - etc
+    """
+
+    def __init__(self, simulation):
         super().__init__()
         self.simulation = simulation
         self.hdfstore = HDFStore(self.simulation.name)
-        # TODO: add struct(s) and attributes(s)
-        for struct, attributes in zip(structs, attribute_list):
-            self.hdfstore.add_dataset(struct, attributes)
-            self.hdfstore.add_buffers(struct, attributes)
         self.iterations = 0
 
+    def set(self, records):
+        if isinstance(records, Record):
+            self.hdfstore.add_dataset(records)
+        else:
+            for record in records:
+                self.hdfstore.add_dataset(record)
+
     def update(self, frequency=100):
+        self.iterations += 1
         self.hdfstore.update_buffers()
         if self.iterations % frequency == 0:
             self.hdfstore.dump_buffers()
-        self.iterations += 1
 
 
 class GuiCommunication(TaskNode):

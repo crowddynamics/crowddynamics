@@ -18,12 +18,63 @@ tangent vectors
    \mathbf{\hat{e}_t} &= [\sin(\varphi), -\cos(\varphi)]
 
 """
+from collections import namedtuple
+
 import numba
 import numpy as np
 from numba import float64, int64, boolean, f8
 from numba.types import UniTuple
 
 from crowddynamics.core.vector2D.vector2D import rotate270, wrap_to_pi
+
+
+Attribute = namedtuple('Attribute', ('name', 'numba_type', 'resizable'))
+AGENT_ATTRS = (
+    Attribute('size', int64, False),
+    Attribute('shape', UniTuple(int64, 2), False),
+    Attribute('circular', boolean, False),
+    Attribute('three_circle', boolean, False),
+    Attribute('orientable', boolean, False),
+    Attribute('active', boolean[:], True),
+    Attribute('mass', float64[:, :], False),
+    Attribute('radius', float64[:], False),
+    Attribute('r_t', float64[:], False),
+    Attribute('r_s', float64[:], False),
+    Attribute('r_ts', float64[:], False),
+    Attribute('position', float64[:, :], True),
+    Attribute('velocity', float64[:, :], True),
+    Attribute('target_velocity', float64[:, :], True),
+    Attribute('target_direction', float64[:, :], True),
+    Attribute('force', float64[:, :], True),
+    Attribute('inertia_rot', float64[:], True),
+    Attribute('orientation', float64[:], True),
+    Attribute('angular_velocity', float64[:], True),
+    Attribute('target_orientation', float64[:], True),
+    Attribute('target_angular_velocity', float64[:], True),
+    Attribute('torque', float64[:], True),
+    Attribute('tau_adj', float64[:, :], False),
+    Attribute('tau_rot', float64[:, :], False),
+    Attribute('k_soc', float64[:], False),
+    Attribute('tau_0', float64[:], False),
+    Attribute('mu', float64[:], False),
+    Attribute('kappa', float64[:], False),
+    Attribute('damping', float64[:], False),
+    Attribute('std_rand_force', float64[:], False),
+    Attribute('std_rand_torque', float64[:], False),
+    Attribute('f_soc_ij_max', float64, False),
+    Attribute('f_soc_iw_max', float64, False),
+    Attribute('sight_soc', float64, False),
+    Attribute('sight_wall', float64, False),
+)
+
+
+NEIGHBORHOOD_SPEC = (
+    ('neighbor_radius', float64),
+    ('neighborhood_size', int64),
+    ('neighbors', int64[:, :]),
+    ('neighbor_distances', float64[:, :]),
+    ('neighbor_distances_max', float64[:]),
+)
 
 
 @numba.jit(UniTuple(f8[:], 3)(f8[:], f8, f8), nopython=True, nogil=True)
@@ -63,47 +114,7 @@ def positions(position, orientation, radius_ts):
         raise Exception()
 
 
-AGENT_SPEC = (
-    ('size', int64),
-    ('shape', UniTuple(int64, 2)),
-    ('circular', boolean),
-    ('three_circle', boolean),
-    ('orientable', boolean),
-    ('active', boolean[:]),
-    ('mass', float64[:, :]),
-    ('radius', float64[:]),
-    ('r_t', float64[:]),
-    ('r_s', float64[:]),
-    ('r_ts', float64[:]),
-    ('position', float64[:, :]),
-    ('velocity', float64[:, :]),
-    ('target_velocity', float64[:, :]),
-    ('target_direction', float64[:, :]),
-    ('force', float64[:, :]),
-    ('inertia_rot', float64[:]),
-    ('orientation', float64[:]),
-    ('angular_velocity', float64[:]),
-    ('target_orientation', float64[:]),
-    ('target_angular_velocity', float64[:]),
-    ('torque', float64[:]),
-    ('tau_adj', float64[:, :]),
-    ('tau_rot', float64[:, :]),
-    ('k_soc', float64[:]),
-    ('tau_0', float64[:]),
-    ('mu', float64[:]),
-    ('kappa', float64[:]),
-    ('damping', float64[:]),
-    ('std_rand_force', float64[:]),
-    ('std_rand_torque', float64[:]),
-    ('f_soc_ij_max', float64),
-    ('f_soc_iw_max', float64),
-    ('sight_soc', float64),
-    ('sight_wall', float64),
-)
-AGENT_PARAMS = [item[0] for item in AGENT_SPEC]
-
-
-@numba.jitclass(AGENT_SPEC)
+@numba.jitclass(tuple((p.name, p.numba_type) for p in AGENT_ATTRS))
 class Agent(object):
     r"""Structure for agent parameters and variables.
 
@@ -198,7 +209,7 @@ class Agent(object):
         self.orientable = False
         self.active = np.zeros(size, np.bool8)
 
-        # Constant properties
+        # Agent properties
         self.radius = np.zeros(self.size)
         self.r_t = np.zeros(self.size)
         self.r_s = np.zeros(self.size)
@@ -206,14 +217,14 @@ class Agent(object):
         self.mass = np.zeros((self.size, 1))
         self.inertia_rot = np.zeros(self.size)
 
-        # Movement along x and y axis.
+        # Translational motion
         self.position = np.zeros(self.shape)
         self.velocity = np.zeros(self.shape)
         self.target_velocity = np.zeros((size, 1))
         self.target_direction = np.zeros(self.shape)
         self.force = np.zeros(self.shape)
 
-        # Rotational movement. Three circles agent model
+        # Rotational motion
         self.orientation = np.zeros(self.size)
         self.angular_velocity = np.zeros(self.size)
         self.target_orientation = np.zeros(self.size)
@@ -221,15 +232,15 @@ class Agent(object):
         self.torque = np.zeros(self.size)
 
         # Motion related parameters
-        self.tau_adj = 0.5 * np.zeros((self.size, 1))
-        self.tau_rot = 0.2 * np.zeros((self.size, 1))
-        self.k_soc = 1.5 * np.zeros(self.size)
-        self.tau_0 = 3.0 * np.zeros(self.size)
-        self.mu = 1.2e5 * np.zeros(self.size)
-        self.kappa = 4e4 * np.zeros(self.size)
-        self.damping = 500 * np.zeros(self.size)
-        self.std_rand_force = 0.1 * np.zeros(self.size)
-        self.std_rand_torque = 0.1 * np.zeros(self.size)
+        self.tau_adj = 0.5 * np.ones((self.size, 1))
+        self.tau_rot = 0.2 * np.ones((self.size, 1))
+        self.k_soc = 1.5 * np.ones(self.size)
+        self.tau_0 = 3.0 * np.ones(self.size)
+        self.mu = 1.2e5 * np.ones(self.size)
+        self.kappa = 4e4 * np.ones(self.size)
+        self.damping = 500 * np.ones(self.size)
+        self.std_rand_force = 0.1 * np.ones(self.size)
+        self.std_rand_torque = 0.1 * np.ones(self.size)
 
         # Limits
         self.sight_soc = 3.0
@@ -393,15 +404,6 @@ class Agent(object):
 
 def resize_agent():
     return NotImplementedError
-
-
-NEIGHBORHOOD_SPEC = (
-    ('neighbor_radius', float64),
-    ('neighborhood_size', int64),
-    ('neighbors', int64[:, :]),
-    ('neighbor_distances', float64[:, :]),
-    ('neighbor_distances_max', float64[:]),
-)
 
 
 class NeighborHood(object):

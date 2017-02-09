@@ -1,7 +1,22 @@
 Interactions
 ============
 
-.. automodule:: crowddynamics.core.interactions
+Distance
+--------
+
+.. automodule:: crowddynamics.core.interactions.distance
    :members:
-   :special-members:
-   :private-members:
+
+
+Interactions
+------------
+
+.. automodule:: crowddynamics.core.interactions.interactions
+   :members:
+
+
+Partitioning
+------------
+
+.. automodule:: crowddynamics.core.interactions.partitioning
+   :members:
