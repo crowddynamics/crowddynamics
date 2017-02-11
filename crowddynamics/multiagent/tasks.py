@@ -12,6 +12,9 @@ from crowddynamics.io import HDFStore
 from crowddynamics.io import Record
 from crowddynamics.taskgraph import TaskNode
 
+# TODO: Integrator: time-limit, iterations limit -> signal
+# TODO: Contains:   diff limit
+
 
 class Integrator(TaskNode):
     r"""Integrator
@@ -30,6 +33,12 @@ class Integrator(TaskNode):
         self.dt = (0.001, 0.01)
         self.time_tot = np.float64(0.0)
         self.dt_prev = np.float64(np.nan)
+
+    def set(self, iter_limit=None, time_limit=None):
+        pass
+
+    def signal(self):
+        pass
 
     def update(self):
         self.dt_prev = euler_integration(self.simulation.agent, self.dt[0], self.dt[0])

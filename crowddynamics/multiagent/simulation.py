@@ -3,6 +3,7 @@ import logging
 from collections import Iterable
 from multiprocessing import Process, Event
 
+import multiprocessing
 import numpy as np
 from shapely.geometry import Point, Polygon, GeometryCollection
 from shapely.ops import cascaded_union
@@ -16,7 +17,7 @@ from crowddynamics.logging import log_with
 from crowddynamics.multiagent.parameters import Parameters
 from crowddynamics.taskgraph import TaskNode
 
-REGISTERED_SIMULATIONS = []
+REGISTERED_SIMULATIONS = dict()
 AGENT_MODELS = ['circular', 'three_circle']
 BODY_TYPES = ['adult', 'male', 'female', 'child', 'eldery']
 
@@ -68,7 +69,7 @@ class MultiAgentSimulation:
         self._occupied = Polygon()
 
         # Algorithms
-        self.queue = None
+        self.queue = multiprocessing.Queue()
         self.tasks = None
         self.iterations = int(0)
 
@@ -264,7 +265,7 @@ class MultiAgentSimulation:
         """Method for subclasses to overwrite for setting up simulation."""
         raise NotImplementedError
 
-    # @log_with(logger)
+    @log_with(logger)
     def update(self):
         """Execute new iteration cycle of the simulation."""
         self.tasks.evaluate()
@@ -286,32 +287,29 @@ class MultiAgentProcess(Process):
     # End of Simulation. Value that is injected into queue when simulation ends.
     EOS = None
 
-    def __init__(self, simulation):
+    def __init__(self, simulation, maxiter=None):
         """Init MultiAgentProcess
 
         Args:
             simulation (MultiAgentSimulation):
         """
         super(MultiAgentProcess, self).__init__()
-        if isinstance(simulation, MultiAgentSimulation):
-            raise InvalidArgument("Argument simulation should be instance of"
-                                  "MultiAgentSimulation")
         self.simulation = simulation
         self.exit = Event()
+        self.maxiter = maxiter
 
-    @log_with(logger, entry_msg="starting", exit_msg="Stopped")
+    @log_with(logger)
     def run(self):
         """Runs simulation process by calling update method repeatedly until
         stop is called. This method is called automatically by Process class
         when start is called."""
-        if self.simulation.queue is None:
-            raise CrowdDynamicsException("Simulation queue is not set.")
-
         while not self.exit.is_set():
             self.simulation.update()
+            if self.maxiter and self.simulation.iterations > self.maxiter:
+                self.stop()
         self.simulation.queue.put(self.EOS)
 
-    @log_with(logger, entry_msg="Stopping")
+    @log_with(logger)
     def stop(self):
         """Sets event to true in order to stop the simulation process."""
         self.exit.set()
@@ -323,11 +321,16 @@ def register(simulation):
     if isinstance(simulation, MultiAgentSimulation):
         raise InvalidArgument("Argument simulation should be instance of"
                               "MultiAgentSimulation")
-    REGISTERED_SIMULATIONS.append(simulation)
+    name = simulation.__name__
+    if name in REGISTERED_SIMULATIONS:
+        raise CrowdDynamicsException('Simulation named: "{name}" already '
+                                     'exists in registered simulations.'
+                                     'please rename the simulation.')
+    REGISTERED_SIMULATIONS[name] = simulation
 
 
 @log_with()
-def run_simulations(simulations):
+def run_simulations_parallel(simulations, maxiter=None):
     """Run multiagent simulations as a new process
 
     Wraps MultiAgentSimulations in MultiAgentProcess class and starts them.
@@ -346,6 +349,26 @@ def run_simulations(simulations):
         simulations = (simulations,)
 
     for simulation in simulations:
-        process = MultiAgentProcess(simulation)
+        process = MultiAgentProcess(simulation, maxiter)
         process.start()
         yield process
+
+
+@log_with()
+def run_simulations_sequentially(simulations, maxiter=None):
+    """Run new simulation sequentially
+
+    Args:
+        simulation (Iterable[MultiAgentSimulation]):
+    """
+    if not isinstance(simulations, Iterable):
+        simulations = (simulations,)
+
+    for simulation in simulations:
+        iterations = 0
+        conds = True
+        while conds:
+            simulation.update()
+            iterations += 1
+            if maxiter:
+                conds = iterations <= maxiter

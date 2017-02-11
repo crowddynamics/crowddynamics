@@ -19,7 +19,7 @@ class GuiCommunication(TaskNode):
 
     def set(self, configs):
         self.configs = configs
-        for config in configs:
+        for config in self.configs:
             self.messages.append(
                 namedtuple(config.object.__name__, config.attributes)
             )
