@@ -1,7 +1,7 @@
 import numba
 from numba import f8
 
-from crowddynamics.core.vector2D import dot2d
+from crowddynamics.core.vector import dot
 
 
 @numba.jit(f8[:](f8, f8[:], f8[:], f8[:], f8, f8, f8), nopython=True,
@@ -41,4 +41,4 @@ def force_contact(h, n, v, t, mu, kappa, damping):
     Returns:
         numpy.ndarray: Contact force
     """
-    return - h * (mu * n - kappa * dot2d(v, t) * t) + damping * dot2d(v, n) * n
+    return - h * (mu * n - kappa * dot(v, t) * t) + damping * dot(v, n) * n

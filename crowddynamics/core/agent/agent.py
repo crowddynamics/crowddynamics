@@ -25,7 +25,7 @@ import numpy as np
 from numba import float64, int64, boolean, f8
 from numba.types import UniTuple
 
-from crowddynamics.core.vector2D.vector2D import rotate270, wrap_to_pi
+from crowddynamics.core.vector.vector2D import rotate270, wrap_to_pi
 
 
 Attribute = namedtuple('Attribute', ('name', 'numba_type', 'resizable'))

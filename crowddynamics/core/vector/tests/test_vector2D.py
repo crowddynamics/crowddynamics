@@ -1,8 +1,8 @@
 import numpy as np
 from hypothesis import given, assume
 
-from crowddynamics.core.vector2D.vector2D import cross2d, wrap_to_pi, truncate, \
-    rotate270, normalize, length, angle, rotate90, dot2d
+from crowddynamics.core.vector.vector2D import cross, wrap_to_pi, truncate, \
+    rotate270, normalize, length, angle, rotate90, dot
 from crowddynamics.testing import real
 
 
@@ -49,13 +49,13 @@ def test_length(a):
 
 @given(a=real(shape=2), b=real(shape=2))
 def test_dot(a, b):
-    ans = dot2d(a, b)
+    ans = dot(a, b)
     assert isinstance(ans, float)
 
 
 @given(a=real(shape=2), b=real(shape=2))
 def test_cross(a, b):
-    ans = cross2d(a, b)
+    ans = cross(a, b)
     assert isinstance(ans, float)
 
 

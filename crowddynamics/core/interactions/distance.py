@@ -9,7 +9,7 @@ Some of the functions also compute rotational moments for computing torque like
 import numba
 import numpy as np
 
-from crowddynamics.core.vector2D import length, rotate90, dot2d
+from crowddynamics.core.vector import length, rotate90, dot
 
 
 @numba.jit(nopython=True, nogil=True)
@@ -118,7 +118,7 @@ def distance_circle_line(x, r, p):
     n_w = rotate90(t_w)
 
     q = x - p
-    l_t = - dot2d(t_w, q[1]) - dot2d(t_w, q[0])
+    l_t = - dot(t_w, q[1]) - dot(t_w, q[0])
 
     if l_t > l_w:
         d_iw = length(q[0])
@@ -127,7 +127,7 @@ def distance_circle_line(x, r, p):
         d_iw = length(q[1])
         n_iw = q[1] / d_iw
     else:
-        l_n = dot2d(n_w, q[0])
+        l_n = dot(n_w, q[0])
         d_iw = np.abs(l_n)
         n_iw = np.sign(l_n) * n_w
 

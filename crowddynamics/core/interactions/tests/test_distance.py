@@ -6,7 +6,7 @@ from hypothesis import given
 from crowddynamics.core.interactions.distance import distance_circle_circle, \
     distance_three_circle, distance_circle_line, distance_three_circle_line, \
     overlapping_circle_circle, overlapping_three_circle
-from crowddynamics.core.vector2D.vector2D import length
+from crowddynamics.core.vector.vector2D import length
 import crowddynamics.testing.strategies as st2
 
 

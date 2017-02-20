@@ -7,7 +7,7 @@ from crowddynamics.core.interactions.interactions import agent_agent_block_list,
 from crowddynamics.core.motion import force_fluctuation, \
     force_adjust, torque_adjust, torque_fluctuation
 from crowddynamics.core.steering.navigation import to_indices, static_potential
-from crowddynamics.core.vector2D.vector2D import angle_nx2
+from crowddynamics.core.vector.vector2D import angle_nx2
 from crowddynamics.io import HDFStore
 from crowddynamics.io import Record
 from crowddynamics.taskgraph import TaskNode

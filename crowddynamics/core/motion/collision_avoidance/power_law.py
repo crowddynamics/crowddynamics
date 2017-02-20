@@ -6,7 +6,7 @@ import numba
 import numpy as np
 from numba import f8
 
-from crowddynamics.core.vector2D import dot2d, truncate, rotate90
+from crowddynamics.core.vector import dot, truncate, rotate90
 
 
 @numba.jit(nopython=True, nogil=True)
@@ -123,7 +123,7 @@ def gradient_circle_line(v, n):
     Returns:
 
     """
-    return n / dot2d(v, n)
+    return n / dot(v, n)
 
 
 @numba.jit(numba.types.Tuple((f8, f8[:]))(f8[:], f8[:], f8),
@@ -170,9 +170,9 @@ def time_to_collision_circle_circle(x_rel, v_rel, r_tot):
         (float, numpy.ndarray):
 
     """
-    a = dot2d(v_rel, v_rel)
-    b = -dot2d(x_rel, v_rel)
-    c = dot2d(x_rel, x_rel) - r_tot ** 2
+    a = dot(v_rel, v_rel)
+    b = -dot(x_rel, v_rel)
+    c = dot(x_rel, x_rel) - r_tot ** 2
     d = np.sqrt(b ** 2 - a * c)
 
     # No interaction if tau cannot be defined.
@@ -202,11 +202,11 @@ def time_to_collision_circle_line(x_rel, v_rel, r_tot, n):
     Returns:
 
     """
-    dot_vn = dot2d(v_rel, n)
+    dot_vn = dot(v_rel, n)
     if dot_vn == 0:
         return np.nan, np.zeros(2)
 
-    g0 = -dot2d(x_rel, n) / dot_vn
+    g0 = -dot(x_rel, n) / dot_vn
     g1 = r_tot / dot_vn
     tau0 = g0 + g1
     tau1 = g0 - g1
@@ -237,9 +237,9 @@ def force_social_circular(agent, i, j):
 
     force = np.zeros(2), np.zeros(2)
 
-    a = dot2d(v_rel, v_rel)
-    b = -dot2d(x_rel, v_rel)
-    c = dot2d(x_rel, x_rel) - r_tot ** 2
+    a = dot(v_rel, v_rel)
+    b = -dot(x_rel, v_rel)
+    c = dot(x_rel, x_rel) - r_tot ** 2
     d = np.sqrt(b ** 2 - a * c)
 
     # No interaction if tau cannot be defined.
@@ -283,7 +283,7 @@ def force_social_three_circle(agent, i, j):
     force = np.zeros(2), np.zeros(2)
 
     v_rel = agent.velocity[i] - agent.velocity[j]
-    a = dot2d(v_rel, v_rel)
+    a = dot(v_rel, v_rel)
 
     # Agents are not moving relative to each other.
     if a == 0:
@@ -322,8 +322,8 @@ def force_social_three_circle(agent, i, j):
             r_tot = ri + rj
 
             # Coefficients for time-to-collision
-            b = -dot2d(x_rel, v_rel)
-            c = dot2d(x_rel, x_rel) - r_tot ** 2
+            b = -dot(x_rel, v_rel)
+            c = dot(x_rel, x_rel) - r_tot ** 2
             d = np.sqrt(b ** 2 - a * c)
 
             # No interaction if tau cannot be defined.
@@ -407,13 +407,13 @@ def force_social_linear_wall(i, w, agent, wall):
     v_rel = agent.velocity[i]
     r_tot = agent.radius[i]
 
-    dot_vt = dot2d(v_rel, t_w)
+    dot_vt = dot(v_rel, t_w)
     if dot_vt == 0:
         tau_t0 = np.nan
         tau_t1 = np.nan
     else:
-        tau_t0 = -dot2d(x_rel0, t_w) / dot_vt
-        tau_t1 = -dot2d(x_rel1, t_w) / dot_vt
+        tau_t0 = -dot(x_rel0, t_w) / dot_vt
+        tau_t1 = -dot(x_rel1, t_w) / dot_vt
 
     tau[0], grad[0] = time_to_collision_circle_circle(x_rel0, v_rel, r_tot)
     tau[1], grad[1] = time_to_collision_circle_circle(x_rel1, v_rel, r_tot)

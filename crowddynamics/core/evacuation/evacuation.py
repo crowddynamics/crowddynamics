@@ -3,7 +3,7 @@ import numba
 import numpy as np
 from numba import i8, f8, optional
 
-from crowddynamics.core.vector2D import length_nx2
+from crowddynamics.core.vector import length_nx2
 
 
 @numba.jit(f8(f8, f8, optional(f8), f8), nopython=True)

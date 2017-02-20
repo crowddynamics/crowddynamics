@@ -18,7 +18,7 @@ from crowddynamics.core.interactions import distance_circle_circle, \
     BlockList
 from crowddynamics.core.motion import force_social_circular, \
     force_social_three_circle, force_social_linear_wall, force_contact
-from crowddynamics.core.vector2D import rotate270, cross2d
+from crowddynamics.core.vector import rotate270, cross
 
 
 @numba.jit(nopython=True, nogil=True)
@@ -174,8 +174,8 @@ def agent_agent_interaction_three_circle(i, j, agent):
         agent.force[i] += force_i
         agent.force[j] += force_j
 
-        agent.torque[i] += cross2d(r_moment_i, force_i)
-        agent.torque[j] += cross2d(r_moment_j, force_j)
+        agent.torque[i] += cross(r_moment_i, force_i)
+        agent.torque[j] += cross(r_moment_j, force_j)
 
 
 @numba.jit(nopython=True, nogil=True)
@@ -228,4 +228,4 @@ def agent_obstacle_interaction_three_circle(i, w, agent, wall):
                                    agent.damping[i])
 
         agent.force[i] += force
-        agent.torque[i] += cross2d(r_moment, force)
+        agent.torque[i] += cross(r_moment, force)

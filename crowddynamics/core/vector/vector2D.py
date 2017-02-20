@@ -1,10 +1,13 @@
-r"""
-Functions operating on 2-Dimensional vectors.
-"""
-
+r"""Functions operating on 2-Dimensional vectors."""
 import numba
 import numpy as np
 from numba import f8, void
+
+
+vector_type = np.dtype([
+    ('x', np.float64),
+    ('y', np.float64),
+])
 
 
 @numba.vectorize([f8(f8)])
@@ -87,6 +90,7 @@ def angle(vec2d):
     return np.arctan2(vec2d[1], vec2d[0])
 
 
+# TODO: unify with angle
 @numba.jit(f8[:](f8[:, :]), nopython=True, nogil=True)
 def angle_nx2(vec2d):
     r"""
@@ -115,6 +119,7 @@ def length(vec2d):
     return np.hypot(vec2d[0], vec2d[1])
 
 
+# TODO: unifyg with length
 @numba.jit(f8[:](f8[:, :]), nopython=True, nogil=True)
 def length_nx2(vec2d):
     r"""
@@ -130,7 +135,7 @@ def length_nx2(vec2d):
 
 
 @numba.jit(f8(f8[:], f8[:]), nopython=True, nogil=True)
-def dot2d(v0, v1):
+def dot(v0, v1):
     r"""
     Dot product for 2D vectors.
 
@@ -145,7 +150,7 @@ def dot2d(v0, v1):
 
 
 @numba.jit(f8(f8[:], f8[:]), nopython=True, nogil=True)
-def cross2d(v0, v1):
+def cross(v0, v1):
     r"""
     Cross product for 2D vectors. Right corner from 3D cross product.
 
