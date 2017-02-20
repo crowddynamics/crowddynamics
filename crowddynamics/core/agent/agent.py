@@ -402,10 +402,6 @@ class Agent(object):
         return np.arange(self.size)[self.active]
 
 
-def resize_agent():
-    return NotImplementedError
-
-
 class NeighborHood(object):
     # Tracking neighboring agents. Neighbors contains the indices of the
     # neighboring agents. Negative value denotes missing value (if less than

@@ -4,12 +4,6 @@ import numpy as np
 from numba import f8, void
 
 
-vector_type = np.dtype([
-    ('x', np.float64),
-    ('y', np.float64),
-])
-
-
 @numba.vectorize([f8(f8)])
 def wrap_to_pi(rad):
     r"""
