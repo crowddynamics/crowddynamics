@@ -5,6 +5,7 @@
 *.hdf5
 *.old
 *.hypothesis
+*.benchmarks
 
 # Folders
 *.logs/

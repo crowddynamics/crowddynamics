@@ -1,8 +1,6 @@
 ## Documentation
 sphinx
 sphinx_rtd_theme
-sphinxcontrib-napoleon
-sphinxcontrib-bibtex
 sphinxcontrib-programoutput
 ghp-import
 graphviz

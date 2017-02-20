@@ -4,3 +4,4 @@ pytest-cov
 pytest-xdist
 coverage
 hypothesis
+pytest-benchmark

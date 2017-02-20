@@ -1,16 +1,18 @@
+import collections
+import functools
 import inspect
+import logging.config
 import math
 import os
 import platform
 import sys
-import logging.config
-
-import functools
 import timeit
+from itertools import islice
 
-import numpy as np
-import pandas as pd
-from ruamel import yaml
+try:
+    from ruamel import yaml
+except ImportError:
+    import yaml
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 LOG_CFG = os.path.join(BASE_DIR, 'logging.yaml')
@@ -26,13 +28,33 @@ pandas_options = {
 }
 
 
+def consume(iterator, n=None):
+    """Advance the iterator n-steps ahead. If n is none, consume entirely."""
+    # Use functions that consume iterators at C speed.
+    if n is None:
+        # feed the entire iterator into a zero-length deque
+        collections.deque(iterator, maxlen=0)
+    else:
+        # advance to the empty slice starting at position n
+        next(islice(iterator, n, n), None)
+
+
 def format_pandas(opts=pandas_options):
-    for key, val in opts.items():
-        pd.set_option(key, val)
+    try:
+        import pandas as pd
+    except ImportError:
+        return
+
+    consume(map(pd.set_option, opts.keys(), opts.values()))
 
 
 def format_numpy(precision=5, threshold=6, edgeitems=3, linewidth=None,
                  suppress=False, nanstr=None, infstr=None, formatter=None):
+    try:
+        import numpy as np
+    except ImportError:
+        return
+
     np.set_printoptions(precision, threshold, edgeitems, linewidth, suppress,
                         nanstr, infstr, formatter)
 
@@ -127,10 +149,7 @@ class log_with(object):
 
     Todo:
         - loglevel
-        - Pretty formatting
         - function call stack level
-        - timer
-        - args & kwargs
     """
 
     def __init__(self, logger=None, entry_msg=None, exit_msg=None):
@@ -152,26 +171,29 @@ class log_with(object):
 
         def message(args, kwargs):
             for i, name in enumerate(arg_names):
-                try:
-                    value = args[i]
-                except IndexError:
-                    # FIXME: Default values in kwargs
-                    try:
-                        value = kwargs[name]
-                    except KeyError:
-                        continue
-                yield str(name) + ': ' + str(value)
+                if i < len(args):
+                    yield name, str(args[i])
+                elif name in kwargs:
+                    yield name, str(kwargs[name])
 
         @functools.wraps(function)
         def wrapper(*args, **kwargs):
-            self.logger.info('<' + function.__name__ + '>' + '\n' +
-                             '\n'.join(message(args, kwargs)))
+            # Log function's name, arguments and key-value arguments
+            d = ', '.join(': '.join(items) for items in message(args, kwargs))
+            msg = '<' + function.__name__ + '>' + ' ' + '{' + d + '}'
 
+            # Log the message
+            self.logger.info(msg)
+
+            # Time the function execution
             start = timeit.default_timer()
             result = function(*args, **kwargs)
             dt = timeit.default_timer() - start
             time = format_time(dt)
 
+            # Log the execution time
             self.logger.info(time)
+
             return result
+
         return wrapper

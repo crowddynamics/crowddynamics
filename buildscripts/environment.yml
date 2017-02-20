@@ -6,9 +6,6 @@ channels:
     - conda-forge
 dependencies:
     ## Package
-    - setuptools
-    - versioneer
-    - typing
     - numpy
     - numba
     - scipy
@@ -26,6 +23,8 @@ dependencies:
     - jupyter
     - pip:
         ## Package
+        - versioneer
+        - typing
         - ruamel.yaml
         - scikit-fmm
         - click
@@ -37,6 +36,7 @@ dependencies:
         - pytest-xdist
         - coverage
         - hypothesis
+        - pytest-benchmark
         ## Documentation
         - sphinx
         - sphinx_rtd_theme

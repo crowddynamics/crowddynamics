@@ -34,11 +34,8 @@ extensions = [
 
 extensions += [
     # 'sphinxcontrib.programoutput',
-    # 'sphinxcontrib.bibtex',
     # 'sphinxcontrib.youtube',
 ]
-
-
 
 
 templates_path = ['_templates']
