@@ -390,8 +390,7 @@ class Agent(object):
 
     def front(self, i):
         n = np.array((np.cos(self.orientation[i]), np.sin(self.orientation[i])))
-        position = self.position[i]
-        return position + n * self.r_t[i]
+        return self.position[i] + n * self.r_t[i]
 
     def reset_motion(self):
         self.force[:] = 0

@@ -1,7 +1,11 @@
+import numba
 import numpy as np
+from numba import typeof, int64
 
 
 # Default values
+from crowddynamics.core.vector.vector2D import unit_vector, rotate270
+
 tau_adj = 0.5
 tau_rot = 0.2
 k_soc = 1.5
@@ -69,6 +73,35 @@ agent_type_three_circle = np.dtype(
     rotational +
     three_circle
 )
+
+
+@numba.jit((typeof(agent_type_three_circle), int64),
+           nopython=True, nogil=True, cache=True)
+def shoulders(agent, i):
+    n = agent.orientation[i]
+    t = rotate270(n)
+    offset = t * agent.r_ts[i]
+    position = agent.position[i]
+    position_ls = position - offset
+    position_rs = position + offset
+    return position, position_ls, position_rs
+
+
+@numba.jit((typeof(agent_type_three_circle), int64),
+           nopython=True, nogil=True, cache=True)
+def front(agent, i):
+    return agent.position[i] * unit_vector(agent.orientation[i]) * agent.r_t[i]
+
+
+@numba.jit()
+def reset_motion(agent):
+    agent.force[:] = 0
+    agent.torque[:] = 0
+
+
+class AgentFactory(object):
+    def __init__(self, size, model):
+        self.agents = np.zeros(size, dtype=agent_type_circular)
 
 
 # Linear obstacle defined by two points
