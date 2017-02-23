@@ -1,10 +1,13 @@
 import numba
+from numba import float64
 import numpy as np
 
+from crowddynamics.core.agent.agent import Agent_numba_type
 from crowddynamics.core.vector.vector2D import length_nx2, wrap_to_pi
 
 
-@numba.jit(nopython=True)
+@numba.jit([float64(float64, float64, float64[:, :], float64[:, :])],
+           nopython=True, nogil=True, cache=True)
 def adaptive_timestep(dt_min, dt_max, velocity, target_velocity):
     r"""
     Timestep is selected from interval :math:`[\Delta t_{min}, \Delta t_{max}]`
@@ -68,7 +71,8 @@ def adaptive_timestep(dt_min, dt_max, velocity, target_velocity):
         return dt
 
 
-@numba.jit(nopython=True)
+@numba.jit([float64(Agent_numba_type, float64, float64)],
+           nopython=True, nogil=True)
 def euler_integration(agent, dt_min, dt_max):
     r"""
     Differential system is integrated using numerical integration scheme using

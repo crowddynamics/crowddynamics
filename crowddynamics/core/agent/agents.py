@@ -1,7 +1,4 @@
-import numba
 import numpy as np
-
-from crowddynamics.core.vector.vector import vector_type
 
 
 # Default values
@@ -23,15 +20,15 @@ f_soc_ij_max = 2e3
 f_soc_iw_max = 2e3
 
 
-# Agent types
+# Agent attributes
 translational = [
     ('mass', np.float64),
     ('radius', np.float64),
-    ('position', vector_type),
-    ('velocity', vector_type),
+    ('position', np.float64, 2),
+    ('velocity', np.float64, 2),
     ('target_velocity', np.float64),
-    ('target_direction', vector_type),
-    ('force', vector_type),
+    ('target_direction', np.float64, 2),
+    ('force', np.float64, 2),
     ('tau_adj', np.float64),
     ('k_soc', np.float64),
     ('tau_0', np.float64),
@@ -62,6 +59,7 @@ three_circle = [
     ('r_ts', np.float64),
 ]
 
+# Agent types
 agent_type_circular = np.dtype(
     translational
 )
@@ -75,6 +73,6 @@ agent_type_three_circle = np.dtype(
 
 # Linear obstacle defined by two points
 obstacle_type_linear = np.dtype([
-    ('p0', vector_type),
-    ('p1', vector_type),
+    ('p0', np.float64, 2),
+    ('p1', np.float64, 2),
 ])

@@ -23,7 +23,7 @@ Variables (Mutable)
 """
 import numpy as np
 
-from crowddynamics.core.random.random import truncnorm
+from crowddynamics.core.random.functions import truncnorm
 from crowddynamics.functions import load_config
 
 

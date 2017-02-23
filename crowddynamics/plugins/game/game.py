@@ -46,7 +46,7 @@ from shapely.geometry import Polygon
 
 from crowddynamics.core.evacuation.evacuation import narrow_exit_capacity, \
     agent_closer_to_exit
-from crowddynamics.core.random.random import poisson_timings
+from crowddynamics.core.random.functions import poisson_timings
 from crowddynamics.core.vector.vector2D import length
 from crowddynamics.taskgraph import TaskNode
 

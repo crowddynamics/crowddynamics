@@ -8,11 +8,14 @@ Some of the functions also compute rotational moments for computing torque like
 """
 import numba
 import numpy as np
-
+from numba import float64
+from numba.types import Tuple, UniTuple
 from crowddynamics.core.vector import length, rotate90, dot
 
 
-@numba.jit(nopython=True, nogil=True)
+@numba.jit([Tuple((float64, float64[:]))(float64[:], float64,
+                                         float64[:], float64)],
+           nopython=True, nogil=True, cache=True)
 def distance_circle_circle(x0, r0, x1, r1):
     r"""
     Skin-to-Skin distance :math:`h`  with normal :math:`\mathbf{\hat{n}}`
@@ -44,7 +47,11 @@ def distance_circle_circle(x0, r0, x1, r1):
     return h, n
 
 
-@numba.jit(nopython=True, nogil=True)
+@numba.jit([Tuple((float64, float64[:], float64[:], float64[:]))(
+    UniTuple(float64[:], 3), UniTuple(float64, 3),
+    UniTuple(float64[:], 3), UniTuple(float64, 3)
+)],
+           nopython=True, nogil=True, cache=True)
 def distance_three_circle(x0, r0, x1, r1):
     r"""
     Skin-to-Skin distance :math:`h` with normal :math:`\mathbf{\hat{n}}` and
@@ -98,7 +105,8 @@ def distance_three_circle(x0, r0, x1, r1):
     return h_min, normal, r_moment0, r_moment1
 
 
-@numba.jit(nopython=True, nogil=True)
+@numba.jit([Tuple((float64, float64[:]))(float64[:], float64, float64[:, :])],
+           nopython=True, nogil=True, cache=True)
 def distance_circle_line(x, r, p):
     r"""
     Skin-to-Skin distance between circle and line
@@ -136,7 +144,11 @@ def distance_circle_line(x, r, p):
     return h_iw, n_iw
 
 
-@numba.jit(nopython=True, nogil=True)
+@numba.jit([Tuple((float64, float64[:], float64[:]))(
+    UniTuple(float64[:], 3), UniTuple(float64, 3),
+    float64[:, :]
+)],
+           nopython=True, nogil=True, cache=True)
 def distance_three_circle_line(x, r, p):
     r"""
     Skin-to-Skin distance between three circle model and line

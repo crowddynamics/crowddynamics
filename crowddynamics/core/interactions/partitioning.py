@@ -10,10 +10,10 @@ with agents far a away.
 """
 import numpy as np
 import numba
-from numba import f8, i8
+from numba import float64, int64
 
 
-@numba.jit(nopython=True)
+@numba.jit([(float64[:, :], float64)], nopython=True, cache=True)
 def block_list(points, cell_size):
     """
     Block list
@@ -92,13 +92,13 @@ def block_list(points, cell_size):
 
 
 spec = (
-    ("cell_width", f8),
-    ("index_list", i8[:]),
-    ("count", i8[:]),
-    ("offset", i8[:]),
-    ("x_min", i8[:]),
-    ("x_max", i8[:]),
-    ("shape", i8[:]),
+    ("cell_width", float64),
+    ("index_list", int64[:]),
+    ("count", int64[:]),
+    ("offset", int64[:]),
+    ("x_min", int64[:]),
+    ("x_max", int64[:]),
+    ("shape", int64[:]),
 )
 
 

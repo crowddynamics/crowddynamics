@@ -2,11 +2,8 @@ import numpy as np
 from hypothesis import given, assume
 
 from crowddynamics.core.vector.vector2D import cross, wrap_to_pi, truncate, \
-    rotate270, normalize, length, angle, rotate90, dot
+    rotate270, normalize, length, angle, rotate90, dot, unit_vector
 from crowddynamics.testing import real
-
-
-# TODO: Use numpy.testing
 
 
 @given(phi=real())
@@ -73,10 +70,8 @@ def test_normalize(a):
         assert np.isclose(l, 1.0)
 
 
-@given(
-    v=real(-1.0, 1.0, exclude_zero='near', shape=2),
-    l=real(0.0, 1.0, exclude_zero='near')
-)
+@given(v=real(-1.0, 1.0, exclude_zero='near', shape=2),
+       l=real(0.0, 1.0, exclude_zero='near'))
 def test_truncate(v, l):
     vlen = length(v)
 
@@ -85,3 +80,8 @@ def test_truncate(v, l):
         assert np.isclose(length(v), l)
     else:
         assert length(v) <= l
+
+
+def test_unit_vector():
+    ans = unit_vector(0.0)
+    assert isinstance(ans, np.ndarray)

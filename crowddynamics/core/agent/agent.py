@@ -402,6 +402,9 @@ class Agent(object):
         return np.arange(self.size)[self.active]
 
 
+Agent_numba_type = Agent.class_type.instance_type
+
+
 class NeighborHood(object):
     # Tracking neighboring agents. Neighbors contains the indices of the
     # neighboring agents. Negative value denotes missing value (if less than
