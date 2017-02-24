@@ -13,7 +13,8 @@ import numba
 from numba import float64, int64
 
 
-@numba.jit([(float64[:, :], float64)], nopython=True, cache=True)
+@numba.jit([(float64[:, :], float64)],
+           nopython=True, nogil=True, cache=True)
 def block_list(points, cell_size):
     """
     Block list

@@ -6,7 +6,8 @@ from numba import i8, f8, optional
 from crowddynamics.core.vector import length_nx2
 
 
-@numba.jit(f8(f8, f8, optional(f8), f8), nopython=True)
+@numba.jit(f8(f8, f8, optional(f8), f8),
+           nopython=True, nogil=True, cache=True)
 def narrow_exit_capacity(d_door, d_agent, d_layer=None, coeff=1.0):
     r"""Estimation of the capacity of narrow exit.
 
@@ -61,7 +62,8 @@ def narrow_exit_capacity(d_door, d_agent, d_layer=None, coeff=1.0):
         return coeff * ((d_door - (d_agent - d_layer)) // d_layer)
 
 
-@numba.jit(i8[:](f8[:], f8[:, :]), nopython=True)
+@numba.jit(i8[:](f8[:], f8[:, :]),
+           nopython=True, nogil=True, cache=True)
 def agent_closer_to_exit(c_door, position):
     r"""Amount of positions (agents) closer to center of the exit.
 

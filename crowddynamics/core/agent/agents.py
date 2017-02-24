@@ -23,8 +23,11 @@ from enum import Enum
 
 import numba
 import numpy as np
-from numba import typeof, void
+from numba import typeof, void, boolean, float64
+from numba.types import UniTuple
 
+from crowddynamics.core.interactions import distance_circle_circle
+from crowddynamics.core.interactions import distance_three_circle
 from crowddynamics.core.vector.vector2D import unit_vector, rotate270
 from crowddynamics.exceptions import CrowdDynamicsException
 
@@ -36,6 +39,7 @@ class AgentModels(Enum):
 
 
 class AgentBodyTypes(Enum):
+    """Enumeration for available agent body types."""
     ADULT = 'adult'
     MALE = 'male'
     FEMALE = 'female'
@@ -43,22 +47,37 @@ class AgentBodyTypes(Enum):
     ELDERY = 'eldery'
 
 
-# Default values
-tau_adj = 0.5
-tau_rot = 0.2
-k_soc = 1.5
-tau_0 = 3.0
-mu = 1.2e5
-kappa = 4e4
-damping = 500
-std_rand_force = 0.1
-std_rand_torque = 0.1
+class Defaults(object):
+    """Default values for agent parameters"""
+    tau_adj = 0.5
+    tau_rot = 0.2
+    k_soc = 1.5
+    tau_0 = 3.0
+    mu = 1.2e5
+    kappa = 4e4
+    damping = 500
+    std_rand_force = 0.1
+    std_rand_torque = 0.1
 
-# Limits
-sight_soc = 3.0
-sight_wall = 3.0
-f_soc_ij_max = 2e3
-f_soc_iw_max = 2e3
+
+class Limits(object):
+    """Limits"""
+    sight_soc = 3.0
+    sight_wall = 3.0
+    f_soc_ij_max = 2e3
+    f_soc_iw_max = 2e3
+
+
+def items(cls):
+    """Yield items from a class."""
+    for key, value in cls.__dict__.items():
+        if not key.startswith('__'):
+            yield key, value
+
+
+def to_dict(cls):
+    return {key: value for key, value in items(cls)}
+
 
 # Agent attributes
 translational = [
@@ -146,6 +165,54 @@ def reset_motion(agent):
         agent.torque[:] = 0
 
 
+@numba.jit([boolean(typeof(agent_type_three_circle)[:], float64[:], float64)],
+           nopython=True, nogil=True, cache=True)
+def overlapping_circle_circle(agents, x, r):
+    """Test if two circles are overlapping.
+
+    Args:
+        agents:
+        x: Position of agent that is tested
+        r: Radius of agent that is tested
+
+    Returns:
+        bool:
+    """
+    for agent in agents:
+        h, _ = distance_circle_circle(agent.position, agent.radius, x, r)
+        if h < 0.0:
+            return True
+    return False
+
+
+@numba.jit([boolean(typeof(agent_type_three_circle)[:],
+                    UniTuple(float64[:], 3), UniTuple(float64, 3))],
+           nopython=True, nogil=True, cache=True)
+def overlapping_three_circle(agents, x, r):
+    """Test if two three-circle models are overlapping.
+
+    Args:
+        x1: Positions of other agents
+        r1: Radii of other agents
+        x: Position of agent that is tested
+        r: Radius of agent that is tested
+
+    Returns:
+        bool:
+
+    """
+    # TODO: Compute shoulders
+    for agent in agents:
+        h, _, _, _ = distance_three_circle(
+            (agent.position, agent.position_ls, agent.position_rs),
+            (agent.r_t, agent.r_s, agent.r_s),
+            x, r
+        )
+        if h < 0:
+            return True
+    return False
+
+
 class AgentManager(object):
     def __init__(self, size, model):
         if model is AgentModels.CIRCULAR:
@@ -161,8 +228,8 @@ class AgentManager(object):
         self.active = np.zeros(self.size, dtype=np.bool8)
 
     def add(self, index, **attributes):
-        agent = self.agents[index]
         self.set_attributes(index, **attributes)
+        self.set_attributes(index, **to_dict(Defaults))
         self.active[index] = np.bool8(True)
 
     def remove(self, index):
@@ -172,7 +239,8 @@ class AgentManager(object):
     def set_attributes(self, index, **attributes):
         agent = self.agents[index]
         for attribute, value in attributes.items():
-            agent[attribute] = value
+            if hasattr(agent, attribute):
+                agent[attribute] = value
 
 
 # Linear obstacle defined by two points
@@ -180,7 +248,6 @@ obstacle_type_linear = np.dtype([
     ('p0', np.float64, 2),
     ('p1', np.float64, 2),
 ])
-
 
 # Neighborhood for tracking neighboring agents
 Neighborhood = namedtuple(
@@ -211,6 +278,7 @@ def init_neighborhood(agent_size, neighborhood_size, neighbor_radius):
 
 
 def reset_neighborhood(neighborhood):
-    neighborhood.neighbors['agent_indices'] = -1
+    missing = -1
+    neighborhood.neighbors['agent_indices'] = missing
     neighborhood.neighbors['distances'] = np.inf
     neighborhood.neighbors['distances_max'] = np.inf
