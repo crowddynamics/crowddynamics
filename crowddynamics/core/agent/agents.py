@@ -200,7 +200,7 @@ def init_neighborhood(agent_size, neighborhood_size, neighbor_radius):
         Neighborhood:
     """
     dtype = np.dtype([
-        ('indices', np.int64, neighborhood_size),
+        ('agent_indices', np.int64, neighborhood_size),
         ('distances', np.float64, neighborhood_size),
         ('distances_max', np.float64),
     ])
@@ -211,6 +211,6 @@ def init_neighborhood(agent_size, neighborhood_size, neighbor_radius):
 
 
 def reset_neighborhood(neighborhood):
-    neighborhood.neighbors.indices[:, :] = -1
-    neighborhood.neighbors.distances[:, :] = np.inf
-    neighborhood.neighbors.distances_max[:] = np.inf
+    neighborhood.neighbors['agent_indices'] = -1
+    neighborhood.neighbors['distances'] = np.inf
+    neighborhood.neighbors['distances_max'] = np.inf
