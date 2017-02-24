@@ -1,4 +1,24 @@
-"""Agent and obstacle structures."""
+r"""Agent model for multiagent simulation
+
+**Circular model**
+
+Simplest of the models is circular model without orientation. Circle is defined
+with radius :math:`r > 0` from the center of mass.
+
+**Three circle model** [Langston2006]_
+
+Three circle model models agent with three circles which represent torso and two
+shoulders. Torso has radius of :math:`r_t` and is centered at center of mass
+:math:`\mathbf{x}` and shoulder have both radius of  :math:`r_s` and are
+centered at :math:`\mathbf{x} \pm r_{ts} \mathbf{\hat{e}_t}` where normal and
+tangent vectors
+
+.. math::
+   \mathbf{\hat{e}_n} &= [\cos(\varphi), \sin(\varphi)] \\
+   \mathbf{\hat{e}_t} &= [\sin(\varphi), -\cos(\varphi)]
+
+"""
+from collections import namedtuple
 from enum import Enum
 
 import numba
@@ -34,13 +54,11 @@ damping = 500
 std_rand_force = 0.1
 std_rand_torque = 0.1
 
-
 # Limits
 sight_soc = 3.0
 sight_wall = 3.0
 f_soc_ij_max = 2e3
 f_soc_iw_max = 2e3
-
 
 # Agent attributes
 translational = [
@@ -84,7 +102,6 @@ three_circle = [
     ('front', np.float64, 2),
 ]
 
-
 # Agent model types
 agent_type_circular = np.dtype(
     translational
@@ -122,7 +139,7 @@ def front(agents):
                          agent.r_t
 
 
-@numba.generated_jit()
+@numba.generated_jit(cache=True)
 def reset_motion(agent):
     agent.force[:] = 0
     if agent.dtype is numba.from_dtype(agent_type_three_circle):
@@ -143,7 +160,7 @@ class AgentManager(object):
         self.model = model
         self.active = np.zeros(self.size, dtype=np.bool8)
 
-    def add(self,  index, **attributes):
+    def add(self, index, **attributes):
         agent = self.agents[index]
         self.set_attributes(index, **attributes)
         self.active[index] = np.bool8(True)
@@ -163,3 +180,37 @@ obstacle_type_linear = np.dtype([
     ('p0', np.float64, 2),
     ('p1', np.float64, 2),
 ])
+
+
+# Neighborhood for tracking neighboring agents
+Neighborhood = namedtuple(
+    'Neighborhood', ['neighbor_radius', 'neighborhood_size', 'neighbors']
+)
+
+
+def init_neighborhood(agent_size, neighborhood_size, neighbor_radius):
+    """Initialise neighborhood
+
+    Args:
+        agent_size (int):
+        neighborhood_size (int):
+        neighbor_radius (float):
+
+    Returns:
+        Neighborhood:
+    """
+    dtype = np.dtype([
+        ('indices', np.int64, neighborhood_size),
+        ('distances', np.float64, neighborhood_size),
+        ('distances_max', np.float64),
+    ])
+    neighbors = np.zeros(agent_size, dtype=dtype)
+    neighborhood = Neighborhood(neighbor_radius, neighborhood_size, neighbors)
+    reset_neighborhood(neighborhood)
+    return neighborhood
+
+
+def reset_neighborhood(neighborhood):
+    neighborhood.neighbors.indices[:, :] = -1
+    neighborhood.neighbors.distances[:, :] = np.inf
+    neighborhood.neighbors.distances_max[:] = np.inf

@@ -68,15 +68,6 @@ AGENT_ATTRS = (
 )
 
 
-NEIGHBORHOOD_SPEC = (
-    ('neighbor_radius', float64),
-    ('neighborhood_size', int64),
-    ('neighbors', int64[:, :]),
-    ('neighbor_distances', float64[:, :]),
-    ('neighbor_distances_max', float64[:]),
-)
-
-
 @numba.jit(UniTuple(f8[:], 3)(f8[:], f8, f8), nopython=True, nogil=True)
 def positions_scalar(position, orientation, radius_ts):
     """Center and shoulder positions"""
@@ -402,24 +393,3 @@ class Agent(object):
 
 
 Agent_numba_type = Agent.class_type.instance_type
-
-
-class NeighborHood(object):
-    # Tracking neighboring agents. Neighbors contains the indices of the
-    # neighboring agents. Negative value denotes missing value (if less than
-    # neighborhood_size of neighbors).
-    # TODO: move to interactions
-
-    def __init__(self, size):
-        self.size = size
-        self.neighbor_radius = np.nan
-        self.neighborhood_size = 8
-        self.neighbors = np.ones((self.size, self.neighborhood_size), dtype=np.int64)
-        self.neighbor_distances = np.zeros((self.size, self.neighborhood_size))
-        self.neighbor_distances_max = np.zeros(self.size)
-        self.reset_neighbor()
-
-    def reset_neighbor(self):
-        self.neighbors[:, :] = -1  # negative value denotes missing value
-        self.neighbor_distances[:, :] = np.inf
-        self.neighbor_distances_max[:] = np.inf
