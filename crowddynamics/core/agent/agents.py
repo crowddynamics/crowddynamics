@@ -1,11 +1,29 @@
+"""Agent and obstacle structures."""
+from enum import Enum
+
 import numba
 import numpy as np
-from numba import typeof, int64
+from numba import typeof, void
+
+from crowddynamics.core.vector.vector2D import unit_vector, rotate270
+from crowddynamics.exceptions import CrowdDynamicsException
+
+
+class AgentModels(Enum):
+    """Enumeration class for available agent models."""
+    CIRCULAR = 'circular'
+    THREE_CIRCLE = 'three_circle'
+
+
+class AgentBodyTypes(Enum):
+    ADULT = 'adult'
+    MALE = 'male'
+    FEMALE = 'female'
+    CHILD = 'child'
+    ELDERY = 'eldery'
 
 
 # Default values
-from crowddynamics.core.vector.vector2D import unit_vector, rotate270
-
 tau_adj = 0.5
 tau_rot = 0.2
 k_soc = 1.5
@@ -61,9 +79,13 @@ three_circle = [
     ('r_t', np.float64),
     ('r_s', np.float64),
     ('r_ts', np.float64),
+    ('position_ls', np.float64, 2),
+    ('position_rs', np.float64, 2),
+    ('front', np.float64, 2),
 ]
 
-# Agent types
+
+# Agent model types
 agent_type_circular = np.dtype(
     translational
 )
@@ -75,33 +97,65 @@ agent_type_three_circle = np.dtype(
 )
 
 
-@numba.jit((typeof(agent_type_three_circle), int64),
+@numba.jit(void(typeof(agent_type_three_circle)[:]),
            nopython=True, nogil=True, cache=True)
-def shoulders(agent, i):
-    n = agent.orientation[i]
-    t = rotate270(n)
-    offset = t * agent.r_ts[i]
-    position = agent.position[i]
-    position_ls = position - offset
-    position_rs = position + offset
-    return position, position_ls, position_rs
+def shoulders(agents):
+    """Positions of the center of mass, left- and right shoulders.
+
+    Args:
+        agents (ndarray):
+            Numpy array of datatype ``dtype=agent_type_three_circle``.
+    """
+    for agent in agents:
+        tangent = rotate270(unit_vector(agent.orientation))
+        offset = tangent * agent.r_ts
+        agent.position_ls[:] = agent.position - offset
+        agent.position_rs[:] = agent.position + offset
 
 
-@numba.jit((typeof(agent_type_three_circle), int64),
+@numba.jit(void(typeof(agent_type_three_circle)[:]),
            nopython=True, nogil=True, cache=True)
-def front(agent, i):
-    return agent.position[i] * unit_vector(agent.orientation[i]) * agent.r_t[i]
+def front(agents):
+    """Position of agents nose."""
+    for agent in agents:
+        agent.front[:] = agent.position * unit_vector(agent.orientation) * \
+                         agent.r_t
 
 
-@numba.jit()
+@numba.generated_jit()
 def reset_motion(agent):
     agent.force[:] = 0
-    agent.torque[:] = 0
+    if agent.dtype is numba.from_dtype(agent_type_three_circle):
+        agent.torque[:] = 0
 
 
-class AgentFactory(object):
+class AgentManager(object):
     def __init__(self, size, model):
-        self.agents = np.zeros(size, dtype=agent_type_circular)
+        if model is AgentModels.CIRCULAR:
+            self.agents = np.zeros(size, dtype=agent_type_circular)
+        elif model is AgentModels.THREE_CIRCLE:
+            self.agents = np.zeros(size, dtype=agent_type_three_circle)
+        else:
+            CrowdDynamicsException('Model: {model} in in {models}'.format(
+                model=model, models=AgentModels
+            ))
+        self.size = size
+        self.model = model
+        self.active = np.zeros(self.size, dtype=np.bool8)
+
+    def add(self,  index, **attributes):
+        agent = self.agents[index]
+        self.set_attributes(index, **attributes)
+        self.active[index] = np.bool8(True)
+
+    def remove(self, index):
+        agent = self.agents[index]
+        self.active[index] = np.bool8(False)
+
+    def set_attributes(self, index, **attributes):
+        agent = self.agents[index]
+        for attribute, value in attributes.items():
+            agent[attribute] = value
 
 
 # Linear obstacle defined by two points

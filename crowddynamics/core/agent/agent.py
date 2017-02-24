@@ -248,7 +248,7 @@ class Agent(object):
         self.f_soc_ij_max = 2e3
         self.f_soc_iw_max = 2e3
 
-    def add(self, position, mass, radius, ratio_rt, ratio_rs, ratio_ts,
+    def add(self, position, mass, radius, r_t, r_s, r_ts,
             inertia_rot, max_velocity, max_angular_velocity):
         r"""
         Add new agent to next free index if there is space left.
@@ -263,13 +263,13 @@ class Agent(object):
             radius (float):
                 Total radius of the agent
 
-            ratio_rt (float):
+            r_t (float):
                 Ratio of the total radius and torso radius. :math:`[0, 1]`
 
-            ratio_rs (float):
+            r_s (float):
                 Ratio of the total radius and shoulder radius. :math:`[0, 1]`
 
-            ratio_ts (float):
+            r_ts (float):
                 Ratio of the torso radius and torso radius. :math:`[0, 1]`
 
             inertia_rot (float):
@@ -295,9 +295,9 @@ class Agent(object):
                 self.position[i] = position
                 self.mass[i] = mass
                 self.radius[i] = radius
-                self.r_t[i] = ratio_rt * radius
-                self.r_s[i] = ratio_rs * radius
-                self.r_ts[i] = ratio_ts * radius
+                self.r_t[i] = r_t
+                self.r_s[i] = r_s
+                self.r_ts[i] = r_ts
                 self.inertia_rot[i] = inertia_rot
                 self.target_velocity[i] = max_velocity
                 self.target_angular_velocity[i] = max_angular_velocity

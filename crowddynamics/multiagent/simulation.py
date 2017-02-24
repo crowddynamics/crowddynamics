@@ -95,17 +95,14 @@ class MultiAgentSimulation:
         """Initialize agents
 
         Args:
-            max_size (int, optional):
+            max_size (int):
                 - ``int``: Maximum number of agents.
-                - ``None``: Dynamically increase the size when adding new agents
 
             model (str):
                 Choice from:
                 - ``circular``
                 - ``three_circle``
         """
-        if max_size is None:
-            raise NotImplemented
         self.agent = Agent(max_size)
         if model == 'three_circle':
             self.agent.set_three_circle()
@@ -189,9 +186,9 @@ class MultiAgentSimulation:
             position = sampling.draw()
             mass = parameters.mass.default()
             radius = parameters.radius.default()
-            ratio_rt = parameters.radius_torso.default()
-            ratio_rs = parameters.radius_shoulder.default()
-            ratio_ts = parameters.radius_torso_shoulder.default()
+            r_t = parameters.radius_torso.default() * radius
+            r_s = parameters.radius_shoulder.default() * radius
+            r_ts = parameters.radius_torso_shoulder.default() * radius
             inertia_rot = parameters.moment_of_inertia.default()
             max_velocity = parameters.maximum_velocity.default()
             max_angular_velocity = parameters.maximum_angular_velocity.default()
@@ -203,16 +200,14 @@ class MultiAgentSimulation:
             if num_active_agents > 0:
                 # Conditions
                 if self.agent.three_circle:
-                    r_t = ratio_rt * radius
-                    r_s = ratio_rs * radius
                     orientation = 0.0
                     poly = agent_polygon(
-                        positions(position, orientation, ratio_rt * radius),
+                        positions(position, orientation, r_t),
                         (r_t, r_s, r_s)
                     )
                     overlapping_agents = overlapping_three_circle(
                         self.agent, self.agent.indices(),
-                        positions(position, orientation, ratio_rt * radius),
+                        positions(position, orientation, r_t),
                         (r_t, r_s, r_s),
                     )
                 else:
@@ -227,7 +222,7 @@ class MultiAgentSimulation:
             if not overlapping_agents and not overlapping_obstacles:
                 # Add new agent
                 index = self.agent.add(
-                    position, mass, radius, ratio_rt, ratio_rs, ratio_ts,
+                    position, mass, radius, r_t, r_s, r_ts,
                     inertia_rot, max_velocity, max_angular_velocity
                 )
                 if index >= 0:
