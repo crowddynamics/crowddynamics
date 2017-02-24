@@ -5,6 +5,7 @@ r"""Universal power law governing pedestrian
 import numba
 import numpy as np
 from numba import f8
+from numba.types import Tuple
 
 from crowddynamics.core.vector import dot, truncate, rotate90
 
@@ -38,7 +39,7 @@ def potential(k, tau, tau_0):
 
 
 @numba.jit(f8(f8, f8),
-           nopython=True, nogil=True)
+           nopython=True, nogil=True, cache=True)
 def magnitude(tau, tau_0):
     r"""
     Force affecting agent can be derived by taking spatial gradient of the energy,
@@ -72,7 +73,7 @@ def magnitude(tau, tau_0):
 
 
 @numba.jit(f8[:](f8[:], f8[:], f8, f8, f8),
-           nopython=True, nogil=True)
+           nopython=True, nogil=True, cache=True)
 def gradient_circle_circle(x_rel, v_rel, a, b, d):
     r"""
     Gradient of :math:`\tau` between two circles.
@@ -94,7 +95,7 @@ def gradient_circle_circle(x_rel, v_rel, a, b, d):
 
 
 @numba.jit(f8[:](f8[:], f8[:], f8[:], f8, f8, f8),
-           nopython=True, nogil=True)
+           nopython=True, nogil=True, cache=True)
 def gradient_three_circle(x_rel, v_rel, r_off, a, b, d):
     r"""
     Gradient of :math:`\tau` between two three-circle representations.
@@ -115,7 +116,7 @@ def gradient_three_circle(x_rel, v_rel, r_off, a, b, d):
 
 
 @numba.jit(f8[:](f8[:], f8[:]),
-           nopython=True, nogil=True)
+           nopython=True, nogil=True, cache=True)
 def gradient_circle_line(v, n):
     """
     Gradient circle line
@@ -130,8 +131,8 @@ def gradient_circle_line(v, n):
     return n / dot(v, n)
 
 
-@numba.jit(numba.types.Tuple((f8, f8[:]))(f8[:], f8[:], f8),
-           nopython=True, nogil=True)
+@numba.jit(Tuple((f8, f8[:]))(f8[:], f8[:], f8),
+           nopython=True, nogil=True, cache=True)
 def time_to_collision_circle_circle(x_rel, v_rel, r_tot):
     r"""
     Time-to-collision of two circles. From *skin-to-skin* distance
@@ -192,10 +193,10 @@ def time_to_collision_circle_circle(x_rel, v_rel, r_tot):
     return tau, grad
 
 
-@numba.jit(nopython=True, nogil=True)
+@numba.jit(Tuple((f8, f8[:]))(f8[:], f8[:], f8, f8[:]),
+           nopython=True, nogil=True, cache=True)
 def time_to_collision_circle_line(x_rel, v_rel, r_tot, n):
-    r"""
-    Time-to-collision of circle with line.
+    r"""Time-to-collision of circle with line.
 
     Args:
         x_rel:

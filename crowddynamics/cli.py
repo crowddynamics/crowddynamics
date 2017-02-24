@@ -228,9 +228,9 @@ def mkcommand(name, simulation):
     @click.pass_context
     def run_simulation(context, *args, **kwargs):
         """"Callback function that is called when the command is executed."""
-        click.echo(context.obj)
-        click.echo(args)
-        click.echo(kwargs)
+        # click.echo(context.obj)
+        # click.echo(args)
+        # click.echo(kwargs)
 
         num = context.obj['num']
         maxiter = context.obj['maxiter']
