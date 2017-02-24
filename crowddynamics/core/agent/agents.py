@@ -25,6 +25,7 @@ import numba
 import numpy as np
 from numba import typeof, void, boolean, float64
 from numba.types import UniTuple
+from sortedcontainers import SortedSet
 
 from crowddynamics.core.interactions import distance_circle_circle
 from crowddynamics.core.interactions import distance_three_circle
@@ -47,7 +48,20 @@ class AgentBodyTypes(Enum):
     ELDERY = 'eldery'
 
 
-class Defaults(object):
+class Values(object):
+    @classmethod
+    def items(cls):
+        """Yield items from a class."""
+        for key, value in cls.__dict__.items():
+            if not key.startswith('__'):
+                yield key, value
+
+    @classmethod
+    def to_dict(cls):
+        return {key: value for key, value in cls.items()}
+
+
+class Defaults(Values):
     """Default values for agent parameters"""
     tau_adj = 0.5
     tau_rot = 0.2
@@ -60,23 +74,12 @@ class Defaults(object):
     std_rand_torque = 0.1
 
 
-class Limits(object):
+class Limits(Values):
     """Limits"""
     sight_soc = 3.0
     sight_wall = 3.0
     f_soc_ij_max = 2e3
     f_soc_iw_max = 2e3
-
-
-def items(cls):
-    """Yield items from a class."""
-    for key, value in cls.__dict__.items():
-        if not key.startswith('__'):
-            yield key, value
-
-
-def to_dict(cls):
-    return {key: value for key, value in items(cls)}
 
 
 # Agent attributes
@@ -160,12 +163,20 @@ def front(agents):
 
 @numba.generated_jit(cache=True)
 def reset_motion(agent):
-    agent.force[:] = 0
+    def _reset(agent):
+        agent['force'][:] = 0
+
+    def _reset2(agent):
+        agent['force'][:] = 0
+        agent['torque'][:] = 0
+
+    if agent.dtype is numba.from_dtype(agent_type_circular):
+        return _reset
     if agent.dtype is numba.from_dtype(agent_type_three_circle):
-        agent.torque[:] = 0
+        return _reset2
 
 
-@numba.jit([boolean(typeof(agent_type_three_circle)[:], float64[:], float64)],
+@numba.jit([boolean(typeof(agent_type_circular)[:], float64[:], float64)],
            nopython=True, nogil=True, cache=True)
 def overlapping_circle_circle(agents, x, r):
     """Test if two circles are overlapping.
@@ -223,20 +234,77 @@ class AgentManager(object):
             CrowdDynamicsException('Model: {model} in in {models}'.format(
                 model=model, models=AgentModels
             ))
+
         self.size = size
         self.model = model
-        self.active = np.zeros(self.size, dtype=np.bool8)
+        self.active = SortedSet()
+        self.inactive = SortedSet(range(size))
 
-    def add(self, index, **attributes):
-        self.set_attributes(index, **attributes)
-        self.set_attributes(index, **to_dict(Defaults))
-        self.active[index] = np.bool8(True)
+    def add(self, **attributes):
+        """Add new agent
+
+        Args:
+            index (int):
+
+            **attributes:
+                position (numpy.ndarray):
+                    Initial position of the agent
+
+                mass (float):
+                    Mass of the agent
+
+                radius (float):
+                    Total radius of the agent
+
+                r_t (float):
+                    Ratio of the total radius and torso radius. :math:`[0, 1]`
+
+                r_s (float):
+                    Ratio of the total radius and shoulder radius. :math:`[0, 1]`
+
+                r_ts (float):
+                    Ratio of the torso radius and torso radius. :math:`[0, 1]`
+
+                inertia_rot (float):
+
+                max_velocity (float):
+
+                max_angular_velocity (float):
+
+                orientation (float):
+                    Initial orientation :math:`\varphi = [\-pi, \pi]` of the agent.
+
+                velocity (numpy.ndarray):
+                    Initial velocity
+
+                angular_velocity (float):
+
+                target_direction (numpy.ndarray):
+                    Unit vector to desired direction
+
+        """
+        if self.inactive:
+            index = self.inactive.pop(0)
+            self.set_attributes(index, **attributes)
+            self.set_attributes(index, **Defaults.to_dict())
+            self.set_attributes(index, **Limits.to_dict())
+            self.active.add(index)
+            return index
+        else:
+            return -1
 
     def remove(self, index):
-        agent = self.agents[index]
-        self.active[index] = np.bool8(False)
+        """Remove agent"""
+        if index in self.active:
+            self.active.remove(index)
+            self.inactive.add(index)
+            self.agents[index][:] = 0  # Reset agent
+            return True
+        else:
+            return False
 
     def set_attributes(self, index, **attributes):
+        """Set attribute value for agent"""
         agent = self.agents[index]
         for attribute, value in attributes.items():
             if hasattr(agent, attribute):
@@ -248,6 +316,11 @@ obstacle_type_linear = np.dtype([
     ('p0', np.float64, 2),
     ('p1', np.float64, 2),
 ])
+
+
+class ObstacleManager(object):
+    pass
+
 
 # Neighborhood for tracking neighboring agents
 Neighborhood = namedtuple(

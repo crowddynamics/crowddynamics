@@ -241,8 +241,7 @@ class Agent(object):
 
     def add(self, position, mass, radius, r_t, r_s, r_ts,
             inertia_rot, max_velocity, max_angular_velocity):
-        r"""
-        Add new agent to next free index if there is space left.
+        r"""Add new agent to next free index if there is space left.
 
         Args:
             position (numpy.ndarray):
@@ -317,8 +316,7 @@ class Agent(object):
 
     def set_motion(self, i, orientation, velocity, angular_velocity,
                    target_direction, target_orientation):
-        r"""
-        Set motion parameters for agent.
+        r"""Set motion parameters for agent.
 
         Args:
 
