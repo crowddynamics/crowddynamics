@@ -178,6 +178,7 @@ def distance_three_circle_line(x, r, p):
     return h_min, normal, r_moment
 
 
+# TODO: remove
 @numba.jit(nopython=True, nogil=True)
 def overlapping_circle_circle(agent, indices, x2, r2):
     """
@@ -202,6 +203,7 @@ def overlapping_circle_circle(agent, indices, x2, r2):
     return False
 
 
+# TODO: remove
 @numba.jit(nopython=True, nogil=True)
 def overlapping_three_circle(agent, indices, x2, r2):
     """

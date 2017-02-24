@@ -4,11 +4,10 @@ from numba import f8
 from crowddynamics.core.vector import dot
 
 
-@numba.jit(f8[:](f8, f8[:], f8[:], f8[:], f8, f8, f8), nopython=True,
-           nogil=True)
+@numba.jit(f8[:](f8, f8[:], f8[:], f8[:], f8, f8, f8),
+           nopython=True, nogil=True, cache=True)
 def force_contact(h, n, v, t, mu, kappa, damping):
-    r"""
-    Physical contact force with damping. Helbing's original model did not
+    r"""Physical contact force with damping. Helbing's original model did not
     include damping, which was added by Langston.
 
     .. math::

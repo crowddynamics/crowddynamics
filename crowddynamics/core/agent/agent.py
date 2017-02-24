@@ -53,7 +53,7 @@ AGENT_ATTRS = (
     Attribute('target_angular_velocity', float64[:], True),
     Attribute('torque', float64[:], True),
     Attribute('tau_adj', float64[:, :], False),
-    Attribute('tau_rot', float64[:, :], False),
+    Attribute('tau_rot', float64[:], False),
     Attribute('k_soc', float64[:], False),
     Attribute('tau_0', float64[:], False),
     Attribute('mu', float64[:], False),
@@ -224,7 +224,7 @@ class Agent(object):
 
         # Motion related parameters
         self.tau_adj = 0.5 * np.ones((self.size, 1))
-        self.tau_rot = 0.2 * np.ones((self.size, 1))
+        self.tau_rot = 0.2 * np.ones(self.size)
         self.k_soc = 1.5 * np.ones(self.size)
         self.tau_0 = 3.0 * np.ones(self.size)
         self.mu = 1.2e5 * np.ones(self.size)

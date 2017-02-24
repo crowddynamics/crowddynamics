@@ -185,6 +185,7 @@ def overlapping_circle_circle(agents, x, r):
     return False
 
 
+# TODO: Compute shoulders
 @numba.jit([boolean(typeof(agent_type_three_circle)[:],
                     UniTuple(float64[:], 3), UniTuple(float64, 3))],
            nopython=True, nogil=True, cache=True)
@@ -201,7 +202,6 @@ def overlapping_three_circle(agents, x, r):
         bool:
 
     """
-    # TODO: Compute shoulders
     for agent in agents:
         h, _, _, _ = distance_three_circle(
             (agent.position, agent.position_ls, agent.position_rs),

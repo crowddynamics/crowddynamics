@@ -37,7 +37,8 @@ def potential(k, tau, tau_0):
     return k / tau**2 * np.exp(-tau / tau_0)
 
 
-@numba.jit(f8(f8, f8), nopython=True, nogil=True)
+@numba.jit(f8(f8, f8),
+           nopython=True, nogil=True)
 def magnitude(tau, tau_0):
     r"""
     Force affecting agent can be derived by taking spatial gradient of the energy,
@@ -70,7 +71,8 @@ def magnitude(tau, tau_0):
     return (2.0 / tau + 1.0 / tau_0) * np.exp(-tau / tau_0) / tau ** 2
 
 
-@numba.jit(f8[:](f8[:], f8[:], f8, f8, f8), nopython=True, nogil=True)
+@numba.jit(f8[:](f8[:], f8[:], f8, f8, f8),
+           nopython=True, nogil=True)
 def gradient_circle_circle(x_rel, v_rel, a, b, d):
     r"""
     Gradient of :math:`\tau` between two circles.
@@ -91,7 +93,8 @@ def gradient_circle_circle(x_rel, v_rel, a, b, d):
     return (v_rel - (v_rel * b + x_rel * a) / d) / a
 
 
-@numba.jit(f8[:](f8[:], f8[:], f8[:], f8, f8, f8), nopython=True, nogil=True)
+@numba.jit(f8[:](f8[:], f8[:], f8[:], f8, f8, f8),
+           nopython=True, nogil=True)
 def gradient_three_circle(x_rel, v_rel, r_off, a, b, d):
     r"""
     Gradient of :math:`\tau` between two three-circle representations.
@@ -111,7 +114,8 @@ def gradient_three_circle(x_rel, v_rel, r_off, a, b, d):
     return (v_rel - (a * (x_rel + 2 * r_off) + b * v_rel) / d) / a
 
 
-@numba.jit(f8[:](f8[:], f8[:]), nopython=True, nogil=True)
+@numba.jit(f8[:](f8[:], f8[:]),
+           nopython=True, nogil=True)
 def gradient_circle_line(v, n):
     """
     Gradient circle line
