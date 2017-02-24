@@ -18,6 +18,7 @@ from crowddynamics.multiagent.parameters import Parameters
 from crowddynamics.taskgraph import TaskNode
 
 REGISTERED_SIMULATIONS = dict()
+# TODO: remove, replace with Enum classes in agents.py
 AGENT_MODELS = ['circular', 'three_circle']
 BODY_TYPES = ['adult', 'male', 'female', 'child', 'eldery']
 
@@ -71,7 +72,7 @@ class MultiAgentSimulation:
         # Algorithms
         self.queue = multiprocessing.Queue()
         self.tasks = None
-        self.iterations = int(0)
+        self.iterations = 0
 
     @property
     def name(self):

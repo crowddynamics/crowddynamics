@@ -7,38 +7,20 @@ from crowddynamics.core.agent.agents import AgentManager, AgentModels, \
 from crowddynamics.core.vector.vector2D import unit_vector
 
 
-def create_random_agent_attributes():
-    return dict(
-        position=np.random.uniform(-1.0, 1.0, 2),
-        mass=np.random.uniform(0.0, 1.0),
-        radius=np.random.uniform(0.0, 1.0),
-        r_t=np.random.uniform(0.0, 1.0),
-        r_s=np.random.uniform(0.0, 1.0),
-        r_ts=np.random.uniform(0.0, 1.0),
-        inertia_rot=np.random.uniform(0.0, 1.0),
-        target_velocity=np.random.uniform(0.0, 1.0),
-        target_angular_velocity=np.random.uniform(0.0, 1.0),
-        orientation=np.random.uniform(-np.pi, np.pi),
-        velocity=np.random.uniform(0.0, 1.0, 2),
-        angular_velocity=np.random.uniform(-1.0, 1.0),
-        target_direction=unit_vector(np.random.uniform(-np.pi, np.pi)),
-        target_orientation=np.random.uniform(-np.pi, np.pi),
-    )
+SEED = np.random.randint(0, 100)
 
 
-@pytest.fixture()
+@pytest.fixture(scope='module')
 def agent_circular(size=1000):
     agent = AgentManager(size, AgentModels.CIRCULAR)
-    while agent.inactive:
-        agent.add(**create_random_agent_attributes())
+    agent.fill_random(SEED)
     return agent
 
 
-@pytest.fixture()
+@pytest.fixture(scope='module')
 def agent_three_circle(size=1000):
     agent = AgentManager(size, AgentModels.THREE_CIRCLE)
-    while agent.inactive:
-        agent.add(**create_random_agent_attributes())
+    agent.fill_random(SEED)
     return agent
 
 
@@ -54,14 +36,14 @@ def test_three_circle(agent_three_circle):
     assert True
 
 
-def test_overlapping_circular(benchmark, agent_circular):
+def test_overlapping_circular(agent_circular):
     x = np.random.uniform(-1.0, 1.0, 2)
     r = np.random.uniform(0.0, 1.0)
     overlapping_circle_circle(agent_circular.agents, x, r)
     assert True
 
 
-def test_overlapping_three_circle(benchmark, agent_three_circle):
+def test_overlapping_three_circle(agent_three_circle):
     x = (
         np.random.uniform(-1.0, 1.0, 2),
         np.random.uniform(-1.0, 1.0, 2),

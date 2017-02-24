@@ -1,13 +1,11 @@
 import hypothesis.strategies as st
 import numpy as np
-from hypothesis import example
 from hypothesis import given
 
+import crowddynamics.testing.strategies as st2
 from crowddynamics.core.interactions.distance import distance_circle_circle, \
     distance_three_circle, distance_circle_line, distance_three_circle_line, \
     overlapping_circle_circle, overlapping_three_circle
-from crowddynamics.core.vector.vector2D import length
-import crowddynamics.testing.strategies as st2
 
 
 @given(
@@ -26,11 +24,6 @@ def test_distance_circle_circle(x0, r0, x1, r1):
     assert n.dtype.type is np.float64
 
     assert h >= -r_tot
-
-    # if np.all(x == 0.0):
-    #     assert np.isclose(length(n), 0.0)
-    # else:
-    #     assert np.isclose(length(n), 1.0)
 
 
 @given(

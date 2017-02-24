@@ -224,6 +224,25 @@ def overlapping_three_circle(agents, x, r):
     return False
 
 
+def create_random_agent_attributes():
+    return dict(
+        position=np.random.uniform(-1.0, 1.0, 2),
+        mass=np.random.uniform(0.0, 1.0),
+        radius=np.random.uniform(0.0, 1.0),
+        r_t=np.random.uniform(0.0, 1.0),
+        r_s=np.random.uniform(0.0, 1.0),
+        r_ts=np.random.uniform(0.0, 1.0),
+        inertia_rot=np.random.uniform(0.0, 1.0),
+        target_velocity=np.random.uniform(0.0, 1.0),
+        target_angular_velocity=np.random.uniform(0.0, 1.0),
+        orientation=np.random.uniform(-np.pi, np.pi),
+        velocity=np.random.uniform(0.0, 1.0, 2),
+        angular_velocity=np.random.uniform(-1.0, 1.0),
+        target_direction=unit_vector(np.random.uniform(-np.pi, np.pi)),
+        target_orientation=np.random.uniform(-np.pi, np.pi),
+    )
+
+
 class AgentManager(object):
     def __init__(self, size, model):
         if model is AgentModels.CIRCULAR:
@@ -309,6 +328,15 @@ class AgentManager(object):
         for attribute, value in attributes.items():
             if hasattr(agent, attribute):
                 agent[attribute] = value
+
+    def fill_random(self, seed=None):
+        """Fill with random agents for testing purposes"""
+        np.random.seed(seed)
+        while self.inactive:
+            self.add(**create_random_agent_attributes())
+        if self.model is AgentModels.THREE_CIRCLE:
+            shoulders(self.agents)
+            front(self.agents)
 
 
 # Linear obstacle defined by two points

@@ -4,6 +4,7 @@
 ## Package
 typing
 ruamel.yaml
+sortedcontainers
 
 ## Command-line interface
 click

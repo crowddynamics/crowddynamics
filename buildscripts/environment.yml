@@ -25,6 +25,7 @@ dependencies:
         ## Package
         - versioneer
         - typing
+        - sortedcontainers
         - ruamel.yaml
         - scikit-fmm
         - click
