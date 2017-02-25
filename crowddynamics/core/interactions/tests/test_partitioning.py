@@ -12,7 +12,7 @@ CELL_SIZE = 0.001
 POINTS = np.random.uniform(-1.0, 1.0, (10000, 2))
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope='function')
 def mutable_blocklist():
     mbl = MutableBlockList(CELL_SIZE, radius=1)
     return mbl
@@ -48,22 +48,34 @@ def test_block_list(points, cell_size):
     assert x_max.dtype.type is np.int64
 
 
+@pytest.mark.parametrize('cell_size', (0.1, 0.05, 0.01, 0.005))
 @pytest.mark.parametrize('size', (100, 1000, 10000))
-def test_blocklist_benchmark(benchmark, size):
-    benchmark(block_list, POINTS[:size], CELL_SIZE)
+def test_blocklist_benchmark(benchmark, size, cell_size):
+    points = np.random.uniform(-1.0, 1.0, (size, 2))
+    benchmark(block_list, points, cell_size)
     assert True
 
 
-def test_mutable_blocklist(mutable_blocklist, size=1000):
+@pytest.mark.parametrize('size', (100, 1000, 10000))
+def test_mutable_blocklist_setitem(mutable_blocklist, benchmark, size):
+    keys = np.random.uniform(-1.0, 1.0, (size, 2))
+
+    def f():
+        for value in range(size):
+            mutable_blocklist[keys[value]] = value
+
+    benchmark(f)
+    assert True
+
+
+@pytest.mark.parametrize('size', (100, 1000, 10000))
+def test_mutable_blocklist_getitem(mutable_blocklist, benchmark, size):
     for value in range(size):
         key = np.random.uniform(-1.0, 1.0, 2)
         mutable_blocklist[key] = value
 
-    neighbors = mutable_blocklist[np.random.uniform(-1.0, 1.0, 2)]
-    assert True
-
-
-def test_mutable_blocklist_benchmark():
+    key = np.random.uniform(-1.0, 1.0, 2)
+    benchmark(mutable_blocklist.__getitem__, key)
     assert True
 
 
