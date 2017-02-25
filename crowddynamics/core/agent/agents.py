@@ -244,13 +244,15 @@ def create_random_agent_attributes():
 
 
 class AgentManager(object):
+    # TODO: user mutable blocklist for adding non-overlappping agents
+
     def __init__(self, size, model):
         if model is AgentModels.CIRCULAR:
             self.agents = np.zeros(size, dtype=agent_type_circular)
         elif model is AgentModels.THREE_CIRCLE:
             self.agents = np.zeros(size, dtype=agent_type_three_circle)
         else:
-            CrowdDynamicsException('Model: {model} in in {models}'.format(
+            raise CrowdDynamicsException('Model: {model} in in {models}'.format(
                 model=model, models=AgentModels
             ))
 
@@ -326,7 +328,7 @@ class AgentManager(object):
         """Set attribute value for agent"""
         agent = self.agents[index]
         for attribute, value in attributes.items():
-            if hasattr(agent, attribute):
+            if attribute in agent.dtype.names:
                 agent[attribute] = value
 
     def fill_random(self, seed=None):

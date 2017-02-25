@@ -8,9 +8,14 @@ Since crowd simulations are only dependent on interactions with agents close by
 we can partition the space into smaller chunk in order to avoid having to loop
 with agents far a away.
 """
+import operator as op
+from collections import defaultdict, Sequence, Iterable
+from itertools import product
+
 import numpy as np
 import numba
 from numba import float64, int64
+from sortedcontainers import SortedList
 
 
 @numba.jit([(float64[:, :], float64)],
@@ -103,6 +108,7 @@ spec = (
 )
 
 
+# TODO: remove from jitclass
 @numba.jitclass(spec)
 class BlockList(object):
     """
@@ -158,6 +164,40 @@ class BlockList(object):
         start = self.offset[index]
         end = start + self.count[index]
         return self.index_list[start:end]
+
+
+class MutableBlockList(defaultdict):
+    """Mutable block list implementation"""
+
+    def __init__(self, cell_size, radius=1, **kwargs):
+        super().__init__(SortedList, **kwargs)
+        self.cell_size = cell_size
+        self.radius = int(radius)
+        self.dimensions = 2
+
+    def index(self, key):
+        if isinstance(key, (int, float)):
+            return int(key // self.cell_size)
+        elif isinstance(key, Iterable):
+            return tuple(int(elem // self.cell_size) for elem in key)
+        else:
+            raise Exception('Invalid key')
+
+    def __setitem__(self, key, value):
+        """Add value to position in blocklist"""
+        super(MutableBlockList, self).__setitem__(self.index(key), value)
+
+    def __getitem__(self, item):
+        """Get values """
+        index = self.index(item)
+        ranges = (range(-self.radius, self.radius + 1) for _ in
+                  range(self.dimensions))
+        items = SortedList()
+        for i in product(*ranges):
+            key = tuple(map(op.add, index, i))
+            if key in self:
+                items += super(MutableBlockList, self).__getitem__(key)
+        return items
 
 
 class ConvexHull(object):
