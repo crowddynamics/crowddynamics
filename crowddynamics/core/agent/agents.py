@@ -29,6 +29,7 @@ from sortedcontainers import SortedSet
 
 from crowddynamics.core.interactions import distance_circle_circle
 from crowddynamics.core.interactions import distance_three_circle
+from crowddynamics.core.interactions.partitioning import MutableBlockList
 from crowddynamics.core.vector.vector2D import unit_vector, rotate270
 from crowddynamics.exceptions import CrowdDynamicsException
 
@@ -80,6 +81,9 @@ class Limits(Values):
     sight_wall = 3.0
     f_soc_ij_max = 2e3
     f_soc_iw_max = 2e3
+
+
+MAX_AGENT_RADIUS = 0.3
 
 
 # Agent attributes
@@ -260,8 +264,9 @@ class AgentManager(object):
         self.model = model
         self.active = SortedSet()
         self.inactive = SortedSet(range(size))
+        self.grid = MutableBlockList(cell_size=MAX_AGENT_RADIUS)
 
-    def add(self, **attributes):
+    def add(self, check_overlapping=True, **attributes):
         """Add new agent
 
         Args:
@@ -305,10 +310,17 @@ class AgentManager(object):
 
         """
         if self.inactive:
+            if check_overlapping and 'position' in attributes:
+                neighbours = self.grid[attributes['position']]
+                for i in neighbours:
+                    agent = self.agents[i]
+                    # TODO: test overlapping
+
             index = self.inactive.pop(0)
             self.set_attributes(index, **attributes)
             self.set_attributes(index, **Defaults.to_dict())
             self.set_attributes(index, **Limits.to_dict())
+
             self.active.add(index)
             return index
         else:

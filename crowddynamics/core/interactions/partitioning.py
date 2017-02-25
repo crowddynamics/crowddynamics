@@ -1,5 +1,4 @@
-"""
-Spatial partitioning algorithms.
+"""Spatial partitioning algorithms.
 
 - BlockList
 - ConvexHull
@@ -9,20 +8,18 @@ we can partition the space into smaller chunk in order to avoid having to loop
 with agents far a away.
 """
 import operator as op
-from collections import defaultdict, Sequence, Iterable
+from collections import defaultdict, Iterable
 from itertools import product
 
-import numpy as np
 import numba
+import numpy as np
 from numba import float64, int64
-from sortedcontainers import SortedList
 
 
 @numba.jit([(float64[:, :], float64)],
            nopython=True, nogil=True, cache=True)
 def block_list(points, cell_size):
-    """
-    Block list
+    """Block list partitioning algorithm
 
     Args:
         points (numpy.ndarray):
@@ -166,37 +163,41 @@ class BlockList(object):
         return self.index_list[start:end]
 
 
-class MutableBlockList(defaultdict):
-    """Mutable block list implementation"""
+class MutableBlockList(object):
+    """Mutable blocklist (or spatial grid hash) implementation."""
 
-    def __init__(self, cell_size, radius=1, **kwargs):
-        super().__init__(SortedList, **kwargs)
-        self.cell_size = cell_size
-        self.radius = int(radius)
-        self.dimensions = 2
+    def __init__(self, cell_size, radius=1, dimensions=2):
+        self._cell_size = cell_size
+        self._radius = int(radius)
+        self._dimensions = dimensions
+
+        # Default could also be SortedList
+        self._list = list
+        self._blocks = defaultdict(self._list)
 
     def index(self, key):
         if isinstance(key, (int, float)):
-            return int(key // self.cell_size)
+            return int(key // self._cell_size)
         elif isinstance(key, Iterable):
-            return tuple(int(elem // self.cell_size) for elem in key)
+            return tuple(int(elem // self._cell_size) for elem in key)
         else:
             raise Exception('Invalid key')
 
     def __setitem__(self, key, value):
         """Add value to position in blocklist"""
-        super(MutableBlockList, self).__setitem__(self.index(key), value)
+        index = self.index(key)
+        self._blocks[index].append(value)
 
     def __getitem__(self, item):
-        """Get values """
+        """Get values of neighbouring"""
         index = self.index(item)
-        ranges = (range(-self.radius, self.radius + 1) for _ in
-                  range(self.dimensions))
-        items = SortedList()
+        ranges = (range(-self._radius, self._radius + 1) for _ in
+                  range(self._dimensions))
+        items = self._list()
         for i in product(*ranges):
             key = tuple(map(op.add, index, i))
             if key in self:
-                items += super(MutableBlockList, self).__getitem__(key)
+                items += self._blocks[key]
         return items
 
 

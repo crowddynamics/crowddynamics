@@ -1,3 +1,6 @@
+import random
+from collections import defaultdict
+
 import hypothesis.strategies as st
 import numpy as np
 import pytest
@@ -8,20 +11,8 @@ from crowddynamics.core.interactions.partitioning import block_list, \
 from crowddynamics.testing import real
 
 
-CELL_SIZE = 0.001
-POINTS = np.random.uniform(-1.0, 1.0, (10000, 2))
-
-
-@pytest.fixture(scope='function')
-def mutable_blocklist():
-    mbl = MutableBlockList(CELL_SIZE, radius=1)
-    return mbl
-
-
-@given(
-    points=real(-10.0, 10.0, shape=(10, 2)),
-    cell_size=st.floats(0.1, 1.0)
-)
+@given(points=real(-10.0, 10.0, shape=(10, 2)),
+       cell_size=st.floats(0.1, 1.0))
 def test_block_list(points, cell_size):
     n, m = points.shape
 
@@ -48,28 +39,49 @@ def test_block_list(points, cell_size):
     assert x_max.dtype.type is np.int64
 
 
-@pytest.mark.parametrize('cell_size', (0.1, 0.05, 0.01, 0.005))
-@pytest.mark.parametrize('size', (100, 1000, 10000))
+@pytest.mark.parametrize('cell_size', (0.27,))
+@pytest.mark.parametrize('size', (100, 250, 500, 1000, 10000))
 def test_blocklist_benchmark(benchmark, size, cell_size):
     points = np.random.uniform(-1.0, 1.0, (size, 2))
     benchmark(block_list, points, cell_size)
     assert True
 
 
-@pytest.mark.parametrize('size', (100, 1000, 10000))
-def test_mutable_blocklist_setitem(mutable_blocklist, benchmark, size):
-    keys = np.random.uniform(-1.0, 1.0, (size, 2))
-
+@pytest.mark.parametrize('cell_size', (0.27,))
+@pytest.mark.parametrize('size', (100, 250, 500, 1000))
+def test_defaultdict_setitem(benchmark, size, cell_size):
     def f():
-        for value in range(size):
-            mutable_blocklist[keys[value]] = value
+        keys = ((random.uniform(-1.0, 1.0) // cell_size,
+                 random.uniform(-1.0, 1.0) // cell_size) for _ in range(size))
+        values = range(size)
+        d = defaultdict(list)
+        for key, value in zip(keys, values):
+            d[key].append(value)
 
     benchmark(f)
     assert True
 
 
-@pytest.mark.parametrize('size', (100, 1000, 10000))
-def test_mutable_blocklist_getitem(mutable_blocklist, benchmark, size):
+@pytest.mark.parametrize('cell_size', (0.27,))
+@pytest.mark.parametrize('size', (100, 250, 500, 1000))
+def test_mutable_blocklist_setitem(benchmark, size, cell_size):
+    def f():
+        keys = ((random.uniform(-1.0, 1.0),
+                 random.uniform(-1.0, 1.0)) for _ in range(size))
+        values = range(size)
+        mutable_blocklist = MutableBlockList(cell_size, radius=1)
+        for key, value in zip(keys, values):
+            mutable_blocklist[key] = value
+
+    benchmark(f)
+    assert True
+
+
+@pytest.mark.parametrize('cell_size', (0.27,))
+@pytest.mark.parametrize('size', (100, 500, 1000))
+def test_mutable_blocklist_getitem(benchmark, size, cell_size):
+    mutable_blocklist = MutableBlockList(cell_size, radius=1)
+
     for value in range(size):
         key = np.random.uniform(-1.0, 1.0, 2)
         mutable_blocklist[key] = value
