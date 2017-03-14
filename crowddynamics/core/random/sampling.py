@@ -8,7 +8,8 @@ from scipy.spatial.qhull import Delaunay
 from shapely.geometry import Polygon
 
 
-@numba.jit(f8(f8[:], f8[:], f8[:]), nopython=True, nogil=True)
+@numba.jit(f8(f8[:], f8[:], f8[:]),
+           nopython=True, nogil=True, cache=True)
 def triangle_area(a, b, c):
     r"""
     Area of a triangle given by points :math:`\mathbf{a}`, :math:`\mathbf{b}`,
@@ -31,10 +32,10 @@ def triangle_area(a, b, c):
                   c[0] * (a[1] - b[1])) / 2
 
 
-@numba.jit(nopython=True, nogil=True)
+@numba.jit([f8[:](f8[:, :, :])],
+           nopython=True, nogil=True, cache=True)
 def triangle_area_cumsum(trimesh):
-    r"""
-    Computes cumulative sum of the areas of the triangle mesh.
+    r"""Computes cumulative sum of the areas of the triangle mesh.
 
     Args:
         trimesh (numpy.ndarray):
@@ -54,7 +55,8 @@ def triangle_area_cumsum(trimesh):
     return cumsum
 
 
-@numba.jit(f8[:](f8[:], f8[:], f8[:]), nopython=True, nogil=True)
+@numba.jit(f8[:](f8[:], f8[:], f8[:]),
+           nopython=True, nogil=True, cache=True)
 def random_sample_triangle(a, b, c):
     r"""
     Generate uniform random sample from inside of a triangle defined by points
@@ -106,23 +108,19 @@ class PolygonSample:
 
         http://gis.stackexchange.com/questions/6412/generate-points-that-lie-inside-polygon
     """
-    def __init__(self, polygon):
-        r"""
-        Convex Polygon to sample. (Non convex polygon will be treated as convex)
+    def __init__(self, polygon_vertices):
+        r"""Convex Polygon to sample.
+
+        Currently Non convex polygon will be treated as convex.
 
         Args:
-            polygon (Polygon | numpy.ndarray): Shapely polygon or numpy array of
-                polygon vertices.
-
+            polygon_vertices (numpy.ndarray):
+                Array of polygon vertices.
         """
-        if isinstance(polygon, Polygon):
-            self.vertices = np.asarray(polygon.exterior)
-        else:
-            # Should be numpy.ndarray
-            self.vertices = polygon
+        self.vertices = polygon_vertices
 
+        # FIXME: Delaunay only works for convex polygons
         # Triangular mesh using Delaunay triangulation algorithm
-        # FIXME: Delaunay only works for convex polygon
         self.delaunay = Delaunay(self.vertices)
         self.mesh = self.vertices[self.delaunay.simplices]
 
@@ -131,13 +129,11 @@ class PolygonSample:
         self.weights /= self.weights[-1]  # Normalize values to interval [0, 1]
 
     def draw(self):
-        r"""
-        Draw random triangle weighted by the area of the triangle and draw
+        r"""Draw random triangle weighted by the area of the triangle and draw
         random sample
 
         Returns:
             numpy.ndarray: Uniformly sampled point inside the polygon
-
         """
         x = np.random.random()
         i = np.searchsorted(self.weights, x)

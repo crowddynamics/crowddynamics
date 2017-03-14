@@ -13,3 +13,11 @@ class InvalidArgument(CrowdDynamicsException, TypeError):
 
 class ValidationError(CrowdDynamicsException):
     """Argument is not correct type or value"""
+
+
+class OverlappingError(CrowdDynamicsException):
+    """Two agents are overlapping."""
+
+
+class AgentStructureFull(CrowdDynamicsException):
+    """Agent structure is full."""

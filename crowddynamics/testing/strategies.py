@@ -71,8 +71,7 @@ def unit_vector(draw, start=0, end=2 * np.pi):
 
 @st.composite
 def polygon(draw, a=-1.0, b=1.0, num_points=5, buffer=real(0.1, 0.2)):
-    r"""
-    Generate a random polygon. Polygon should have area > 0.
+    r"""Generate a random polygon. Polygon should have area > 0.
 
     Args:
         draw:

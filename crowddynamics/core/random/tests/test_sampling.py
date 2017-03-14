@@ -53,6 +53,6 @@ def test_polygon_sampling(poly):
     assume(poly.area > 0.01)
 
     sample_size = 20
-    sample = PolygonSample(poly)
+    sample = PolygonSample(np.asarray(poly.exterior))
     for point in sample.generator(sample_size):
         assert poly.contains(Point(point))

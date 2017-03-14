@@ -31,7 +31,8 @@ from crowddynamics.core.interactions import distance_circle_circle
 from crowddynamics.core.interactions import distance_three_circle
 from crowddynamics.core.interactions.partitioning import MutableBlockList
 from crowddynamics.core.vector.vector2D import unit_vector, rotate270
-from crowddynamics.exceptions import CrowdDynamicsException
+from crowddynamics.exceptions import CrowdDynamicsException, OverlappingError, \
+    AgentStructureFull
 
 
 class AgentModels(Enum):
@@ -49,21 +50,11 @@ class AgentBodyTypes(Enum):
     ELDERY = 'eldery'
 
 
-class Values(object):
-    @classmethod
-    def items(cls):
-        """Yield items from a class."""
-        for key, value in cls.__dict__.items():
-            if not key.startswith('__'):
-                yield key, value
-
-    @classmethod
-    def to_dict(cls):
-        return {key: value for key, value in cls.items()}
-
-
-class Defaults(Values):
+class Defaults(object):
     """Default values for agent parameters"""
+    orientation = 0.0
+
+    # Motion parameters
     tau_adj = 0.5
     tau_rot = 0.2
     k_soc = 1.5
@@ -74,13 +65,22 @@ class Defaults(Values):
     std_rand_force = 0.1
     std_rand_torque = 0.1
 
-
-class Limits(Values):
-    """Limits"""
+    # Limits
     sight_soc = 3.0
     sight_wall = 3.0
     f_soc_ij_max = 2e3
     f_soc_iw_max = 2e3
+
+    @classmethod
+    def items(cls):
+        """Yield items from a class."""
+        for key, value in cls.__dict__.items():
+            if not key.startswith('__'):
+                yield key, value
+
+    @classmethod
+    def to_dict(cls):
+        return {key: value for key, value in cls.items()}
 
 
 MAX_AGENT_RADIUS = 0.3
@@ -200,7 +200,6 @@ def overlapping_circle_circle(agents, x, r):
     return False
 
 
-# TODO: Compute shoulders
 @numba.jit([boolean(typeof(agent_type_three_circle)[:],
                     UniTuple(float64[:], 3), UniTuple(float64, 3))],
            nopython=True, nogil=True, cache=True)
@@ -248,7 +247,7 @@ def create_random_agent_attributes():
 
 
 class AgentManager(object):
-    # TODO: user mutable blocklist for adding non-overlappping agents
+    """Class for initialising new agents."""
 
     def __init__(self, size, model):
         if model is AgentModels.CIRCULAR:
@@ -262,8 +261,14 @@ class AgentManager(object):
 
         self.size = size
         self.model = model
+
+        # Keeps track of which agents are active and which in active. Stores
+        # indices of agents.
         self.active = SortedSet()
         self.inactive = SortedSet(range(size))
+
+        # Faster check for neighbouring agents for initializing agents into
+        # random positions.
         self.grid = MutableBlockList(cell_size=MAX_AGENT_RADIUS)
 
     def add(self, check_overlapping=True, **attributes):
@@ -308,23 +313,50 @@ class AgentManager(object):
                 target_direction (numpy.ndarray):
                     Unit vector to desired direction
 
+        Raises:
+
+        Returns:
+
         """
         if self.inactive:
-            if check_overlapping and 'position' in attributes:
-                neighbours = self.grid[attributes['position']]
-                for i in neighbours:
-                    agent = self.agents[i]
-                    # TODO: test overlapping
-
             index = self.inactive.pop(0)
+
+            # TODO: default parameters
+            # Set default parameters if parameters are not given in attributes
+            for key, value in Defaults.items():
+                if key not in attributes:
+                    attributes[key] = value
+
             self.set_attributes(index, **attributes)
-            self.set_attributes(index, **Defaults.to_dict())
-            self.set_attributes(index, **Limits.to_dict())
+
+            # Update shoulder positions for three circle agents
+            if self.model is AgentModels.THREE_CIRCLE:
+                shoulders(self.agents)
+
+            # Check if agents are overlapping.
+            position = attributes.get('position')
+            orientation = attributes.get('orientation')
+            radius = attributes.get('radius')
+
+            if check_overlapping and position:
+                neighbours = self.grid[position]
+                agents = self.agents[neighbours]
+
+                if self.model is AgentModels.CIRCULAR:
+                    if overlapping_circle_circle(agents, position, radius):
+                        self.agents[index][:] = 0
+                        raise OverlappingError()
+                elif self.model is AgentModels.THREE_CIRCLE:
+                    if overlapping_three_circle(agents, None, None):
+                        self.agents[index][:] = 0
+                        raise OverlappingError()
+                else:
+                    raise CrowdDynamicsException("")
 
             self.active.add(index)
             return index
         else:
-            return -1
+            return AgentStructureFull()
 
     def remove(self, index):
         """Remove agent"""

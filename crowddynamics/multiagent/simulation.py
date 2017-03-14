@@ -179,7 +179,7 @@ class MultiAgentSimulation:
         # that belong to the surface. These are used as possible new position
         # for an agents (if it does not overlap other agents).
         iterations = 0
-        sampling = PolygonSample(spawn)
+        sampling = PolygonSample(np.asarray(spawn.exterior))
         parameters = Parameters(body_type=body_type)
 
         while num > 0 and iterations <= iterations_limit * num:
