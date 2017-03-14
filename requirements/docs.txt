@@ -1,6 +1,0 @@
-## Documentation
-sphinx
-sphinx_rtd_theme
-sphinxcontrib-programoutput
-ghp-import
-graphviz
