@@ -1,6 +1,8 @@
 ## Should not be installed through pip
 ## Recommended to use Conda package manager instead
 
+git+https://github.com/jaantollander/loggingtools.git
+
 ## Package
 # mypy
 typing

@@ -24,21 +24,32 @@ Todo:
 
 """
 import inspect
+import logging
 import os
+import platform
+import sys
 from collections import namedtuple
-from functools import partial
 from pprint import pformat
 
 import click
-import logging
+from loggingtools import setup_logging
 
 import crowddynamics
 from crowddynamics.exceptions import CrowdDynamicsException, InvalidArgument
-from crowddynamics.logging import setup_logging, user_info
 from crowddynamics.multiagent import examples
 from crowddynamics.multiagent.simulation import REGISTERED_SIMULATIONS, \
     run_simulations_parallel, run_simulations_sequentially
-from crowddynamics.plugins.gui import run_gui
+
+BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+LOG_CFG = os.path.join(BASE_DIR, 'logging.yaml')
+
+
+def user_info():
+    logger = logging.getLogger(__name__)
+    logger.info("Platform: %s", platform.platform())
+    logger.info("Path: %s", sys.path[0])
+    logger.info("Python: %s", sys.version[0:5])
+
 
 VERSION = crowddynamics.__version__
 HELP = "CrowdDynamics {version}. A tool for building and running crowd " \
@@ -115,7 +126,7 @@ def list():
 def run(context, loglevel, num, maxiter, timeout, parallel, profile):
     """Run simulation from the command-line."""
     # TODO: set loglevel
-    setup_logging()
+    setup_logging(LOG_CFG)
     user_info()
 
     # Pass the options into the context
@@ -123,15 +134,6 @@ def run(context, loglevel, num, maxiter, timeout, parallel, profile):
         num=num, maxiter=maxiter, timeout=timeout, profile=profile,
         parallel=parallel
     )
-
-
-@main.command()
-def gui():
-    """Run graphical user interface."""
-    # TODO: move to `plugins.gui`
-    setup_logging()
-    user_info()
-    run_gui()
 
 
 ArgSpec = namedtuple('ArgSpec', ('name', 'default', 'type', 'annotation'))

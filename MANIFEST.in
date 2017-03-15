@@ -1,10 +1,10 @@
 include MANIFEST.in
-include AUTHORS LICENSE CONTRIBUTING README.md
+include AUTHORS LICENSE CONTRIBUTING README.*
+include requirements.txt requirements-dev.txt
 include setup.py versioneer.py
 
 recursive-include crowddynamics *
 recursive-include docs *
-recursive-include requirements *
 
 prune docs/build
 

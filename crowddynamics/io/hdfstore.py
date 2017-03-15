@@ -26,7 +26,7 @@ from collections import namedtuple
 import h5py
 import numpy as np
 
-from crowddynamics.logging import log_with
+from loggingtools import log_with
 
 
 Attribute = namedtuple('Attribute', ('name', 'resizable'))

@@ -13,7 +13,7 @@ from crowddynamics.core.interactions import overlapping_three_circle, \
     overlapping_circle_circle
 from crowddynamics.core.random.sampling import PolygonSample
 from crowddynamics.exceptions import CrowdDynamicsException, InvalidArgument
-from crowddynamics.logging import log_with
+from loggingtools import log_with
 from crowddynamics.multiagent.parameters import Parameters
 from crowddynamics.taskgraph import TaskNode
 
