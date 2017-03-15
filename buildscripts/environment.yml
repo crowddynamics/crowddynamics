@@ -17,8 +17,6 @@ dependencies:
     - pyqtgraph
     - matplotlib
     - bokeh
-    ## Documentation
-    - graphviz
     ## Dev
     - jupyter
     - pip:
@@ -41,9 +39,7 @@ dependencies:
         ## Documentation
         - sphinx
         - sphinx_rtd_theme
-        - sphinxcontrib-napoleon
-        - sphinxcontrib-bibtex
-        - sphinxcontrib-programoutput
+#        - sphinxcontrib-programoutput
         - ghp-import
         - graphviz
         ## Dev
