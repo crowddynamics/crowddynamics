@@ -2,6 +2,7 @@
 ## Recommended to use Conda package manager instead
 
 ## Package
+# mypy
 typing
 ruamel.yaml
 sortedcontainers
