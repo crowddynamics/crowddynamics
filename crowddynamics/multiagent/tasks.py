@@ -10,7 +10,8 @@ from crowddynamics.core.steering.navigation import to_indices, static_potential
 from crowddynamics.core.vector.vector2D import angle_nx2
 from crowddynamics.io import HDFStore
 from crowddynamics.io import Record
-from crowddynamics.taskgraph import TaskNode
+from crowddynamics.multiagent.taskgraph import TaskNode
+
 
 # TODO: Integrator: time-limit, iterations limit -> signal
 # TODO: Contains:   diff limit

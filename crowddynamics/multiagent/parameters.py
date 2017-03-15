@@ -23,8 +23,8 @@ Variables (Mutable)
 """
 import numpy as np
 
+from crowddynamics.configs import BODIES
 from crowddynamics.core.random.functions import truncnorm
-from crowddynamics.configs import load_config
 
 
 class Parameter:
@@ -164,7 +164,7 @@ class Parameters:
     """Agent parameters"""
 
     def __init__(self, body_type='adult'):
-        self.bodies = load_config("body.csv")
+        self.bodies = BODIES
         self.body_types = ('adult', 'male', 'female', 'child', 'eldery')
         self.body_type = None
         self.set_body_type(body_type)

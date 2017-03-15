@@ -40,16 +40,6 @@ from crowddynamics.multiagent import examples
 from crowddynamics.multiagent.simulation import REGISTERED_SIMULATIONS, \
     run_simulations_parallel, run_simulations_sequentially
 
-BASE_DIR = os.path.dirname(os.path.dirname(__file__))
-LOG_CFG = os.path.join(BASE_DIR, 'logging.yaml')
-
-
-def user_info():
-    logger = logging.getLogger(__name__)
-    logger.info("Platform: %s", platform.platform())
-    logger.info("Path: %s", sys.path[0])
-    logger.info("Python: %s", sys.version[0:5])
-
 
 VERSION = crowddynamics.__version__
 HELP = "CrowdDynamics {version}. A tool for building and running crowd " \
@@ -67,8 +57,18 @@ LOGLEVELS = [
 # TODO: loglevel by name
 LOGLEVELS += ['CRITICAL', 'FATAL', 'ERROR', 'WARNING', 'WARN', 'INFO',
               'DEBUG', 'NOTSET', ]
+BASE_DIR = os.path.dirname(__file__)
+LOG_CFG = os.path.join(BASE_DIR, 'logging.yaml')
+
 
 examples.init()
+
+
+def user_info():
+    logger = logging.getLogger(__name__)
+    logger.info("Platform: %s", platform.platform())
+    logger.info("Path: %s", sys.path[0])
+    logger.info("Python: %s", sys.version[0:5])
 
 
 @click.group(help=HELP)

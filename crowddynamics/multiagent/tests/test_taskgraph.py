@@ -1,10 +1,9 @@
 import random
 
 import hypothesis.strategies as st
-from hypothesis import event
 from hypothesis import given
 
-from crowddynamics.taskgraph import TaskNode
+from crowddynamics.multiagent.taskgraph import TaskNode
 
 
 class Node(TaskNode):

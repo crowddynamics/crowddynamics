@@ -1,17 +1,27 @@
 import os
-from functools import lru_cache
+import csv
 
 import pandas as pd
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
-CFG_DIR = os.path.join(BASE_DIR, 'crowddynamics', 'configs')
+CFG_DIR = os.path.join(BASE_DIR, 'crowddynamics')
 
 
-@lru_cache()
-def load_config(filename):
-    name, ext = os.path.splitext(filename)
-    path = os.path.join(CFG_DIR, filename)
-    if ext == ".csv":
-        return pd.read_csv(path, index_col=[0])
-    else:
-        raise Exception("Filetype not supported.")
+def load_csv(filename: str) -> dict:
+    """Load csv configuration
+
+    http://stackoverflow.com/questions/6740918/creating-a-dictionary-from-a-csv-file
+
+    Args:
+        filename (str):
+
+    Returns:
+        dict:
+    """
+    with open(filename) as csvfile:
+        reader = csv.DictReader(csvfile)
+
+        return
+
+
+BODIES = pd.read_csv(os.path.join(CFG_DIR, 'body.csv'), index_col=[0])
