@@ -1,4 +1,4 @@
-"""MultiAgent Simulation"""
+"""Tools for creating multiagent simulations."""
 import logging
 import multiprocessing
 from collections import Iterable
@@ -10,11 +10,11 @@ from shapely.geometry import Point, Polygon, GeometryCollection
 from shapely.ops import cascaded_union
 
 from crowddynamics.core.agent.agent import Agent, positions
+from crowddynamics.core.agent.parameters import Parameters
 from crowddynamics.core.interactions import overlapping_three_circle, \
     overlapping_circle_circle
 from crowddynamics.core.random.sampling import PolygonSample
 from crowddynamics.exceptions import CrowdDynamicsException, InvalidArgument
-from crowddynamics.multiagent.parameters import Parameters
 from crowddynamics.multiagent.taskgraph import TaskNode
 
 REGISTERED_SIMULATIONS = dict()
@@ -247,15 +247,6 @@ class MultiAgentSimulation:
             tasks (TaskNode):
         """
         self.tasks = tasks
-
-    @log_with(logger)
-    def set_queue(self, queue):
-        """Set queue for the simulation
-
-        Args:
-            queue (multiprocessing.Queue):
-        """
-        self.queue = queue
 
     def set(self, *args, **kwargs):
         """Method for subclasses to overwrite for setting up simulation."""

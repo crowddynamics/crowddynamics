@@ -1,6 +1,6 @@
 from shapely.geometry import Polygon
 
-from crowddynamics.multiagent.parameters import Parameters
+from crowddynamics.core.agent.parameters import Parameters
 from crowddynamics.multiagent.simulation import MultiAgentSimulation
 
 parameters = Parameters()

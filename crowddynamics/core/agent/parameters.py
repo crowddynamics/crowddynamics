@@ -1,5 +1,5 @@
 """Agent parameters"""
-# TODO: move to agents
+# TODO: improve this module or remove it
 import numpy as np
 
 from crowddynamics.core.agent.agents import BODIES
