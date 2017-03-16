@@ -1,36 +1,9 @@
-"""
-Agent parameters
-
-- docstring
-- default value
-    - source
-- Validation
-    - Type
-    - Value
-- Unit
-- Symbol
-
-::
-
-   parameter.mass.value
-   parameter.mass.unit
-   parameter.body_type
-   parameter.body
-   ...
-
-Parameters (Immutable)
-Variables (Mutable)
-"""
-import os
-
+"""Agent parameters"""
+# TODO: move to agents
 import numpy as np
-import pandas as pd
 
+from crowddynamics.core.agent.agents import BODIES
 from crowddynamics.core.random.functions import truncnorm
-
-
-BASE_DIR = os.path.dirname(__file__)
-BODIES = pd.read_csv(os.path.join(BASE_DIR, 'body.csv'), index_col=[0])
 
 
 class Parameter:

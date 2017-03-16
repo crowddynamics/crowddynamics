@@ -1,7 +1,3 @@
-.. Crowd Dynamics documentation master file, created by
-   sphinx-quickstart on Sat Mar 26 15:35:19 2016.
-   You can adapt this file completely to your liking, but it should at least contain the root `toctree` directive.
-
 .. warning::
    Crowd Dynamics is in very early states of its development and a lot of changes can be made to source code and documentation.
 
@@ -15,51 +11,50 @@ Crowddynamics is a Python package for crowd simulation. The project was created 
    :caption: General
    :maxdepth: 2
 
-   installation
-   usage
-   contributing
+   installation.
+   usage.
+   contributing.
 
 
 .. toctree::
    :caption: Foundations & Theory
    :maxdepth: 2
 
-   theory
+   theory.rst
 
 
 .. toctree::
    :caption: Simulation Models
    :maxdepth: 2
 
-   multiagent/index
-   cellular_automata/index
-   continuum_flow/index
-   optimal_control/index
+   multiagent/index.rst
+   cellular_automata/index.rst
+   continuum_flow/index.rst
+   optimal_control/index.rst
 
 
 .. toctree::
    :caption: Api
    :maxdepth: 2
 
-   core/index
-   api/taskgraph
-   api/io
-   api/cli
-   api/testing
+   core/index.rst
+   api/taskgraph.rst
+   api/io.rst
+   api/cli.rst
+   api/testing.rst
 
 
 .. toctree::
    :caption: Simulation Models
    :maxdepth: 2
 
-   plugins/gui
-   plugins/game
+   plugins/gui.rst
+   plugins/game.rst
 
 
 .. toctree::
    :caption: Research
    :maxdepth: 2
 
-   research/index
-   references
-   tables
+   research/index.rst
+   references.rst

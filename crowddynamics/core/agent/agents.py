@@ -18,11 +18,13 @@ tangent vectors
    \mathbf{\hat{e}_t} &= [\sin(\varphi), -\cos(\varphi)]
 
 """
+import os
 from collections import namedtuple
 from enum import Enum
 
 import numba
 import numpy as np
+import pandas as pd
 from numba import typeof, void, boolean, float64
 from numba.types import UniTuple
 from sortedcontainers import SortedSet
@@ -33,6 +35,10 @@ from crowddynamics.core.interactions.partitioning import MutableBlockList
 from crowddynamics.core.vector.vector2D import unit_vector, rotate270
 from crowddynamics.exceptions import CrowdDynamicsException, OverlappingError, \
     AgentStructureFull
+
+
+BASE_DIR = os.path.dirname(__file__)
+BODIES = pd.read_csv(os.path.join(BASE_DIR, 'body.csv'), index_col=[0])
 
 
 class AgentModels(Enum):
