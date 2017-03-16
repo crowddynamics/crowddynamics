@@ -1,5 +1,5 @@
 Testing
 =======
 
-.. automodule:: crowddynamics.testing.strategies
+.. automodule:: crowddynamics.testing
    :members:
