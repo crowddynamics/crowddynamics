@@ -1,4 +1,4 @@
-name,adult,male,female,child,eldery,Unit,explanation
+,adult,male,female,child,eldery,Unit,explanation
 radius,0.255,0.27,0.24,0.21,0.25,m,Total radius of the agent
 radius_scale,0.035,0.02,0.02,0.015,0.02,m,Difference bound for total radius
 ratio_rt,0.5882,0.5926,0.5833,0.5714,0.6,1,Ratio of total radius and radius torso

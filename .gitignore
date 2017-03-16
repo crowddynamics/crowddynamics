@@ -6,6 +6,7 @@
 *.old
 *.hypothesis
 *.benchmarks
+*.ipynb
 
 # Folders
 *.logs/

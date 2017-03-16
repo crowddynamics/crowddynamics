@@ -21,10 +21,16 @@ Agent parameters
 Parameters (Immutable)
 Variables (Mutable)
 """
-import numpy as np
+import os
 
-from crowddynamics.configs import BODIES
+import numpy as np
+import pandas as pd
+
 from crowddynamics.core.random.functions import truncnorm
+
+
+BASE_DIR = os.path.dirname(__file__)
+BODIES = pd.read_csv(os.path.join(BASE_DIR, 'body.csv'), index_col=[0])
 
 
 class Parameter:

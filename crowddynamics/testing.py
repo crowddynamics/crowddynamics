@@ -4,16 +4,13 @@ library [#]_.
 
 .. [#] https://hypothesis.readthedocs.io/en/latest/data.html?highlight=example
 """
+import random
 from itertools import chain
 
 import numpy as np
 from hypothesis import strategies as st
 from hypothesis.extra.numpy import arrays
-from hypothesis.searchstrategy.strategies import SearchStrategy
 from shapely.geometry import LineString
-import random
-
-from shapely.geometry import Polygon
 
 from crowddynamics.core.agent.agent import Agent
 

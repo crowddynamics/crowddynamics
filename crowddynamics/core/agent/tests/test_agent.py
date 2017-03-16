@@ -2,22 +2,22 @@ import numpy as np
 from hypothesis import given
 from hypothesis.strategies import data
 
-import crowddynamics.testing.strategies as st
+import crowddynamics.testing
 from crowddynamics.core.agent.agent import positions_vector, \
     positions, positions_scalar, Agent
 
 
 def add_agent(agent, data):
     return agent.add(
-        data.draw(st.real(-100, 100, shape=2)),
-        data.draw(st.real(1.0, 100.0)),
-        data.draw(st.real(0.1, 1.0)),
-        data.draw(st.real(0.1, 1.0)),
-        data.draw(st.real(0.1, 1.0)),
-        data.draw(st.real(0.1, 1.0)),
-        data.draw(st.real()),
-        data.draw(st.real()),
-        data.draw(st.real(-10, 10)),
+        data.draw(crowddynamics.testing.real(-100, 100, shape=2)),
+        data.draw(crowddynamics.testing.real(1.0, 100.0)),
+        data.draw(crowddynamics.testing.real(0.1, 1.0)),
+        data.draw(crowddynamics.testing.real(0.1, 1.0)),
+        data.draw(crowddynamics.testing.real(0.1, 1.0)),
+        data.draw(crowddynamics.testing.real(0.1, 1.0)),
+        data.draw(crowddynamics.testing.real()),
+        data.draw(crowddynamics.testing.real()),
+        data.draw(crowddynamics.testing.real(-10, 10)),
     )
 
 
@@ -25,9 +25,9 @@ def add_agent(agent, data):
 def test_positions(data):
     # scalar
     out = positions_scalar(
-        position=data.draw(st.real(-10.0, 10.0, shape=2)),
-        orientation=data.draw(st.real(-np.pi, np.pi)),
-        radius_ts=data.draw(st.real(0.01, 0.1))
+        position=data.draw(crowddynamics.testing.real(-10.0, 10.0, shape=2)),
+        orientation=data.draw(crowddynamics.testing.real(-np.pi, np.pi)),
+        radius_ts=data.draw(crowddynamics.testing.real(0.01, 0.1))
     )
     assert isinstance(out, tuple)
     for i in range(3):
@@ -38,9 +38,11 @@ def test_positions(data):
     # vector
     size = 2
     out = positions_vector(
-        position=data.draw(st.real(-10.0, 10.0, shape=(size, 2))),
-        orientation=data.draw(st.real(-np.pi, np.pi, shape=size)),
-        radius_ts=data.draw(st.real(0.01, 0.1, shape=size))
+        position=data.draw(
+            crowddynamics.testing.real(-10.0, 10.0, shape=(size, 2))),
+        orientation=data.draw(
+            crowddynamics.testing.real(-np.pi, np.pi, shape=size)),
+        radius_ts=data.draw(crowddynamics.testing.real(0.01, 0.1, shape=size))
     )
     assert isinstance(out, tuple)
     for i in range(3):
@@ -50,9 +52,9 @@ def test_positions(data):
 
     # scalar
     out = positions(
-        position=data.draw(st.real(-10.0, 10.0, shape=2)),
-        orientation=data.draw(st.real(-np.pi, np.pi)),
-        radius_ts=data.draw(st.real(0.01, 0.1))
+        position=data.draw(crowddynamics.testing.real(-10.0, 10.0, shape=2)),
+        orientation=data.draw(crowddynamics.testing.real(-np.pi, np.pi)),
+        radius_ts=data.draw(crowddynamics.testing.real(0.01, 0.1))
     )
     assert isinstance(out, tuple)
     for i in range(3):
@@ -63,9 +65,11 @@ def test_positions(data):
     # vector
     size = 2
     out = positions(
-        position=data.draw(st.real(-10.0, 10.0, shape=(size, 2))),
-        orientation=data.draw(st.real(-np.pi, np.pi, shape=size)),
-        radius_ts=data.draw(st.real(0.01, 0.1, shape=size))
+        position=data.draw(
+            crowddynamics.testing.real(-10.0, 10.0, shape=(size, 2))),
+        orientation=data.draw(
+            crowddynamics.testing.real(-np.pi, np.pi, shape=size)),
+        radius_ts=data.draw(crowddynamics.testing.real(0.01, 0.1, shape=size))
     )
     assert isinstance(out, tuple)
     for i in range(3):
@@ -86,11 +90,11 @@ def test_agent(data):
         assert index >= 0
         flag = agent.set_motion(
             index,
-            data.draw(st.real(-np.pi, np.pi)),
-            data.draw(st.real(-100, 100, shape=2)),
-            data.draw(st.real(-100, 100)),
-            data.draw(st.unit_vector()),
-            data.draw(st.real(-np.pi, np.pi))
+            data.draw(crowddynamics.testing.real(-np.pi, np.pi)),
+            data.draw(crowddynamics.testing.real(-100, 100, shape=2)),
+            data.draw(crowddynamics.testing.real(-100, 100)),
+            data.draw(crowddynamics.testing.unit_vector()),
+            data.draw(crowddynamics.testing.real(-np.pi, np.pi))
         )
         assert flag
 
