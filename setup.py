@@ -16,7 +16,7 @@ def license():
 def requirements(name):
     """Parse requirements from file inside requirements directory. Does not
     hander ``-r file.txt`` syntax."""
-    with open(os.path.join('requirements', name)) as f:
+    with open(name) as f:
         lines = []
         while True:
             line = f.readline()
@@ -46,7 +46,7 @@ setup(
         ]
     },
     include_package_data=True,
-    install_requires='',  #requirements('package.txt'),
+    install_requires=[],
     zip_safe=False,
     keywords='',
     classifiers=[
@@ -60,5 +60,5 @@ setup(
         'Programming Language :: Python :: 3.5',
     ],
     test_suite='crowddynamics.tests',
-    test_requirements=requirements('test.txt'),
+    test_requirements=[],
 )

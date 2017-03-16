@@ -1,5 +1,15 @@
+Multi-Agent
+===========
+
+.. csv-table:: Model Specification
+
+   "Continuous Space", ":math:`\mathbb{R}^2`"
+   "Microscopic", "Agents are modelled as rigid bodies."
+   "Social Force Model", "Classical mechanics for modelling movement."
+
+
 Social Force Model
-==================
+------------------
 Dirk Helbing, a pioneer of social force model, describes social forces
 
 .. epigraph::
@@ -41,3 +51,4 @@ Parameters
      - :math:`M_{i}^{adj}`
      - :math:`M_{ij}^{soc}` and :math:`M_{iw}^{soc}`
      - :math:`M_{ij}^{c}` and :math:`M_{iw}^{c}`
+
