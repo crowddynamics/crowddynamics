@@ -19,5 +19,6 @@ try:
     from shapely import speedups
 
     speedups.enable()
+    del speedups
 except ImportError():
     pass

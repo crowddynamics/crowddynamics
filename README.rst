@@ -1,8 +1,37 @@
 Crowd Dynamics
 ==============
-This is a project that started in summer 2016 at *Aalto University's* `Systems Analysis Laboratory <http://sal.aalto.fi/en/>`_.
+.. |Build_Status| |Coverage| |Doc_Status| |Gitter| |Version_Status|
 
-Main goal is to create a Python package for simulating, visualizing and analysing movement of human crowds with currently known models and creating a high quality modern documentation. Documentation can be found at project's `GitHub pages <http://jaantollander.github.io/CrowdDynamics/>`_
+Crowddynamics is a library for creating crowd simulations in Python. See documentation_ for more information.
 
 
+License
+-------
+Project is licensed under GPL3. See `License <LICENSE.txt>`_
 
+
+.. _documentation: http://jaantollander.github.io/CrowdDynamics/
+
+..
+    .. travis-ci.org
+    .. |Build_Status| image::
+       :target:
+
+    .. Coveralls.io
+    .. |Coverage| image::
+       :target:
+       :alt: Coverage status
+
+    .. Readthedocs.org
+    .. |Doc_Status| image::
+       :target:
+       :alt: Documentation Status
+
+    .. gitter.im
+    .. |Gitter| image::
+       :target:
+       :alt: Join the chat at
+
+    .. pypi
+    .. |Version_Status| image::
+       :target:
