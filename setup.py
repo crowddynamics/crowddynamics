@@ -1,31 +1,11 @@
-import os
 from setuptools import setup, find_packages
+
 import versioneer
 
 
-def readme():
-    with open('README.rst') as f:
+def readfile(filepath):
+    with open(filepath) as f:
         return f.read()
-
-
-def license():
-    with open('LICENSE') as f:
-        return f.read()
-
-
-def requirements(name):
-    """Parse requirements from file inside requirements directory. Does not
-    hander ``-r file.txt`` syntax."""
-    with open(name) as f:
-        lines = []
-        while True:
-            line = f.readline()
-            if line == '\n' or line.startswith('#') or line.startswith('-'):
-                continue
-            if line == '':
-                break
-            lines.append(line)
-        return lines
 
 
 setup(
@@ -34,11 +14,11 @@ setup(
     cmdclass=versioneer.get_cmdclass(),
     description='Python package for simulating, visualizing and analysing '
                 'movement of human crowds.',
-    long_description=readme(),
+    long_description=readfile('README.rst'),
     author='Jaan Tollander de Balsch',
     author_email='de.tollander@aalto.fi',
     url='https://github.com/jaantollander/CrowdDynamics',
-    license=license(),
+    license=readfile('LICENSE.txt'),
     packages=find_packages(),
     entry_points={
         'console_scripts': [
@@ -58,6 +38,7 @@ setup(
         'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
     ],
     test_suite='crowddynamics.tests',
     test_requirements=[],

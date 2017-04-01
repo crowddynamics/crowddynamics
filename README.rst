@@ -29,9 +29,7 @@ Crowd Dynamics
    :alt: Codecov coverage hosting
 
 
-Crowddynamics is a library for creating crowd simulations in Python. See documentation_ for more information.
-
-.. _documentation: http://jaantollander.github.io/CrowdDynamics/
+Crowddynamics is a library for creating crowd simulations in Python.
 
 License
 -------
