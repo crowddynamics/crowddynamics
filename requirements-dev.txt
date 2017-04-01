@@ -1,0 +1,26 @@
+## Tools for developing
+setuptools
+versioneer
+
+
+## Documentation
+sphinx
+sphinx_rtd_theme
+sphinxcontrib-programoutput
+ghp-import
+graphviz
+
+
+## Testing
+pytest
+pytest-cov
+pytest-xdist
+coverage
+hypothesis
+pytest-benchmark
+
+
+## Profiling
+line_profiler
+memory_profiler
+objgraph

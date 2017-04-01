@@ -1,15 +1,32 @@
+## Should not be installed through pip
+## Recommended to use Conda package manager instead
+
+loggingtools
+
+## Package
+typing
+ruamel.yaml
+sortedcontainers
+
+## Command-line interface
+click
+colorama
+colorlog
+
+## Core
 numpy
 numba
 scipy
 scikit-image
 shapely
-matplotlib
-pyqt
-pyqtgraph
-h5py
-yaml
 pandas
-ruamel.yaml
 scikit-fmm
-typing
-nose
+
+## IO
+h5py
+
+## Gui and Vizualisation
+pyqt  # pyqt4
+pyqtgraph
+matplotlib
+bokeh

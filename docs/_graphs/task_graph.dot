@@ -1,0 +1,22 @@
+digraph foo {
+      "Reset" -> {
+          "GuiCommunication";
+          "IO";
+      };
+      "GuiCommunication" -> "Integrator";
+      "IO" -> "Integrator";
+      "Integrator" -> {
+          "Interactions";
+          "Adjusting";
+          "Fluctuation";
+      }
+      "Adjusting" -> {
+        "Navigation";
+        "Orientation";
+      }
+      "Navigation" -> "Exit Selection";
+      "Interactions" -> {
+        "Agent-Agent";
+        "Agent-Obstacle"
+      }
+    }

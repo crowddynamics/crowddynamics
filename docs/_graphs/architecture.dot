@@ -1,0 +1,15 @@
+digraph architecture {
+    "CLI" -> {
+        "Configuration";
+        "GUI";
+    }
+    "Test Simulation" -> "Configuration";
+    "GUI" -> {
+        "Configuration";
+    };
+    "Configuration" -> "Simulation";
+    "Simulation" -> {
+        "GUI";
+        "IO";
+    }
+}
