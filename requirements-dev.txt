@@ -1,5 +1,5 @@
 ## Tools for developing
-setuptools
+setuptools==34.3.3
 versioneer
 
 
