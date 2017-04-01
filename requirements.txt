@@ -4,7 +4,7 @@
 loggingtools==0.0.2
 
 ## Package
-typing
+typing==3.6.1
 ruamel.yaml
 sortedcontainers
 
