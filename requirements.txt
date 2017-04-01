@@ -1,32 +1,32 @@
 ## Should not be installed through pip
 ## Recommended to use Conda package manager instead
 
-loggingtools
+loggingtools==0.0.2
 
 ## Package
-typing
-ruamel.yaml
-sortedcontainers
+typing==3.6.1
+ruamel.yaml==0.14.4
+sortedcontainers==1.5.7
 
 ## Command-line interface
-click
-colorama
-colorlog
+click==6.7
+colorama==0.3.7
+colorlog==2.10.0
 
 ## Core
-numpy
-numba
-scipy
-scikit-image
-shapely
-pandas
-scikit-fmm
+numpy==1.12.1
+numba==0.31.0
+scipy==0.19.0
+scikit-image==0.13.0
+shapely==1.5.17.post1
+pandas==0.19.2
+scikit-fmm==0.0.9
 
 ## IO
-h5py
+h5py==2.7.0
 
 ## Gui and Vizualisation
 pyqt  # pyqt4
-pyqtgraph
-matplotlib
-bokeh
+pyqtgraph==0.10.0
+matplotlib==2.0.0
+bokeh==0.12.4
