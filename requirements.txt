@@ -23,7 +23,7 @@ pandas==0.19.2
 scikit-fmm==0.0.9
 
 ## IO
-h5py
+h5py==2.7.0
 
 ## Gui and Vizualisation
 pyqt  # pyqt4
