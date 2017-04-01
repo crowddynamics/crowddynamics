@@ -23,4 +23,4 @@ pytest-benchmark==3.0.0
 ## Profiling
 line-profiler==2.0
 memory-profiler==0.45
-objgraph
+objgraph==3.1.0
