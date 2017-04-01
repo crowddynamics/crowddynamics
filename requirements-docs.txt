@@ -1,0 +1,6 @@
+## Documentation
+sphinx==1.5.3
+sphinx-autobuild
+sphinx-rtd-theme==0.2.4
+sphinxcontrib-programoutput==0.10
+graphviz==0.6
