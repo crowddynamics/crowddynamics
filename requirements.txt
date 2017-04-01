@@ -15,7 +15,7 @@ colorlog==2.10.0
 
 ## Core
 numpy==1.12.1
-numba
+numba==0.31.0
 scipy
 scikit-image
 shapely
