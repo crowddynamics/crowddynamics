@@ -8,7 +8,7 @@ sphinx==1.5.3
 sphinx-rtd-theme==0.2.4
 sphinxcontrib-programoutput==0.10
 ghp-import==0.5.5
-graphviz
+graphviz==0.6
 
 
 ## Testing
