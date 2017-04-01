@@ -27,6 +27,6 @@ h5py==2.7.0
 
 ## Gui and Vizualisation
 pyqt  # pyqt4
-pyqtgraph
+pyqtgraph==0.10.0
 matplotlib
 bokeh
