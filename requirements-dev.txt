@@ -4,7 +4,7 @@ versioneer==0.18
 
 
 ## Documentation
-sphinx
+sphinx==1.5.3
 sphinx_rtd_theme
 sphinxcontrib-programoutput
 ghp-import
