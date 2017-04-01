@@ -1,26 +1,26 @@
 ## Tools for developing
-setuptools
-versioneer
+setuptools==34.3.3
+versioneer==0.18
 
 
 ## Documentation
-sphinx
-sphinx_rtd_theme
-sphinxcontrib-programoutput
-ghp-import
-graphviz
+sphinx==1.5.3
+sphinx-rtd-theme==0.2.4
+sphinxcontrib-programoutput==0.10
+ghp-import==0.5.5
+graphviz==0.6
 
 
 ## Testing
-pytest
-pytest-cov
-pytest-xdist
-coverage
-hypothesis
-pytest-benchmark
+pytest==3.0.7
+pytest-cov==2.4.0
+pytest-xdist==1.15.0
+coverage==4.3.4
+hypothesis==3.7.0
+pytest-benchmark==3.0.0
 
 
 ## Profiling
-line_profiler
-memory_profiler
-objgraph
+line-profiler==2.0
+memory-profiler==0.45
+objgraph==3.1.0
