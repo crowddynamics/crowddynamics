@@ -1,8 +1,6 @@
 ## Tools for developing
 setuptools
 versioneer
-jupyter
-pip-tools
 
 
 ## Documentation
