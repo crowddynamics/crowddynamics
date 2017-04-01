@@ -35,3 +35,15 @@ Project is licensed under GPL3. See `License <LICENSE.txt>`_
     .. pypi
     .. |Version_Status| image::
        :target:
+
+
+Authors
+-------
+
+.. list-table::
+   :header-rows: 1
+
+   * - Name
+     - Email
+   * - Jaan Tollander de Balsch
+     - <de.tollander@aalto.fi>
