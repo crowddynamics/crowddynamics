@@ -29,4 +29,4 @@ h5py==2.7.0
 pyqt  # pyqt4
 pyqtgraph==0.10.0
 matplotlib==2.0.0
-bokeh
+bokeh==0.12.4
