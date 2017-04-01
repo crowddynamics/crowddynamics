@@ -6,7 +6,7 @@ versioneer==0.18
 ## Documentation
 sphinx==1.5.3
 sphinx-rtd-theme==0.2.4
-sphinxcontrib-programoutput
+sphinxcontrib-programoutput==0.10
 ghp-import
 graphviz
 
