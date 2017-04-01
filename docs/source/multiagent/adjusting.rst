@@ -28,3 +28,38 @@ where
 - Characteristic time :math:`\tau_{rot}` time for agent to adjust it orientation.
 - Maximum angular velocity :math:`\omega_{0}`.
 - Target orientation :math:`\varphi_{0}`. In low and medium crowd densities the angle of the target direction can be sufficient for target orientation. In high crowd densities agents may twist their body differently for example to try to squeeze through narrow spaces, requiring more sophisticated algorithms.
+
+
+Subgroups
+---------
+.. warning::
+   This section is under construction and might contain errors and be subject to change.
+
+Crowds in real life often have a number of smaller subgroups. Such as group of two or three friends walking together or couple with or without children.
+
+
+Model by Langston for subgroups at most :math:`4` people.
+
+
+Attractor point
+^^^^^^^^^^^^^^^
+
+.. math::
+   \mathbf{x}_{att} = \mathbf{x}_{n} \pm d \hat{\mathbf{e}} (\theta)
+
+where
+
+* :math:`\mathbf{x}_{n}` is the coordinates of relative neighbor
+* :math:`d` is desired distance between two consecutive members
+* :math:`\theta` is desired angular orientation of the subgroup
+
+
+Intra-subgroup adjusting force
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Subgroup adjusting force adds additional term to adjusting force in social force model
+
+.. math::
+   \mathbf{f}^{adj} = \frac{m}{\tau^{adj}} (v_{0} \hat{\mathbf{e}}  + \underset{\text{new}}{\underbrace{k \mathbf{e}_{att}}} - \mathbf{v})
+
+* :math:`\mathbf{e}_{att} = \mathbf{x}_{att} - \mathbf{x}_{i}` relative displacement from the formation attractor point
+* :math:`k` subgroup velocity constant

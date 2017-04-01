@@ -1,0 +1,42 @@
+name,symbol,value,unit,explanation,source
+size,:math:`N`,,,Number of agents (N),
+shape,":math:`(N, 2)`",,,Shape for arrays,
+three_circles_flag,,,,Boolean indicating if agent is modeled with three circle model,
+orientable_flag,,,,Boolean indicating if agent is orientable,
+active,,,,Boolean indicating if agent is active,
+goal_reached,,,,Boolean indicating if goal is reahed,
+mass,:math:`m`,,kg,Mass,fds+evac
+radius,:math:`r`,,m,Radius,fds+evac
+r_t,:math:`r_t`,,m,Radius of torso,fds+evac
+r_s,:math:`r_s`,,m,Radius of shoulder,fds+evac
+r_ts,:math:`r_{ts}`,,m,Distance from torso to shoulder,fds+evac
+position,:math:`x`,,m,Position,
+velocity,:math:`v`,,m / s,Velocity,
+target_velocity,:math:`v_0`,,m / s,Target velocity,fds+evac
+target_direction,:math:`e_0`,,,Target direction,
+force,:math:`f`,,N,Force,
+force_adjust,:math:`f_{adj}`,,N,Adjusting force,
+force_agent,:math:`f_{agent}`,,N,Agent to agent force,
+force_wall,:math:`f_{wall}`,,N,Agent to wall force,
+inertia_rot,:math:`I_{rot}`,4,"kg\,m^{2}",Rotational moment for agent of weight 80 kg and radius 0.27,fds+evac
+angle,:math:`\varphi`,,rad,"Angle :math:`[-\pi, \pi]`",
+angular_velocity,:math:`\omega`,,rad / s,Angular velocity,
+target_angle,:math:`\varphi_0`,,rad,"Target angle :math:`[-\pi, \pi]`",
+target_angular_velocity,:math:`\omega_0`,4 * pi,rad / s,Target angular velocity,fds+evac
+torque,:math:`M`,,"N\,m",Torque,
+position_ls,:math:`x_{ls}`,,m,Position of the left shoulder,
+position_rs,:math:`x_{rs}`,,m,Position of the right shoulder,
+front,:math:`x_{front}`,,m,Position of the front,
+tau_adj,:math:`\tau_{adj}`,0.5,s,Characteristic time for agent adjusting its  movement,fds+evac
+tau_rot,:math:`\tau_{adjrot}`,0.2,s,Characteristic time for agent adjusting its  rotational movement,fds+evac
+k_soc,:math:`k_{soc}`,1.5,N,Social force scaling constant,power law
+tau_0,:math:`\tau_0`,3,s,Interaction time horizon,power law
+mu,:math:`\mu`,12000,kg/s^{2},Compression counteraction constant,fds+evac
+kappa,:math:`\kappa`,4000,"kg/(m\,s)",Sliding friction constant,fds+evac
+damping,:math:`c_d`,500,N,Damping coefficient for contact force,fds+evac
+std_rand_force,:math:`\xi / m`,0.1,,Standard deviation for random force from truncated normal distribution,fds+evac
+std_rand_torque,:math:`\eta / I_{rot}`,0.1,,Standard deviation for random torque from truncated normal distribution,fds+evac
+f_soc_ij_max,,2000,N,Truncation for social force with agent to agent interaction,
+f_soc_iw_max,,2000,N,Truncation for social force with agent to wall interaction,
+sight_soc,,7,m,Maximum distance for social force to effect,
+sight_wall,,7,m,Maximum distance for social force to effect,

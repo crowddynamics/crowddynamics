@@ -42,7 +42,8 @@ Required external libraries
 
    - ``pandas``
 
-.. TODO: About architecture
+
+
 
 ----
 
@@ -50,4 +51,7 @@ Contents
 
 .. toctree::
 
+   application.rst
    interface.rst
+   simulation.rst
+   io.rst

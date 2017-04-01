@@ -1,8 +1,6 @@
-Game Theoretical Models
-=======================
+Games
+=====
 
-Spatial Game for Egress Congestion
-----------------------------------
 Spatial `game`_ for egress congestion between players :math:`P \subset A`
 
 .. math::
@@ -20,36 +18,19 @@ Individual strategy is denoted
 
 .. _game: https://en.wikipedia.org/wiki/Normal-form_game
 
-Payoff Matrix
--------------
-+-----------+------------------------------------------+---------------+
-|           |                                Impatient |       Patient |
-+-----------+------------------------------------------+---------------+
-| Impatient | :math:`T_{aset}/T_{ij}, T_{aset}/T_{ij}` | :math:`-1, 1` |
-+-----------+------------------------------------------+---------------+
-|   Patient |                            :math:`1, -1` | :math:`0, 0`  |
-+-----------+------------------------------------------+---------------+
 
+Spatial Game for Egress Congestion
+----------------------------------
 Set of strategies
 
 .. math::
    S &= \{ \text{Impatient}, \text{Patient} \} \\
      &= \{ 0, 1 \}
 
-Payoff function
+Payoff matrix / function
 
 .. math::
-   f(s_i, s_j) =
-   \begin{cases}
-   \begin{cases}
-   T_{aset}/T_{ij} \\
-   1
-   \end{cases} \\
-   \begin{cases}
-   -1 \\
-   0
-   \end{cases}
-   \end{cases}
+   f(s_i, s_j) = \left[\begin{matrix}\left ( \frac{T_{aset}}{T_{ij}}, \quad \frac{T_{aset}}{T_{ij}}\right ) & \left ( -1, \quad 1\right )\\\left ( 1, \quad -1\right ) & \left ( 0, \quad 0\right )\end{matrix}\right]
 
 
 Available Safe Egress Time

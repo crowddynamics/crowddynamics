@@ -1,0 +1,42 @@
+Function,Kwargs,Options,Explanation
+field,,,
+,domain,,Polygon which contains all the other objects.
+,goals,,
+,obstacles,,Collection of polygons and LineStrings.
+,exits,,Collection of polygons and LineStrings.
+,,,
+algorithms,,,
+,navigation,None,Agent follow the initial target directions and do not update their target directions
+,,“static”,
+,,“dynamic”,
+,,callable,Custom class that has callable `update` function
+,orientation,None,
+,exit_selection,None,
+,intergrator,"(float, float)",Timestep interval
+,,,
+body,,,
+,,,
+model,,,
+,,,
+set_agents,,,
+,size,Integer,Number of agent to be placed
+,,None,All agents
+,surface,surface,Custom value
+,,None,Domain
+,position,ndarray,Custom value
+,,"""random""",Uses Monte Carlo method to place agent without overlapping with obstacles or other agents.
+,target_direction,None,Default value
+,,ndarrray,Custom value
+,,"""random""",Uniformly distributed random value
+,velocity,None,Default value
+,,ndarray,Custom value
+,,"""random""",Uniformly distributed random value
+,,"""auto""",
+,target_angle,None,Default value
+,,ndarray,Custom value
+,,"""random""",Uniformly distributed random value
+,,"""auto""",
+,orientation,None,Default value
+,,Number,Custom value
+,,"""random""",Uniformly distributed random value
+,,"""auto""",

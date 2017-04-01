@@ -1,0 +1,22 @@
+name: crowd34
+channels:
+    - conda-forge
+dependencies:
+    # Pyqt is not working properly with Python 3.5.
+    - python=3.4
+    - numpy
+    - numba
+    - scipy
+    - scikit-image
+    - shapely
+    - matplotlib
+    - pyqt
+    - pyqtgraph
+    - h5py
+    - yaml
+    - pandas
+    - typing
+    - nose
+    - pip:
+        - ruamel.yaml
+        - scikit-fmm

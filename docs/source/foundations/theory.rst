@@ -131,7 +131,7 @@ Model
 Three different models for she shape of the agent from above are displayed in the figure.
 
 .. image::
-    ../_static/agent_model.*
+    agent_model.*
 
 All agents have mass :math:`m > 0`, center of the mass :math:`\mathbf{x} \in \Omega` and moment of inertia :math:`I > 0`. Orientable agents have body angle of :math:`\varphi \in [-\pi, \pi]`. Normal and tangential unit vectors for agent
 

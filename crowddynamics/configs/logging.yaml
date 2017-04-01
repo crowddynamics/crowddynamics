@@ -1,0 +1,72 @@
+---
+
+version: 1
+disable_existing_loggers: False
+
+
+formatters:
+  simple:
+    format: "%(asctime)s - %(levelname)-8s - %(name)-12s - %(funcName)s: %(message)s"
+  plain:
+    format: "%(asctime)s - %(levelname)s <%(funcName)s> %(message)s"
+
+
+handlers:
+  console:
+    class: "logging.StreamHandler"
+    formatter: plain
+    level: INFO
+    stream: "ext://sys.stdout"
+
+  debug_file_handler:
+    class: "logging.handlers.RotatingFileHandler"
+    formatter: plain
+    filename: "debug.log"
+    level: DEBUG
+    maxBytes: 10485760  # 10 MB
+    backupCount: 20
+    encoding: "utf8"
+
+  info_file_handler:
+    class: "logging.handlers.RotatingFileHandler"
+    formatter: plain
+    filename: "info.log"
+    level: INFO
+    maxBytes: 10485760  # 10 MB
+    backupCount: 20
+    encoding: "utf8"
+
+
+loggers:
+  crowddynamics:
+    level: INFO
+    handlers: [console, debug_file_handler, info_file_handler]
+    propagate: no
+
+  crowddynamics.configuration:
+    level: INFO
+    handlers: [console, debug_file_handler, info_file_handler]
+    propagate: no
+
+  crowddynamics.simulation:
+    level: INFO
+    handlers: [console, debug_file_handler, info_file_handler]
+    propagate: no
+
+  crowddynamics.gui.mainwindow:
+    level: INFO
+    handlers: [console, debug_file_handler, info_file_handler]
+    propagate: no
+
+  crowddynamics.gui.graphics:
+    level: INFO
+    handlers: [console, debug_file_handler, info_file_handler]
+    propagate: no
+
+
+root:
+  level: INFO
+  handlers: [console]
+#  handlers: [console, debug_file_handler, info_file_handler]
+
+...

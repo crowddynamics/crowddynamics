@@ -1,0 +1,10 @@
+name,adult,male,female,child,eldery,Unit,explanation
+radius,0.255,0.27,0.24,0.21,0.25,m,Total radius of the agent
+radius_scale,0.035,0.02,0.02,0.015,0.02,m,Difference bound for total radius
+ratio_rt,0.5882,0.5926,0.5833,0.5714,0.6,1,Ratio of total radius and radius torso
+ratio_rs,0.3725,0.3704,0.375,0.3333,0.36,1,Ratio of total radius and radius shoulder
+ratio_ts,0.6275,0.6296,0.625,0.6667,0.64,1,Ratio of total radius and distance from torso to shoulder
+velocity,1.25,1.35,1.15,0.9,0.8,m/s,Walking speed of agent
+velocity_scale,0.3,0.2,0.2,0.3,0.3,m/s,Difference bound for walking speed
+mass,73.5,80,67,57,70,kg,Mass of an agent
+mass_scale,8,8,6.7,5.7,7,kg,Standard deviation of mass of the agent

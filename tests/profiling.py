@@ -1,37 +1,19 @@
-"""
-Profiling and Benchmarks
-========================
-
-kernprof -l profiling.py
-
-python -m line_profiler profiling.py.lprof
-
-
-Jit compiling speed
-
-
-.. [#] http://www.scipy-lectures.org/advanced/optimizing/
-.. [#] http://www.blog.pythonlibrary.org/2016/05/24/python-101-an-intro-to-benchmarking-your-code/
-
-"""
-import sys
 import importlib
 import logging
 import logging.config
+import sys
 
-sys.path.insert(0, "/home/jaan/Dropbox/Projects/CrowdDynamics")
+sys.path.insert(0, "..")
 
-from src.main import setup_logging, user_info
-from src.config import Load
+from crowddynamics.main import setup_logging
+from crowddynamics.functions import load_config
 
 
 def run_simulation(name, iterations=100):
     setup_logging()
-    user_info()
     logging.info("Starting")
 
-    load = Load()
-    configs = load.yaml("simulations")
+    configs = load_config("simulations.yaml")
     simu_dict = configs["simulations"][name]
     module_name = simu_dict["module"]
     class_name = simu_dict["class"]

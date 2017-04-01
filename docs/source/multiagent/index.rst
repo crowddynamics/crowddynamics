@@ -1,57 +1,29 @@
 Multi-Agent
 ===========
-- Microscopic
-- Continuous space
-- Social force model
+.. Struture Tree, GraphViz, Architeture
 
-Multi-agent simulation (MAS) of crowd dynamics on continuous 2-dimensional space. Motion is created by *social force model* which approached modelling pedestrian dynamics using classical mechanics. Agents are modeled as rigid bodies. Helbing describes social forces
+Arhitecture
 
-   *These forces are not directly exerted by the pedestrians’ personal environment, but they are a measure for the internal motivations of the individuals to perform certain actions (movements).*
+- **Microscopic** in nature. Agents are modelled as rigid bodies.
+- **Continuous space**, :math:`\mathbb{R}^2`
+- **Social force model** as a classical mechanics approach for modelling crowd movement.
 
-Law's of motion are given as coupled `Langevin equations`_ where translational motion and rotational motion
 
-.. _Langevin equations: https://en.wikipedia.org/wiki/Langevin_equation
+Task graph
 
-.. math::
-   \begin{cases}
-   m \frac{d^{2}}{d t^{2}} \mathbf{x}(t) = \mathbf{f}(t) + \boldsymbol{\xi}(t) \\
-   I \frac{d^{2}}{d t^{2}} \varphi(t) = M(t) + \eta(t)
-   \end{cases}
+.. figure:: task_graph.png
 
-Total force exerted on the agent
-
-.. math::
-   \mathbf{f}_{i}(t) = \mathbf{f}_{i}^{adj} + \sum_{j\neq i}^{} \left(\mathbf{f}_{ij}^{soc} + \mathbf{f}_{ij}^{c}\right) + \sum_{w}^{} \left(\mathbf{f}_{iw}^{soc} + \mathbf{f}_{iw}^{c}\right),
-
-where
-
-* Adjusting force :math:`\mathbf{f}_{i}^{adj}`
-* Social force :math:`\mathbf{f}_{ij}^{soc}` and :math:`\mathbf{f}_{iw}^{soc}`
-* Contact force :math:`\mathbf{f}_{ij}^{c}` and :math:`\mathbf{f}_{iw}^{c}`
-
-Total torque on the agent
-
-.. math::
-   M_{i}(t) = M_{i}^{adj} + \sum_{j\neq i}^{} \left(M_{ij}^{soc} + M_{ij}^{c}\right) + \sum_{w}^{} \left(M_{iw}^{soc} + M_{iw}^{c}\right),
-
-where
-
-* Adjusting torque :math:`M_{i}^{adj}`
-* Social torque :math:`M_{ij}^{soc}` and :math:`M_{iw}^{soc}`
-* Contact torque :math:`M_{ij}^{c}` and :math:`M_{iw}^{c}`
 
 ----
 
-Contents
-
 .. toctree::
 
+   algorithms.rst
+   social_force_model.rst
    adjusting.rst
    interactions.rst
    fluctuation.rst
    integrator.rst
-   subgroup.rst
-   neighborhood.rst
    navigation.rst
    orientation.rst
    exit_selection.rst

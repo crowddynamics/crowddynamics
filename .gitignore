@@ -261,7 +261,7 @@ sympy-plots-for-*.tex/
 *.hdf5
 *.old
 /.travis.yaml
-TODO
+TODO.txt
 
 # Folders
 /docs/build/
