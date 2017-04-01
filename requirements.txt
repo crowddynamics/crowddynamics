@@ -1,7 +1,7 @@
 ## Should not be installed through pip
 ## Recommended to use Conda package manager instead
 
-loggingtools
+loggingtools==0.0.2
 
 ## Package
 typing
