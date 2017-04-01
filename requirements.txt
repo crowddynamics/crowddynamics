@@ -14,7 +14,7 @@ colorama==0.3.7
 colorlog==2.10.0
 
 ## Core
-numpy
+numpy==1.12.1
 numba
 scipy
 scikit-image
