@@ -2,7 +2,7 @@ Crowd Dynamics
 ==============
 .. Build status, coverage
 
-|QuantifiedCode| |Pyup|
+|Travis| |Appveoyr| |readthedocs| |QuantifiedCode| |Pyup|
 
 .. |QuantifiedCode| image:: https://www.quantifiedcode.com/api/v1/project/d65ae0eba6ea496b84e36dcbb556d80a/badge.svg
    :target: https://www.quantifiedcode.com/app/project/d65ae0eba6ea496b84e36dcbb556d80a
@@ -12,16 +12,30 @@ Crowd Dynamics
    :target: https://pyup.io/repos/github/jaantollander/CrowdDynamics/
    :alt: Updates
 
+.. |readthedocs| image:: https://readthedocs.org/projects/crowddynamics/badge/?version=latest
+   :target: http://crowddynamics.readthedocs.io/en/latest/?badge=latest
+   :alt: Documentation Status
+
+.. |Travis| image:: https://travis-ci.org/jaantollander/CrowdDynamics.svg?branch=master
+   :target: https://travis-ci.org/jaantollander/CrowdDynamics
+   :alt: Travis continuous intergration
+
+.. |Appveoyr| image:: https://ci.appveyor.com/api/projects/status/nlqrc850nbr9kh4e?svg=true
+   :target: https://ci.appveyor.com/project/jaantollander/CrowdDynamics
+   :alt: Appveoyr continuous intergration
+
+.. |Codecov| image:: https://codecov.io/gh/jaantollander/CrowdDynamics/branch/master/graph/badge.svg
+   :target: https://codecov.io/gh/jaantollander/CrowdDynamics
+   :alt: Codecov coverage hosting
+
 
 Crowddynamics is a library for creating crowd simulations in Python. See documentation_ for more information.
 
+.. _documentation: http://jaantollander.github.io/CrowdDynamics/
 
 License
 -------
 Project is licensed under GPL3. See `License <LICENSE.txt>`_
-
-
-.. _documentation: http://jaantollander.github.io/CrowdDynamics/
 
 
 Authors
