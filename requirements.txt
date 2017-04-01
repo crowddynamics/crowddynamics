@@ -9,7 +9,7 @@ ruamel.yaml==0.14.4
 sortedcontainers==1.5.7
 
 ## Command-line interface
-click
+click==6.7
 colorama
 colorlog
 
