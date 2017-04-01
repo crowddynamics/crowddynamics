@@ -12,7 +12,7 @@ graphviz==0.6
 
 
 ## Testing
-pytest
+pytest==3.0.7
 pytest-cov
 pytest-xdist
 coverage
