@@ -10,7 +10,7 @@ sortedcontainers==1.5.7
 
 ## Command-line interface
 click==6.7
-colorama
+colorama==0.3.7
 colorlog
 
 ## Core
