@@ -13,6 +13,7 @@ Crowd simulation in game engines
 Existing simulation software
 
 - http://pedsim.silmaril.org/
+- JuPedSim
 
 Force Based Multiagent
 

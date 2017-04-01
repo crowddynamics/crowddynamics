@@ -1,24 +1,15 @@
-# Research project for Aalto University, System Analysis Laboratory
-# CREATED_DATE = "2016-06-01"
-
-# Module metadata variables
-__author__ = "Jaan Tollander de Balsch"
-__authors__ = ("Jaan Tollander de Balsch",)
-__contact__ = "de.tollander@aalto.fi"
-__copyright__ = None
-__license__ = "GNU GENERAL PUBLIC LICENSE Version 3"
-__date__ = None
+# Research project for Aalto University, System Analysis Laboratory,
+# created 2016-06-01
 
 from ._version import get_versions
+
+
+__author__ = "Jaan Tollander de Balsch"
+__authors__ = ("Jaan Tollander de Balsch",)
+__email__ = "de.tollander@aalto.fi"
+__license__ = "GPL3"
 __version__ = get_versions()['version']
-del get_versions
 
 # __all__= []
 
-try:
-    from shapely import speedups
-
-    speedups.enable()
-    del speedups
-except ImportError():
-    pass
+del get_versions

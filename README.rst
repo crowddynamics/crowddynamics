@@ -1,7 +1,5 @@
 Crowd Dynamics
 ==============
-.. Build status, coverage
-
 |Travis| |Appveoyr| |readthedocs| |QuantifiedCode| |Pyup| |Codecov|
 
 .. |QuantifiedCode| image:: https://www.quantifiedcode.com/api/v1/project/d65ae0eba6ea496b84e36dcbb556d80a/badge.svg

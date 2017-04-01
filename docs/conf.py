@@ -16,9 +16,8 @@ from __future__ import print_function
 import os
 import sys
 
-import crowddynamics
-
 sys.path.insert(0, os.path.abspath('..'))
+import crowddynamics
 
 # -- General configuration ------------------------------------------------
 
@@ -90,13 +89,10 @@ graphviz_output_format = 'png'  # svg
 
 # -- Options for HTML output ----------------------------------------------
 
-try:
-    import sphinx_rtd_theme
-    html_theme = "sphinx_rtd_theme"
-    html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
-    html_theme_options = {}
-except ImportError() as e:
-    html_theme = 'alabaster'
+import sphinx_rtd_theme
+html_theme = "sphinx_rtd_theme"
+html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
+html_theme_options = {}
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the

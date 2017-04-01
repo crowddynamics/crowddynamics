@@ -1,13 +1,12 @@
 ## Tools for developing
 setuptools==34.3.3
-versioneer==0.18
 
 
 ## Documentation
 sphinx==1.5.3
+sphinx-autobuild
 sphinx-rtd-theme==0.2.4
 sphinxcontrib-programoutput==0.10
-ghp-import==0.5.5
 graphviz==0.6
 
 
