@@ -16,6 +16,7 @@ dependencies:
     - matplotlib
     - bokeh
     - pip:
+        - loggingtools
         - typing
         - sortedcontainers
         - ruamel.yaml

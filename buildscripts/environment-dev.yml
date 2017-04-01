@@ -20,6 +20,7 @@ dependencies:
     - jupyter
     - pip:
         ## Package
+        - loggingtools
         - versioneer
         - typing
         - sortedcontainers
