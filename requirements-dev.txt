@@ -1,6 +1,6 @@
 ## Tools for developing
 setuptools==34.3.3
-versioneer
+versioneer==0.18
 
 
 ## Documentation
