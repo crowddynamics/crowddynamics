@@ -1,4 +1,3 @@
-## Tools for developing
 setuptools==34.3.3
 
 
