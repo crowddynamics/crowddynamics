@@ -1,0 +1,3 @@
+# https://docs.quantifiedcode.com/configuration/config_checkignore.html
+versioneer.py
+*/_version.py
