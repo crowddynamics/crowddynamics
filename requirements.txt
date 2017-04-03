@@ -4,7 +4,7 @@
 loggingtools==0.0.2
 
 ## Package
-configobj
+configobj==5.0.6
 typing==3.6.1
 ruamel.yaml==0.14.4
 sortedcontainers==1.5.7
