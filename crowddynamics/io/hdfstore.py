@@ -111,7 +111,6 @@ class HDFStore(object):
         with h5py.File(self.filepath, mode='a') as file:
             file.create_group(self.group_name)
 
-    # @log_with(logger)
     def _create_dataset(self, group, name, values, resizable=False):
         """
         Create dataset
@@ -139,7 +138,6 @@ class HDFStore(object):
             values = np.expand_dims(values, axis=0)
         group.create_dataset(name, data=values, **kw)
 
-    # @log_with(logger)
     def _append_buffer_to_dataset(self, dset, list_buffer):
         """Append values to resizable h5py dataset.
 

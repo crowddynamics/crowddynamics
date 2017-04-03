@@ -15,12 +15,19 @@ from crowddynamics.core.interactions import overlapping_three_circle, \
     overlapping_circle_circle
 from crowddynamics.core.random.sampling import PolygonSample
 from crowddynamics.exceptions import CrowdDynamicsException, InvalidArgument
-from crowddynamics.multiagent.taskgraph import TaskNode
+from crowddynamics.simulation.taskgraph import TaskNode
+
+
+__all__ = """
+REGISTERED_SIMULATIONS
+MultiAgentSimulation
+MultiAgentProcess
+register
+run_simulations_parallel
+run_simulations_sequentially
+""".split()
 
 REGISTERED_SIMULATIONS = dict()
-# TODO: remove, replace with Enum classes in agents.py
-AGENT_MODELS = ['circular', 'three_circle']
-BODY_TYPES = ['adult', 'male', 'female', 'child', 'eldery']
 
 
 def agent_polygon(position, radius):
@@ -34,7 +41,7 @@ def agent_polygon(position, radius):
         return Point(position).buffer(radius)
 
 
-class MultiAgentSimulation:
+class MultiAgentSimulation(object):
     r"""MultiAgent simulation setup
 
     1) Set the Field

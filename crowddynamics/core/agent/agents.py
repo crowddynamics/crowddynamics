@@ -37,13 +37,13 @@ from crowddynamics.core.vector.vector2D import unit_vector, rotate270
 from crowddynamics.exceptions import CrowdDynamicsException, OverlappingError, \
     AgentStructureFull
 
-
 # TODO: configspec for agent.cfg
 # https://configobj.readthedocs.io/en/latest/configobj.html#configspec
 # TODO: body_type configspec
 # TODO: convert configs to right type
 # TODO: Validation
 # https://configobj.readthedocs.io/en/latest/validate.html
+
 BASE_DIR = os.path.dirname(__file__)
 AGENT_CONFIG = ConfigObj(os.path.join(BASE_DIR, 'agent.cfg'))
 AGENT_BODY_TYPES = AGENT_CONFIG['body_types']
@@ -55,7 +55,7 @@ def _truncnorm(mean, abs_scale, size):
     return truncnorm(-3.0, 3.0, loc=mean, abs_scale=abs_scale, size=size)
 
 
-def converter(body, size):
+def body_to_values(body, size):
     """Body to values
 
     Args:
@@ -73,17 +73,24 @@ def converter(body, size):
             
         size (int): 
     """
+    radius = _truncnorm(body['radius'], body['radius_scale'], size)
     return {
-        'ratio_rt': body['ratio_rt'],
-        'ratio_rs': body['ratio_rs'],
-        'ratio_ts': body['ratio_ts'],
-        'radius': _truncnorm(body['radius'], body['radius_scale'], size),
-        'velocity': _truncnorm(body['velocity'], body['velocity_scale'], size),
+        'r_t': body['ratio_rt'] * radius,
+        'r_s': body['ratio_rs'] * radius,
+        'r_ts': body['ratio_ts'] * radius,
+        'radius': radius,
+        'max_velocity': _truncnorm(body['velocity'], body['velocity_scale'],
+                                   size),
         'mass': _truncnorm(body['mass'], body['mass_scale'], size),
+        'max_angular_velocity': np.full(size, 4 * np.pi)
     }
 
 
-# Agent attributes
+class AgentModels(Enum):
+    """Enumeration class for available agent models."""
+    CIRCULAR = 'circular'
+    THREE_CIRCLE = 'three_circle'
+
 translational = [
     ('mass', np.float64),
     ('radius', np.float64),
@@ -104,7 +111,6 @@ translational = [
     ('sight_soc', np.float64),
     ('sight_wall', np.float64),
 ]
-
 rotational = [
     ('inertia_rot', np.float64),
     ('orientation', np.float64),
@@ -115,7 +121,6 @@ rotational = [
     ('tau_rot', np.float64),
     ('std_rand_torque', np.float64),
 ]
-
 three_circle = [
     ('r_t', np.float64),
     ('r_s', np.float64),
@@ -125,22 +130,8 @@ three_circle = [
     ('front', np.float64, 2),
 ]
 
-
-class AgentModels(Enum):
-    """Enumeration class for available agent models."""
-    CIRCULAR = 'circular'
-    THREE_CIRCLE = 'three_circle'
-
-
-agent_type_circular = np.dtype(
-    translational
-)
-
-agent_type_three_circle = np.dtype(
-    translational +
-    rotational +
-    three_circle
-)
+agent_type_circular = np.dtype(translational)
+agent_type_three_circle = np.dtype(translational + rotational + three_circle)
 
 
 @numba.jit(void(typeof(agent_type_three_circle)[:]),
@@ -400,9 +391,8 @@ class ObstacleManager(object):
 
 
 # Neighborhood for tracking neighboring agents
-Neighborhood = namedtuple(
-    'Neighborhood', ['neighbor_radius', 'neighborhood_size', 'neighbors']
-)
+Neighborhood = namedtuple('Neighborhood',
+                          ['neighbor_radius', 'neighborhood_size', 'neighbors'])
 
 
 def init_neighborhood(agent_size, neighborhood_size, neighbor_radius):

@@ -39,8 +39,7 @@ from configobj import ConfigObj
 from crowddynamics import __version__
 from crowddynamics.exceptions import CrowdDynamicsException, InvalidArgument, \
     NotACrowdDynamicsDirectory, DirectoryIsAlreadyCrowdDynamicsDirectory
-from crowddynamics.multiagent import examples
-from crowddynamics.multiagent.simulation import REGISTERED_SIMULATIONS, \
+from crowddynamics.simulation.multiagent import REGISTERED_SIMULATIONS, \
     run_simulations_parallel, run_simulations_sequentially
 
 
@@ -51,9 +50,6 @@ class Colors:
     NEGATIVE = 'red'
 
 
-CROWDDYNAMICS_CFG = 'crowddynamics.cfg'
-ENVIRONMENT_YML = 'environment.yml'
-
 LOGLEVELS = [
     logging.CRITICAL, logging.FATAL, logging.ERROR, logging.WARNING,
     logging.WARN, logging.INFO, logging.DEBUG, logging.NOTSET,
@@ -61,8 +57,8 @@ LOGLEVELS = [
 ]
 BASE_DIR = os.path.dirname(__file__)
 LOG_CFG = os.path.join(BASE_DIR, 'logging.yaml')
-
-examples.init()
+CROWDDYNAMICS_CFG = 'crowddynamics.cfg'
+ENVIRONMENT_YML = 'environment.yml'
 
 
 def user_info():
@@ -131,7 +127,7 @@ def startproject(dirpath):
 
 @main.command()
 @click.argument('name')
-def newsimulation(name):
+def new(name):
     """Create new simulation. Must be called inside a crowddynamics directory.
     
     ::
@@ -180,13 +176,13 @@ def newsimulation(name):
         fp.write('')
 
 
-# TODO: read simulation from crowddynamics.cfg
-@main.command()
-def list():
+@main.command('list')
+def list_of_simulations():
     """List of available simulations"""
-    # TODO: pretty formatting, colors
-    click.secho('List of available simulations:', fg='green')
-    click.secho(pformat(REGISTERED_SIMULATIONS), fg='green')
+    config = ConfigObj(CROWDDYNAMICS_CFG)
+    l = config.get('simulations', [])
+    click.secho('List of available simulations:', fg=Colors.NEUTRAL)
+    click.secho(pformat(l), fg=Colors.NEUTRAL)
 
 
 @main.group(chain=True)
