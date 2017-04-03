@@ -2,7 +2,7 @@
 # TODO: improve this module or remove it
 import numpy as np
 
-from crowddynamics.core.agent.agents import BODIES
+from crowddynamics.core.agent.agents import AGENT_BODY_TYPES
 from crowddynamics.core.random.functions import truncnorm
 
 
@@ -143,7 +143,7 @@ class Parameters:
     """Agent parameters"""
 
     def __init__(self, body_type='adult'):
-        self.bodies = BODIES
+        self.bodies = AGENT_BODY_TYPES
         self.body_types = ('adult', 'male', 'female', 'child', 'eldery')
         self.body_type = None
         self.set_body_type(body_type)

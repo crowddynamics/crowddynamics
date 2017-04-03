@@ -180,6 +180,7 @@ def newsimulation(name):
         fp.write('')
 
 
+# TODO: read simulation from crowddynamics.cfg
 @main.command()
 def list():
     """List of available simulations"""

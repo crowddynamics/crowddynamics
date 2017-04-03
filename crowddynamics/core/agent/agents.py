@@ -24,7 +24,7 @@ from enum import Enum
 
 import numba
 import numpy as np
-import pandas as pd
+from configobj import ConfigObj
 from numba import typeof, void, boolean, float64
 from numba.types import UniTuple
 from sortedcontainers import SortedSet
@@ -32,65 +32,55 @@ from sortedcontainers import SortedSet
 from crowddynamics.core.interactions import distance_circle_circle
 from crowddynamics.core.interactions import distance_three_circle
 from crowddynamics.core.interactions.partitioning import MutableBlockList
+from crowddynamics.core.random.functions import truncnorm
 from crowddynamics.core.vector.vector2D import unit_vector, rotate270
 from crowddynamics.exceptions import CrowdDynamicsException, OverlappingError, \
     AgentStructureFull
 
 
-# TODO: read configutaion from .cfg file
+# TODO: configspec for agent.cfg
+# https://configobj.readthedocs.io/en/latest/configobj.html#configspec
+# TODO: body_type configspec
+# TODO: convert configs to right type
+# TODO: Validation
+# https://configobj.readthedocs.io/en/latest/validate.html
 BASE_DIR = os.path.dirname(__file__)
-BODIES = pd.read_csv(os.path.join(BASE_DIR, 'body.csv'), index_col=[0])
+AGENT_CONFIG = ConfigObj(os.path.join(BASE_DIR, 'agent.cfg'))
+AGENT_BODY_TYPES = AGENT_CONFIG['body_types']
+AGENT_DEFAULT_PARAMETERS = AGENT_CONFIG['default_parameters']
+AGENT_RADIUS_MAX = 0.3
 
 
-class AgentModels(Enum):
-    """Enumeration class for available agent models."""
-    CIRCULAR = 'circular'
-    THREE_CIRCLE = 'three_circle'
+def _truncnorm(mean, abs_scale, size):
+    return truncnorm(-3.0, 3.0, loc=mean, abs_scale=abs_scale, size=size)
 
 
-class AgentBodyTypes(Enum):
-    """Enumeration for available agent body types."""
-    ADULT = 'adult'
-    MALE = 'male'
-    FEMALE = 'female'
-    CHILD = 'child'
-    ELDERY = 'eldery'
+def converter(body, size):
+    """Body to values
 
-
-class Defaults(object):
-    """Default values for agent parameters"""
-    orientation = 0.0
-
-    # Motion parameters
-    tau_adj = 0.5
-    tau_rot = 0.2
-    k_soc = 1.5
-    tau_0 = 3.0
-    mu = 1.2e5
-    kappa = 4e4
-    damping = 500
-    std_rand_force = 0.1
-    std_rand_torque = 0.1
-
-    # Limits
-    sight_soc = 3.0
-    sight_wall = 3.0
-    f_soc_ij_max = 2e3
-    f_soc_iw_max = 2e3
-
-    @classmethod
-    def items(cls):
-        """Yield items from a class."""
-        for key, value in cls.__dict__.items():
-            if not key.startswith('__'):
-                yield key, value
-
-    @classmethod
-    def to_dict(cls):
-        return {key: value for key, value in cls.items()}
-
-
-MAX_AGENT_RADIUS = 0.3
+    Args:
+        body (dict): Dictionary with keys::
+        
+            ratio_rt = float
+            ratio_rs = float
+            ratio_ts = float
+            radius = float
+            radius_scale = float
+            velocity = float
+            velocity_scale = float
+            mass = float
+            mass_scale = float
+            
+        size (int): 
+    """
+    return {
+        'ratio_rt': body['ratio_rt'],
+        'ratio_rs': body['ratio_rs'],
+        'ratio_ts': body['ratio_ts'],
+        'radius': _truncnorm(body['radius'], body['radius_scale'], size),
+        'velocity': _truncnorm(body['velocity'], body['velocity_scale'], size),
+        'mass': _truncnorm(body['mass'], body['mass_scale'], size),
+    }
 
 
 # Agent attributes
@@ -135,7 +125,13 @@ three_circle = [
     ('front', np.float64, 2),
 ]
 
-# Agent model types
+
+class AgentModels(Enum):
+    """Enumeration class for available agent models."""
+    CIRCULAR = 'circular'
+    THREE_CIRCLE = 'three_circle'
+
+
 agent_type_circular = np.dtype(
     translational
 )
@@ -276,7 +272,7 @@ class AgentManager(object):
 
         # Faster check for neighbouring agents for initializing agents into
         # random positions.
-        self.grid = MutableBlockList(cell_size=MAX_AGENT_RADIUS)
+        self.grid = MutableBlockList(cell_size=AGENT_RADIUS_MAX)
 
     def add(self, check_overlapping=True, **attributes):
         """Add new agent
@@ -330,7 +326,7 @@ class AgentManager(object):
 
             # TODO: default parameters
             # Set default parameters if parameters are not given in attributes
-            for key, value in Defaults.items():
+            for key, value in AGENT_DEFAULT_PARAMETERS.items():
                 if key not in attributes:
                     attributes[key] = value
 
