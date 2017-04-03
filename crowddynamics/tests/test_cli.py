@@ -1,10 +1,21 @@
+import os
+
 import pytest
 from click.testing import CliRunner
 
+from crowddynamics.cli import startproject, newsimulation, CROWDDYNAMICS_CFG, \
+    ENVIRONMENT_YML
 
-@pytest.mark.skip
-def test_run():
+
+@pytest.mark.parametrize('dirpath', ['.', 'name', os.path.join('folder', 'path')])
+def test_startproject(tmpdir, dirpath):
     runner = CliRunner()
-    result = runner.invoke()  # TODO: add function to test
-    assert result.exit_code == 0
-    assert result.output == ''
+    with runner.isolated_filesystem():
+        result = runner.invoke(startproject, [dirpath])
+        assert result.exit_code == 0
+        assert os.path.exists(os.path.join(dirpath, CROWDDYNAMICS_CFG))
+        assert os.path.exists(os.path.join(dirpath, ENVIRONMENT_YML))
+
+        os.chdir(dirpath)
+        result2 = runner.invoke(newsimulation, ['simu'])
+        assert result2.exit_code == 0

@@ -8,8 +8,7 @@ from crowddynamics.core.motion import force_fluctuation, \
     force_adjust, torque_adjust, torque_fluctuation
 from crowddynamics.core.steering.navigation import to_indices, static_potential
 from crowddynamics.core.vector.vector2D import angle_nx2
-from crowddynamics.io import HDFStore
-from crowddynamics.io import Record
+from crowddynamics.io.hdfstore import HDFStore, Record
 from crowddynamics.multiagent.taskgraph import TaskNode
 
 

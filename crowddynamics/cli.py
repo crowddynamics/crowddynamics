@@ -33,33 +33,34 @@ from pprint import pformat
 
 import click
 from loggingtools import setup_logging
+import ruamel.yaml as yaml
+from configobj import ConfigObj
 
-import crowddynamics
-from crowddynamics.exceptions import CrowdDynamicsException, InvalidArgument
+from crowddynamics import __version__
+from crowddynamics.exceptions import CrowdDynamicsException, InvalidArgument, \
+    NotACrowdDynamicsDirectory, DirectoryIsAlreadyCrowdDynamicsDirectory
 from crowddynamics.multiagent import examples
 from crowddynamics.multiagent.simulation import REGISTERED_SIMULATIONS, \
     run_simulations_parallel, run_simulations_sequentially
 
 
-VERSION = crowddynamics.__version__
-HELP = "CrowdDynamics {version}. A tool for building and running crowd " \
-       "simulations.".format(version=VERSION)
+class Colors:
+    """Commandline output colors"""
+    NEUTRAL = 'blue'
+    POSITIVE = 'green'
+    NEGATIVE = 'red'
+
+
+CROWDDYNAMICS_CFG = 'crowddynamics.cfg'
+ENVIRONMENT_YML = 'environment.yml'
+
 LOGLEVELS = [
-    logging.CRITICAL,
-    logging.FATAL,
-    logging.ERROR,
-    logging.WARNING,
-    logging.WARN,
-    logging.INFO,
-    logging.DEBUG,
-    logging.NOTSET,
+    logging.CRITICAL, logging.FATAL, logging.ERROR, logging.WARNING,
+    logging.WARN, logging.INFO, logging.DEBUG, logging.NOTSET,
+    'CRITICAL', 'FATAL', 'ERROR', 'WARNING', 'WARN', 'INFO', 'DEBUG', 'NOTSET'
 ]
-# TODO: loglevel by name
-LOGLEVELS += ['CRITICAL', 'FATAL', 'ERROR', 'WARNING', 'WARN', 'INFO',
-              'DEBUG', 'NOTSET', ]
 BASE_DIR = os.path.dirname(__file__)
 LOG_CFG = os.path.join(BASE_DIR, 'logging.yaml')
-
 
 examples.init()
 
@@ -71,32 +72,112 @@ def user_info():
     logger.info("Python: %s", sys.version[0:5])
 
 
-@click.group(help=HELP)
-@click.version_option(VERSION)
+@click.group(help="CrowdDynamics {version}. A tool for building and running "
+                  "crowd simulations.".format(version=__version__))
+@click.version_option(__version__)
 def main():
     pass
 
 
 @main.command()
-@click.argument('name')
-def startproject(name):
-    """Create new simulation project."""
-    # TODO: Handle lower / upper case
-    if os.path.exists(name):
-        click.secho('Project "{name}" already exists.'.format(name=name),
-                    fg='red')
-        return
-    click.secho('Creating project: {name}'.format(name=name), fg='green')
-    os.mkdir(name)
-    # TODO: project template
+@click.argument('dirpath')
+def startproject(dirpath):
+    """Create new simulation project.
+    
+    ::
+    
+        <name>
+        ├── crowddynamics.cfg
+        ├── environment.yml
+        ├── ...
+        
+    - crowddynamics.cfg
+        Configurations and path to simulations.
+    - environment.yml
+        Conda environment to install and run simulations.
+    
+    Args:
+        dirpath (str):
+          - ``.``: Current directory
+          - ``path/to/name``: Path to directory called ``name``  
+    """
+    click.secho('Creating project: {name}'.format(name=dirpath),
+                fg=Colors.NEUTRAL)
+
+    if os.path.exists(os.path.join(dirpath, CROWDDYNAMICS_CFG)):
+        click.secho('Dirpath is already crowddynamics directory.',
+                    fg=Colors.NEGATIVE)
+        raise DirectoryIsAlreadyCrowdDynamicsDirectory
+
+    try:
+        # Project directory
+        os.makedirs(dirpath, exist_ok=True)
+        click.secho('Created successfully', fg=Colors.POSITIVE)
+    except FileExistsError as error:
+        click.secho('Creation failed', fg=Colors.NEGATIVE)
+        raise error
+
+    # crowddynamics.cfg
+    config = ConfigObj(os.path.join(dirpath, CROWDDYNAMICS_CFG))
+    config['simulations'] = {}
+    config.write()
+
+    # environment.yml
+    data = {'channels': ['conda-forge'],
+            'dependencies': ['crowddynamics']}
+    with open(os.path.join(dirpath, ENVIRONMENT_YML), 'w') as envfile:
+        yaml.dump(data, envfile, default_flow_style=False, indent=2)
 
 
 @main.command()
 @click.argument('name')
-def gensimulation(name):
-    """Create new simulation."""
-    # TODO: simulation template
-    pass
+def newsimulation(name):
+    """Create new simulation. Must be called inside a crowddynamics directory.
+    
+    ::
+    
+        project
+        ├── crowddynamics.cfg
+        ├── environment.yml
+        ├── <name>
+        │   ├── __init__.py
+        │   └── simulation.py
+        ...
+    
+    - simulation.py
+        Template for making new crowd simulations.
+    """
+    click.secho('Creating simulation: {}'.format(name), fg=Colors.NEUTRAL)
+
+    # Check if we are inside crowddynamics project directory
+    if not os.path.exists(CROWDDYNAMICS_CFG):
+        click.secho('Current directory is not a simulation directory',
+                    fg=Colors.NEGATIVE)
+        raise NotACrowdDynamicsDirectory
+
+    try:
+        os.mkdir(name)
+        click.secho('Created successfully', fg=Colors.POSITIVE)
+    except FileExistsError as error:
+        click.secho('Creation failed.', fg=Colors.NEGATIVE)
+        raise error
+
+    # Append simulation metadata to simulations sections in
+    # crowddynamics.cfg
+    config = ConfigObj(CROWDDYNAMICS_CFG)
+    cfg = {name: {'path': name}}
+    try:
+        config['simulations'].update(cfg)
+    except KeyError:
+        config['simulations'] = cfg
+    config.write()
+
+    # Make Python simulation template
+    with open(os.path.join(name, '__init__.py'), 'w') as fp:
+        fp.write('')
+
+    with open(os.path.join(name, 'simulation.py'), 'w') as fp:
+        fp.write('')
 
 
 @main.command()

@@ -21,3 +21,12 @@ class OverlappingError(CrowdDynamicsException):
 
 class AgentStructureFull(CrowdDynamicsException):
     """Agent structure is full."""
+
+
+class NotACrowdDynamicsDirectory(CrowdDynamicsException):
+    """Directory is not recognized as a crowddynamics simulation directory"""
+
+
+class DirectoryIsAlreadyCrowdDynamicsDirectory(CrowdDynamicsException):
+    """Directory is already recognized as a crowddynamics simulation 
+    directory"""

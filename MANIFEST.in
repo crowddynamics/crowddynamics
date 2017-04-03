@@ -1,13 +1,12 @@
-include MANIFEST.*
-include AUTHORS.* LICENSE.* README.*
-include requirements.txt requirements-dev.txt
-include setup.py versioneer.py
+include LICENSE.txt README.rst
+include requirements*.txt
 
 recursive-include crowddynamics *
 recursive-include docs *
 
-prune docs/build
-
 recursive-exclude * __pycache__
 recursive-exclude * *.py[co]
+recursive-exclude docs/_build *
+
+include versioneer.py
 include crowddynamics/_version.py

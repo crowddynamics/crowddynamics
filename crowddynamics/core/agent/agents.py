@@ -37,6 +37,7 @@ from crowddynamics.exceptions import CrowdDynamicsException, OverlappingError, \
     AgentStructureFull
 
 
+# TODO: read configutaion from .cfg file
 BASE_DIR = os.path.dirname(__file__)
 BODIES = pd.read_csv(os.path.join(BASE_DIR, 'body.csv'), index_col=[0])
 

@@ -6,3 +6,4 @@ omit =
     */conftest.py,
     */tests/*,
     docs/*,
+    */_version.py

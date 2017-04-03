@@ -10,7 +10,7 @@ import numpy as np
 from shapely.geometry import Polygon, LineString, Point
 
 from crowddynamics.core.agent.agent import AGENT_ATTRS
-from crowddynamics.io import Record
+from crowddynamics.io.hdfstore import Record
 from loggingtools import log_with
 from crowddynamics.multiagent.simulation import MultiAgentSimulation, register, \
     AGENT_MODELS, BODY_TYPES

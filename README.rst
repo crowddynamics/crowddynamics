@@ -33,6 +33,10 @@ License
 -------
 Project is licensed under GPL3. See `License <LICENSE.txt>`_
 
+Plugins
+-------
+List of plugins for crowddynamics:
+
 
 Authors
 -------

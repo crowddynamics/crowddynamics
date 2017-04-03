@@ -5,13 +5,11 @@ from collections import namedtuple
 import h5py
 import hypothesis.strategies as st
 import numpy as np
-import pytest
 from hypothesis import given
 from hypothesis.extra.numpy import arrays
 
-from crowddynamics.io import Attribute
-from crowddynamics.io import ListBuffer, HDFStore, struct_name
-from crowddynamics.io import Record
+from crowddynamics.io.hdfstore import Attribute, Record
+from crowddynamics.io.hdfstore import ListBuffer, HDFStore, struct_name
 
 
 @st.composite

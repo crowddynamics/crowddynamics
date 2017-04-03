@@ -1,15 +1,9 @@
 digraph architecture {
-    "CLI" -> {
-        "Configuration";
-        "GUI";
-    }
-    "Test Simulation" -> "Configuration";
-    "GUI" -> {
-        "Configuration";
-    };
-    "Configuration" -> "Simulation";
-    "Simulation" -> {
-        "GUI";
-        "IO";
-    }
+    "Command line" -> "start project";
+    "Command line" -> "generate simulation";
+    "Command line" -> "Find Simulations";
+    "Find Simulations" -> "List";
+    "Find Simulations" -> "Run";
+    "Run" -> "Parse Signature";
+
 }
