@@ -7,7 +7,7 @@ pytest-cov==2.4.0
 pytest-xdist==1.15.0
 hypothesis==3.7.0
 pytest-benchmark==3.0.0
-codecov
+codecov==2.0.5
 
 
 ## Profiling
