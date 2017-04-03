@@ -20,7 +20,6 @@ numba==0.31.0
 scipy==0.19.0
 scikit-image==0.13.0
 shapely==1.5.17.post1
-pandas==0.19.2
 scikit-fmm==0.0.9
 
 ## IO
