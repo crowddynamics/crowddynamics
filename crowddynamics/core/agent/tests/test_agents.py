@@ -4,8 +4,6 @@ import pytest
 from crowddynamics.core.agent.agents import AgentManager, AgentModels, \
     reset_motion, shoulders, front, overlapping_circle_circle, \
     overlapping_three_circle
-from crowddynamics.core.vector.vector2D import unit_vector
-
 
 SEED = np.random.randint(0, 100)
 

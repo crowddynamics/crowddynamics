@@ -70,21 +70,22 @@ def test_distance_three_circle_line(x, r, p):
     assert r_moment.dtype.type is np.float64
 
 
-@given(
-    agent=crowddynamics.testing.agent(5),
-    x2=crowddynamics.testing.real(-10, 10, shape=2),
-    r2=crowddynamics.testing.real(min_value=0, max_value=1)
-)
-def test_overlapping_circle_circle(agent, x2, r2):
-    flag = overlapping_circle_circle(agent, agent.indices(), x2, r2)
-    assert isinstance(flag, bool)
-
-
-@given(
-    agent=crowddynamics.testing.agent(5),
-    x2=st.tuples(*3 * [crowddynamics.testing.real(-10, 10, shape=2)]),
-    r2=st.tuples(*3 * [crowddynamics.testing.real(min_value=0, max_value=1)])
-)
-def test_overlapping_three_circle(agent, x2, r2):
-    flag = overlapping_three_circle(agent, agent.indices(), x2, r2)
-    assert isinstance(flag, bool)
+# TODO: agent strategy
+# @given(
+#     agent=crowddynamics.testing.agent(5),
+#     x2=crowddynamics.testing.real(-10, 10, shape=2),
+#     r2=crowddynamics.testing.real(min_value=0, max_value=1)
+# )
+# def test_overlapping_circle_circle(agent, x2, r2):
+#     flag = overlapping_circle_circle(agent, agent.indices(), x2, r2)
+#     assert isinstance(flag, bool)
+#
+#
+# @given(
+#     agent=crowddynamics.testing.agent(5),
+#     x2=st.tuples(*3 * [crowddynamics.testing.real(-10, 10, shape=2)]),
+#     r2=st.tuples(*3 * [crowddynamics.testing.real(min_value=0, max_value=1)])
+# )
+# def test_overlapping_three_circle(agent, x2, r2):
+#     flag = overlapping_three_circle(agent, agent.indices(), x2, r2)
+#     assert isinstance(flag, bool)

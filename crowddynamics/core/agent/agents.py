@@ -222,22 +222,20 @@ def overlapping_three_circle(agents, x, r):
 
 
 def create_random_agent_attributes():
-    return dict(
-        position=np.random.uniform(-1.0, 1.0, 2),
-        mass=np.random.uniform(0.0, 1.0),
-        radius=np.random.uniform(0.0, 1.0),
-        r_t=np.random.uniform(0.0, 1.0),
-        r_s=np.random.uniform(0.0, 1.0),
-        r_ts=np.random.uniform(0.0, 1.0),
-        inertia_rot=np.random.uniform(0.0, 1.0),
-        target_velocity=np.random.uniform(0.0, 1.0),
-        target_angular_velocity=np.random.uniform(0.0, 1.0),
-        orientation=np.random.uniform(-np.pi, np.pi),
-        velocity=np.random.uniform(0.0, 1.0, 2),
-        angular_velocity=np.random.uniform(-1.0, 1.0),
-        target_direction=unit_vector(np.random.uniform(-np.pi, np.pi)),
-        target_orientation=np.random.uniform(-np.pi, np.pi),
-    )
+    return {'position': np.random.uniform(-1.0, 1.0, 2),
+            'mass': np.random.uniform(0.0, 1.0),
+            'radius': np.random.uniform(0.0, 1.0),
+            'r_t': np.random.uniform(0.0, 1.0),
+            'r_s': np.random.uniform(0.0, 1.0),
+            'r_ts': np.random.uniform(0.0, 1.0),
+            'inertia_rot': np.random.uniform(0.0, 1.0),
+            'target_velocity': np.random.uniform(0.0, 1.0),
+            'target_angular_velocity': np.random.uniform(0.0, 1.0),
+            'orientation': np.random.uniform(-np.pi, np.pi),
+            'velocity': np.random.uniform(0.0, 1.0, 2),
+            'angular_velocity': np.random.uniform(-1.0, 1.0),
+            'target_direction': unit_vector(np.random.uniform(-np.pi, np.pi)),
+            'target_orientation': np.random.uniform(-np.pi, np.pi)}
 
 
 class AgentManager(object):
@@ -249,7 +247,7 @@ class AgentManager(object):
         elif model is AgentModels.THREE_CIRCLE:
             self.agents = np.zeros(size, dtype=agent_type_three_circle)
         else:
-            raise CrowdDynamicsException('Model: {model} in in {models}'.format(
+            raise CrowdDynamicsException('Model: {model} in {models}'.format(
                 model=model, models=AgentModels
             ))
 
@@ -264,6 +262,13 @@ class AgentManager(object):
         # Faster check for neighbouring agents for initializing agents into
         # random positions.
         self.grid = MutableBlockList(cell_size=AGENT_RADIUS_MAX)
+
+    def _set_attributes(self, index, **attributes):
+        """Set attribute value for agent"""
+        agent = self.agents[index]
+        for attribute, value in attributes.items():
+            if attribute in agent.dtype.names:
+                agent[attribute] = value
 
     def add(self, check_overlapping=True, **attributes):
         """Add new agent
@@ -321,7 +326,7 @@ class AgentManager(object):
                 if key not in attributes:
                     attributes[key] = value
 
-            self.set_attributes(index, **attributes)
+            self._set_attributes(index, **attributes)
 
             # Update shoulder positions for three circle agents
             if self.model is AgentModels.THREE_CIRCLE:
@@ -362,13 +367,6 @@ class AgentManager(object):
         else:
             return False
 
-    def set_attributes(self, index, **attributes):
-        """Set attribute value for agent"""
-        agent = self.agents[index]
-        for attribute, value in attributes.items():
-            if attribute in agent.dtype.names:
-                agent[attribute] = value
-
     def fill_random(self, seed=None):
         """Fill with random agents for testing purposes"""
         np.random.seed(seed)
@@ -377,48 +375,3 @@ class AgentManager(object):
         if self.model is AgentModels.THREE_CIRCLE:
             shoulders(self.agents)
             front(self.agents)
-
-
-# Linear obstacle defined by two points
-obstacle_type_linear = np.dtype([
-    ('p0', np.float64, 2),
-    ('p1', np.float64, 2),
-])
-
-
-class ObstacleManager(object):
-    pass
-
-
-# Neighborhood for tracking neighboring agents
-Neighborhood = namedtuple('Neighborhood',
-                          ['neighbor_radius', 'neighborhood_size', 'neighbors'])
-
-
-def init_neighborhood(agent_size, neighborhood_size, neighbor_radius):
-    """Initialise neighborhood
-
-    Args:
-        agent_size (int):
-        neighborhood_size (int):
-        neighbor_radius (float):
-
-    Returns:
-        Neighborhood:
-    """
-    dtype = np.dtype([
-        ('agent_indices', np.int64, neighborhood_size),
-        ('distances', np.float64, neighborhood_size),
-        ('distances_max', np.float64),
-    ])
-    neighbors = np.zeros(agent_size, dtype=dtype)
-    neighborhood = Neighborhood(neighbor_radius, neighborhood_size, neighbors)
-    reset_neighborhood(neighborhood)
-    return neighborhood
-
-
-def reset_neighborhood(neighborhood):
-    missing = -1
-    neighborhood.neighbors['agent_indices'] = missing
-    neighborhood.neighbors['distances'] = np.inf
-    neighborhood.neighbors['distances_max'] = np.inf
