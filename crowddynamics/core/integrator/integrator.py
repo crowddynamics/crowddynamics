@@ -1,12 +1,12 @@
 import numba
 import numpy as np
-from crowddynamics.core.structures.agent import Agent_numba_type
-from numba import float64
+from numba import f8
 
+from crowddynamics.core.structures.agents import agent_type_three_circle
 from crowddynamics.core.vector.vector2D import length_nx2, wrap_to_pi
 
 
-@numba.jit([float64(float64, float64, float64[:, :], float64[:, :])],
+@numba.jit([f8(f8, f8, f8[:, :], f8[:, :])],
            nopython=True, nogil=True, cache=True)
 def adaptive_timestep(dt_min, dt_max, velocity, target_velocity):
     r"""
@@ -71,8 +71,7 @@ def adaptive_timestep(dt_min, dt_max, velocity, target_velocity):
         return dt
 
 
-@numba.jit([float64(Agent_numba_type, float64, float64)],
-           nopython=True, nogil=True)
+# TODO: numba generated jit
 def euler_integration(agent, dt_min, dt_max):
     r"""
     Differential system is integrated using numerical integration scheme using
@@ -105,28 +104,23 @@ def euler_integration(agent, dt_min, dt_max):
         float: Timestep :math:`\Delta t` that was used for integration.
 
     """
-    i = agent.indices()
-
     # Time step selection
-    dt = adaptive_timestep(dt_min, dt_max, agent.velocity[i],
-                           agent.target_velocity[i])
+    dt = adaptive_timestep(dt_min, dt_max, agent['velocity'], agent['target_velocity'])
 
     # Updating agents
-    a = agent.force[i] / agent.mass[i]  # Acceleration
-    agent.position[i] += agent.velocity[i] * dt + a / 2 * dt ** 2
-    agent.velocity[i] += a * dt
+    acceleration = agent['force'] / agent['mass']
+    agent['position'] += agent['velocity'] * dt + acceleration / 2 * dt ** 2
+    agent['velocity'] += acceleration * dt
 
-    if agent.orientable:
-        angular_acceleration = agent.torque[i] / agent.inertia_rot[i]
-        agent.orientation[i] += agent.angular_velocity[i] * dt + \
-                                angular_acceleration / 2 * dt ** 2
-        agent.angular_velocity[i] += angular_acceleration * dt
-        agent.orientation[:] = wrap_to_pi(agent.orientation)
+    if agent.dtype is agent_type_three_circle:
+        angular_acceleration = agent['torque'] / agent['inertia_rot']
+        agent['orientation'] += agent['angular_velocity'] * dt + angular_acceleration / 2 * dt ** 2
+        agent['angular_velocity'] += angular_acceleration * dt
+        agent['orientation'][:] = wrap_to_pi(agent['orientation'])
 
     return dt
 
 
-@numba.jit(nopython=True)
 def velocity_verlet(agent, dt_min, dt_max):
     r"""
     Velocity verlet
@@ -154,22 +148,16 @@ def velocity_verlet(agent, dt_min, dt_max):
         float: Timestep :math:`\Delta t` that was used for integration.
 
     """
-    i = agent.indices()
-    dt = adaptive_timestep(dt_min, dt_max, agent.velocity[i],
-                           agent.target_velocity[i])
-    a = agent.force[i] / agent.mass[i]
-    agent.position[i] += agent.velocity[i] * dt + a / 2 * dt ** 2
+    # TODO: save old accelerations to agent structure
+    dt = adaptive_timestep(dt_min, dt_max, agent['velocity'], agent['target_velocity'])
+    acceleration = agent['force'] / agent['mass']
+    agent['position'] += agent['velocity'] * dt + acceleration / 2 * dt ** 2
     yield dt
 
     while True:
-        i = agent.indices()
-
-        # Time step selection
-        dt = adaptive_timestep(dt_min, dt_max, agent.velocity[i],
-                               agent.target_velocity[i])
-
-        a2 = agent.force[i] / agent.mass[i]
-        agent.velocity[i] += (a + a2) / 2 * dt
-        agent.position[i] += agent.velocity[i] * dt + a2 / 2 * dt ** 2
-        a = a2
+        dt = adaptive_timestep(dt_min, dt_max, agent['velocity'], agent['target_velocity'])
+        new_acceleration = agent['force'] / agent['mass']
+        agent['velocity'] += (acceleration + new_acceleration) / 2 * dt
+        agent['position'] += agent['velocity'] * dt + new_acceleration / 2 * dt ** 2
+        acceleration = new_acceleration
         yield dt

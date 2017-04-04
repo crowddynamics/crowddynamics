@@ -47,10 +47,11 @@ def test_distance_three_circle(x0, r0, x1, r1):
 @given(
     x=crowddynamics.testing.real(-10, 10, shape=2),
     r=crowddynamics.testing.real(min_value=0, max_value=1),
-    p=crowddynamics.testing.real(-10, 10, shape=(2, 2))
+    p0=crowddynamics.testing.real(-10, 10, shape=2),
+    p1=crowddynamics.testing.real(-10, 10, shape=2)
 )
-def test_distance_circle_line(x, r, p):
-    h, n = distance_circle_line(x, r, p)
+def test_distance_circle_line(x, r, p0, p1):
+    h, n = distance_circle_line(x, r, p0, p1)
     assert isinstance(h, float)
     assert isinstance(n, np.ndarray)
     assert n.dtype.type is np.float64
@@ -59,10 +60,11 @@ def test_distance_circle_line(x, r, p):
 @given(
     x=st.tuples(*3 * [crowddynamics.testing.real(-10, 10, shape=2)]),
     r=st.tuples(*3 * [crowddynamics.testing.real(min_value=0, max_value=1)]),
-    p=crowddynamics.testing.real(-10, 10, shape=(2, 2))
+    p0=crowddynamics.testing.real(-10, 10, shape=2),
+    p1=crowddynamics.testing.real(-10, 10, shape=2)
 )
-def test_distance_three_circle_line(x, r, p):
-    h, n, r_moment = distance_three_circle_line(x, r, p)
+def test_distance_three_circle_line(x, r, p0, p1):
+    h, n, r_moment = distance_three_circle_line(x, r, p0, p1)
     assert isinstance(h, float)
     assert isinstance(n, np.ndarray)
     assert n.dtype.type is np.float64

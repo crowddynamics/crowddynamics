@@ -105,7 +105,6 @@ spec = (
 )
 
 
-# TODO: remove from jitclass
 @numba.jitclass(spec)
 class BlockList(object):
     """

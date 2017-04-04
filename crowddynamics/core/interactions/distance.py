@@ -105,37 +105,39 @@ def distance_three_circle(x0, r0, x1, r1):
     return h_min, normal, r_moment0, r_moment1
 
 
-@numba.jit([Tuple((float64, float64[:]))(float64[:], float64, float64[:, :])],
+@numba.jit([Tuple((float64, float64[:]))(float64[:], float64, float64[:], float64[:])],
            nopython=True, nogil=True, cache=True)
-def distance_circle_line(x, r, p):
+def distance_circle_line(x, r, p0, p1):
     r"""
     Skin-to-Skin distance between circle and line
 
     Args:
         x (numpy.ndarray):
         r (float):
-        p (numpy.ndarray):
+        p0 (numpy.ndarray):
+        p1 (numpy.ndarray):
 
     Returns:
         (float, numpy.ndarray): (skin-to-skin distance, normal vector)
     """
     # TODO: More docs
-    d = p[1] - p[0]
+    d = p1 - p0
     l_w = length(d)
     t_w = d / l_w
     n_w = rotate90(t_w)
 
-    q = x - p
-    l_t = - dot(t_w, q[1]) - dot(t_w, q[0])
+    q0 = x - p0
+    q1 = x - p1
+    l_t = - dot(t_w, q1) - dot(t_w, q0)
 
     if l_t > l_w:
-        d_iw = length(q[0])
-        n_iw = q[0] / d_iw
+        d_iw = length(q0)
+        n_iw = q0 / d_iw
     elif l_t < -l_w:
-        d_iw = length(q[1])
-        n_iw = q[1] / d_iw
+        d_iw = length(q1)
+        n_iw = q1 / d_iw
     else:
-        l_n = dot(n_w, q[0])
+        l_n = dot(n_w, q0)
         d_iw = np.abs(l_n)
         n_iw = np.sign(l_n) * n_w
 
@@ -146,10 +148,10 @@ def distance_circle_line(x, r, p):
 
 @numba.jit([Tuple((float64, float64[:], float64[:]))(
     UniTuple(float64[:], 3), UniTuple(float64, 3),
-    float64[:, :]
+    float64[:], float64[:]
 )],
            nopython=True, nogil=True, cache=True)
-def distance_three_circle_line(x, r, p):
+def distance_three_circle_line(x, r, p0, p1):
     r"""
     Skin-to-Skin distance between three circle model and line
 
@@ -167,7 +169,7 @@ def distance_three_circle_line(x, r, p):
     i_min = 0
 
     for i, (x_, r_) in enumerate(zip(x, r)):
-        h, n = distance_circle_line(x_, r_, p)
+        h, n = distance_circle_line(x_, r_, p0, p1)
         if h < h_min or np.isnan(h_min):
             h_min = h
             normal = n
