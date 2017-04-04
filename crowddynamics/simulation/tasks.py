@@ -5,14 +5,13 @@ from crowddynamics.core.geometry import shapes_to_point_pairs
 from crowddynamics.core.integrator import euler_integration
 from crowddynamics.core.interactions.interactions import \
     agent_agent_block_list, agent_wall
+from crowddynamics.core.motion.adjusting import force_adjust, torque_adjust
 from crowddynamics.core.motion.fluctuation import force_fluctuation, \
     torque_fluctuation
-from crowddynamics.core.motion.adjusting import force_adjust, torque_adjust
 from crowddynamics.core.steering.navigation import to_indices, static_potential
 from crowddynamics.core.vector.vector2D import angle_nx2
-from crowddynamics.io.hdfstore import HDFStore, Record
+from crowddynamics.io import HDFStore, Record
 from crowddynamics.simulation.taskgraph import TaskNode
-
 
 # TODO: Integrator: time-limit, iterations limit -> signal
 # TODO: Contains:   diff limit

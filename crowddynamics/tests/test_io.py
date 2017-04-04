@@ -8,8 +8,8 @@ import numpy as np
 from hypothesis import given
 from hypothesis.extra.numpy import arrays
 
-from crowddynamics.io.hdfstore import Attribute, Record
-from crowddynamics.io.hdfstore import ListBuffer, HDFStore, struct_name
+from crowddynamics.io import Attribute, Record
+from crowddynamics.io import ListBuffer, HDFStore, struct_name
 
 
 @st.composite
