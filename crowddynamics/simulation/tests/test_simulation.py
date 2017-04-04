@@ -1,6 +1,6 @@
 from shapely.geometry import Polygon
 
-from crowddynamics.core.agent.agents import AgentModels
+from crowddynamics.core.structures.agents import AgentModels
 from crowddynamics.simulation.multiagent import MultiAgentSimulation
 
 

@@ -19,7 +19,6 @@ tangent vectors
 
 """
 import os
-from collections import namedtuple
 from enum import Enum
 
 import numba
@@ -29,8 +28,8 @@ from numba import typeof, void, boolean, float64
 from numba.types import UniTuple
 from sortedcontainers import SortedSet
 
-from crowddynamics.core.interactions import distance_circle_circle
-from crowddynamics.core.interactions import distance_three_circle
+from crowddynamics.core.interactions.distance import distance_circle_circle
+from crowddynamics.core.interactions.distance import distance_three_circle
 from crowddynamics.core.interactions.partitioning import MutableBlockList
 from crowddynamics.core.random.functions import truncnorm
 from crowddynamics.core.vector.vector2D import unit_vector, rotate270

@@ -2,8 +2,11 @@ import numpy as np
 import pytest
 from hypothesis import given
 
-from crowddynamics.core.motion import force_fluctuation, force_adjust, \
-    force_social_helbing, force_contact
+from crowddynamics.core.motion.fluctuation import force_fluctuation
+from crowddynamics.core.motion.adjusting import force_adjust
+from crowddynamics.core.motion.contact import force_contact
+from crowddynamics.core.motion.collision_avoidance.helbing import \
+    force_social_helbing
 from crowddynamics.testing import real
 
 

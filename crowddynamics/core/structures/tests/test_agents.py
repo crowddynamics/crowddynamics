@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from crowddynamics.core.agent.agents import AgentManager, AgentModels, \
+from crowddynamics.core.structures.agents import AgentManager, AgentModels, \
     reset_motion, shoulders, front, overlapping_circle_circle, \
     overlapping_three_circle
 

@@ -1,6 +1,6 @@
 import numba
 import numpy as np
-from crowddynamics.core.agent.agent import Agent_numba_type
+from crowddynamics.core.structures.agent import Agent_numba_type
 from numba import float64
 
 from crowddynamics.core.vector.vector2D import length_nx2, wrap_to_pi

@@ -4,9 +4,12 @@ r"""Universal power law governing pedestrian
 """
 import numba
 import numpy as np
-from numba import f8
+from numba import f8, i8, typeof
 from numba.types import Tuple
 
+from crowddynamics.core.structures.agents import agent_type_three_circle, \
+    agent_type_circular
+from crowddynamics.core.structures.obstacles import obstacle_type_linear
 from crowddynamics.core.vector import dot, truncate, rotate90
 
 
@@ -224,7 +227,8 @@ def time_to_collision_circle_line(x_rel, v_rel, r_tot, n):
         return np.nan, np.zeros(2)
 
 
-@numba.jit(nopython=True, nogil=True)
+@numba.jit(Tuple((f8[:], f8[:]))(typeof(agent_type_circular)[:], i8, i8),
+           nopython=True, nogil=True, cache=True)
 def force_social_circular(agent, i, j):
     """Social force based on human anticipatory behaviour.
 
@@ -236,11 +240,12 @@ def force_social_circular(agent, i, j):
     Returns:
 
     """
-    x_rel = agent.position[i] - agent.position[j]
-    v_rel = agent.velocity[i] - agent.velocity[j]
-    r_tot = agent.radius[i] + agent.radius[j]
+    force_i = np.zeros(2)
+    force_j = np.zeros(2)
 
-    force = np.zeros(2), np.zeros(2)
+    x_rel = agent[i].position - agent[j].position
+    v_rel = agent[i].velocity - agent[j].velocity
+    r_tot = agent[i].radius + agent[j].radius
 
     a = dot(v_rel, v_rel)
     b = -dot(x_rel, v_rel)
@@ -249,29 +254,28 @@ def force_social_circular(agent, i, j):
 
     # No interaction if tau cannot be defined.
     if np.isnan(d) or d == 0 or a == 0:
-        return force
+        return force_i, force_j
 
     tau = (b - d) / a  # Time-to-collision. In seconds
     tau_max = 30.0  # Maximum time for interaction.
 
     if tau <= 0 or tau > tau_max:
-        return force
+        return force_i, force_j
 
     # Force is returned negative as repulsive force
     grad = gradient_circle_circle(x_rel, v_rel, a, b, d)
-    force[0][:] += - agent.mass[i] * agent.k_soc[i] * grad * \
-                   magnitude(tau, agent.tau_0[i])
-    force[1][:] -= - agent.mass[j] * agent.k_soc[j] * grad * \
-                   magnitude(tau, agent.tau_0[j])
+    force_i[:] += - agent[i].mass * agent[i].k_soc * grad * magnitude(tau, agent[i].tau_0)
+    force_j[:] -= - agent[j].mass * agent[j].k_soc * grad * magnitude(tau, agent[j].tau_0)
 
     # Truncation for small tau
-    truncate(force[0], agent.f_soc_ij_max)
-    truncate(force[1], agent.f_soc_ij_max)
+    truncate(force_i, agent[i].f_soc_ij_max)
+    truncate(force_j, agent[j].f_soc_ij_max)
 
-    return force
+    return force_i, force_j
 
 
-@numba.jit(nopython=True, nogil=True)
+@numba.jit(Tuple((f8[:], f8[:]))(typeof(agent_type_three_circle)[:], i8, i8),
+           nopython=True, nogil=True, cache=True)
 def force_social_three_circle(agent, i, j):
     """
     Minimium time-to-collision for two circles of relative displacements.
@@ -285,14 +289,15 @@ def force_social_three_circle(agent, i, j):
 
     """
     # Forces for agent i and j
-    force = np.zeros(2), np.zeros(2)
+    force_i = np.zeros(2)
+    force_j = np.zeros(2)
 
-    v_rel = agent.velocity[i] - agent.velocity[j]
+    v_rel = agent[i].velocity - agent[j].velocity
     a = dot(v_rel, v_rel)
 
     # Agents are not moving relative to each other.
     if a == 0:
-        return force
+        return force_i, force_j
 
     # Meaning of indexes for tuples of three
     # 0 = torso
@@ -300,16 +305,12 @@ def force_social_three_circle(agent, i, j):
     # 2 = right shoulder
 
     # Positions: center, left, right
-    # x_i = (agent.position[i], agent.position_ls[i], agent.position_rs[i])
-    # x_j = (agent.position[j], agent.position_ls[j], agent.position_rs[j])
-    x_i = agent.positions(i)
-    x_j = agent.positions(j)
+    x_i = (agent[i].position, agent[i].position_ls, agent[i].position_rs)
+    x_j = (agent[j].position, agent[j].position_ls, agent[j].position_rs)
 
     # Radii of torso and shoulders
-    # r_i = (agent.r_t[i], agent.r_s[i], agent.r_s[i])
-    # r_j = (agent.r_t[j], agent.r_s[j], agent.r_s[j])
-    r_i = agent.radii(i)
-    r_j = agent.radii(j)
+    r_i = (agent[i].r_t, agent[i].r_s, agent[i].r_s)
+    r_j = (agent[j].r_t, agent[j].r_s, agent[j].r_s)
 
     # Parts that will be first in contact for agents i and j if colliding.
     contact_i = np.int64(0)
@@ -343,7 +344,7 @@ def force_social_three_circle(agent, i, j):
                 d_min = d
 
     if np.isnan(tau) or tau <= 0:
-        return force
+        return force_i, force_j
 
     # Shoulder displacement vectors
     r_off_i = np.zeros(2)
@@ -351,36 +352,36 @@ def force_social_three_circle(agent, i, j):
 
     # TODO: Fix signs
     if contact_i == 1:
-        phi = agent.orientation[i]
-        r_off_i += agent.r_ts[i] * np.array((np.sin(phi), -np.cos(phi)))
+        phi = agent[i].orientation
+        r_off_i += agent[i].r_ts * np.array((np.sin(phi), -np.cos(phi)))
     elif contact_i == 2:
-        phi = agent.orientation[i]
-        r_off_i -= agent.r_ts[i] * np.array((np.sin(phi), -np.cos(phi)))
+        phi = agent[i].orientation
+        r_off_i -= agent[i].r_ts * np.array((np.sin(phi), -np.cos(phi)))
 
     if contact_j == 1:
-        phi = agent.orientation[j]
-        r_off_j += agent.r_ts[j] * np.array((np.sin(phi), -np.cos(phi)))
+        phi = agent[j].orientation
+        r_off_j += agent[j].r_ts * np.array((np.sin(phi), -np.cos(phi)))
     elif contact_j == 2:
-        phi = agent.orientation[j]
-        r_off_j -= agent.r_ts[j] * np.array((np.sin(phi), -np.cos(phi)))
+        phi = agent[j].orientation
+        r_off_j -= agent[j].r_ts * np.array((np.sin(phi), -np.cos(phi)))
 
-    x_rel = agent.position[i] - agent.position[j]
+    x_rel = agent[i].position - agent[j].position
     r_off = r_off_i - r_off_j
 
     # Force
     grad = gradient_three_circle(x_rel, v_rel, r_off, a, b_min, d_min)
-    force[0][:] += - agent.mass[i] * agent.k_soc[i] * grad * \
-                   magnitude(tau, agent.tau_0[i])
-    force[1][:] -= - agent.mass[j] * agent.k_soc[j] * grad * \
-                   magnitude(tau, agent.tau_0[j])
+    force_i[:] += - agent[i].mass * agent[i].k_soc * grad * magnitude(tau, agent[i].tau_0)
+    force_j[:] -= - agent[j].mass * agent[j].k_soc * grad * magnitude(tau, agent[j].tau_0)
 
-    truncate(force[0], agent.f_soc_ij_max)
-    truncate(force[1], agent.f_soc_ij_max)
+    truncate(force_i, agent[i].f_soc_ij_max)
+    truncate(force_j, agent[j].f_soc_ij_max)
 
-    return force
+    return force_i, force_j
 
 
-@numba.jit(nopython=True, nogil=True)
+@numba.jit(f8[:](i8, i8, typeof(agent_type_circular)[:],
+                 typeof(obstacle_type_linear)[:]),
+           nopython=True, nogil=True, cache=True)
 def force_social_linear_wall(i, w, agent, wall):
     """
     Force social linear wall
@@ -398,19 +399,17 @@ def force_social_linear_wall(i, w, agent, wall):
     tau = np.zeros(3)
     grad = np.zeros((3, 2))
 
-    # p_0, p_1, t_w, n_w, l_w = wall.deconstruct(w)
-
-    p_0 = wall[w, 0, :]
-    p_1 = wall[w, 1, :]
+    p_0 = wall[w].p0
+    p_1 = wall[w].p1
     d = p_1 - p_0  # Vector from p_0 to p_1
     l_w = np.hypot(d[1], d[0])  # Length of the wall
     t_w = d / l_w  # Tangential unit-vector
     n_w = rotate90(t_w)  # Normal unit-vector
 
-    x_rel0 = agent.position[i] - p_0
-    x_rel1 = agent.position[i] - p_1
-    v_rel = agent.velocity[i]
-    r_tot = agent.radius[i]
+    x_rel0 = agent[i].position - p_0
+    x_rel1 = agent[i].position - p_1
+    v_rel = agent[i].velocity
+    r_tot = agent[i].radius
 
     dot_vt = dot(v_rel, t_w)
     if dot_vt == 0:
@@ -425,15 +424,15 @@ def force_social_linear_wall(i, w, agent, wall):
     tau[2], grad[2] = time_to_collision_circle_line(x_rel0, v_rel, r_tot, n_w)
 
     if not np.isnan(tau[0]) and tau[0] <= tau_t0:
-        mag = magnitude(tau[0], agent.tau_0[i])
-        force[:] = - agent.mass[i] * agent.k_soc[i] * mag * grad[0]
+        mag = magnitude(tau[0], agent[i].tau_0)
+        force[:] = - agent[i].mass * agent[i].k_soc * mag * grad[0]
     elif not np.isnan(tau[1]) and tau[1] > tau_t1:
-        mag = magnitude(tau[1], agent.tau_0[i])
-        force[:] = - agent.mass[i] * agent.k_soc[i] * mag * grad[1]
+        mag = magnitude(tau[1], agent[i].tau_0)
+        force[:] = - agent[i].mass * agent[i].k_soc * mag * grad[1]
     elif not np.isnan(tau[2]):
-        mag = magnitude(tau[2], agent.tau_0[i])
-        force[:] = - agent.mass[i] * agent.k_soc[i] * mag * grad[2]
+        mag = magnitude(tau[2], agent[i].tau_0)
+        force[:] = - agent[i].mass * agent[i].k_soc * mag * grad[2]
 
-    truncate(force, agent.f_soc_iw_max)
+    truncate(force, agent[i].f_soc_iw_max)
 
     return force

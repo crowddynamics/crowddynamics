@@ -13,11 +13,12 @@ Todo:
 import numba
 import numpy as np
 
-from crowddynamics.core.interactions import distance_circle_circle, \
-    distance_circle_line, distance_three_circle_line, distance_three_circle, \
-    BlockList
-from crowddynamics.core.motion import force_social_circular, \
-    force_social_three_circle, force_social_linear_wall, force_contact
+from crowddynamics.core.interactions.distance import distance_circle_circle, \
+    distance_circle_line, distance_three_circle_line, distance_three_circle
+from crowddynamics.core.interactions.partitioning import BlockList
+from crowddynamics.core.motion.collision_avoidance.power_law import \
+    force_social_circular, force_social_three_circle, force_social_linear_wall
+from crowddynamics.core.motion.contact import force_contact
 from crowddynamics.core.vector import rotate270, cross
 
 

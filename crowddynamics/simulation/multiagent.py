@@ -5,13 +5,13 @@ from collections import Iterable
 from multiprocessing import Process, Event
 
 import numpy as np
-from crowddynamics.core.agent.agent import Agent, positions
-from crowddynamics.core.agent.parameters import Parameters
+from crowddynamics.core.structures.agent import Agent, positions
+from crowddynamics.core.structures.parameters import Parameters
 from loggingtools import log_with
 from shapely.geometry import Point, Polygon, GeometryCollection
 from shapely.ops import cascaded_union
 
-from crowddynamics.core.interactions import overlapping_three_circle, \
+from crowddynamics.core.interactions.distance import overlapping_three_circle, \
     overlapping_circle_circle
 from crowddynamics.core.random.sampling import PolygonSample
 from crowddynamics.exceptions import CrowdDynamicsException, InvalidArgument
