@@ -30,3 +30,7 @@ class NotACrowdDynamicsDirectory(CrowdDynamicsException):
 class DirectoryIsAlreadyCrowdDynamicsDirectory(CrowdDynamicsException):
     """Directory is already recognized as a crowddynamics simulation 
     directory"""
+
+
+class InvalidConfigurationError(CrowdDynamicsException):
+    """Initial configuration is invalid"""

@@ -1,7 +1,8 @@
 import numpy as np
 from hypothesis import given
 
-from crowddynamics.core.motion import torque_fluctuation, torque_adjust
+from crowddynamics.core.motion.adjusting import torque_adjust
+from crowddynamics.core.motion.fluctuation import torque_fluctuation
 from crowddynamics.testing import real
 
 SIZE = 10

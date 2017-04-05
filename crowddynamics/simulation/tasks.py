@@ -9,6 +9,7 @@ from crowddynamics.core.motion.adjusting import force_adjust, torque_adjust
 from crowddynamics.core.motion.fluctuation import force_fluctuation, \
     torque_fluctuation
 from crowddynamics.core.steering.navigation import to_indices, static_potential
+from crowddynamics.core.structures.agents import agent_type_three_circle
 from crowddynamics.core.vector.vector2D import angle_nx2
 from crowddynamics.io import HDFStore, Record
 from crowddynamics.simulation.taskgraph import TaskNode
@@ -57,7 +58,7 @@ class Integrator(TaskNode):
         pass
 
     def update(self):
-        self.dt_prev = euler_integration(self.simulation.agent, self.dt[0], self.dt[0])
+        self.dt_prev = euler_integration(self.simulation.agent, self.dt[0], self.dt[1])
         self.time_tot += self.dt_prev
 
 
@@ -70,13 +71,13 @@ class Fluctuation(TaskNode):
 
     def update(self):
         agent = self.simulation.agent
-        i = agent.indices()
 
-        agent.force[i] = force_fluctuation(agent.mass[i], agent.std_rand_force[i])
+        agent['force'] += force_fluctuation(agent['mass'],
+                                            agent['std_rand_force'])
 
         if agent.orientable:
-            agent.torque[i] = torque_fluctuation(agent.inertia_rot[i],
-                                                 agent.std_rand_torque[i])
+            agent['torque'] += torque_fluctuation(agent['inertia_rot'],
+                                                  agent['std_rand_torque'])
 
 
 class Adjusting(TaskNode):
@@ -88,20 +89,19 @@ class Adjusting(TaskNode):
 
     def update(self):
         agent = self.simulation.agent
-        i = agent.indices()
 
-        agent.force[i] = force_adjust(agent.mass[i],
-                                      agent.tau_adj[i],
-                                      agent.target_velocity[i],
-                                      agent.target_direction[i],
-                                      agent.velocity[i])
+        agent['force'] += force_adjust(agent['mass'],
+                                       agent['tau_adj'],
+                                       agent['target_velocity'],
+                                       agent['target_direction'],
+                                       agent['velocity'])
         if agent.orientable:
-            agent.torque[i] = torque_adjust(agent.inertia_rot[i],
-                                            agent.tau_rot[i],
-                                            agent.target_orientation[i],
-                                            agent.orientation[i],
-                                            agent.target_angular_velocity[i],
-                                            agent.angular_velocity[i])
+            agent['torque'] += torque_adjust(agent['inertia_rot'],
+                                             agent['tau_rot'],
+                                             agent['target_orientation'],
+                                             agent['orientation'],
+                                             agent['target_angular_velocity'],
+                                             agent['angular_velocity'])
 
 
 class AgentAgentInteractions(TaskNode):
@@ -168,7 +168,7 @@ class Navigation(TaskNode):
         # http://docs.scipy.org/doc/numpy/reference/arrays.indexing.html
         # TODO: Handle index out of bounds -> numpy.take
         d = self.direction_map[indices[:, 0], indices[:, 1], :]
-        self.simulation.agent.target_direction[i] = d
+        self.simulation.agent['target_direction'] = d
 
 
 class Orientation(TaskNode):
@@ -179,9 +179,9 @@ class Orientation(TaskNode):
         self.simulation = simulation
 
     def update(self):
-        if self.simulation.agent.orientable:
+        if self.simulation.agent.dtype is agent_type_three_circle:
             dir_to_orient = angle_nx2(self.simulation.agent.target_direction)
-            self.simulation.agent.target_orientation[:] = dir_to_orient
+            self.simulation.agent['target_orientation'] = dir_to_orient
 
 
 class ExitSelection(TaskNode):

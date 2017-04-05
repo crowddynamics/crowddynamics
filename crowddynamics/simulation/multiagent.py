@@ -5,8 +5,6 @@ from collections import Iterable
 from multiprocessing import Process, Event
 
 import numpy as np
-from crowddynamics.core.structures.agent import Agent, positions
-from crowddynamics.core.structures.parameters import Parameters
 from loggingtools import log_with
 from shapely.geometry import Point, Polygon, GeometryCollection
 from shapely.ops import cascaded_union
@@ -14,6 +12,7 @@ from shapely.ops import cascaded_union
 from crowddynamics.core.interactions.distance import overlapping_three_circle, \
     overlapping_circle_circle
 from crowddynamics.core.random.sampling import PolygonSample
+from crowddynamics.core.structures.agents import AgentManager
 from crowddynamics.exceptions import CrowdDynamicsException, InvalidArgument
 from crowddynamics.simulation.taskgraph import TaskNode
 
@@ -186,19 +185,10 @@ class MultiAgentSimulation(object):
         # for an agents (if it does not overlap other agents).
         iterations = 0
         sampling = PolygonSample(np.asarray(spawn.exterior))
-        parameters = Parameters(body_type=body_type)
 
         while num > 0 and iterations <= iterations_limit * num:
             # Parameters
             position = sampling.draw()
-            mass = parameters.mass.default()
-            radius = parameters.radius.default()
-            r_t = parameters.radius_torso.default() * radius
-            r_s = parameters.radius_shoulder.default() * radius
-            r_ts = parameters.radius_torso_shoulder.default() * radius
-            inertia_rot = parameters.moment_of_inertia.default()
-            max_velocity = parameters.maximum_velocity.default()
-            max_angular_velocity = parameters.maximum_angular_velocity.default()
 
             # Polygon of the agent
             overlapping_agents = False
