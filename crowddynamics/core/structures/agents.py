@@ -30,8 +30,6 @@ Attributes:
     
 """
 import os
-from copy import deepcopy
-from enum import Enum
 from functools import lru_cache
 
 import numba
@@ -66,11 +64,13 @@ def load_config(infile, configspec):
     return config
 
 
-def _truncnorm(mean, abs_scale, size):
-    return truncnorm(-3.0, 3.0, loc=mean, abs_scale=abs_scale, size=size)
+def _truncnorm(mean, abs_scale):
+    """Individual value from truncnorm"""
+    return np.asscalar(
+        truncnorm(-3.0, 3.0, loc=mean, abs_scale=abs_scale, size=1))
 
 
-def body_to_values(body, size):
+def body_to_values(body):
     """Body to values
 
     Args:
@@ -85,11 +85,9 @@ def body_to_values(body, size):
             velocity_scale = float
             mass = float
             mass_scale = float
-            
-        size (int): 
     """
-    radius = _truncnorm(body['radius'], body['radius_scale'], size)
-    mass = _truncnorm(body['mass'], body['mass_scale'], size)
+    radius = _truncnorm(body['radius'], body['radius_scale'])
+    mass = _truncnorm(body['mass'], body['mass_scale'])
     # Rotational inertia of mass 80 kg and radius 0.27 m agent.
     # Should be scaled to correct value for agents.
     inertia_rot = 4.0 * (mass / 80.0) * (radius / 0.27) ** 2
@@ -98,10 +96,9 @@ def body_to_values(body, size):
         'r_s': body['ratio_rs'] * radius,
         'r_ts': body['ratio_ts'] * radius,
         'radius': radius,
-        'target_velocity': _truncnorm(body['velocity'], body['velocity_scale'],
-                                   size),
+        'target_velocity': _truncnorm(body['velocity'], body['velocity_scale']),
         'mass': mass,
-        'target_angular_velocity': np.full(size, 4 * np.pi),
+        'target_angular_velocity': 4 * np.pi,
         'inertia_rot': inertia_rot
     }
 
@@ -116,12 +113,6 @@ def create_random_agent_attributes():
         'target_direction': unit_vector(np.random.uniform(-np.pi, np.pi)),
         'target_orientation': np.random.uniform(-np.pi, np.pi)
     }
-
-
-class AgentModels(Enum):
-    """Enumeration class for available agent models."""
-    CIRCULAR = 'circular'
-    THREE_CIRCLE = 'three_circle'
 
 
 translational = [
@@ -167,6 +158,40 @@ agent_type_circular = np.dtype(translational)
 agent_type_three_circle = np.dtype(translational + rotational + three_circle)
 
 
+AgentModelToType = {
+    'circular': agent_type_circular,
+    'three_circle': agent_type_three_circle,
+}
+
+AgentTypeToModel = {
+    agent_type_circular: 'circular',
+    agent_type_three_circle: 'three_circle',
+}
+
+
+def register_agent_model(name, dtype):
+    AgentModelToType[name] = dtype
+    AgentTypeToModel[dtype] = name
+
+
+def is_model(agents, model):
+    """Test if agent if type same type as model name
+    
+    Args:
+        agents (numpy.ndarray): 
+        model (str): 
+
+    Returns:
+        bool:
+    """
+    return agents.dtype is AgentModelToType[model]
+
+
+def of_model(agents):
+    """Returns the model name of agents"""
+    return AgentTypeToModel[agents.dtype]
+
+
 @numba.jit(void(typeof(agent_type_three_circle)[:]),
            nopython=True, nogil=True, cache=True)
 def shoulders(agents):
@@ -177,10 +202,10 @@ def shoulders(agents):
             Numpy array of datatype ``dtype=agent_type_three_circle``.
     """
     for agent in agents:
-        tangent = rotate270(unit_vector(agent.orientation))
-        offset = tangent * agent.r_ts
-        agent.position_ls[:] = agent.position - offset
-        agent.position_rs[:] = agent.position + offset
+        tangent = rotate270(unit_vector(agent['orientation']))
+        offset = tangent * agent['r_ts']
+        agent['position_ls'][:] = agent['position'] - offset
+        agent['position_rs'][:] = agent['position'] + offset
 
 
 @numba.jit(void(typeof(agent_type_three_circle)[:]),
@@ -188,8 +213,9 @@ def shoulders(agents):
 def front(agents):
     """Position of agents nose."""
     for agent in agents:
-        agent.front[:] = agent.position * unit_vector(agent.orientation) * \
-                         agent.r_t
+        agent['front'][:] = agent['position'] * \
+                            unit_vector(agent['orientation']) * \
+                            agent['r_t']
 
 
 @numba.generated_jit(cache=True)
@@ -221,7 +247,7 @@ def overlapping_circles(agents, x, r):
         bool:
     """
     for agent in agents:
-        h, _ = distance_circles(agent.position, agent.radius, x, r)
+        h, _ = distance_circles(agent['position'], agent['radius'], x, r)
         if h < 0.0:
             return True
     return False
@@ -245,8 +271,8 @@ def overlapping_three_circles(agents, x, r):
     """
     for agent in agents:
         h, _, _, _ = distance_three_circles(
-            (agent.position, agent.position_ls, agent.position_rs),
-            (agent.r_t, agent.r_s, agent.r_s),
+            (agent['position'], agent['position_ls'], agent['position_rs']),
+            (agent['r_t'], agent['r_s'], agent['r_s']),
             x, r
         )
         if h < 0:
@@ -260,8 +286,8 @@ def overlapping_three_circles(agents, x, r):
 def overlapping_circle_line(agents, obstacles):
     for agent in agents:
         for obstacle in obstacles:
-            h, _ = distance_circle_line(agent.position, agent.radius,
-                                        obstacle.p0, obstacle.p1)
+            h, _ = distance_circle_line(agent['position'], agent['radius'],
+                                        obstacle['p0'], obstacle['p1'])
             if h < 0.0:
                 return True
     return False
@@ -274,37 +300,87 @@ def overlapping_three_circle_line(agents, obstacles):
     for agent in agents:
         for obstacle in obstacles:
             h, _, _ = distance_three_circle_line(
-                (agent.position, agent.position_ls, agent.position_rs),
-                (agent.r_t, agent.r_s, agent.r_s),
-                obstacle.p0, obstacle.p1
+                (agent['position'], agent['position_ls'], agent['position_rs']),
+                (agent['r_t'], agent['r_s'], agent['r_s']),
+                obstacle['p0'],
+                obstacle['p1']
             )
             if h < 0.0:
                 return True
     return False
 
 
+def call(value):
+    """Iterate, call and return the value.
+    
+    Args:
+        value:
+            - Iterator: returns next(value)
+            - Callable: return value()
+            - otherwise returns the value itself
+
+    Returns:
+
+    """
+    try:
+        return next(value)
+    except TypeError:
+        pass
+
+    try:
+        return value()
+    except TypeError:
+        pass
+
+    return value
+
+
+def set_agent_attributes(agents, index, attributes):
+    """Set attributes for agent
+    
+    Args:
+        agents: 
+        attributes:
+            Dictionary values, iterators or callables. 
+            - Iterator; return value of next is used
+            - Callable: return value of __call__ will be used 
+
+    """
+    for attribute, value in attributes.items():
+        try:
+            agents[index][attribute] = call(value)
+        except ValueError:
+            print('Agent: {} doesn\'t have attribute {}'.format(
+                of_model(agents), attribute
+            ))
+
+
+def reset_agent(agent): agent[:] = 0
+
+
 class AgentManager(object):
     """Class for initialising new agents."""
 
-    def __init__(self, size, model,
+    def __init__(self,
+                 size,
+                 agent_type=agent_type_circular,
                  agent_cfg=AGENT_CFG,
                  agent_cfg_pec=AGENT_CFG_SPEC):
-        if model is AgentModels.CIRCULAR:
-            self.agents = np.zeros(size, dtype=agent_type_circular)
-        elif model is AgentModels.THREE_CIRCLE:
-            self.agents = np.zeros(size, dtype=agent_type_three_circle)
-        else:
-            raise CrowdDynamicsException('Model: {model} in {models}'.format(
-                model=model, models=AgentModels
-            ))
-
+        """Agent manager
+        
+        Args:
+            size (int):
+                Number of agents
+            agent_type (numpy.dtype):
+                - agent_type_circular
+                - agent_type_three_circle
+            agent_cfg:
+                Agent configuration filepath
+            agent_cfg_pec: 
+                Agent configuration spec filepath
+        """
+        self.agents = np.zeros(size, dtype=agent_type)
         self.config = load_config(infile=agent_cfg, configspec=agent_cfg_pec)
-        self.constants = self.config['constants']
-        self.defaults = self.config['defaults']
-        # self.body_types = self.config['body_types']
-
-        self.size = size
-        self.model = model
 
         # Keeps track of which agents are active and which in active. Stores
         # indices of agents.
@@ -313,7 +389,12 @@ class AgentManager(object):
 
         # Faster check for neighbouring agents for initializing agents into
         # random positions.
-        self.grid = MutableBlockList(cell_size=self.constants['cell_size'])
+        constants = self.config['constants']
+        self.grid = MutableBlockList(cell_size=constants['cell_size'])
+
+    @property
+    def size(self):
+        return self.agents.size
 
     def add(self, attributes, check_overlapping=True):
         """Add new agent with given attributes
@@ -344,40 +425,42 @@ class AgentManager(object):
         except IndexError:
             raise AgentStructureFull
 
-        # Set default parameters if parameters are not given in attributes
-        attributes = deepcopy(self.defaults).update(attributes)
+        attrs = dict(**self.config['defaults'])
+        attrs.update(attributes)
 
-        body_type = attributes['body_type']
-        body = self.config['body_types'][body_type]
-        attributes.update(body_to_values(body, 1))
+        try:
+            body_type = attrs['body_type']
+            body = self.config['body_types'][body_type]
+            attrs.update(body_to_values(body))
+            del attrs['body_type']
+        except KeyError:
+            pass
 
-        # Set attributes for agent
-        for attribute, value in attributes.items():
-            try:
-                self.agents[index][attribute] = value
-            except KeyError:
-                pass  # TODO: warning
+        set_agent_attributes(self.agents, index, attrs)
 
         # Update shoulder positions for three circle agents
-        if self.model is AgentModels.THREE_CIRCLE:
+        if is_model(self.agents, 'three_circle'):
             shoulders(self.agents)
 
-        # Check if agents are overlapping.
-        position = attributes.get('position')
-        orientation = attributes.get('orientation')
-        radius = attributes.get('radius')
+        if check_overlapping:
+            agent = self.agents[index]
+            radius = agent['radius']
+            position = agent['position']
 
-        if check_overlapping and position:
             neighbours = self.grid[position]
             agents = self.agents[neighbours]
 
-            if self.model is AgentModels.CIRCULAR:
+            if is_model(self.agents, 'circular'):
                 if overlapping_circles(agents, position, radius):
-                    self.agents[index][:] = 0
+                    reset_agent(self.agents[index])
                     raise OverlappingError
-            elif self.model is AgentModels.THREE_CIRCLE:
-                if overlapping_three_circles(agents, None, None):
-                    self.agents[index][:] = 0
+            elif is_model(self.agents, 'three_circle'):
+                if overlapping_three_circles(
+                        agents,
+                        (agent['position'], agent['position_ls'],
+                         agent['position_rs']),
+                        (agent['r_t'], agent['r_s'], agent['r_s'])):
+                    reset_agent(self.agents[index])
                     raise OverlappingError
             else:
                 raise CrowdDynamicsException
@@ -390,7 +473,7 @@ class AgentManager(object):
         if index in self.active:
             self.active.remove(index)
             self.inactive.add(index)
-            self.agents[index][:] = 0  # Reset agent
+            reset_agent(self.agents[index])
             return True
         else:
             return False
@@ -399,6 +482,7 @@ class AgentManager(object):
         """Fill agents
 
         Args:
+            check_overlapping: 
             amount (int): 
             attributes (dict|Callable[dict]): 
         """
@@ -414,6 +498,6 @@ class AgentManager(object):
             except AgentStructureFull:
                 break
 
-        if self.model is AgentModels.THREE_CIRCLE:
+        if is_model(self.agents, 'three_circle'):
             shoulders(self.agents)
             front(self.agents)

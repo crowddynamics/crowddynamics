@@ -1,6 +1,6 @@
 from shapely.geometry import Polygon
 
-from crowddynamics.core.structures.agents import AgentModels
+from crowddynamics.core.structures.agents import AgentModelToType
 from crowddynamics.simulation.multiagent import MultiAgentSimulation
 
 
@@ -11,7 +11,7 @@ def test_field():
     surface = Polygon([(0, 0), (0, height), (width, height), (width, 0)])
     body_type = 'adult'
 
-    for model in AgentModels:
+    for model in AgentModelToType:
         field = MultiAgentSimulation()
         field.init_domain(None)
         field.init_agents(size, model.value)

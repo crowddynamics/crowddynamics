@@ -110,47 +110,6 @@ class MultiAgentSimulation(object):
         self.targets -= geom
 
     @log_with(logger)
-    def add_agents(self, num, spawn, body_type, iterations_limit=100):
-        r"""Add multiple agents at once.
-
-        1) Sample new position from ``PolygonSample``
-        2) Check if agent in new position is overlapping with existing ones
-        3) Add new agent if there is no overlapping
-
-        Args:
-            num (int, optional):
-                - Number of agents to be placed into the ``surface``. If given
-                  amount of agents does not fit into the ``surface`` only the
-                  amount that fits will be placed.
-                - ``None``: Places maximum size of agents
-
-            spawn (Polygon, optional):
-                - ``Polygon``: Custom polygon that is contained inside the
-                  domain
-                - ``None``: Domain
-
-            body_type (str):
-                Choice from ``Parameter.body_types``:
-                - 'adult'
-                - 'male'
-                - 'female'
-                - 'child'
-                - 'eldery'
-
-            iterations_limit (int):
-                Limits iterations to ``max_iter = iterations_limit * num``.
-
-        Yields:
-            int: Index of agent that was placed.
-
-        """
-        # Draw random uniformly distributed points from the set on points
-        # that belong to the surface. These are used as possible new position
-        # for an agents (if it does not overlap other agents).
-        # sampling = polygon_sample(np.asarray(spawn.exterior))
-        pass
-
-    @log_with(logger)
     def remove_agents(self, indices):
         pass
 
