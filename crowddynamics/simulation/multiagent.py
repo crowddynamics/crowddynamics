@@ -4,11 +4,9 @@ import multiprocessing
 from collections import Iterable
 from multiprocessing import Process, Event
 
-import numpy as np
 from loggingtools import log_with
 from shapely.geometry import Polygon, GeometryCollection
 
-from crowddynamics.core.random.sampling import PolygonSample
 from crowddynamics.exceptions import CrowdDynamicsException, InvalidArgument
 from crowddynamics.simulation.taskgraph import TaskNode
 
@@ -149,8 +147,7 @@ class MultiAgentSimulation(object):
         # Draw random uniformly distributed points from the set on points
         # that belong to the surface. These are used as possible new position
         # for an agents (if it does not overlap other agents).
-        sampling = PolygonSample(np.asarray(spawn.exterior))
-        position = sampling.draw()
+        # sampling = polygon_sample(np.asarray(spawn.exterior))
         pass
 
     @log_with(logger)
