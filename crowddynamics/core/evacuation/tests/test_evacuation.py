@@ -4,7 +4,7 @@ import hypothesis.strategies as st
 
 from crowddynamics.core.evacuation.evacuation import agent_closer_to_exit, \
     narrow_exit_capacity
-from crowddynamics.testing import real
+from crowddynamics.strategies import real
 
 
 @given(

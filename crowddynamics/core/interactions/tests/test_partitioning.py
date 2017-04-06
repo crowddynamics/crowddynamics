@@ -8,7 +8,7 @@ from hypothesis import given
 
 from crowddynamics.core.interactions.partitioning import block_list, \
     MutableBlockList
-from crowddynamics.testing import real
+from crowddynamics.strategies import real
 
 
 @given(points=real(-10.0, 10.0, shape=(10, 2)),

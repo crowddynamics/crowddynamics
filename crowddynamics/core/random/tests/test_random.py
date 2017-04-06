@@ -1,7 +1,7 @@
 from hypothesis import given, assume
 
 from crowddynamics.core.random.functions import poisson_clock, poisson_timings
-from crowddynamics.testing import real
+from crowddynamics.strategies import real
 
 
 @given(

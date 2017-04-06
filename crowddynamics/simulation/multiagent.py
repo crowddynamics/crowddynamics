@@ -6,13 +6,9 @@ from multiprocessing import Process, Event
 
 import numpy as np
 from loggingtools import log_with
-from shapely.geometry import Point, Polygon, GeometryCollection
-from shapely.ops import cascaded_union
+from shapely.geometry import Polygon, GeometryCollection
 
-from crowddynamics.core.interactions.distance import overlapping_three_circle, \
-    overlapping_circle_circle
 from crowddynamics.core.random.sampling import PolygonSample
-from crowddynamics.core.structures.agents import AgentManager
 from crowddynamics.exceptions import CrowdDynamicsException, InvalidArgument
 from crowddynamics.simulation.taskgraph import TaskNode
 
@@ -26,17 +22,6 @@ run_simulations_sequentially
 """.split()
 
 REGISTERED_SIMULATIONS = dict()
-
-
-def agent_polygon(position, radius):
-    if isinstance(position, tuple):
-        return cascaded_union((
-            Point(position[0]).buffer(radius[0]),
-            Point(position[1]).buffer(radius[1]),
-            Point(position[2]).buffer(radius[2]),
-        ))
-    else:
-        return Point(position).buffer(radius)
 
 
 class MultiAgentSimulation(object):

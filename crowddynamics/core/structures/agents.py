@@ -286,7 +286,8 @@ def overlapping_three_circle_line(agents, obstacles):
 class AgentManager(object):
     """Class for initialising new agents."""
 
-    def __init__(self, size, model, agent_cfg=AGENT_CFG,
+    def __init__(self, size, model,
+                 agent_cfg=AGENT_CFG,
                  agent_cfg_pec=AGENT_CFG_SPEC):
         if model is AgentModels.CIRCULAR:
             self.agents = np.zeros(size, dtype=agent_type_circular)
