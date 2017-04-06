@@ -2,8 +2,8 @@ import numpy as np
 import pytest
 
 from crowddynamics.core.structures.agents import AgentManager, AgentModels, \
-    reset_motion, shoulders, front, overlapping_circle_circle, \
-    overlapping_three_circle, create_random_agent_attributes
+    reset_motion, shoulders, front, overlapping_circles, \
+    overlapping_three_circles, create_random_agent_attributes
 
 SEED = np.random.randint(0, 100)
 np.random.seed(SEED)
@@ -38,7 +38,7 @@ def test_three_circle(agent_three_circle):
 def test_overlapping_circular(agent_circular):
     x = np.random.uniform(-1.0, 1.0, 2)
     r = np.random.uniform(0.0, 1.0)
-    overlapping_circle_circle(agent_circular.agents, x, r)
+    overlapping_circles(agent_circular.agents, x, r)
     assert True
 
 
@@ -53,5 +53,5 @@ def test_overlapping_three_circle(agent_three_circle):
         np.random.uniform(0.0, 1.0),
         np.random.uniform(0.0, 1.0)
     )
-    overlapping_three_circle(agent_three_circle.agents, x, r)
+    overlapping_three_circles(agent_three_circle.agents, x, r)
     assert True

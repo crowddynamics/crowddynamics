@@ -3,8 +3,8 @@ import numpy as np
 from hypothesis import given
 
 import crowddynamics.testing
-from crowddynamics.core.interactions.distance import distance_circle_circle, \
-    distance_three_circle, distance_circle_line, distance_three_circle_line, \
+from crowddynamics.core.interactions.distance import distance_circles, \
+    distance_three_circles, distance_circle_line, distance_three_circle_line, \
     overlapping_circle_circle, overlapping_three_circle
 
 
@@ -15,7 +15,7 @@ from crowddynamics.core.interactions.distance import distance_circle_circle, \
     r1=crowddynamics.testing.real(0.0, 1.0)
 )
 def test_distance_circle_circle(x0, r0, x1, r1):
-    h, n = distance_circle_circle(x0, r0, x1, r1)
+    h, n = distance_circles(x0, r0, x1, r1)
     x = x0 - x1
     r_tot = r0 + r1
 
@@ -33,7 +33,7 @@ def test_distance_circle_circle(x0, r0, x1, r1):
     r1=st.tuples(*3 * [crowddynamics.testing.real(0.0, 1.0)])
 )
 def test_distance_three_circle(x0, r0, x1, r1):
-    h, n, r_moment0, r_moment1 = distance_three_circle(x0, r0, x1, r1)
+    h, n, r_moment0, r_moment1 = distance_three_circles(x0, r0, x1, r1)
 
     assert isinstance(h, float)
     assert isinstance(n, np.ndarray)

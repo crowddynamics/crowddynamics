@@ -1,7 +1,7 @@
 import numpy as np
 from matplotlib.path import Path
 
-from crowddynamics.core.geometry import shapes_to_point_pairs
+from crowddynamics.core.geometry import geom_to_pairs
 from crowddynamics.core.integrator import euler_integration
 from crowddynamics.core.interactions.interactions import \
     agent_agent_block_list, agent_wall
@@ -123,7 +123,7 @@ class AgentObstacleInteractions(TaskNode):
         self.simulation = simulation
 
         # TODO: Expects that field is set prior to initialisation
-        self.walls = shapes_to_point_pairs(self.simulation.obstacles)
+        self.walls = np.array(geom_to_pairs(self.simulation.obstacles))
 
     def update(self):
         agent_wall(self.simulation.agent, self.walls)

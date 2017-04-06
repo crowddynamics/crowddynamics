@@ -22,7 +22,7 @@ from shapely.geometry import LineString, Polygon
 from shapely.geometry import Point
 from shapely.geometry.base import BaseGeometry
 
-from crowddynamics.core.geometry import shapes_to_point_pairs
+from crowddynamics.core.geometry import geom_to_pairs
 
 
 def to_indices(points, step):
@@ -65,7 +65,7 @@ def set_values_to_grid(grid, step, shape, value):
     if isinstance(shape, Point):
         pass
     elif isinstance(shape, LineString):
-        points = shapes_to_point_pairs(shape)
+        points = np.array(geom_to_pairs(shape))
         points = to_indices(points, step)
         for args in points:
             j, i = skimage.draw.line(*args.flatten())

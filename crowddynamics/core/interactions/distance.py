@@ -16,7 +16,7 @@ from crowddynamics.core.vector import length, rotate90, dot
 @numba.jit([Tuple((float64, float64[:]))(float64[:], float64,
                                          float64[:], float64)],
            nopython=True, nogil=True, cache=True)
-def distance_circle_circle(x0, r0, x1, r1):
+def distance_circles(x0, r0, x1, r1):
     r"""
     Skin-to-Skin distance :math:`h`  with normal :math:`\mathbf{\hat{n}}`
     between two circles.
@@ -52,7 +52,7 @@ def distance_circle_circle(x0, r0, x1, r1):
     UniTuple(float64[:], 3), UniTuple(float64, 3)
 )],
            nopython=True, nogil=True, cache=True)
-def distance_three_circle(x0, r0, x1, r1):
+def distance_three_circles(x0, r0, x1, r1):
     r"""
     Skin-to-Skin distance :math:`h` with normal :math:`\mathbf{\hat{n}}` and
     rotational moments :math:`\mathbf{r}_{\mathrm{moment}_i}` between two three-circle
@@ -92,7 +92,7 @@ def distance_three_circle(x0, r0, x1, r1):
 
     for i, (xi, ri) in enumerate(zip(x0, r0)):
         for j, (xj, rj) in enumerate(zip(x1, r1)):
-            h, n = distance_circle_circle(xi, ri, xj, rj)
+            h, n = distance_circles(xi, ri, xj, rj)
             if h < h_min or np.isnan(h_min):
                 h_min = h
                 normal = n
@@ -178,53 +178,3 @@ def distance_three_circle_line(x, r, p0, p1):
     r_moment = x[i_min] - r[i_min] * normal - x[0]
 
     return h_min, normal, r_moment
-
-
-# TODO: remove
-@numba.jit(nopython=True, nogil=True)
-def overlapping_circle_circle(agent, indices, x2, r2):
-    """
-    Test if two circles are overlapping.
-
-    Args:
-        x1: Positions of other agents
-        r1: Radii of other agents
-        x2: Position of agent that is tested
-        r2: Radius of agent that is tested
-
-    Returns:
-        bool:
-
-    """
-    for i in indices:
-        h, _ = distance_circle_circle(
-            agent.position[i], agent.radius[i], x2, r2
-        )
-        if h < 0.0:
-            return True
-    return False
-
-
-# TODO: remove
-@numba.jit(nopython=True, nogil=True)
-def overlapping_three_circle(agent, indices, x2, r2):
-    """
-    Test if two three-circle models are overlapping.
-
-    Args:
-        x1: Positions of other agents
-        r1: Radii of other agents
-        x2: Position of agent that is tested
-        r2: Radius of agent that is tested
-
-    Returns:
-        bool:
-
-    """
-    for i in indices:
-        h, _, _, _ = distance_three_circle(
-            agent.positions(i), agent.radii(i), x2, r2
-        )
-        if h < 0:
-            return True
-    return False

@@ -5,67 +5,42 @@ References:
 """
 from collections import Iterable
 
-import numpy as np
-from shapely.geometry import Polygon
-from shapely.geometry.base import BaseGeometry
+from shapely import speedups
+from shapely.geometry import Polygon, LineString, LinearRing
 
 
-def check_shapes(shapes, types):
-    """Checks type and flattens shapes.
-
-    Args:
-        shapes (shapely.geometry.base.BaseGeometry):
-            Shapes
-        types (shapely.geometry.base.BaseGeometry):
-            Allowed types of subclass shapely.BaseGeometry
-
-    Returns:
-        List: List of shapes
-    """
-
-    def _set_shape(_shapes, _types, _coll):
-        if isinstance(_shapes, Iterable):
-            for shape in _shapes:
-                _set_shape(shape, _types, _coll)
-        elif isinstance(_shapes, _types):
-            _coll.append(_shapes)
-        elif _shapes is None:
-            pass
-        else:
-            raise ValueError("shape {} not in types {}".format(_shapes, _types))
-
-    # TODO: Geometry Collection?
-    coll = []
-    _set_shape(shapes, types, coll)
-    return coll
+if speedups.available:
+    speedups.enable()
 
 
-def shapes_to_point_pairs(shapes):
-    """Converts shapes to pairs of points representing the line segments of the
-    shapes.
+def geom_to_pairs(geom) -> list:
+    """Converts shapes to point pairs.
+    
+    >>> ls = LineString([(1, 2), (0, 0)])
+    >>> lr = LinearRing([(1, 2), (0, 0), (2, 1)])
+    >>> poly = Polygon([(1, 2), (0, 0), (2, 1)])
+    >>> geom_to_pairs((ls, lr, poly))
+    [((1.0, 2.0), (0.0, 0.0)),
+     ((1.0, 2.0), (0.0, 0.0)),
+     ((0.0, 0.0), (2.0, 1.0)),
+     ((2.0, 1.0), (1.0, 2.0)),
+     ((1.0, 2.0), (0.0, 0.0)),
+     ((0.0, 0.0), (2.0, 1.0)),
+     ((2.0, 1.0), (1.0, 2.0))]
 
     Args:
-        shapes (shapely.geometry.base.BaseGeometry): Shapes
+        shape: 
+            Shape or iterable of shapes. Iterables can be nested.
 
     Returns:
-        numpy.ndarray: Numpy array of point pairs.
+        list: List of tuples of points pairs. 
+
     """
-
-    def _shapes_to_points(_shapes, _points):
-        if isinstance(_shapes, Iterable):
-            for shape in _shapes:
-                _shapes_to_points(shape, _points)
-        elif isinstance(_shapes, Polygon):
-            _shapes_to_points(_shapes.exterior, _points)
-        elif isinstance(_shapes, BaseGeometry):
-            a = np.asarray(_shapes)
-            for i in range(len(a) - 1):
-                _points.append((a[i], a[i + 1]))
-        elif _shapes is None:
-            pass
-        else:
-            raise ValueError("")
-
-    points = []
-    _shapes_to_points(shapes, points)
-    return np.array(points)
+    if isinstance(geom, Iterable):
+        return sum(map(geom_to_pairs, geom), [])
+    elif isinstance(geom, Polygon):
+        return geom_to_pairs(geom.exterior)
+    elif isinstance(geom, (LineString, LinearRing)):
+        return list(zip(geom.coords[:-1], geom.coords[1:]))
+    else:
+        return []

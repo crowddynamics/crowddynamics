@@ -16,8 +16,21 @@ tangent vectors
 .. math::
    \mathbf{\hat{e}_n} &= [\cos(\varphi), \sin(\varphi)] \\
    \mathbf{\hat{e}_t} &= [\sin(\varphi), -\cos(\varphi)]
+
+
+Attributes:
+    BASE_DIR:
+    AGENT_CFG_SPEC:
+    AGENT_CFG:
+    translational:
+    rotational:
+    three_circle:
+    agent_type_circular:
+    agent_type_three_circle:
+    
 """
 import os
+from copy import deepcopy
 from enum import Enum
 from functools import lru_cache
 
@@ -29,10 +42,12 @@ from numba.types import UniTuple
 from sortedcontainers import SortedSet
 from validate import Validator
 
-from crowddynamics.core.interactions.distance import distance_circle_circle
-from crowddynamics.core.interactions.distance import distance_three_circle
+from crowddynamics.core.interactions.distance import distance_circles, \
+    distance_circle_line, distance_three_circle_line
+from crowddynamics.core.interactions.distance import distance_three_circles
 from crowddynamics.core.interactions.partitioning import MutableBlockList
 from crowddynamics.core.random.functions import truncnorm
+from crowddynamics.core.structures.obstacles import obstacle_type_linear
 from crowddynamics.core.vector.vector2D import unit_vector, rotate270
 from crowddynamics.exceptions import CrowdDynamicsException, OverlappingError, \
     AgentStructureFull, InvalidConfigurationError
@@ -194,7 +209,7 @@ def reset_motion(agent):
 
 @numba.jit([boolean(typeof(agent_type_circular)[:], float64[:], float64)],
            nopython=True, nogil=True, cache=True)
-def overlapping_circle_circle(agents, x, r):
+def overlapping_circles(agents, x, r):
     """Test if two circles are overlapping.
 
     Args:
@@ -206,7 +221,7 @@ def overlapping_circle_circle(agents, x, r):
         bool:
     """
     for agent in agents:
-        h, _ = distance_circle_circle(agent.position, agent.radius, x, r)
+        h, _ = distance_circles(agent.position, agent.radius, x, r)
         if h < 0.0:
             return True
     return False
@@ -215,7 +230,7 @@ def overlapping_circle_circle(agents, x, r):
 @numba.jit([boolean(typeof(agent_type_three_circle)[:],
                     UniTuple(float64[:], 3), UniTuple(float64, 3))],
            nopython=True, nogil=True, cache=True)
-def overlapping_three_circle(agents, x, r):
+def overlapping_three_circles(agents, x, r):
     """Test if two three-circle models are overlapping.
 
     Args:
@@ -229,13 +244,42 @@ def overlapping_three_circle(agents, x, r):
 
     """
     for agent in agents:
-        h, _, _, _ = distance_three_circle(
+        h, _, _, _ = distance_three_circles(
             (agent.position, agent.position_ls, agent.position_rs),
             (agent.r_t, agent.r_s, agent.r_s),
             x, r
         )
         if h < 0:
             return True
+    return False
+
+
+@numba.jit([boolean(typeof(agent_type_circular)[:],
+                    typeof(obstacle_type_linear)[:])],
+           nopython=True, nogil=True, cache=True)
+def overlapping_circle_line(agents, obstacles):
+    for agent in agents:
+        for obstacle in obstacles:
+            h, _ = distance_circle_line(agent.position, agent.radius,
+                                        obstacle.p0, obstacle.p1)
+            if h < 0.0:
+                return True
+    return False
+
+
+@numba.jit([boolean(typeof(agent_type_three_circle)[:],
+                    typeof(obstacle_type_linear)[:])],
+           nopython=True, nogil=True, cache=True)
+def overlapping_three_circle_line(agents, obstacles):
+    for agent in agents:
+        for obstacle in obstacles:
+            h, _, _ = distance_three_circle_line(
+                (agent.position, agent.position_ls, agent.position_rs),
+                (agent.r_t, agent.r_s, agent.r_s),
+                obstacle.p0, obstacle.p1
+            )
+            if h < 0.0:
+                return True
     return False
 
 
@@ -256,7 +300,7 @@ class AgentManager(object):
         self.config = load_config(infile=agent_cfg, configspec=agent_cfg_pec)
         self.constants = self.config['constants']
         self.defaults = self.config['defaults']
-        self.body_types = self.config['body_types']
+        # self.body_types = self.config['body_types']
 
         self.size = size
         self.model = model
@@ -270,29 +314,29 @@ class AgentManager(object):
         # random positions.
         self.grid = MutableBlockList(cell_size=self.constants['cell_size'])
 
-    def add(self, check_overlapping=True, **attributes):
-        """Add new agent
+    def add(self, attributes, check_overlapping=True):
+        """Add new agent with given attributes
 
         Args:
             check_overlapping (bool): 
 
-            **attributes:
-                position (numpy.ndarray): Initial position of the agent
-                mass (float): Mass of the agent
-                radius (float): Total radius of the agent
-                r_t (float): Ratio of the total radius and torso radius. :math:`[0, 1]`
-                r_s (float): Ratio of the total radius and shoulder radius. :math:`[0, 1]`
-                r_ts (float): Ratio of the torso radius and torso radius. :math:`[0, 1]`
-                inertia_rot (float):
-                max_velocity (float):
-                max_angular_velocity (float):
-                orientation (float): Initial orientation :math:`\varphi = [\-pi, \pi]` of the agent.
-                velocity (numpy.ndarray): Initial velocity
+            attributes:
+                body_type (str):
+                position (numpy.ndarray): 
+                    Initial position of the agent
+                orientation (float): 
+                    Initial orientation :math:`\varphi = [\-pi, \pi]` of the agent.
+                velocity (numpy.ndarray): 
+                    Initial velocity
                 angular_velocity (float):
-                target_direction (numpy.ndarray): Unit vector to desired direction
-
+                    Angular velocity
+                target_direction (numpy.ndarray): 
+                    Unit vector to desired direction
+                target_orientation:
+                
         Raises:
             AgentStructureFull: When no more agents can be added.
+            OverlappingError: When two agents overlap each other.
         """
         try:
             index = self.inactive.pop(0)
@@ -300,12 +344,10 @@ class AgentManager(object):
             raise AgentStructureFull
 
         # Set default parameters if parameters are not given in attributes
-        for key, value in self.defaults.items():
-            if key not in attributes:
-                attributes[key] = value
+        attributes = deepcopy(self.defaults).update(attributes)
 
-        body_type = attributes.get('body_type')
-        body = self.body_types[body_type]
+        body_type = attributes['body_type']
+        body = self.config['body_types'][body_type]
         attributes.update(body_to_values(body, 1))
 
         # Set attributes for agent
@@ -329,13 +371,13 @@ class AgentManager(object):
             agents = self.agents[neighbours]
 
             if self.model is AgentModels.CIRCULAR:
-                if overlapping_circle_circle(agents, position, radius):
+                if overlapping_circles(agents, position, radius):
                     self.agents[index][:] = 0
-                    raise OverlappingError()
+                    raise OverlappingError
             elif self.model is AgentModels.THREE_CIRCLE:
-                if overlapping_three_circle(agents, None, None):
+                if overlapping_three_circles(agents, None, None):
                     self.agents[index][:] = 0
-                    raise OverlappingError()
+                    raise OverlappingError
             else:
                 raise CrowdDynamicsException
 
@@ -352,7 +394,7 @@ class AgentManager(object):
         else:
             return False
 
-    def fill(self, amount, attributes):
+    def fill(self, amount, attributes, check_overlapping=True):
         """Fill agents
 
         Args:
@@ -364,7 +406,7 @@ class AgentManager(object):
         while size < amount and overlaps < 10 * amount:
             try:
                 a = attributes() if callable(attributes) else attributes
-                self.add(check_overlapping=True, **a)
+                self.add(a, check_overlapping=check_overlapping)
                 size += 1
             except OverlappingError:
                 overlaps += 1

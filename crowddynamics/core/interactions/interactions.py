@@ -16,8 +16,8 @@ import numba
 import numpy as np
 from numba import void, i8, typeof
 
-from crowddynamics.core.interactions.distance import distance_circle_circle, \
-    distance_circle_line, distance_three_circle_line, distance_three_circle
+from crowddynamics.core.interactions.distance import distance_circles, \
+    distance_circle_line, distance_three_circle_line, distance_three_circles
 from crowddynamics.core.interactions.partitioning import BlockList
 from crowddynamics.core.motion.collision_avoidance.power_law import \
     force_social_circular, force_social_three_circle, force_social_linear_wall
@@ -42,8 +42,8 @@ def agent_agent_interaction_circle(i, j, agent):
         agent:
 
     """
-    h, n = distance_circle_circle(agent[i]['position'], agent[i]['radius'],
-                                  agent[j]['position'], agent[j]['radius'])
+    h, n = distance_circles(agent[i]['position'], agent[i]['radius'],
+                            agent[j]['position'], agent[j]['radius'])
     if h < agent[i]['sight_soc']:  # FIXME: take into account agent j
         force_i, force_j = force_social_circular(agent, i, j)
 
@@ -80,7 +80,7 @@ def agent_agent_interaction_three_circle(i, j, agent):
     r_i = (agent[i]['r_t'], agent[i]['r_s'], agent[i]['r_s'])
     r_j = (agent[j]['r_t'], agent[j]['r_s'], agent[j]['r_s'])
 
-    h, n, r_moment_i, r_moment_j = distance_three_circle(x_i, r_i, x_j, r_j)
+    h, n, r_moment_i, r_moment_j = distance_three_circles(x_i, r_i, x_j, r_j)
 
     if h < agent[i]['sight_soc']:  # FIXME: take into account agent j
         force_i, force_j = force_social_three_circle(agent, i, j)

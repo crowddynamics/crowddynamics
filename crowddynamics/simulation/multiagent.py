@@ -97,25 +97,6 @@ class MultiAgentSimulation(object):
         self.domain = domain
 
     @log_with(logger)
-    def init_agents(self, max_size, model):
-        """Initialize agents
-
-        Args:
-            max_size (int):
-                - ``int``: Maximum number of agents.
-
-            model (str):
-                Choice from:
-                - ``circular``
-                - ``three_circle``
-        """
-        self.agent = Agent(max_size)
-        if model == 'three_circle':
-            self.agent.set_three_circle()
-        else:
-            self.agent.set_circular()
-
-    @log_with(logger)
     def add_obstacle(self, geom):
         """Add new ``obstacle`` to the Field
 
@@ -183,53 +164,9 @@ class MultiAgentSimulation(object):
         # Draw random uniformly distributed points from the set on points
         # that belong to the surface. These are used as possible new position
         # for an agents (if it does not overlap other agents).
-        iterations = 0
         sampling = PolygonSample(np.asarray(spawn.exterior))
-
-        while num > 0 and iterations <= iterations_limit * num:
-            # Parameters
-            position = sampling.draw()
-
-            # Polygon of the agent
-            overlapping_agents = False
-            overlapping_obstacles = False
-            num_active_agents = np.sum(self.agent.active)
-            if num_active_agents > 0:
-                # Conditions
-                if self.agent.three_circle:
-                    orientation = 0.0
-                    poly = agent_polygon(
-                        positions(position, orientation, r_t),
-                        (r_t, r_s, r_s)
-                    )
-                    overlapping_agents = overlapping_three_circle(
-                        self.agent, self.agent.indices(),
-                        positions(position, orientation, r_t),
-                        (r_t, r_s, r_s),
-                    )
-                else:
-                    poly = agent_polygon(position, radius)
-                    overlapping_agents = overlapping_circle_circle(
-                        self.agent, self.agent.indices(),
-                        position,
-                        radius
-                    )
-                overlapping_obstacles = self.obstacles.intersects(poly)
-
-            if not overlapping_agents and not overlapping_obstacles:
-                # Add new agent
-                index = self.agent.add(
-                    position, mass, radius, r_t, r_s, r_ts,
-                    inertia_rot, max_velocity, max_angular_velocity
-                )
-                if index >= 0:
-                    # Yield index of an agent that was successfully placed.
-                    num -= 1
-                    # self.agents[index] = poly
-                    yield index
-                else:
-                    break
-            iterations += 1
+        position = sampling.draw()
+        pass
 
     @log_with(logger)
     def remove_agents(self, indices):
