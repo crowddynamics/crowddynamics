@@ -3,8 +3,6 @@ from matplotlib.path import Path
 
 from crowddynamics.core.geometry import geom_to_pairs
 from crowddynamics.core.integrator import euler_integration
-from crowddynamics.core.interactions.interactions import \
-    agent_agent_block_list, agent_wall
 from crowddynamics.core.motion.adjusting import force_adjust, torque_adjust
 from crowddynamics.core.motion.fluctuation import force_fluctuation, \
     torque_fluctuation
@@ -13,9 +11,6 @@ from crowddynamics.core.structures.agents import agent_type_three_circle
 from crowddynamics.core.vector.vector2D import angle_nx2
 from crowddynamics.io import HDFStore, Record
 from crowddynamics.simulation.taskgraph import TaskNode
-
-# TODO: Integrator: time-limit, iterations limit -> signal
-# TODO: Contains:   diff limit
 
 
 __all__ = """
@@ -142,27 +137,16 @@ class Navigation(TaskNode):
     def __init__(self, simulation):
         super().__init__()
         self.simulation = simulation
-
         self.step = 0.01
-        self.direction_map = None
-        self.algorithm = "static"
-
-        if self.algorithm == "static":
-            self.direction_map = static_potential(self.step,
-                                                  self.simulation.domain,
-                                                  self.simulation.targets,
-                                                  self.simulation.obstacles,
-                                                  radius=0.3,
-                                                  value=0.3)
-        elif self.algorithm == "dynamic":
-            raise NotImplementedError
-        else:
-            pass
+        self.direction_map = static_potential(self.step,
+                                              self.simulation.domain,
+                                              self.simulation.targets,
+                                              self.simulation.obstacles,
+                                              radius=0.3,
+                                              value=0.3)
 
     def update(self):
-        i = self.simulation.agent.indices()
-        points = self.simulation.agent.position[i]
-        # indices = self.points_to_indices(points)
+        points = self.simulation.agent['position']
         indices = to_indices(points, self.step)
         indices = np.fliplr(indices)
         # http://docs.scipy.org/doc/numpy/reference/arrays.indexing.html

@@ -3,10 +3,10 @@ import random
 import numpy as np
 import pytest
 
-from crowddynamics.core.structures.agents import AgentManager, \
+from crowddynamics.core.structures.agents import Agents, \
     reset_motion, shoulders, front, overlapping_circles, \
     agent_type_circular, agent_type_three_circle, \
-    overlapping_three_circles, AgentModelToType
+    overlapping_three_circles
 from crowddynamics.core.vector import unit_vector
 
 SEED = np.random.randint(0, 100)
@@ -28,14 +28,14 @@ def create_random_agent_attributes():
 
 @pytest.fixture(scope='module')
 def agent_circular(size=100):
-    agent = AgentManager(size, agent_type_circular)
+    agent = Agents(size, agent_type_circular)
     agent.fill(size, create_random_agent_attributes())
     return agent
 
 
 @pytest.fixture(scope='module')
 def agent_three_circle(size=100):
-    agent = AgentManager(size, agent_type_three_circle)
+    agent = Agents(size, agent_type_three_circle)
     agent.fill(size, create_random_agent_attributes())
     return agent
 

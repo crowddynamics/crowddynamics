@@ -351,7 +351,7 @@ def reset_agent(agent):
     agent[:] = 0
 
 
-class AgentManager(object):
+class Agents(object):
     """Class for initialising new agents."""
     logger = logging.getLogger(__name__)
 
@@ -373,7 +373,7 @@ class AgentManager(object):
             agent_cfg_pec: 
                 Agent configuration spec filepath
         """
-        self.agents = np.zeros(size, dtype=agent_type)
+        self.array = np.zeros(size, dtype=agent_type)
         self.config = load_config(infile=agent_cfg, configspec=agent_cfg_pec)
 
         # Keeps track of which agents are active and which in active. Stores
@@ -388,7 +388,7 @@ class AgentManager(object):
 
     @property
     def size(self):
-        return self.agents.size
+        return self.array.size
 
     def add(self, attributes, check_overlapping=True):
         """Add new agent with given attributes
@@ -430,31 +430,31 @@ class AgentManager(object):
         except KeyError:
             pass
 
-        set_agent_attributes(self.agents, index, attrs)
+        set_agent_attributes(self.array, index, attrs)
 
         # Update shoulder positions for three circle agents
-        if is_model(self.agents, 'three_circle'):
-            shoulders(self.agents)
+        if is_model(self.array, 'three_circle'):
+            shoulders(self.array)
 
         if check_overlapping:
-            agent = self.agents[index]
+            agent = self.array[index]
             radius = agent['radius']
             position = agent['position']
 
             neighbours = self.grid.nearest(position, radius=1)
-            agents = self.agents[neighbours]
+            agents = self.array[neighbours]
 
-            if is_model(self.agents, 'circular'):
+            if is_model(self.array, 'circular'):
                 if overlapping_circles(agents, position, radius):
-                    reset_agent(self.agents[index])
+                    reset_agent(self.array[index])
                     raise OverlappingError
-            elif is_model(self.agents, 'three_circle'):
+            elif is_model(self.array, 'three_circle'):
                 if overlapping_three_circles(
                         agents,
                         (agent['position'], agent['position_ls'],
                          agent['position_rs']),
                         (agent['r_t'], agent['r_s'], agent['r_s'])):
-                    reset_agent(self.agents[index])
+                    reset_agent(self.array[index])
                     raise OverlappingError
             else:
                 raise CrowdDynamicsException
@@ -467,7 +467,7 @@ class AgentManager(object):
         if index in self.active:
             self.active.remove(index)
             self.inactive.add(index)
-            reset_agent(self.agents[index])
+            reset_agent(self.array[index])
             return True
         else:
             return False
@@ -492,6 +492,6 @@ class AgentManager(object):
             except AgentStructureFull:
                 break
 
-        if is_model(self.agents, 'three_circle'):
-            shoulders(self.agents)
-            front(self.agents)
+        if is_model(self.array, 'three_circle'):
+            shoulders(self.array)
+            front(self.array)

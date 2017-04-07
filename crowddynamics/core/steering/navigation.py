@@ -317,3 +317,9 @@ def dynamic_potential():
     that is occupied by dynamic agents (aka agents).
     """
     return NotImplementedError
+
+
+algorithms = {
+    'static_potential': static_potential,
+    'dynamic_potential': dynamic_potential
+}

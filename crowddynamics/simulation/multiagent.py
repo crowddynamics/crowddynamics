@@ -1,12 +1,18 @@
-"""Tools for creating multiagent simulations."""
+"""Tools for creating multiagent simulations.
+
+- Domain
+- Obstacles
+- Targets
+- Agents
+"""
 import logging
 import multiprocessing
 from collections import Iterable
 from multiprocessing import Process, Event
 
 from loggingtools import log_with
-from shapely.geometry import Polygon, GeometryCollection
 
+from crowddynamics.core.structures.obstacles import geom_to_linear_obstacles
 from crowddynamics.exceptions import CrowdDynamicsException, InvalidArgument
 from crowddynamics.simulation.taskgraph import TaskNode
 
@@ -25,104 +31,137 @@ REGISTERED_SIMULATIONS = dict()
 class MultiAgentSimulation(object):
     r"""MultiAgent simulation setup
 
-    1) Set the Field
+    1. Set the Field
 
-       - Domain
-       - Obstacles
-       - Targets (aka exits)
+       1. Domain
+       2. Obstacles
+       3. Targets (aka exits)
 
-    2) Initialise Agents
+    2. Initialise Agents
 
        - Set maximum number of agents. This is the limit of the size of array
          inside ``Agent`` class.
        - Select Agent model.
 
-    3) Place Agents into any surface that is contained by the domain.
+    3. Place Agents into any surface that is contained by the domain.
 
        - Body type
        - Number of agents that is placed into the surface
 
-    4) Run simulation
+    4. Run simulation
 
     """
     logger = logging.getLogger(__name__)
 
     def __init__(self):
-        # Field
-        self.domain = Polygon()
-        self.obstacles = GeometryCollection()
-        self.targets = GeometryCollection()
-        self.agent = None
+        self.__name = None
 
-        # Currently occupied surface by Agents and Obstacles
-        self._occupied = Polygon()
+        # Geometry
+        self.__domain = None
+        self.__obstacles = None
+        self.__targets = None
+        self.__agents = None
 
-        # Algorithms
+        # Numerical types for geometry
+        self.domain_array = None
+        self.obstacles_array = None
+        self.targets_array = None
+        self.agents_array = None
+
+        # Simulation logic
+        self.__tasks = None
+
         self.queue = multiprocessing.Queue()
-        self.tasks = None
         self.iterations = 0
 
     @property
     def name(self):
-        """Name of the simulation"""
-        return self.__class__.__name__
+        """Name of the simulation. Defaults to __class__.__name__."""
+        return self.__name if self.__name else self.__class__.__name__
 
-    @log_with(logger)
-    def init_domain(self, domain):
-        """Initialize domain
-
-        Args:
-            domain (Polygon, optional):
-                - ``Polygon``: Subset of real domain
-                  :math:`\Omega \subset \mathbb{R}^{2}`.
-                - ``None``: Real domain :math:`\Omega = \mathbb{R}^{2}`.
-        """
-        self.domain = domain
-
-    @log_with(logger)
-    def add_obstacle(self, geom):
-        """Add new ``obstacle`` to the Field
+    @name.setter
+    def name(self, name):
+        """Set name for the simulations
 
         Args:
-            geom (BaseGeometry):
+            name (str): 
         """
-        self.obstacles |= geom
-        self._occupied |= geom
+        self.__name = name
 
-    @log_with(logger)
-    def remove_obstacle(self, geom):
-        """Remove obstacle"""
-        self.obstacles -= geom
-        self._occupied -= geom
+    @property
+    def domain(self):
+        """Set domain"""
+        return self.__domain
 
-    @log_with(logger)
-    def add_target(self, geom):
-        """Add new ``target`` to the Field
+    @domain.setter
+    def domain(self, domain):
+        """Set simulation domain
 
         Args:
-            geom (BaseGeometry):
+            domain (Polygon): 
+                Subset of real domain :math:`\Omega \subset \mathbb{R}^{2}`.
         """
-        self.targets |= geom
+        self.__domain = domain
 
-    @log_with(logger)
-    def remove_target(self, geom):
-        """Remove target"""
-        self.targets -= geom
+    @property
+    def obstacles(self):
+        """Obstacles"""
+        return self.__obstacles
 
-    @log_with(logger)
-    def remove_agents(self, indices):
-        pass
+    @obstacles.setter
+    def obstacles(self, obstacles):
+        """Set obstacles to the simulation
 
-    @log_with(logger)
-    def set_tasks(self, tasks):
-        """Set task graph
+        Args:
+            obstacles (Iterable[LineString]): 
+        """
+        self.__obstacles = obstacles
+        self.obstacles_array = geom_to_linear_obstacles(obstacles)
+
+    @property
+    def targets(self):
+        """Targets"""
+        return self.__targets
+
+    @targets.setter
+    def targets(self, targets):
+        """Set targets to the simulation
+
+        Args:
+            targets (BaseGeometry): 
+        """
+        self.__targets = targets
+
+    @property
+    def agents(self):
+        """Agent"""
+        return self.__agents
+
+    @agents.setter
+    def agents(self, agents):
+        """Set agents
+
+        Args:
+            agent (Agents): 
+        """
+        self.__agents = agents
+        self.agents_array = agents.array
+
+    @property
+    def tasks(self):
+        """Tasks"""
+        return self.__tasks
+
+    @tasks.setter
+    def tasks(self, tasks):
+        """Set task graph to the simulation
 
         Args:
             tasks (TaskNode):
         """
-        self.tasks = tasks
+        self.__tasks = tasks
 
-    def set(self, *args, **kwargs):
+    def setup(self, *args, **kwargs):
         """Method for subclasses to overwrite for setting up simulation."""
         raise NotImplementedError
 
@@ -137,6 +176,16 @@ class MultiAgentSimulation(object):
 
     def __repr__(self):
         return self.name
+
+    def register(self):
+        """Register the simulation so it can be found for example by the
+        commandline client (CLI)."""
+        if self.name in REGISTERED_SIMULATIONS:
+            self.logger.warning('Simulation named: "{name}" already '
+                                'exists in registered simulations.'.format(
+                name=self.name
+            ))
+        REGISTERED_SIMULATIONS[self.name] = self
 
 
 class MultiAgentProcess(Process):
@@ -174,20 +223,6 @@ class MultiAgentProcess(Process):
     def stop(self):
         """Sets event to true in order to stop the simulation process."""
         self.exit.set()
-
-
-@log_with()
-def register(simulation):
-    """Register simulation in order to make it visible to CLI and GUI."""
-    if isinstance(simulation, MultiAgentSimulation):
-        raise InvalidArgument("Argument simulation should be instance of"
-                              "MultiAgentSimulation")
-    name = simulation.__name__
-    if name in REGISTERED_SIMULATIONS:
-        raise CrowdDynamicsException('Simulation named: "{name}" already '
-                                     'exists in registered simulations.'
-                                     'please rename the simulation.')
-    REGISTERED_SIMULATIONS[name] = simulation
 
 
 @log_with()

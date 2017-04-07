@@ -5,6 +5,55 @@ from numba import f8
 from scipy.spatial.qhull import Delaunay
 
 
+@numba.jit(f8[:](f8[:, :]), nopython=True, nogil=True, cache=True)
+def linestring_length_cumsum(vertices):
+    n = len(vertices) - 1
+    cumsum = np.zeros(n)
+    for i in range(n):
+        diff = vertices[i] - vertices[i + 1]
+        cumsum[i] = np.hypot(diff[0], diff[1])
+    return cumsum
+
+
+@numba.jit(f8[:](f8[:], f8[:]), nopython=True, nogil=True, cache=True)
+def random_sample_line(p0, p1):
+    """Random sample line
+
+    Args:
+        p0 (numpy.ndarray): 
+        p1 (numpy.ndarray): 
+
+    Returns:
+        numpy.ndarray
+    """
+    v = p1 - p0
+    x = np.random.random()
+    return x * v
+
+
+def linestring_sample(vertices):
+    """Uniform sampling of linestring
+
+    Args:
+        vertices (numpy.ndarray): Array of shape (n, 2) 
+
+    Yields:
+        numpy.ndarray: 
+    """
+    assert len(vertices.shape) == 2
+    assert vertices.shape[1] == 2
+
+    # Weights for choosing random linestring from the vertices.
+    # Weight are normalized to values in interval [0, 1].
+    weights = linestring_length_cumsum(vertices)
+    weights /= weights[-1]
+
+    while True:
+        x = np.random.random()  # Random variable from interval [0, 1]
+        i = np.searchsorted(weights, x)  # Uniformly drawn random linestring
+        yield random_sample_line(vertices[i], vertices[i+1])
+
+
 @numba.jit(f8(f8[:], f8[:], f8[:]), nopython=True, nogil=True, cache=True)
 def triangle_area(a, b, c):
     r"""
@@ -84,10 +133,6 @@ def random_sample_triangle(a, b, c):
     return (1 - np.sqrt(r1)) * a + \
            np.sqrt(r1) * (1 - r2) * b + \
            r2 * np.sqrt(r1) * c
-
-
-def linestring_sample():
-    pass
 
 
 def polygon_sample(vertices):
