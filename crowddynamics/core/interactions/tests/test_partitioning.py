@@ -44,14 +44,14 @@ def test_block_list(points, cell_size):
     assert x_max.dtype.type is np.int64
 
 
+@pytest.mark.parametrize('dimensions', (2, 3))
 @pytest.mark.parametrize('default_list', (list, SortedList, lambda: array('i')))
-def test_mutable_block_list(default_list, cell_size=1.0):
+def test_mutable_block_list(dimensions, default_list, cell_size=1.0):
     mutable_blocklist = MutableBlockList(cell_size, default_list)
-
-    size = 10
-    dimensions = 2
+    size = 100
     _list = default_list()
     for i, point in zip(range(size), points(dimensions, (-1.0, 2.0))):
         _list.append(i)
         mutable_blocklist[point] = i
-    assert set(mutable_blocklist.nearest((0.0, 0.0), radius=1)) == set(_list)
+    assert set(mutable_blocklist.nearest(dimensions * (0.0,), radius=1)) == \
+           set(_list)

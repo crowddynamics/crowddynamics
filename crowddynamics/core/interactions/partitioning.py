@@ -225,12 +225,12 @@ class MutableBlockList(object):
             yield tuple(map(sum, zip(index, i)))
 
     def __setitem__(self, key, value):
-        """Add value to position in blocklist"""
+        """Add value to blocklist"""
         index = self._transform(key, self._cell_size)
         self._blocks[index].append(value)
 
     def __getitem__(self, item):
-        """Get values of neighbouring"""
+        """Get value in the same block as item"""
         index = self._transform(item, self._cell_size)
         return self._blocks[index]
 

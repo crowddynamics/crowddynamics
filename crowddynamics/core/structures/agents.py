@@ -29,6 +29,7 @@ Attributes:
     agent_type_three_circle:
     
 """
+import logging
 import os
 from functools import lru_cache
 
@@ -338,9 +339,11 @@ def set_agent_attributes(agents, index, attributes):
         try:
             agents[index][attribute] = call(value)
         except ValueError:
-            print('Agent: {} doesn\'t have attribute {}'.format(
-                of_model(agents), attribute
-            ))
+            # logger = logging.getLogger(__name__)
+            # logger.warning('Agent: {} doesn\'t have attribute {}'.format(
+            #     of_model(agents), attribute
+            # ))
+            pass
 
 
 def reset_agent(agent):
@@ -350,6 +353,7 @@ def reset_agent(agent):
 
 class AgentManager(object):
     """Class for initialising new agents."""
+    logger = logging.getLogger(__name__)
 
     def __init__(self,
                  size,
@@ -419,7 +423,7 @@ class AgentManager(object):
         attrs.update(attributes)
 
         try:
-            body_type = attrs['body_type']
+            body_type = call(attrs['body_type'])
             body = self.config['body_types'][body_type]
             attrs.update(body_to_values(body))
             del attrs['body_type']
