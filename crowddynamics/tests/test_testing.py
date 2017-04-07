@@ -3,10 +3,10 @@ from hypothesis import settings
 from shapely.geometry import Polygon
 from shapely.geometry.base import BaseGeometry
 
-import crowddynamics.strategies
+import crowddynamics.testing
 
 
-@given(crowddynamics.strategies.polygon(a=-1.0, b=1.0))
+@given(crowddynamics.testing.polygon(a=-1.0, b=1.0))
 @settings(max_examples=500)
 def test_polygon(polygon):
     minx, miny, maxx, maxy = polygon.bounds
@@ -16,7 +16,7 @@ def test_polygon(polygon):
     assert -1.0 <= miny < maxy <= 1.0
 
 
-@given(crowddynamics.strategies.field())
+@given(crowddynamics.testing.field())
 def test_field(field):
     domain, targets, obstacles = field
 

@@ -7,23 +7,33 @@
 """
 import logging
 import multiprocessing
-from collections import Iterable
+import os
 from multiprocessing import Process, Event
 
+import numpy as np
 from loggingtools import log_with
+from matplotlib.path import Path
 
+from crowddynamics.config import load_config
+from crowddynamics.core.integrator import euler_integration
+from crowddynamics.core.interactions.interactions import \
+    agent_agent_block_list_circular, agent_agent_block_list_three_circle, \
+    circular_agent_linear_wall, three_circle_agent_linear_wall
+from crowddynamics.core.motion.adjusting import force_adjust, torque_adjust
+from crowddynamics.core.motion.fluctuation import force_fluctuation, \
+    torque_fluctuation
+from crowddynamics.core.steering import static_potential
+from crowddynamics.core.steering.navigation import to_indices
+from crowddynamics.core.structures.agents import is_model, reset_motion
 from crowddynamics.core.structures.obstacles import geom_to_linear_obstacles
-from crowddynamics.exceptions import CrowdDynamicsException, InvalidArgument
+from crowddynamics.core.vector import angle_nx2
+from crowddynamics.io import HDFStore, Record
 from crowddynamics.simulation.taskgraph import TaskNode
 
-__all__ = """
-REGISTERED_SIMULATIONS
-MultiAgentSimulation
-MultiAgentProcess
-run_simulations_parallel
-run_simulations_sequentially
-""".split()
-
+BASE_DIR = os.path.dirname(__file__)
+AGENT_CFG_SPEC = os.path.join(BASE_DIR, 'multiagent_spec.cfg')
+AGENT_CFG = os.path.join(BASE_DIR, 'multiagent.cfg')
+CONFIG = load_config(AGENT_CFG, AGENT_CFG_SPEC)
 REGISTERED_SIMULATIONS = dict()
 
 
@@ -169,9 +179,6 @@ class MultiAgentSimulation(object):
     def __str__(self):
         return self.name
 
-    def __repr__(self):
-        return self.name
-
     def register(self):
         """Register the simulation so it can be found for example by the
         commandline client (CLI)."""
@@ -221,40 +228,12 @@ class MultiAgentProcess(Process):
 
 
 @log_with()
-def run_simulations_parallel(simulations, maxiter=None):
-    """Run multiagent simulations as a new process
-
-    Wraps MultiAgentSimulations in MultiAgentProcess class and starts them.
-    Started process is yielded and can be stopped with stop method. When
-    stop is called process will put ``MultiAgentProcess.EOS`` into the queue as
-    sign of final value.
-
-    Args:
-        simulations (Iterable[MultiAgentSimulation]):
-            Iterable of multiagent simulations to be run in a new process.
-
-    Yields:
-        MultiAgentProcess: Started simulation process
-    """
-    if not isinstance(simulations, Iterable):
-        simulations = (simulations,)
-
-    for simulation in simulations:
-        process = MultiAgentProcess(simulation, maxiter)
-        process.start()
-        yield process
-
-
-@log_with()
-def run_simulations_sequentially(simulations, maxiter=None):
+def run_sequentially(*simulations, maxiter=None):
     """Run new simulation sequentially
 
     Args:
-        simulation (Iterable[MultiAgentSimulation]):
+        simulation (MultiAgentSimulation):
     """
-    if not isinstance(simulations, Iterable):
-        simulations = (simulations,)
-
     for simulation in simulations:
         iterations = 0
         conds = True
@@ -263,3 +242,195 @@ def run_simulations_sequentially(simulations, maxiter=None):
             iterations += 1
             if maxiter:
                 conds = iterations <= maxiter
+
+
+@log_with()
+def run_parallel(*simulations, maxiter=None):
+    """Run multiagent simulations as a new process
+
+    Wraps MultiAgentSimulations in MultiAgentProcess class and starts them.
+    Started process is yielded and can be stopped with stop method. When
+    stop is called process will put ``MultiAgentProcess.EOS`` into the queue as
+    sign of final value.
+
+    Args:
+        simulations (MultiAgentSimulation):
+            Iterable of multiagent simulations to be run in a new process.
+
+    Yields:
+        MultiAgentProcess: Started simulation process
+    """
+    for simulation in simulations:
+        process = MultiAgentProcess(simulation, maxiter)
+        process.start()
+        yield process
+
+
+class MASTaskNode(TaskNode):
+    def __init__(self, simulation):
+        super(MASTaskNode, self).__init__()
+        assert isinstance(simulation, MultiAgentSimulation)
+        self.simulation = simulation
+
+
+class Integrator(MASTaskNode):
+    r"""Integrator"""
+
+    def __init__(self, simulation):
+        super().__init__(simulation)
+        self.dt = CONFIG['integrator']['dt_min'], \
+                  CONFIG['integrator']['dt_max']
+        self.time_tot = np.float64(0.0)
+        self.dt_prev = np.float64(np.nan)
+
+    def set(self, iter_limit=None, time_limit=None):
+        pass
+
+    def signal(self):
+        pass
+
+    def update(self):
+        self.dt_prev = euler_integration(self.simulation.agents_array,
+                                         self.dt[0], self.dt[1])
+        self.time_tot += self.dt_prev
+
+
+class Fluctuation(MASTaskNode):
+    r"""Fluctuation"""
+
+    def update(self):
+        agent = self.simulation.agents_array
+        agent['force'] += force_fluctuation(agent['mass'],
+                                            agent['std_rand_force'])
+        if agent.orientable:
+            agent['torque'] += torque_fluctuation(agent['inertia_rot'],
+                                                  agent['std_rand_torque'])
+
+
+class Adjusting(MASTaskNode):
+    r"""Adjusting"""
+
+    def update(self):
+        agent = self.simulation.agents_array
+        agent['force'] += force_adjust(
+            agent['mass'], agent['tau_adj'], agent['target_velocity'],
+            agent['target_direction'], agent['velocity'])
+        if agent.orientable:
+            agent['torque'] += torque_adjust(
+                agent['inertia_rot'], agent['tau_rot'],
+                agent['target_orientation'], agent['orientation'],
+                agent['target_angular_velocity'], agent['angular_velocity'])
+
+
+class AgentAgentInteractions(MASTaskNode):
+    r"""AgentAgentInteractions"""
+
+    def update(self):
+        if is_model(self.simulation.agents_array, 'circular'):
+            agent_agent_block_list_circular(self.simulation.agents_array)
+        elif is_model(self.simulation.agents_array, 'three_circle'):
+            agent_agent_block_list_three_circle(self.simulation.agents_array)
+
+
+class AgentObstacleInteractions(MASTaskNode):
+    r"""AgentObstacleInteractions"""
+
+    def update(self):
+        if is_model(self.simulation.agents_array, 'circular'):
+            circular_agent_linear_wall(self.simulation.agents_array,
+                                       self.simulation.obstacles_array)
+        elif is_model(self.simulation.agents_array, 'three_circle'):
+            three_circle_agent_linear_wall(self.simulation.agents_array,
+                                           self.simulation.obstacles_array)
+
+
+class Navigation(MASTaskNode):
+    r"""Handles navigation in multi-agent simulation."""
+
+    def __init__(self, simulation):
+        super().__init__(simulation)
+        self.step = CONFIG['navigation']['step']
+        self.direction_map = static_potential(
+            self.step, self.simulation.domain, self.simulation.targets,
+            self.simulation.obstacles,
+            radius=CONFIG['navigation']['radius'],
+            value=CONFIG['navigation']['value'])
+
+    def update(self):
+        points = self.simulation.agents_array['position']
+        indices = to_indices(points, self.step)
+        indices = np.fliplr(indices)
+        # http://docs.scipy.org/doc/numpy/reference/arrays.indexing.html
+        # TODO: Handle index out of bounds -> numpy.take
+        d = self.direction_map[indices[:, 0], indices[:, 1], :]
+        self.simulation.agents_array['target_direction'] = d
+
+
+class Orientation(MASTaskNode):
+    r"""Target orientation"""
+
+    def update(self):
+        if is_model(self.simulation.agents_array, 'three_circle'):
+            dir_to_orient = angle_nx2(
+                self.simulation.agents_array['target_direction'])
+            self.simulation.agents_array['target_orientation'] = dir_to_orient
+
+
+class ExitSelection(MASTaskNode):
+    """Exit selection policy."""
+
+    def update(self):
+        pass
+
+
+class Reset(MASTaskNode):
+    r"""Reset"""
+
+    def update(self):
+        reset_motion(self.simulation.agents_array)
+        # TODO: reset agent neighbor
+
+
+class HDFNode(MASTaskNode):
+    r"""Saves data to hdf5 file."""
+
+    def __init__(self, simulation):
+        super().__init__(simulation)
+        self.hdfstore = HDFStore(self.simulation.name)
+        self.iterations = 0
+
+    def set(self, records):
+        if isinstance(records, Record):
+            self.hdfstore.add_dataset(records)
+        else:
+            for record in records:
+                self.hdfstore.add_dataset(record)
+
+    def update(self, frequency=100):
+        self.iterations += 1
+        self.hdfstore.update_buffers()
+        if self.iterations % frequency == 0:
+            self.hdfstore.dump_buffers()
+
+
+class Contains(MASTaskNode):
+    """Contains"""
+
+    def __init__(self, simulation):
+        super().__init__(simulation)
+
+        self.path = None
+        self.inside = np.zeros(self.simulation.agents.size, np.bool8)
+
+    def set(self, polygon):
+        self.path = Path(np.asarray(polygon.exterior))
+        self.update()
+
+    def update(self, *args, **kwargs):
+        position = self.simulation.agents_array['position']
+        inside = self.path.contains_points(position)
+        # out: True  -> False
+        # in:  False -> True
+        changed = self.inside ^ inside
+        self.inside = inside
+        diff = np.sum(changed)

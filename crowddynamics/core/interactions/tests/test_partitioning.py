@@ -9,7 +9,7 @@ from sortedcontainers.sortedlist import SortedList
 
 from crowddynamics.core.interactions.partitioning import block_list, \
     MutableBlockList
-from crowddynamics.strategies import real
+from crowddynamics.testing import real
 
 
 def points(dimensions, interval=(-1.0, 1.0)):

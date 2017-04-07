@@ -3,7 +3,7 @@ from hypothesis import given
 
 from crowddynamics.core.motion.adjusting import torque_adjust
 from crowddynamics.core.motion.fluctuation import torque_fluctuation
-from crowddynamics.strategies import real
+from crowddynamics.testing import real
 
 SIZE = 10
 

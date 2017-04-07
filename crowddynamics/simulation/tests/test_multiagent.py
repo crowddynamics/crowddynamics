@@ -7,9 +7,9 @@ from shapely.geometry import Polygon, LineString
 from crowddynamics.core.random.sampling import polygon_sample
 from crowddynamics.core.structures.agents import AgentModelToType, Agents
 from crowddynamics.core.vector import unit_vector
-from crowddynamics.simulation.multiagent import MultiAgentSimulation
-from crowddynamics.simulation.tasks import Reset, Integrator, Adjusting, \
-    Orientation, AgentAgentInteractions, AgentObstacleInteractions, Fluctuation
+from crowddynamics.simulation.multiagent import MultiAgentSimulation, \
+    Integrator, Fluctuation, Adjusting, AgentAgentInteractions, \
+    AgentObstacleInteractions, Orientation, Reset
 
 
 def samples(spawn, obstacles, radius):
@@ -57,3 +57,5 @@ def test_multiagent_simulation(agent_type):
                 AgentObstacleInteractions(simu),
             )
         )
+    simu.update()
+    simu.update()

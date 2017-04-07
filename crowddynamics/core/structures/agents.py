@@ -31,16 +31,14 @@ Attributes:
 """
 import logging
 import os
-from functools import lru_cache
 
 import numba
 import numpy as np
-from configobj import ConfigObj
 from numba import typeof, void, boolean, float64
 from numba.types import UniTuple
 from sortedcontainers import SortedSet
-from validate import Validator
 
+from crowddynamics.config import load_config
 from crowddynamics.core.interactions.distance import distance_circles, \
     distance_circle_line, distance_three_circle_line
 from crowddynamics.core.interactions.distance import distance_three_circles
@@ -49,20 +47,11 @@ from crowddynamics.core.random.functions import truncnorm
 from crowddynamics.core.structures.obstacles import obstacle_type_linear
 from crowddynamics.core.vector.vector2D import unit_vector, rotate270
 from crowddynamics.exceptions import CrowdDynamicsException, OverlappingError, \
-    AgentStructureFull, InvalidConfigurationError
+    AgentStructureFull
 
 BASE_DIR = os.path.dirname(__file__)
 AGENT_CFG_SPEC = os.path.join(BASE_DIR, 'agent_spec.cfg')
 AGENT_CFG = os.path.join(BASE_DIR, 'agent.cfg')
-
-
-@lru_cache()
-def load_config(infile, configspec):
-    """Load configuration from INI file."""
-    config = ConfigObj(infile=infile, configspec=configspec)
-    if not config.validate(Validator()):
-        raise InvalidConfigurationError
-    return config
 
 
 def _truncnorm(mean, abs_scale):

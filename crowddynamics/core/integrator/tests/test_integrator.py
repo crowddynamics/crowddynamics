@@ -1,16 +1,16 @@
 from hypothesis import given, assume, settings
 
-import crowddynamics.strategies
+import crowddynamics.testing
 from crowddynamics.core.integrator import adaptive_timestep, \
     euler_integration
 from crowddynamics.core.integrator.integrator import velocity_verlet
 
 
 @given(
-    dt_min=crowddynamics.strategies.real(min_value=0, max_value=10.0),
-    dt_max=crowddynamics.strategies.real(min_value=0, max_value=10.0),
-    velocity=crowddynamics.strategies.real(-10, 10, shape=(10, 2)),
-    target_velocity=crowddynamics.strategies.real(-10, 10, shape=(10, 2))
+    dt_min=crowddynamics.testing.real(min_value=0, max_value=10.0),
+    dt_max=crowddynamics.testing.real(min_value=0, max_value=10.0),
+    velocity=crowddynamics.testing.real(-10, 10, shape=(10, 2)),
+    target_velocity=crowddynamics.testing.real(-10, 10, shape=(10, 2))
 )
 def test_adaptive_timestep(dt_min, dt_max, velocity, target_velocity):
     assume(0 < dt_min < dt_max)

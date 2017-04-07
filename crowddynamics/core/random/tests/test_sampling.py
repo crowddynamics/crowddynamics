@@ -9,7 +9,7 @@ from shapely.geometry import Polygon, Point
 
 from crowddynamics.core.random.sampling import triangle_area, \
     random_sample_triangle, triangle_area_cumsum, polygon_sample
-from crowddynamics.strategies import real, polygon
+from crowddynamics.testing import real, polygon
 
 
 @given(real(shape=2), real(shape=2), real(shape=2))
