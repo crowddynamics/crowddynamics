@@ -7,17 +7,15 @@ Since crowd simulations are only dependent on interactions with agents close by
 we can partition the space into smaller chunk in order to avoid having to loop
 with agents far a away.
 """
-import operator as op
-from collections import defaultdict, Iterable
+from collections import defaultdict, MutableSequence
 from itertools import product
 
 import numba
 import numpy as np
-from numba import float64, int64
+from numba import f8, i8
 
 
-@numba.jit([(float64[:, :], float64)],
-           nopython=True, nogil=True, cache=True)
+@numba.jit([(f8[:, :], f8)], nopython=True, nogil=True, cache=True)
 def block_list(points, cell_size):
     """Block list partitioning algorithm
 
@@ -95,13 +93,13 @@ def block_list(points, cell_size):
 
 
 spec = (
-    ("cell_width", float64),
-    ("index_list", int64[:]),
-    ("count", int64[:]),
-    ("offset", int64[:]),
-    ("x_min", int64[:]),
-    ("x_max", int64[:]),
-    ("shape", int64[:]),
+    ("cell_width", f8),
+    ("index_list", i8[:]),
+    ("count", i8[:]),
+    ("offset", i8[:]),
+    ("x_min", i8[:]),
+    ("x_max", i8[:]),
+    ("shape", i8[:]),
 )
 
 
@@ -163,41 +161,95 @@ class BlockList(object):
 
 
 class MutableBlockList(object):
-    """Mutable blocklist (or spatial grid hash) implementation."""
+    """Mutable blocklist (or spatial grid hash) implementation.
+    
+    Dictionary where the key is index of a block/cell and values are a list of
+    items belonging to that block/cell.
+    
+    >>> {(0, 1): [1, 3, 4], (1, 2): [2]}
+    
+    """
 
-    def __init__(self, cell_size, radius=1, dimensions=2):
+    def __init__(self, cell_size, default_list=list):
+        """Initialize
+        
+        Args:
+            cell_size (float): 
+            default_list (Callable[MutableSequence]): 
+                Must have append method. For example
+                - ``list``
+                - ``SortedList``
+                - ``lambda: array(typecode)``
+        """
+        assert cell_size > 0
+        assert callable(default_list)
+
         self._cell_size = cell_size
-        self._radius = int(radius)
-        self._dimensions = dimensions
+        self._list = default_list
+        self._blocks = defaultdict(default_list)
 
-        # Default could also be SortedList
-        self._list = list
-        self._blocks = defaultdict(self._list)
+        self._str = \
+            "cell_size: {cell_size}\n" \
+            "default_list: {default_list}".format(
+                cell_size=cell_size, default_list=default_list)
 
-    def index(self, key):
-        if isinstance(key, (int, float)):
-            return int(key // self._cell_size)
-        elif isinstance(key, Iterable):
-            return tuple(int(elem // self._cell_size) for elem in key)
-        else:
-            raise Exception('Invalid key')
+    @staticmethod
+    def _transform(value, cell_size):
+        """Key transform function
+
+        Args:
+            value: Iterable of numbers 
+            cell_size (float): 
+
+        Returns:
+            tuple: 
+        """
+        try:
+            return tuple(elem // cell_size for elem in value)
+        except:
+            raise KeyError
+
+    @staticmethod
+    def _nearest_blocks(index, radius):
+        """Keys of nearest blocks
+
+        Args:
+            index (tuple): 
+            radius (int):
+        
+        Yields:
+            tuple:
+        """
+        ranges = (range(-radius, radius + 1) for _ in range(len(index)))
+        for i in product(*ranges):
+            yield tuple(map(sum, zip(index, i)))
 
     def __setitem__(self, key, value):
         """Add value to position in blocklist"""
-        index = self.index(key)
+        index = self._transform(key, self._cell_size)
         self._blocks[index].append(value)
 
     def __getitem__(self, item):
         """Get values of neighbouring"""
-        index = self.index(item)
-        ranges = (range(-self._radius, self._radius + 1) for _ in
-                  range(self._dimensions))
-        items = self._list()
-        for i in product(*ranges):
-            key = tuple(map(op.add, index, i))
-            if key in self:
-                items += self._blocks[key]
-        return items
+        index = self._transform(item, self._cell_size)
+        return self._blocks[index]
+
+    def nearest(self, item, radius=1):
+        """Get values of neighbouring blocks
+
+        Args:
+            item: 
+            radius (int): 
+
+        Returns:
+            MutableSequence: 
+        """
+        index = self._transform(item, self._cell_size)
+        return sum((self._blocks[key] for key in
+                    self._nearest_blocks(index, radius)), self._list())
+
+    def __str__(self):
+        return self._str
 
 
 class ConvexHull(object):

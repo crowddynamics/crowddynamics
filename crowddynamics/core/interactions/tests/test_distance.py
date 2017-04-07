@@ -4,8 +4,7 @@ from hypothesis import given
 
 import crowddynamics.strategies
 from crowddynamics.core.interactions.distance import distance_circles, \
-    distance_three_circles, distance_circle_line, distance_three_circle_line, \
-    overlapping_circle_circle, overlapping_three_circle
+    distance_three_circles, distance_circle_line, distance_three_circle_line
 
 
 @given(

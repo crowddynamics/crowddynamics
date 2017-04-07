@@ -103,18 +103,6 @@ def body_to_values(body):
     }
 
 
-def create_random_agent_attributes():
-    return {
-        'position': np.random.uniform(-1.0, 1.0, 2),
-        'target_velocity': np.random.uniform(0.0, 1.0),
-        'orientation': np.random.uniform(-np.pi, np.pi),
-        'velocity': np.random.uniform(0.0, 1.0, 2),
-        'angular_velocity': np.random.uniform(-1.0, 1.0),
-        'target_direction': unit_vector(np.random.uniform(-np.pi, np.pi)),
-        'target_orientation': np.random.uniform(-np.pi, np.pi)
-    }
-
-
 translational = [
     ('mass', np.float64),
     ('radius', np.float64),
@@ -355,7 +343,9 @@ def set_agent_attributes(agents, index, attributes):
             ))
 
 
-def reset_agent(agent): agent[:] = 0
+def reset_agent(agent):
+    """Reset agent"""
+    agent[:] = 0
 
 
 class AgentManager(object):
@@ -447,7 +437,7 @@ class AgentManager(object):
             radius = agent['radius']
             position = agent['position']
 
-            neighbours = self.grid[position]
+            neighbours = self.grid.nearest(position, radius=1)
             agents = self.agents[neighbours]
 
             if is_model(self.agents, 'circular'):

@@ -5,33 +5,35 @@ from crowddynamics.core.structures.agents import AgentManager, \
     reset_motion, shoulders, front, overlapping_circles, \
     agent_type_circular, agent_type_three_circle, \
     overlapping_three_circles
+from crowddynamics.core.vector import unit_vector
 
 SEED = np.random.randint(0, 100)
 np.random.seed(SEED)
 
 
-@pytest.fixture(scope='module')
-def agent_circular(size=1000):
-    agent = AgentManager(size, agent_type_circular)
-    agent.fill(size, {
+def create_random_agent_attributes():
+    return {
         'body_type': 'adult',
-        'position': np.random.uniform(size=2),
-        'velocity': np.random.uniform(size=2),
-        'target_direction': np.random.uniform(size=2),
-    })
+        'position': np.random.uniform(-1.0, 1.0, 2),
+        'orientation': np.random.uniform(-np.pi, np.pi),
+        'velocity': np.random.uniform(0.0, 1.0, 2),
+        'angular_velocity': np.random.uniform(-1.0, 1.0),
+        'target_direction': unit_vector(np.random.uniform(-np.pi, np.pi)),
+        'target_orientation': np.random.uniform(-np.pi, np.pi)
+    }
+
+
+@pytest.fixture(scope='module')
+def agent_circular(size=100):
+    agent = AgentManager(size, agent_type_circular)
+    agent.fill(size, create_random_agent_attributes())
     return agent
 
 
 @pytest.fixture(scope='module')
-def agent_three_circle(size=1000):
+def agent_three_circle(size=100):
     agent = AgentManager(size, agent_type_three_circle)
-    agent.fill(size, {
-        'body_type': 'adult',
-        'position': np.random.uniform(size=2),
-        'velocity': np.random.uniform(size=2),
-        'target_direction': np.random.uniform(size=2),
-        'orientation': np.random.uniform(-np.pi, np.pi),
-    })
+    agent.fill(size, create_random_agent_attributes())
     return agent
 
 
