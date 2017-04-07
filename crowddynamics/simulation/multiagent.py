@@ -113,7 +113,7 @@ class MultiAgentSimulation(object):
         """Set obstacles to the simulation
 
         Args:
-            obstacles (Iterable[LineString]): 
+            obstacles (MultiLineString): 
         """
         self.__obstacles = obstacles
         self.obstacles_array = geom_to_linear_obstacles(obstacles)

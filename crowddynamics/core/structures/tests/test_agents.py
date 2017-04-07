@@ -41,21 +41,21 @@ def agent_three_circle(size=100):
 
 
 def test_circular(agent_circular):
-    reset_motion(agent_circular.agents)
+    reset_motion(agent_circular.array)
     assert True
 
 
 def test_three_circle(agent_three_circle):
-    reset_motion(agent_three_circle.agents)
-    shoulders(agent_three_circle.agents)
-    front(agent_three_circle.agents)
+    reset_motion(agent_three_circle.array)
+    shoulders(agent_three_circle.array)
+    front(agent_three_circle.array)
     assert True
 
 
 def test_overlapping_circular(agent_circular):
     x = np.random.uniform(-1.0, 1.0, 2)
     r = np.random.uniform(0.0, 1.0)
-    overlapping_circles(agent_circular.agents, x, r)
+    overlapping_circles(agent_circular.array, x, r)
     assert True
 
 
@@ -70,5 +70,5 @@ def test_overlapping_three_circle(agent_three_circle):
         np.random.uniform(0.0, 1.0),
         np.random.uniform(0.0, 1.0)
     )
-    overlapping_three_circles(agent_three_circle.agents, x, r)
+    overlapping_three_circles(agent_three_circle.array, x, r)
     assert True
