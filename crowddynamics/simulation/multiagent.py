@@ -20,7 +20,6 @@ __all__ = """
 REGISTERED_SIMULATIONS
 MultiAgentSimulation
 MultiAgentProcess
-register
 run_simulations_parallel
 run_simulations_sequentially
 """.split()
@@ -160,10 +159,6 @@ class MultiAgentSimulation(object):
             tasks (TaskNode):
         """
         self.__tasks = tasks
-
-    def setup(self, *args, **kwargs):
-        """Method for subclasses to overwrite for setting up simulation."""
-        raise NotImplementedError
 
     @log_with(logger)
     def update(self):

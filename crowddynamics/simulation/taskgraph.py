@@ -48,10 +48,31 @@ class TaskNode:
         self.add(other)
         return self
 
+    def __lshift__(self, other):
+        """Syntactic sugar for forming task graphs
+        
+        ::
+        
+            simu.tasks = \
+                Reset(simu) << (
+                    Integrator(simu) << (
+                        Fluctuation(simu),
+                        Adjusting(simu) << Orientation(simu),
+                        AgentAgentInteractions(simu),
+                        AgentObstacleInteractions(simu),
+                    )
+                )
+    
+        Args:
+            other (TaskNode, Tuple[TaskNode]): 
+        """
+        if isinstance(other, TaskNode):
+            self.add(other)
+        else:
+            for _other in other:
+                self.add(_other)
+        return self
+
 
 class TaskNodeGroup:
-    pass
-
-
-class RootNode:
     pass
