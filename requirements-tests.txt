@@ -1,4 +1,4 @@
-setuptools==34.3.3
+setuptools==34.4.0
 
 
 ## Testing
