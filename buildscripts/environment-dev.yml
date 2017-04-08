@@ -17,6 +17,7 @@ dependencies:
     - bokeh
     - pip:
         ## Package
+        - configobj
         - loggingtools
         - versioneer
         - typing

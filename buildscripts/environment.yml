@@ -15,6 +15,7 @@ dependencies:
     - matplotlib
     - bokeh
     - pip:
+        - configobj
         - loggingtools
         - typing
         - sortedcontainers

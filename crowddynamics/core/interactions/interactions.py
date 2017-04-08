@@ -10,7 +10,6 @@ Todo:
     - Neighborhood
 
 """
-from functools import partial
 
 import numba
 import numpy as np
@@ -18,7 +17,8 @@ from numba import void, i8, typeof
 
 from crowddynamics.core.interactions.distance import distance_circles, \
     distance_circle_line, distance_three_circle_line, distance_three_circles
-from crowddynamics.core.interactions.partitioning import BlockList
+from crowddynamics.core.interactions.partitioning import block_list, \
+    get_block
 from crowddynamics.core.motion.collision_avoidance.power_law import \
     force_social_circular, force_social_three_circle, force_social_linear_wall
 from crowddynamics.core.motion.contact import force_contact
@@ -260,8 +260,10 @@ def agent_agent_block_list_circular(agent):
     for i in range(len(agent)):
         points[i, :] = agent[i]['position']
 
-    blocks = BlockList(points, agent[0]['sight_soc'])
-    n, m = blocks.shape
+    index_list, count, offset, x_min, x_max = block_list(
+        points, agent[0]['sight_soc'])
+    shape = x_max + 1
+    n, m = shape
 
     # Neighbouring blocks
     nb = np.array(((1, 0), (1, 1), (0, 1), (1, -1)), dtype=np.int64)
@@ -270,7 +272,7 @@ def agent_agent_block_list_circular(agent):
     for i in range(n):
         for j in range(m):
             # Agents in the block
-            ilist = blocks.get_block((i, j))
+            ilist = get_block((i, j), index_list, count, offset, x_max)
             indices_block = indices[ilist]
 
             # Forces between agents indices the block
@@ -280,8 +282,10 @@ def agent_agent_block_list_circular(agent):
             for k in range(len(nb)):
                 i2, j2 = nb[k]
                 if 0 <= (i + i2) < n and 0 <= (j + j2) < m:
-                    ilist2 = blocks.get_block((i + i2, j + j2))
-                    agent_agent_brute_disjoint_circular(agent, indices_block, indices[ilist2])
+                    ilist2 = get_block((i + i2, j + j2), index_list, count,
+                                       offset, x_max)
+                    agent_agent_brute_disjoint_circular(agent, indices_block,
+                                                        indices[ilist2])
 
 
 @numba.jit(void(typeof(agent_type_three_circle)[:]),
@@ -298,8 +302,10 @@ def agent_agent_block_list_three_circle(agent):
     for i in range(len(agent)):
         points[i, :] = agent[i]['position']
 
-    blocks = BlockList(points, agent[0]['sight_soc'])
-    n, m = blocks.shape
+    index_list, count, offset, x_min, x_max = block_list(
+        points, agent[0]['sight_soc'])
+    shape = x_max + 1
+    n, m = shape
 
     # Neighbouring blocks
     nb = np.array(((1, 0), (1, 1), (0, 1), (1, -1)), dtype=np.int64)
@@ -308,7 +314,7 @@ def agent_agent_block_list_three_circle(agent):
     for i in range(n):
         for j in range(m):
             # Agents in the block
-            ilist = blocks.get_block((i, j))
+            ilist = get_block((i, j), index_list, count, offset, x_max)
             indices_block = indices[ilist]
 
             # Forces between agents indices the block
@@ -318,8 +324,11 @@ def agent_agent_block_list_three_circle(agent):
             for k in range(len(nb)):
                 i2, j2 = nb[k]
                 if 0 <= (i + i2) < n and 0 <= (j + j2) < m:
-                    ilist2 = blocks.get_block((i + i2, j + j2))
-                    agent_agent_brute_disjoint_three_circle(agent, indices_block, indices[ilist2])
+                    ilist2 = get_block((i + i2, j + j2), index_list, count,
+                                       offset, x_max)
+                    agent_agent_brute_disjoint_three_circle(agent,
+                                                            indices_block,
+                                                            indices[ilist2])
 
 
 @numba.jit(void(typeof(agent_type_circular)[:], typeof(obstacle_type_linear)[:]),
