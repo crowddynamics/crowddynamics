@@ -11,6 +11,9 @@ Subpackages
 Submodules
 ----------
 
+crowddynamics.core.integrator.integrator module
+-----------------------------------------------
+
 .. automodule:: crowddynamics.core.integrator.integrator
     :members:
     :undoc-members:

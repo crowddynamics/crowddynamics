@@ -1,28 +1,28 @@
-crowddynamics.core.random package
-=================================
+crowddynamics.simulation package
+================================
 
 Subpackages
 -----------
 
 .. toctree::
 
-    crowddynamics.core.random.tests
+    crowddynamics.simulation.tests
 
 Submodules
 ----------
 
-crowddynamics.core.random.functions module
+crowddynamics.simulation.multiagent module
 ------------------------------------------
 
-.. automodule:: crowddynamics.core.random.functions
+.. automodule:: crowddynamics.simulation.multiagent
     :members:
     :undoc-members:
     :show-inheritance:
 
-crowddynamics.core.random.sampling module
+crowddynamics.simulation.taskgraph module
 -----------------------------------------
 
-.. automodule:: crowddynamics.core.random.sampling
+.. automodule:: crowddynamics.simulation.taskgraph
     :members:
     :undoc-members:
     :show-inheritance:
@@ -31,7 +31,7 @@ crowddynamics.core.random.sampling module
 Module contents
 ---------------
 
-.. automodule:: crowddynamics.core.random
+.. automodule:: crowddynamics.simulation
     :members:
     :undoc-members:
     :show-inheritance:

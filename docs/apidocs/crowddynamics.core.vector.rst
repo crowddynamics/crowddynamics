@@ -11,6 +11,9 @@ Subpackages
 Submodules
 ----------
 
+crowddynamics.core.vector.vector2D module
+-----------------------------------------
+
 .. automodule:: crowddynamics.core.vector.vector2D
     :members:
     :undoc-members:
