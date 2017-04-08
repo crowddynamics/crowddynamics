@@ -1,11 +1,11 @@
 """Spatial partitioning algorithms.
 
-- BlockList
-- ConvexHull
-
 Since crowd simulations are only dependent on interactions with agents close by
 we can partition the space into smaller chunk in order to avoid having to loop
 with agents far a away.
+
+Todo: 
+    - Convex Hull algorithm: http://doi.org/10.1016/j.asoc.2009.07.004
 """
 from collections import defaultdict, MutableSequence
 from itertools import product
@@ -250,12 +250,3 @@ class MutableBlockList(object):
 
     def __str__(self):
         return self._str
-
-
-class ConvexHull(object):
-    r"""
-    Convex hull algorithm
-
-    http://doi.org/10.1016/j.asoc.2009.07.004
-    """
-    pass

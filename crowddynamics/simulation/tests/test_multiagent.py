@@ -13,6 +13,7 @@ from crowddynamics.simulation.multiagent import MultiAgentSimulation, \
 
 
 def samples(spawn, obstacles, radius):
+    """Generates positions for agents"""
     geom = spawn - obstacles.buffer(radius)
     vertices = np.asarray(geom.exterior)
     return polygon_sample(vertices)

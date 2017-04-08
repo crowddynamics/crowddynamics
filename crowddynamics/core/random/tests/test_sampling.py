@@ -1,6 +1,7 @@
 """
 UnitTests and property based testing using
 """
+import pytest
 import hypothesis.strategies as st
 import numpy as np
 from hypothesis import given, assume
@@ -10,6 +11,11 @@ from shapely.geometry import Polygon, Point
 from crowddynamics.core.random.sampling import triangle_area, \
     random_sample_triangle, triangle_area_cumsum, polygon_sample
 from crowddynamics.testing import real, polygon
+
+
+@pytest.mark.skip
+def test_linestring_sample():
+    pass
 
 
 @given(real(shape=2), real(shape=2), real(shape=2))
@@ -27,11 +33,9 @@ def test_triangle_area_cumsum(trimesh):
     assert np.all(np.sort(cumsum) == cumsum)
 
 
-@given(
-    real(min_value=-100, max_value=100, shape=2),
-    real(min_value=-100, max_value=100, shape=2),
-    real(min_value=-100, max_value=100, shape=2),
-)
+@given(real(min_value=-100, max_value=100, shape=2),
+       real(min_value=-100, max_value=100, shape=2),
+       real(min_value=-100, max_value=100, shape=2))
 def test_random_sample_triangle(a, b, c):
     # Assume that the area of the triangle is not zero.
     area = triangle_area(a, b, c)

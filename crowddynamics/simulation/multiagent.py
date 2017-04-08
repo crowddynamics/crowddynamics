@@ -19,7 +19,8 @@ from crowddynamics.core.integrator import euler_integration
 from crowddynamics.core.interactions.interactions import \
     agent_agent_block_list_circular, agent_agent_block_list_three_circle, \
     circular_agent_linear_wall, three_circle_agent_linear_wall
-from crowddynamics.core.motion.adjusting import force_adjust, torque_adjust
+from crowddynamics.core.motion.adjusting import force_adjust_agents, \
+    torque_adjust_agents
 from crowddynamics.core.motion.fluctuation import force_fluctuation, \
     torque_fluctuation
 from crowddynamics.core.steering import static_potential
@@ -268,6 +269,11 @@ def run_parallel(*simulations, maxiter=None):
 
 class MASTaskNode(TaskNode):
     def __init__(self, simulation):
+        """MultiAgentSimulation TaskNode
+        
+        Args:
+            simulation (MultiAgentSimulation): 
+        """
         super(MASTaskNode, self).__init__()
         assert isinstance(simulation, MultiAgentSimulation)
         self.simulation = simulation
@@ -302,7 +308,7 @@ class Fluctuation(MASTaskNode):
         agent = self.simulation.agents_array
         agent['force'] += force_fluctuation(agent['mass'],
                                             agent['std_rand_force'])
-        if agent.orientable:
+        if is_model(self.simulation.agents_array, 'three_circle'):
             agent['torque'] += torque_fluctuation(agent['inertia_rot'],
                                                   agent['std_rand_torque'])
 
@@ -311,15 +317,10 @@ class Adjusting(MASTaskNode):
     r"""Adjusting"""
 
     def update(self):
-        agent = self.simulation.agents_array
-        agent['force'] += force_adjust(
-            agent['mass'], agent['tau_adj'], agent['target_velocity'],
-            agent['target_direction'], agent['velocity'])
-        if agent.orientable:
-            agent['torque'] += torque_adjust(
-                agent['inertia_rot'], agent['tau_rot'],
-                agent['target_orientation'], agent['orientation'],
-                agent['target_angular_velocity'], agent['angular_velocity'])
+        agents = self.simulation.agents_array
+        force_adjust_agents(agents)
+        if is_model(self.simulation.agents_array, 'three_circle'):
+            torque_adjust_agents(agents)
 
 
 class AgentAgentInteractions(MASTaskNode):

@@ -1,65 +1,32 @@
-import random
-
 import numpy as np
-import pytest
 
-from crowddynamics.core.structures.agents import Agents, \
-    reset_motion, shoulders, front, overlapping_circles, \
-    agent_type_circular, agent_type_three_circle, \
-    overlapping_three_circles
-from crowddynamics.core.vector import unit_vector
+from crowddynamics.core.structures.agents import reset_motion, shoulders, \
+    front, overlapping_circles, overlapping_three_circles
 
 SEED = np.random.randint(0, 100)
 np.random.seed(SEED)
 
 
-def create_random_agent_attributes():
-    return {
-        'body_type': lambda: random.choice(('adult', 'male', 'female', 'child',
-                                            'eldery')),
-        'position': lambda: np.random.uniform(-1.0, 1.0, 2),
-        'orientation': lambda: np.random.uniform(-np.pi, np.pi),
-        'velocity': lambda: np.random.uniform(0.0, 1.0, 2),
-        'angular_velocity': lambda: np.random.uniform(-1.0, 1.0),
-        'target_direction': lambda: unit_vector(np.random.uniform(-np.pi, np.pi)),
-        'target_orientation': lambda: np.random.uniform(-np.pi, np.pi)
-    }
-
-
-@pytest.fixture(scope='module')
-def agent_circular(size=100):
-    agent = Agents(size, agent_type_circular)
-    agent.fill(size, create_random_agent_attributes())
-    return agent
-
-
-@pytest.fixture(scope='module')
-def agent_three_circle(size=100):
-    agent = Agents(size, agent_type_three_circle)
-    agent.fill(size, create_random_agent_attributes())
-    return agent
-
-
-def test_circular(agent_circular):
-    reset_motion(agent_circular.array)
+def test_circular(agents_circular):
+    reset_motion(agents_circular.array)
     assert True
 
 
-def test_three_circle(agent_three_circle):
-    reset_motion(agent_three_circle.array)
-    shoulders(agent_three_circle.array)
-    front(agent_three_circle.array)
+def test_three_circle(agents_three_circle):
+    reset_motion(agents_three_circle.array)
+    shoulders(agents_three_circle.array)
+    front(agents_three_circle.array)
     assert True
 
 
-def test_overlapping_circular(agent_circular):
+def test_overlapping_circular(agents_circular):
     x = np.random.uniform(-1.0, 1.0, 2)
     r = np.random.uniform(0.0, 1.0)
-    overlapping_circles(agent_circular.array, x, r)
+    overlapping_circles(agents_circular.array, x, r)
     assert True
 
 
-def test_overlapping_three_circle(agent_three_circle):
+def test_overlapping_three_circle(agents_three_circle):
     x = (
         np.random.uniform(-1.0, 1.0, 2),
         np.random.uniform(-1.0, 1.0, 2),
@@ -70,5 +37,5 @@ def test_overlapping_three_circle(agent_three_circle):
         np.random.uniform(0.0, 1.0),
         np.random.uniform(0.0, 1.0)
     )
-    overlapping_three_circles(agent_three_circle.array, x, r)
+    overlapping_three_circles(agents_three_circle.array, x, r)
     assert True

@@ -21,7 +21,7 @@ def truncnorm(start, end, loc=0.0, scale=1.0, abs_scale=None, size=1,
         start (float):
         end (float):
         loc (float):
-        scale (float):
+        scale (float|numpy.ndarray):
         abs_scale: Absolute scale ``scale = abs_scale / max(abs(start), abs(end))
         size (int):
         random_state (int, optional):
