@@ -1,15 +1,21 @@
 """
 UnitTests and property based testing using
 """
+import pytest
 import hypothesis.strategies as st
 import numpy as np
 from hypothesis import given, assume
 from hypothesis.extra.numpy import arrays
 from shapely.geometry import Polygon, Point
 
-from crowddynamics.core.random.sampling import PolygonSample, triangle_area, \
-    random_sample_triangle, triangle_area_cumsum
+from crowddynamics.core.random.sampling import triangle_area, \
+    random_sample_triangle, triangle_area_cumsum, polygon_sample
 from crowddynamics.testing import real, polygon
+
+
+@pytest.mark.skip
+def test_linestring_sample():
+    pass
 
 
 @given(real(shape=2), real(shape=2), real(shape=2))
@@ -27,11 +33,9 @@ def test_triangle_area_cumsum(trimesh):
     assert np.all(np.sort(cumsum) == cumsum)
 
 
-@given(
-    real(min_value=-100, max_value=100, shape=2),
-    real(min_value=-100, max_value=100, shape=2),
-    real(min_value=-100, max_value=100, shape=2),
-)
+@given(real(min_value=-100, max_value=100, shape=2),
+       real(min_value=-100, max_value=100, shape=2),
+       real(min_value=-100, max_value=100, shape=2))
 def test_random_sample_triangle(a, b, c):
     # Assume that the area of the triangle is not zero.
     area = triangle_area(a, b, c)
@@ -53,6 +57,8 @@ def test_polygon_sampling(poly):
     assume(poly.area > 0.01)
 
     sample_size = 20
-    sample = PolygonSample(np.asarray(poly.exterior))
-    for point in sample.generator(sample_size):
+    for point in polygon_sample(np.asarray(poly.exterior)):
         assert poly.contains(Point(point))
+        sample_size -= 1
+        if sample_size < 0:
+            break

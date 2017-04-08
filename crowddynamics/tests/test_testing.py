@@ -1,4 +1,3 @@
-import pytest
 from hypothesis import given
 from hypothesis import settings
 from shapely.geometry import Polygon
@@ -31,9 +30,3 @@ def test_field(field):
     # assert targets.area > 0
     assert targets.length > 0
     # assert targets.area > 0
-
-
-@pytest.mark.skip
-@given(crowddynamics.testing.agent(size=10))
-def test_agent(agent):
-    assert True

@@ -11,6 +11,9 @@ Subpackages
 Submodules
 ----------
 
+crowddynamics.core.evacuation.evacuation module
+-----------------------------------------------
+
 .. automodule:: crowddynamics.core.evacuation.evacuation
     :members:
     :undoc-members:

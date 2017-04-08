@@ -6,7 +6,7 @@ import bokeh.io
 import bokeh.plotting
 import numpy as np
 from matplotlib import pyplot as plt, cm
-from shapely.geometry import LineString, Point, Polygon
+from shapely.geometry import LineString, Point, Polygon, LinearRing
 
 
 def plot_distance_map(mgrid, dmap, phi):
@@ -87,7 +87,7 @@ def add_shape(fig, shape, *args, **kwargs):
     if isinstance(shape, Point):
         x, y = shape.xy
         fig.circle(x, y, *args, **kwargs)
-    elif isinstance(shape, LineString):
+    elif isinstance(shape, (LineString, LinearRing)):
         coords = np.asarray(shape.coords)
         fig.line(coords, *args, **kwargs)
     elif isinstance(shape, Polygon):

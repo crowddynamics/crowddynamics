@@ -5,67 +5,54 @@ References:
 """
 from collections import Iterable
 
-import numpy as np
-from shapely.geometry import Polygon
-from shapely.geometry.base import BaseGeometry
+from shapely import speedups
+from shapely.geometry import Polygon, LineString, LinearRing
 
 
-def check_shapes(shapes, types):
-    """Checks type and flattens shapes.
-
-    Args:
-        shapes (shapely.geometry.base.BaseGeometry):
-            Shapes
-        types (shapely.geometry.base.BaseGeometry):
-            Allowed types of subclass shapely.BaseGeometry
-
-    Returns:
-        List: List of shapes
-    """
-
-    def _set_shape(_shapes, _types, _coll):
-        if isinstance(_shapes, Iterable):
-            for shape in _shapes:
-                _set_shape(shape, _types, _coll)
-        elif isinstance(_shapes, _types):
-            _coll.append(_shapes)
-        elif _shapes is None:
-            pass
-        else:
-            raise ValueError("shape {} not in types {}".format(_shapes, _types))
-
-    # TODO: Geometry Collection?
-    coll = []
-    _set_shape(shapes, types, coll)
-    return coll
+if speedups.available:
+    speedups.enable()
 
 
-def shapes_to_point_pairs(shapes):
-    """Converts shapes to pairs of points representing the line segments of the
-    shapes.
+def geom_to_pairs(geom):
+    """Converts shapes to point pairs.
+    
+    >>> geom_to_pairs([])
+    []
+    >>> ls = LineString([(1, 2), (3, 4)])
+    >>> geom_to_pairs(ls)
+    [((1.0, 2.0), (3.0, 4.0))]
+    >>> lr = LinearRing([(5, 6), (7, 8), (9, 10)])
+    >>> geom_to_pairs(lr)
+    [((5.0, 6.0), (7.0, 8.0)),
+     ((7.0, 8.0), (9.0, 10.0)),
+     ((9.0, 10.0), (5.0, 6.0))]
+    >>> poly = Polygon([(11, 12), (13, 14), (15, 16)])
+    >>> geom_to_pairs(poly)
+    [((11.0, 12.0), (13.0, 14.0)),
+     ((13.0, 14.0), (15.0, 16.0)),
+     ((15.0, 16.0), (11.0, 12.0))]
+    >>> geom_to_pairs((ls, lr, poly))
+    [((1.0, 2.0), (3.0, 4.0)),
+     ((5.0, 6.0), (7.0, 8.0)),
+     ((7.0, 8.0), (9.0, 10.0)),
+     ((9.0, 10.0), (5.0, 6.0)),
+     ((11.0, 12.0), (13.0, 14.0)),
+     ((13.0, 14.0), (15.0, 16.0)),
+     ((15.0, 16.0), (11.0, 12.0))]
 
     Args:
-        shapes (shapely.geometry.base.BaseGeometry): Shapes
+        geom: 
+            Shape or iterable of shapes. Iterables can be nested.
 
     Returns:
-        numpy.ndarray: Numpy array of point pairs.
+        list: List of tuples of points pairs. 
+
     """
-
-    def _shapes_to_points(_shapes, _points):
-        if isinstance(_shapes, Iterable):
-            for shape in _shapes:
-                _shapes_to_points(shape, _points)
-        elif isinstance(_shapes, Polygon):
-            _shapes_to_points(_shapes.exterior, _points)
-        elif isinstance(_shapes, BaseGeometry):
-            a = np.asarray(_shapes)
-            for i in range(len(a) - 1):
-                _points.append((a[i], a[i + 1]))
-        elif _shapes is None:
-            pass
-        else:
-            raise ValueError("")
-
-    points = []
-    _shapes_to_points(shapes, points)
-    return np.array(points)
+    if isinstance(geom, Iterable):
+        return sum(map(geom_to_pairs, geom), [])
+    elif isinstance(geom, Polygon):
+        return geom_to_pairs(geom.exterior)
+    elif isinstance(geom, (LineString, LinearRing)):
+        return list(zip(geom.coords[:-1], geom.coords[1:]))
+    else:
+        return []

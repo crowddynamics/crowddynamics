@@ -15,10 +15,9 @@ dependencies:
     - pyqtgraph
     - matplotlib
     - bokeh
-    ## Dev
-    - jupyter
     - pip:
         ## Package
+        - configobj
         - loggingtools
         - versioneer
         - typing
@@ -31,13 +30,13 @@ dependencies:
         ## Testing
         - pytest
         - pytest-cov
-        - pytest-xdist
         - coverage
         - hypothesis
         - pytest-benchmark
+        - codecov
         ## Documentation
+        - graphviz
         - sphinx
         - sphinx_rtd_theme
-#        - sphinxcontrib-programoutput
-        - ghp-import
-        - graphviz
+        - sphinx-autobuild
+        - sphinxcontrib-programoutput

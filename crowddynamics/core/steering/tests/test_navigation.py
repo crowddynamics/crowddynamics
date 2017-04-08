@@ -9,6 +9,7 @@ import crowddynamics.testing
 from crowddynamics.core.steering import direction_map, distance_map
 
 
+@pytest.mark.skip
 @given(step=just(0.01), field=crowddynamics.testing.field())
 @settings(max_examples=10)
 def test_distance_map(step, field):

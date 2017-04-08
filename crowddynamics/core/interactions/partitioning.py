@@ -1,25 +1,120 @@
 """Spatial partitioning algorithms.
 
-- BlockList
-- ConvexHull
-
 Since crowd simulations are only dependent on interactions with agents close by
 we can partition the space into smaller chunk in order to avoid having to loop
 with agents far a away.
+
+Todo: 
+    - Convex Hull algorithm: http://doi.org/10.1016/j.asoc.2009.07.004
 """
-import operator as op
-from collections import defaultdict, Iterable
+from collections import defaultdict, MutableSequence
 from itertools import product
 
 import numba
 import numpy as np
-from numba import float64, int64
+from numba import f8, i8
+from numba.types import Tuple
 
 
-@numba.jit([(float64[:, :], float64)],
-           nopython=True, nogil=True, cache=True)
+class MutableBlockList(object):
+    """Mutable blocklist (or spatial grid hash) implementation.
+
+    Dictionary where the key is index of a block/cell and values are a list of
+    items belonging to that block/cell.
+
+    >>> {(0, 1): [1, 3, 4], (1, 2): [2]}
+
+    """
+
+    def __init__(self, cell_size, default_list=list):
+        """Initialize
+
+        Args:
+            cell_size (float): 
+            default_list (Callable[MutableSequence]): 
+                Must have append method. For example
+                - ``list``
+                - ``SortedList``
+                - ``lambda: array(typecode)``
+        """
+        assert cell_size > 0
+        assert callable(default_list)
+
+        self._cell_size = cell_size
+        self._list = default_list
+        self._blocks = defaultdict(default_list)
+
+        self._str = \
+            "cell_size: {cell_size}\n" \
+            "default_list: {default_list}".format(
+                cell_size=cell_size, default_list=default_list)
+
+    @staticmethod
+    def _transform(value, cell_size):
+        """Key transform function
+
+        Args:
+            value: Iterable of numbers 
+            cell_size (float): 
+
+        Returns:
+            tuple: 
+        """
+        try:
+            return tuple(elem // cell_size for elem in value)
+        except:
+            raise KeyError
+
+    @staticmethod
+    def _nearest_blocks(index, radius):
+        """Keys of nearest blocks
+
+        Args:
+            index (tuple): 
+            radius (int):
+
+        Yields:
+            tuple:
+        """
+        ranges = (range(-radius, radius + 1) for _ in range(len(index)))
+        for i in product(*ranges):
+            yield tuple(map(sum, zip(index, i)))
+
+    def __setitem__(self, key, value):
+        """Add value to blocklist"""
+        index = self._transform(key, self._cell_size)
+        self._blocks[index].append(value)
+
+    def __getitem__(self, item):
+        """Get value in the same block as item"""
+        index = self._transform(item, self._cell_size)
+        return self._blocks[index]
+
+    def nearest(self, item, radius=1):
+        """Get values of neighbouring blocks
+
+        Args:
+            item: 
+            radius (int): 
+
+        Returns:
+            MutableSequence: 
+        """
+        index = self._transform(item, self._cell_size)
+        return sum((self._blocks[key] for key in
+                    self._nearest_blocks(index, radius)), self._list())
+
+    def __str__(self):
+        return self._str
+
+
+@numba.jit([(f8[:, :], f8)], nopython=True, nogil=True, cache=True)
 def block_list(points, cell_size):
     """Block list partitioning algorithm
+    
+    BlockList algorithm partitions space into squares and sorts points into
+    the square they belong. This allows fast neighbourhood search because we
+    only have to search current and neighbouring rectangles for points.
 
     Args:
         points (numpy.ndarray):
@@ -94,117 +189,38 @@ def block_list(points, cell_size):
     return index_list, count, offset, x_min, x_max
 
 
-spec = (
-    ("cell_width", float64),
-    ("index_list", int64[:]),
-    ("count", int64[:]),
-    ("offset", int64[:]),
-    ("x_min", int64[:]),
-    ("x_max", int64[:]),
-    ("shape", int64[:]),
-)
+@numba.jit([i8[:](Tuple((i8, i8)), i8[:], i8[:], i8[:], i8[:])],
+           nopython=True, nogil=True, cache=True)
+def get_block(indices, index_list, count, offset, x_max):
+    r"""Multidimensional indexing
 
+    1-D: [...]
+    dims: n0
+    key: x0
+    index: x0
 
-# TODO: remove from jitclass
-@numba.jitclass(spec)
-class BlockList(object):
+    2-D: [[...], [...]]
+    dims: (n0, n1)
+    key: (x0, x1)
+    index: x0 * n1 + x1
+
+    3-D: [[[...], [...]], [[...], [...]]]
+    dims: (n0, n1, n2)
+    key:(x0, x1, x2)
+    index: x0 * n1 * n2 + x1 * n2 + x2
+          (x0 * n1 + x1) * n2 + x2
+
+    Args:
+        indices (numpy.ndarray | tuple):
+
+    Returns:
+        numpy.ndarray:
     """
-    BlockList algorithm partitions space into squares and sorts points into
-    the square they belong. This allows fast neighbourhood search because we
-    only have to search current and neighbouring rectangles for points.
-    """
-
-    def __init__(self, points, cell_size):
-        assert cell_size > 0
-        assert points.ndim == 2
-        assert points.shape[1] == 2
-
-        index_list, count, offset, x_min, x_max = block_list(points, cell_size)
-        self.cell_width = cell_size
-        self.index_list = index_list
-        self.count = count
-        self.offset = offset
-        self.x_min = x_min
-        self.x_max = x_max
-        self.shape = x_max + 1
-
-    def get_block(self, indices):
-        r"""
-        Multidimensional indexing
-
-        1-D: [...]
-        dims: n0
-        key: x0
-        index: x0
-
-        2-D: [[...], [...]]
-        dims: (n0, n1)
-        key: (x0, x1)
-        index: x0 * n1 + x1
-
-        3-D: [[[...], [...]], [[...], [...]]]
-        dims: (n0, n1, n2)
-        key:(x0, x1, x2)
-        index: x0 * n1 * n2 + x1 * n2 + x2
-              (x0 * n1 + x1) * n2 + x2
-
-        Args:
-            indices (numpy.ndarray | tuple):
-
-        Returns:
-            numpy.ndarray:
-        """
-        index = indices[0]
-        for j in range(1, len(indices)):
-            index *= self.shape[j]
-            index += indices[j]
-        start = self.offset[index]
-        end = start + self.count[index]
-        return self.index_list[start:end]
-
-
-class MutableBlockList(object):
-    """Mutable blocklist (or spatial grid hash) implementation."""
-
-    def __init__(self, cell_size, radius=1, dimensions=2):
-        self._cell_size = cell_size
-        self._radius = int(radius)
-        self._dimensions = dimensions
-
-        # Default could also be SortedList
-        self._list = list
-        self._blocks = defaultdict(self._list)
-
-    def index(self, key):
-        if isinstance(key, (int, float)):
-            return int(key // self._cell_size)
-        elif isinstance(key, Iterable):
-            return tuple(int(elem // self._cell_size) for elem in key)
-        else:
-            raise Exception('Invalid key')
-
-    def __setitem__(self, key, value):
-        """Add value to position in blocklist"""
-        index = self.index(key)
-        self._blocks[index].append(value)
-
-    def __getitem__(self, item):
-        """Get values of neighbouring"""
-        index = self.index(item)
-        ranges = (range(-self._radius, self._radius + 1) for _ in
-                  range(self._dimensions))
-        items = self._list()
-        for i in product(*ranges):
-            key = tuple(map(op.add, index, i))
-            if key in self:
-                items += self._blocks[key]
-        return items
-
-
-class ConvexHull(object):
-    r"""
-    Convex hull algorithm
-
-    http://doi.org/10.1016/j.asoc.2009.07.004
-    """
-    pass
+    shape = x_max + 1
+    index = indices[0]
+    for j in range(1, len(indices)):
+        index *= shape[j]
+        index += indices[j]
+    start = offset[index]
+    end = start + count[index]
+    return index_list[start:end]

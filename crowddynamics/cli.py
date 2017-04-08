@@ -40,7 +40,7 @@ from crowddynamics import __version__
 from crowddynamics.exceptions import CrowdDynamicsException, InvalidArgument, \
     NotACrowdDynamicsDirectory, DirectoryIsAlreadyCrowdDynamicsDirectory
 from crowddynamics.simulation.multiagent import REGISTERED_SIMULATIONS, \
-    run_simulations_parallel, run_simulations_sequentially
+    run_parallel, run_sequentially
 
 
 class Colors:
@@ -324,11 +324,11 @@ def mkcommand(name, simulation):
 
         # Run options from the context
         if num > 1 and context.obj['parallel']:
-            processes = run_simulations_parallel(simulations, maxiter)
+            processes = run_parallel(*simulations, maxiter)
             for process in processes:
                 pass
         else:
-            run_simulations_sequentially(simulations, maxiter)
+            run_sequentially(*simulations, maxiter)
 
     # Make new command for running the simulation.
     command = click.Command(name, callback=run_simulation,

@@ -4,12 +4,18 @@ crowddynamics.core.motion.tests package
 Submodules
 ----------
 
-.. automodule:: crowddynamics.core.motion.tests.test_force
+crowddynamics.core.motion.tests.test_motion module
+--------------------------------------------------
+
+.. automodule:: crowddynamics.core.motion.tests.test_motion
     :members:
     :undoc-members:
     :show-inheritance:
 
-.. automodule:: crowddynamics.core.motion.tests.test_torque
+crowddynamics.core.motion.tests.test_power_law module
+-----------------------------------------------------
+
+.. automodule:: crowddynamics.core.motion.tests.test_power_law
     :members:
     :undoc-members:
     :show-inheritance:

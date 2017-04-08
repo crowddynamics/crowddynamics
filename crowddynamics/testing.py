@@ -12,8 +12,6 @@ from hypothesis import strategies as st
 from hypothesis.extra.numpy import arrays
 from shapely.geometry import LineString
 
-from crowddynamics.core.agent.agent import Agent
-
 
 def real(min_value=None, max_value=None, exclude_zero=None, shape=None,
          dtype=float):
@@ -139,41 +137,3 @@ def field(draw,
 
     obstacles -= targets
     return domain, targets, obstacles
-
-
-@st.composite
-def agent(draw, size):
-    r"""
-    Agent SearchStrategy
-
-    Args:
-        draw:
-        size (int):
-
-    Returns:
-        SearchStrategy:
-
-    """
-    agent = Agent(size=size)
-
-    for i in range(size):
-        index = agent.add(
-            draw(real(-100, 100, shape=2)),
-            draw(real(1.0, 100.0)),
-            draw(real(0.1, 1.0)),
-            draw(real(0.1, 1.0)),
-            draw(real(0.1, 1.0)),
-            draw(real(0.1, 1.0)),
-            draw(real()),
-            draw(real()),
-            draw(real(-10, 10)),
-        )
-        agent.set_motion(
-            index,
-            draw(real(-np.pi, np.pi)),
-            draw(real(-100, 100, shape=2)),
-            draw(real(-100, 100)),
-            draw(unit_vector()),
-            draw(real(-np.pi, np.pi))
-        )
-    return agent

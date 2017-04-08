@@ -3,8 +3,7 @@ import numpy as np
 from numba import f8
 
 
-@numba.jit([f8[:](f8, f8[:], f8, f8)],
-           nopython=True, nogil=True, cache=True)
+@numba.jit([f8[:](f8, f8[:], f8, f8)], nopython=True, nogil=True, cache=True)
 def force_social_helbing(h, n, a, b):
     r"""Helbing's model's original social force. Independent of the velocity or
     direction of the agent. [Helbing2000a]_

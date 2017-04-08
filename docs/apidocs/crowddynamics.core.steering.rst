@@ -11,10 +11,16 @@ Subpackages
 Submodules
 ----------
 
+crowddynamics.core.steering.navigation module
+---------------------------------------------
+
 .. automodule:: crowddynamics.core.steering.navigation
     :members:
     :undoc-members:
     :show-inheritance:
+
+crowddynamics.core.steering.orientation module
+----------------------------------------------
 
 .. automodule:: crowddynamics.core.steering.orientation
     :members:

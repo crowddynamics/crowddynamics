@@ -25,26 +25,20 @@ def force_fluctuation(mass, scale):
       :math:`\varphi`.
 
     Args:
-        mass (float):
+        mass (numpy.ndarray):
             Mass
 
-        scale (float):
+        scale (numpy.ndarray):
             Standard deviation of truncated normal distribution
 
     Returns:
         numpy.ndarray: Fluctuation force
     """
-    if isinstance(mass, np.ndarray):
-        size = len(mass)
-    elif isinstance(scale, np.ndarray):
-        size = len(scale)
-    else:
-        size = 1
-
+    size = len(mass)
     phi = np.random.uniform(0.0, 2.0 * np.pi, size=size)
     unit_vector = np.array((np.cos(phi), np.sin(phi)))
     magnitude = truncnorm(0.0, 3.0, loc=0.0, scale=scale, size=size)
-    return mass * (magnitude * unit_vector).T
+    return (mass * magnitude * unit_vector).T
 
 
 def torque_fluctuation(inertia_rot, scale):
@@ -55,20 +49,14 @@ def torque_fluctuation(inertia_rot, scale):
        \eta \sim \mathcal{N}(\mu, \sigma^{2})
 
     Args:
-        inertia_rot (float):
+        inertia_rot (numpy.ndarray):
             Rotational intertial
 
-        scale (float):
+        scale (numpy.ndarray):
             Standard deviation of truncated normal distribution
 
     Returns:
         numpy.ndarray: Fluctuation torque
     """
-    if isinstance(inertia_rot, np.ndarray):
-        size = len(inertia_rot)
-    elif isinstance(scale, np.ndarray):
-        size = len(scale)
-    else:
-        size = 1
-
+    size = len(inertia_rot)
     return inertia_rot * truncnorm(-3.0, 3.0, loc=0.0, scale=scale, size=size)

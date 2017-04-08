@@ -4,6 +4,9 @@ crowddynamics.core.steering.tests package
 Submodules
 ----------
 
+crowddynamics.core.steering.tests.test_navigation module
+--------------------------------------------------------
+
 .. automodule:: crowddynamics.core.steering.tests.test_navigation
     :members:
     :undoc-members:

@@ -1,7 +1,9 @@
 import numba
 import numpy as np
-from numba import f8
+from numba import f8, void, typeof
 
+from crowddynamics.core.structures.agents import agent_type_circular, \
+    agent_type_three_circle
 from crowddynamics.core.vector import wrap_to_pi
 
 
@@ -9,7 +11,8 @@ from crowddynamics.core.vector import wrap_to_pi
             f8[:, :](f8[:, :], f8[:, :], f8[:, :], f8[:, :], f8[:, :])],
            nopython=True, nogil=True, cache=True)
 def force_adjust(mass, tau_adj, v0, e0, v):
-    r"""
+    r"""Adjusting Force
+    
     *Adjusting* aka *driving* force accounts of agent's desire to reach a
     certain destination. In high crowd densities term *manoeuvring* is used.
     Force affecting the agent takes form
@@ -48,8 +51,9 @@ def force_adjust(mass, tau_adj, v0, e0, v):
             f8[:](f8[:], f8[:], f8[:], f8[:], f8[:], f8[:])],
            nopython=True, nogil=True, cache=True)
 def torque_adjust(inertia_rot, tau_rot, phi_0, phi, omega_0, omega):
-    r"""
-    Adjusting torque account for agent's desire to rotate it orientation.
+    r"""Adjusting torque
+    
+    Adjusting torque accounts for agent's desire to rotate it orientation.
 
     .. math::
        M_{adj} = \frac{I_{rot}}{\tau_{rot}} \left( \omega_{0} \left (
@@ -87,3 +91,27 @@ def torque_adjust(inertia_rot, tau_rot, phi_0, phi, omega_0, omega):
     """
     return inertia_rot / tau_rot * \
            (wrap_to_pi(phi_0 - phi) / np.pi * omega_0 - omega)
+
+
+@numba.jit([void(typeof(agent_type_circular)[:]),
+            void(typeof(agent_type_three_circle)[:])],
+           nopython=True, nogil=True, cache=True)
+def force_adjust_agents(agents):
+    for agent in agents:
+        agent['force'][:] += force_adjust(agent['mass'],
+                                          agent['tau_adj'],
+                                          agent['target_velocity'],
+                                          agent['target_direction'],
+                                          agent['velocity'])
+
+
+@numba.jit(void(typeof(agent_type_three_circle)[:]),
+           nopython=True, nogil=True, cache=True)
+def torque_adjust_agents(agents):
+    for agent in agents:
+        agent['torque'] += torque_adjust(agent['inertia_rot'],
+                                         agent['tau_rot'],
+                                         agent['target_orientation'],
+                                         agent['orientation'],
+                                         agent['target_angular_velocity'],
+                                         agent['angular_velocity'])

@@ -1,263 +1,175 @@
-"""Tools for creating multiagent simulations."""
+"""Tools for creating multiagent simulations.
+
+- Domain
+- Obstacles
+- Targets
+- Agents
+"""
 import logging
 import multiprocessing
-from collections import Iterable
+import os
 from multiprocessing import Process, Event
 
 import numpy as np
 from loggingtools import log_with
-from shapely.geometry import Point, Polygon, GeometryCollection
-from shapely.ops import cascaded_union
+from matplotlib.path import Path
 
-from crowddynamics.core.agent.agent import Agent, positions
-from crowddynamics.core.agent.parameters import Parameters
-from crowddynamics.core.interactions import overlapping_three_circle, \
-    overlapping_circle_circle
-from crowddynamics.core.random.sampling import PolygonSample
-from crowddynamics.exceptions import CrowdDynamicsException, InvalidArgument
+from crowddynamics.config import load_config
+from crowddynamics.core.integrator import euler_integration
+from crowddynamics.core.interactions.interactions import \
+    agent_agent_block_list_circular, agent_agent_block_list_three_circle, \
+    circular_agent_linear_wall, three_circle_agent_linear_wall
+from crowddynamics.core.motion.adjusting import force_adjust_agents, \
+    torque_adjust_agents
+from crowddynamics.core.motion.fluctuation import force_fluctuation, \
+    torque_fluctuation
+from crowddynamics.core.steering import static_potential
+from crowddynamics.core.steering.navigation import to_indices
+from crowddynamics.core.structures.agents import is_model, reset_motion
+from crowddynamics.core.structures.obstacles import geom_to_linear_obstacles
+from crowddynamics.core.vector import angle_nx2
+from crowddynamics.io import HDFStore, Record
 from crowddynamics.simulation.taskgraph import TaskNode
 
-
-__all__ = """
-REGISTERED_SIMULATIONS
-MultiAgentSimulation
-MultiAgentProcess
-register
-run_simulations_parallel
-run_simulations_sequentially
-""".split()
-
+BASE_DIR = os.path.dirname(__file__)
+AGENT_CFG_SPEC = os.path.join(BASE_DIR, 'multiagent_spec.cfg')
+AGENT_CFG = os.path.join(BASE_DIR, 'multiagent.cfg')
+CONFIG = load_config(AGENT_CFG, AGENT_CFG_SPEC)
 REGISTERED_SIMULATIONS = dict()
-
-
-def agent_polygon(position, radius):
-    if isinstance(position, tuple):
-        return cascaded_union((
-            Point(position[0]).buffer(radius[0]),
-            Point(position[1]).buffer(radius[1]),
-            Point(position[2]).buffer(radius[2]),
-        ))
-    else:
-        return Point(position).buffer(radius)
 
 
 class MultiAgentSimulation(object):
     r"""MultiAgent simulation setup
 
-    1) Set the Field
+    1. Set the Field
 
-       - Domain
-       - Obstacles
-       - Targets (aka exits)
+       1. Domain
+       2. Obstacles
+       3. Targets (aka exits)
 
-    2) Initialise Agents
+    2. Initialise Agents
 
        - Set maximum number of agents. This is the limit of the size of array
          inside ``Agent`` class.
        - Select Agent model.
 
-    3) Place Agents into any surface that is contained by the domain.
+    3. Place Agents into any surface that is contained by the domain.
 
        - Body type
        - Number of agents that is placed into the surface
 
-    4) Run simulation
+    4. Run simulation
 
     """
     logger = logging.getLogger(__name__)
 
     def __init__(self):
-        # Field
-        self.domain = Polygon()
-        self.obstacles = GeometryCollection()
-        self.targets = GeometryCollection()
-        self.agent = None
+        self.__name = None
 
-        # Currently occupied surface by Agents and Obstacles
-        self._occupied = Polygon()
+        # Geometry
+        self.__domain = None
+        self.__obstacles = None
+        self.__targets = None
+        self.__agents = None
 
-        # Algorithms
+        # Numerical types for geometry
+        self.domain_array = None
+        self.obstacles_array = None
+        self.targets_array = None
+        self.agents_array = None
+
+        # Simulation logic
+        self.__tasks = None
+
         self.queue = multiprocessing.Queue()
-        self.tasks = None
         self.iterations = 0
 
     @property
     def name(self):
-        """Name of the simulation"""
-        return self.__class__.__name__
+        """Name of the simulation. Defaults to __class__.__name__."""
+        return self.__name if self.__name else self.__class__.__name__
 
-    @log_with(logger)
-    def init_domain(self, domain):
-        """Initialize domain
-
-        Args:
-            domain (Polygon, optional):
-                - ``Polygon``: Subset of real domain
-                  :math:`\Omega \subset \mathbb{R}^{2}`.
-                - ``None``: Real domain :math:`\Omega = \mathbb{R}^{2}`.
-        """
-        self.domain = domain
-
-    @log_with(logger)
-    def init_agents(self, max_size, model):
-        """Initialize agents
+    @name.setter
+    def name(self, name):
+        """Set name for the simulations
 
         Args:
-            max_size (int):
-                - ``int``: Maximum number of agents.
-
-            model (str):
-                Choice from:
-                - ``circular``
-                - ``three_circle``
+            name (str): 
         """
-        self.agent = Agent(max_size)
-        if model == 'three_circle':
-            self.agent.set_three_circle()
-        else:
-            self.agent.set_circular()
+        self.__name = name
 
-    @log_with(logger)
-    def add_obstacle(self, geom):
-        """Add new ``obstacle`` to the Field
+    @property
+    def domain(self):
+        """Set domain"""
+        return self.__domain
+
+    @domain.setter
+    def domain(self, domain):
+        """Set simulation domain
 
         Args:
-            geom (BaseGeometry):
+            domain (Polygon): 
+                Subset of real domain :math:`\Omega \subset \mathbb{R}^{2}`.
         """
-        self.obstacles |= geom
-        self._occupied |= geom
+        self.__domain = domain
 
-    @log_with(logger)
-    def remove_obstacle(self, geom):
-        """Remove obstacle"""
-        self.obstacles -= geom
-        self._occupied -= geom
+    @property
+    def obstacles(self):
+        """Obstacles"""
+        return self.__obstacles
 
-    @log_with(logger)
-    def add_target(self, geom):
-        """Add new ``target`` to the Field
+    @obstacles.setter
+    def obstacles(self, obstacles):
+        """Set obstacles to the simulation
 
         Args:
-            geom (BaseGeometry):
+            obstacles (MultiLineString): 
         """
-        self.targets |= geom
+        self.__obstacles = obstacles
+        self.obstacles_array = geom_to_linear_obstacles(obstacles)
 
-    @log_with(logger)
-    def remove_target(self, geom):
-        """Remove target"""
-        self.targets -= geom
+    @property
+    def targets(self):
+        """Targets"""
+        return self.__targets
 
-    @log_with(logger)
-    def add_agents(self, num, spawn, body_type, iterations_limit=100):
-        r"""Add multiple agents at once.
-
-        1) Sample new position from ``PolygonSample``
-        2) Check if agent in new position is overlapping with existing ones
-        3) Add new agent if there is no overlapping
+    @targets.setter
+    def targets(self, targets):
+        """Set targets to the simulation
 
         Args:
-            num (int, optional):
-                - Number of agents to be placed into the ``surface``. If given
-                  amount of agents does not fit into the ``surface`` only the
-                  amount that fits will be placed.
-                - ``None``: Places maximum size of agents
-
-            spawn (Polygon, optional):
-                - ``Polygon``: Custom polygon that is contained inside the
-                  domain
-                - ``None``: Domain
-
-            body_type (str):
-                Choice from ``Parameter.body_types``:
-                - 'adult'
-                - 'male'
-                - 'female'
-                - 'child'
-                - 'eldery'
-
-            iterations_limit (int):
-                Limits iterations to ``max_iter = iterations_limit * num``.
-
-        Yields:
-            int: Index of agent that was placed.
-
+            targets (BaseGeometry): 
         """
-        # Draw random uniformly distributed points from the set on points
-        # that belong to the surface. These are used as possible new position
-        # for an agents (if it does not overlap other agents).
-        iterations = 0
-        sampling = PolygonSample(np.asarray(spawn.exterior))
-        parameters = Parameters(body_type=body_type)
+        self.__targets = targets
 
-        while num > 0 and iterations <= iterations_limit * num:
-            # Parameters
-            position = sampling.draw()
-            mass = parameters.mass.default()
-            radius = parameters.radius.default()
-            r_t = parameters.radius_torso.default() * radius
-            r_s = parameters.radius_shoulder.default() * radius
-            r_ts = parameters.radius_torso_shoulder.default() * radius
-            inertia_rot = parameters.moment_of_inertia.default()
-            max_velocity = parameters.maximum_velocity.default()
-            max_angular_velocity = parameters.maximum_angular_velocity.default()
+    @property
+    def agents(self):
+        """Agent"""
+        return self.__agents
 
-            # Polygon of the agent
-            overlapping_agents = False
-            overlapping_obstacles = False
-            num_active_agents = np.sum(self.agent.active)
-            if num_active_agents > 0:
-                # Conditions
-                if self.agent.three_circle:
-                    orientation = 0.0
-                    poly = agent_polygon(
-                        positions(position, orientation, r_t),
-                        (r_t, r_s, r_s)
-                    )
-                    overlapping_agents = overlapping_three_circle(
-                        self.agent, self.agent.indices(),
-                        positions(position, orientation, r_t),
-                        (r_t, r_s, r_s),
-                    )
-                else:
-                    poly = agent_polygon(position, radius)
-                    overlapping_agents = overlapping_circle_circle(
-                        self.agent, self.agent.indices(),
-                        position,
-                        radius
-                    )
-                overlapping_obstacles = self.obstacles.intersects(poly)
+    @agents.setter
+    def agents(self, agents):
+        """Set agents
 
-            if not overlapping_agents and not overlapping_obstacles:
-                # Add new agent
-                index = self.agent.add(
-                    position, mass, radius, r_t, r_s, r_ts,
-                    inertia_rot, max_velocity, max_angular_velocity
-                )
-                if index >= 0:
-                    # Yield index of an agent that was successfully placed.
-                    num -= 1
-                    # self.agents[index] = poly
-                    yield index
-                else:
-                    break
-            iterations += 1
+        Args:
+            agent (Agents): 
+        """
+        self.__agents = agents
+        self.agents_array = agents.array
 
-    @log_with(logger)
-    def remove_agents(self, indices):
-        pass
+    @property
+    def tasks(self):
+        """Tasks"""
+        return self.__tasks
 
-    @log_with(logger)
-    def set_tasks(self, tasks):
-        """Set task graph
+    @tasks.setter
+    def tasks(self, tasks):
+        """Set task graph to the simulation
 
         Args:
             tasks (TaskNode):
         """
-        self.tasks = tasks
-
-    def set(self, *args, **kwargs):
-        """Method for subclasses to overwrite for setting up simulation."""
-        raise NotImplementedError
+        self.__tasks = tasks
 
     @log_with(logger)
     def update(self):
@@ -268,8 +180,15 @@ class MultiAgentSimulation(object):
     def __str__(self):
         return self.name
 
-    def __repr__(self):
-        return self.name
+    def register(self):
+        """Register the simulation so it can be found for example by the
+        commandline client (CLI)."""
+        if self.name in REGISTERED_SIMULATIONS:
+            self.logger.warning('Simulation named: "{name}" already '
+                                'exists in registered simulations.'.format(
+                name=self.name
+            ))
+        REGISTERED_SIMULATIONS[self.name] = self
 
 
 class MultiAgentProcess(Process):
@@ -310,54 +229,12 @@ class MultiAgentProcess(Process):
 
 
 @log_with()
-def register(simulation):
-    """Register simulation in order to make it visible to CLI and GUI."""
-    if isinstance(simulation, MultiAgentSimulation):
-        raise InvalidArgument("Argument simulation should be instance of"
-                              "MultiAgentSimulation")
-    name = simulation.__name__
-    if name in REGISTERED_SIMULATIONS:
-        raise CrowdDynamicsException('Simulation named: "{name}" already '
-                                     'exists in registered simulations.'
-                                     'please rename the simulation.')
-    REGISTERED_SIMULATIONS[name] = simulation
-
-
-@log_with()
-def run_simulations_parallel(simulations, maxiter=None):
-    """Run multiagent simulations as a new process
-
-    Wraps MultiAgentSimulations in MultiAgentProcess class and starts them.
-    Started process is yielded and can be stopped with stop method. When
-    stop is called process will put ``MultiAgentProcess.EOS`` into the queue as
-    sign of final value.
-
-    Args:
-        simulations (Iterable[MultiAgentSimulation]):
-            Iterable of multiagent simulations to be run in a new process.
-
-    Yields:
-        MultiAgentProcess: Started simulation process
-    """
-    if not isinstance(simulations, Iterable):
-        simulations = (simulations,)
-
-    for simulation in simulations:
-        process = MultiAgentProcess(simulation, maxiter)
-        process.start()
-        yield process
-
-
-@log_with()
-def run_simulations_sequentially(simulations, maxiter=None):
+def run_sequentially(*simulations, maxiter=None):
     """Run new simulation sequentially
 
     Args:
-        simulation (Iterable[MultiAgentSimulation]):
+        simulation (MultiAgentSimulation):
     """
-    if not isinstance(simulations, Iterable):
-        simulations = (simulations,)
-
     for simulation in simulations:
         iterations = 0
         conds = True
@@ -366,3 +243,195 @@ def run_simulations_sequentially(simulations, maxiter=None):
             iterations += 1
             if maxiter:
                 conds = iterations <= maxiter
+
+
+@log_with()
+def run_parallel(*simulations, maxiter=None):
+    """Run multiagent simulations as a new process
+
+    Wraps MultiAgentSimulations in MultiAgentProcess class and starts them.
+    Started process is yielded and can be stopped with stop method. When
+    stop is called process will put ``MultiAgentProcess.EOS`` into the queue as
+    sign of final value.
+
+    Args:
+        simulations (MultiAgentSimulation):
+            Iterable of multiagent simulations to be run in a new process.
+
+    Yields:
+        MultiAgentProcess: Started simulation process
+    """
+    for simulation in simulations:
+        process = MultiAgentProcess(simulation, maxiter)
+        process.start()
+        yield process
+
+
+class MASTaskNode(TaskNode):
+    def __init__(self, simulation):
+        """MultiAgentSimulation TaskNode
+        
+        Args:
+            simulation (MultiAgentSimulation): 
+        """
+        super(MASTaskNode, self).__init__()
+        assert isinstance(simulation, MultiAgentSimulation)
+        self.simulation = simulation
+
+
+class Integrator(MASTaskNode):
+    r"""Integrator"""
+
+    def __init__(self, simulation):
+        super().__init__(simulation)
+        self.dt = CONFIG['integrator']['dt_min'], \
+                  CONFIG['integrator']['dt_max']
+        self.time_tot = np.float64(0.0)
+        self.dt_prev = np.float64(np.nan)
+
+    def set(self, iter_limit=None, time_limit=None):
+        pass
+
+    def signal(self):
+        pass
+
+    def update(self):
+        self.dt_prev = euler_integration(self.simulation.agents_array,
+                                         self.dt[0], self.dt[1])
+        self.time_tot += self.dt_prev
+
+
+class Fluctuation(MASTaskNode):
+    r"""Fluctuation"""
+
+    def update(self):
+        agent = self.simulation.agents_array
+        agent['force'] += force_fluctuation(agent['mass'],
+                                            agent['std_rand_force'])
+        if is_model(self.simulation.agents_array, 'three_circle'):
+            agent['torque'] += torque_fluctuation(agent['inertia_rot'],
+                                                  agent['std_rand_torque'])
+
+
+class Adjusting(MASTaskNode):
+    r"""Adjusting"""
+
+    def update(self):
+        agents = self.simulation.agents_array
+        force_adjust_agents(agents)
+        if is_model(self.simulation.agents_array, 'three_circle'):
+            torque_adjust_agents(agents)
+
+
+class AgentAgentInteractions(MASTaskNode):
+    r"""AgentAgentInteractions"""
+
+    def update(self):
+        if is_model(self.simulation.agents_array, 'circular'):
+            agent_agent_block_list_circular(self.simulation.agents_array)
+        elif is_model(self.simulation.agents_array, 'three_circle'):
+            agent_agent_block_list_three_circle(self.simulation.agents_array)
+
+
+class AgentObstacleInteractions(MASTaskNode):
+    r"""AgentObstacleInteractions"""
+
+    def update(self):
+        if is_model(self.simulation.agents_array, 'circular'):
+            circular_agent_linear_wall(self.simulation.agents_array,
+                                       self.simulation.obstacles_array)
+        elif is_model(self.simulation.agents_array, 'three_circle'):
+            three_circle_agent_linear_wall(self.simulation.agents_array,
+                                           self.simulation.obstacles_array)
+
+
+class Navigation(MASTaskNode):
+    r"""Handles navigation in multi-agent simulation."""
+
+    def __init__(self, simulation):
+        super().__init__(simulation)
+        self.step = CONFIG['navigation']['step']
+        self.direction_map = static_potential(
+            self.step, self.simulation.domain, self.simulation.targets,
+            self.simulation.obstacles,
+            radius=CONFIG['navigation']['radius'],
+            value=CONFIG['navigation']['value'])
+
+    def update(self):
+        points = self.simulation.agents_array['position']
+        indices = to_indices(points, self.step)
+        indices = np.fliplr(indices)
+        # http://docs.scipy.org/doc/numpy/reference/arrays.indexing.html
+        # TODO: Handle index out of bounds -> numpy.take
+        d = self.direction_map[indices[:, 0], indices[:, 1], :]
+        self.simulation.agents_array['target_direction'] = d
+
+
+class Orientation(MASTaskNode):
+    r"""Target orientation"""
+
+    def update(self):
+        if is_model(self.simulation.agents_array, 'three_circle'):
+            dir_to_orient = angle_nx2(
+                self.simulation.agents_array['target_direction'])
+            self.simulation.agents_array['target_orientation'] = dir_to_orient
+
+
+class ExitSelection(MASTaskNode):
+    """Exit selection policy."""
+
+    def update(self):
+        pass
+
+
+class Reset(MASTaskNode):
+    r"""Reset"""
+
+    def update(self):
+        reset_motion(self.simulation.agents_array)
+        # TODO: reset agent neighbor
+
+
+class HDFNode(MASTaskNode):
+    r"""Saves data to hdf5 file."""
+
+    def __init__(self, simulation):
+        super().__init__(simulation)
+        self.hdfstore = HDFStore(self.simulation.name)
+        self.iterations = 0
+
+    def set(self, records):
+        if isinstance(records, Record):
+            self.hdfstore.add_dataset(records)
+        else:
+            for record in records:
+                self.hdfstore.add_dataset(record)
+
+    def update(self, frequency=100):
+        self.iterations += 1
+        self.hdfstore.update_buffers()
+        if self.iterations % frequency == 0:
+            self.hdfstore.dump_buffers()
+
+
+class Contains(MASTaskNode):
+    """Contains"""
+
+    def __init__(self, simulation):
+        super().__init__(simulation)
+
+        self.path = None
+        self.inside = np.zeros(self.simulation.agents.size, np.bool8)
+
+    def set(self, polygon):
+        self.path = Path(np.asarray(polygon.exterior))
+        self.update()
+
+    def update(self, *args, **kwargs):
+        position = self.simulation.agents_array['position']
+        inside = self.path.contains_points(position)
+        # out: True  -> False
+        # in:  False -> True
+        changed = self.inside ^ inside
+        self.inside = inside
+        diff = np.sum(changed)

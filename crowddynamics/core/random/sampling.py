@@ -1,15 +1,60 @@
-"""
-Sampling
-"""
+"""Sampling points on polygons."""
 import numba
 import numpy as np
 from numba import f8
 from scipy.spatial.qhull import Delaunay
-from shapely.geometry import Polygon
 
 
-@numba.jit(f8(f8[:], f8[:], f8[:]),
-           nopython=True, nogil=True, cache=True)
+@numba.jit(f8[:](f8[:, :]), nopython=True, nogil=True, cache=True)
+def linestring_length_cumsum(vertices):
+    n = len(vertices) - 1
+    cumsum = np.zeros(n)
+    for i in range(n):
+        diff = vertices[i] - vertices[i + 1]
+        cumsum[i] = np.hypot(diff[0], diff[1])
+    return cumsum
+
+
+@numba.jit(f8[:](f8[:], f8[:]), nopython=True, nogil=True, cache=True)
+def random_sample_line(p0, p1):
+    """Random sample line
+
+    Args:
+        p0 (numpy.ndarray): 
+        p1 (numpy.ndarray): 
+
+    Returns:
+        numpy.ndarray
+    """
+    v = p1 - p0
+    x = np.random.random()
+    return x * v
+
+
+def linestring_sample(vertices):
+    """Uniform sampling of linestring
+
+    Args:
+        vertices (numpy.ndarray): Array of shape (n, 2) 
+
+    Yields:
+        numpy.ndarray: 
+    """
+    assert len(vertices.shape) == 2
+    assert vertices.shape[1] == 2
+
+    # Weights for choosing random linestring from the vertices.
+    # Weight are normalized to values in interval [0, 1].
+    weights = linestring_length_cumsum(vertices)
+    weights /= weights[-1]
+
+    while True:
+        x = np.random.random()  # Random variable from interval [0, 1]
+        i = np.searchsorted(weights, x)  # Uniformly drawn random linestring
+        yield random_sample_line(vertices[i], vertices[i+1])
+
+
+@numba.jit(f8(f8[:], f8[:], f8[:]), nopython=True, nogil=True, cache=True)
 def triangle_area(a, b, c):
     r"""
     Area of a triangle given by points :math:`\mathbf{a}`, :math:`\mathbf{b}`,
@@ -32,8 +77,7 @@ def triangle_area(a, b, c):
                   c[0] * (a[1] - b[1])) / 2
 
 
-@numba.jit([f8[:](f8[:, :, :])],
-           nopython=True, nogil=True, cache=True)
+@numba.jit([f8[:](f8[:, :, :])], nopython=True, nogil=True, cache=True)
 def triangle_area_cumsum(trimesh):
     r"""Computes cumulative sum of the areas of the triangle mesh.
 
@@ -55,8 +99,7 @@ def triangle_area_cumsum(trimesh):
     return cumsum
 
 
-@numba.jit(f8[:](f8[:], f8[:], f8[:]),
-           nopython=True, nogil=True, cache=True)
+@numba.jit(f8[:](f8[:], f8[:], f8[:]), nopython=True, nogil=True, cache=True)
 def random_sample_triangle(a, b, c):
     r"""
     Generate uniform random sample from inside of a triangle defined by points
@@ -92,72 +135,45 @@ def random_sample_triangle(a, b, c):
            r2 * np.sqrt(r1) * c
 
 
-class PolygonSample:
-    r"""
-    Uniform sampling of convex polygon
-
-    Generates random uniform point from inside of polygon.
-
+def polygon_sample(vertices):
+    """Uniform sampling of points inside a convex polygon. Non convex polygons 
+    will be treated as the input would be their convex hull.
+    
+    Steps of the algorithm
+    
     1) `Delaunay triangulation`_ to break the polygon into triangular mesh.
     2) Draw random uniform triangle weighted by its area.
     3) Draw random uniform sample from inside the triangle.
-
+    
     .. _Delaunay triangulation: https://en.wikipedia.org/wiki/Delaunay_triangulation
+    
+    Args:
+        vertices (numpy.ndarray): 
+            Array of polygon vertices. Shape of (n, 2).
+
+    Yields:
+        numpy.ndarray: 
+            Random point inside the polygon.
 
     References:
-
-        http://gis.stackexchange.com/questions/6412/generate-points-that-lie-inside-polygon
+        - http://gis.stackexchange.com/questions/6412/generate-points-that-lie-inside-polygon
+    
+    Todo:
+        - Algorithm for sampling non-convex polygons
     """
-    def __init__(self, polygon_vertices):
-        r"""Convex Polygon to sample.
+    assert len(vertices.shape) == 2
+    assert vertices.shape[1] == 2
 
-        Currently Non convex polygon will be treated as convex.
+    delaunay = Delaunay(vertices)  # Triangulation
+    mesh = vertices[delaunay.simplices]  # Triangle mesh
 
-        Args:
-            polygon_vertices (numpy.ndarray):
-                Array of polygon vertices.
-        """
-        self.vertices = polygon_vertices
+    # Weights for choosing random uniform triangle from the mesh.
+    # Weight are normalized to values in interval [0, 1].
+    weights = triangle_area_cumsum(mesh)
+    weights /= weights[-1]
 
-        # FIXME: Delaunay only works for convex polygons
-        # Triangular mesh using Delaunay triangulation algorithm
-        self.delaunay = Delaunay(self.vertices)
-        self.mesh = self.vertices[self.delaunay.simplices]
-
-        # Cumulative sum of areas of the triangles
-        self.weights = triangle_area_cumsum(self.mesh)
-        self.weights /= self.weights[-1]  # Normalize values to interval [0, 1]
-
-    def draw(self):
-        r"""Draw random triangle weighted by the area of the triangle and draw
-        random sample
-
-        Returns:
-            numpy.ndarray: Uniformly sampled point inside the polygon
-        """
-        x = np.random.random()
-        i = np.searchsorted(self.weights, x)
-        a, b, c = self.mesh[i]
-        sample = random_sample_triangle(a, b, c)
-        return sample
-
-    def generator(self, num=None):
-        r"""
-        Generator that generates ``num`` amount of draws.
-
-        Args:
-            num (int, optional):
-                Number of draws, if None returns infinite generator.
-
-        Returns:
-            Generator:
-        """
-        i = 0
-        while num is None or i < num:
-            yield self.draw()
-            i += 1
-
-
-class LineStringSample:
-    # TODO: LineStringSampling
-    pass
+    while True:
+        x = np.random.random()  # Random variable from interval [0, 1]
+        i = np.searchsorted(weights, x)  # Uniformly drawn random triangle
+        a, b, c = mesh[i]
+        yield random_sample_triangle(a, b, c)

@@ -4,10 +4,7 @@ from crowddynamics.core.random.functions import poisson_clock, poisson_timings
 from crowddynamics.testing import real
 
 
-@given(
-    interval=real(0.001, 0.01),
-    dt=real(0.001, 0.01),
-)
+@given(interval=real(0.001, 0.01), dt=real(0.001, 0.01))
 def test_poisson_clock(interval, dt):
     # Limit the ratio so test doesn't run forever
     assume(1/100 < interval / dt < 100)
@@ -19,11 +16,9 @@ def test_poisson_clock(interval, dt):
         time_prev = time
 
 
-@given(
-    players=real(0, 10**7, shape=10, dtype=int),
-    interval=real(0.001, 0.01),
-    dt=real(0.001, 0.01),
-)
+@given(players=real(0, 10**7, shape=10, dtype=int),
+       interval=real(0.001, 0.01),
+       dt=real(0.001, 0.01))
 def test_poisson_timings(players, interval, dt):
     # Limit the ratio so test doesn't run forever
     assume(1 / 100 < interval / dt < 100)
