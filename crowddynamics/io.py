@@ -32,24 +32,6 @@ def load_config(infile, configspec):
     return config
 
 
-def _find(directory, basename):
-    """Find data files
-
-    Args:
-        directory (str|Path): 
-        basename (str): 
-
-    Yields:
-        (int, numpy.ndarray): Tuple containing (index, data)
-    """
-    for root, dirs, files in os.walk(directory):
-        for file in files:
-            if file.startswith(basename) and file.endswith('.npy'):
-                index = int(file.lstrip(basename + '_').rstrip('.npy'))
-                data = np.load(os.path.join(root, file))
-                yield index, data
-
-
 def save(directory, basename):
     """Save simulation data
       
@@ -79,6 +61,23 @@ def save(directory, basename):
             index += 1
 
 
+def _find(directory, basename):
+    """Find data files
+
+    Args:
+        directory (str|Path): 
+        basename (str): 
+
+    Yields:
+        (int, numpy.ndarray): Tuple containing (index, data)
+    """
+    for root, dirs, files in os.walk(directory):
+        for file in files:
+            if file.startswith(basename) and file.endswith('.npy'):
+                index = int(file.lstrip(basename + '_').rstrip('.npy'))
+                yield index, os.path.join(root, file)
+
+
 def load(directory, basename):
     """Load simulation data files in order
     
@@ -95,8 +94,8 @@ def load(directory, basename):
 
     """
     values = list(_find(directory, basename))
-    for index, data in sorted(values, key=lambda x: x[0]):
-        yield data
+    for index, filepath in sorted(values, key=lambda x: x[0]):
+        yield np.load(filepath)
 
 
 def load_concatenated(directory, basename):
