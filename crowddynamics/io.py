@@ -32,7 +32,7 @@ def load_config(infile, configspec):
     return config
 
 
-def save(directory, basename):
+def save_data(directory, basename):
     """Save simulation data
       
     Args:
@@ -40,7 +40,7 @@ def save(directory, basename):
         basename (str): 
         
     Examples:
-        >>> storage = save('.', 'basename')
+        >>> storage = save_data('.', 'basename')
         >>> storage.send(None)  # Initialise coroutine
         >>> storage.send(data)  # Send some data (ndarray)
         >>> storage.send(False)  # False dumps data into buffers
@@ -61,7 +61,7 @@ def save(directory, basename):
             index += 1
 
 
-def _find(directory, basename):
+def find_files(directory, basename):
     """Find data files
 
     Args:
@@ -78,7 +78,7 @@ def _find(directory, basename):
                 yield index, os.path.join(root, file)
 
 
-def load(directory, basename):
+def load_data(directory, basename):
     """Load simulation data files in order
     
     Args:
@@ -89,16 +89,16 @@ def load(directory, basename):
         numpy.ndarray:
     
     Examples:
-        >>> for data in load('.', 'basename'):
+        >>> for data in load_data('.', 'basename'):
         >>>     ...
 
     """
-    values = list(_find(directory, basename))
+    values = list(find_files(directory, basename))
     for index, filepath in sorted(values, key=lambda x: x[0]):
         yield np.load(filepath)
 
 
-def load_concatenated(directory, basename):
+def load_data_concatenated(directory, basename):
     """Load simulation data files concatenated into one 
     
     Args:
@@ -109,6 +109,6 @@ def load_concatenated(directory, basename):
         numpy.ndarray:
     
     Examples:
-        >>> load_concatenated('.', 'basename')
+        >>> load_data_concatenated('.', 'basename')
     """
-    return np.vstack(list(load(directory, basename)))
+    return np.vstack(list(load_data(directory, basename)))

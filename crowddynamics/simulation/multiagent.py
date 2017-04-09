@@ -8,13 +8,14 @@
 import logging
 import multiprocessing
 import os
+from functools import partial
 from multiprocessing import Process, Event
 
 import numpy as np
 from loggingtools import log_with
 from matplotlib.path import Path
 
-from crowddynamics.io import load_config
+from crowddynamics.io import load_config, save_data
 from crowddynamics.core.integrator import euler_integration
 from crowddynamics.core.interactions.interactions import \
     agent_agent_block_list_circular, agent_agent_block_list_three_circle, \
@@ -391,14 +392,18 @@ class Reset(MASTaskNode):
         # TODO: reset agent neighbor
 
 
-class IONode(MASTaskNode):
+class SaveAgentsData(MASTaskNode):
     r"""Saves data to hdf5 file."""
 
-    def __init__(self, simulation):
+    def __init__(self, simulation, directory):
         super().__init__(simulation)
+        self.save_data = partial(save_data, directory, 'agents')()
+        self.save_data.send(None)
         self.iterations = 0
 
     def update(self, frequency=100):
+        self.save_data.send(self.simulation.agents_array)
+        self.save_data.send(self.iterations % frequency == 0)
         self.iterations += 1
 
 

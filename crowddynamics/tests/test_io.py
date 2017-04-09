@@ -4,7 +4,7 @@ import pytest
 import numpy as np
 import os
 
-from crowddynamics.io import save, load, load_concatenated
+from crowddynamics.io import save_data, load_data, load_data_concatenated
 
 
 @pytest.mark.skip
@@ -19,7 +19,7 @@ def test_io():
 
     with tempfile.TemporaryDirectory() as tmpdir:
         filepath = os.path.join(tmpdir, basename + '_{}.npy')
-        storage = save(tmpdir, basename)
+        storage = save_data(tmpdir, basename)
         storage.send(None)
 
         for i in range(2):
@@ -32,8 +32,8 @@ def test_io():
             assert os.path.exists(filepath.format(i))
             assert np.all(np.load(filepath.format(i)) == concatenated)
 
-        for data in load(tmpdir, basename):
+        for data in load_data(tmpdir, basename):
             assert np.all(data == concatenated)
 
-        assert np.all(load_concatenated(tmpdir, basename) ==
+        assert np.all(load_data_concatenated(tmpdir, basename) ==
                       np.vstack((concatenated, concatenated)))

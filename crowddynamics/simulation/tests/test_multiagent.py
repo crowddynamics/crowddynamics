@@ -1,4 +1,6 @@
 import random
+from tempfile import TemporaryDirectory
+
 import numpy as np
 
 import pytest
@@ -9,7 +11,7 @@ from crowddynamics.core.structures.agents import AgentModelToType, Agents
 from crowddynamics.core.vector import unit_vector
 from crowddynamics.simulation.multiagent import MultiAgentSimulation, \
     Integrator, Fluctuation, Adjusting, AgentAgentInteractions, \
-    AgentObstacleInteractions, Orientation, Reset
+    AgentObstacleInteractions, Orientation, Reset, SaveAgentsData
 
 
 def samples(spawn, obstacles, radius):
@@ -49,14 +51,15 @@ def test_multiagent_simulation(agent_type):
         'target_direction': lambda: unit_vector(np.random.uniform(-np.pi, np.pi)),
         'target_orientation': lambda: np.random.uniform(-np.pi, np.pi)
     })
-    simu.tasks = \
-        Reset(simu) << (
-            Integrator(simu) << (
-                Fluctuation(simu),
-                Adjusting(simu) << Orientation(simu),
-                AgentAgentInteractions(simu),
-                AgentObstacleInteractions(simu),
+    with TemporaryDirectory() as tmpdir:
+        simu.tasks = \
+            Reset(simu) << SaveAgentsData(simu, tmpdir) << (
+                Integrator(simu) << (
+                    Fluctuation(simu),
+                    Adjusting(simu) << Orientation(simu),
+                    AgentAgentInteractions(simu),
+                    AgentObstacleInteractions(simu),
+                )
             )
-        )
-    simu.update()
-    simu.update()
+        simu.update()
+        simu.update()
