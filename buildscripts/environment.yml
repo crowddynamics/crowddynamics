@@ -9,7 +9,6 @@ dependencies:
     - scipy
     - scikit-image
     - shapely
-    - h5py
     - pyqt
     - pyqtgraph
     - matplotlib

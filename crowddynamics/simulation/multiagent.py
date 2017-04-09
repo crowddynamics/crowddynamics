@@ -14,7 +14,7 @@ import numpy as np
 from loggingtools import log_with
 from matplotlib.path import Path
 
-from crowddynamics.config import load_config
+from crowddynamics.io import load_config
 from crowddynamics.core.integrator import euler_integration
 from crowddynamics.core.interactions.interactions import \
     agent_agent_block_list_circular, agent_agent_block_list_three_circle, \
@@ -28,7 +28,6 @@ from crowddynamics.core.steering.navigation import to_indices
 from crowddynamics.core.structures.agents import is_model, reset_motion
 from crowddynamics.core.structures.obstacles import geom_to_linear_obstacles
 from crowddynamics.core.vector import angle_nx2
-from crowddynamics.io import HDFStore, Record
 from crowddynamics.simulation.taskgraph import TaskNode
 
 BASE_DIR = os.path.dirname(__file__)
@@ -392,26 +391,15 @@ class Reset(MASTaskNode):
         # TODO: reset agent neighbor
 
 
-class HDFNode(MASTaskNode):
+class IONode(MASTaskNode):
     r"""Saves data to hdf5 file."""
 
     def __init__(self, simulation):
         super().__init__(simulation)
-        self.hdfstore = HDFStore(self.simulation.name)
         self.iterations = 0
-
-    def set(self, records):
-        if isinstance(records, Record):
-            self.hdfstore.add_dataset(records)
-        else:
-            for record in records:
-                self.hdfstore.add_dataset(record)
 
     def update(self, frequency=100):
         self.iterations += 1
-        self.hdfstore.update_buffers()
-        if self.iterations % frequency == 0:
-            self.hdfstore.dump_buffers()
 
 
 class Contains(MASTaskNode):

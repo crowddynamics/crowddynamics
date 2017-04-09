@@ -1,213 +1,115 @@
-"""HDFStore for saving simulation data into hdf5 file.
+"""Crowddynamics IO operations
 
-::
+- Loading configurations
+- Saving simulation data
 
-    Record:
-        object:
-            name: array|number
-        attributes:
-            Attribute:
-                name:
-                resizable:
+Data flow
 
-    Buffer:
-        object:
-        list_buffer:
-            name:
-            start:
-            end:
+data (ndarray) -> buffer (list) -> file (.npy)
 
+Todo:
+    - https://docs.scipy.org/doc/numpy-dev/neps/npy-format.html
+    - json/yaml for metadata
+    - config files
+    - serializing geometry (shapely) objects (.shp), Fiona
 """
-import datetime
-import logging
 import os
-from collections import namedtuple
+from functools import lru_cache
 
-import h5py
 import numpy as np
+from configobj import ConfigObj
+from validate import Validator
 
-from loggingtools import log_with
-
-
-Attribute = namedtuple('Attribute', ('name', 'resizable'))
-Record = namedtuple('Record', ['object', 'attributes'])
-Buffer = namedtuple('Buffer', ['object', 'list_buffers'])
+from crowddynamics.exceptions import InvalidConfigurationError
 
 
-def struct_name(struct):
-    """Get the name of the structure.
+@lru_cache()
+def load_config(infile, configspec):
+    """Load configuration from INI file."""
+    config = ConfigObj(infile=infile, configspec=configspec)
+    if not config.validate(Validator()):
+        raise InvalidConfigurationError
+    return config
+
+
+def _find(directory, basename):
+    """Find data files
 
     Args:
-        struct:
+        directory (str|Path): 
+        basename (str): 
 
+    Yields:
+        (int, numpy.ndarray): Tuple containing (index, data)
+    """
+    for root, dirs, files in os.walk(directory):
+        for file in files:
+            if file.startswith(basename) and file.endswith('.npy'):
+                index = int(file.lstrip(basename + '_').rstrip('.npy'))
+                data = np.load(os.path.join(root, file))
+                yield index, data
+
+
+def save(directory, basename):
+    """Save simulation data
+      
+    Args:
+        directory (str|Path): 
+        basename (str): 
+        
+    Examples:
+        >>> storage = save('.', 'basename')
+        >>> storage.send(None)  # Initialise coroutine
+        >>> storage.send(data)  # Send some data (ndarray)
+        >>> storage.send(False)  # False dumps data into buffers
+        >>> storage.send(data)
+        >>> storage.send(True)  # True dumps data into file 
+    """
+    filepath = os.path.join(directory, basename + '_{index}.npy')
+    buffer = []
+    index = 0
+    while True:
+        data = yield  # numpy.ndarray
+        buffer.append(data)
+
+        dump = yield  # bool
+        if dump:
+            np.save(filepath.format(index=index), np.vstack(buffer))
+            buffer.clear()
+            index += 1
+
+
+def load(directory, basename):
+    """Load simulation data files in order
+    
+    Args:
+        directory (str|Path): 
+        basename (str):
+    
+    Yields:
+        numpy.ndarray:
+    
+    Examples:
+        >>> for data in load('.', 'basename'):
+        >>>     ...
+
+    """
+    values = list(_find(directory, basename))
+    for index, data in sorted(values, key=lambda x: x[0]):
+        yield data
+
+
+def load_concatenated(directory, basename):
+    """Load simulation data files concatenated into one 
+    
+    Args:
+        directory (str|Path): 
+        basename (str):
+    
     Returns:
-        str: Name of the structure
+        numpy.ndarray:
+    
+    Examples:
+        >>> load_concatenated('.', 'basename')
     """
-    return struct.__class__.__name__.lower()
-
-
-class ListBuffer(list):
-    """List that tracks start and end indices of added items."""
-
-    def __init__(self, name, start=0, end=0):
-        """Initialise list buffer by setting start and end indices.
-
-        Args:
-            name (str):
-            start (int):
-            end (int):
-
-        """
-        super(ListBuffer, self).__init__()
-        self.name = name
-        self.start = start
-        self.end = end
-
-    def append(self, p_object):
-        """
-        Appends the ``p_object`` to the end of the list and increments end index
-        by one.
-
-        Args:
-            p_object (object):
-        """
-        super(ListBuffer, self).append(p_object)
-        self.end += 1
-
-    def clear(self):
-        """
-        Clears the list buffer and sets start index equal to end.
-        """
-        super(ListBuffer, self).clear()
-        self.start = self.end
-
-
-class HDFStore(object):
-    """HDFStore
-
-    Class for saving object's array or scalar data in ``hdf5`` file. Data can be
-    saved once or made bufferable so that new data points can be added and
-    dumped into the ``hdf5`` file.
-
-    Attributes:
-        timestamp:
-        filepath: Filepath to the ``hdf5`` file where data should be saved.
-        group_name:
-        buffers:
-
-    Todo:
-        - set loglevel to log_with decorators
-    """
-    logger = logging.getLogger(__name__)
-    ext = ".hdf5"
-
-    @log_with(logger)
-    def __init__(self, filepath):
-        self.timestamp = datetime.datetime.now()
-        self.filepath = os.path.splitext(filepath)[0] + self.ext
-        self.group_name = self.timestamp.strftime('%Y-%m-%d_%H:%M:%S%f')
-        self.buffers = []
-
-        with h5py.File(self.filepath, mode='a') as file:
-            file.create_group(self.group_name)
-
-    def _create_dataset(self, group, name, values, resizable=False):
-        """
-        Create dataset
-
-        Args:
-            group (h5py.Group):
-                Group in which the dataset is created to.
-
-            name (str):
-                Name of the dataset.
-
-            values (numpy.ndarray):
-                Values to be stored. Goes through np.array(value).
-
-            resizable (bool):
-                If true new values can be added to the dataset.
-
-        """
-        values = np.array(values)
-        kw = {}
-        if resizable:
-            values = np.array(values)
-            maxshape = (None,) + values.shape
-            kw.update(maxshape=maxshape)
-            values = np.expand_dims(values, axis=0)
-        group.create_dataset(name, data=values, **kw)
-
-    def _append_buffer_to_dataset(self, dset, list_buffer):
-        """Append values to resizable h5py dataset.
-
-        Args:
-            dset (h5py.Dataset):
-            list_buffer (ListBuffer):
-        """
-        if list_buffer:
-            values = np.array(list_buffer)
-            new_shape = (list_buffer.end,) + values.shape[1:]
-            dset.resize(new_shape)
-            dset[list_buffer.start:] = values
-
-    @log_with(logger)
-    def add_dataset(self, record, overwrite=False):
-        """Add new dataset
-
-        Args:
-            record (Record):
-
-            overwrite (bool):
-                If True allows to overwrite existing dataset.
-
-        Raises:
-            AttributeError:
-                If struct doesn't have attribute.
-
-        """
-        with h5py.File(self.filepath, mode='a') as file:
-            grp_name = struct_name(record.object)
-            base = file[self.group_name]
-
-            # Delete existing dataset
-            if overwrite and (grp_name in base):
-                del base[grp_name]
-
-            group = base.create_group(grp_name)
-
-            # Create new datasets
-            list_buffers = []  # TODO: grp_name
-            for attr in record.attributes:
-                value = np.copy(getattr(record.object, attr.name))
-                self._create_dataset(group=group,
-                                     name=attr.name,
-                                     values=value,
-                                     resizable=attr.resizable)
-
-                if attr.resizable:
-                    list_buffers.append(ListBuffer(attr.name, start=1, end=1))
-
-            if list_buffers:
-                self.buffers.append(Buffer(record.object, list_buffers))
-
-    def update_buffers(self):
-        """Update new values to the buffers from the structs."""
-        for buffer in self.buffers:
-            for list_buffer in buffer.list_buffers:
-                value = np.copy(getattr(buffer.object, list_buffer.name))
-                list_buffer.append(value)
-
-    @log_with(logger)
-    def dump_buffers(self):
-        """Dump values in the buffers into hdf5 file."""
-        if not self.buffers:
-            return
-        with h5py.File(self.filepath, mode='a') as file:
-            grp = file[self.group_name]
-            for buffer in self.buffers:
-                grp_name = struct_name(buffer.object)
-                for list_buffer in buffer.list_buffers:
-                    dset = grp[grp_name][list_buffer.name]
-                    self._append_buffer_to_dataset(dset, list_buffer)
-                    list_buffer.clear()
+    return np.vstack(list(load(directory, basename)))

@@ -1,89 +1,39 @@
-import os
 import tempfile
-from collections import namedtuple
+import pytest
 
-import h5py
-import hypothesis.strategies as st
 import numpy as np
-from hypothesis import given
-from hypothesis.extra.numpy import arrays
+import os
 
-from crowddynamics.io import Attribute, Record
-from crowddynamics.io import ListBuffer, HDFStore, struct_name
+from crowddynamics.io import save, load, load_concatenated
 
 
-@st.composite
-def records(draw, attribute_names, name='struct', elements=st.floats(),
-            dtype=np.float64):
-    """Strategy that generates ``structs`` which are objects with defined
-    attributes.
-
-    Args:
-        name:
-        draw:
-        attribute_names (typing.Iterable[str]):
-        elements (hypothesis.searchstrategy.strategies.SearchStrategy):
-        dtype (numpy.dtype):
-
-    Returns:
-        hypothesis.searchstrategy.strategies.SearchStrategy:
-    """
-
-    def array(size=st.integers(1, 100)):
-        dim = draw(st.integers(1, 2))
-        shape = draw(size) if dim == 1 else draw(st.tuples(size, st.just(dim)))
-        return draw(arrays(dtype, shape, elements))
-
-    structure = namedtuple(name, attribute_names)
-    values = {attr: array() for attr in attribute_names}
-    attributes = []
-    for name in attribute_names:
-        attributes.append(Attribute(name=name, resizable=draw(st.booleans())))
-
-    record = Record(
-        object=structure(**values),
-        attributes=attributes
-    )
-
-    return record
+@pytest.mark.skip
+def test_config():
+    pass
 
 
-@given(st.integers(), st.lists(st.integers()))
-def test_list_buffer(start, elements):
-    end = start
-    lb = ListBuffer('ListBuffer', start=start, end=end)
+def test_io():
+    basename = 'basename'
+    data = np.zeros(10)
+    concatenated = np.vstack((data, data))
 
-    for i, e in enumerate(elements):
-        lb.append(e)
-        assert lb.end == end + (i + 1)
-
-    lb.clear()
-    assert lb.start == end + len(elements)
-
-
-ATTRIBUTE_NAMES = attribute_names = ('x', 'y', 'z')
-
-
-@given(record=records(ATTRIBUTE_NAMES))
-def test_hdfstore(record):
     with tempfile.TemporaryDirectory() as tmpdir:
-        filepath = os.path.join(tmpdir, 'hdfstore')
-        hdfstore = HDFStore(filepath)
-        assert os.path.exists(hdfstore.filepath)
+        filepath = os.path.join(tmpdir, basename + '_{}.npy')
+        storage = save(tmpdir, basename)
+        storage.send(None)
 
-        hdfstore.add_dataset(
-            record=record,
-            overwrite=True
-        )
-        name = struct_name(record.object)
+        for i in range(2):
+            storage.send(data)
+            storage.send(False)
 
-        with h5py.File(hdfstore.filepath, mode='r') as file:
-            grp = file[hdfstore.group_name]
-            assert name in grp
-            subgrp = grp[name]
-            for attr in ATTRIBUTE_NAMES:
-                assert attr in subgrp
+            storage.send(data)
+            storage.send(True)
 
-        for _ in range(10):
-            hdfstore.update_buffers()
-        hdfstore.dump_buffers()
+            assert os.path.exists(filepath.format(i))
+            assert np.all(np.load(filepath.format(i)) == concatenated)
+
+        for data in load(tmpdir, basename):
+            assert np.all(data == concatenated)
+
+        assert np.all(load_concatenated(tmpdir, basename) ==
+                      np.vstack((concatenated, concatenated)))
