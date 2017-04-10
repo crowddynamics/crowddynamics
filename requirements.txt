@@ -16,7 +16,7 @@ colorlog==2.10.0
 
 ## Core
 numpy==1.12.1
-numba==0.31.0
+numba==0.32.0
 scipy==0.19.0
 scikit-image==0.13.0
 shapely==1.5.17.post1
