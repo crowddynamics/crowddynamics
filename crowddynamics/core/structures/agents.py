@@ -34,6 +34,7 @@ import os
 
 import numba
 import numpy as np
+from loggingtools import log_with
 from numba import typeof, void, boolean, float64
 from numba.types import UniTuple
 from sortedcontainers import SortedSet
@@ -439,6 +440,7 @@ class Agents(object):
             if is_model(self.array, 'circular'):
                 if overlapping_circles(agents, position, radius):
                     reset_agent(index, self.array)
+                    self.inactive.add(index)
                     raise OverlappingError
             elif is_model(self.array, 'three_circle'):
                 if overlapping_three_circles(
@@ -447,6 +449,7 @@ class Agents(object):
                          agent['position_rs']),
                         (agent['r_t'], agent['r_s'], agent['r_s'])):
                     reset_agent(index, self.array)
+                    self.inactive.add(index)
                     raise OverlappingError
             else:
                 raise CrowdDynamicsException
@@ -465,6 +468,7 @@ class Agents(object):
         else:
             return False
 
+    @log_with(logger)
     def fill(self, amount, attributes, check_overlapping=True):
         """Fill agents
 
@@ -476,14 +480,20 @@ class Agents(object):
         overlaps = 0
         size = 0
         while size < amount and overlaps < 10 * amount:
+            a = attributes() if callable(attributes) else attributes
+
             try:
-                a = attributes() if callable(attributes) else attributes
-                self.add(a, check_overlapping=check_overlapping)
-                size += 1
+                index = self.add(a, check_overlapping=check_overlapping)
             except OverlappingError:
                 overlaps += 1
-            except AgentStructureFull:
+                self.logger.info('Overlaps: {}'.format(overlaps))
+                continue
+            except AgentStructureFull as e:
+                self.logger.info('AgentStructureFull')
                 break
+
+            size += 1
+            self.logger.info('Agent placed: {}/{}'.format(size, amount))
 
         if is_model(self.array, 'three_circle'):
             shoulders(self.array)

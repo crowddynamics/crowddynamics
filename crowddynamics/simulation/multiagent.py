@@ -278,12 +278,6 @@ class Integrator(MASTaskNode):
         self.time_tot = np.float64(0.0)
         self.dt_prev = np.float64(np.nan)
 
-    def set(self, iter_limit=None, time_limit=None):
-        pass
-
-    def signal(self):
-        pass
-
     def update(self):
         self.dt_prev = euler_integration(self.simulation.agents_array,
                                          self.dt[0], self.dt[1])

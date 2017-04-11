@@ -27,6 +27,5 @@ install:
 script:
     - buildscripts/test.sh
 
-# TODO: Build and publish documentation
 #after_success:
 #    - buildscripts/after_success.sh
