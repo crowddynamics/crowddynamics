@@ -16,6 +16,7 @@ dependencies:
         - loggingtools
         - typing
         - sortedcontainers
+        - anytree
         - ruamel.yaml
         - scikit-fmm
         - click

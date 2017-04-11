@@ -66,7 +66,7 @@ def task_graph(draw, maxsize_st=st.integers(1, 100)):
                 break
             parent = random.choice(list(parents.keys()))
             node = next(nodes_gen)
-            parent += node
+            parent.add_children(node)
             children[node] = 0
             size += 1
             parents[parent] += 1
