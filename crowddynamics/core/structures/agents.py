@@ -335,9 +335,9 @@ def set_agent_attributes(agents, index, attributes):
             pass
 
 
-def reset_agent(agent):
+def reset_agent(index, agents):
     """Reset agent"""
-    agent[:] = 0
+    agents[index] = np.zeros(1, agents.dtype)
 
 
 class Agents(object):
@@ -428,17 +428,17 @@ class Agents(object):
         if is_model(self.array, 'three_circle'):
             shoulders(self.array)
 
-        if check_overlapping:
-            agent = self.array[index]
-            radius = agent['radius']
-            position = agent['position']
+        agent = self.array[index]
+        radius = agent['radius']
+        position = agent['position']
 
+        if check_overlapping:
             neighbours = self.grid.nearest(position, radius=1)
             agents = self.array[neighbours]
 
             if is_model(self.array, 'circular'):
                 if overlapping_circles(agents, position, radius):
-                    reset_agent(self.array[index])
+                    reset_agent(index, self.array)
                     raise OverlappingError
             elif is_model(self.array, 'three_circle'):
                 if overlapping_three_circles(
@@ -446,11 +446,12 @@ class Agents(object):
                         (agent['position'], agent['position_ls'],
                          agent['position_rs']),
                         (agent['r_t'], agent['r_s'], agent['r_s'])):
-                    reset_agent(self.array[index])
+                    reset_agent(index, self.array)
                     raise OverlappingError
             else:
                 raise CrowdDynamicsException
 
+        self.grid[position] = index
         self.active.add(index)
         return index
 
@@ -459,7 +460,7 @@ class Agents(object):
         if index in self.active:
             self.active.remove(index)
             self.inactive.add(index)
-            reset_agent(self.array[index])
+            reset_agent(index, self.array)
             return True
         else:
             return False
