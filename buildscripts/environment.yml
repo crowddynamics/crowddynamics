@@ -9,8 +9,6 @@ dependencies:
     - scipy
     - scikit-image
     - shapely
-    - pyqt
-    - pyqtgraph
     - matplotlib
     - bokeh
     - pip:

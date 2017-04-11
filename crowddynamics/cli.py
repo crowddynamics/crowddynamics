@@ -23,24 +23,22 @@ Todo:
     - token normalization
 
 """
-import inspect
 import logging
 import os
 import platform
 import sys
-from collections import namedtuple
 from pprint import pformat
 
 import click
-from loggingtools import setup_logging
 import ruamel.yaml as yaml
 from configobj import ConfigObj
-
 from crowddynamics import __version__
-from crowddynamics.exceptions import CrowdDynamicsException, InvalidArgument, \
+from crowddynamics.exceptions import CrowdDynamicsException, \
     NotACrowdDynamicsDirectory, DirectoryIsAlreadyCrowdDynamicsDirectory
-from crowddynamics.simulation.multiagent import REGISTERED_SIMULATIONS, \
-    run_parallel, run_sequentially
+
+from crowddynamics.parse import parse_signature, ArgSpec
+from crowddynamics.simulation.multiagent import run_parallel, run_sequentially
+from loggingtools import setup_logging
 
 
 class Colors:
@@ -135,54 +133,57 @@ def new(name):
         project
         ├── crowddynamics.cfg
         ├── environment.yml
-        ├── <name>
-        │   ├── __init__.py
-        │   └── simulation.py
+        ├── __init__.py
+        ├── <name>.py
         ...
     
-    - simulation.py
+    - <name>.py
         Template for making new crowd simulations.
     """
+    base, ext = os.path.splitext(name)
+    if ext == '.py':
+        name = base
+    filename = name + '.py'
+
     click.secho('Creating simulation: {}'.format(name), fg=Colors.NEUTRAL)
 
     # Check if we are inside crowddynamics project directory
     if not os.path.exists(CROWDDYNAMICS_CFG):
-        click.secho('Current directory is not a simulation directory',
+        click.secho('Current directory is not a simulation directory '
+                    'Run "startproject" to initialise simulation.',
                     fg=Colors.NEGATIVE)
         raise NotACrowdDynamicsDirectory
 
-    try:
-        os.mkdir(name)
-        click.secho('Created successfully', fg=Colors.POSITIVE)
-    except FileExistsError as error:
-        click.secho('Creation failed.', fg=Colors.NEGATIVE)
-        raise error
+    if not os.path.exists('__init__.py'):
+        with open('__init__.py', 'w') as fp:
+            fp.write('')
 
-    # Append simulation metadata to simulations sections in
-    # crowddynamics.cfg
+    if not os.path.exists(filename):
+        # TODO: template / cookiecutter
+        with open(os.path.join(filename), 'w') as fp:
+            fp.write('')
+        click.secho('Created successfully', fg=Colors.POSITIVE)
+    else:
+        click.secho('Creation failed.', fg=Colors.NEGATIVE)
+        raise FileExistsError
+
+    # Append simulation metadata to simulations sections in crowddynamics.cfg
     config = ConfigObj(CROWDDYNAMICS_CFG)
-    cfg = {name: {'path': name}}
+    cfg = {name: {'filename': filename}}
     try:
         config['simulations'].update(cfg)
     except KeyError:
         config['simulations'] = cfg
     config.write()
 
-    # Make Python simulation template
-    with open(os.path.join(name, '__init__.py'), 'w') as fp:
-        fp.write('')
-
-    with open(os.path.join(name, 'simulation.py'), 'w') as fp:
-        fp.write('')
-
 
 @main.command('list')
 def list_of_simulations():
     """List of available simulations"""
     config = ConfigObj(CROWDDYNAMICS_CFG)
-    l = config.get('simulations', [])
+    d = config.get('simulations', [])
     click.secho('List of available simulations:', fg=Colors.NEUTRAL)
-    click.secho(pformat(l), fg=Colors.NEUTRAL)
+    click.secho(pformat(d), fg=Colors.NEUTRAL)
 
 
 @main.group(chain=True)
@@ -214,73 +215,21 @@ def run(context, loglevel, num, maxiter, timeout, parallel, profile):
     )
 
 
-ArgSpec = namedtuple('ArgSpec', ('name', 'default', 'type', 'annotation'))
-
-
-def mkspec(parameter):
-    if isinstance(parameter.default, inspect.Parameter.empty):
-        raise InvalidArgument('Default argument should not be empty.')
-    return ArgSpec(name=parameter.name,
-                   default=parameter.default,
-                   type=type(parameter.default),
-                   annotation=parameter.annotation)
-
-
-def parse_signature(function):
-    """Parse signature
-
-    .. list-table::
-       :header-rows: 1
-
-       * - Type
-         - Validation
-         - Click option
-         - Qt widget
-       * - int
-         - interval
-         - IntRange
-         - QSpinBox
-       * - float
-         - interval
-         - float with callback
-         - QDoubleSpinBox
-       * - bool
-         - flag
-         - Boolean flag
-         - QRadioButton
-       * - str
-         - choice
-         - Choice
-         - QComboBox
-
-    Args:
-        function:
-
-    Yields:
-        ArgSpec:
-
-    """
-    sig = inspect.signature(function)
-    for name, p in sig.parameters.items():
-        if name != 'self':
-            yield mkspec(p)
-
-
-def mkoption(spec):
-    if spec.type is int:
+def mkoption(spec: ArgSpec):
+    if isinstance(spec.default, int):
         return click.Option(('--' + spec.name,),
                             default=spec.default,
                             type=click.IntRange(spec.annotation[0],
                                                 spec.annotation[1]))
-    elif spec.type is float:
+    elif isinstance(spec.default, float):
         return click.Option(('--' + spec.name,),
                             default=spec.default,
                             type=float)
-    elif spec.type is bool:
+    elif isinstance(spec.default, bool):
         return click.Option(('--' + spec.name,),
                             default=spec.default,
                             is_flag=True)
-    elif spec.type is str:
+    elif isinstance(spec.default, str):
         return click.Option(('--' + spec.name,),
                             default=spec.default,
                             type=click.Choice(spec.annotation))
@@ -343,9 +292,6 @@ def mkcommand(name, simulation):
 
     return command
 
-
-for name, simulation in REGISTERED_SIMULATIONS.items():
-    mkcommand(name, simulation)
 
 if __name__ == "__main__":
     main()

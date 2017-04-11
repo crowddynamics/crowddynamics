@@ -348,22 +348,25 @@ class Agents(object):
                  size,
                  agent_type=agent_type_circular,
                  agent_cfg=AGENT_CFG,
-                 agent_cfg_pec=AGENT_CFG_SPEC):
+                 agent_cfg_spec=AGENT_CFG_SPEC):
         """Agent manager
         
         Args:
             size (int):
                 Number of agents
-            agent_type (numpy.dtype):
-                - agent_type_circular
-                - agent_type_three_circle
+            agent_type (str|numpy.dtype): 
+                AgentModelToType
             agent_cfg:
                 Agent configuration filepath
-            agent_cfg_pec: 
+            agent_cfg_spec: 
                 Agent configuration spec filepath
         """
-        self.array = np.zeros(size, dtype=agent_type)
-        self.config = load_config(infile=agent_cfg, configspec=agent_cfg_pec)
+        if isinstance(agent_type, str):
+            dtype = AgentModelToType[agent_type]
+        else:
+            dtype = agent_type
+        self.array = np.zeros(size, dtype=dtype)
+        self.config = load_config(infile=agent_cfg, configspec=agent_cfg_spec)
 
         # Keeps track of which agents are active and which in active. Stores
         # indices of agents.

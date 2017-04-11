@@ -37,7 +37,6 @@ def test_multiagent_simulation(agent_type):
 
     simu = MultiAgentSimulation()
     simu.name = 'Testing {}'.format(agent_type)
-    simu.register()
     simu.domain = domain
     simu.obstacles = obstacles
     simu.agents = Agents(100, agent_type)

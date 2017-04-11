@@ -35,7 +35,6 @@ BASE_DIR = os.path.dirname(__file__)
 AGENT_CFG_SPEC = os.path.join(BASE_DIR, 'multiagent_spec.cfg')
 AGENT_CFG = os.path.join(BASE_DIR, 'multiagent.cfg')
 CONFIG = load_config(AGENT_CFG, AGENT_CFG_SPEC)
-REGISTERED_SIMULATIONS = dict()
 
 
 class MultiAgentSimulation(object):
@@ -179,16 +178,6 @@ class MultiAgentSimulation(object):
 
     def __str__(self):
         return self.name
-
-    def register(self):
-        """Register the simulation so it can be found for example by the
-        commandline client (CLI)."""
-        if self.name in REGISTERED_SIMULATIONS:
-            self.logger.warning('Simulation named: "{name}" already '
-                                'exists in registered simulations.'.format(
-                name=self.name
-            ))
-        REGISTERED_SIMULATIONS[self.name] = self
 
 
 class MultiAgentProcess(Process):
@@ -397,7 +386,7 @@ class SaveAgentsData(MASTaskNode):
 
     def __init__(self, simulation, directory):
         super().__init__(simulation)
-        self.save_data = partial(save_data, directory, 'agents')()
+        self.save_data = save_data(directory, 'agents')
         self.save_data.send(None)
         self.iterations = 0
 
@@ -410,14 +399,11 @@ class SaveAgentsData(MASTaskNode):
 class Contains(MASTaskNode):
     """Contains"""
 
-    def __init__(self, simulation):
+    def __init__(self, simulation, polygon):
         super().__init__(simulation)
 
-        self.path = None
-        self.inside = np.zeros(self.simulation.agents.size, np.bool8)
-
-    def set(self, polygon):
         self.path = Path(np.asarray(polygon.exterior))
+        self.inside = np.zeros(self.simulation.agents.size, np.bool8)
         self.update()
 
     def update(self, *args, **kwargs):

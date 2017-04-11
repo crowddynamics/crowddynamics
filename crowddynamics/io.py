@@ -12,22 +12,22 @@ Todo:
     - json/yaml for metadata
     - config files
     - serializing geometry (shapely) objects (.shp), Fiona
+
+References:
+    - http://www.dabeaz.com/coroutines/Coroutines.pdf
 """
 import os
-from functools import lru_cache
 
 import numpy as np
 from configobj import ConfigObj
+from crowddynamics.exceptions import InvalidConfigurationError
 from validate import Validator
 
-from crowddynamics.exceptions import InvalidConfigurationError
 
-
-@lru_cache()
-def load_config(infile, configspec):
+def load_config(infile, configspec=None):
     """Load configuration from INI file."""
     config = ConfigObj(infile=infile, configspec=configspec)
-    if not config.validate(Validator()):
+    if configspec and not config.validate(Validator()):
         raise InvalidConfigurationError
     return config
 
