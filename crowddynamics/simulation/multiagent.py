@@ -8,14 +8,9 @@
 import logging
 import multiprocessing
 import os
-from functools import partial
 from multiprocessing import Process, Event
 
 import numpy as np
-from loggingtools import log_with
-from matplotlib.path import Path
-
-from crowddynamics.io import load_config, save_data
 from crowddynamics.core.integrator import euler_integration
 from crowddynamics.core.interactions.interactions import \
     agent_agent_block_list_circular, agent_agent_block_list_three_circle, \
@@ -29,7 +24,10 @@ from crowddynamics.core.steering.navigation import to_indices
 from crowddynamics.core.structures.agents import is_model, reset_motion
 from crowddynamics.core.structures.obstacles import geom_to_linear_obstacles
 from crowddynamics.core.vector import angle_nx2
-from crowddynamics.simulation.taskgraph import TaskNode
+from crowddynamics.io import load_config, save_data
+from crowddynamics.taskgraph import TaskNode
+from loggingtools import log_with
+from matplotlib.path import Path
 
 BASE_DIR = os.path.dirname(__file__)
 AGENT_CFG_SPEC = os.path.join(BASE_DIR, 'multiagent_spec.cfg')
@@ -79,8 +77,6 @@ class MultiAgentSimulation(object):
 
         # Simulation logic
         self.__tasks = None
-
-        self.queue = multiprocessing.Queue()
         self.iterations = 0
 
     @property
@@ -189,16 +185,19 @@ class MultiAgentProcess(Process):
     # End of Simulation. Value that is injected into queue when simulation ends.
     EOS = None
 
-    def __init__(self, simulation, maxiter=None):
+    def __init__(self, simulation, queue, maxiterations=None):
         """Init MultiAgentProcess
 
         Args:
             simulation (MultiAgentSimulation):
+            queue (multiprocessing.Queue): 
+            maxiterations (int): 
         """
         super(MultiAgentProcess, self).__init__()
         self.simulation = simulation
         self.exit = Event()
-        self.maxiter = maxiter
+        self.maxiter = maxiterations
+        self.queue = queue
 
     @log_with(logger)
     def run(self):
@@ -209,7 +208,7 @@ class MultiAgentProcess(Process):
             self.simulation.update()
             if self.maxiter and self.simulation.iterations > self.maxiter:
                 self.stop()
-        self.simulation.queue.put(self.EOS)
+        self.queue.put(self.EOS)
 
     @log_with(logger)
     def stop(self):
@@ -235,7 +234,7 @@ def run_sequentially(*simulations, maxiter=None):
 
 
 @log_with()
-def run_parallel(*simulations, maxiter=None):
+def run_parallel(*simulations, queue, maxiter=None):
     """Run multiagent simulations as a new process
 
     Wraps MultiAgentSimulations in MultiAgentProcess class and starts them.
@@ -251,7 +250,7 @@ def run_parallel(*simulations, maxiter=None):
         MultiAgentProcess: Started simulation process
     """
     for simulation in simulations:
-        process = MultiAgentProcess(simulation, maxiter)
+        process = MultiAgentProcess(simulation, queue, maxiter)
         process.start()
         yield process
 
@@ -273,14 +272,14 @@ class Integrator(MASTaskNode):
 
     def __init__(self, simulation):
         super().__init__(simulation)
-        self.dt = CONFIG['integrator']['dt_min'], \
-                  CONFIG['integrator']['dt_max']
+        self.dt_min = CONFIG['integrator']['dt_min']
+        self.dt_max = CONFIG['integrator']['dt_max']
         self.time_tot = np.float64(0.0)
         self.dt_prev = np.float64(np.nan)
 
     def update(self):
         self.dt_prev = euler_integration(self.simulation.agents_array,
-                                         self.dt[0], self.dt[1])
+                                         self.dt_min, self.dt_max)
         self.time_tot += self.dt_prev
 
 

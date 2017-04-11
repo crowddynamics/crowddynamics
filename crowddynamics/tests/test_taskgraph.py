@@ -1,9 +1,8 @@
 import random
 
 import hypothesis.strategies as st
+from crowddynamics.taskgraph import TaskNode
 from hypothesis import given
-
-from crowddynamics.simulation.taskgraph import TaskNode
 
 
 class Node(TaskNode):

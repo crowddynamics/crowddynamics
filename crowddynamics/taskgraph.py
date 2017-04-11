@@ -3,6 +3,8 @@
 https://www.python.org/doc/essays/graphs/
 http://dask.pydata.org/en/latest/
 http://dask.pydata.org/en/latest/graphs.html
+https://en.wikipedia.org/wiki/Tree_(data_structure)
+https://github.com/c0fec0de/anytree
 """
 
 

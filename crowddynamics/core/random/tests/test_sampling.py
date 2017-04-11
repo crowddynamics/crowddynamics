@@ -7,6 +7,7 @@ import numpy as np
 from hypothesis import given, assume
 from hypothesis.extra.numpy import arrays
 from shapely.geometry import Polygon, Point
+import sys
 
 from crowddynamics.core.random.sampling import triangle_area, \
     random_sample_triangle, triangle_area_cumsum, polygon_sample
@@ -56,9 +57,5 @@ def test_polygon_sampling(poly):
     poly = poly.convex_hull
     assume(poly.area > 0.01)
 
-    sample_size = 20
-    for point in polygon_sample(np.asarray(poly.exterior)):
+    for i, point in zip(range(20), polygon_sample(np.asarray(poly.exterior))):
         assert poly.contains(Point(point))
-        sample_size -= 1
-        if sample_size < 0:
-            break
