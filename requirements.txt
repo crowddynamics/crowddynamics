@@ -8,7 +8,7 @@ configobj==5.0.6
 typing==3.6.1
 ruamel.yaml==0.14.5
 sortedcontainers==1.5.7
-anytree
+anytree==2.1.2
 
 ## Command-line interface
 click==6.7
