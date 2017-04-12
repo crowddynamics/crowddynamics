@@ -23,14 +23,14 @@ def _random_attributes():
 
 
 @pytest.fixture(scope='function')
-def agents_circular(size=100):
+def agents_circular(size=10):
     agents = Agents(size, agent_type_circular)
     agents.fill(size, _random_attributes())
     return agents
 
 
 @pytest.fixture(scope='function')
-def agents_three_circle(size=100):
+def agents_three_circle(size=10):
     agents = Agents(size, agent_type_three_circle)
     agents.fill(size, _random_attributes())
     return agents

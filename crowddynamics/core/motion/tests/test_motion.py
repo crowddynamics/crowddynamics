@@ -33,18 +33,6 @@ def test_force_adjust(mass, tau_adj, v0, e0, v):
     assert ans.shape == (2,)
 
 
-@given(mass=real(min_value=0, shape=(SIZE, 1)),
-       tau_adj=real(min_value=0, exclude_zero='near', shape=(SIZE, 1)),
-       v0=real(min_value=0, shape=(SIZE, 1)),
-       e0=real(shape=(SIZE, 2)),
-       v=real(shape=(SIZE, 2)))
-def test_force_adjust_vector(mass, tau_adj, v0, e0, v):
-    ans = force_adjust(mass, tau_adj, v0, e0, v)
-    assert isinstance(ans, np.ndarray)
-    assert ans.dtype.type is np.float64
-    assert ans.shape == (SIZE, 2)
-
-
 @given(h=real(),
        n=real(shape=2),
        a=real(min_value=0),
@@ -88,17 +76,3 @@ def test_torque_adjust(inertia_rot, tau_rot, phi_0, phi, omega_0, omega):
     ans = torque_adjust(inertia_rot, tau_rot, phi_0, phi, omega_0,
                         omega)
     assert isinstance(ans, float)
-
-
-@given(inertia_rot=real(0, shape=SIZE),
-       tau_rot=real(0, exclude_zero='near', shape=SIZE),
-       phi_0=real(shape=SIZE),
-       phi=real(shape=SIZE),
-       omega_0=real(shape=SIZE),
-       omega=real(shape=SIZE))
-def test_torque_adjust_vector(inertia_rot, tau_rot, phi_0, phi, omega_0, omega):
-    ans = torque_adjust(inertia_rot, tau_rot, phi_0, phi, omega_0,
-                        omega)
-    assert isinstance(ans, np.ndarray)
-    assert ans.dtype.type is np.float64
-    assert ans.shape == (SIZE,)

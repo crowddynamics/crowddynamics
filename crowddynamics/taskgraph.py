@@ -5,15 +5,19 @@ http://dask.pydata.org/en/latest/
 http://dask.pydata.org/en/latest/graphs.html
 https://en.wikipedia.org/wiki/Tree_(data_structure)
 https://github.com/c0fec0de/anytree
+
+Todo:
+    - update method timer
 """
+
 from anytree import NodeMixin
 
 
-class TaskNode(NodeMixin, object):
-    """TaskNode
-
-    Create task graphs with TaskNodes for evaluating simulation algorithms
-    in the right order and possibly parallel.
+class Node(NodeMixin):
+    """Node (tree)
+    
+    Node for implementing trees for controlling evaluation order for
+    simulation logic.
     """
 
     def __init__(self, name=None, parent=None):
@@ -22,11 +26,17 @@ class TaskNode(NodeMixin, object):
 
     @property
     def name(self):
-        """Name."""
-        return self._name
+        """Name
+
+        Returns:
+            str: Return name set by user. If name is not set returns class
+                 name.
+        """
+        return self._name if self._name else self.__class__.__name__
 
     @name.setter
     def name(self, value):
+        """Name setter"""
         self._name = value
 
     def update(self, *args, **kwargs):
@@ -34,11 +44,25 @@ class TaskNode(NodeMixin, object):
         classes."""
         pass
 
-    def evaluate(self, *args, **kwargs):
-        """Evaluate nodes recursively, child nodes first (bottom-up)."""
-        for node in self._children:
-            node.evaluate()
-        self.update()
+    def inject_before(self, node):
+        """Inject before
+
+        Args:
+            node (Node): 
+        """
+        parent = self.parent
+        self.parent = node
+        node.parent = parent
+
+    def inject_after(self, node):
+        """Inject after
+
+        Args:
+            node (Node): 
+        """
+        for child in self.children:
+            child.parent = node
+        node.parent = self
 
     def add_children(self, node):
         """Add new child node.
@@ -67,7 +91,7 @@ class TaskNode(NodeMixin, object):
         Args:
             other (TaskNode, Tuple[TaskNode]): 
         """
-        if isinstance(other, TaskNode):
+        if isinstance(other, Node):
             self.add_children(other)
         else:
             for _other in other:
@@ -82,7 +106,3 @@ class TaskNode(NodeMixin, object):
                                         key=lambda item: item[0])):
             args.append("%s=%r" % (key, value))
         return "%s(%s)" % (classname, ", ".join(args))
-
-
-class TaskNodeGroup:
-    pass

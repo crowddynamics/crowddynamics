@@ -11,6 +11,8 @@ import os
 from multiprocessing import Process, Event
 
 import numpy as np
+from anytree.iterators import PostOrderIter
+
 from crowddynamics.core.integrator import euler_integration
 from crowddynamics.core.interactions.interactions import \
     agent_agent_block_list_circular, agent_agent_block_list_three_circle, \
@@ -25,7 +27,7 @@ from crowddynamics.core.structures.agents import is_model, reset_motion
 from crowddynamics.core.structures.obstacles import geom_to_linear_obstacles
 from crowddynamics.core.vector import angle_nx2
 from crowddynamics.io import load_config, save_data
-from crowddynamics.taskgraph import TaskNode
+from crowddynamics.taskgraph import Node
 from loggingtools import log_with
 from matplotlib.path import Path
 
@@ -154,7 +156,11 @@ class MultiAgentSimulation(object):
 
     @property
     def tasks(self):
-        """Tasks"""
+        """Tasks
+
+        Returns:
+            Node: 
+        """
         return self.__tasks
 
     @tasks.setter
@@ -162,18 +168,16 @@ class MultiAgentSimulation(object):
         """Set task graph to the simulation
 
         Args:
-            tasks (TaskNode):
+            tasks (Node):
         """
         self.__tasks = tasks
 
     @log_with(logger)
     def update(self):
         """Execute new iteration cycle of the simulation."""
-        self.tasks.evaluate()
+        for node in PostOrderIter(self.tasks.root):
+            node.update()
         self.iterations += 1
-
-    def __str__(self):
-        return self.name
 
 
 class MultiAgentProcess(Process):
@@ -255,19 +259,19 @@ def run_parallel(*simulations, queue, maxiter=None):
         yield process
 
 
-class MASTaskNode(TaskNode):
+class MASNode(Node):
     def __init__(self, simulation):
         """MultiAgentSimulation TaskNode
         
         Args:
             simulation (MultiAgentSimulation): 
         """
-        super(MASTaskNode, self).__init__()
+        super(MASNode, self).__init__()
         assert isinstance(simulation, MultiAgentSimulation)
         self.simulation = simulation
 
 
-class Integrator(MASTaskNode):
+class Integrator(MASNode):
     r"""Integrator"""
 
     def __init__(self, simulation):
@@ -283,7 +287,7 @@ class Integrator(MASTaskNode):
         self.time_tot += self.dt_prev
 
 
-class Fluctuation(MASTaskNode):
+class Fluctuation(MASNode):
     r"""Fluctuation"""
 
     def update(self):
@@ -295,7 +299,7 @@ class Fluctuation(MASTaskNode):
                                                   agent['std_rand_torque'])
 
 
-class Adjusting(MASTaskNode):
+class Adjusting(MASNode):
     r"""Adjusting"""
 
     def update(self):
@@ -305,7 +309,7 @@ class Adjusting(MASTaskNode):
             torque_adjust_agents(agents)
 
 
-class AgentAgentInteractions(MASTaskNode):
+class AgentAgentInteractions(MASNode):
     r"""AgentAgentInteractions"""
 
     def update(self):
@@ -315,7 +319,7 @@ class AgentAgentInteractions(MASTaskNode):
             agent_agent_block_list_three_circle(self.simulation.agents_array)
 
 
-class AgentObstacleInteractions(MASTaskNode):
+class AgentObstacleInteractions(MASNode):
     r"""AgentObstacleInteractions"""
 
     def update(self):
@@ -327,7 +331,7 @@ class AgentObstacleInteractions(MASTaskNode):
                                            self.simulation.obstacles_array)
 
 
-class Navigation(MASTaskNode):
+class Navigation(MASNode):
     r"""Handles navigation in multi-agent simulation."""
 
     def __init__(self, simulation):
@@ -349,7 +353,7 @@ class Navigation(MASTaskNode):
         self.simulation.agents_array['target_direction'] = d
 
 
-class Orientation(MASTaskNode):
+class Orientation(MASNode):
     r"""Target orientation"""
 
     def update(self):
@@ -359,14 +363,14 @@ class Orientation(MASTaskNode):
             self.simulation.agents_array['target_orientation'] = dir_to_orient
 
 
-class ExitSelection(MASTaskNode):
+class ExitSelection(MASNode):
     """Exit selection policy."""
 
     def update(self):
         pass
 
 
-class Reset(MASTaskNode):
+class Reset(MASNode):
     r"""Reset"""
 
     def update(self):
@@ -374,7 +378,7 @@ class Reset(MASTaskNode):
         # TODO: reset agent neighbor
 
 
-class SaveAgentsData(MASTaskNode):
+class SaveAgentsData(MASNode):
     r"""Saves data to hdf5 file."""
 
     def __init__(self, simulation, directory):
@@ -389,7 +393,7 @@ class SaveAgentsData(MASTaskNode):
         self.iterations += 1
 
 
-class Contains(MASTaskNode):
+class Contains(MASNode):
     """Contains"""
 
     def __init__(self, simulation, polygon):

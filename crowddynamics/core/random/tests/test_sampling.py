@@ -1,17 +1,20 @@
-"""
-UnitTests and property based testing using
-"""
-import pytest
+"""UnitTests and property based testing"""
 import hypothesis.strategies as st
 import numpy as np
+import pytest
 from hypothesis import given, assume
 from hypothesis.extra.numpy import arrays
 from shapely.geometry import Polygon, Point
-import sys
 
 from crowddynamics.core.random.sampling import triangle_area, \
     random_sample_triangle, triangle_area_cumsum, polygon_sample
 from crowddynamics.testing import real, polygon
+
+
+# Convex shapes
+triangle = Polygon([(1.0, 1.0), (0.0, 0.0), (2.0, 0.0)])
+square = Polygon([(1.0, 1.0), (0.0, 0.0), (2.0, 0.0), (3.0, 0.5)])
+tetragon = Polygon([(1.0, 1.0), (0.0, 0.0), (2.0, 0.0), (3.0, 0.5), (2.5, 2.0)])
 
 
 @pytest.mark.skip
@@ -51,11 +54,12 @@ def test_random_sample_triangle(a, b, c):
     assert triangle.intersects(point) or np.isclose(distance, 0.0)
 
 
-@given(polygon(a=-1.0, b=1.0, num_points=5))
+@pytest.mark.parametrize('poly', (triangle, square, tetragon))
 def test_polygon_sampling(poly):
     # Numerical error is too great if area of the polygon is too small
     poly = poly.convex_hull
-    assume(poly.area > 0.01)
+    # assume(poly.area > 0.01)
+    exterior = np.asarray(poly.exterior)
 
-    for i, point in zip(range(20), polygon_sample(np.asarray(poly.exterior))):
+    for i, point in zip(range(100), polygon_sample(exterior)):
         assert poly.contains(Point(point))

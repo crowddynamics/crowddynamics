@@ -9,6 +9,8 @@ import numba
 import numpy as np
 import scipy.stats
 
+from numba import f8, i8
+
 logger = logging.getLogger()
 
 
@@ -51,7 +53,7 @@ def random_vector(size, orient=(0.0, 2.0 * np.pi), mag=1.0):
     return mag * np.stack((np.cos(orientation), np.sin(orientation)), axis=1)
 
 
-@numba.jit(nopython=True, nogil=True)
+@numba.jit((f8, f8), nopython=True, nogil=True)
 def poisson_clock(interval, dt):
     r"""Generated points in time using Poisson process.
 
@@ -110,7 +112,7 @@ def poisson_clock(interval, dt):
         t_tot += np.random.exponential(scale=interval)
 
 
-@numba.jit(nopython=True, nogil=True)
+@numba.jit((i8[:], f8, f8), nopython=True, nogil=True)
 def poisson_timings(players, interval, dt):
     r"""
     Update times for all agent in the game using Poisson clock.

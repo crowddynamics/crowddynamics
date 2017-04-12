@@ -1,41 +1,17 @@
 import random
 
 import hypothesis.strategies as st
-from crowddynamics.taskgraph import TaskNode
-from hypothesis import given
-
-
-class Node(TaskNode):
-    def __init__(self, index):
-        super().__init__()
-        self.index = index
-
-    def update(self, l):
-        l.append(self.index)
-
-    def evaluate(self, l):
-        """
-        Test evaluate
-
-        Args:
-            l (list):
-
-        Returns:
-            list:
-        """
-        for node in self._children:
-            node.evaluate(l)
-        self.update(l)
+from crowddynamics.taskgraph import Node
 
 
 def newnode(index=0):
     while True:
-        yield Node(index)
+        yield Node(str(index))
         index += 1
 
 
 @st.composite
-def task_graph(draw, maxsize_st=st.integers(1, 100)):
+def tree_strategy(draw, maxsize_st=st.integers(1, 100)):
     """
     Search strategy that task graphs.
 
@@ -82,8 +58,11 @@ def task_graph(draw, maxsize_st=st.integers(1, 100)):
     return root
 
 
-@given(task_graph())
-def test_taskgraph(tasks):
-    l = []
-    tasks.evaluate(l)
-    assert True
+def test_tasknode():
+    node = [Node(str(i)) for i in range(4)]
+    tree = node[0] << node[1] << (
+        node[2],
+        node[3]
+    )
+    assert node[0].is_root
+    assert node[0].children == (node[1], node[2], node[3])

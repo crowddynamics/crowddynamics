@@ -2,10 +2,12 @@ from hypothesis import given
 from hypothesis import settings
 from shapely.geometry import Polygon
 from shapely.geometry.base import BaseGeometry
+import pytest
 
 import crowddynamics.testing
 
 
+@pytest.mark.skip
 @given(crowddynamics.testing.polygon(a=-1.0, b=1.0))
 @settings(max_examples=500)
 def test_polygon(polygon):
@@ -16,6 +18,7 @@ def test_polygon(polygon):
     assert -1.0 <= miny < maxy <= 1.0
 
 
+@pytest.mark.skip
 @given(crowddynamics.testing.field())
 def test_field(field):
     domain, targets, obstacles = field

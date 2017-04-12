@@ -235,8 +235,7 @@ def mkoption(spec: ArgSpec):
                             type=click.Choice(spec.annotation))
     else:
         raise CrowdDynamicsException(
-            "Option not defined for spec: {}".format(spec)
-        )
+            "Option not defined for spec: {}".format(spec))
 
 
 def mkcommand(name, simulation):

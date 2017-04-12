@@ -7,8 +7,7 @@ from crowddynamics.core.structures.agents import agent_type_circular, \
 from crowddynamics.core.vector import wrap_to_pi
 
 
-@numba.jit([f8[:](f8, f8, f8, f8[:], f8[:]),
-            f8[:, :](f8[:, :], f8[:, :], f8[:, :], f8[:, :], f8[:, :])],
+@numba.jit([f8[:](f8, f8, f8, f8[:], f8[:])],
            nopython=True, nogil=True, cache=True)
 def force_adjust(mass, tau_adj, v0, e0, v):
     r"""Adjusting Force
@@ -47,8 +46,7 @@ def force_adjust(mass, tau_adj, v0, e0, v):
     return (mass / tau_adj) * (v0 * e0 - v)
 
 
-@numba.jit([f8(f8, f8, f8, f8, f8, f8),
-            f8[:](f8[:], f8[:], f8[:], f8[:], f8[:], f8[:])],
+@numba.jit([f8(f8, f8, f8, f8, f8, f8)],
            nopython=True, nogil=True, cache=True)
 def torque_adjust(inertia_rot, tau_rot, phi_0, phi, omega_0, omega):
     r"""Adjusting torque
