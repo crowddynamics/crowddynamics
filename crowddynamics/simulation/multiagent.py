@@ -26,6 +26,7 @@ from crowddynamics.core.steering.navigation import to_indices
 from crowddynamics.core.structures.agents import is_model, reset_motion
 from crowddynamics.core.structures.obstacles import geom_to_linear_obstacles
 from crowddynamics.core.vector import angle_nx2
+from crowddynamics.exceptions import CrowdDynamicsException
 from crowddynamics.io import load_config, save_data
 from crowddynamics.taskgraph import Node
 from loggingtools import log_with
@@ -172,7 +173,6 @@ class MultiAgentSimulation(object):
         """
         self.__tasks = tasks
 
-    @log_with(logger)
     def update(self):
         """Execute new iteration cycle of the simulation."""
         for node in PostOrderIter(self.tasks.root):
@@ -187,7 +187,9 @@ class MultiAgentProcess(Process):
     """
     logger = logging.getLogger(__name__)
     # End of Simulation. Value that is injected into queue when simulation ends.
-    EOS = None
+
+    class EndProcess(object):
+        """Marker for end of simulation"""
 
     def __init__(self, simulation, queue, maxiterations=None):
         """Init MultiAgentProcess
@@ -209,10 +211,16 @@ class MultiAgentProcess(Process):
         stop is called. This method is called automatically by Process class
         when start is called."""
         while not self.exit.is_set():
-            self.simulation.update()
+            try:
+                self.simulation.update()
+            except CrowdDynamicsException as error:
+                self.logger.error('Simulation stopped to error: {}'.format(
+                    error))
+                self.stop()
+
             if self.maxiter and self.simulation.iterations > self.maxiter:
                 self.stop()
-        self.queue.put(self.EOS)
+        self.queue.put(self.EndProcess)
 
     @log_with(logger)
     def stop(self):

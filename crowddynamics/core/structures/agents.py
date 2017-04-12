@@ -163,7 +163,7 @@ def is_model(agents, model):
     Returns:
         bool:
     """
-    return agents.dtype is AgentModelToType[model]
+    return hash(agents.dtype) == hash(AgentModelToType[model])
 
 
 def of_model(agents):
