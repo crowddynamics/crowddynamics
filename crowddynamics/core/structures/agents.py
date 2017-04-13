@@ -147,6 +147,8 @@ AgentTypeToModel = {
     agent_type_three_circle: 'three_circle',
 }
 
+AgentModels = list(AgentModelToType)
+
 
 def register_agent_model(name, dtype):
     AgentModelToType[name] = dtype

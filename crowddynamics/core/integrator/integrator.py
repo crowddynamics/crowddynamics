@@ -3,7 +3,7 @@ import numpy as np
 from numba import f8, void, typeof
 
 from crowddynamics.core.structures.agents import agent_type_three_circle, \
-    agent_type_circular
+    agent_type_circular, shoulders, front
 from crowddynamics.core.vector.vector2D import wrap_to_pi, length
 
 
@@ -96,6 +96,8 @@ def rotational(agents, dt):
         agent['orientation'] += agent['angular_velocity'] * dt + angular_acceleration / 2 * dt ** 2
         agent['angular_velocity'] += angular_acceleration * dt
         agent['orientation'] = wrap_to_pi(agent['orientation'])
+    shoulders(agents)
+    front(agents)
 
 
 def euler_integration(agents, dt_min, dt_max):
