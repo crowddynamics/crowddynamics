@@ -43,11 +43,6 @@ pip install -q \
     hypothesis \
     pytest-benchmark \
     codecov \
-    graphviz \
-    sphinx \
-    sphinx_rtd_theme \
-    sphinx-autobuild \
-    sphinxcontrib-programoutput
 
 
 # Install crowddynamics
