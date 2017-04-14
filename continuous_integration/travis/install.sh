@@ -7,7 +7,6 @@
 wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
 bash miniconda.sh -b -p $HOME/miniconda
 export PATH=$HOME/miniconda/bin:$PATH
-source activate $CONDA_ENV
 conda update --yes conda
 
 # The next couple lines fix a crash with multiprocessing on Travis and are not specific to using Miniconda
@@ -21,6 +20,8 @@ conda env create \
       -n $CONDA_ENV \
       python=$PYTHON \
       -f environment-dev.yml
+
+source activate $CONDA_ENV
 
 # Install crowddynamics
 python setup.py install
