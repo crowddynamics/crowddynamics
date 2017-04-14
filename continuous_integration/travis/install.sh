@@ -16,7 +16,7 @@ sudo ln -s /run/shm /dev/shm
 # Install conda environment from file
 conda create --quiet --yes --name $CONDA_ENV python=$PYTHON
 source activate $CONDA_ENV
-conda install --quiet -c conda-forge  \
+conda install --quiet --yes -c conda-forge  \
     numpy \
     numba \
     scipy \
