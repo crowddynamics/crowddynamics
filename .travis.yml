@@ -1,31 +1,29 @@
-# Outline of this travis setup is modified from numba's setup
-# http://numba.pydata.org/
+# Some examples configurations:
+# https://github.com/numba/numba/tree/master/buildscripts
+# https://github.com/dask/dask/tree/master/continuous_integration
 #
 # Resources
 # https://lint.travis-ci.org/
 # https://gist.github.com/dan-blanchard/7045057
 # https://docs.travis-ci.com/user/trusty-ci-environment/
 
+language: python
+sudo: true
+os: linux
 dist: trusty
+notifications:
+  email: false
 
 matrix:
     include:
-#        - env: CONDA_ENV=crowd34 PYTHON=python3.4 BUILD_DOC=yes
-        - env: CONDA_ENV=crowd35 PYTHON=python3.5 BUILD_DOC=yes
+        - env: CONDA_ENV=crowd34 PYTHON=python3.4
+        - env: CONDA_ENV=crowd35 PYTHON=python3.5
+        - env: CONDA_ENV=crowd36 PYTHON=python3.6
 
 branches:
     only:
         - master
 
-before_install:
-    - buildscripts/install_miniconda.sh
-    - export PATH=$HOME/miniconda3/bin:$PATH
-    - buildscripts/setup_conda_environment.sh
-install:
-    - buildscripts/build.sh
-
-script:
-    - buildscripts/test.sh
-
-#after_success:
-#    - buildscripts/after_success.sh
+install: source continuous_integration/travis/install.sh
+script: source continuous_integration/travis/run_tests.sh
+#after_success: source continuous_integration/after_success.sh
