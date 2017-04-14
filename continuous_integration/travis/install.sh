@@ -14,14 +14,41 @@ sudo rm -rf /dev/shm
 sudo ln -s /run/shm /dev/shm
 
 # Install conda environment from file
-conda env create \
-      --quiet \
-      --yes \
-      -n $CONDA_ENV \
-      python=$PYTHON \
-      -f environment-dev.yml
-
+conda create --quiet --yes --name $CONDA_ENV python=$PYTHON
 source activate $CONDA_ENV
+conda install --quiet -c conda-forge  \
+    numpy \
+    numba \
+    scipy \
+    scikit-image \
+    shapely \
+    matplotlib \
+    bokeh
+
+pip install -q \
+    configobj \
+    loggingtools \
+    versioneer \
+    typing \
+    sortedcontainers \
+    anytree \
+    ruamel.yaml \
+    scikit-fmm \
+    click \
+    colorama \
+    colorlog \
+    pytest \
+    pytest-cov \
+    coverage \
+    hypothesis \
+    pytest-benchmark \
+    codecov \
+    graphviz \
+    sphinx \
+    sphinx_rtd_theme \
+    sphinx-autobuild \
+    sphinxcontrib-programoutput
+
 
 # Install crowddynamics
 python setup.py install
