@@ -19,14 +19,6 @@ crowddynamics.simulation.multiagent module
     :undoc-members:
     :show-inheritance:
 
-crowddynamics.simulation.taskgraph module
------------------------------------------
-
-.. automodule:: crowddynamics.simulation.taskgraph
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 
 Module contents
 ---------------

@@ -28,6 +28,14 @@ crowddynamics.tests.test_plot module
     :undoc-members:
     :show-inheritance:
 
+crowddynamics.tests.test_taskgraph module
+-----------------------------------------
+
+.. automodule:: crowddynamics.tests.test_taskgraph
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 crowddynamics.tests.test_testing module
 ---------------------------------------
 

@@ -12,14 +12,6 @@ crowddynamics.simulation.tests.test_multiagent module
     :undoc-members:
     :show-inheritance:
 
-crowddynamics.simulation.tests.test_taskgraph module
-----------------------------------------------------
-
-.. automodule:: crowddynamics.simulation.tests.test_taskgraph
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 
 Module contents
 ---------------

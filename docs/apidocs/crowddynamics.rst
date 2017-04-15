@@ -21,14 +21,6 @@ crowddynamics.cli module
     :undoc-members:
     :show-inheritance:
 
-crowddynamics.config module
----------------------------
-
-.. automodule:: crowddynamics.config
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 crowddynamics.exceptions module
 -------------------------------
 
@@ -45,10 +37,26 @@ crowddynamics.io module
     :undoc-members:
     :show-inheritance:
 
+crowddynamics.parse module
+--------------------------
+
+.. automodule:: crowddynamics.parse
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 crowddynamics.plot module
 -------------------------
 
 .. automodule:: crowddynamics.plot
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+crowddynamics.taskgraph module
+------------------------------
+
+.. automodule:: crowddynamics.taskgraph
     :members:
     :undoc-members:
     :show-inheritance:
