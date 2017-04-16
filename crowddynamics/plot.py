@@ -1,40 +1,73 @@
+"""Visualization of simulation geometry"""
 import os
 from collections import Iterable
 from contextlib import contextmanager
 
 import bokeh.io
 import bokeh.plotting
-import numpy as np
+import matplotlib.ticker as plticker
 from matplotlib import pyplot as plt, cm
 from shapely.geometry import LineString, Point, Polygon, LinearRing
 
 
-def plot_distance_map(mgrid, dmap, phi):
-    """
-    Plot distance map
+def plot_field(domain, obstacles, targets, **fig_kw):
+    # TODO: polygon patch
+    # TODO: default styles
+    fig, ax = plt.subplots(**fig_kw)
+
+    return fig, ax
+
+
+def plot_navigation(mgrid, dmap, phi, dir_map=None, frequency=20, **fig_kw):
+    """Plot distance map
 
     Args:
-        mgrid (numpy.meshgrid):
+        mgrid (numpy.ndarray):
+            Array created using numpy.meshgrid
         dmap (numpy.ndarray):
+            Distance map. Plotted as countour.
         phi (numpy.ma.MaskedArray):
+        dir_map (numpy.ndarray): 
+            Direction map. Plotted as quiver.
+        frequency (int): 
+        **fig_kw:
+            Key values for plt.subplots
+    
+    Returns:
+        (Figure, Axes)
+    
+    Examples:
+        >>> mgrid, dmap, phi = distance_map(...)
+        >>> dir_map = direction_map(dmap)
+        >>> fig, ax = plot_navigation(mgrid, dmap, phi, dir_map, 
+        >>>                           figsize=(20, 20))
+        >>> plt.show()
     """
+    fig, ax = plt.subplots(**fig_kw)
+
+    # This locator puts ticks at regular intervals
+    loc = plticker.MultipleLocator(base=0.5)
+    ax.xaxis.set_major_locator(loc)
+    ax.yaxis.set_major_locator(loc)
+
+    # Plot of distance map
     X, Y = mgrid
     bbox = (X.min(), X.max(), Y.min(), Y.max())
-
-    opts = dict(
-        figsize=(12, 12),
-    )
-
-    fig, ax = plt.subplots(**opts)
-
-    # Distance map plot
     ax.imshow(dmap, interpolation='bilinear', origin='lower', cmap=cm.gray,
               extent=bbox)
     ax.contour(X, Y, dmap, 30, linewidths=1, colors='gray')  # Contour lines
     ax.contour(X, Y, phi.mask, [0], linewidths=1, colors='black')  # Obstacles
 
-    # plt.savefig("distance_map_{}.pdf".format(name))
-    ax.show()
+    # Plot of direction map as quiver plot (vector field)
+    if dir_map is not None:
+        U, V = dir_map
+        ax.quiver(X[::frequency, ::frequency],
+                  Y[::frequency, ::frequency],
+                  U[::frequency, ::frequency],
+                  V[::frequency, ::frequency],
+                  units='width')
+
+    return fig, ax
 
 
 def path(filename, save_dir="output",
@@ -49,8 +82,7 @@ def path(filename, save_dir="output",
 
 @contextmanager
 def figure(name, show=False, save=False):
-    """
-    Plot polygons
+    """Bokeh plot
 
     Args:
         name (str):
@@ -76,23 +108,19 @@ def figure(name, show=False, save=False):
         bokeh.io.save(p)
 
 
-def add_shape(fig, shape, *args, **kwargs):
-    """
-    Add Shapely ``shape`` into ``Bokeh`` plot.
+def add_shape(fig, geom, *args, **kwargs):
+    """Add Shapely geom into Bokeh plot.
 
     Args:
         fig (bokeh.plotting.figure.Figure):
-        shape (shapely.geometry.BaseGeometry):
+        geom (shapely.geometry.BaseGeometry):
     """
-    if isinstance(shape, Point):
-        x, y = shape.xy
-        fig.circle(x, y, *args, **kwargs)
-    elif isinstance(shape, (LineString, LinearRing)):
-        coords = np.asarray(shape.coords)
-        fig.line(coords, *args, **kwargs)
-    elif isinstance(shape, Polygon):
-        values = np.asarray(shape.exterior)
-        fig.patch(values[:, 0], values[:, 1], *args, **kwargs)
-    elif isinstance(shape, Iterable):
-        for item in shape:
+    if isinstance(geom, Point):
+        fig.circle(*geom.xy, *args, **kwargs)
+    elif isinstance(geom, (LineString, LinearRing)):
+        fig.line(geom.coords, *args, **kwargs)
+    elif isinstance(geom, Polygon):
+        fig.patch(*geom.exterior.xy, *args, **kwargs)
+    elif isinstance(geom, Iterable):
+        for item in geom:
             add_shape(fig, item, *args, **kwargs)

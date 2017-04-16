@@ -102,6 +102,7 @@ translational = [
     ('target_velocity', np.float64),
     ('target_direction', np.float64, 2),
     ('force', np.float64, 2),
+    ('force_prev', np.float64, 2),
     ('tau_adj', np.float64),
     ('k_soc', np.float64),
     ('tau_0', np.float64),

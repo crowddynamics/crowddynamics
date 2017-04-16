@@ -4,16 +4,20 @@ References:
     - http://toblerity.org/shapely/manual.html
 """
 from collections import Iterable
+from typing import List, Tuple
 
 from shapely import speedups
 from shapely.geometry import Polygon, LineString, LinearRing
-
+from shapely.geometry.base import BaseGeometry
 
 if speedups.available:
     speedups.enable()
 
 
-def geom_to_pairs(geom):
+PointPair = Tuple[float, float]
+
+
+def geom_to_pairs(geom: BaseGeometry) -> List[Tuple[PointPair, PointPair]]:
     """Converts shapes to point pairs.
     
     >>> geom_to_pairs([])
