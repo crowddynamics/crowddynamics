@@ -2,98 +2,181 @@
 
 Continuos shortest path problem
 
-Fast Marching Method.
+Eikonal equation solvers
 
-https://github.com/scikit-fmm/scikit-fmm
+- Fast Marching Method [scikit-fmm]
+- Fast Iterative Method [SCI-Solver_Eikonal]
 
-Fast Iterative Method
+References:
+    .. [scikit-fmm] https://github.com/scikit-fmm/scikit-fmm
+    .. [SCI-Solver_Eikonal] https://github.com/SCIInstitute/SCI-Solver_Eikonal
 
-https://github.com/SCIInstitute/SCI-Solver_Eikonal
-
-
+Attributes:
+    MeshGrid (namedtuple):
+        - values: Tuple (X, Y) of ndarrays of shape (n, m).
+        - shape:
+        - step: 
+        - bounds:
+        - indicer:
+    DistanceMap:
+        Ndarray of shape (n, m) where the values indicate the shortest distance
+        from target.
+    DirectionMap:
+        Tuple (U, V) of ndarray of shape (n, m), where the value are x and y
+        components of a (unit)vector field.
+        
+Todo: 
+    - improve performance
 """
-from collections import Iterable
+from collections import namedtuple
+from typing import Tuple, Optional
 
 import numba
 import numpy as np
 import skfmm
-import skimage.draw
-from shapely.geometry import LineString, Polygon
-from shapely.geometry import Point
+from numba import f8, i8
+from shapely.geometry import Polygon
 from shapely.geometry.base import BaseGeometry
 
-from crowddynamics.core.geometry import geom_to_pairs
+from crowddynamics.core.geometry import geom_to_skimage
+
+MeshGrid = namedtuple('MeshGrid', 'values shape step bounds indicer')
+DistanceMap = np.ma.MaskedArray
+DirectionMap = Tuple[np.ma.MaskedArray, np.ma.MaskedArray]
 
 
-def to_indices(points, step):
-    """To indices
+# Numerical Routines
 
-    Args:
-        points (numpy.ndarray):
-            Points on a continuous grid
-
-        step (float):
-            Step size of the grid
-
-    Returns:
-        np.ndarray:
-            Array of integers. Indices of a point in discrete grid.
-
-    """
-    return np.round(points / step).astype(np.int64)
-
-
-def set_values_to_grid(grid, step, shape, value):
-    """Set values on discrete grid using ``scikit-image``.
+def interpolate_direction_map(mgrid: MeshGrid,
+                              dir_map: DirectionMap) -> DirectionMap:
+    """Interpolate direction map
 
     Args:
-        shape (BaseGeometry):
-            Shapely shape
-
-        grid (numpy.ndarray):
-            Grid to set values
-
-        value (grid.dtype):
-            Value to set to the grid points
-
-        step (float):
-            Step size of the grid
+        mgrid:
+        dir_map:
 
     Returns:
-        None. Values are set to grid.
+        DirectionMap:
     """
-    if isinstance(shape, Point):
-        pass
-    elif isinstance(shape, LineString):
-        points = np.array(geom_to_pairs(shape))
-        points = to_indices(points, step)
-        for args in points:
-            j, i = skimage.draw.line(*args.flatten())
-            grid[i, j] = value
-    elif isinstance(shape, Polygon):
-        points = np.asarray(shape.exterior)
-        points = to_indices(points, step)
-        x, y = points[:, 0], points[:, 1]
-        j, i = skimage.draw.polygon(x, y)
-        grid[i, j] = value
-    elif isinstance(shape, Iterable):
-        for shape_ in shape:
-            set_values_to_grid(grid, step, shape_, value)
+    from scipy.interpolate import griddata
+
+    x, y = mgrid.values
+    u, v = dir_map
+
+    # Invert boolean values, because we want non masked values
+    nomask = u.mask ^ True
+
+    # Stack into shape (n, 2)
+    points = np.stack((y[nomask], x[nomask])).T
+
+    u_out = griddata(points, u[nomask], xi=(y, x), method='nearest')
+    v_out = griddata(points, v[nomask], xi=(y, x), method='nearest')
+
+    return u_out, v_out
 
 
-def meshgrid(step, minx, miny, maxx, maxy):
-    """2-Dimensional meshgrid with inclusive end points ``maxx`` and ``maxy``.
+@numba.jit((f8[:, :], numba.types.Tuple((f8[:, :], f8[:, :])),
+            numba.types.Tuple((f8[:, :], f8[:, :])), f8, f8),
+           nopython=True, nogil=True, cache=True)
+def merge_dir_maps(dmap, dir_map1, dir_map2, radius, strength):
+    r"""
+    Function that merges two direction maps together. Let distance map from
+    obstacles be :math:`\Phi(\mathbf{x})` and :math:`\lambda(\Phi(\mathbf{x}))`
+    be any decreasing function :math:`\lambda^{\prime}(\Phi(\mathbf{x})) < 0` of
+    distance from obstacles such that
+
+    .. math::
+       \lambda(\Phi) &=
+       \begin{cases}
+       1 & \Phi = 0 \\
+       0 & \Phi > M > 0
+       \end{cases}
+
+    Then merged direction map :math:`\hat{\mathbf{e}}_{merged}` is
+
+    .. math::
+       k &= \lambda(\Phi(\mathbf{x})) \\
+       \hat{\mathbf{e}}_{merged} &= k \hat{\mathbf{e}}_{obs} + (1 - k) \hat{\mathbf{e}}_{exits}
+
+    Args:
+        dmap:
+        dir_map1:
+        dir_map2:
+        radius (float):
+            Radius
+        strength (float):
+            Value between (0, 1). Value denoting the strength of dir_map1 at
+            distance of radius.
 
     Returns:
-        numpy.ndarray:
+        Tuple[numpy.ndarray, numpy.ndarray]:
     """
-    # TODO: matrix indexing='ij'
+    # FIXME: artifacts near radius distance from obstacles
+    u1, v1 = dir_map1  # Obstacles
+    u2, v2 = dir_map2  # Targets
+    u_out, v_out = np.copy(u2), np.copy(v2)
+
+    n, m = dmap.shape
+    eps = -4.0e-08
+    for i in range(n):
+        for j in range(m):
+            # Distance from the obstacles
+            x = np.abs(dmap[i, j])
+            if x - radius < eps:
+                # Decreasing function
+                k = strength ** (x / radius)
+                u_out[i, j] = - k * u1[i, j] + (1 - k) * u2[i, j]
+                v_out[i, j] = - k * v1[i, j] + (1 - k) * v2[i, j]
+
+    l = np.hypot(u_out, v_out)
+    return u_out / l, v_out / l
+
+
+# Grid
+
+def meshgrid(step: float, minx: float, miny: float,
+             maxx: float, maxy: float) -> MeshGrid:
+    """2-Dimensional meshgrid with inclusive end points maxx and maxy"""
     x = np.arange(minx, maxx + step, step=step)
     y = np.arange(miny, maxy + step, step=step)
-    return np.meshgrid(x, y, indexing='xy')
+    values = np.meshgrid(x, y, indexing='xy')
+    shape = values[0].shape
+
+    def indicer(position):
+        shifted = np.asarray(position) - np.array((minx, miny))
+        return (shifted // step).astype(np.int64)
+
+    return MeshGrid(
+        values=values, shape=shape, step=step, bounds=(minx, miny, maxx, maxy),
+        indicer=indicer
+    )
 
 
-def distance_map(domain, targets, obstacles, step):
+def values_to_grid(geom: BaseGeometry, grid, indicer, value: float):
+    """Set values on discrete grid using scikit-image
+
+    Args:
+        geom (BaseGeometry):
+            Shapely shape
+        
+        grid (np.ndarray):
+            Grid to set values
+            
+        indicer (Callable): 
+            Function that converts points to indices of a discrete grid. 
+
+        value (float):
+            Value to set to the grid points
+    """
+    for y, x in geom_to_skimage(geom, indicer):
+        grid[x, y] = value
+
+
+# Maps
+
+def distance_map(mgrid: MeshGrid,
+                 targets: BaseGeometry,
+                 obstacles: Optional[BaseGeometry]) -> DistanceMap:
     r"""Distance map
 
     Distance map :math:`S(\mathbf{x})` is obtained by solving *Eikonal equation*
@@ -124,19 +207,13 @@ def distance_map(domain, targets, obstacles, step):
        \end{cases}
 
     Args:
-        domain (Polygon):
-            Domain :math:`\Omega` containing obstacles and targets.
+        mgrid:
 
-        obstacles (shapely.geometry.base.BaseGeometry, optional):
+        obstacles (BaseGeometry, optional):
             Impassable regions :math:`\mathcal{O}` in the domain.
 
-        targets (shapely.geometry.base.BaseGeometry, optional):
+        targets (BaseGeometry, optional):
             Target regions :math:`\mathcal{E}` in the domain.
-
-        step (float):
-            - Positive float
-            - Step size for the meshgrid.
-            - Reference value :math:`0.01\,\mathrm{m}`.
 
     Return:
         (numpy.ndarray, numpy.ndarray, numpy.ma.MaskedArray):
@@ -145,8 +222,6 @@ def distance_map(domain, targets, obstacles, step):
             - ``dmap``
             - ``phi``
     """
-    mgrid = meshgrid(step, *domain.bounds)
-
     # Numerical values for objects in the domain
     empty_region = -1.0
     target_region = 1.0
@@ -155,16 +230,18 @@ def distance_map(domain, targets, obstacles, step):
 
     # Contour used for solving distance map
     # Mask for masked values that represent obstacles for the solver
-    contour = np.full_like(mgrid[0], empty_region, dtype=np.float64)
-    mask = np.full_like(mgrid[0], non_obstacle_region, dtype=np.bool_)
+    contour = np.full(mgrid.shape, empty_region, dtype=np.float64)
+    mask = np.full(mgrid.shape, non_obstacle_region, dtype=np.bool_)
 
-    set_values_to_grid(contour, step, targets, target_region)
-    set_values_to_grid(mask, step, obstacles, obstacle_region)
+    values_to_grid(targets, contour, mgrid.indicer, target_region)
+    if obstacles is not None:
+        values_to_grid(obstacles, mask, mgrid.indicer, obstacle_region)
 
     # Solve distance map using Fast-Marching Method (FMM)
     phi = np.ma.MaskedArray(contour, mask)
-    dmap = skfmm.distance(phi, dx=step)
-    return mgrid, dmap, phi
+    dmap = skfmm.distance(phi, dx=mgrid.step)
+
+    return dmap
 
 
 def travel_time_map(step, domain, targets, obstacles, agents):
@@ -210,9 +287,10 @@ def travel_time_map(step, domain, targets, obstacles, agents):
     return NotImplementedError
 
 
-def direction_map(dmap):
-    r"""
-    Normalized gradient of distance map.
+def direction_map(dmap: DistanceMap) -> DirectionMap:
+    r"""Normalized gradient of distance map.
+
+    Direction map is not defined when length of the gradient is zero.
 
     .. math::
        \hat{\mathbf{e}}_{S} = -\frac{\nabla S(\mathbf{x})}{\| \nabla S(\mathbf{x}) \|}
@@ -224,68 +302,23 @@ def direction_map(dmap):
     Returns:
         numpy.ndarray:
             Direction map. Array of shape: ``dmap.shape + (2,)``
-
     """
+    # TODO: remove artifacts inside the obstacle regions
     u, v = np.gradient(dmap)
     l = np.hypot(u, v)
-    l[l == 0] = 1.0  # Handles l == 0 to avoid zero division
+    l[l == 0] = np.nan  # Avoids zero division
     # Flip order from (row, col) to (x, y)
-    dir_map = np.zeros(u.shape + (2,))
-    dir_map[:, :, 0] = v / l
-    dir_map[:, :, 1] = u / l
-    return dir_map
+    return v / l, u / l
 
 
-@numba.jit(nopython=True)
-def merge_dir_maps(dmap, dir_map1, dir_map2, radius, value):
-    r"""
-    Function that merges two direction maps together. Let distance map from
-    obstacles be :math:`\Phi(\mathbf{x})` and :math:`\lambda(\Phi(\mathbf{x}))`
-    be any decreasing function :math:`\lambda^{\prime}(\Phi(\mathbf{x})) < 0` of
-    distance from obstacles such that
+# Potentials
 
-    .. math::
-       \lambda(\Phi) &=
-       \begin{cases}
-       1 & \Phi = 0 \\
-       0 & \Phi > M > 0
-       \end{cases}
+def static_potential(domain: Polygon, targets: BaseGeometry,
+                     obstacles: BaseGeometry, step: float, radius: float,
+                     value: float) -> Tuple[MeshGrid, DistanceMap, DirectionMap]:
+    r"""Static potential
 
-    Then merged direction map :math:`\hat{\mathbf{e}}_{merged}` is
-
-    .. math::
-       k &= \lambda(\Phi(\mathbf{x})) \\
-       \hat{\mathbf{e}}_{merged} &= k \hat{\mathbf{e}}_{obs} + (1 - k) \hat{\mathbf{e}}_{exits}
-
-    Args:
-        dmap:
-        dir_map1:
-        dir_map2:
-        radius (float):
-            Radius
-        value (float):
-            Value between (0, 1). Value denoting the strength of dir_map1 at
-            distance of radius.
-
-    Returns:
-        numpy.ndarray:
-
-    """
-    n, m = dmap.shape
-    merged = np.copy(dir_map2)
-    for i in range(n):
-        for j in range(m):
-            x = np.abs(dmap[i, j])
-
-            if x < 1.1 * radius:
-                k = value ** (x / radius)  # Decreasing function
-                merged[i, j] = - k * dir_map1[i, j] + (1 - k) * dir_map2[i, j]
-    return merged
-
-
-def static_potential(step, domain, targets, obstacles, radius, value):
-    r"""
-    Static potential is navigation algorithm that does not take into account
+    Navigation algorithm that does not take into account
     the space that is occupied by dynamic agents (aka agents).
 
     Args:
@@ -297,24 +330,34 @@ def static_potential(step, domain, targets, obstacles, radius, value):
         radius (float):
 
     Returns:
-        numpy.ndarray:
+        Tuple[MeshGrid, DirectionMap]:
     """
-    # TODO: interpolation
-    _, dmap_exits, _ = distance_map(domain, targets, obstacles, step)
-    _, dmap_obs, _ = distance_map(domain, obstacles, None, step)
+    # Compute meshgrid for solving distance maps.
+    mgrid = meshgrid(step, *domain.bounds)
 
-    dir_map_exits = direction_map(dmap_exits)
+    # Direction map (vector field) for guiding agents towards targets without
+    # them walking into obstacles.
+    obstacles_buffered = obstacles.buffer(radius).intersection(domain)
+    dmap_exits = distance_map(mgrid, targets, obstacles_buffered)
+    # FIXME: interpolation
+    dir_map_exits = interpolate_direction_map(mgrid, direction_map(dmap_exits))
+
+    # Direction map guiding agents away from the obstacles
+    dmap_obs = distance_map(mgrid, obstacles, None)
     dir_map_obs = direction_map(dmap_obs)
 
-    dir_map = merge_dir_maps(dmap_obs, dir_map_obs, dir_map_exits, radius, value)
+    # Direction map that combines the two direction maps
+    dir_map = merge_dir_maps(dmap_obs, dir_map_obs, dir_map_exits, radius,
+                             value)
 
-    return dir_map
+    return mgrid, dmap_exits, dir_map
 
 
 def dynamic_potential():
-    r"""
-    Dynamic potential is navigation algorithm that takes into account the space
-    that is occupied by dynamic agents (aka agents).
+    r"""Dynamic potential
+
+    Navigation algorithm that takes into account the
+    space that is occupied by dynamic agents (aka agents).
     """
     return NotImplementedError
 
@@ -323,3 +366,51 @@ algorithms = {
     'static_potential': static_potential,
     'dynamic_potential': dynamic_potential
 }
+
+
+# Navigator
+
+
+@numba.jit()
+def inside(a, lower, upper):
+    for l, i, u in zip(lower, a, upper):
+        if not (l <= i < u):
+            return False
+    return True
+
+
+@numba.jit((i8[:, :], numba.types.Tuple((f8[:, :], f8[:, :])), f8[:, :]),
+           nopython=True, nogil=True, cache=True)
+def getdefault(indices, dir_map, defaults):
+    assert indices.shape == defaults.shape
+    out = np.copy(defaults)
+    x, y = dir_map
+    for k in range(len(indices)):
+        i, j = indices[k]
+        if inside((i, j), (0, 0), x.shape):
+            out[k][0] = x[i, j]
+            out[k][1] = y[i, j]
+    return out
+
+
+def navigation(position, old_direction, mgrid, dir_map):
+    """Find directions for positions
+
+    Args:
+        position (numpy.ndarray): Shape (n, 2)
+        step (float):
+        dir_map (Tuple[numpy.ndarray, numpy.ndarray]):
+
+    Returns:
+        numpy.ndarray:
+    
+    References:
+        - https://docs.scipy.org/doc/numpy/reference/arrays.indexing.html
+    """
+    # Flip x and y to array index i and j
+    indices = np.fliplr(mgrid.indicer(position))
+    return getdefault(indices, dir_map, old_direction)
+
+    # x, y = dir_map
+    # inds = indices[:, 0], indices[:, 1]  # Has to be tuple
+    # return np.stack((x[inds], y[inds]), axis=1)

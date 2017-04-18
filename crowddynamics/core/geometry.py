@@ -4,59 +4,90 @@ References:
     - http://toblerity.org/shapely/manual.html
 """
 from collections import Iterable
-from typing import List, Tuple
+from itertools import chain
+from typing import Tuple, Iterator, Callable
 
+import numpy as np
+import skimage.draw
 from shapely import speedups
-from shapely.geometry import Polygon, LineString, LinearRing
-from shapely.geometry.base import BaseGeometry
+from shapely.geometry import Polygon, LineString, Point
+from shapely.geometry.base import BaseGeometry, BaseMultipartGeometry
+
+from crowddynamics.core.structures.obstacles import obstacle_type_linear
 
 if speedups.available:
     speedups.enable()
 
 
 PointPair = Tuple[float, float]
+LineSegment = Tuple[PointPair, PointPair]
 
 
-def geom_to_pairs(geom: BaseGeometry) -> List[Tuple[PointPair, PointPair]]:
+def geom_to_linesegment(geom: BaseGeometry) -> Iterator[LineSegment]:
     """Converts shapes to point pairs.
-    
-    >>> geom_to_pairs([])
-    []
+
     >>> ls = LineString([(1, 2), (3, 4)])
-    >>> geom_to_pairs(ls)
+    >>> list(geom_to_linesegment(ls))
     [((1.0, 2.0), (3.0, 4.0))]
-    >>> lr = LinearRing([(5, 6), (7, 8), (9, 10)])
-    >>> geom_to_pairs(lr)
+    >>> poly = Polygon([(5, 6), (7, 8), (9, 10)])
+    >>> list(geom_to_linesegment(poly))
     [((5.0, 6.0), (7.0, 8.0)),
      ((7.0, 8.0), (9.0, 10.0)),
      ((9.0, 10.0), (5.0, 6.0))]
-    >>> poly = Polygon([(11, 12), (13, 14), (15, 16)])
-    >>> geom_to_pairs(poly)
-    [((11.0, 12.0), (13.0, 14.0)),
-     ((13.0, 14.0), (15.0, 16.0)),
-     ((15.0, 16.0), (11.0, 12.0))]
-    >>> geom_to_pairs((ls, lr, poly))
-    [((1.0, 2.0), (3.0, 4.0)),
-     ((5.0, 6.0), (7.0, 8.0)),
-     ((7.0, 8.0), (9.0, 10.0)),
-     ((9.0, 10.0), (5.0, 6.0)),
-     ((11.0, 12.0), (13.0, 14.0)),
-     ((13.0, 14.0), (15.0, 16.0)),
-     ((15.0, 16.0), (11.0, 12.0))]
+    >>> list(geom_to_linesegment(ls | poly))
+    [((1.0, 2.0), (3.0, 4.0)), 
+     ((5.0, 6.0), (7.0, 8.0)), 
+     ((7.0, 8.0), (9.0, 10.0)), 
+     ((9.0, 10.0), (5.0, 6.0))]
+
+    Args:
+        geom (BaseGeometry): BaseGeometry type.
+
+    Returns:
+        Iterable[LineSegment]: Iterable of linesegments 
+
+    """
+    if isinstance(geom, Point):
+        return iter(())
+    elif isinstance(geom, LineString):
+        return zip(geom.coords[:-1], geom.coords[1:])
+    elif isinstance(geom, Polygon):
+        return zip(geom.exterior.coords[:-1], geom.exterior.coords[1:])
+    elif isinstance(geom, BaseMultipartGeometry):
+        return chain.from_iterable(map(geom_to_linesegment, geom))
+    else:
+        raise TypeError('Argument is not subclass of {}'.format(BaseGeometry))
+
+
+def geom_to_linear_obstacles(geom):
+    """Converts shape(s) to array of linear obstacles."""
+    segments = list(geom_to_linesegment(geom))
+    return np.array(segments, dtype=obstacle_type_linear)
+
+
+def geom_to_skimage(geom: BaseGeometry,
+                    indicer: Callable) -> Tuple[np.ndarray, np.ndarray]:
+    """Convert geom
 
     Args:
         geom: 
-            Shape or iterable of shapes. Iterables can be nested.
+        indicer: Function that converts points to indices of a discrete grid. 
 
-    Returns:
-        list: List of tuples of points pairs. 
-
+    Yields:
+        (np.ndarray, np.ndarray): Returned indices are in matrix order 
+            (row, column) aka (y, x).
     """
-    if isinstance(geom, Iterable):
-        return sum(map(geom_to_pairs, geom), [])
+    if isinstance(geom, Point):
+        pass
+    elif isinstance(geom, LineString):
+        for line in geom_to_linesegment(geom):
+            r0, c0, r1, c1 = indicer(line).flatten()
+            yield skimage.draw.line(r0, c0, r1, c1)
     elif isinstance(geom, Polygon):
-        return geom_to_pairs(geom.exterior)
-    elif isinstance(geom, (LineString, LinearRing)):
-        return list(zip(geom.coords[:-1], geom.coords[1:]))
+        i = indicer(geom.exterior)
+        yield skimage.draw.polygon(i[:, 0], i[:, 1])
+    elif isinstance(geom, BaseMultipartGeometry):
+        for gen in (geom_to_skimage(geo, indicer) for geo in geom):
+            yield from gen
     else:
-        return []
+        raise TypeError

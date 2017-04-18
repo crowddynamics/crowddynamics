@@ -1,13 +1,17 @@
 """Visualization of simulation geometry"""
 import os
-from collections import Iterable
 from contextlib import contextmanager
 
 import bokeh.io
 import bokeh.plotting
 import matplotlib.ticker as plticker
+from bokeh.plotting.figure import Figure
 from matplotlib import pyplot as plt, cm
-from shapely.geometry import LineString, Point, Polygon, LinearRing
+from shapely.geometry import LineString, Point, Polygon
+from shapely.geometry.base import BaseMultipartGeometry, BaseGeometry
+
+
+# Matplotlib
 
 
 def plot_field(domain, obstacles, targets, **fig_kw):
@@ -18,16 +22,15 @@ def plot_field(domain, obstacles, targets, **fig_kw):
     return fig, ax
 
 
-def plot_navigation(mgrid, dmap, phi, dir_map=None, frequency=20, **fig_kw):
+def plot_navigation(mgrid, dmap, dir_map=None, frequency=20, **fig_kw):
     """Plot distance map
 
     Args:
-        mgrid (numpy.ndarray):
+        mgrid:
             Array created using numpy.meshgrid
-        dmap (numpy.ndarray):
+        dmap:
             Distance map. Plotted as countour.
-        phi (numpy.ma.MaskedArray):
-        dir_map (numpy.ndarray): 
+        dir_map: 
             Direction map. Plotted as quiver.
         frequency (int): 
         **fig_kw:
@@ -37,10 +40,31 @@ def plot_navigation(mgrid, dmap, phi, dir_map=None, frequency=20, **fig_kw):
         (Figure, Axes)
     
     Examples:
-        >>> mgrid, dmap, phi = distance_map(...)
-        >>> dir_map = direction_map(dmap)
-        >>> fig, ax = plot_navigation(mgrid, dmap, phi, dir_map, 
-        >>>                           figsize=(20, 20))
+        >>> import matplotlib.pyplot as plt
+        >>> from shapely.geometry import LineString, Polygon
+        >>> 
+        >>> from crowddynamics.core.steering.navigation import distance_map, \
+        >>>     direction_map, meshgrid
+        >>> from crowddynamics.plot import plot_navigation
+        >>> 
+        >>> step = 0.01
+        >>> height = 3.0
+        >>> width = 4.0
+        >>> radius = 0.3
+        >>> 
+        >>> domain = Polygon([(0, 0), (0, height), (width, height), (width, 0)])
+        >>> targets = LineString([(0, height / 2), (0, height)])
+        >>> obstacles = LineString([(0, height / 2), (width * 3 / 4, height / 2)]) | \
+        >>>             domain.exterior - targets
+        >>> 
+        >>> mgrid = meshgrid(step, *domain.bounds)
+        >>> dmap_exits = distance_map(mgrid, targets,
+        >>>                           obstacles.buffer(radius).intersection(domain))
+        >>> dmap_obs = distance_map(mgrid, obstacles, None)
+        >>> dir_map_exits = direction_map(dmap_exits)
+        >>> dir_map_obs = direction_map(dmap_obs)
+        >>> 
+        >>> plot_navigation(mgrid.values, dmap_exits, dir_map_exits, frequency=5, figsize=(16, 16))
         >>> plt.show()
     """
     fig, ax = plt.subplots(**fig_kw)
@@ -56,7 +80,7 @@ def plot_navigation(mgrid, dmap, phi, dir_map=None, frequency=20, **fig_kw):
     ax.imshow(dmap, interpolation='bilinear', origin='lower', cmap=cm.gray,
               extent=bbox)
     ax.contour(X, Y, dmap, 30, linewidths=1, colors='gray')  # Contour lines
-    ax.contour(X, Y, phi.mask, [0], linewidths=1, colors='black')  # Obstacles
+    ax.contour(X, Y, dmap.mask, [0], linewidths=1, colors='black')  # Obstacles
 
     # Plot of direction map as quiver plot (vector field)
     if dir_map is not None:
@@ -78,6 +102,9 @@ def path(filename, save_dir="output",
     os.makedirs(d, exist_ok=True)
     filename = filename.replace(" ", "_")
     return os.path.join(d, filename)
+
+
+# Bokeh
 
 
 @contextmanager
@@ -108,19 +135,23 @@ def figure(name, show=False, save=False):
         bokeh.io.save(p)
 
 
-def add_shape(fig, geom, *args, **kwargs):
+def geom_to_bokeh(fig: Figure,
+                  geom: BaseGeometry,
+                  *args, **kwargs):
     """Add Shapely geom into Bokeh plot.
 
     Args:
-        fig (bokeh.plotting.figure.Figure):
-        geom (shapely.geometry.BaseGeometry):
+        fig (Figure):
+        geom (BaseGeometry):
     """
     if isinstance(geom, Point):
-        fig.circle(*geom.xy, *args, **kwargs)
-    elif isinstance(geom, (LineString, LinearRing)):
+        fig.circle(geom.coords, *args, **kwargs)
+    elif isinstance(geom, LineString):
         fig.line(geom.coords, *args, **kwargs)
     elif isinstance(geom, Polygon):
-        fig.patch(*geom.exterior.xy, *args, **kwargs)
-    elif isinstance(geom, Iterable):
+        fig.patch(geom.exterior.coords, *args, **kwargs)
+    elif isinstance(geom, BaseMultipartGeometry):
         for item in geom:
-            add_shape(fig, item, *args, **kwargs)
+            geom_to_bokeh(fig, item, *args, **kwargs)
+    else:
+        raise TypeError

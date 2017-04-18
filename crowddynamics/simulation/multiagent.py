@@ -1,9 +1,34 @@
-"""Tools for creating multiagent simulations.
+"""Multi-Agent Simulation
 
-- Domain
-- Obstacles
-- Targets
-- Agents
+Tools for creating multiagent simulations.
+
+.. csv-table:: Model Specification
+
+   "Continuous Space", ":math:`\mathbb{R}^2`"
+   "Microscopic", "Agents are modelled as rigid bodies."
+   "Social Force Model", "Classical mechanics for modelling movement."
+
+Multi-agent simulation attributes
+
+.. list-table::
+    :header-rows: 1
+
+    * - Name
+      - Symbol
+      - Type
+    * - Domain
+      - :math:`\Omega`
+      - Polygon
+    * - Obstacles
+      - :math:`\mathcal{O}`
+      - LineString
+    * - Targets
+      - :math:`\mathcal{E}` 
+      - Linestring
+    * - Agents
+      - :math:`\mathcal{A}`
+      - Circle(s)
+
 """
 import logging
 import multiprocessing
@@ -12,7 +37,10 @@ from multiprocessing import Process, Event
 
 import numpy as np
 from anytree.iterators import PostOrderIter
+from loggingtools import log_with
+from matplotlib.path import Path
 
+from crowddynamics.core.geometry import geom_to_linear_obstacles
 from crowddynamics.core.integrator import euler_integration
 from crowddynamics.core.interactions.interactions import \
     agent_agent_block_list_circular, agent_agent_block_list_three_circle, \
@@ -21,16 +49,13 @@ from crowddynamics.core.motion.adjusting import force_adjust_agents, \
     torque_adjust_agents
 from crowddynamics.core.motion.fluctuation import force_fluctuation, \
     torque_fluctuation
-from crowddynamics.core.steering import static_potential
-from crowddynamics.core.steering.navigation import to_indices
+from crowddynamics.core.steering.navigation import navigation
+from crowddynamics.core.steering.navigation import static_potential
 from crowddynamics.core.structures.agents import is_model, reset_motion
-from crowddynamics.core.structures.obstacles import geom_to_linear_obstacles
 from crowddynamics.core.vector import angle_nx2
 from crowddynamics.exceptions import CrowdDynamicsException
 from crowddynamics.io import load_config, save_data
 from crowddynamics.taskgraph import Node
-from loggingtools import log_with
-from matplotlib.path import Path
 
 BASE_DIR = os.path.dirname(__file__)
 AGENT_CFG_SPEC = os.path.join(BASE_DIR, 'multiagent_spec.cfg')
@@ -268,6 +293,8 @@ def run_parallel(*simulations, queue, maxiter=None):
 
 
 class MASNode(Node):
+    logger = logging.getLogger(__name__)
+
     def __init__(self, simulation):
         """MultiAgentSimulation TaskNode
         
@@ -277,6 +304,7 @@ class MASNode(Node):
         super(MASNode, self).__init__()
         assert isinstance(simulation, MultiAgentSimulation)
         self.simulation = simulation
+        self.logger.info('Init MASNode: {}'.format(self.__class__.__name__))
 
 
 class Integrator(MASNode):
@@ -344,21 +372,22 @@ class Navigation(MASNode):
 
     def __init__(self, simulation):
         super().__init__(simulation)
-        self.step = CONFIG['navigation']['step']
-        self.direction_map = static_potential(
-            self.step, self.simulation.domain, self.simulation.targets,
-            self.simulation.obstacles,
+        self.mgrid, self.distance_map, self.direction_map = static_potential(
+            self.simulation.domain, self.simulation.targets,
+            self.simulation.obstacles, CONFIG['navigation']['step'],
             radius=CONFIG['navigation']['radius'],
             value=CONFIG['navigation']['value'])
 
     def update(self):
-        points = self.simulation.agents_array['position']
-        indices = to_indices(points, self.step)
-        indices = np.fliplr(indices)
-        # http://docs.scipy.org/doc/numpy/reference/arrays.indexing.html
-        # TODO: Handle index out of bounds -> numpy.take
-        d = self.direction_map[indices[:, 0], indices[:, 1], :]
-        self.simulation.agents_array['target_direction'] = d
+        # points = self.simulation.agents_array['position']
+        # indices = to_indices(points, self.step)
+        # indices = np.fliplr(indices)
+        # d = self.direction_map[indices[:, 0], indices[:, 1], :]
+        # self.simulation.agents_array['target_direction'] = d
+        position = self.simulation.agents_array['position']
+        direction = self.simulation.agents_array['target_direction']
+        d = navigation(position, direction, self.mgrid, self.direction_map)
+        self.simulation.agents_array['target_direction'][:] = d
 
 
 class Orientation(MASNode):
