@@ -4,9 +4,8 @@ from contextlib import contextmanager
 
 import bokeh.io
 import bokeh.plotting
-import matplotlib.ticker as plticker
 from bokeh.plotting.figure import Figure
-from matplotlib import pyplot as plt, cm
+from matplotlib import cm
 from shapely.geometry import LineString, Point, Polygon
 from shapely.geometry.base import BaseMultipartGeometry, BaseGeometry
 
@@ -14,18 +13,18 @@ from shapely.geometry.base import BaseMultipartGeometry, BaseGeometry
 # Matplotlib
 
 
-def plot_field(domain, obstacles, targets, **fig_kw):
+def plot_field(domain, obstacles, targets):
     # TODO: polygon patch
     # TODO: default styles
-    fig, ax = plt.subplots(**fig_kw)
-
-    return fig, ax
+    pass
 
 
-def plot_navigation(mgrid, dmap, dir_map=None, frequency=20, **fig_kw):
+def plot_navigation(fig, ax, mgrid, dmap, dir_map=None, frequency=20):
     """Plot distance map
 
     Args:
+        fig: Matplotlib figure instance
+        ax: Matplotlib Axes instance
         mgrid:
             Array created using numpy.meshgrid
         dmap:
@@ -67,20 +66,13 @@ def plot_navigation(mgrid, dmap, dir_map=None, frequency=20, **fig_kw):
         >>> plot_navigation(mgrid.values, dmap_exits, dir_map_exits, frequency=5, figsize=(16, 16))
         >>> plt.show()
     """
-    fig, ax = plt.subplots(**fig_kw)
-
-    # This locator puts ticks at regular intervals
-    loc = plticker.MultipleLocator(base=0.5)
-    ax.xaxis.set_major_locator(loc)
-    ax.yaxis.set_major_locator(loc)
-
-    # Plot of distance map
     X, Y = mgrid
     bbox = (X.min(), X.max(), Y.min(), Y.max())
     ax.imshow(dmap, interpolation='bilinear', origin='lower', cmap=cm.gray,
               extent=bbox)
     ax.contour(X, Y, dmap, 30, linewidths=1, colors='gray')  # Contour lines
-    ax.contour(X, Y, dmap.mask, [0], linewidths=1, colors='black')  # Obstacles
+    if hasattr(dmap, 'mask'):
+        ax.contour(X, Y, dmap.mask, [0], linewidths=1, colors='black')  # Obstacles
 
     # Plot of direction map as quiver plot (vector field)
     if dir_map is not None:
