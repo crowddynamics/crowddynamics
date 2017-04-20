@@ -1,10 +1,13 @@
 import matplotlib.pyplot as plt
 import matplotlib.ticker as plticker
+from crowddynamics.logging import setup_logging
 from shapely.geometry import LineString, Polygon
 
 from crowddynamics.core.steering.navigation import meshgrid, distance_map, \
     interpolate_direction_map, direction_map, merge_dir_maps
 from crowddynamics.plot import plot_navigation
+
+setup_logging()
 
 step = 0.01
 height = 3.0
@@ -46,7 +49,6 @@ for dmap, dir_map, name in zip([dmap_exits, dmap_obs, dmap_exits],
     ax.yaxis.set_major_locator(loc)
 
     plot_navigation(fig, ax, mgrid.values, dmap, dir_map, 5)
-    for fmt in ('png', 'pdf'):
-        plt.savefig('navigation_' + name + '.' + fmt)
-
-# plt.show()
+    # for fmt in ('png', 'pdf'):
+    #     plt.savefig('navigation_' + name + '.' + fmt)
+plt.show()
