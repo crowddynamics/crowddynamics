@@ -37,11 +37,25 @@ def test_angle(a):
     assert -np.pi <= ans <= np.pi
 
 
+@given(a=real(shape=(10, 2)))
+def test_angle_vec(a):
+    ans = angle(a)
+    assert isinstance(ans, np.ndarray)
+    assert np.all((-np.pi <= ans) & (ans <= np.pi))
+
+
 @given(a=real(shape=2))
 def test_length(a):
     ans = length(a)
     assert isinstance(ans, float)
     assert ans >= 0
+
+
+@given(a=real(shape=(10, 2)))
+def test_length_vec(a):
+    ans = length(a)
+    assert isinstance(ans, np.ndarray)
+    assert np.all(ans >= 0)
 
 
 @given(a=real(shape=2), b=real(shape=2))

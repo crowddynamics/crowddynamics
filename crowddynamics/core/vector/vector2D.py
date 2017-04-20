@@ -1,10 +1,10 @@
 r"""Functions operating on 2-Dimensional vectors."""
 import numba
 import numpy as np
-from numba import float64, void
+from numba import f8, void
 
 
-@numba.vectorize([float64(float64)], cache=True)
+@numba.vectorize([f8(f8)], cache=True)
 def wrap_to_pi(rad):
     r"""
     Wraps angles in rad in radians, to the interval [−pi pi].
@@ -36,7 +36,7 @@ def wrap_to_pi(rad):
         return rad_
 
 
-@numba.jit(float64[:](float64[:]), nopython=True, nogil=True, cache=True)
+@numba.jit(f8[:](f8[:]), nopython=True, nogil=True, cache=True)
 def rotate90(vec2d):
     r"""
     90 degree counterclockwise rotation for 2D vector.
@@ -53,7 +53,7 @@ def rotate90(vec2d):
     return rot
 
 
-@numba.jit(float64[:](float64[:]), nopython=True, nogil=True, cache=True)
+@numba.jit(f8[:](f8[:]), nopython=True, nogil=True, cache=True)
 def rotate270(vec2d):
     r"""
     90 degree clockwise rotation for 2D vector.
@@ -70,65 +70,35 @@ def rotate270(vec2d):
     return rot
 
 
-@numba.jit(float64(float64[:]), nopython=True, nogil=True, cache=True)
+@numba.jit([f8(f8[:]), f8[:](f8[:, :])],
+           nopython=True, nogil=True, cache=True)
 def angle(vec2d):
-    r"""
-    Angle of 2d vector in radians.
+    r"""Angle of 2d vector in radians.
 
     Args:
         vec2d (numpy.ndarray): 2D vector
 
     Returns:
-        float: Angle in [-pi, pi]
+        float|numpy.ndarray: Angle in [-pi, pi]
     """
-    return np.arctan2(vec2d[1], vec2d[0])
+    return np.arctan2(vec2d[..., 1], vec2d[..., 0])
 
 
-# TODO: unify with angle
-@numba.jit(float64[:](float64[:, :]), nopython=True, nogil=True, cache=True)
-def angle_nx2(vec2d):
-    r"""
-    Angle of 2d vectors in radians.
-
-    Args:
-        vec2d (numpy.ndarray):
-
-    Returns:
-        numpy.ndarray:
-    """
-    return np.arctan2(vec2d[:, 1], vec2d[:, 0])
-
-
-@numba.jit(float64(float64[:]), nopython=True, nogil=True, cache=True)
+@numba.jit([f8(f8[:]), f8[:](f8[:, :])],
+           nopython=True, nogil=True, cache=True)
 def length(vec2d):
-    r"""
-    Length
+    r"""Length
 
     Args:
         vec2d (numpy.ndarray): 2D vector
 
     Returns:
-        float: Length of the vector in [0, infty)
+        float|numpy.ndarray: Length of the vector in [0, infty)
     """
-    return np.hypot(vec2d[0], vec2d[1])
+    return np.hypot(vec2d[..., 0], vec2d[..., 1])
 
 
-# TODO: unify with length
-@numba.jit(float64[:](float64[:, :]), nopython=True, nogil=True, cache=True)
-def length_nx2(vec2d):
-    r"""
-    Length
-
-    Args:
-        vec2d (numpy.ndarray):
-
-    Returns:
-        numpy.ndarray:
-    """
-    return np.hypot(vec2d[:, 0], vec2d[:, 1])
-
-
-@numba.jit(float64(float64[:], float64[:]), nopython=True, nogil=True, cache=True)
+@numba.jit(f8(f8[:], f8[:]), nopython=True, nogil=True, cache=True)
 def dot(v0, v1):
     r"""
     Dot product for 2D vectors.
@@ -143,7 +113,7 @@ def dot(v0, v1):
     return v0[0] * v1[0] + v0[1] * v1[1]
 
 
-@numba.jit(float64(float64[:], float64[:]), nopython=True, nogil=True, cache=True)
+@numba.jit(f8(f8[:], f8[:]), nopython=True, nogil=True, cache=True)
 def cross(v0, v1):
     r"""
     Cross product for 2D vectors. Right corner from 3D cross product.
@@ -158,7 +128,7 @@ def cross(v0, v1):
     return v0[0] * v1[1] - v0[1] * v1[0]
 
 
-@numba.jit(float64[:](float64[:]), nopython=True, nogil=True, cache=True)
+@numba.jit(f8[:](f8[:]), nopython=True, nogil=True, cache=True)
 def normalize(vec2d):
     r"""
     Normalize
@@ -174,7 +144,7 @@ def normalize(vec2d):
     return vec2d / length(vec2d)
 
 
-@numba.jit(void(float64[:], float64), nopython=True, nogil=True, cache=True)
+@numba.jit(void(f8[:], f8), nopython=True, nogil=True, cache=True)
 def truncate(v, l):
     r"""
     Truncate vector :math:`\mathbf{v}` to length :math:`l > 0` if
@@ -198,6 +168,6 @@ def truncate(v, l):
         v *= l / vlen
 
 
-@numba.jit(float64[:](float64), nopython=True, nogil=True, cache=True)
+@numba.jit(f8[:](f8), nopython=True, nogil=True, cache=True)
 def unit_vector(orientation):
     return np.array([np.cos(orientation), np.sin(orientation)])

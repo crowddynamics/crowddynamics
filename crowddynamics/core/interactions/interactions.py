@@ -8,6 +8,7 @@ Todo:
     - Rework walls
     - Toggleable helbing/power law
     - Neighborhood
+    - Social force between agent and wall can be made redundant via navigation
 
 """
 

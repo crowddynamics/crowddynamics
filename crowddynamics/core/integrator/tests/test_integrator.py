@@ -1,8 +1,8 @@
 import pytest
 from hypothesis import given, assume
 
-from crowddynamics.core.integrator import adaptive_timestep, \
-    euler_integration, velocity_verlet
+from crowddynamics.core.integrator.integrator import adaptive_timestep, \
+    euler_integrator, velocity_verlet_integrator
 from crowddynamics.testing import real
 
 
@@ -26,7 +26,7 @@ def test_adaptive_timestep2(agents_three_circle, dt_min, dt_max):
        dt_max=real(min_value=0, max_value=10.0, exclude_zero='near'))
 def test_euler_integration1(agents_circular, dt_min, dt_max):
     assume(0 < dt_min < dt_max)
-    dt = euler_integration(agents_circular.array, dt_min, dt_max)
+    dt = euler_integrator(agents_circular.array, dt_min, dt_max)
     assert 0 < dt_min <= dt <= dt_max
 
 
@@ -34,7 +34,7 @@ def test_euler_integration1(agents_circular, dt_min, dt_max):
        dt_max=real(min_value=0, max_value=10.0, exclude_zero='near'))
 def test_euler_integration2(agents_three_circle, dt_min, dt_max):
     assume(0 < dt_min < dt_max)
-    dt = euler_integration(agents_three_circle.array, dt_min, dt_max)
+    dt = euler_integrator(agents_three_circle.array, dt_min, dt_max)
     assert 0 < dt_min <= dt <= dt_max
 
 
@@ -43,6 +43,6 @@ def test_euler_integration2(agents_three_circle, dt_min, dt_max):
        dt_max=real(min_value=0, max_value=10.0))
 def test_velocity_verlet(agents, dt_min, dt_max):
     assume(0 < dt_min < dt_max)
-    integrator = velocity_verlet(agents, dt_min, dt_max)
+    integrator = velocity_verlet_integrator(agents, dt_min, dt_max)
     for _, dt in zip(range(10), integrator):
         assert 0 < dt_min <= dt <= dt_max

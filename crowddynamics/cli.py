@@ -25,8 +25,6 @@ Todo:
 """
 import logging
 import os
-import platform
-import sys
 from pprint import pformat
 
 import click
@@ -35,10 +33,13 @@ from configobj import ConfigObj
 from crowddynamics import __version__
 from crowddynamics.exceptions import CrowdDynamicsException, \
     NotACrowdDynamicsDirectory, DirectoryIsAlreadyCrowdDynamicsDirectory
-
+from crowddynamics.logging import setup_logging, LOGLEVELS
 from crowddynamics.parse import parse_signature, ArgSpec
 from crowddynamics.simulation.multiagent import run_parallel, run_sequentially
-from loggingtools import setup_logging
+
+
+CROWDDYNAMICS_CFG = 'crowddynamics.cfg'
+ENVIRONMENT_YML = 'environment.yml'
 
 
 class Colors:
@@ -46,24 +47,6 @@ class Colors:
     NEUTRAL = 'blue'
     POSITIVE = 'green'
     NEGATIVE = 'red'
-
-
-LOGLEVELS = [
-    logging.CRITICAL, logging.FATAL, logging.ERROR, logging.WARNING,
-    logging.WARN, logging.INFO, logging.DEBUG, logging.NOTSET,
-    'CRITICAL', 'FATAL', 'ERROR', 'WARNING', 'WARN', 'INFO', 'DEBUG', 'NOTSET'
-]
-BASE_DIR = os.path.dirname(__file__)
-LOG_CFG = os.path.join(BASE_DIR, 'logging.yaml')
-CROWDDYNAMICS_CFG = 'crowddynamics.cfg'
-ENVIRONMENT_YML = 'environment.yml'
-
-
-def user_info():
-    logger = logging.getLogger(__name__)
-    logger.info("Platform: %s", platform.platform())
-    logger.info("Path: %s", sys.path[0])
-    logger.info("Python: %s", sys.version[0:5])
 
 
 @click.group(help="CrowdDynamics {version}. A tool for building and running "
@@ -204,9 +187,7 @@ def list_of_simulations():
 @click.pass_context
 def run(context, loglevel, num, maxiter, timeout, parallel, profile):
     """Run simulation from the command-line."""
-    # TODO: set loglevel
-    setup_logging(LOG_CFG)
-    user_info()
+    setup_logging(loglevel)
 
     # Pass the options into the context
     context.obj = dict(

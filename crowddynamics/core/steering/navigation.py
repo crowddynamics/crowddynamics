@@ -34,11 +34,12 @@ from typing import Tuple, Optional
 import numba
 import numpy as np
 import skfmm
+from crowddynamics.core.geometry import geom_to_skimage
+from loggingtools.log_with import log_with
 from numba import f8, i8
+from scipy.interpolate import NearestNDInterpolator
 from shapely.geometry import Polygon
 from shapely.geometry.base import BaseGeometry
-
-from crowddynamics.core.geometry import geom_to_skimage
 
 MeshGrid = namedtuple('MeshGrid', 'values shape step bounds indicer')
 DistanceMap = np.ma.MaskedArray
@@ -47,6 +48,7 @@ DirectionMap = Tuple[np.ma.MaskedArray, np.ma.MaskedArray]
 
 # Numerical Routines
 
+@log_with(arguments=False, timed=True)
 def interpolate_direction_map(mgrid: MeshGrid,
                               dir_map: DirectionMap) -> DirectionMap:
     """Interpolate direction map
@@ -58,8 +60,6 @@ def interpolate_direction_map(mgrid: MeshGrid,
     Returns:
         DirectionMap:
     """
-    from scipy.interpolate import griddata
-
     x, y = mgrid.values
     u, v = dir_map
 
@@ -69,20 +69,26 @@ def interpolate_direction_map(mgrid: MeshGrid,
     # Stack into shape (n, 2)
     points = np.stack((y[nomask], x[nomask])).T
 
-    u_out = griddata(points, u[nomask], xi=(y, x), method='nearest')
-    v_out = griddata(points, v[nomask], xi=(y, x), method='nearest')
+    # FIXME: interpolation with many points is slow
+    ip_u = NearestNDInterpolator(points, u[nomask], rescale=False)
+    ip_v = NearestNDInterpolator(points, v[nomask], rescale=False)
+
+    u_out = ip_u((y, x))
+    v_out = ip_v((y, x))
 
     return u_out, v_out
 
 
+@log_with(arguments=False, timed=True)
 @numba.jit((f8[:, :], numba.types.Tuple((f8[:, :], f8[:, :])),
             numba.types.Tuple((f8[:, :], f8[:, :])), f8, f8),
            nopython=True, nogil=True, cache=True)
-def merge_dir_maps(dmap, dir_map1, dir_map2, radius, strength):
-    r"""
+def merge_dir_maps(dmap, dir_map_obs, dir_map_targets, radius, strength):
+    r"""Merges direction maps
+
     Function that merges two direction maps together. Let distance map from
     obstacles be :math:`\Phi(\mathbf{x})` and :math:`\lambda(\Phi(\mathbf{x}))`
-    be any decreasing function :math:`\lambda^{\prime}(\Phi(\mathbf{x})) < 0` of
+    be any decreasing function :math:`\frac{\partial}{\partial\Phi}\lambda(\Phi(\mathbf{x})) < 0` of
     distance from obstacles such that
 
     .. math::
@@ -100,8 +106,8 @@ def merge_dir_maps(dmap, dir_map1, dir_map2, radius, strength):
 
     Args:
         dmap:
-        dir_map1:
-        dir_map2:
+        dir_map_obs:
+        dir_map_targets:
         radius (float):
             Radius
         strength (float):
@@ -112,31 +118,43 @@ def merge_dir_maps(dmap, dir_map1, dir_map2, radius, strength):
         Tuple[numpy.ndarray, numpy.ndarray]:
     """
     # FIXME: artifacts near radius distance from obstacles
-    u1, v1 = dir_map1  # Obstacles
-    u2, v2 = dir_map2  # Targets
+    u1, v1 = dir_map_obs
+    u2, v2 = dir_map_targets
     u_out, v_out = np.copy(u2), np.copy(v2)
 
     n, m = dmap.shape
-    eps = -4.0e-08
     for i in range(n):
         for j in range(m):
             # Distance from the obstacles
             x = np.abs(dmap[i, j])
-            if x - radius < eps:
+            if 0 < x < radius:
                 # Decreasing function
                 k = strength ** (x / radius)
                 u_out[i, j] = - k * u1[i, j] + (1 - k) * u2[i, j]
                 v_out[i, j] = - k * v1[i, j] + (1 - k) * v2[i, j]
 
+    # Normalize the output
     l = np.hypot(u_out, v_out)
     return u_out / l, v_out / l
 
 
 # Grid
 
+@log_with(arguments=False, timed=True)
 def meshgrid(step: float, minx: float, miny: float,
              maxx: float, maxy: float) -> MeshGrid:
-    """2-Dimensional meshgrid with inclusive end points maxx and maxy"""
+    """2-Dimensional meshgrid with inclusive end points maxx and maxy
+
+    Args:
+        step (float): 
+        minx (float): 
+        miny (float): 
+        maxx (float): 
+        maxy (float):
+
+    Returns:
+        MeshGrid: 
+    """
     x = np.arange(minx, maxx + step, step=step)
     y = np.arange(miny, maxy + step, step=step)
     values = np.meshgrid(x, y, indexing='xy')
@@ -152,6 +170,7 @@ def meshgrid(step: float, minx: float, miny: float,
     )
 
 
+@log_with(arguments=False, timed=True)
 def values_to_grid(geom: BaseGeometry, grid, indicer, value: float):
     """Set values on discrete grid using scikit-image
 
@@ -168,12 +187,13 @@ def values_to_grid(geom: BaseGeometry, grid, indicer, value: float):
         value (float):
             Value to set to the grid points
     """
-    for y, x in geom_to_skimage(geom, indicer):
-        grid[x, y] = value
+    for x, y in geom_to_skimage(geom, indicer):
+        grid[y, x] = value
 
 
 # Maps
 
+@log_with(arguments=False, timed=True)
 def distance_map(mgrid: MeshGrid,
                  targets: BaseGeometry,
                  obstacles: Optional[BaseGeometry]) -> DistanceMap:
@@ -287,6 +307,7 @@ def travel_time_map(step, domain, targets, obstacles, agents):
     return NotImplementedError
 
 
+@log_with(arguments=False, timed=True)
 def direction_map(dmap: DistanceMap) -> DirectionMap:
     r"""Normalized gradient of distance map.
 
@@ -313,9 +334,11 @@ def direction_map(dmap: DistanceMap) -> DirectionMap:
 
 # Potentials
 
+@log_with(timed=True)
 def static_potential(domain: Polygon, targets: BaseGeometry,
                      obstacles: BaseGeometry, step: float, radius: float,
-                     value: float) -> Tuple[MeshGrid, DistanceMap, DirectionMap]:
+                     value: float) -> Tuple[
+    MeshGrid, DistanceMap, DirectionMap]:
     r"""Static potential
 
     Navigation algorithm that does not take into account
@@ -338,9 +361,9 @@ def static_potential(domain: Polygon, targets: BaseGeometry,
     # Direction map (vector field) for guiding agents towards targets without
     # them walking into obstacles.
     obstacles_buffered = obstacles.buffer(radius).intersection(domain)
-    dmap_exits = distance_map(mgrid, targets, obstacles_buffered)
-    # FIXME: interpolation
-    dir_map_exits = interpolate_direction_map(mgrid, direction_map(dmap_exits))
+    dmap_targets = distance_map(mgrid, targets, obstacles_buffered)
+    dir_map_exits = interpolate_direction_map(mgrid,
+                                              direction_map(dmap_targets))
 
     # Direction map guiding agents away from the obstacles
     dmap_obs = distance_map(mgrid, obstacles, None)
@@ -350,7 +373,7 @@ def static_potential(domain: Polygon, targets: BaseGeometry,
     dir_map = merge_dir_maps(dmap_obs, dir_map_obs, dir_map_exits, radius,
                              value)
 
-    return mgrid, dmap_exits, dir_map
+    return mgrid, dmap_targets, dir_map
 
 
 def dynamic_potential():
@@ -372,7 +395,7 @@ algorithms = {
 
 
 @numba.jit()
-def inside(a, lower, upper):
+def is_inside(a, lower, upper):
     for l, i, u in zip(lower, a, upper):
         if not (l <= i < u):
             return False
@@ -387,7 +410,7 @@ def getdefault(indices, dir_map, defaults):
     x, y = dir_map
     for k in range(len(indices)):
         i, j = indices[k]
-        if inside((i, j), (0, 0), x.shape):
+        if is_inside((i, j), (0, 0), x.shape):
             out[k][0] = x[i, j]
             out[k][1] = y[i, j]
     return out

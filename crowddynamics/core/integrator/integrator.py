@@ -1,10 +1,9 @@
 import numba
 import numpy as np
-from numba import f8, void, typeof
-
 from crowddynamics.core.structures.agents import agent_type_three_circle, \
     agent_type_circular, shoulders, front
 from crowddynamics.core.vector.vector2D import wrap_to_pi, length
+from numba import f8, void, typeof
 
 
 @numba.jit([f8(typeof(agent_type_circular)[:], f8, f8),
@@ -104,7 +103,7 @@ def rotational_euler(agents, dt):
     front(agents)
 
 
-def euler_integration(agents, dt_min, dt_max):
+def euler_integrator(agents, dt_min, dt_max):
     r"""
     Differential system is integrated using numerical integration scheme using
     discrete adaptive timestep :math:`\Delta t`.
@@ -143,20 +142,22 @@ def euler_integration(agents, dt_min, dt_max):
     return dt
 
 
+@numba.jit([void(typeof(agent_type_circular)[:], f8),
+            void(typeof(agent_type_three_circle)[:], f8)],
+           nopython=True, nogil=True, cache=True)
 def translational_verlet(agents, dt):
     """Translational motion using velocity verlet method"""
     for agent in agents:
         old_acceleration = agent['force_prev'] / agent['mass']
         new_acceleration = agent['force'] / agent['mass']
-        agents['velocity'] += (old_acceleration + new_acceleration) / 2 * dt
-        agents['position'] += agents['velocity'] * dt + \
-                              new_acceleration / 2 * dt ** 2
+        agent['velocity'][:] += (old_acceleration + new_acceleration) / 2 * dt
+        agent['position'][:] += agent['velocity'] * dt + new_acceleration / 2 * dt ** 2
 
         # save old force for next iteration
-        agent['force_prev'] = agent['force']
+        agent['force_prev'][:] = agent['force']
 
 
-def velocity_verlet(agents, dt_min, dt_max):
+def velocity_verlet_integrator(agents, dt_min, dt_max):
     r"""Velocity verlet
 
     .. math::
@@ -189,6 +190,6 @@ def velocity_verlet(agents, dt_min, dt_max):
     yield dt
 
     while True:
-        dt = adaptive_timestep(dt_min, dt_max, agents['velocity'], agents['target_velocity'])
+        dt = adaptive_timestep(agents, dt_min, dt_max)
         translational_verlet(agents, dt)
         yield dt

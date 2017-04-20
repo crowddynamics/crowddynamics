@@ -12,6 +12,7 @@ dependencies:
     - shapely
     - matplotlib
     - bokeh
+    - tqdm
     - pip:
         ## Package
         - configobj

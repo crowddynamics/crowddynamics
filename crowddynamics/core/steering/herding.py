@@ -1,0 +1,1 @@
+"""Herding / Leader-Follower effect"""

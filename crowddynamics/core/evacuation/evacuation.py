@@ -1,9 +1,8 @@
 """Evacuation related functions"""
 import numba
 import numpy as np
+from crowddynamics.core.vector import length
 from numba import i8, f8, optional
-
-from crowddynamics.core.vector import length_nx2
 
 
 @numba.jit(f8(f8, f8, optional(f8), f8),
@@ -55,8 +54,7 @@ def narrow_exit_capacity(d_door, d_agent, d_layer=None, coeff=1.0):
     """
     if d_door < d_agent:
         return 0.0
-
-    if d_layer is None:
+    elif d_layer is None:
         return coeff * (d_door // d_agent)
     else:
         return coeff * ((d_door - (d_agent - d_layer)) // d_layer)
@@ -105,7 +103,7 @@ def agent_closer_to_exit(c_door, position):
             Array :math:`\lambda_i`
 
     """
-    distances = length_nx2(c_door - position)
+    distances = length(c_door - position)
     d_sorted = np.argsort(distances)
     num = np.argsort(d_sorted)
     return num

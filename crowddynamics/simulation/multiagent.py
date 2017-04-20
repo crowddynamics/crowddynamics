@@ -37,11 +37,8 @@ from multiprocessing import Process, Event
 
 import numpy as np
 from anytree.iterators import PostOrderIter
-from loggingtools import log_with
-from matplotlib.path import Path
-
 from crowddynamics.core.geometry import geom_to_linear_obstacles
-from crowddynamics.core.integrator import euler_integration
+from crowddynamics.core.integrator.integrator import euler_integrator
 from crowddynamics.core.interactions.interactions import \
     agent_agent_block_list_circular, agent_agent_block_list_three_circle, \
     circular_agent_linear_wall, three_circle_agent_linear_wall
@@ -52,10 +49,12 @@ from crowddynamics.core.motion.fluctuation import force_fluctuation, \
 from crowddynamics.core.steering.navigation import navigation
 from crowddynamics.core.steering.navigation import static_potential
 from crowddynamics.core.structures.agents import is_model, reset_motion
-from crowddynamics.core.vector import angle_nx2
+from crowddynamics.core.vector import angle
 from crowddynamics.exceptions import CrowdDynamicsException
 from crowddynamics.io import load_config, save_data
 from crowddynamics.taskgraph import Node
+from loggingtools import log_with
+from matplotlib.path import Path
 
 BASE_DIR = os.path.dirname(__file__)
 AGENT_CFG_SPEC = os.path.join(BASE_DIR, 'multiagent_spec.cfg')
@@ -87,6 +86,8 @@ class MultiAgentSimulation(object):
 
     """
     logger = logging.getLogger(__name__)
+    # TODO: Properties -> Descriptors
+    # https://docs.python.org/3.6/howto/descriptor.html
 
     def __init__(self):
         self.__name = None
@@ -230,7 +231,7 @@ class MultiAgentProcess(Process):
         self.maxiter = maxiterations
         self.queue = queue
 
-    @log_with(logger)
+    @log_with(qualname=True)
     def run(self):
         """Runs simulation process by calling update method repeatedly until
         stop is called. This method is called automatically by Process class
@@ -247,7 +248,7 @@ class MultiAgentProcess(Process):
                 self.stop()
         self.queue.put(self.EndProcess)
 
-    @log_with(logger)
+    @log_with(qualname=True)
     def stop(self):
         """Sets event to true in order to stop the simulation process."""
         self.exit.set()
@@ -318,8 +319,8 @@ class Integrator(MASNode):
         self.dt_prev = np.float64(np.nan)
 
     def update(self):
-        self.dt_prev = euler_integration(self.simulation.agents_array,
-                                         self.dt_min, self.dt_max)
+        self.dt_prev = euler_integrator(self.simulation.agents_array,
+                                        self.dt_min, self.dt_max)
         self.time_tot += self.dt_prev
 
 
@@ -379,11 +380,6 @@ class Navigation(MASNode):
             value=CONFIG['navigation']['value'])
 
     def update(self):
-        # points = self.simulation.agents_array['position']
-        # indices = to_indices(points, self.step)
-        # indices = np.fliplr(indices)
-        # d = self.direction_map[indices[:, 0], indices[:, 1], :]
-        # self.simulation.agents_array['target_direction'] = d
         position = self.simulation.agents_array['position']
         direction = self.simulation.agents_array['target_direction']
         d = navigation(position, direction, self.mgrid, self.direction_map)
@@ -395,8 +391,7 @@ class Orientation(MASNode):
 
     def update(self):
         if is_model(self.simulation.agents_array, 'three_circle'):
-            dir_to_orient = angle_nx2(
-                self.simulation.agents_array['target_direction'])
+            dir_to_orient = angle(self.simulation.agents_array['target_direction'])
             self.simulation.agents_array['target_orientation'] = dir_to_orient
 
 

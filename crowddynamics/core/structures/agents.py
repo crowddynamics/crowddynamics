@@ -49,6 +49,7 @@ from crowddynamics.core.structures.obstacles import obstacle_type_linear
 from crowddynamics.core.vector.vector2D import unit_vector, rotate270
 from crowddynamics.exceptions import CrowdDynamicsException, OverlappingError, \
     AgentStructureFull
+from tqdm import tqdm
 
 BASE_DIR = os.path.dirname(__file__)
 AGENT_CFG_SPEC = os.path.join(BASE_DIR, 'agent_spec.cfg')
@@ -369,6 +370,7 @@ class Agents(object):
             dtype = AgentModelToType[agent_type]
         else:
             dtype = agent_type
+
         self.array = np.zeros(size, dtype=dtype)
         self.config = load_config(infile=agent_cfg, configspec=agent_cfg_spec)
 
@@ -461,6 +463,7 @@ class Agents(object):
         self.active.add(index)
         return index
 
+    @log_with(qualname=True, timed=True, ignore=('self',))
     def remove(self, index):
         """Remove agent"""
         if index in self.active:
@@ -471,7 +474,7 @@ class Agents(object):
         else:
             return False
 
-    @log_with(logger)
+    @log_with(qualname=True, timed=True, ignore=('self',))
     def fill(self, amount, attributes, check_overlapping=True):
         """Fill agents
 
@@ -481,22 +484,27 @@ class Agents(object):
             attributes (dict|Callable[dict]): 
         """
         overlaps = 0
-        size = 0
-        while size < amount and overlaps < 10 * amount:
-            a = attributes() if callable(attributes) else attributes
+        iteration = 0
+        iterations_max = 10 * amount
 
+        # Progress bar for displaying number of agents placed
+        # FIXME: tqdm does not work with tests
+        # success = tqdm(desc='Agents placed: ', total=amount)
+        # overlapping = tqdm(desc='Agent overlaps: ', total=iterations_max)
+        while iteration < amount and overlaps < iterations_max:
+            a = attributes() if callable(attributes) else attributes
             try:
                 index = self.add(a, check_overlapping=check_overlapping)
+                # success.update(1)
             except OverlappingError:
                 overlaps += 1
-                self.logger.info('Overlaps: {}'.format(overlaps))
+                # overlapping.update(1)
                 continue
-            except AgentStructureFull as e:
-                self.logger.info('AgentStructureFull')
+            except AgentStructureFull:
                 break
-
-            size += 1
-            self.logger.info('Agent placed: {}/{}'.format(size, amount))
+            iteration += 1
+        # success.close()
+        # overlapping.close()
 
         if is_model(self.array, 'three_circle'):
             shoulders(self.array)
