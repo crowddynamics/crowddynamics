@@ -13,56 +13,56 @@ Subpackages
 Submodules
 ----------
 
-crowddynamics.cli module
-------------------------
+crowddynamics\.cli module
+-------------------------
 
 .. automodule:: crowddynamics.cli
     :members:
     :undoc-members:
     :show-inheritance:
 
-crowddynamics.exceptions module
--------------------------------
+crowddynamics\.exceptions module
+--------------------------------
 
 .. automodule:: crowddynamics.exceptions
     :members:
     :undoc-members:
     :show-inheritance:
 
-crowddynamics.io module
------------------------
+crowddynamics\.io module
+------------------------
 
 .. automodule:: crowddynamics.io
     :members:
     :undoc-members:
     :show-inheritance:
 
-crowddynamics.parse module
---------------------------
+crowddynamics\.parse module
+---------------------------
 
 .. automodule:: crowddynamics.parse
     :members:
     :undoc-members:
     :show-inheritance:
 
-crowddynamics.plot module
--------------------------
+crowddynamics\.plot module
+--------------------------
 
 .. automodule:: crowddynamics.plot
     :members:
     :undoc-members:
     :show-inheritance:
 
-crowddynamics.taskgraph module
-------------------------------
+crowddynamics\.taskgraph module
+-------------------------------
 
 .. automodule:: crowddynamics.taskgraph
     :members:
     :undoc-members:
     :show-inheritance:
 
-crowddynamics.testing module
-----------------------------
+crowddynamics\.testing module
+-----------------------------
 
 .. automodule:: crowddynamics.testing
     :members:

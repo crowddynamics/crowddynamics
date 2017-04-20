@@ -1,11 +1,11 @@
-crowddynamics.core.tests package
-================================
+crowddynamics\.core\.tests package
+==================================
 
 Submodules
 ----------
 
-crowddynamics.core.tests.test_geometry module
----------------------------------------------
+crowddynamics\.core\.tests\.test\_geometry module
+-------------------------------------------------
 
 .. automodule:: crowddynamics.core.tests.test_geometry
     :members:

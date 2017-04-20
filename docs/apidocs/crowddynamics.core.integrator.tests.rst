@@ -1,11 +1,11 @@
-crowddynamics.core.integrator.tests package
-===========================================
+crowddynamics\.core\.integrator\.tests package
+==============================================
 
 Submodules
 ----------
 
-crowddynamics.core.integrator.tests.test_integrator module
-----------------------------------------------------------
+crowddynamics\.core\.integrator\.tests\.test\_integrator module
+---------------------------------------------------------------
 
 .. automodule:: crowddynamics.core.integrator.tests.test_integrator
     :members:

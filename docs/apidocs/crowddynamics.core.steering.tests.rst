@@ -1,11 +1,11 @@
-crowddynamics.core.steering.tests package
-=========================================
+crowddynamics\.core\.steering\.tests package
+============================================
 
 Submodules
 ----------
 
-crowddynamics.core.steering.tests.test_navigation module
---------------------------------------------------------
+crowddynamics\.core\.steering\.tests\.test\_navigation module
+-------------------------------------------------------------
 
 .. automodule:: crowddynamics.core.steering.tests.test_navigation
     :members:

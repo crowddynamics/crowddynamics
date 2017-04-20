@@ -1,11 +1,11 @@
-crowddynamics.simulation.tests package
-======================================
+crowddynamics\.simulation\.tests package
+========================================
 
 Submodules
 ----------
 
-crowddynamics.simulation.tests.test_multiagent module
------------------------------------------------------
+crowddynamics\.simulation\.tests\.test\_multiagent module
+---------------------------------------------------------
 
 .. automodule:: crowddynamics.simulation.tests.test_multiagent
     :members:

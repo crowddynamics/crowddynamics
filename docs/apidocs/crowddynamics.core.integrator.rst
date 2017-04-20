@@ -1,5 +1,5 @@
-crowddynamics.core.integrator package
-=====================================
+crowddynamics\.core\.integrator package
+=======================================
 
 Subpackages
 -----------
@@ -11,8 +11,8 @@ Subpackages
 Submodules
 ----------
 
-crowddynamics.core.integrator.integrator module
------------------------------------------------
+crowddynamics\.core\.integrator\.integrator module
+--------------------------------------------------
 
 .. automodule:: crowddynamics.core.integrator.integrator
     :members:

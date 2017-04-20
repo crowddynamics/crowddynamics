@@ -1,5 +1,5 @@
-crowddynamics.core.random package
-=================================
+crowddynamics\.core\.random package
+===================================
 
 Subpackages
 -----------
@@ -11,16 +11,16 @@ Subpackages
 Submodules
 ----------
 
-crowddynamics.core.random.functions module
-------------------------------------------
+crowddynamics\.core\.random\.functions module
+---------------------------------------------
 
 .. automodule:: crowddynamics.core.random.functions
     :members:
     :undoc-members:
     :show-inheritance:
 
-crowddynamics.core.random.sampling module
------------------------------------------
+crowddynamics\.core\.random\.sampling module
+--------------------------------------------
 
 .. automodule:: crowddynamics.core.random.sampling
     :members:

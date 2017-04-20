@@ -1,5 +1,5 @@
-crowddynamics.core.interactions package
-=======================================
+crowddynamics\.core\.interactions package
+=========================================
 
 Subpackages
 -----------
@@ -11,24 +11,24 @@ Subpackages
 Submodules
 ----------
 
-crowddynamics.core.interactions.distance module
------------------------------------------------
+crowddynamics\.core\.interactions\.distance module
+--------------------------------------------------
 
 .. automodule:: crowddynamics.core.interactions.distance
     :members:
     :undoc-members:
     :show-inheritance:
 
-crowddynamics.core.interactions.interactions module
----------------------------------------------------
+crowddynamics\.core\.interactions\.interactions module
+------------------------------------------------------
 
 .. automodule:: crowddynamics.core.interactions.interactions
     :members:
     :undoc-members:
     :show-inheritance:
 
-crowddynamics.core.interactions.partitioning module
----------------------------------------------------
+crowddynamics\.core\.interactions\.partitioning module
+------------------------------------------------------
 
 .. automodule:: crowddynamics.core.interactions.partitioning
     :members:

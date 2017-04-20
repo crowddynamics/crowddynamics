@@ -1,19 +1,19 @@
-crowddynamics.core.random.tests package
-=======================================
+crowddynamics\.core\.random\.tests package
+==========================================
 
 Submodules
 ----------
 
-crowddynamics.core.random.tests.test_random module
---------------------------------------------------
+crowddynamics\.core\.random\.tests\.test\_random module
+-------------------------------------------------------
 
 .. automodule:: crowddynamics.core.random.tests.test_random
     :members:
     :undoc-members:
     :show-inheritance:
 
-crowddynamics.core.random.tests.test_sampling module
-----------------------------------------------------
+crowddynamics\.core\.random\.tests\.test\_sampling module
+---------------------------------------------------------
 
 .. automodule:: crowddynamics.core.random.tests.test_sampling
     :members:

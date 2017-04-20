@@ -1,5 +1,5 @@
-crowddynamics.core.vector package
-=================================
+crowddynamics\.core\.vector package
+===================================
 
 Subpackages
 -----------
@@ -11,8 +11,8 @@ Subpackages
 Submodules
 ----------
 
-crowddynamics.core.vector.vector2D module
------------------------------------------
+crowddynamics\.core\.vector\.vector2D module
+--------------------------------------------
 
 .. automodule:: crowddynamics.core.vector.vector2D
     :members:

@@ -1,11 +1,11 @@
-crowddynamics.core.vector.tests package
-=======================================
+crowddynamics\.core\.vector\.tests package
+==========================================
 
 Submodules
 ----------
 
-crowddynamics.core.vector.tests.test_vector2D module
-----------------------------------------------------
+crowddynamics\.core\.vector\.tests\.test\_vector2D module
+---------------------------------------------------------
 
 .. automodule:: crowddynamics.core.vector.tests.test_vector2D
     :members:

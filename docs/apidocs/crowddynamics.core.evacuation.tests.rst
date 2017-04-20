@@ -1,11 +1,11 @@
-crowddynamics.core.evacuation.tests package
-===========================================
+crowddynamics\.core\.evacuation\.tests package
+==============================================
 
 Submodules
 ----------
 
-crowddynamics.core.evacuation.tests.test_evacuation module
-----------------------------------------------------------
+crowddynamics\.core\.evacuation\.tests\.test\_evacuation module
+---------------------------------------------------------------
 
 .. automodule:: crowddynamics.core.evacuation.tests.test_evacuation
     :members:

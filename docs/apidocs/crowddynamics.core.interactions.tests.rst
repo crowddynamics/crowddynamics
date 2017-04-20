@@ -1,35 +1,35 @@
-crowddynamics.core.interactions.tests package
-=============================================
+crowddynamics\.core\.interactions\.tests package
+================================================
 
 Submodules
 ----------
 
-crowddynamics.core.interactions.tests.benchmarks module
--------------------------------------------------------
+crowddynamics\.core\.interactions\.tests\.benchmarks module
+-----------------------------------------------------------
 
 .. automodule:: crowddynamics.core.interactions.tests.benchmarks
     :members:
     :undoc-members:
     :show-inheritance:
 
-crowddynamics.core.interactions.tests.test_distance module
-----------------------------------------------------------
+crowddynamics\.core\.interactions\.tests\.test\_distance module
+---------------------------------------------------------------
 
 .. automodule:: crowddynamics.core.interactions.tests.test_distance
     :members:
     :undoc-members:
     :show-inheritance:
 
-crowddynamics.core.interactions.tests.test_interactions module
---------------------------------------------------------------
+crowddynamics\.core\.interactions\.tests\.test\_interactions module
+-------------------------------------------------------------------
 
 .. automodule:: crowddynamics.core.interactions.tests.test_interactions
     :members:
     :undoc-members:
     :show-inheritance:
 
-crowddynamics.core.interactions.tests.test_partitioning module
---------------------------------------------------------------
+crowddynamics\.core\.interactions\.tests\.test\_partitioning module
+-------------------------------------------------------------------
 
 .. automodule:: crowddynamics.core.interactions.tests.test_partitioning
     :members:

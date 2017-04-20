@@ -1,5 +1,5 @@
-crowddynamics.core.structures package
-=====================================
+crowddynamics\.core\.structures package
+=======================================
 
 Subpackages
 -----------
@@ -11,24 +11,24 @@ Subpackages
 Submodules
 ----------
 
-crowddynamics.core.structures.agents module
--------------------------------------------
+crowddynamics\.core\.structures\.agents module
+----------------------------------------------
 
 .. automodule:: crowddynamics.core.structures.agents
     :members:
     :undoc-members:
     :show-inheritance:
 
-crowddynamics.core.structures.neighborhood module
--------------------------------------------------
+crowddynamics\.core\.structures\.neighborhood module
+----------------------------------------------------
 
 .. automodule:: crowddynamics.core.structures.neighborhood
     :members:
     :undoc-members:
     :show-inheritance:
 
-crowddynamics.core.structures.obstacles module
-----------------------------------------------
+crowddynamics\.core\.structures\.obstacles module
+-------------------------------------------------
 
 .. automodule:: crowddynamics.core.structures.obstacles
     :members:

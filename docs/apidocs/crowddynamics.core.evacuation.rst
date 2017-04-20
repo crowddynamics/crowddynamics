@@ -1,5 +1,5 @@
-crowddynamics.core.evacuation package
-=====================================
+crowddynamics\.core\.evacuation package
+=======================================
 
 Subpackages
 -----------
@@ -11,8 +11,8 @@ Subpackages
 Submodules
 ----------
 
-crowddynamics.core.evacuation.evacuation module
------------------------------------------------
+crowddynamics\.core\.evacuation\.evacuation module
+--------------------------------------------------
 
 .. automodule:: crowddynamics.core.evacuation.evacuation
     :members:

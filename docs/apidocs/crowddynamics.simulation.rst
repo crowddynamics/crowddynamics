@@ -1,5 +1,5 @@
-crowddynamics.simulation package
-================================
+crowddynamics\.simulation package
+=================================
 
 Subpackages
 -----------
@@ -11,8 +11,8 @@ Subpackages
 Submodules
 ----------
 
-crowddynamics.simulation.multiagent module
-------------------------------------------
+crowddynamics\.simulation\.multiagent module
+--------------------------------------------
 
 .. automodule:: crowddynamics.simulation.multiagent
     :members:

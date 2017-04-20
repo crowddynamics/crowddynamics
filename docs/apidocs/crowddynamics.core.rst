@@ -1,5 +1,5 @@
-crowddynamics.core package
-==========================
+crowddynamics\.core package
+===========================
 
 Subpackages
 -----------
@@ -19,16 +19,16 @@ Subpackages
 Submodules
 ----------
 
-crowddynamics.core.conftest module
-----------------------------------
+crowddynamics\.core\.conftest module
+------------------------------------
 
 .. automodule:: crowddynamics.core.conftest
     :members:
     :undoc-members:
     :show-inheritance:
 
-crowddynamics.core.geometry module
-----------------------------------
+crowddynamics\.core\.geometry module
+------------------------------------
 
 .. automodule:: crowddynamics.core.geometry
     :members:
