@@ -1,7 +1,7 @@
 ## Should not be installed through pip
 ## Recommended to use Conda package manager instead
 
-loggingtools==0.0.3
+loggingtools==0.0.4
 
 ## Package
 configobj==5.0.6
