@@ -38,7 +38,8 @@ from multiprocessing import Process, Event
 import numpy as np
 from anytree.iterators import PostOrderIter
 from crowddynamics.core.geometry import geom_to_linear_obstacles
-from crowddynamics.core.integrator.integrator import euler_integrator
+from crowddynamics.core.integrator.integrator import euler_integrator, \
+    velocity_verlet_integrator
 from crowddynamics.core.interactions.interactions import \
     agent_agent_block_list_circular, agent_agent_block_list_three_circle, \
     circular_agent_linear_wall, three_circle_agent_linear_wall
@@ -294,6 +295,7 @@ def run_parallel(*simulations, queue, maxiter=None):
 
 
 class MASNode(Node):
+    # TODO: log_with, __init__, update
     logger = logging.getLogger(__name__)
 
     def __init__(self, simulation):
@@ -319,8 +321,10 @@ class Integrator(MASNode):
         self.dt_prev = np.float64(np.nan)
 
     def update(self):
-        self.dt_prev = euler_integrator(self.simulation.agents_array,
-                                        self.dt_min, self.dt_max)
+        # self.dt_prev = euler_integrator(self.simulation.agents_array,
+        #                                 self.dt_min, self.dt_max)
+        self.dt_prev = velocity_verlet_integrator(self.simulation.agents_array,
+                                                  self.dt_min, self.dt_max)
         self.time_tot += self.dt_prev
 
 

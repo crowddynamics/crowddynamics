@@ -38,11 +38,17 @@ def test_euler_integration2(agents_three_circle, dt_min, dt_max):
     assert 0 < dt_min <= dt <= dt_max
 
 
-@pytest.mark.skip
 @given(dt_min=real(min_value=0, max_value=10.0),
        dt_max=real(min_value=0, max_value=10.0))
-def test_velocity_verlet(agents, dt_min, dt_max):
+def test_velocity_verlet1(agents_circular, dt_min, dt_max):
     assume(0 < dt_min < dt_max)
-    integrator = velocity_verlet_integrator(agents, dt_min, dt_max)
-    for _, dt in zip(range(10), integrator):
-        assert 0 < dt_min <= dt <= dt_max
+    dt = velocity_verlet_integrator(agents_circular.array, dt_min, dt_max)
+    assert 0 < dt_min <= dt <= dt_max
+
+
+@given(dt_min=real(min_value=0, max_value=10.0),
+       dt_max=real(min_value=0, max_value=10.0))
+def test_velocity_verlet2(agents_three_circle, dt_min, dt_max):
+    assume(0 < dt_min < dt_max)
+    dt = velocity_verlet_integrator(agents_three_circle.array, dt_min, dt_max)
+    assert 0 < dt_min <= dt <= dt_max

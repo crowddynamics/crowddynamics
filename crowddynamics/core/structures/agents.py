@@ -123,6 +123,7 @@ rotational = [
     ('target_orientation', np.float64),
     ('target_angular_velocity', np.float64),
     ('torque', np.float64),
+    ('torque_prev', np.float64),
     ('tau_rot', np.float64),
     ('std_rand_torque', np.float64),
 ]

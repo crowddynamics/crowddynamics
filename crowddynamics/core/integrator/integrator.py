@@ -150,21 +150,70 @@ def translational_verlet(agents, dt):
     for agent in agents:
         old_acceleration = agent['force_prev'] / agent['mass']
         new_acceleration = agent['force'] / agent['mass']
-        agent['velocity'][:] += (old_acceleration + new_acceleration) / 2 * dt
-        agent['position'][:] += agent['velocity'] * dt + new_acceleration / 2 * dt ** 2
-
-        # save old force for next iteration
         agent['force_prev'][:] = agent['force']
+
+        agent['velocity'][:] += (old_acceleration + new_acceleration) / 2 * dt
+        agent['position'][:] += agent['velocity'] * dt + \
+                                new_acceleration / 2 * dt ** 2
+
+
+@numba.jit(void(typeof(agent_type_three_circle)[:], f8),
+           nopython=True, nogil=True, cache=True)
+def rotational_verlet(agents, dt):
+    """Rotational motion using velocity verlet method"""
+    for agent in agents:
+        old_angular_acceleration = agent['torque_prev'] / agent['inertia_rot']
+        new_angular_acceleration = agent['torque'] / agent['inertia_rot']
+        agent['torque_prev'] = agent['torque']
+
+        agent['angular_velocity'] += (old_angular_acceleration +
+                                      new_angular_acceleration) / 2 * dt
+        agent['orientation'] += agent['angular_velocity'] * dt + \
+                                new_angular_acceleration / 2 * dt ** 2
+
+        agent['orientation'] = wrap_to_pi(agent['orientation'])
+    shoulders(agents)
+    front(agents)
+
+
+def velocity_verlet_integrator_init(agents, dt_min, dt_max):
+    dt = adaptive_timestep(agents, dt_min, dt_max)
+    translational_euler(agents, dt)
+    for agent in agents:
+        agent['force_prev'][:] = agent['force'][:]
+    if agents.dtype is agent_type_three_circle:
+        rotational_euler(agents, dt)
+        for agent in agents:
+            agent['torque_prev'] = agent['torque']
+    return dt
 
 
 def velocity_verlet_integrator(agents, dt_min, dt_max):
-    r"""Velocity verlet
+    r"""Velocity verlet integrator algorithm
 
-    .. math::
-        \mathbf{v}_{k+1/2} &= \mathbf{v}_{k} + \frac{1}{2} a_{k} \Delta t \\
-        \mathbf{x}_{k+1} &= \mathbf{x}_{k} + \mathbf{v}_{k+1/2} \Delta t \\
-        a_{k+1} &= \mathbf{f}_{k+1} / m \\
-        \mathbf{v}_{k+1} &= \mathbf{v}_{k+1/2} + \frac{1}{2} a_{k+1} \Delta t
+    Translational motion
+
+    1. 
+
+        .. math::
+            \mathbf{v}_{k+1/2} = \mathbf{v}_{k} + \frac{1}{2} a_{k} \Delta t
+    
+    2.
+    
+        .. math::
+            \mathbf{x}_{k+1} = \mathbf{x}_{k} + \mathbf{v}_{k+1/2} \Delta t
+    
+    3. 
+    
+        .. math::
+            a_{k+1} = \mathbf{f}_{k+1} / m
+    
+    4. 
+    
+        .. math::
+            \mathbf{v}_{k+1} = \mathbf{v}_{k+1/2} + \frac{1}{2} a_{k+1} \Delta t
+
+    .. Todo::  Rotational motion
 
     Args:
         agents (Agent):
@@ -182,14 +231,7 @@ def velocity_verlet_integrator(agents, dt_min, dt_max):
         - https://en.wikipedia.org/wiki/Verlet_integration#Velocity_Verlet
     """
     dt = adaptive_timestep(agents, dt_min, dt_max)
-    translational_euler(agents, dt)
-
-    for agent in agents:
-        agent['force_prev'][:] = agent['force'][:]
-
-    yield dt
-
-    while True:
-        dt = adaptive_timestep(agents, dt_min, dt_max)
-        translational_verlet(agents, dt)
-        yield dt
+    translational_verlet(agents, dt)
+    if agents.dtype is agent_type_three_circle:
+        rotational_verlet(agents, dt)
+    return dt
