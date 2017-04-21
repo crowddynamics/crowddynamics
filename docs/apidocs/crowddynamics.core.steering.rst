@@ -11,6 +11,14 @@ Subpackages
 Submodules
 ----------
 
+crowddynamics\.core\.steering\.herding module
+---------------------------------------------
+
+.. automodule:: crowddynamics.core.steering.herding
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 crowddynamics\.core\.steering\.navigation module
 ------------------------------------------------
 

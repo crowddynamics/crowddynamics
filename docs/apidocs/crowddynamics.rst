@@ -37,6 +37,14 @@ crowddynamics\.io module
     :undoc-members:
     :show-inheritance:
 
+crowddynamics\.logging module
+-----------------------------
+
+.. automodule:: crowddynamics.logging
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 crowddynamics\.parse module
 ---------------------------
 
