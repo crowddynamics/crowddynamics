@@ -115,22 +115,28 @@ def block_list(points, cell_size):
     
     BlockList algorithm partitions space into squares and sorts points into
     the square they belong. This allows fast neighbourhood search because we
-    only have to search current and neighbouring rectangles for points.
+    only have to search current and neighbouring cells for points.
+
+    Algorithm
+    
+    1. Find the bounds (minimum and maximum indices) of the points
+    2. 
 
     Args:
         points (numpy.ndarray):
-            Array of ``shape=(size, 2)`` to be block listed.
+            Array of :math:`N` points :math:`(\mathbf{p}_i \in 
+            \mathbb{R}^2)_{i=1,...,N}` (``shape=(size, 2)``) to be block listed
 
         cell_size (float):
-            Positive real number. Width and height of the rectangular mesh.
+            Positive real number :math:`c > 0`. Width and height of the 
+            rectangular mesh.
 
     Returns:
-        (numpy.ndarray, numpy.ndarray, numpy.ndarray, numpy.ndarray, numpy.ndarray):
+        (numpy.ndarray, numpy.ndarray, numpy.ndarray, numpy.ndarray):
             - ``index_list``
             - ``count``
             - ``offset``
-            - ``x_min``
-            - ``x_max``
+            - ``shape``
 
     """
     assert cell_size > 0
@@ -155,61 +161,59 @@ def block_list(points, cell_size):
     indices = np.zeros(shape=points.shape, dtype=np.int64)
     for i in range(n):
         for j in range(m):
-            x = np.int64(points[i, j] / cell_size) - x_min[j]
-            indices[i, j] = x
+            indices[i, j] = np.int64(points[i, j] / cell_size) - x_min[j]
 
-    #
-    x_max = x_max - x_min
+    shape = x_max - x_min + 1
 
-    # TODO: Implementation for sparse block lists.
-    #       Maximum amount of blocks == len(points)
-
-    # Count how many points go into each point
-    size = np.prod(x_max + 1)
+    # Count how many points go into each cell
+    size = np.prod(shape)
     count = np.zeros(size, dtype=np.int64)
     for i in range(n):
         index = indices[i, 0]
         for j in range(1, m):
-            index *= x_max[j] + 1
+            index *= shape[j]
             index += indices[i, j]
         count[index] += 1
 
     # Index list
-    index_list = np.zeros(points.shape[0], dtype=np.int64)
+    index_list = np.zeros(n, dtype=np.int64)
     offset = count.cumsum() - 1  # Offset indices
     for i in range(n):
         index = indices[i, 0]
         for j in range(1, m):
-            index *= x_max[j] + 1
+            index *= shape[j]
             index += indices[i, j]
         index_list[offset[index]] = i
         offset[index] -= 1
 
     offset += 1
 
-    return index_list, count, offset, x_min, x_max
+    return index_list, count, offset, shape
 
 
-@numba.jit([i8[:](Tuple((i8, i8)), i8[:], i8[:], i8[:], i8[:])],
+@numba.jit([i8[:](Tuple((i8, i8)), i8[:], i8[:], i8[:], i8[:]),
+            i8[:](i8[:], i8[:], i8[:], i8[:], i8[:])],
            nopython=True, nogil=True, cache=True)
-def get_block(indices, index_list, count, offset, x_max):
+def get_block(indices, index_list, count, offset, shape):
     r"""Multidimensional indexing
 
-    1-D: [...]
-    dims: n0
-    key: x0
-    index: x0
+    ::
 
-    2-D: [[...], [...]]
-    dims: (n0, n1)
-    key: (x0, x1)
-    index: x0 * n1 + x1
-
-    3-D: [[[...], [...]], [[...], [...]]]
-    dims: (n0, n1, n2)
-    key:(x0, x1, x2)
-    index: x0 * n1 * n2 + x1 * n2 + x2
-          (x0 * n1 + x1) * n2 + x2
+        1-D: [...]
+        dims: n0
+        key: x0
+        index: x0
+    
+        2-D: [[...], [...]]
+        dims: (n0, n1)
+        key: (x0, x1)
+        index: x0 * n1 + x1
+    
+        3-D: [[[...], [...]], [[...], [...]]]
+        dims: (n0, n1, n2)
+        key:(x0, x1, x2)
+        index: x0 * n1 * n2 + x1 * n2 + x2
+              (x0 * n1 + x1) * n2 + x2
 
     Args:
         indices (numpy.ndarray | tuple):
@@ -217,7 +221,6 @@ def get_block(indices, index_list, count, offset, x_max):
     Returns:
         numpy.ndarray:
     """
-    shape = x_max + 1
     index = indices[0]
     for j in range(1, len(indices)):
         index *= shape[j]

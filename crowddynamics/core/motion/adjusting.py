@@ -41,7 +41,7 @@ def force_adjust(mass, tau_adj, v0, e0, v):
             Velocity
 
     Returns:
-        numpy.ndarray:
+        numpy.ndarray: Adjusting force vector
     """
     return (mass / tau_adj) * (v0 * e0 - v)
 
@@ -85,7 +85,7 @@ def torque_adjust(inertia_rot, tau_rot, phi_0, phi, omega_0, omega):
         omega (float):
 
     Returns:
-        float:
+        float: Adjusting torque scalar
     """
     return inertia_rot / tau_rot * \
            (wrap_to_pi(phi_0 - phi) / np.pi * omega_0 - omega)
@@ -95,6 +95,7 @@ def torque_adjust(inertia_rot, tau_rot, phi_0, phi, omega_0, omega):
             void(typeof(agent_type_three_circle)[:])],
            nopython=True, nogil=True, cache=True)
 def force_adjust_agents(agents):
+    """Apply adjusting force to agents"""
     for agent in agents:
         agent['force'][:] += force_adjust(agent['mass'],
                                           agent['tau_adj'],
@@ -106,6 +107,7 @@ def force_adjust_agents(agents):
 @numba.jit(void(typeof(agent_type_three_circle)[:]),
            nopython=True, nogil=True, cache=True)
 def torque_adjust_agents(agents):
+    """Apply adjusting torque to agents"""
     for agent in agents:
         agent['torque'] += torque_adjust(agent['inertia_rot'],
                                          agent['tau_rot'],

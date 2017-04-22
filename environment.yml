@@ -3,6 +3,7 @@
 
 channels:
     - conda-forge
+#    - intel
 dependencies:
     - numpy
     - numba

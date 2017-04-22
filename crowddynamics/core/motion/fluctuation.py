@@ -32,7 +32,7 @@ def force_fluctuation(mass, scale):
             Standard deviation of truncated normal distribution
 
     Returns:
-        numpy.ndarray: Fluctuation force
+        numpy.ndarray: Fluctuation force vector
     """
     size = len(mass)
     phi = np.random.uniform(0.0, 2.0 * np.pi, size=size)
@@ -42,8 +42,7 @@ def force_fluctuation(mass, scale):
 
 
 def torque_fluctuation(inertia_rot, scale):
-    r"""
-    Random torque.
+    r"""Random torque
 
     .. math::
        \eta \sim \mathcal{N}(\mu, \sigma^{2})
@@ -56,7 +55,7 @@ def torque_fluctuation(inertia_rot, scale):
             Standard deviation of truncated normal distribution
 
     Returns:
-        numpy.ndarray: Fluctuation torque
+        numpy.ndarray: Fluctuation torque scalar
     """
     size = len(inertia_rot)
     return inertia_rot * truncnorm(-3.0, 3.0, loc=0.0, scale=scale, size=size)

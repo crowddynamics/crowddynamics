@@ -21,6 +21,14 @@ crowddynamics\.cli module
     :undoc-members:
     :show-inheritance:
 
+crowddynamics\.config module
+----------------------------
+
+.. automodule:: crowddynamics.config
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 crowddynamics\.exceptions module
 --------------------------------
 

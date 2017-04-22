@@ -24,9 +24,6 @@ Attributes:
     DirectionMap:
         Tuple (U, V) of ndarray of shape (n, m), where the value are x and y
         components of a (unit)vector field.
-        
-Todo: 
-    - improve performance
 """
 from collections import namedtuple
 from typing import Tuple, Optional
@@ -34,12 +31,14 @@ from typing import Tuple, Optional
 import numba
 import numpy as np
 import skfmm
-from crowddynamics.core.geometry import geom_to_skimage
 from loggingtools.log_with import log_with
 from numba import f8, i8
 from scipy.interpolate import NearestNDInterpolator
 from shapely.geometry import Polygon
 from shapely.geometry.base import BaseGeometry
+from skimage.segmentation import find_boundaries
+
+from crowddynamics.core.geometry import geom_to_skimage
 
 MeshGrid = namedtuple('MeshGrid', 'values shape step bounds indicer')
 DistanceMap = np.ma.MaskedArray
@@ -49,9 +48,8 @@ DirectionMap = Tuple[np.ma.MaskedArray, np.ma.MaskedArray]
 # Numerical Routines
 
 @log_with(arguments=False, timed=True)
-def interpolate_direction_map(mgrid: MeshGrid,
-                              dir_map: DirectionMap) -> DirectionMap:
-    """Interpolate direction map
+def fill_missing(mgrid: MeshGrid, dir_map: DirectionMap):
+    """Fill missing value with by interpolating the values from nearest neighbours
 
     Args:
         mgrid:
@@ -63,20 +61,17 @@ def interpolate_direction_map(mgrid: MeshGrid,
     x, y = mgrid.values
     u, v = dir_map
 
-    # Invert boolean values, because we want non masked values
-    nomask = u.mask ^ True
+    # Construct the interpolators from the boundary values surrounding the
+    # missing values
+    boundaries = find_boundaries(u.mask, mode='outer')
+    points = np.stack((y[boundaries], x[boundaries])).T
+    ip_u = NearestNDInterpolator(points, u[boundaries], rescale=False)
+    ip_v = NearestNDInterpolator(points, v[boundaries], rescale=False)
 
-    # Stack into shape (n, 2)
-    points = np.stack((y[nomask], x[nomask])).T
-
-    # FIXME: interpolation with many points is slow
-    ip_u = NearestNDInterpolator(points, u[nomask], rescale=False)
-    ip_v = NearestNDInterpolator(points, v[nomask], rescale=False)
-
-    u_out = ip_u((y, x))
-    v_out = ip_v((y, x))
-
-    return u_out, v_out
+    # interpolate only missing values (u.mask)
+    missing = (y[u.mask], x[v.mask])
+    u[u.mask] = ip_u(missing)
+    v[v.mask] = ip_v(missing)
 
 
 @log_with(arguments=False, timed=True)
@@ -161,8 +156,9 @@ def meshgrid(step: float, minx: float, miny: float,
     shape = values[0].shape
 
     def indicer(position):
+        """Converts positions to meshgrid indices"""
         shifted = np.asarray(position) - np.array((minx, miny))
-        return (shifted // step).astype(np.int64)
+        return (shifted / step).astype(np.int64)
 
     return MeshGrid(
         values=values, shape=shape, step=step, bounds=(minx, miny, maxx, maxy),
@@ -227,7 +223,7 @@ def distance_map(mgrid: MeshGrid,
        \end{cases}
 
     Args:
-        mgrid:
+        mgrid (MeshGrid):
 
         obstacles (BaseGeometry, optional):
             Impassable regions :math:`\mathcal{O}` in the domain.
@@ -335,14 +331,31 @@ def direction_map(dmap: DistanceMap) -> DirectionMap:
 # Potentials
 
 @log_with(timed=True)
-def static_potential(domain: Polygon, targets: BaseGeometry,
-                     obstacles: BaseGeometry, step: float, radius: float,
-                     value: float) -> Tuple[
-    MeshGrid, DistanceMap, DirectionMap]:
+def static_potential(domain: Polygon,
+                     targets: BaseGeometry,
+                     obstacles: Optional[BaseGeometry],
+                     step: float,
+                     radius: float,
+                     value: float) -> \
+        Tuple[MeshGrid, DistanceMap, DirectionMap]:
     r"""Static potential
 
     Navigation algorithm that does not take into account
     the space that is occupied by dynamic agents (aka agents).
+
+    1. Discretize the domain into grid
+    2. Vector field pointing to target
+    
+        a. Solve distance map from the targets using buffered obstacles
+        b. Compute gradient of the distance map to obtain the vector field
+        c. Fill the missing values by interpolating nearest values
+
+    3. Vector field pointing to obstacles
+    
+        a. Compute distance map from the obstacles
+        b. Compute gradient of the distance map to obtain the vector field
+    
+    4. Combine these two vector fields
 
     Args:
         step (float):
@@ -362,15 +375,15 @@ def static_potential(domain: Polygon, targets: BaseGeometry,
     # them walking into obstacles.
     obstacles_buffered = obstacles.buffer(radius).intersection(domain)
     dmap_targets = distance_map(mgrid, targets, obstacles_buffered)
-    dir_map_exits = interpolate_direction_map(mgrid,
-                                              direction_map(dmap_targets))
+    dir_map_targets = direction_map(dmap_targets)
+    fill_missing(mgrid, dir_map_targets)
 
     # Direction map guiding agents away from the obstacles
     dmap_obs = distance_map(mgrid, obstacles, None)
     dir_map_obs = direction_map(dmap_obs)
 
     # Direction map that combines the two direction maps
-    dir_map = merge_dir_maps(dmap_obs, dir_map_obs, dir_map_exits, radius,
+    dir_map = merge_dir_maps(dmap_obs, dir_map_obs, dir_map_targets, radius,
                              value)
 
     return mgrid, dmap_targets, dir_map

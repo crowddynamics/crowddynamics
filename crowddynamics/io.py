@@ -19,17 +19,6 @@ References:
 import os
 
 import numpy as np
-from configobj import ConfigObj
-from crowddynamics.exceptions import InvalidConfigurationError
-from validate import Validator
-
-
-def load_config(infile, configspec=None):
-    """Load configuration from INI file."""
-    config = ConfigObj(infile=infile, configspec=configspec)
-    if configspec and not config.validate(Validator()):
-        raise InvalidConfigurationError
-    return config
 
 
 def save_data(directory, basename):

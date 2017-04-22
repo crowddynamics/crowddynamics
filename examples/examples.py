@@ -90,7 +90,7 @@ def hallway(size: (1, None)=100,
                       (width - 1.1, 0)]) - obstacles.buffer(0.3)
 
     simu = MultiAgentSimulation()
-    simu.name = 'hallway'
+    simu.name = 'Hallway'
 
     simu.domain = domain
     simu.obstacles = obstacles
@@ -148,7 +148,7 @@ def rounding(size: (1, None)=100,
                      (width / 2, 0)])
 
     simu = MultiAgentSimulation()
-    simu.name = 'hallway'
+    simu.name = 'Rounding'
 
     simu.domain = domain
     simu.obstacles = obstacles
@@ -213,7 +213,7 @@ def room_evacuation(size: (1, None)=100,
     obstacles = (room | hall).exterior - targets
 
     simu = MultiAgentSimulation()
-    simu.name = 'room_evacuation'
+    simu.name = 'RoomEvacuation'
 
     simu.domain = domain
     simu.obstacles = obstacles

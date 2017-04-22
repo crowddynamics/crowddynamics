@@ -9,8 +9,7 @@ from numba.types import Tuple
 
 from crowddynamics.core.structures.agents import agent_type_three_circle, \
     agent_type_circular
-from crowddynamics.core.structures.obstacles import obstacle_type_linear
-from crowddynamics.core.vector import dot, truncate, rotate90
+from crowddynamics.core.vector import dot, truncate
 
 
 @numba.jit(nopython=True, nogil=True)
@@ -377,64 +376,3 @@ def force_social_three_circle(agent, i, j):
     truncate(force_j, agent[j]['f_soc_ij_max'])
 
     return force_i, force_j
-
-
-@numba.jit([
-    f8[:](i8, i8, typeof(agent_type_circular)[:], typeof(obstacle_type_linear)[:]),
-    f8[:](i8, i8, typeof(agent_type_three_circle)[:], typeof(obstacle_type_linear)[:]),
-],
-    nopython=True, nogil=True, cache=True)
-def force_social_linear_wall(i, w, agent, wall):
-    """
-    Force social linear wall
-
-    Args:
-        i:
-        w:
-        agent:
-        wall:
-
-    Returns:
-
-    """
-    force = np.zeros(2)
-    tau = np.zeros(3)
-    grad = np.zeros((3, 2))
-
-    p_0 = wall[w]['p0']
-    p_1 = wall[w]['p1']
-    d = p_1 - p_0  # Vector from p_0 to p_1
-    l_w = np.hypot(d[1], d[0])  # Length of the wall
-    t_w = d / l_w  # Tangential unit-vector
-    n_w = rotate90(t_w)  # Normal unit-vector
-
-    x_rel0 = agent[i]['position'] - p_0
-    x_rel1 = agent[i]['position'] - p_1
-    v_rel = agent[i]['velocity']
-    r_tot = agent[i]['radius']
-
-    dot_vt = dot(v_rel, t_w)
-    if dot_vt == 0:
-        tau_t0 = np.nan
-        tau_t1 = np.nan
-    else:
-        tau_t0 = -dot(x_rel0, t_w) / dot_vt
-        tau_t1 = -dot(x_rel1, t_w) / dot_vt
-
-    tau[0], grad[0] = time_to_collision_circle_circle(x_rel0, v_rel, r_tot)
-    tau[1], grad[1] = time_to_collision_circle_circle(x_rel1, v_rel, r_tot)
-    tau[2], grad[2] = time_to_collision_circle_line(x_rel0, v_rel, r_tot, n_w)
-
-    if not np.isnan(tau[0]) and tau[0] <= tau_t0:
-        mag = magnitude(tau[0], agent[i]['tau_0'])
-        force[:] = - agent[i]['mass'] * agent[i]['k_soc'] * mag * grad[0]
-    elif not np.isnan(tau[1]) and tau[1] > tau_t1:
-        mag = magnitude(tau[1], agent[i]['tau_0'])
-        force[:] = - agent[i]['mass'] * agent[i]['k_soc'] * mag * grad[1]
-    elif not np.isnan(tau[2]):
-        mag = magnitude(tau[2], agent[i]['tau_0'])
-        force[:] = - agent[i]['mass'] * agent[i]['k_soc'] * mag * grad[2]
-
-    truncate(force, agent[i]['f_soc_iw_max'])
-
-    return force

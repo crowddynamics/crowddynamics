@@ -9,8 +9,9 @@ from typing import Tuple, Iterator, Callable
 
 import numpy as np
 import skimage.draw
+from matplotlib.path import Path
 from shapely import speedups
-from shapely.geometry import Polygon, LineString, Point
+from shapely.geometry import Polygon, LineString, Point, LinearRing
 from shapely.geometry.base import BaseGeometry, BaseMultipartGeometry
 
 from crowddynamics.core.structures.obstacles import obstacle_type_linear
@@ -91,3 +92,45 @@ def geom_to_skimage(geom: BaseGeometry,
             yield from gen
     else:
         raise TypeError
+
+
+def coding(ob):
+    # The codes will be all "LINETO" commands, except for "MOVETO"s at the
+    # beginning of each subpath
+    n = len(ob.coords)
+    vals = np.full(shape=n, fill_value=Path.LINETO, dtype=Path.code_type)
+    vals[0] = Path.MOVETO
+    return vals
+
+
+def geom_to_mpl(geom: BaseGeometry) -> Path:
+    """Convert geom to matplotlib Path
+    
+    References:
+        https://bitbucket.org/sgillies/descartes/src/ddcb7f8f0542758ebf28fee5cce946413c4b2e3c/descartes/patch.py?at=default&fileviewer=file-view-default
+    """
+    def inner(geom: BaseGeometry) -> Tuple[np.ndarray, np.ndarray]:
+        if isinstance(geom, Point):
+            raise ValueError('Points')
+        elif isinstance(geom, LineString):
+            vertices = np.asarray(geom)[:, :2]
+            codes = coding(geom)
+            yield vertices, codes
+        elif isinstance(geom, Polygon):
+            vertices = np.concatenate([np.asarray(geom.exterior)[:, :2]] +
+                                      [np.asarray(r)[:, :2] for r in geom.interiors])
+            codes = np.concatenate([coding(geom.exterior)] +
+                                   [coding(r) for r in geom.interiors])
+            yield vertices, codes
+        elif isinstance(geom, BaseMultipartGeometry):
+            for gen in map(inner, geom):
+                yield from gen
+        else:
+            raise TypeError('Argument is not subclass of {}'.format(BaseGeometry))
+
+    _vertices = []
+    _codes = []
+    for vertices, codes in inner(geom):
+        _vertices.append(vertices)
+        _codes.append(codes)
+    return Path(np.concatenate(_vertices), np.concatenate(_codes))

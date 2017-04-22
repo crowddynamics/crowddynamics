@@ -21,7 +21,7 @@ from crowddynamics.core.interactions.distance import distance_circles, \
 from crowddynamics.core.interactions.partitioning import block_list, \
     get_block
 from crowddynamics.core.motion.collision_avoidance.power_law import \
-    force_social_circular, force_social_three_circle, force_social_linear_wall
+    force_social_circular, force_social_three_circle
 from crowddynamics.core.motion.contact import force_contact
 from crowddynamics.core.structures.agents import agent_type_circular, \
     agent_type_three_circle
@@ -115,15 +115,11 @@ def agent_obstacle_interaction_circle(i, w, agent, wall):
     """
     h, n = distance_circle_line(agent[i]['position'], agent[i]['radius'],
                                 wall[w]['p0'], wall[w]['p1'])
-
-    if h < agent[i]['sight_wall']:
-        force = force_social_linear_wall(i, w, agent, wall)
-
-        if h < 0:
-            t = rotate270(n)  # Tangent
-            v = agent[i]['velocity']
-            force += force_contact(h, n, v, t, agent[i]['mu'],
-                                   agent[i]['kappa'], agent[i]['damping'])
+    if h < 0:
+        t = rotate270(n)  # Tangent
+        v = agent[i]['velocity']
+        force = force_contact(h, n, v, t, agent[i]['mu'],
+                              agent[i]['kappa'], agent[i]['damping'])
 
         agent[i]['force'][:] += force
 
@@ -147,14 +143,11 @@ def agent_obstacle_interaction_three_circle(i, w, agent, wall):
 
     h, n, r_moment = distance_three_circle_line(x_i, r_i,
                                                 wall[w]['p0'], wall[w]['p1'])
-    if h < agent[i]['sight_wall']:
-        force = force_social_linear_wall(i, w, agent, wall)
-
-        if h < 0:
-            t = rotate270(n)  # Tangent
-            v = agent[i]['velocity']
-            force += force_contact(h, n, v, t, agent[i]['mu'],
-                                   agent[i]['kappa'], agent[i]['damping'])
+    if h < 0:
+        t = rotate270(n)  # Tangent
+        v = agent[i]['velocity']
+        force = force_contact(h, n, v, t, agent[i]['mu'],
+                              agent[i]['kappa'], agent[i]['damping'])
 
         agent[i]['force'][:] += force
         agent[i]['torque'] += cross(r_moment, force)
@@ -261,9 +254,7 @@ def agent_agent_block_list_circular(agent):
     for i in range(len(agent)):
         points[i, :] = agent[i]['position']
 
-    index_list, count, offset, x_min, x_max = block_list(
-        points, agent[0]['sight_soc'])
-    shape = x_max + 1
+    index_list, count, offset, shape = block_list(points, agent[0]['sight_soc'])
     n, m = shape
 
     # Neighbouring blocks
@@ -273,7 +264,7 @@ def agent_agent_block_list_circular(agent):
     for i in range(n):
         for j in range(m):
             # Agents in the block
-            ilist = get_block((i, j), index_list, count, offset, x_max)
+            ilist = get_block((i, j), index_list, count, offset, shape)
             indices_block = indices[ilist]
 
             # Forces between agents indices the block
@@ -284,7 +275,7 @@ def agent_agent_block_list_circular(agent):
                 i2, j2 = nb[k]
                 if 0 <= (i + i2) < n and 0 <= (j + j2) < m:
                     ilist2 = get_block((i + i2, j + j2), index_list, count,
-                                       offset, x_max)
+                                       offset, shape)
                     agent_agent_brute_disjoint_circular(agent, indices_block,
                                                         indices[ilist2])
 
@@ -303,9 +294,8 @@ def agent_agent_block_list_three_circle(agent):
     for i in range(len(agent)):
         points[i, :] = agent[i]['position']
 
-    index_list, count, offset, x_min, x_max = block_list(
+    index_list, count, offset, shape = block_list(
         points, agent[0]['sight_soc'])
-    shape = x_max + 1
     n, m = shape
 
     # Neighbouring blocks
@@ -315,7 +305,7 @@ def agent_agent_block_list_three_circle(agent):
     for i in range(n):
         for j in range(m):
             # Agents in the block
-            ilist = get_block((i, j), index_list, count, offset, x_max)
+            ilist = get_block((i, j), index_list, count, offset, shape)
             indices_block = indices[ilist]
 
             # Forces between agents indices the block
@@ -326,7 +316,7 @@ def agent_agent_block_list_three_circle(agent):
                 i2, j2 = nb[k]
                 if 0 <= (i + i2) < n and 0 <= (j + j2) < m:
                     ilist2 = get_block((i + i2, j + j2), index_list, count,
-                                       offset, x_max)
+                                       offset, shape)
                     agent_agent_brute_disjoint_three_circle(agent,
                                                             indices_block,
                                                             indices[ilist2])

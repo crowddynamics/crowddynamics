@@ -1,8 +1,9 @@
 # Install env with command:
-# conda env create --yes python=3.x -n crowd3x -f environment-dev.yml
+# conda env create python=3.x -n crowd3x -f environment-dev.yml
 
 channels:
     - conda-forge
+#    - intel
 dependencies:
     ## Package
     - numpy

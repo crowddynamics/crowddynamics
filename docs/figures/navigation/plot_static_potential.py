@@ -4,12 +4,12 @@ from crowddynamics.logging import setup_logging
 from shapely.geometry import LineString, Polygon
 
 from crowddynamics.core.steering.navigation import meshgrid, distance_map, \
-    interpolate_direction_map, direction_map, merge_dir_maps
+    fill_missing, direction_map, merge_dir_maps
 from crowddynamics.plot import plot_navigation
 
 setup_logging()
 
-step = 0.01
+step = 0.02
 height = 3.0
 width = 4.0
 radius = 0.3
@@ -27,7 +27,8 @@ mgrid = meshgrid(step, *domain.bounds)
 # them walking into obstacles.
 obstacles_buffered = obstacles.buffer(radius).intersection(domain)
 dmap_exits = distance_map(mgrid, targets, obstacles_buffered)
-dir_map_exits = interpolate_direction_map(mgrid, direction_map(dmap_exits))
+dir_map_exits = direction_map(dmap_exits)
+fill_missing(mgrid, dir_map_exits)
 
 # Direction map guiding agents away from the obstacles
 dmap_obs = distance_map(mgrid, obstacles, None)
@@ -48,7 +49,7 @@ for dmap, dir_map, name in zip([dmap_exits, dmap_obs, dmap_exits],
     ax.xaxis.set_major_locator(loc)
     ax.yaxis.set_major_locator(loc)
 
-    plot_navigation(fig, ax, mgrid.values, dmap, dir_map, 5)
+    plot_navigation(fig, ax, mgrid.values, dmap, dir_map, 2)
     # for fmt in ('png', 'pdf'):
     #     plt.savefig('navigation_' + name + '.' + fmt)
 plt.show()

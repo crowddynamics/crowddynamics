@@ -1,24 +1,9 @@
-import contextlib
-import os
-import importlib.util
 import inspect
-import logging
 from collections import namedtuple
 
 from crowddynamics.exceptions import InvalidArgument
-from crowddynamics.io import load_config
 
 ArgSpec = namedtuple('ArgSpec', 'name default annotation')
-
-
-@contextlib.contextmanager
-def remember_cwd(directory):
-    curdir = os.getcwd()
-    try:
-        os.chdir(directory)
-        yield
-    finally:
-        os.chdir(curdir)
 
 
 def empty_to_none(value):
@@ -72,34 +57,3 @@ def parse_signature(function):
     for name, p in sig.parameters.items():
         if name != 'self':
             yield mkspec(p)
-
-
-def import_simulation_callables(confpath):
-    """Import simulations callables
-    
-    https://stackoverflow.com/questions/67631/how-to-import-a-module-given-the-full-path
-
-    Args:
-        confpath (str|Path):
-
-    Yields:
-        (str, typing.Callable[[...], MultiAgentSimulation]):
-    """
-    logger = logging.getLogger(__name__)
-    base, _ = os.path.split(confpath)
-    config = load_config(confpath)
-    conf = config.get('simulations', [])
-    if conf:
-        for modulename, configs in conf.items():
-            try:
-                with remember_cwd(base):
-                    spec = importlib.util.spec_from_file_location(
-                        modulename, configs['module'])
-                    module = importlib.util.module_from_spec(spec)
-                    spec.loader.exec_module(module)
-                    try:
-                        yield modulename, getattr(module, configs['function'])
-                    except AttributeError as e:
-                        logger.warning(e)
-            except ImportError as e:
-                logger.warning(e)

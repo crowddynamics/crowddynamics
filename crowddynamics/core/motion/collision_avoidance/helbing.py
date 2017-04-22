@@ -25,6 +25,6 @@ def force_social_helbing(h, n, a, b):
             Constant :math:`B = 0.08 \,\mathrm{m}`
 
     Returns:
-        numpy.ndarray: Social force
+        numpy.ndarray: Social force vector
     """
     return a * np.exp(- h / b) * n

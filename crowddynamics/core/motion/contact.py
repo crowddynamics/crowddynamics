@@ -38,6 +38,6 @@ def force_contact(h, n, v, t, mu, kappa, damping):
             Constant :math:`500 \,\mathrm{N}`
 
     Returns:
-        numpy.ndarray: Contact force
+        numpy.ndarray: Contact force vector
     """
     return - h * (mu * n - kappa * dot(v, t) * t) + damping * dot(v, n) * n

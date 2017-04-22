@@ -23,12 +23,19 @@ import crowddynamics
 # -- Build apidocs automatically when sphinx is run ----------------------
 
 from sphinx.apidoc import main
-
 ROOT_PATH = os.path.dirname(os.path.dirname(__file__))
+
 out_path = 'apidocs'
 module_path = os.path.join(ROOT_PATH, 'crowddynamics')
 main(['--separate',
       '--output-dir', out_path, module_path,
+      '--no-toc',
+      '--force'])
+
+out_path2 = 'apidocs_examples'
+module_path2 = os.path.join(ROOT_PATH, 'examples')
+main(['--separate',
+      '--output-dir', out_path2, module_path2,
       '--no-toc',
       '--force'])
 

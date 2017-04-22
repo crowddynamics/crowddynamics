@@ -52,7 +52,8 @@ from crowddynamics.core.steering.navigation import static_potential
 from crowddynamics.core.structures.agents import is_model, reset_motion
 from crowddynamics.core.vector import angle
 from crowddynamics.exceptions import CrowdDynamicsException
-from crowddynamics.io import load_config, save_data
+from crowddynamics.io import save_data
+from crowddynamics.config import load_config
 from crowddynamics.taskgraph import Node
 from loggingtools import log_with
 from matplotlib.path import Path

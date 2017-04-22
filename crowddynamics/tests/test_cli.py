@@ -4,7 +4,8 @@ import pytest
 from click.testing import CliRunner
 
 from crowddynamics.cli import startproject, new, list_of_simulations, \
-    CROWDDYNAMICS_CFG, ENVIRONMENT_YML
+    ENVIRONMENT_YML
+from crowddynamics.config import CROWDDYNAMICS_CFG
 
 
 @pytest.mark.parametrize('dirpath', ['.', 'name', os.path.join('folder', 'path')])

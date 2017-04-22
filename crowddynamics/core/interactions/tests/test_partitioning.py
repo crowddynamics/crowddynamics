@@ -21,7 +21,7 @@ def points(dimensions, interval=(-1.0, 1.0)):
 def test_block_list(points, cell_size):
     n, m = points.shape
 
-    index_list, count, offset, x_min, x_max = block_list(points, cell_size)
+    index_list, count, offset, shape = block_list(points, cell_size)
 
     assert isinstance(index_list, np.ndarray)
     assert index_list.dtype.type is np.int64
@@ -37,11 +37,8 @@ def test_block_list(points, cell_size):
     assert 0 <= np.min(offset) <= np.max(offset) <= n
     assert np.all(np.sort(offset) == offset)
 
-    assert isinstance(x_min, np.ndarray)
-    assert x_min.dtype.type is np.int64
-
-    assert isinstance(x_max, np.ndarray)
-    assert x_max.dtype.type is np.int64
+    assert isinstance(shape, np.ndarray)
+    assert shape.dtype.type is np.int64
 
 
 @pytest.mark.parametrize('dimensions', (2, 3))

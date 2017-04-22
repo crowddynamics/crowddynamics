@@ -39,7 +39,7 @@ from numba import typeof, void, boolean, float64
 from numba.types import UniTuple
 from sortedcontainers import SortedSet
 
-from crowddynamics.io import load_config
+from crowddynamics.config import load_config
 from crowddynamics.core.interactions.distance import distance_circles, \
     distance_circle_line, distance_three_circle_line
 from crowddynamics.core.interactions.distance import distance_three_circles

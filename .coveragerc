@@ -7,3 +7,6 @@ omit =
     */tests/*,
     docs/*,
     */_version.py
+
+    # Remove once numba jitted functions coverage works
+    */core/*

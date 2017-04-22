@@ -5,7 +5,9 @@ from contextlib import contextmanager
 import bokeh.io
 import bokeh.plotting
 from bokeh.plotting.figure import Figure
+from crowddynamics.core.geometry import geom_to_mpl
 from matplotlib import cm
+from matplotlib.patches import PathPatch
 from shapely.geometry import LineString, Point, Polygon
 from shapely.geometry.base import BaseMultipartGeometry, BaseGeometry
 
@@ -13,10 +15,29 @@ from shapely.geometry.base import BaseMultipartGeometry, BaseGeometry
 # Matplotlib
 
 
-def plot_field(domain, obstacles, targets):
+def plot_field(fig, ax, domain, obstacles, targets):
+    """Plot field"""
     # TODO: polygon patch
     # TODO: default styles
-    pass
+    if domain:
+        ax.add_patch(PathPatch(
+            geom_to_mpl(domain),
+            # color='0.25', linewidth=0.0, alpha=0.8, fill=True
+        ))
+
+    if obstacles:
+        ax.add_patch(PathPatch(
+            geom_to_mpl(obstacles),
+            # color='1.0', fill=True
+        ))
+
+    if targets:
+        ax.add_patch(PathPatch(
+            geom_to_mpl(targets),
+            color='0.75', linestyle='--', alpha=0.5
+        ))
+
+    return fig, ax
 
 
 def plot_navigation(fig, ax, mgrid, dmap, dir_map=None, frequency=20):
@@ -37,34 +58,6 @@ def plot_navigation(fig, ax, mgrid, dmap, dir_map=None, frequency=20):
     
     Returns:
         (Figure, Axes)
-    
-    Examples:
-        >>> import matplotlib.pyplot as plt
-        >>> from shapely.geometry import LineString, Polygon
-        >>> 
-        >>> from crowddynamics.core.steering.navigation import distance_map, \
-        >>>     direction_map, meshgrid
-        >>> from crowddynamics.plot import plot_navigation
-        >>> 
-        >>> step = 0.01
-        >>> height = 3.0
-        >>> width = 4.0
-        >>> radius = 0.3
-        >>> 
-        >>> domain = Polygon([(0, 0), (0, height), (width, height), (width, 0)])
-        >>> targets = LineString([(0, height / 2), (0, height)])
-        >>> obstacles = LineString([(0, height / 2), (width * 3 / 4, height / 2)]) | \
-        >>>             domain.exterior - targets
-        >>> 
-        >>> mgrid = meshgrid(step, *domain.bounds)
-        >>> dmap_exits = distance_map(mgrid, targets,
-        >>>                           obstacles.buffer(radius).intersection(domain))
-        >>> dmap_obs = distance_map(mgrid, obstacles, None)
-        >>> dir_map_exits = direction_map(dmap_exits)
-        >>> dir_map_obs = direction_map(dmap_obs)
-        >>> 
-        >>> plot_navigation(mgrid.values, dmap_exits, dir_map_exits, frequency=5, figsize=(16, 16))
-        >>> plt.show()
     """
     X, Y = mgrid
     bbox = (X.min(), X.max(), Y.min(), Y.max())

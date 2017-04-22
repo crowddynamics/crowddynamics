@@ -30,15 +30,15 @@ from pprint import pformat
 import click
 import ruamel.yaml as yaml
 from configobj import ConfigObj
+
 from crowddynamics import __version__
+from crowddynamics.config import CROWDDYNAMICS_CFG
 from crowddynamics.exceptions import CrowdDynamicsException, \
     NotACrowdDynamicsDirectory, DirectoryIsAlreadyCrowdDynamicsDirectory
 from crowddynamics.logging import setup_logging, LOGLEVELS
 from crowddynamics.parse import parse_signature, ArgSpec
 from crowddynamics.simulation.multiagent import run_parallel, run_sequentially
 
-
-CROWDDYNAMICS_CFG = 'crowddynamics.cfg'
 ENVIRONMENT_YML = 'environment.yml'
 
 

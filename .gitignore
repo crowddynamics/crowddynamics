@@ -9,7 +9,9 @@
 *.ipynb
 
 # Folders
+examples/plots/
 /docs/apidocs/
+/docs/apidocs_examples/
 *.logs/
 *_build/
 crowddynamics/tests/output/

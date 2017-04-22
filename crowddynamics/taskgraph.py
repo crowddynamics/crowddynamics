@@ -10,7 +10,7 @@ Todo:
     - update method timer
 """
 
-from anytree import NodeMixin
+from anytree import NodeMixin, PreOrderIter
 
 
 class Node(NodeMixin):
@@ -106,3 +106,11 @@ class Node(NodeMixin):
                                         key=lambda item: item[0])):
             args.append("%s=%r" % (key, value))
         return "%s(%s)" % (classname, ", ".join(args))
+
+    def __getitem__(self, item):
+        """Slow get item which find node named "item" by iterating over the all 
+        nodes."""
+        for node in PreOrderIter(self.root):
+            if node.name == item:
+                return node
+        raise KeyError('Key: "{}" not in the tree.'.format(item))
