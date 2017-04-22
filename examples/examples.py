@@ -59,10 +59,10 @@ def outdoor(size: (1, None) = 100,
 
 
 @log_with()
-def hallway(size: (1, None)=100,
-            width: (1.0, None)=20.0,
-            height: (1.0, None)=5.0,
-            agent_type: AgentModels='circular',
+def hallway(size: (1, None) = 100,
+            width: (1.0, None) = 20.0,
+            height: (1.0, None) = 5.0,
+            agent_type: AgentModels = 'circular',
             body_type='adult'):
     r"""Hallway
 
@@ -127,10 +127,10 @@ def hallway(size: (1, None)=100,
 
 
 @log_with()
-def rounding(size: (1, None)=100,
-             width: (1.0, None)=15.0,
-             height: (1.0, None)=15.0,
-             agent_type: AgentModels='circular',
+def rounding(size: (1, None) = 100,
+             width: (1.0, None) = 15.0,
+             height: (1.0, None) = 15.0,
+             agent_type: AgentModels = 'circular',
              body_type='adult'):
     r"""Rounding
 
@@ -180,13 +180,13 @@ def rounding(size: (1, None)=100,
 
 
 @log_with()
-def room_evacuation(size: (1, None)=100,
-                    width: (1.0, None)=10.0,
-                    height: (1.0, None)=20.0,
-                    agent_type: AgentModels='circular',
+def room_evacuation(size: (1, None) = 100,
+                    width: (1.0, None) = 10.0,
+                    height: (1.0, None) = 20.0,
+                    agent_type: AgentModels = 'circular',
                     body_type='adult',
-                    door_width: (0.0, None)=1.2,
-                    exit_hall_width: (0.0, None)=2.0):
+                    door_width: (0.0, None) = 1.2,
+                    exit_hall_width: (0.0, None) = 2.0):
     r"""Room Evacuation
 
     - Unidirectional flow
@@ -224,6 +224,60 @@ def room_evacuation(size: (1, None)=100,
         'body_type': body_type,
         'position': polygon_sample(
             np.asarray((room - obstacles.buffer(0.3)).exterior)),
+        'orientation': 0.0,
+        'velocity': lambda: np.random.uniform(0.0, 1.0, 2),
+        'angular_velocity': 0.0,
+        'target_direction': np.array((1.0, 0.0)),
+        'target_orientation': 0.0
+    })
+    simu.tasks = \
+        Reset(simu) << (
+            Integrator(simu) << (
+                Fluctuation(simu),
+                Adjusting(simu) << (
+                    Navigation(simu),
+                    Orientation(simu)
+                ),
+                AgentAgentInteractions(simu),
+                AgentObstacleInteractions(simu)
+            )
+        )
+    return simu
+
+
+@log_with()
+def uturn(size: (1, None) = 10,
+          width: (1.0, None) = 20.0,
+          height: (1.0, None) = 10.0,
+          agent_type: AgentModels = 'circular',
+          body_type='adult'):
+    """U-Turn"""
+    domain = Polygon([
+        (0, -height / 2), (0, height / 2),
+        (width, height / 2), (width, -height / 2)
+    ])
+    b = 0.9 * height / 2
+    b2 = 0.2 * height / 2
+    exits = LineString([(0.0, b2), (0.0, b)])
+    obstacles = domain - \
+                LineString([(0, 0), (0.95 * (width - b), 0)]).buffer(b) | \
+                LineString([(0, 0), (0.95 * (width - b), 0)]).buffer(b2) & \
+                domain
+
+    spawn = Polygon([(0, -b2), (0, -b),
+                     (width / 4, -b), (width / 4, -b2)])
+
+    simu = MultiAgentSimulation()
+    simu.name = 'U-Turn'
+
+    simu.domain = domain
+    simu.obstacles = obstacles
+    simu.targets = exits
+
+    simu.agents = Agents(size, agent_type)
+    simu.agents.fill(size, {
+        'body_type': body_type,
+        'position': polygon_sample(np.asarray(spawn.exterior)),
         'orientation': 0.0,
         'velocity': lambda: np.random.uniform(0.0, 1.0, 2),
         'angular_velocity': 0.0,
