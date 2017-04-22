@@ -10,9 +10,18 @@ from validate import Validator
 from crowddynamics.exceptions import InvalidConfigurationError
 
 
-ROOT = os.path.dirname(__file__)
-CROWDDYNAMICS_CFG_SPEC = os.path.join(ROOT, 'crowddynamics_spec.cfg')
+CONFIG_ROOT = os.path.join(os.path.dirname(__file__), 'config')
+
+LOG_CFG = os.path.join(CONFIG_ROOT, 'logging.yaml')
+
+CROWDDYNAMICS_CFG_SPEC = os.path.join(CONFIG_ROOT, 'crowddynamics_spec.cfg')
 CROWDDYNAMICS_CFG = 'crowddynamics.cfg'
+
+AGENT_CFG_SPEC = os.path.join(CONFIG_ROOT, 'agent_spec.cfg')
+AGENT_CFG = os.path.join(CONFIG_ROOT, 'agent.cfg')
+
+MULTIAGENT_CFG = os.path.join(CONFIG_ROOT, 'multiagent.cfg')
+MULTIAGENT_CFG_SPEC = os.path.join(CONFIG_ROOT, 'multiagent_spec.cfg')
 
 
 def load_config(infile, configspec=None):

@@ -30,7 +30,6 @@ Attributes:
     
 """
 import logging
-import os
 
 import numba
 import numpy as np
@@ -39,7 +38,7 @@ from numba import typeof, void, boolean, float64
 from numba.types import UniTuple
 from sortedcontainers import SortedSet
 
-from crowddynamics.config import load_config
+from crowddynamics.config import load_config, AGENT_CFG, AGENT_CFG_SPEC
 from crowddynamics.core.interactions.distance import distance_circles, \
     distance_circle_line, distance_three_circle_line
 from crowddynamics.core.interactions.distance import distance_three_circles
@@ -50,10 +49,6 @@ from crowddynamics.core.vector.vector2D import unit_vector, rotate270
 from crowddynamics.exceptions import CrowdDynamicsException, OverlappingError, \
     AgentStructureFull
 from tqdm import tqdm
-
-BASE_DIR = os.path.dirname(__file__)
-AGENT_CFG_SPEC = os.path.join(BASE_DIR, 'agent_spec.cfg')
-AGENT_CFG = os.path.join(BASE_DIR, 'agent.cfg')
 
 
 def _truncnorm(mean, abs_scale):

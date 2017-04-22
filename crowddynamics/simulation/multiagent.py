@@ -37,9 +37,13 @@ from multiprocessing import Process, Event
 
 import numpy as np
 from anytree.iterators import PostOrderIter
+from loggingtools import log_with
+from matplotlib.path import Path
+
+from crowddynamics.config import load_config, MULTIAGENT_CFG, \
+    MULTIAGENT_CFG_SPEC
 from crowddynamics.core.geometry import geom_to_linear_obstacles
-from crowddynamics.core.integrator.integrator import euler_integrator, \
-    velocity_verlet_integrator
+from crowddynamics.core.integrator.integrator import velocity_verlet_integrator
 from crowddynamics.core.interactions.interactions import \
     agent_agent_block_list_circular, agent_agent_block_list_three_circle, \
     circular_agent_linear_wall, three_circle_agent_linear_wall
@@ -53,15 +57,9 @@ from crowddynamics.core.structures.agents import is_model, reset_motion
 from crowddynamics.core.vector import angle
 from crowddynamics.exceptions import CrowdDynamicsException
 from crowddynamics.io import save_data
-from crowddynamics.config import load_config
 from crowddynamics.taskgraph import Node
-from loggingtools import log_with
-from matplotlib.path import Path
 
-BASE_DIR = os.path.dirname(__file__)
-AGENT_CFG_SPEC = os.path.join(BASE_DIR, 'multiagent_spec.cfg')
-AGENT_CFG = os.path.join(BASE_DIR, 'multiagent.cfg')
-CONFIG = load_config(AGENT_CFG, AGENT_CFG_SPEC)
+CONFIG = load_config(MULTIAGENT_CFG, MULTIAGENT_CFG_SPEC)
 
 
 class MultiAgentSimulation(object):

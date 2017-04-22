@@ -1,17 +1,16 @@
 import logging
 import platform
 import sys
-import os
 
 import loggingtools
+
+from crowddynamics.config import LOG_CFG
 
 LOGLEVELS = [
     logging.CRITICAL, logging.FATAL, logging.ERROR, logging.WARNING,
     logging.WARN, logging.INFO, logging.DEBUG, logging.NOTSET,
     'CRITICAL', 'FATAL', 'ERROR', 'WARNING', 'WARN', 'INFO', 'DEBUG', 'NOTSET'
 ]
-BASE_DIR = os.path.dirname(__file__)
-LOG_CFG = os.path.join(BASE_DIR, 'logging.yaml')
 
 
 def format_numpy(precision=5, threshold=6, edgeitems=3, linewidth=None,
