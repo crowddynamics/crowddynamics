@@ -23,7 +23,8 @@ conda install --quiet --yes -c conda-forge  \
     scikit-image \
     shapely \
     matplotlib \
-    bokeh
+    bokeh \
+    tqdm
 
 pip install -q \
     configobj \

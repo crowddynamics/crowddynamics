@@ -19,7 +19,7 @@ conda create -n %CONDA_ENV% -q -y python=%PYTHON%
 call activate %CONDA_ENV%
 
 @rem Install optional dependencies for tests
-%CONDA_INSTALL% numpy numba scipy scikit-image shapely matplotlib bokeh
+%CONDA_INSTALL% numpy numba scipy scikit-image shapely matplotlib bokeh tqdm
 
 %PIP_INSTALL% configobj loggingtools versioneer typing sortedcontainers anytree ruamel.yaml scikit-fmm click colorama colorlog pytest pytest-cov coverage hypothesis pytest-benchmark codecov
 
