@@ -1,28 +1,4 @@
-"""Command-line interface for running crowddynamics.
-
-References:
-    - https://github.com/aharris88/awesome-cli-apps
-    - https://doc.scrapy.org/en/1.3/topics/commands.html
-
-Todo:
-    - debug
-    - profile
-    - loglevel
-    - help text for mkoption
-    - Launch multiple simulation in parallel
-    - Scheduler
-    - Iterations limit
-    - Time limit
-    - Simulation time limit
-    - Read simulation configs from file
-    - load and restart old simulations
-    - Progress bar
-    - random seed
-    - chaining command to run different simulation types at chained, should
-      also work in parallel
-    - token normalization
-
-"""
+"""Command-line interface for running crowddynamics."""
 import logging
 import os
 from pprint import pformat
@@ -32,9 +8,11 @@ import ruamel.yaml as yaml
 from configobj import ConfigObj
 
 from crowddynamics import __version__
-from crowddynamics.config import CROWDDYNAMICS_CFG
-from crowddynamics.exceptions import CrowdDynamicsException, \
-    NotACrowdDynamicsDirectory, DirectoryIsAlreadyCrowdDynamicsDirectory
+from crowddynamics.config import CROWDDYNAMICS_CFG, CROWDDYNAMICS_CFG_SPEC, \
+    load_config
+from crowddynamics.exceptions import NotACrowdDynamicsDirectory, \
+    DirectoryIsAlreadyCrowdDynamicsDirectory, \
+    InvalidArgument
 from crowddynamics.logging import setup_logging, LOGLEVELS
 from crowddynamics.parse import parse_signature, ArgSpec
 from crowddynamics.simulation.multiagent import run_parallel, run_sequentially
@@ -43,7 +21,7 @@ ENVIRONMENT_YML = 'environment.yml'
 
 
 class Colors:
-    """Commandline output colors"""
+    """Color palette for the commandline output colors"""
     NEUTRAL = 'blue'
     POSITIVE = 'green'
     NEGATIVE = 'red'
@@ -59,10 +37,8 @@ def main():
 @main.command()
 @click.argument('dirpath')
 def startproject(dirpath):
-    """Create new simulation project.
-    
-    ::
-    
+    """Create new simulation project in the filesystem ::
+
         <name>
         ├── crowddynamics.cfg
         ├── environment.yml
@@ -109,10 +85,8 @@ def startproject(dirpath):
 @main.command()
 @click.argument('name')
 def new(name):
-    """Create new simulation. Must be called inside a crowddynamics directory.
-    
-    ::
-    
+    """Create new simulation. Must be called inside a crowddynamics directory ::
+
         project
         ├── crowddynamics.cfg
         ├── environment.yml
@@ -142,7 +116,6 @@ def new(name):
             fp.write('')
 
     if not os.path.exists(filename):
-        # TODO: template / cookiecutter
         with open(os.path.join(filename), 'w') as fp:
             fp.write('')
         click.secho('Created successfully', fg=Colors.POSITIVE)
@@ -151,22 +124,24 @@ def new(name):
         raise FileExistsError
 
     # Append simulation metadata to simulations sections in crowddynamics.cfg
-    config = ConfigObj(CROWDDYNAMICS_CFG)
-    cfg = {name: {'filename': filename}}
-    try:
-        config['simulations'].update(cfg)
-    except KeyError:
-        config['simulations'] = cfg
-    config.write()
+    config = load_config(CROWDDYNAMICS_CFG, configspec=CROWDDYNAMICS_CFG_SPEC)
+    # TODO: comply with configspec
+    # cfg = {name: {'filename': filename}}
+    # try:
+    #     config['simulations'].update(cfg)
+    # except KeyError:
+    #     config['simulations'] = cfg
+    # config.write()
 
 
 @main.command('list')
 def list_of_simulations():
     """List of available simulations"""
-    config = ConfigObj(CROWDDYNAMICS_CFG)
-    d = config.get('simulations', [])
+    config = load_config(CROWDDYNAMICS_CFG, configspec=CROWDDYNAMICS_CFG_SPEC)
     click.secho('List of available simulations:', fg=Colors.NEUTRAL)
-    click.secho(pformat(d), fg=Colors.NEUTRAL)
+    for name, config in config['simulations'].items():
+        click.secho('- ' + name + ': ' + pformat(config['functions']),
+                    fg=Colors.POSITIVE)
 
 
 @main.group(chain=True)
@@ -196,7 +171,7 @@ def run(context, loglevel, num, maxiter, timeout, parallel, profile):
     )
 
 
-def mkoption(spec: ArgSpec):
+def mkoption(spec: ArgSpec) -> click.Option:
     if isinstance(spec.default, int):
         return click.Option(('--' + spec.name,),
                             default=spec.default,
@@ -215,32 +190,14 @@ def mkoption(spec: ArgSpec):
                             default=spec.default,
                             type=click.Choice(spec.annotation))
     else:
-        raise CrowdDynamicsException(
-            "Option not defined for spec: {}".format(spec))
+        raise InvalidArgument(
+            'Type: "{}" for spec.default is not supported'.format(type(spec.default)))
 
 
-def mkcommand(name, simulation):
-    """Make command
-
-    Args:
-        name (str):
-        simulation (MultiAgentSimulation):
-
-    Returns:
-        click.Command:
-
-    Todo:
-        - make lazy
-        - run sequentially / parallel
-    """
-
+def mk_run_simulation(simulation):
     @click.pass_context
     def run_simulation(context, *args, **kwargs):
         """"Callback function that is called when the command is executed."""
-        # click.echo(context.obj)
-        # click.echo(args)
-        # click.echo(kwargs)
-
         num = context.obj['num']
         maxiter = context.obj['maxiter']
 
@@ -258,9 +215,26 @@ def mkcommand(name, simulation):
                 pass
         else:
             run_sequentially(*simulations, maxiter)
+    return run_simulation
 
+
+def mkcommand(name, simulation):
+    """Make command
+
+    Args:
+        name (str):
+        simulation (MultiAgentSimulation):
+
+    Returns:
+        click.Command:
+
+    Todo:
+        - make lazy
+        - run sequentially / parallel
+    """
     # Make new command for running the simulation.
-    command = click.Command(name, callback=run_simulation,
+    command = click.Command(name,
+                            callback=mk_run_simulation(simulation),
                             help=simulation.__doc__)
 
     # Add the command into run group

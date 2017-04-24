@@ -1,20 +1,9 @@
-"""Crowddynamics IO operations
+"""Crowddynamics IO operations for storing simulation data into disk
 
-- Loading configurations
-- Saving simulation data
+Data flow ::
 
-Data flow
+    data (ndarray) -> buffer (list) -> file (.npy)
 
-data (ndarray) -> buffer (list) -> file (.npy)
-
-Todo:
-    - https://docs.scipy.org/doc/numpy-dev/neps/npy-format.html
-    - json/yaml for metadata
-    - config files
-    - serializing geometry (shapely) objects (.shp), Fiona
-
-References:
-    - http://www.dabeaz.com/coroutines/Coroutines.pdf
 """
 import os
 

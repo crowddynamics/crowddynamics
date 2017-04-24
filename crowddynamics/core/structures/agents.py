@@ -48,7 +48,6 @@ from crowddynamics.core.structures.obstacles import obstacle_type_linear
 from crowddynamics.core.vector.vector2D import unit_vector, rotate270
 from crowddynamics.exceptions import CrowdDynamicsException, OverlappingError, \
     AgentStructureFull
-from tqdm import tqdm
 
 
 def _truncnorm(mean, abs_scale):
@@ -128,7 +127,6 @@ three_circle = [
     ('r_ts', np.float64),
     ('position_ls', np.float64, 2),
     ('position_rs', np.float64, 2),
-    ('front', np.float64, 2),
 ]
 
 agent_type_circular = np.dtype(translational)
@@ -185,16 +183,6 @@ def shoulders(agents):
         offset = tangent * agent['r_ts']
         agent['position_ls'][:] = agent['position'] - offset
         agent['position_rs'][:] = agent['position'] + offset
-
-
-@numba.jit(void(typeof(agent_type_three_circle)[:]),
-           nopython=True, nogil=True, cache=True)
-def front(agents):
-    """Position of agents nose."""
-    for agent in agents:
-        agent['front'][:] = agent['position'] * \
-                            unit_vector(agent['orientation']) * \
-                            agent['r_t']
 
 
 @numba.generated_jit(cache=True)
@@ -504,4 +492,3 @@ class Agents(object):
 
         if is_model(self.array, 'three_circle'):
             shoulders(self.array)
-            front(self.array)

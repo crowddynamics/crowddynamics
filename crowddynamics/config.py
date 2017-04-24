@@ -10,7 +10,7 @@ from validate import Validator
 from crowddynamics.exceptions import InvalidConfigurationError
 
 
-CONFIG_ROOT = os.path.join(os.path.dirname(__file__), 'config')
+CONFIG_ROOT = os.path.join(os.path.dirname(__file__), 'conf')
 
 LOG_CFG = os.path.join(CONFIG_ROOT, 'logging.yaml')
 

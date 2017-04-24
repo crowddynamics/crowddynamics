@@ -3,7 +3,7 @@ import os
 import pytest
 from click.testing import CliRunner
 
-from crowddynamics.cli import startproject, new, list_of_simulations, \
+from crowddynamics.cli import startproject, list_of_simulations, \
     ENVIRONMENT_YML
 from crowddynamics.config import CROWDDYNAMICS_CFG
 
@@ -17,9 +17,9 @@ def test_startproject(tmpdir, dirpath):
         assert os.path.exists(os.path.join(dirpath, CROWDDYNAMICS_CFG))
         assert os.path.exists(os.path.join(dirpath, ENVIRONMENT_YML))
 
-        os.chdir(dirpath)
-        result2 = runner.invoke(new, ['simu'])
-        assert result2.exit_code == 0
+        # os.chdir(dirpath)
+        # result2 = runner.invoke(new, ['simu'])
+        # assert result2.exit_code == 0
 
         result2 = runner.invoke(list_of_simulations, [])
         assert result2.exit_code == 0

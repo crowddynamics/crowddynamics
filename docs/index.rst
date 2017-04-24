@@ -44,3 +44,11 @@ Crowddynamics is a Python package for crowd simulation. The project was created 
 
    research/index.rst
    references.rst
+
+
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`

@@ -32,7 +32,6 @@ Multi-agent simulation attributes
 """
 import logging
 import multiprocessing
-import os
 from multiprocessing import Process, Event
 
 import numpy as np
@@ -414,7 +413,7 @@ class Reset(MASNode):
 
 
 class SaveAgentsData(MASNode):
-    r"""Saves data to hdf5 file."""
+    r"""Saves data to .npy file."""
 
     def __init__(self, simulation, directory):
         super().__init__(simulation)

@@ -96,6 +96,15 @@ def test_truncate(v, l):
         assert length(v) <= l
 
 
-def test_unit_vector():
-    ans = unit_vector(0.0)
+@given(real(-1.0, 1.0))
+def test_unit_vector(orientation):
+    ans = unit_vector(orientation)
     assert isinstance(ans, np.ndarray)
+    assert ans.ndim == 1
+
+
+@given(real(-1.0, 1.0, shape=10))
+def test_unit_vector_vec(orientation):
+    ans = unit_vector(orientation)
+    assert isinstance(ans, np.ndarray)
+    assert ans.ndim == 2

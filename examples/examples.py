@@ -4,9 +4,15 @@ from crowddynamics.core.structures.agents import Agents, AgentModels
 from crowddynamics.core.vector import unit_vector
 from crowddynamics.simulation.multiagent import MultiAgentSimulation, \
     Orientation, Integrator, Fluctuation, Adjusting, \
-    AgentAgentInteractions, Reset, AgentObstacleInteractions, Navigation
+    AgentAgentInteractions, Reset, AgentObstacleInteractions, Navigation, \
+    SaveAgentsData
 from loggingtools import log_with
 from shapely.geometry import Polygon, LineString
+
+
+def save_simulation(simulation, directory):
+    node = SaveAgentsData(simulation, directory)
+    simulation.tasks['Reset'].inject_before(node)
 
 
 @log_with()
@@ -60,7 +66,7 @@ def outdoor(size: (1, None) = 100,
 
 @log_with()
 def hallway(size: (1, None) = 100,
-            width: (1.0, None) = 20.0,
+            width: (1.0, None) = 30.0,
             height: (1.0, None) = 5.0,
             agent_type: AgentModels = 'circular',
             body_type='adult'):
@@ -127,7 +133,7 @@ def hallway(size: (1, None) = 100,
 
 
 @log_with()
-def rounding(size: (1, None) = 100,
+def rounding(size: (1, None) = 10,
              width: (1.0, None) = 15.0,
              height: (1.0, None) = 15.0,
              agent_type: AgentModels = 'circular',
@@ -277,7 +283,8 @@ def uturn(size: (1, None) = 10,
     simu.agents = Agents(size, agent_type)
     simu.agents.fill(size, {
         'body_type': body_type,
-        'position': polygon_sample(np.asarray(spawn.exterior)),
+        'position': polygon_sample(
+            np.asarray((spawn - obstacles.buffer(0.3)).exterior)),
         'orientation': 0.0,
         'velocity': lambda: np.random.uniform(0.0, 1.0, 2),
         'angular_velocity': 0.0,

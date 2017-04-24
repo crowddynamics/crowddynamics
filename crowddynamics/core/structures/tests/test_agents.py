@@ -1,7 +1,7 @@
 import numpy as np
 
 from crowddynamics.core.structures.agents import reset_motion, shoulders, \
-    front, overlapping_circles, overlapping_three_circles
+    overlapping_circles, overlapping_three_circles
 
 SEED = np.random.randint(0, 100)
 np.random.seed(SEED)
@@ -15,7 +15,6 @@ def test_circular(agents_circular):
 def test_three_circle(agents_three_circle):
     reset_motion(agents_three_circle.array)
     shoulders(agents_three_circle.array)
-    front(agents_three_circle.array)
     assert True
 
 

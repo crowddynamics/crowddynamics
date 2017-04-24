@@ -1,7 +1,4 @@
-r"""Universal power law governing pedestrian
-
-[Karamouzas2014b]_
-"""
+r"""Universal power law governing pedestrian interactions [Karamouzas2014b]_"""
 import numba
 import numpy as np
 from numba import f8, i8, typeof
@@ -117,22 +114,6 @@ def gradient_three_circle(x_rel, v_rel, r_off, a, b, d):
     return (v_rel - (a * (x_rel + 2 * r_off) + b * v_rel) / d) / a
 
 
-@numba.jit(f8[:](f8[:], f8[:]),
-           nopython=True, nogil=True, cache=True)
-def gradient_circle_line(v, n):
-    """
-    Gradient circle line
-
-    Args:
-        v:
-        n:
-
-    Returns:
-
-    """
-    return n / dot(v, n)
-
-
 @numba.jit(Tuple((f8, f8[:]))(f8[:], f8[:], f8),
            nopython=True, nogil=True, cache=True)
 def time_to_collision_circle_circle(x_rel, v_rel, r_tot):
@@ -193,37 +174,6 @@ def time_to_collision_circle_circle(x_rel, v_rel, r_tot):
 
     grad = gradient_circle_circle(x_rel, v_rel, a, b, d)
     return tau, grad
-
-
-@numba.jit(Tuple((f8, f8[:]))(f8[:], f8[:], f8, f8[:]),
-           nopython=True, nogil=True, cache=True)
-def time_to_collision_circle_line(x_rel, v_rel, r_tot, n):
-    r"""Time-to-collision of circle with line.
-
-    Args:
-        x_rel:
-        v_rel:
-        r_tot:
-        n:
-
-    Returns:
-
-    """
-    dot_vn = dot(v_rel, n)
-    if dot_vn == 0:
-        return np.nan, np.zeros(2)
-
-    g0 = -dot(x_rel, n) / dot_vn
-    g1 = r_tot / dot_vn
-    tau0 = g0 + g1
-    tau1 = g0 - g1
-    grad = gradient_circle_line(v_rel, n)
-    if tau0 > g0 > 0:
-        return tau0, grad
-    elif 0 < tau1 <= g0:
-        return tau1, grad
-    else:
-        return np.nan, np.zeros(2)
 
 
 @numba.jit(Tuple((f8[:], f8[:]))(typeof(agent_type_circular)[:], i8, i8),
