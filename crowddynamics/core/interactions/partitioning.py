@@ -221,6 +221,7 @@ def get_block(indices, index_list, count, offset, shape):
     Returns:
         numpy.ndarray:
     """
+    # TODO: Handle index out of bound
     index = indices[0]
     for j in range(1, len(indices)):
         index *= shape[j]
@@ -228,3 +229,19 @@ def get_block(indices, index_list, count, offset, shape):
     start = offset[index]
     end = start + count[index]
     return index_list[start:end]
+
+
+def split_blocklist(parts, index_list, count, offset, shape):
+    size = len(index_list)
+    part_size = int(size / parts)
+    splits = np.zeros(parts, dtype=np.int64)
+
+    num = 0
+    _sum = 0
+    for i, value in enumerate(count):
+        _sum += value
+        if _sum >= (num + 1) * part_size:
+            splits[num] = i
+            num += 1
+
+    return splits

@@ -12,10 +12,9 @@ from crowddynamics.config import CROWDDYNAMICS_CFG, CROWDDYNAMICS_CFG_SPEC, \
     load_config
 from crowddynamics.exceptions import NotACrowdDynamicsDirectory, \
     DirectoryIsAlreadyCrowdDynamicsDirectory, \
-    InvalidArgument
+    InvalidType
 from crowddynamics.logging import setup_logging, LOGLEVELS
 from crowddynamics.parse import parse_signature, ArgSpec
-from crowddynamics.simulation.multiagent import run_parallel, run_sequentially
 
 ENVIRONMENT_YML = 'environment.yml'
 
@@ -190,7 +189,7 @@ def mkoption(spec: ArgSpec) -> click.Option:
                             default=spec.default,
                             type=click.Choice(spec.annotation))
     else:
-        raise InvalidArgument(
+        raise InvalidType(
             'Type: "{}" for spec.default is not supported'.format(type(spec.default)))
 
 
@@ -202,19 +201,20 @@ def mk_run_simulation(simulation):
         maxiter = context.obj['maxiter']
 
         # Initialise the ``num`` simulations
-        simulations = []
-        for _ in range(num):
-            simu = simulation()
-            simu.set(*args, **kwargs)
-            simulations.append(simu)
+        # simulations = []
+        # for _ in range(num):
+        #     simu = simulation()
+        #     simu.set(*args, **kwargs)
+        #     simulations.append(simu)
 
         # Run options from the context
-        if num > 1 and context.obj['parallel']:
-            processes = run_parallel(*simulations, maxiter)
-            for process in processes:
-                pass
-        else:
-            run_sequentially(*simulations, maxiter)
+        # if num > 1 and context.obj['parallel']:
+        #     processes = run_parallel(*simulations, maxiter)
+        #     for process in processes:
+        #         pass
+        # else:
+        #     # run_sequentially(*simulations, maxiter)
+        #     pass
     return run_simulation
 
 

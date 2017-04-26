@@ -6,9 +6,14 @@ class CrowdDynamicsException(Exception):
     pass
 
 
-class InvalidArgument(CrowdDynamicsException, TypeError):
-    """Used to indicate that the arguments to a CrowdDynamics function were in
-    some manner incorrect."""
+class InvalidType(CrowdDynamicsException, TypeError):
+    """Used to indicate that the arguments to a CrowdDynamics function were 
+    invalid type."""
+
+
+class InvalidValue(CrowdDynamicsException, ValueError):
+    """Used to indicate that the arguments to a CrowdDynamics function had
+    incorrect value."""
 
 
 class ValidationError(CrowdDynamicsException):
@@ -30,7 +35,3 @@ class NotACrowdDynamicsDirectory(CrowdDynamicsException):
 class DirectoryIsAlreadyCrowdDynamicsDirectory(CrowdDynamicsException):
     """Directory is already recognized as a crowddynamics simulation 
     directory"""
-
-
-class InvalidConfigurationError(CrowdDynamicsException):
-    """Initial configuration is invalid"""

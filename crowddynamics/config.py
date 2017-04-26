@@ -7,8 +7,7 @@ import os
 from configobj import ConfigObj
 from validate import Validator
 
-from crowddynamics.exceptions import InvalidConfigurationError
-
+from crowddynamics.exceptions import ValidationError
 
 CONFIG_ROOT = os.path.join(os.path.dirname(__file__), 'conf')
 
@@ -28,7 +27,7 @@ def load_config(infile, configspec=None):
     """Load configuration from INI file."""
     config = ConfigObj(infile=infile, configspec=configspec)
     if configspec and not config.validate(Validator()):
-        raise InvalidConfigurationError
+        raise ValidationError
     return config
 
 

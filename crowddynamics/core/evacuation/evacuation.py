@@ -107,3 +107,7 @@ def agent_closer_to_exit(c_door, position):
     d_sorted = np.argsort(distances)
     num = np.argsort(d_sorted)
     return num
+
+
+def exit_selection():
+    pass

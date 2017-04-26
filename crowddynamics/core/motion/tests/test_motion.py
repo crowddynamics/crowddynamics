@@ -2,11 +2,11 @@ import numpy as np
 from hypothesis import given
 
 from crowddynamics.core.motion.adjusting import force_adjust, torque_adjust
-from crowddynamics.core.motion.collision_avoidance.helbing import \
-    force_social_helbing
 from crowddynamics.core.motion.contact import force_contact
 from crowddynamics.core.motion.fluctuation import force_fluctuation, \
     torque_fluctuation
+from crowddynamics.core.motion.helbing import \
+    force_social_helbing
 from crowddynamics.testing import real
 
 SIZE = 10

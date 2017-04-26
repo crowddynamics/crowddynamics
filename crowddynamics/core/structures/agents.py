@@ -89,6 +89,10 @@ def body_to_values(body):
     }
 
 
+states = [
+    ('active', np.bool_),
+    ('target_reached', np.bool_)
+]
 translational = [
     ('mass', np.float64),
     ('radius', np.float64),
@@ -107,8 +111,6 @@ translational = [
     ('std_rand_force', np.float64),
     ('f_soc_ij_max', np.float64),
     ('f_soc_iw_max', np.float64),
-    ('sight_soc', np.float64),
-    ('sight_wall', np.float64),
 ]
 rotational = [
     ('inertia_rot', np.float64),
@@ -129,8 +131,16 @@ three_circle = [
     ('position_rs', np.float64, 2),
 ]
 
-agent_type_circular = np.dtype(translational)
-agent_type_three_circle = np.dtype(translational + rotational + three_circle)
+agent_type_circular = np.dtype(
+    states +
+    translational
+)
+agent_type_three_circle = np.dtype(
+    states +
+    translational +
+    rotational +
+    three_circle
+)
 
 
 AgentModelToType = {
@@ -355,13 +365,13 @@ class Agents(object):
         else:
             dtype = agent_type
 
-        self.array = np.zeros(size, dtype=dtype)
-        self.config = load_config(infile=agent_cfg, configspec=agent_cfg_spec)
-
         # Keeps track of which agents are active and which in active. Stores
         # indices of agents.
-        self.active = SortedSet()
-        self.inactive = SortedSet(range(size))
+        self._active = SortedSet()
+        self._inactive = SortedSet(range(size))
+
+        self.array = np.zeros(size, dtype=dtype)
+        self.config = load_config(infile=agent_cfg, configspec=agent_cfg_spec)
 
         # Faster check for neighbouring agents for initializing agents into
         # random positions.
@@ -397,7 +407,7 @@ class Agents(object):
             OverlappingError: When two agents overlap each other.
         """
         try:
-            index = self.inactive.pop(0)
+            index = self._inactive.pop(0)
         except IndexError:
             raise AgentStructureFull
 
@@ -429,7 +439,7 @@ class Agents(object):
             if is_model(self.array, 'circular'):
                 if overlapping_circles(agents, position, radius):
                     reset_agent(index, self.array)
-                    self.inactive.add(index)
+                    self._inactive.add(index)
                     raise OverlappingError
             elif is_model(self.array, 'three_circle'):
                 if overlapping_three_circles(
@@ -438,21 +448,23 @@ class Agents(object):
                          agent['position_rs']),
                         (agent['r_t'], agent['r_s'], agent['r_s'])):
                     reset_agent(index, self.array)
-                    self.inactive.add(index)
+                    self._inactive.add(index)
                     raise OverlappingError
             else:
                 raise CrowdDynamicsException
 
         self.grid[position] = index
-        self.active.add(index)
+        self._active.add(index)
+        self.array[index]['active'] = True
         return index
 
     @log_with(qualname=True, timed=True, ignore=('self',))
     def remove(self, index):
         """Remove agent"""
-        if index in self.active:
-            self.active.remove(index)
-            self.inactive.add(index)
+        if index in self._active:
+            self._active.remove(index)
+            self._inactive.add(index)
+            self.array[index]['active'] = False
             reset_agent(index, self.array)
             return True
         else:

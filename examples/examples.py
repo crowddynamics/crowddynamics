@@ -5,7 +5,7 @@ from crowddynamics.core.vector import unit_vector
 from crowddynamics.simulation.multiagent import MultiAgentSimulation, \
     Orientation, Integrator, Fluctuation, Adjusting, \
     AgentAgentInteractions, Reset, AgentObstacleInteractions, Navigation, \
-    SaveAgentsData
+    SaveAgentsData, InsideDomain
 from loggingtools import log_with
 from shapely.geometry import Polygon, LineString
 
@@ -47,10 +47,10 @@ def outdoor(size: (1, None) = 100,
         'body_type': body_type,
         'position': polygon_sample(np.asarray(domain.exterior)),
         'orientation': lambda: np.random.uniform(-np.pi, np.pi),
-        'velocity': lambda: np.random.uniform(0.0, 1.0, 2),
-        'angular_velocity': lambda: np.random.uniform(-1.0, 1.0),
-        'target_direction': lambda: unit_vector(
-            np.random.uniform(-np.pi, np.pi)),
+        'velocity': np.zeros(2),
+        'angular_velocity': 0.0,
+        'target_direction':
+            lambda: unit_vector(np.random.uniform(-np.pi, np.pi)),
         'target_orientation': lambda: np.random.uniform(-np.pi, np.pi)
     })
     simu.tasks = \
@@ -66,7 +66,7 @@ def outdoor(size: (1, None) = 100,
 
 @log_with()
 def hallway(size: (1, None) = 100,
-            width: (1.0, None) = 30.0,
+            width: (1.0, None) = 40.0,
             height: (1.0, None) = 5.0,
             agent_type: AgentModels = 'circular',
             body_type='adult'):
@@ -106,7 +106,7 @@ def hallway(size: (1, None) = 100,
         'body_type': body_type,
         'position': polygon_sample(np.asarray(spawn1.exterior)),
         'orientation': 0.0,
-        'velocity': lambda: np.random.uniform(0.0, 1.0, 2),
+        'velocity': np.zeros(2),
         'angular_velocity': 0.0,
         'target_direction': np.array((1.0, 0.0)),
         'target_orientation': 0.0
@@ -115,13 +115,14 @@ def hallway(size: (1, None) = 100,
         'body_type': body_type,
         'position': polygon_sample(np.asarray(spawn2.exterior)),
         'orientation': np.pi,
-        'velocity': lambda: np.random.uniform(0.0, 1.0, 2),
+        'velocity': np.zeros(2),
         'angular_velocity': 0.0,
         'target_direction': np.array((-1.0, 0.0)),
         'target_orientation': np.pi
     })
     simu.tasks = \
-        Reset(simu) << (
+        Reset(simu) << \
+        InsideDomain(simu) << (
             Integrator(simu) << (
                 Fluctuation(simu),
                 Adjusting(simu) << Orientation(simu),
@@ -133,7 +134,7 @@ def hallway(size: (1, None) = 100,
 
 
 @log_with()
-def rounding(size: (1, None) = 10,
+def rounding(size: (1, None) = 20,
              width: (1.0, None) = 15.0,
              height: (1.0, None) = 15.0,
              agent_type: AgentModels = 'circular',
@@ -165,13 +166,14 @@ def rounding(size: (1, None) = 10,
         'body_type': body_type,
         'position': polygon_sample(np.asarray(spawn.exterior)),
         'orientation': 0.0,
-        'velocity': lambda: np.random.uniform(0.0, 1.0, 2),
+        'velocity': np.zeros(2),
         'angular_velocity': 0.0,
         'target_direction': np.array((1.0, 0.0)),
         'target_orientation': 0.0
     })
     simu.tasks = \
-        Reset(simu) << (
+        Reset(simu) << \
+        InsideDomain(simu) << (
             Integrator(simu) << (
                 Fluctuation(simu),
                 Adjusting(simu) << (
@@ -231,13 +233,14 @@ def room_evacuation(size: (1, None) = 100,
         'position': polygon_sample(
             np.asarray((room - obstacles.buffer(0.3)).exterior)),
         'orientation': 0.0,
-        'velocity': lambda: np.random.uniform(0.0, 1.0, 2),
+        'velocity': np.zeros(2),
         'angular_velocity': 0.0,
         'target_direction': np.array((1.0, 0.0)),
         'target_orientation': 0.0
     })
     simu.tasks = \
-        Reset(simu) << (
+        Reset(simu) << \
+        InsideDomain(simu) << (
             Integrator(simu) << (
                 Fluctuation(simu),
                 Adjusting(simu) << (
@@ -286,13 +289,14 @@ def uturn(size: (1, None) = 10,
         'position': polygon_sample(
             np.asarray((spawn - obstacles.buffer(0.3)).exterior)),
         'orientation': 0.0,
-        'velocity': lambda: np.random.uniform(0.0, 1.0, 2),
+        'velocity': np.zeros(2),
         'angular_velocity': 0.0,
         'target_direction': np.array((1.0, 0.0)),
         'target_orientation': 0.0
     })
     simu.tasks = \
-        Reset(simu) << (
+        Reset(simu) << \
+        InsideDomain(simu) << (
             Integrator(simu) << (
                 Fluctuation(simu),
                 Adjusting(simu) << (

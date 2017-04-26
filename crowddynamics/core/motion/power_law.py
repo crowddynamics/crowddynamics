@@ -74,8 +74,7 @@ def magnitude(tau, tau_0):
 @numba.jit(f8[:](f8[:], f8[:], f8, f8, f8),
            nopython=True, nogil=True, cache=True)
 def gradient_circle_circle(x_rel, v_rel, a, b, d):
-    r"""
-    Gradient of :math:`\tau` between two circles.
+    r"""Gradient of :math:`\tau` between two circles.
 
     Args:
         x_rel (numpy.ndarray): Relative position of the centers of mass.
@@ -96,8 +95,7 @@ def gradient_circle_circle(x_rel, v_rel, a, b, d):
 @numba.jit(f8[:](f8[:], f8[:], f8[:], f8, f8, f8),
            nopython=True, nogil=True, cache=True)
 def gradient_three_circle(x_rel, v_rel, r_off, a, b, d):
-    r"""
-    Gradient of :math:`\tau` between two three-circle representations.
+    r"""Gradient of :math:`\tau` between two three-circle representations.
 
     Args:
         x_rel (numpy.ndarray):
@@ -117,8 +115,7 @@ def gradient_three_circle(x_rel, v_rel, r_off, a, b, d):
 @numba.jit(Tuple((f8, f8[:]))(f8[:], f8[:], f8),
            nopython=True, nogil=True, cache=True)
 def time_to_collision_circle_circle(x_rel, v_rel, r_tot):
-    r"""
-    Time-to-collision of two circles. From *skin-to-skin* distance
+    r"""Time-to-collision of two circles. From *skin-to-skin* distance
 
     .. math::
        h(\tau) = \| \tau \tilde{\mathbf{v}} + \mathbf{c} \| - \tilde{r}.
@@ -213,8 +210,10 @@ def force_social_circular(agent, i, j):
 
     # Force is returned negative as repulsive force
     grad = gradient_circle_circle(x_rel, v_rel, a, b, d)
-    force_i[:] += - agent[i]['mass'] * agent[i]['k_soc'] * grad * magnitude(tau, agent[i]['tau_0'])
-    force_j[:] -= - agent[j]['mass'] * agent[j]['k_soc'] * grad * magnitude(tau, agent[j]['tau_0'])
+    force_i[:] += - agent[i]['mass'] * agent[i]['k_soc'] * grad * \
+                  magnitude(tau, agent[i]['tau_0'])
+    force_j[:] -= - agent[j]['mass'] * agent[j]['k_soc'] * grad * \
+                  magnitude(tau, agent[j]['tau_0'])
 
     # Truncation for small tau
     truncate(force_i, agent[i]['f_soc_ij_max'])

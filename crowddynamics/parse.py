@@ -1,7 +1,7 @@
 import inspect
 from collections import namedtuple
 
-from crowddynamics.exceptions import InvalidArgument
+from crowddynamics.exceptions import InvalidType
 
 ArgSpec = namedtuple('ArgSpec', 'name default annotation')
 
@@ -13,7 +13,7 @@ def empty_to_none(value):
 
 def mkspec(parameter):
     if isinstance(parameter.default, inspect.Parameter.empty):
-        raise InvalidArgument('Default argument should not be empty.')
+        raise InvalidType('Default argument should not be empty.')
     return ArgSpec(name=parameter.name,
                    default=empty_to_none(parameter.default),
                    annotation=empty_to_none(parameter.annotation))

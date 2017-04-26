@@ -11,7 +11,7 @@ from crowddynamics.core.structures.agents import AgentModelToType, Agents
 from crowddynamics.core.vector import unit_vector
 from crowddynamics.simulation.multiagent import MultiAgentSimulation, \
     Integrator, Fluctuation, Adjusting, AgentAgentInteractions, \
-    AgentObstacleInteractions, Orientation, Reset, SaveAgentsData
+    AgentObstacleInteractions, Orientation, Reset, SaveAgentsData, InsideDomain
 
 
 def samples(spawn, obstacles, radius):
@@ -53,7 +53,9 @@ def test_multiagent_simulation(size, agent_type):
 
     with TemporaryDirectory() as tmpdir:
         simu.tasks = \
-            Reset(simu) << SaveAgentsData(simu, tmpdir) << (
+            Reset(simu) << \
+            SaveAgentsData(simu, tmpdir) << \
+            InsideDomain(simu) << (
                 Integrator(simu) << (
                     Fluctuation(simu),
                     Adjusting(simu) << Orientation(simu),
