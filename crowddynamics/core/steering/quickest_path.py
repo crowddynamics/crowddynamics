@@ -220,7 +220,7 @@ def direction_map(dmap: DistanceMap) -> DirectionMap:
 # Potentials
 
 @log_with(arguments=False, timed=True)
-def fill_missing(mgrid: MeshGrid, dir_map: DirectionMap):
+def fill_missing(mask, mgrid: MeshGrid, dir_map: DirectionMap):
     """Fill missing value with by interpolating the values from nearest neighbours
 
     Args:
@@ -241,15 +241,22 @@ def fill_missing(mgrid: MeshGrid, dir_map: DirectionMap):
     ip_v = NearestNDInterpolator(points, v[boundaries], rescale=False)
 
     # interpolate only missing values (u.mask)
-    missing = (y[u.mask], x[v.mask])
-    u[u.mask] = ip_u(missing)
-    v[v.mask] = ip_v(missing)
+    mask2 = np.logical_xor(mask, u.mask)
+    missing = (y[mask2], x[mask2])
+    u[mask2] = ip_u(missing)
+    v[mask2] = ip_v(missing)
 
 
 def direction_map_targets(mgrid, domain, targets, obstacles, buffer_radius):
     """Vector field guiding towards targets """
     obstacles_buffered = obstacles.buffer(buffer_radius).intersection(domain)
+
     dmap_targets = distance_map(mgrid, targets, obstacles_buffered)
     dir_map_targets = direction_map(dmap_targets)
-    fill_missing(mgrid, dir_map_targets)
+
+    # Fill values between buffered region and obstacles
+    mask = np.full(mgrid.shape, False, dtype=np.bool_)
+    values_to_grid(obstacles, mask, mgrid.indicer, True)
+    fill_missing(mask, mgrid, dir_map_targets)
+
     return dir_map_targets, dmap_targets
