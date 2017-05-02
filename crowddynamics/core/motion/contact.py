@@ -1,7 +1,7 @@
 import numba
 from numba import f8
 
-from crowddynamics.core.vector import dot
+from crowddynamics.core.vector2D import dot
 
 
 @numba.jit(f8[:](f8, f8[:], f8[:], f8[:], f8, f8, f8),

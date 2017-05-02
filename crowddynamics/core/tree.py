@@ -1,4 +1,4 @@
-"""Task Graph
+"""Tree node for implementing simulation logic
 
 https://www.python.org/doc/essays/graphs/
 http://dask.pydata.org/en/latest/

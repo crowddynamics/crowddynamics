@@ -5,7 +5,7 @@ import pytest
 
 from crowddynamics.core.structures.agents import Agents, agent_type_circular, \
     agent_type_three_circle
-from crowddynamics.core.vector import unit_vector
+from crowddynamics.core.vector2D import unit_vector
 
 
 def _random_attributes():
@@ -25,14 +25,14 @@ def _random_attributes():
 @pytest.fixture(scope='function')
 def agents_circular(size=10):
     agents = Agents(size, agent_type_circular)
-    agents.fill(size, _random_attributes())
+    agents.add_group(size, _random_attributes())
     return agents
 
 
 @pytest.fixture(scope='function')
 def agents_three_circle(size=10):
     agents = Agents(size, agent_type_three_circle)
-    agents.fill(size, _random_attributes())
+    agents.add_group(size, _random_attributes())
     return agents
 
 

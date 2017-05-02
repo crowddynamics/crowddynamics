@@ -1,10 +1,21 @@
+r"""
+Numerical solver for differential system consisting of translational and 
+rotational motion which produces the movement for agents in crowddynamics
+
+.. math::
+   \begin{cases}
+   m \frac{d^{2}}{d t^{2}} \mathbf{x}(t) = \mathbf{f}(t) + \boldsymbol{\xi}(t) \\
+   I \frac{d^{2}}{d t^{2}} \varphi(t) = M(t) + \eta(t)
+   \end{cases}
+
+"""
 import numba
 import numpy as np
 from numba import f8, void, typeof
 
 from crowddynamics.core.structures.agents import agent_type_three_circle, \
     agent_type_circular, shoulders
-from crowddynamics.core.vector.vector2D import wrap_to_pi, length
+from crowddynamics.core.vector2D import wrap_to_pi, length
 
 
 @numba.jit([f8(typeof(agent_type_circular)[:], f8, f8),

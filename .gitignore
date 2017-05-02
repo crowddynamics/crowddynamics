@@ -7,6 +7,10 @@
 *.hypothesis
 *.benchmarks
 *.ipynb
+.doit.db.bak
+.doit.db.dat
+.doit.db.dir
+examples/run.py
 
 # Folders
 examples/plots/

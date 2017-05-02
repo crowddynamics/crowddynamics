@@ -1,7 +1,7 @@
 """Evacuation related functions"""
 import numba
 import numpy as np
-from crowddynamics.core.vector import length
+from crowddynamics.core.vector2D import length
 from numba import i8, f8, optional
 
 

@@ -45,7 +45,7 @@ from crowddynamics.core.interactions.distance import distance_three_circles
 from crowddynamics.core.interactions.partitioning import MutableBlockList
 from crowddynamics.core.random.functions import truncnorm
 from crowddynamics.core.structures.obstacles import obstacle_type_linear
-from crowddynamics.core.vector.vector2D import unit_vector, rotate270
+from crowddynamics.core.vector2D import unit_vector, rotate270
 from crowddynamics.exceptions import CrowdDynamicsException, OverlappingError, \
     AgentStructureFull
 
@@ -76,7 +76,7 @@ def body_to_values(body):
     mass = _truncnorm(body['mass'], body['mass_scale'])
     # Rotational inertia of mass 80 kg and radius 0.27 m agent.
     # Should be scaled to correct value for agents.
-    inertia_rot = 4.0 * (mass / 80.0) * (radius / 0.27) ** 2
+    inertia_rot = 4.0 * np.pi * (mass / 80.0) * (radius / 0.27) ** 2
     return {
         'r_t': body['ratio_rt'] * radius,
         'r_s': body['ratio_rs'] * radius,
@@ -91,7 +91,10 @@ def body_to_values(body):
 
 states = [
     ('active', np.bool_),
-    ('target_reached', np.bool_)
+]
+navigation = [
+    ('target', np.uint8),
+    ('target_reached', np.bool_),
 ]
 translational = [
     ('mass', np.float64),
@@ -133,10 +136,12 @@ three_circle = [
 
 agent_type_circular = np.dtype(
     states +
+    navigation +
     translational
 )
 agent_type_three_circle = np.dtype(
     states +
+    navigation +
     translational +
     rotational +
     three_circle
@@ -459,20 +464,8 @@ class Agents(object):
         return index
 
     @log_with(qualname=True, timed=True, ignore=('self',))
-    def remove(self, index):
-        """Remove agent"""
-        if index in self._active:
-            self._active.remove(index)
-            self._inactive.add(index)
-            self.array[index]['active'] = False
-            reset_agent(index, self.array)
-            return True
-        else:
-            return False
-
-    @log_with(qualname=True, timed=True, ignore=('self',))
-    def fill(self, amount, attributes, check_overlapping=True):
-        """Fill agents
+    def add_group(self, amount, attributes, check_overlapping=True):
+        """Add group of agents
 
         Args:
             check_overlapping: 
@@ -504,3 +497,15 @@ class Agents(object):
 
         if is_model(self.array, 'three_circle'):
             shoulders(self.array)
+
+    @log_with(qualname=True, timed=True, ignore=('self',))
+    def remove(self, index):
+        """Remove agent"""
+        if index in self._active:
+            self._active.remove(index)
+            self._inactive.add(index)
+            self.array[index]['active'] = False
+            reset_agent(index, self.array)
+            return True
+        else:
+            return False

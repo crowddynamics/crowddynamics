@@ -10,4 +10,4 @@ from examples.examples import outdoor, hallway, rounding, room_evacuation, \
 @pytest.mark.parametrize('agent_type', tuple(AgentModelToType.values()))
 def test_simulations(simulation, agent_type):
     simu = simulation(agent_type=agent_type)
-    simu.update()
+    simu.run(lambda simulation: simulation.data['iterations'] == 100)

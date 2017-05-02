@@ -3,9 +3,10 @@ import matplotlib.ticker as plticker
 from crowddynamics.logging import setup_logging
 from shapely.geometry import LineString, Polygon
 
-from crowddynamics.core.steering.navigation import meshgrid, distance_map, \
-    fill_missing, direction_map, merge_dir_maps
-from crowddynamics.plot import plot_navigation
+from crowddynamics.core.steering.quickest_path import meshgrid, distance_map, \
+    fill_missing, direction_map
+from crowddynamics.core.steering.obstacle_handling import obstacle_handling
+from crowddynamics.visualization import plot_navigation
 
 setup_logging()
 
@@ -35,7 +36,7 @@ dmap_obs = distance_map(mgrid, obstacles, None)
 dir_map_obs = direction_map(dmap_obs)
 
 # Direction map that combines the two direction maps
-dir_map_merged = merge_dir_maps(dmap_obs, dir_map_obs, dir_map_exits, radius, value)
+dir_map_merged = obstacle_handling(dmap_obs, dir_map_obs, dir_map_exits, radius, value)
 
 
 for dmap, dir_map, name in zip([dmap_exits, dmap_obs, dmap_exits],

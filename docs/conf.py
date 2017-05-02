@@ -49,9 +49,6 @@ extensions = [
     'sphinx.ext.viewcode',
     'sphinx.ext.ifconfig',
     'sphinx.ext.githubpages',
-]
-
-extensions += [
     # 'sphinxcontrib.programoutput',
     # 'sphinxcontrib.youtube',
 ]

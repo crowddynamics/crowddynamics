@@ -1,8 +1,8 @@
+import hypothesis.strategies as st
 import numpy as np
 from hypothesis import given, assume
-import hypothesis.strategies as st
 
-from crowddynamics.core.evacuation.evacuation import agent_closer_to_exit, \
+from crowddynamics.core.evacuation import agent_closer_to_exit, \
     narrow_exit_capacity
 from crowddynamics.testing import real
 

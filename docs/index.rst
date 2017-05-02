@@ -13,7 +13,6 @@ Crowddynamics is a Python package for crowd simulation. The project was created 
 
    installation.rst
    usage.rst
-   contributing.rst
 
 
 .. toctree::
@@ -42,7 +41,8 @@ Crowddynamics is a Python package for crowd simulation. The project was created 
    :caption: Research
    :maxdepth: 2
 
-   research/index.rst
+   phenomena.rst
+   applications.rst
    references.rst
 
 

@@ -10,7 +10,7 @@ import numba
 import numpy as np
 from numba import float64
 from numba.types import Tuple, UniTuple
-from crowddynamics.core.vector import length, rotate90, dot
+from crowddynamics.core.vector2D import length, rotate90, dot
 
 
 @numba.jit([Tuple((float64, float64[:]))(float64[:], float64,

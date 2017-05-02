@@ -1,8 +1,7 @@
 import numpy as np
 
-from crowddynamics.core.vector import rotate90, angle, dot, cross, normalize, \
-    unit_vector
-from crowddynamics.core.vector.vector2D import rotate270, length, truncate
+from crowddynamics.core.vector2D import rotate90, angle, dot, cross, normalize, \
+    unit_vector, rotate270, length, truncate
 
 
 def test_rotate90(benchmark):

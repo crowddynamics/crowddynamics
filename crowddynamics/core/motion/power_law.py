@@ -6,7 +6,7 @@ from numba.types import Tuple
 
 from crowddynamics.core.structures.agents import agent_type_three_circle, \
     agent_type_circular
-from crowddynamics.core.vector import dot, truncate
+from crowddynamics.core.vector2D import dot, truncate
 
 
 @numba.jit(nopython=True, nogil=True)

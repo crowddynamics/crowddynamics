@@ -1,7 +1,7 @@
 import numpy as np
 from hypothesis import given, assume
 
-from crowddynamics.core.vector.vector2D import cross, wrap_to_pi, truncate, \
+from crowddynamics.core.vector2D import cross, wrap_to_pi, truncate, \
     rotate270, normalize, length, angle, rotate90, dot, unit_vector
 from crowddynamics.testing import real
 

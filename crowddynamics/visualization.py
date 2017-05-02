@@ -60,9 +60,10 @@ def plot_navigation(fig, ax, mgrid, dmap, dir_map=None, frequency=20):
         (Figure, Axes)
     """
     X, Y = mgrid
-    bbox = (X.min(), X.max(), Y.min(), Y.max())
+    minx, maxx, miny, maxy = X.min(), X.max(), Y.min(), Y.max()
+
     ax.imshow(dmap, interpolation='bilinear', origin='lower', cmap=cm.gray,
-              extent=bbox)
+              extent=(minx, maxx, miny, maxy))
     ax.contour(X, Y, dmap, 30, linewidths=1, colors='gray')  # Contour lines
     if hasattr(dmap, 'mask'):
         ax.contour(X, Y, dmap.mask, [0], linewidths=1, colors='black')  # Obstacles

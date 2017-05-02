@@ -26,9 +26,8 @@ def random_sample_line(p0, p1):
     Returns:
         numpy.ndarray
     """
-    v = p1 - p0
     x = np.random.random()
-    return x * v
+    return x * (p1 - p0) + p0
 
 
 def linestring_sample(vertices):

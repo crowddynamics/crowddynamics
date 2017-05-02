@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import matplotlib.ticker as plticker
 from crowddynamics.logging import setup_logging
-from crowddynamics.plot import plot_field
+from crowddynamics.visualization import plot_field
 from shapely.geometry import LineString, Polygon
 
 setup_logging()

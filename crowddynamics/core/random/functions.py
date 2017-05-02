@@ -1,23 +1,13 @@
-"""Random
-
-Todo:
-    - control the random state for reproducibility
-"""
-import logging
-
 import numba
 import numpy as np
 import scipy.stats
 
 from numba import f8, i8
 
-logger = logging.getLogger()
-
 
 def truncnorm(start, end, loc=0.0, scale=1.0, abs_scale=None, size=1,
               random_state=None):
-    """
-    Truncated normal distribution from ``scipy.stats``.
+    """Truncated normal distribution from ``scipy.stats``.
 
     Args:
         start (float):
@@ -31,19 +21,13 @@ def truncnorm(start, end, loc=0.0, scale=1.0, abs_scale=None, size=1,
     Returns:
         numpy.ndarray:
 
-    References
-
-    https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.truncnorm.html
-    https://en.wikipedia.org/wiki/Truncated_normal_distribution
-
-    Todo:
-        - control std
-        - logger stats
+    References:
+        - https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.truncnorm.html
+        - https://en.wikipedia.org/wiki/Truncated_normal_distribution
     """
-    if abs_scale:
-        scale = abs_scale / max(abs(start), abs(end))
+    _scale = abs_scale / max(abs(start), abs(end)) if abs_scale else scale
     tn = scipy.stats.truncnorm.rvs(
-        start, end, loc=loc, scale=scale, size=size, random_state=random_state
+        start, end, loc=loc, scale=_scale, size=size, random_state=random_state
     )
     return tn
 
@@ -155,6 +139,5 @@ def estimate_number_poisson_timings(interval, dt):
     .. math::
        \Pr(N \leq n) = p
 
-    Issue #19
     """
     pass

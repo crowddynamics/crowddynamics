@@ -1,7 +1,8 @@
 import random
 
 import hypothesis.strategies as st
-from crowddynamics.taskgraph import Node
+
+from crowddynamics.core.tree import Node
 
 
 def newnode(index=0):

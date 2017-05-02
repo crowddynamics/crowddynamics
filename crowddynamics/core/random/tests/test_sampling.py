@@ -7,9 +7,9 @@ from hypothesis.extra.numpy import arrays
 from shapely.geometry import Polygon, Point
 
 from crowddynamics.core.random.sampling import triangle_area, \
-    random_sample_triangle, triangle_area_cumsum, polygon_sample
-from crowddynamics.testing import real, polygon
-
+    random_sample_triangle, triangle_area_cumsum, polygon_sample, \
+    linestring_sample
+from crowddynamics.testing import real
 
 # Convex shapes
 triangle = Polygon([(1.0, 1.0), (0.0, 0.0), (2.0, 0.0)])
@@ -17,9 +17,12 @@ square = Polygon([(1.0, 1.0), (0.0, 0.0), (2.0, 0.0), (3.0, 0.5)])
 tetragon = Polygon([(1.0, 1.0), (0.0, 0.0), (2.0, 0.0), (3.0, 0.5), (2.5, 2.0)])
 
 
-@pytest.mark.skip
-def test_linestring_sample():
-    pass
+@pytest.mark.parametrize('poly', (triangle, square, tetragon))
+def test_linestring_sample(poly):
+    ls = poly.exterior
+    vertices = np.asarray(ls)
+    for i, p in zip(range(10), linestring_sample(vertices)):
+        assert np.isclose(ls.distance(Point(p)), 0.0)
 
 
 @given(real(shape=2), real(shape=2), real(shape=2))

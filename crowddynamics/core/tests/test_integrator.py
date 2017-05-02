@@ -1,7 +1,6 @@
-import pytest
 from hypothesis import given, assume
 
-from crowddynamics.core.integrator.integrator import adaptive_timestep, \
+from crowddynamics.core.integrator import adaptive_timestep, \
     euler_integrator, velocity_verlet_integrator
 from crowddynamics.testing import real
 

@@ -5,7 +5,7 @@ from crowddynamics.core.motion.power_law import force_social_circular, \
     force_social_three_circle
 from crowddynamics.core.structures.agents import Agents, agent_type_circular, \
     agent_type_three_circle
-from crowddynamics.core.vector import length
+from crowddynamics.core.vector2D import length
 
 
 @pytest.mark.parametrize('agent_type,force', [
@@ -13,7 +13,7 @@ from crowddynamics.core.vector import length
     (agent_type_three_circle, force_social_three_circle)])
 def test_not_colliding(benchmark, agent_type, force):
     agents = Agents(2, agent_type)
-    agents.fill(1, {
+    agents.add_group(1, {
         'body_type': 'adult',
         'position': np.array((0.0, 0.0)),
         'orientation': 0.0,
@@ -22,7 +22,7 @@ def test_not_colliding(benchmark, agent_type, force):
         'target_direction': np.array((1.0, 0.0)),
         'target_orientation': 0.0
     })
-    agents.fill(1, {
+    agents.add_group(1, {
         'body_type': 'adult',
         'position': np.array((2.0, 0.0)),
         'orientation': 0.0,
@@ -41,7 +41,7 @@ def test_not_colliding(benchmark, agent_type, force):
     (agent_type_three_circle, force_social_three_circle)])
 def test_colliding(benchmark, agent_type, force):
     agents = Agents(2, agent_type)
-    agents.fill(1, {
+    agents.add_group(1, {
         'body_type': 'adult',
         'position': np.array((0.0, 0.0)),
         'orientation': 0.0,
@@ -50,7 +50,7 @@ def test_colliding(benchmark, agent_type, force):
         'target_direction': np.array((1.0, 0.0)),
         'target_orientation': 0.0
     })
-    agents.fill(1, {
+    agents.add_group(1, {
         'body_type': 'adult',
         'position': np.array((2.0, 0.0)),
         'orientation': np.pi,

@@ -2,7 +2,7 @@ Installation
 ============
 .. attention::
 
-   CrowdDynamics is currently only tested *Linux* and functionality on *Windows* and *OS X* cannot be guaranteed.
+   CrowdDynamics is currently only tested *Linux*. Total functionality on *Windows* and *OS X* is currently not guaranteed.
 
 .. todo::
    Youtube video tutorial on installation
@@ -11,7 +11,7 @@ Conda
 -----
 .. note::
 
-   This section is unfinished
+   Conda package has not yet been released. It will be released as soon as crowddynamics releases version 0.0.1.
 
 
 Source
