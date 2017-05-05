@@ -1,8 +1,16 @@
-"""Front end to navigation algorithms
+r"""
+Navigation
+----------
+Navigation aka path-planing algorithms computes target direction 
+:math:`\mathbf{\hat{e}_0}` for each agent. Target direction accounts for agents 
+desire to move towards some direction.
+
+Currently implemented navigation 
 
 - Quickest path
 - Obstacle handling
 - Herding / Leader Follower
+
 """
 from typing import Tuple
 
@@ -59,9 +67,8 @@ def static_potential(domain,
     # Compute meshgrid for solving distance maps.
     mgrid = meshgrid(step, *domain.bounds)
 
-    dir_map_targets, dmap_targets = direction_map_targets(mgrid, domain,
-                                                          targets, obstacles,
-                                                          radius)
+    dir_map_targets, dmap_targets = direction_map_targets(
+        mgrid, domain, targets, obstacles, radius)
     dir_map_obs, dmap_obs = direction_map_obstacles(mgrid, obstacles)
 
     # Combines two direction maps in a way that agents do not run into a wall

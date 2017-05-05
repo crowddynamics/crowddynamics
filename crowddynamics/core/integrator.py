@@ -1,4 +1,6 @@
 r"""
+Integrator
+----------
 Numerical solver for differential system consisting of translational and 
 rotational motion which produces the movement for agents in crowddynamics
 
@@ -7,6 +9,29 @@ rotational motion which produces the movement for agents in crowddynamics
    m \frac{d^{2}}{d t^{2}} \mathbf{x}(t) = \mathbf{f}(t) + \boldsymbol{\xi}(t) \\
    I \frac{d^{2}}{d t^{2}} \varphi(t) = M(t) + \eta(t)
    \end{cases}
+
+where the forces and torques on the agent are
+
+- Total force
+
+  .. math::
+     \mathbf{f}(t) = \mathbf{f}^{adjusting} + \mathbf{f}^{agent-agent} + 
+                   \mathbf{f}^{agent-obstacles}
+
+- Random fluctutation force
+ 
+  .. math::
+     \boldsymbol{\xi}(t)
+
+- Total torque
+
+  .. math::
+     M(t) = M^{adjusting} + M^{agent-agent} + M^{agent-obstacles}
+
+- Random fluctuation torque
+
+  .. math::
+     \eta(t)
 
 """
 import numba

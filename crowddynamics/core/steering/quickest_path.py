@@ -1,15 +1,4 @@
-"""Navigation/path-planning algorithms
-
-Continuos shortest path problem
-
-Eikonal equation solvers
-
-- Fast Marching Method [scikit-fmm]
-- Fast Iterative Method [SCI-Solver_Eikonal]
-
-References:
-    .. [scikit-fmm] https://github.com/scikit-fmm/scikit-fmm
-    .. [SCI-Solver_Eikonal] https://github.com/SCIInstitute/SCI-Solver_Eikonal
+"""Quickest path
 
 Attributes:
     MeshGrid (namedtuple):
@@ -35,7 +24,7 @@ from scipy.interpolate import NearestNDInterpolator
 from shapely.geometry.base import BaseGeometry
 from skimage.segmentation import find_boundaries
 
-from crowddynamics.core.geometry import geom_to_skimage
+from crowddynamics.core.geometry import draw_geom
 
 MeshGrid = namedtuple('MeshGrid', 'values shape step bounds indicer')
 DistanceMap = np.ma.MaskedArray
@@ -75,37 +64,16 @@ def meshgrid(step: float, minx: float, miny: float,
     )
 
 
-@log_with(arguments=False, timed=True)
-def values_to_grid(geom: BaseGeometry, grid, indicer, value: float):
-    """Set values on discrete grid using scikit-image
-
-    Args:
-        geom (BaseGeometry):
-            Shapely shape
-        
-        grid (np.ndarray):
-            Grid to set values
-            
-        indicer (Callable): 
-            Function that converts points to indices of a discrete grid. 
-
-        value (float):
-            Value to set to the grid points
-    """
-    for x, y in geom_to_skimage(geom, indicer):
-        grid[y, x] = value
-
-
 # Maps
 
 @log_with(arguments=False, timed=True)
 def distance_map(mgrid: MeshGrid,
                  targets: BaseGeometry,
                  obstacles: Optional[BaseGeometry]) -> DistanceMap:
-    r"""Distance map
-
+    r"""
     Distance map :math:`S(\mathbf{x})` is obtained by solving *Eikonal equation*
-    using fast marching *Fast Marching Method (FMM)* (``scikit-fmm``).
+    (Continuos shortest path problem) using fast marching *Fast Marching Method 
+    (FMM)* (``scikit-fmm``).
 
     .. math::
        \left \| \nabla S(\mathbf{x}) \right \| = \frac{1}{f(\mathbf{x})}, \quad \mathbf{x} \in \Omega
@@ -158,9 +126,9 @@ def distance_map(mgrid: MeshGrid,
     contour = np.full(mgrid.shape, empty_region, dtype=np.float64)
     mask = np.full(mgrid.shape, non_obstacle_region, dtype=np.bool_)
 
-    values_to_grid(targets, contour, mgrid.indicer, target_region)
+    draw_geom(targets, contour, mgrid.indicer, target_region)
     if obstacles is not None:
-        values_to_grid(obstacles, mask, mgrid.indicer, obstacle_region)
+        draw_geom(obstacles, mask, mgrid.indicer, obstacle_region)
 
     # Solve distance map using Fast-Marching Method (FMM)
     phi = np.ma.MaskedArray(contour, mask)
@@ -220,35 +188,24 @@ def direction_map(dmap: DistanceMap) -> DirectionMap:
 # Potentials
 
 @log_with(arguments=False, timed=True)
-def fill_missing(mask, mgrid: MeshGrid, dir_map: DirectionMap):
-    """Fill missing value with by interpolating the values from nearest neighbours
-
-    Args:
-        mgrid:
-        dir_map:
-
-    Returns:
-        DirectionMap:
-    """
-    x, y = mgrid.values
-    u, v = dir_map
-
+def fill_missing(mask, x, y, u, v):
+    """Fill missing value with by interpolating the values from nearest 
+    neighbours"""
     # Construct the interpolators from the boundary values surrounding the
-    # missing values
+    # missing values.
     boundaries = find_boundaries(u.mask, mode='outer')
     points = np.stack((y[boundaries], x[boundaries])).T
     ip_u = NearestNDInterpolator(points, u[boundaries], rescale=False)
     ip_v = NearestNDInterpolator(points, v[boundaries], rescale=False)
 
-    # interpolate only missing values (u.mask)
-    mask2 = np.logical_xor(mask, u.mask)
-    missing = (y[mask2], x[mask2])
-    u[mask2] = ip_u(missing)
-    v[mask2] = ip_v(missing)
+    # Interpolate only missing values.
+    missing = (y[mask], x[mask])
+    u[mask] = ip_u(missing)
+    v[mask] = ip_v(missing)
 
 
 def direction_map_targets(mgrid, domain, targets, obstacles, buffer_radius):
-    """Vector field guiding towards targets """
+    """Vector field guiding towards targets."""
     obstacles_buffered = obstacles.buffer(buffer_radius).intersection(domain)
 
     dmap_targets = distance_map(mgrid, targets, obstacles_buffered)
@@ -256,7 +213,8 @@ def direction_map_targets(mgrid, domain, targets, obstacles, buffer_radius):
 
     # Fill values between buffered region and obstacles
     mask = np.full(mgrid.shape, False, dtype=np.bool_)
-    values_to_grid(obstacles, mask, mgrid.indicer, True)
-    fill_missing(mask, mgrid, dir_map_targets)
+    draw_geom(obstacles, mask, mgrid.indicer, True)
+    fill_missing(np.logical_xor(mask, dir_map_targets[0].mask),
+                 *mgrid.values, *dir_map_targets)
 
     return dir_map_targets, dmap_targets

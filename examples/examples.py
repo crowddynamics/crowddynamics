@@ -2,12 +2,12 @@ import numpy as np
 from loggingtools import log_with
 
 import examples.fields as fields
-from crowddynamics.core.structures.agents import Agents, AgentModels
+from crowddynamics.core.structures.agents import AgentModels
 from crowddynamics.core.vector2D import unit_vector
 from crowddynamics.simulation.multiagent import MultiAgentSimulation, \
     Orientation, Integrator, Fluctuation, Adjusting, \
     AgentAgentInteractions, Reset, AgentObstacleInteractions, Navigation, \
-    InsideDomain
+    InsideDomain, Agents
 
 
 @log_with()
@@ -30,7 +30,7 @@ def outdoor(size: (1, None) = 100,
             lambda: unit_vector(np.random.uniform(-np.pi, np.pi)),
         'target_orientation': lambda: np.random.uniform(-np.pi, np.pi)
     })
-    simu.tasks = \
+    simu.logic = \
         Reset(simu) << (
             Integrator(simu) << (
                 Fluctuation(simu),
@@ -79,7 +79,7 @@ def hallway(size: (2, None) = 100,
         'target_orientation': np.pi,
         'target': 0,
     })
-    simu.tasks = \
+    simu.logic = \
         Reset(simu) << \
         InsideDomain(simu) << (
             Integrator(simu) << (
@@ -117,7 +117,7 @@ def rounding(size: (1, None) = 20,
         'target_orientation': 0.0,
         'target': 0,
     })
-    simu.tasks = \
+    simu.logic = \
         Reset(simu) << \
         InsideDomain(simu) << (
             Integrator(simu) << (
@@ -170,7 +170,62 @@ def room_evacuation(size: (1, None) = 100,
         'target_orientation': 0.0,
         'target': 0,
     })
-    simu.tasks = \
+    simu.logic = \
+        Reset(simu) << \
+        InsideDomain(simu) << (
+            Integrator(simu) << (
+                Fluctuation(simu),
+                Adjusting(simu) << (
+                    Navigation(simu),
+                    Orientation(simu)
+                ),
+                AgentAgentInteractions(simu),
+                AgentObstacleInteractions(simu)
+            )
+        )
+    return simu
+
+
+@log_with()
+def braess_paradox(size: (1, None) = 100,
+                   width: (1.0, None) = 10.0,
+                   height: (1.0, None) = 20.0,
+                   agent_type: AgentModels = 'circular',
+                   body_type='adult',
+                   door_width: (0.0, None) = 1.2,
+                   exit_hall_width: (0.0, None) = 2.0,
+                   radius=0.75,
+                   xdist=1.0):
+    r"""Room Evacuation
+
+    - Unidirectional flow
+    - Door width
+    - Door capacity
+    - Herding
+    - Exit selection
+
+    Variables
+
+    - Number of exits
+    - One exit
+    - Two exits
+    - Multiple exits
+    """
+    simu = MultiAgentSimulation('RoomEvacuation')
+    simu.field = fields.braess_paradox(width, height, door_width,
+                                       exit_hall_width, xdist, radius)
+    simu.agents = Agents(size, agent_type)
+    simu.agents.add_group(size, {
+        'body_type': body_type,
+        'position': simu.field.sample_spawn(0),
+        'orientation': 0.0,
+        'velocity': np.zeros(2),
+        'angular_velocity': 0.0,
+        'target_direction': np.array((1.0, 0.0)),
+        'target_orientation': 0.0,
+        'target': 0,
+    })
+    simu.logic = \
         Reset(simu) << \
         InsideDomain(simu) << (
             Integrator(simu) << (
@@ -206,7 +261,7 @@ def uturn(size: (1, None) = 10,
         'target_orientation': 0.0,
         'target': 0,
     })
-    simu.tasks = \
+    simu.logic = \
         Reset(simu) << \
         InsideDomain(simu) << (
             Integrator(simu) << (
@@ -227,7 +282,7 @@ def crossing(size=20,
              d=10,
              u=5,
              v=5,
-             k: (0.0, 1.0)=1/2,
+             k: (0.0, 1.0) = 1 / 2,
              agent_type='circular',
              body_type='adult'):
     """Crossing"""
@@ -254,7 +309,7 @@ def crossing(size=20,
         'target_orientation': np.pi / 2,
         'target': 3,
     })
-    simu.tasks = \
+    simu.logic = \
         Reset(simu) << \
         InsideDomain(simu) << (
             Integrator(simu) << (
@@ -270,5 +325,41 @@ def crossing(size=20,
     return simu
 
 
-def bottleneck():
-    pass
+def bottleneck(size: (1, None) = 10,
+               width: (1.0, None) = 20.0,
+               height: (1.0, None) = 10.0,
+               d=4.0,
+               l=2.0,
+               h=1.0,
+               agent_type: AgentModels = 'circular',
+               body_type='adult'):
+    """Bottleneck"""
+    simu = MultiAgentSimulation('Bottleneck')
+    simu.field = fields.bottleneck(width, height, d, l, h)
+    simu.agents = Agents(size, agent_type)
+    simu.agents.add_group(size, {
+        'body_type': body_type,
+        'position': simu.field.sample_spawn(0),
+        'orientation': 0.0,
+        'velocity': np.zeros(2),
+        'angular_velocity': 0.0,
+        'target_direction': np.array((1.0, 0.0)),
+        'target_orientation': 0.0,
+        'target': 1,
+    })
+    simu.logic = \
+        Reset(simu) << (
+            InsideDomain(simu) << (
+                Integrator(simu) << (
+                    Fluctuation(simu),
+                    Adjusting(simu) << (
+                        Navigation(simu),
+                        Orientation(simu)
+                    ),
+                    AgentAgentInteractions(simu),
+                    AgentObstacleInteractions(simu)
+                )
+            )
+        )
+
+    return simu

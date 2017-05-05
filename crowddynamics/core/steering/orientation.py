@@ -1,3 +1,8 @@
+r"""
+Orientation
+-----------
+Target orientation :math:`\varphi_{0}` finding algorithms.
+"""
 import numba
 from numba import void, typeof
 
@@ -6,9 +11,6 @@ from crowddynamics.core.vector2D import angle
 
 
 def orientation():
-    r"""
-    Algorithm for solving target orientation :math:`\varphi_{0}` for agents.
-    """
     return NotImplementedError
 
 

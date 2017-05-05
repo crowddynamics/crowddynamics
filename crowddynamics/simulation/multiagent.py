@@ -1,39 +1,11 @@
-r"""Multi-Agent Simulation
-
-Tools for creating multiagent simulations.
+r"""
 
 .. csv-table:: Model Specification
 
-   "Continuous Space", ":math:`\mathbb{R}^2`"
-   "Microscopic", "Agents are modelled as rigid bodies."
-   "Social Force Model", "Classical mechanics for modelling movement."
+   "Space", "Continuous space :math:`\mathbb{R}^2`"
+   "Scale", "Microscopic. Agents are modelled as rigid bodies."
+   "Motion", "Classical mechanics for modelling movement."
 
-Social force model
-
-Dirk Helbing, a pioneer of social force model, describes social forces
-
-   *These forces are not directly exerted by the pedestrians’ personal 
-    environment, but they are a measure for the internal motivations of the 
-    individuals to perform certain actions (movements).*
-    
-    -- Dirk Helbing
-
-Total force exerted on the agent
-
-.. math::
-   \mathbf{f}_{i}(t) = \mathbf{f}_{i}^{adj} + \sum_{j\neq i}^{} 
-   \left(\mathbf{f}_{ij}^{soc} + \mathbf{f}_{ij}^{c}\right) + 
-   \sum_{w}^{} \mathbf{f}_{iw}^{c},
-
-Total torque on the agent
-
-.. math::
-   M_{i}(t) = M_{i}^{adj} + \sum_{j\neq i}^{} 
-   \left(M_{ij}^{soc} + M_{ij}^{c}\right) + 
-   \sum_{w}^{} M_{iw}^{c},
-
-In our model social forces between agents and obstacles are handled by adjusting
-force and torque.
 """
 import json
 import logging
@@ -41,12 +13,13 @@ import multiprocessing
 import os
 from collections import OrderedDict, Iterable
 from datetime import datetime
-from functools import reduce, lru_cache
+from functools import lru_cache
 from itertools import chain
 from multiprocessing import Process, Event
 from typing import Optional
 
-import matplotlib.pyplot as plt
+import bokeh.io
+import bokeh.plotting
 import numpy as np
 from anytree.iterators import PostOrderIter
 from loggingtools import log_with
@@ -54,79 +27,92 @@ from matplotlib.path import Path
 from shapely.geometry import Polygon
 from shapely.geometry import mapping, shape
 from shapely.geometry.base import BaseGeometry
+from sortedcontainers import SortedSet
 
 from crowddynamics.config import load_config, MULTIAGENT_CFG, \
-    MULTIAGENT_CFG_SPEC
-from crowddynamics.core.geometry import geom_to_linear_obstacles
+    MULTIAGENT_CFG_SPEC, AGENT_CFG, AGENT_CFG_SPEC
+from crowddynamics.core.geometry import geom_to_linear_obstacles, validate_geom, \
+    union
 from crowddynamics.core.integrator import velocity_verlet_integrator
 from crowddynamics.core.interactions.interactions import \
     agent_agent_block_list, agent_obstacle
+from crowddynamics.core.interactions.partitioning import MutableBlockList
 from crowddynamics.core.motion.adjusting import force_adjust_agents, \
     torque_adjust_agents
 from crowddynamics.core.motion.fluctuation import force_fluctuation, \
     torque_fluctuation
+from crowddynamics.core.random.functions import truncnorm
 from crowddynamics.core.random.sampling import polygon_sample
 from crowddynamics.core.steering.navigation import navigation, static_potential
 from crowddynamics.core.steering.orientation import \
     orient_towards_target_direction
-from crowddynamics.core.structures.agents import is_model, reset_motion, Agents
+from crowddynamics.core.structures.agents import is_model, reset_motion, \
+    AgentModelToType, shoulders, overlapping_circles, overlapping_three_circles
 from crowddynamics.core.tree import Node
 from crowddynamics.exceptions import CrowdDynamicsException, InvalidType, \
-    InvalidValue
+    AgentStructureFull, OverlappingError
 from crowddynamics.io import save_npy, save_csv
-from crowddynamics.visualization import plot_navigation
+from crowddynamics.visualization.bokeh import set_aspect, plot_geom, \
+    plot_distance_map, plot_direction_map
 
-# Types
 Domain = Optional[Polygon]
 Obstacles = Optional[BaseGeometry]
 Spawn = Polygon
 Targets = BaseGeometry
 
 
-def validate_geom(geom, name, types, optional=False):
-    """Validate simulation geometry
-
-    Args:
-        geom (BaseGeometry): 
-        name (str): 
-        types: Type of iterable of types. 
-        optional (bool): True if None is valid type else False.
-    """
-    if optional and geom is None:
-        return
-
-    if not isinstance(geom, types):
-        raise InvalidType('{name} should be instance of {types}.'.format(
-            name=name.capitalize(), types=types))
-
-    if geom.is_empty or not geom.is_valid or not geom.is_simple:
-        raise InvalidValue('{name} should not be empty and should be valid '
-                           'and simple.'.format(name=name.capitalize()))
+def _truncnorm(mean, abs_scale):
+    """Individual value from truncnorm"""
+    return np.asscalar(truncnorm(-3.0, 3.0, loc=mean, abs_scale=abs_scale))
 
 
-def samples(spawn, obstacles, radius=0.3):
-    """Generates positions for agents"""
-    geom = spawn - obstacles.buffer(radius) if obstacles else spawn
-    vertices = np.asarray(geom.exterior)
-    return polygon_sample(vertices)
-
-
-def union(*geoms):
-    """Union of geometries"""
-    return reduce(lambda x, y: x | y, geoms)
+def call(obj):
+    """Iterate, call or return the value."""
+    if hasattr(obj, '__next__'):
+        return next(obj)
+    elif callable(obj):
+        return obj()
+    else:
+        return obj
 
 
 class Field(object):
-    """Class for settings simulation geometry
+    r"""Multi-Agent simulation geometry aka Field consists of
 
-    - domain :math:`\Omega \subset \mathbb{R}^{2}`
-    - obstacles :math:`\mathcal{O}`
-    - targets :math:`\mathcal{E}`
-    - spawns :math:`\mathcal{S}`
+    Domain
+        **Domain** :math:`\Omega \subset \mathbb{R}^{2}` is a plane that
+        contains  all the other objects in the simulation such as agents and
+        obstacles. Agents that move outside the domain will be marked as
+        inactive and not used to compute any of the simulation logic.
+
+    Obstacles
+        **Obstacles** :math:`\mathcal{O} \subset \Omega` are impassable regions
+        of the domain. Agents have have psychological tendency to try to avoid
+        colliding with an obstacle, but if they do, for example being pushed by
+        other agents, there will be friction force between the agent and the
+        obstacles. Obstacles avoidance is handled by a navigation algorithm.
+
+    Targets
+        **Targets** :math:`\mathcal{E}_i \subset \Omega` for
+        :math:`i \in \{0, ..., m-1\}` are passable regions of the domain. Agents
+        can have a psychological tendency  to try to reach one or more of these
+        regions. This psycological tendency is also handled by a navigation
+        algorithm.
+
+    Spawns
+        **Spawns** :math:`\mathcal{S}_j \subset \Omega` for
+        :math:`j \in \{0, ..., n-1\}` are passable regions of the domain. These
+        are the regions where new agents can be placed in the beginning or
+        during the simulation. Polygon sampling algorithm handles the sampling
+        of new potential points for  placing the agent and then algorithm test
+        that the agent does not  overlap with other agents of obstacles. If it
+        doesn't new agent is  placed here.
+
     """
 
     def __init__(self, name=None, domain=None, obstacles=None):
         # TODO: invalidate caches if field changes?
+        # TODO: bound of the field domain bounds (convex hull bounds if None)
 
         # Internal data
         self.__name = None
@@ -152,22 +138,18 @@ class Field(object):
 
     @property
     def domain(self):
-        """Domain"""
         return self.__domain
 
     @property
     def obstacles(self):
-        """Obstacles"""
         return self.__obstacles
 
     @property
     def spawns(self):
-        """Spawns"""
         return self.__spawns
 
     @property
     def targets(self):
-        """Targets"""
         return self.__targets
 
     @domain.setter
@@ -180,10 +162,10 @@ class Field(object):
         validate_geom(obstacles, 'obstacles', (BaseGeometry,), True)
         self.__obstacles = obstacles
 
-    def set_domain_convex_hull(self):
-        """Set domain from the convex hull of union of all other objects"""
-        self.domain = (self.obstacles | union(*self.targets) |
-                       union(*self.spawns)).convex_hull
+    def convex_hull(self):
+        """Convex hull of union of all objects in the field."""
+        field = self.obstacles | union(*self.targets) | union(*self.spawns)
+        return field.convex_hull
 
     def add_spawns(self, *spawns: Spawn):
         """Add new spawns"""
@@ -198,25 +180,38 @@ class Field(object):
             validate_geom(target, 'target', (BaseGeometry,), False)
             self.__targets.append(target)
 
+    def remove_spawn(self, index):
+        return self.__spawns.pop(index)
+
+    def remove_target(self, index):
+        return self.__targets.pop(index)
+
+    @staticmethod
+    def _samples(spawn, obstacles, radius=0.3):
+        """Generates positions for agents"""
+        geom = spawn - obstacles.buffer(radius) if obstacles else spawn
+        vertices = np.asarray(geom.convex_hull.exterior)
+        return polygon_sample(vertices)
+
     def sample_spawn(self, spawn_index: int, radius: float=0.3):
         """Generator for sampling points inside spawn without overlapping with
         obstacles"""
-        return samples(self.spawns[spawn_index], self.obstacles, radius)
+        return self._samples(self.spawns[spawn_index], self.obstacles, radius)
 
     @lru_cache()
-    def navigation_to_target(self, index, step, radius, value):
+    def navigation_to_target(self, index, step, radius, strength):
         if not self.targets:
             raise CrowdDynamicsException('No targets are set.')
         if isinstance(index, (int, np.uint8)):
-            target = self.targets[index]
+            targets = self.targets[index]
         elif index == 'closest':
-            target = union(*self.targets)
+            targets = union(*self.targets)
         else:
             raise InvalidType('Index "{0}" should be integer or '
                               '"closest".'.format(index))
 
-        return static_potential(self.domain, target, self.obstacles, step,
-                                radius, value)
+        return static_potential(self.domain, targets, self.obstacles, step,
+                                radius, strength)
 
     def dump_json(self, fname: str):
         """Dump field into JSON"""
@@ -255,26 +250,365 @@ class Field(object):
             self.add_targets(*_shape(obj['targets']))
             self.add_spawns(*_shape(obj['spawns']))
 
-    def plot_navigation(self, step=0.02, radius=0.3, value=0.3):
-        indices = chain(range(len(self.targets)), ('closest',))
-        for index in indices:
-            fname = '{}_navigation_{}.pdf'.format(self.name, index)
-            mgrid, distance_map, direction_map = \
-                self.navigation_to_target(index, step, radius, value)
+    def plot(self, step=0.02, radius=0.3, strength=0.3, **kwargs):
+        bokeh.io.output_file(self.name + '.html', self.name)
+        p = bokeh.plotting.Figure(**kwargs)
 
-            fig, ax = plt.subplots(figsize=(12, 12))
-            plot_navigation(fig, ax,
-                            mgrid.values,
-                            distance_map,
-                            direction_map,
-                            frequency=5
-                            )
-            # plt.savefig(fname)
-            plt.show()
+        if self.domain:
+            minx, miny, maxx, maxy = self.domain.bounds
+        else:
+            minx, miny, maxx, maxy = self.convex_hull().bounds
+
+        set_aspect(p, (minx, maxx), (miny, maxy))
+        p.grid.minor_grid_line_color = 'navy'
+        p.grid.minor_grid_line_alpha = 0.05
+
+        # indices = chain(range(len(self.targets)), ('closest',))
+        # for index in indices:
+        #     mgrid, distance_map, direction_map = \
+        #         self.navigation_to_target(index, step, radius, strength)
+
+        mgrid, distance_map, direction_map = self.navigation_to_target(
+            'closest', step, radius, strength)
+
+        # TODO: masked values on distance map
+        plot_distance_map(p, mgrid, distance_map.filled(1.0),
+                          legend='distance_map')
+        plot_direction_map(p, mgrid, direction_map, legend='direction_map')
+
+        plot_geom(p, self.domain,
+                  legend='domain',
+                  alpha=0.05,
+                  )
+
+        for i, spawn in enumerate(self.spawns):
+            plot_geom(p, spawn,
+                      legend='spawn_{}'.format(i),
+                      alpha=0.5,
+                      line_width=0,
+                      color='green',
+                      )
+
+        for i, target in enumerate(self.targets):
+            plot_geom(p, target,
+                      legend='target_{}'.format(i),
+                      alpha=0.8,
+                      line_width=3.0,
+                      line_dash='dashed',
+                      color='olive',
+                      )
+
+        plot_geom(p, self.obstacles,
+                  legend='obstacles',
+                  line_width=3.0,
+                  alpha=0.8,
+                  )
+
+        p.legend.location = "top_left"
+        p.legend.click_policy = "hide"
+
+        bokeh.io.show(p)
+
+
+class Agents(object):
+    r"""Multi-Agent simulation agent types.
+     
+    Circular
+        .. tikz::
+           \begin{scope}[scale=3]
+             \node[below] () at (0, 0) {$ \mathbf{x} $};
+             \draw[] (0, 0) circle (1);
+             \draw[dashed, <->] (0, 0) -- node[above] {$ r $} (0.71, 0.71);
+           \end{scope}
+
+        **Circular** agents are modelled as a disk with radius :math:`r > 0`
+        from the center of mass :math:`\mathbf{x}`. This type of agents do not
+        have orientation. This is the simplest model for an agent and works
+        quite well for sparse and medium density crowds, but modelling higher
+        density crowds with this model can be unrealistic because circular
+        model is too wide in the  perpendicular width compared to three-circle
+        or capsule representations  and lacks the ability change orientation to
+        fit through smaller spaces. [Helbing2000a]_
+
+    Three-Circle
+        .. tikz:: 
+           \begin{scope}[scale=3]
+             \node[below] () at (0, 0) {$ \mathbf{x} $};
+             \draw[] (0, 0) circle (0.59);
+             \draw[] (-0.63, 0) circle (0.37);
+             \draw[] (0.63, 0) circle (0.37);
+             \draw[dashed, <->] (0, 0) -- node[above] {$ r_{t} $} (0.42, 0.42);
+             \draw[dashed, <->] (-0.63, 0) -- node[above] {$ r_{s} $} (-0.37, 0.26);
+             \draw[dashed, <->] (0.63, 0) -- node[above] {$ r_{s} $} (0.89, 0.26);
+             \draw[dashed, <->] (0, 0) -- node[above] {$ r_{ts} $} (-0.63, 0);
+             \draw[dashed, <->] (0, 0) -- node[above] {$ r_{ts} $} (0.63, 0);
+             \draw[thick, ->] (0, 0) -- node[left] {$ \mathbf{\hat{e}_n} $} (0, 0.3);
+             \draw[thick, ->] (0, 0) -- node[below] {$ \mathbf{\hat{e}_t} $} (0.3, 0);
+           \end{scope}
+
+        **Three-circle** agents are modelled as three disks representing the
+        torso and two shoulders of an average human. Torso is a disk with radius
+        :math:`r_t > 0` from the center of mass :math:`\mathbf{x}`. Two
+        shoulders are disks with radius :math:`r_s` located at along the
+        tangents at distance :math:`r_{ts}` from the center of mass
+        :math:`\mathbf{x} \pm r_{ts} \mathbf{\hat{e}_t}`, where
+        :math:`\mathbf{\hat{e}_t} = [\sin(\varphi), -\cos(\varphi)]`. Three
+        circle type has orientation of :math:`\varphi`. [Langston2006]_ 
+        [Korhonen2008b]_
+
+    Capsule
+        .. tikz::
+           \begin{scope}[scale=3]
+             \node[below] () at (0, 0) {$ \mathbf{x} $};
+             \node[below] () at (-0.5, 0) {$ \mathbf{x}_0 $};
+             \node[below] () at (0.5, 0) {$ \mathbf{x}_1 $};
+             \draw[] (0.5, 0.5) arc (90:-90:0.5) -- ++(-1, 0) arc (270:90:0.5) 
+                     -- ++(1, 0);
+             \draw[thick, ->] (0, 0) -- node[left] {$ \mathbf{\hat{e}_n} $} (0, 0.3);
+             \draw[thick, ->] (0, 0) -- node[below] {$ \mathbf{\hat{e}_t} $} (0.3, 0);
+           \end{scope}
+    
+        .. note:: Capsule is not implemented yet
+
+        **Capsule** shaped model is similar to `three-circle`. [Stuvel2016]_
+
+    """
+    logger = logging.getLogger(__name__)
+
+    def __init__(self,
+                 size,
+                 agent_type='circular',
+                 agent_cfg=AGENT_CFG,
+                 agent_cfg_spec=AGENT_CFG_SPEC):
+        """Agent manager
+
+        Args:
+            size (int):
+                Number of agents
+            agent_type (str|numpy.dtype):
+                AgentModelToType
+            agent_cfg:
+                Agent configuration filepath
+            agent_cfg_spec:
+                Agent configuration spec filepath
+        """
+        if isinstance(agent_type, str):
+            dtype = AgentModelToType[agent_type]
+        else:
+            dtype = agent_type
+
+        # Keeps track of which agents are active and which in active. Stores
+        # indices of agents.
+        self._active = SortedSet()
+        self._inactive = SortedSet(range(size))
+
+        self.array = np.zeros(size, dtype=dtype)
+        self.config = load_config(infile=agent_cfg, configspec=agent_cfg_spec)
+
+        # Faster check for neighbouring agents for initializing agents into
+        # random positions.
+        constants = self.config['constants']
+        self.grid = MutableBlockList(cell_size=constants['cell_size'])
+
+    @staticmethod
+    def reset_agent(index, agents):
+        """Reset agent"""
+        agents[index] = np.zeros(1, agents.dtype)
+
+    @staticmethod
+    def body_to_values(body):
+        """Body to values
+
+        Args:
+            body (dict): Dictionary with keys::
+
+                ratio_rt = float
+                ratio_rs = float
+                ratio_ts = float
+                radius = float
+                radius_scale = float
+                velocity = float
+                velocity_scale = float
+                mass = float
+                mass_scale = float
+        """
+        radius = _truncnorm(body['radius'], body['radius_scale'])
+        mass = _truncnorm(body['mass'], body['mass_scale'])
+        # Rotational inertia of mass 80 kg and radius 0.27 m agent.
+        # Should be scaled to correct value for agents.
+        inertia_rot = 4.0 * np.pi * (mass / 80.0) * (radius / 0.27) ** 2
+        return {
+            'r_t': body['ratio_rt'] * radius,
+            'r_s': body['ratio_rs'] * radius,
+            'r_ts': body['ratio_ts'] * radius,
+            'radius': radius,
+            'target_velocity': _truncnorm(body['velocity'],
+                                          body['velocity_scale']),
+            'mass': mass,
+            'target_angular_velocity': 4 * np.pi,
+            'inertia_rot': inertia_rot
+        }
+
+    @staticmethod
+    def set_agent_attributes(agents, index, attributes):
+        """Set attributes for agent
+
+        Args:
+            agents:
+            attributes:
+                Dictionary values, iterators or callables.
+                - Iterator; return value of next is used
+                - Callable: return value of __call__ will be used
+
+        """
+        for attribute, value in attributes.items():
+            try:
+                agents[index][attribute] = call(value)
+            except ValueError:
+                # logger = logging.getLogger(__name__)
+                # logger.warning('Agent: {} doesn\'t have attribute {}'.format(
+                #     of_model(agents), attribute
+                # ))
+                pass
+
+    @property
+    def size(self):
+        return self.array.size
+
+    def add(self, attributes, check_overlapping=True):
+        """Add new agent with given attributes
+
+        Args:
+            check_overlapping (bool):
+            attributes:
+
+                - body_type:
+                - position: Initial position of the agent
+                - orientation: Initial orientation [-π, π] of the agent.
+                - velocity: Initial velocity
+                - angular_velocity: Angular velocity
+                - target_direction: Unit vector to desired direction
+                - target_orientation:
+
+        Raises:
+            AgentStructureFull: When no more agents can be added.
+            OverlappingError: When two agents overlap each other.
+        """
+        try:
+            index = self._inactive.pop(0)
+        except IndexError:
+            raise AgentStructureFull
+
+        attrs = dict(**self.config['defaults'])
+        attrs.update(attributes)
+
+        try:
+            body_type = call(attrs['body_type'])
+            body = self.config['body_types'][body_type]
+            attrs.update(self.body_to_values(body))
+            del attrs['body_type']
+        except KeyError:
+            pass
+
+        self.set_agent_attributes(self.array, index, attrs)
+
+        # Update shoulder positions for three circle agents
+        if is_model(self.array, 'three_circle'):
+            shoulders(self.array)
+
+        agent = self.array[index]
+        radius = agent['radius']
+        position = agent['position']
+
+        if check_overlapping:
+            neighbours = self.grid.nearest(position, radius=1)
+            agents = self.array[neighbours]
+
+            if is_model(self.array, 'circular'):
+                if overlapping_circles(agents, position, radius):
+                    self.reset_agent(index, self.array)
+                    self._inactive.add(index)
+                    raise OverlappingError
+            elif is_model(self.array, 'three_circle'):
+                if overlapping_three_circles(
+                        agents,
+                        (agent['position'], agent['position_ls'],
+                         agent['position_rs']),
+                        (agent['r_t'], agent['r_s'], agent['r_s'])):
+                    self.reset_agent(index, self.array)
+                    self._inactive.add(index)
+                    raise OverlappingError
+            else:
+                raise CrowdDynamicsException
+
+        self.grid[position] = index
+        self._active.add(index)
+        self.array[index]['active'] = True
+        return index
+
+    @log_with(qualname=True, timed=True, ignore=('self',))
+    def add_group(self, amount, attributes, check_overlapping=True):
+        """Add group of agents
+
+        Args:
+            check_overlapping:
+            amount (int):
+            attributes (dict|Callable[dict]):
+        """
+        overlaps = 0
+        iteration = 0
+        iterations_max = 10 * amount
+
+        # Progress bar for displaying number of agents placed
+        # FIXME: tqdm does not work with tests
+        # success = tqdm(desc='Agents placed: ', total=amount)
+        # overlapping = tqdm(desc='Agent overlaps: ', total=iterations_max)
+        while iteration < amount and overlaps < iterations_max:
+            a = attributes() if callable(attributes) else attributes
+            try:
+                index = self.add(a, check_overlapping=check_overlapping)
+                # success.update(1)
+            except OverlappingError:
+                overlaps += 1
+                # overlapping.update(1)
+                continue
+            except AgentStructureFull:
+                break
+            iteration += 1
+        # success.close()
+        # overlapping.close()
+
+        if is_model(self.array, 'three_circle'):
+            shoulders(self.array)
+
+    @log_with(qualname=True, timed=True, ignore=('self',))
+    def remove(self, index):
+        """Remove agent"""
+        if index in self._active:
+            self._active.remove(index)
+            self._inactive.add(index)
+            self.array[index]['active'] = False
+            self.reset_agent(index, self.array)
+            return True
+        else:
+            return False
 
 
 class MultiAgentSimulation(object):
-    """Multi-Agent Simulation class"""
+    r"""Constructing a multi-agent simulation
+
+    Field
+        Instance of :class:`Field`.
+
+    Agents
+        Instance of :class:`Agents`.
+
+    Logic
+        **Logic** of the simulation consists of tree of :class:`LogicNode`.
+        Simulation is updated by calling the update function of  each logic node
+        using *post-order* traversal.
+
+    """
 
     def __init__(self, name=None, configfile=MULTIAGENT_CFG):
         self.configs = load_config(configfile, MULTIAGENT_CFG_SPEC)
@@ -295,16 +629,20 @@ class MultiAgentSimulation(object):
 
     @property
     def name(self):
-        """Name of the simulation. Defaults to __class__.__name__."""
+        """Name of the simulation. Defaults to ``self.__class__.__name__``."""
         return self.__name if self.__name else self.__class__.__name__
 
     @name.setter
     def name(self, name):
         self.__name = name
 
+    @lru_cache()
+    def name_with_timestamp(self):
+        """Simulation name with timestamp. First call is cached."""
+        return self.name + '_' + datetime.now().strftime('%Y-%m-%d_%H:%M:%S.%f')
+
     @property
     def field(self):
-        """Field (geometry) of the simulation."""
         return self.__field
 
     @field.setter
@@ -313,54 +651,45 @@ class MultiAgentSimulation(object):
 
     @property
     def agents(self):
-        """Agents"""
         return self.__agents
 
     @agents.setter
     def agents(self, agents: Agents):
-        if isinstance(agents, Agents):
-            self.__agents = agents
-        else:
-            raise InvalidType('Agents should be type {}'.format(Agents))
+        self.__agents = agents
 
     @property
-    def tasks(self):
-        """Logic of the simulation"""
+    def logic(self):
         return self.__tasks
 
-    @tasks.setter
-    def tasks(self, tasks):
+    @logic.setter
+    def logic(self, tasks):
         self.__tasks = tasks
 
     def update(self):
         """Execute new iteration cycle of the simulation."""
-        for node in PostOrderIter(self.tasks.root):
+        for node in PostOrderIter(self.logic.root):
             node.update()
         self.data['iterations'] += 1
 
     @log_with(qualname=True, ignore={'self'})
     def run(self, exit_condition=lambda _: False):
-        """Run simulation until exit condition returns True.
+        """Updates simulation until exit condition is met (returns True).
 
         Args:
-            exit_condition (Callable[MultiAgentSimulation, bool]): 
+            exit_condition (Callable[MultiAgentSimulation, bool]):
         """
         while not exit_condition(self):
             self.update()
 
-    def stamped_name(self):
-        """Timestamped name"""
-        return self.name + '_' + datetime.now().strftime('%Y-%m-%d_%H:%M:%S.%f')
-
     def dump_config(self):
         raise NotImplementedError
 
-    def plot_tasks(self, fname):
+    def plot_logic(self, fname):
         from anytree.dotexport import RenderTreeGraph
         name, ext = os.path.splitext(fname)
         if ext != '.png':
             fname += '.png'
-        RenderTreeGraph(self.tasks.root).to_picture(fname)
+        RenderTreeGraph(self.logic.root).to_picture(fname)
 
 
 class MultiAgentProcess(Process):
@@ -381,7 +710,7 @@ class MultiAgentProcess(Process):
 
         Args:
             simulation (MultiAgentSimulation):
-            queue (multiprocessing.Queue): 
+            queue (multiprocessing.Queue):
         """
         super(MultiAgentProcess, self).__init__()
         self.simulation = simulation
@@ -407,16 +736,33 @@ class MultiAgentProcess(Process):
         self.exit.set()
 
 
-# Simulation Logic
-
-
 class LogicNode(Node):
-    # logger = logging.getLogger(__name__)
+    """Simulation logic is programmed as a tree of dependencies of the order of
+    the execution. For example simulation's logic tree could look like::
+
+        Reset
+        └── Integrator
+            ├── Fluctuation
+            ├── Adjusting
+            │   ├── Navigation
+            │   └── Orientation
+            ├── AgentAgentInteractions
+            └── AgentObstacleInteractions
+
+    In this tree we can notice the dependencies. For example before using
+    updating `Adjusting` node we need to update `Navigation` and `Orientation`
+    nodes.
+    """
 
     def __init__(self, simulation: MultiAgentSimulation):
-        """MultiAgentSimulation Logic Node"""
         super(LogicNode, self).__init__()
         self.simulation = simulation
+
+
+class Reset(LogicNode):
+    def update(self):
+        reset_motion(self.simulation.agents.array)
+        # TODO: reset agent neighbor
 
 
 class Integrator(LogicNode):
@@ -463,7 +809,7 @@ class Navigation(LogicNode):
     def update(self):
         step = self.simulation.configs['navigation']['step']
         radius = radius = self.simulation.configs['navigation']['radius']
-        value = value = self.simulation.configs['navigation']['value']
+        value = value = self.simulation.configs['navigation']['strength']
         agents = self.simulation.agents.array
         targets = agents['target']
         for target in set(targets):
@@ -479,12 +825,6 @@ class Orientation(LogicNode):
             orient_towards_target_direction(self.simulation.agents.array)
 
 
-class Reset(LogicNode):
-    def update(self):
-        reset_motion(self.simulation.agents.array)
-        # TODO: reset agent neighbor
-
-
 def _save_condition(simulation, frequency=100):
     return (simulation.data['iterations'] + 1) % frequency == 0
 
@@ -493,7 +833,7 @@ class SaveSimulationData(LogicNode):
     def __init__(self, simulation, directory, save_condition=_save_condition):
         super().__init__(simulation)
         self.save_condition = save_condition
-        self.directory = os.path.join(directory, self.simulation.stamped_name())
+        self.directory = os.path.join(directory, self.simulation.name_with_timestamp())
         os.makedirs(self.directory)
 
         self.simulation.field.dump_geometry(
@@ -517,17 +857,17 @@ class SaveSimulationData(LogicNode):
 
 def save_simulation_data(simulation, directory):
     node = SaveSimulationData(simulation, directory)
-    simulation.tasks['Reset'].inject_before(node)
+    simulation.logic['Reset'].inject_before(node)
 
 
 def contains(simulation, vertices, state):
     """Contains
 
     Args:
-        simulation (MultiAgentSimulation): 
-        vertices (numpy.ndarray): Vertices of a polygon 
+        simulation (MultiAgentSimulation):
+        vertices (numpy.ndarray): Vertices of a polygon
         state (str):
-    
+
     Yields:
         int: Number of states that changed
     """

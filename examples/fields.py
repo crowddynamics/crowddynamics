@@ -1,4 +1,4 @@
-from shapely.geometry import Polygon, LineString
+from shapely.geometry import Polygon, LineString, Point
 
 from crowddynamics.simulation.multiagent import Field
 
@@ -26,7 +26,7 @@ def hallway(width, height):
     target1 = LineString([(width, 0), (width, height)])
     field.add_spawns(spawn0, spawn1)
     field.add_targets(target0, target1)
-    field.set_domain_convex_hull()
+    field.domain = field.convex_hull()
     return field
 
 
@@ -65,17 +65,17 @@ def uturn(width, height):
 
 def room_with_exit(width, height, door_width, exit_hall_width):
     field = Field('RoomWithExit')
-    room = Polygon([(0, 0), (0, height), (width, height), (width, 0)])
-    hall = Polygon([(width, (height - door_width) / 2),
-                    (width, (height + door_width) / 2),
-                    (width + exit_hall_width, (height + door_width) / 2),
-                    (width + exit_hall_width, (height - door_width) / 2)])
+    room = LineString([(width, 0), (0, 0), (0, height), (width, height)])
+    hall = _rectangle(width, (height + door_width) / 2,
+                      exit_hall_width, (height - door_width) / 2) | \
+           _rectangle(width, 0,
+                      exit_hall_width, (height - door_width) / 2)
     targets = LineString([(width + exit_hall_width, (height - door_width) / 2),
                           (width + exit_hall_width, (height + door_width) / 2)])
-    field.domain = room | hall
-    field.obstacles = (room | hall).exterior - targets
+    field.obstacles = room | hall
     field.add_targets(targets)
-    field.add_spawns(room)
+    field.add_spawns(room.convex_hull)
+    field.domain = field.convex_hull()
     return field
 
 
@@ -83,7 +83,7 @@ def room_with_two_exits():
     pass
 
 
-def crossing(l, d, u, v, k=1/3):
+def crossing(l, d, u, v, k=1 / 3):
     field = Field('Crossing')
     field.obstacles = _rectangle(0, 0, l, d) | \
                       _rectangle(l + u, 0, l, d) | \
@@ -95,7 +95,7 @@ def crossing(l, d, u, v, k=1/3):
              _rectangle(l, d + v + (1 - k) * d, u, k * d))
     field.add_spawns(*rects)
     field.add_targets(*rects)
-    field.set_domain_convex_hull()
+    field.domain = field.convex_hull()
     return field
 
 
@@ -104,13 +104,32 @@ def bottleneck(width, height, d, l, h):
     a = (width - 2 * h - l) / 2
     field.obstacles = LineString([(0, 0), (width, 0)]) | \
                       LineString([(0, height), (width, height)]) | \
-                      Polygon([(a, 0), (a+h, d), (a+h+l, d), (a+h+l+h, 0)]) | \
-                      Polygon([(a, height), (a+h, height-d),
-                               (a+h+l, height-d), (a+h+l+h, height)])
+                      Polygon([(a, 0), (a + h, d), (a + h + l, d),
+                               (a + h + l + h, 0)]) | \
+                      Polygon([(a, height), (a + h, height - d),
+                               (a + h + l, height - d),
+                               (a + h + l + h, height)])
     k = 1 / 3
-    rects = (_rectangle(0, 0, k*a, height),
-             _rectangle(width-k*a, 0, k*a, height))
+    rects = (_rectangle(0, 0, k * a, height),
+             _rectangle(width - k * a, 0, k * a, height))
     field.add_spawns(*rects)
     field.add_targets(*rects)
-    field.set_domain_convex_hull()
+    field.domain = field.convex_hull()
+    return field
+
+
+def braess_paradox(width, height, door_width, exit_hall_width, xdist=1.0,
+                   radius=0.75):
+    assert xdist >= 0.0
+    field = room_with_exit(width, height, door_width, exit_hall_width)
+    field.remove_spawn(0)
+    spawn = _rectangle(0, 0, width - xdist - 2 * radius, height)
+    field.add_spawns(spawn)
+    field.name = 'Braess\'s-Paradox'
+    x = width - (xdist + radius)
+    y1 = height / 2 + 1.5
+    y2 = y1 - 3.0
+    field.obstacles = field.obstacles | \
+                      Point(x, y1).buffer(radius, 8) | \
+                      Point(x, y2).buffer(radius, 8)
     return field

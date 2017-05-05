@@ -1,4 +1,20 @@
-r"""Interactions
+r"""
+Interactions
+------------
+
+.. math::
+   \mathbf{f}_{i}^{agent-agent} = 
+   \sum_{j\neq i}^{} \left(\mathbf{f}_{ij}^{soc} + \mathbf{f}_{ij}^{c}\right)
+
+.. math::
+   \mathbf{f}_{i}^{agent-obstacles} = \sum_{w}^{} \mathbf{f}_{iw}^{c}
+
+.. math::
+   M_{i}^{agent-agent} = 
+   \sum_{j\neq i}^{} \left(M_{ij}^{soc} + M_{ij}^{c}\right)
+
+.. math::
+   M_{i}^{agent-obstacles} = \sum_{w}^{} M_{iw}^{c}
 
 Interaction module has algorithms for computing total forces affecting the
 agents. This is essentially an N-body problem.

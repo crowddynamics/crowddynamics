@@ -3,8 +3,9 @@ import numpy as np
 
 from crowddynamics.core.motion.power_law import force_social_circular, \
     force_social_three_circle
-from crowddynamics.core.structures.agents import Agents, agent_type_circular, \
+from crowddynamics.core.structures.agents import agent_type_circular, \
     agent_type_three_circle
+from crowddynamics.simulation.multiagent import Agents
 from crowddynamics.core.vector2D import length
 
 

@@ -11,16 +11,11 @@
 .doit.db.dat
 .doit.db.dir
 examples/run.py
-
-# Folders
-examples/plots/
+examples/*.html
 /docs/apidocs/
 /docs/apidocs_examples/
 *.logs/
 *_build/
-crowddynamics/tests/output/
-notebooks/
-ENV/
 
 
 # Created by .ignore support plugin (hsz.mobi)

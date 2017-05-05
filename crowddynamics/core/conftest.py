@@ -3,8 +3,9 @@ import random
 import numpy as np
 import pytest
 
-from crowddynamics.core.structures.agents import Agents, agent_type_circular, \
+from crowddynamics.core.structures.agents import agent_type_circular, \
     agent_type_three_circle
+from crowddynamics.simulation.multiagent import Agents
 from crowddynamics.core.vector2D import unit_vector
 
 

@@ -54,7 +54,7 @@ def obstacle_handling(dmap, dir_map_obs, dir_map_targets, radius, strength):
     for i in range(n):
         for j in range(m):
             # Distance from the obstacles
-            x = np.abs(dmap[i, j])
+            x = -dmap[i, j]
             if 0 < x < radius:
                 # Decreasing function
                 p = strength ** (x / radius)

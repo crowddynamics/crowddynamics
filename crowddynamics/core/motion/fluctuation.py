@@ -1,5 +1,6 @@
-r"""Fluctuation force and torque
-
+r"""
+Fluctuation
+-----------
 Fluctuation force and torque are stochastic in nature and analogous to heat in
 particle systems. For modeling fluctuation we use :math:`\mathcal{U}(a, b)` for
 continuous uniform distribution and :math:`\mathcal{N}(\mu, \sigma^{2})` for

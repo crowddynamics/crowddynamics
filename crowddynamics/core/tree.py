@@ -99,13 +99,7 @@ class Node(NodeMixin):
         return self
 
     def __repr__(self):
-        classname = self.__class__.__name__
-        args = ["%r" % self.separator.join([""] + [str(node.name) for node in self.path])]
-        for key, value in filter(lambda item: not item[0].startswith("_"),
-                                 sorted(self.__dict__.items(),
-                                        key=lambda item: item[0])):
-            args.append("%s=%r" % (key, value))
-        return "%s(%s)" % (classname, ", ".join(args))
+        return self.__class__.__name__
 
     def __getitem__(self, item):
         """Slow get item which find node named "item" by iterating over the all 

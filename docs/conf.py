@@ -49,7 +49,8 @@ extensions = [
     'sphinx.ext.viewcode',
     'sphinx.ext.ifconfig',
     'sphinx.ext.githubpages',
-    # 'sphinxcontrib.programoutput',
+    'sphinxcontrib.tikz',
+    'sphinxcontrib.programoutput',
     # 'sphinxcontrib.youtube',
 ]
 
