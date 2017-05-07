@@ -1,24 +1,8 @@
 Theory
 ======
 
-Crowd Simulation
-----------------
-
-.. todo::
-   General description about the theory and mathematics behind crowd simulations.
-
-- Time :math:`t \in \mathbb{R}^{+}`
-- Domain :math:`\Omega \subset \mathbb{R}^{2}` is surface that contains all objects in the simulation such as agents and obstacles.
-- Agent :math:`\mathcal{A}`.
-- Obstacle :math:`\mathcal{O}`.
-- Exit / target region :math:`\mathcal{E}`.
-
-
-----
-
 .. todo::
    Documentation about different quantities related and observed in crowddynamics.
-
 
 Density
 -------

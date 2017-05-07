@@ -66,6 +66,7 @@ def obstacle_handling(dmap, dir_map_obs, dir_map_targets, radius, strength):
     return u_out / l, v_out / l
 
 
+@log_with(arguments=False, timed=True)
 def direction_map_obstacles(mgrid, obstacles):
     """Vector field towards obstacles"""
     dmap_obs = distance_map(mgrid, obstacles, None)

@@ -1,4 +1,10 @@
-r"""Universal power law governing pedestrian interactions [Karamouzas2014b]_"""
+r"""
+Universal Power Law Governing Pedestrian Interactions
+-----------------------------------------------------
+Anticipatory collision avoidance algorithm introduced in *Universal power law 
+governing pedestrian interactions* [Karamouzas2014b]_. Algorithm is derived from
+real world data from the behaviour movement of people in crowds.
+"""
 import numba
 import numpy as np
 from numba import f8, i8, typeof
@@ -37,8 +43,7 @@ def potential(k, tau, tau_0):
     return k / tau**2 * np.exp(-tau / tau_0)
 
 
-@numba.jit(f8(f8, f8),
-           nopython=True, nogil=True, cache=True)
+@numba.jit(f8(f8, f8), nopython=True, nogil=True, cache=True)
 def magnitude(tau, tau_0):
     r"""
     Force affecting agent can be derived by taking spatial gradient of the energy,

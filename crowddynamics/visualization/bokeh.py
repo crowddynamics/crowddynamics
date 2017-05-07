@@ -3,6 +3,7 @@ from contextlib import contextmanager
 
 import bokeh.io
 import bokeh.plotting
+import numpy as np
 from bokeh.models import Range1d
 from bokeh.plotting.figure import Figure
 from shapely.geometry import LineString, Point, Polygon
@@ -133,14 +134,11 @@ def plot_distance_map(fig, mgrid, distance_map, **kwargs):
         
     """
     kwargs.setdefault('palette', 'Greys256')
-
-    # TODO: transform masked values to transparent
-    # distance_map.filled(...)
     minx, miny, maxx, maxy = mgrid.bounds
     fig.image([distance_map], minx, miny, maxx, maxy, **kwargs)
 
 
-def plot_direction_map(fig, mgrid, direction_map, freq=2, **kwargs):
+def plot_direction_map(fig: Figure, mgrid, direction_map, freq=2, **kwargs):
     """Quiver plot of direction map
     
     http://bokeh.pydata.org/en/latest/docs/gallery/quiver.html
@@ -152,8 +150,6 @@ def plot_direction_map(fig, mgrid, direction_map, freq=2, **kwargs):
         **kwargs: 
         
     """
-    # TODO: add arrow heads
-
     X, Y = mgrid.values
     U, V = direction_map
 
@@ -164,3 +160,6 @@ def plot_direction_map(fig, mgrid, direction_map, freq=2, **kwargs):
     y1 = y0 + 0.9 * freq * mgrid.step * V[::freq, ::freq].flatten()
 
     fig.segment(x0, y0, x1, y1, **kwargs)
+    fig.triangle(x1, y1, size=4.0,
+                 angle=np.arctan2(V[::freq, ::freq].flatten(),
+                                  U[::freq, ::freq].flatten()) - np.pi / 2)

@@ -1,7 +1,8 @@
 """
 Adjusting
 ---------
-
+Adjusting motion account for agents desire to move and rotate towards their 
+desired goal.
 """
 import numba
 import numpy as np
@@ -15,8 +16,7 @@ from crowddynamics.core.vector2D import wrap_to_pi
 @numba.jit([f8[:](f8, f8, f8, f8[:], f8[:])],
            nopython=True, nogil=True, cache=True)
 def force_adjust(mass, tau_adj, v0, e0, v):
-    r"""Adjusting Force
-    
+    r"""
     *Adjusting* aka *driving* force accounts of agent's desire to reach a
     certain destination. In high crowd densities term *manoeuvring* is used.
     Force affecting the agent takes form
@@ -26,7 +26,7 @@ def force_adjust(mass, tau_adj, v0, e0, v):
 
     Args:
         mass (float):
-            Mass
+            Mass :math:`m`
 
         tau_adj (float):
             Characteristic time :math:`\tau_{adj}` time for agent to adjust it
@@ -43,10 +43,10 @@ def force_adjust(mass, tau_adj, v0, e0, v):
             navigation section.
 
         v (numpy.ndarray):
-            Velocity
+            Velocity :math:`\mathbf{v}`
 
     Returns:
-        numpy.ndarray: Adjusting force vector
+        numpy.ndarray: Adjusting force vector :math:`\mathbf{f}_{adj}`
     """
     return (mass / tau_adj) * (v0 * e0 - v)
 
@@ -54,9 +54,7 @@ def force_adjust(mass, tau_adj, v0, e0, v):
 @numba.jit([f8(f8, f8, f8, f8, f8, f8)],
            nopython=True, nogil=True, cache=True)
 def torque_adjust(inertia_rot, tau_rot, phi_0, phi, omega_0, omega):
-    r"""Adjusting torque
-    
-    Adjusting torque accounts for agent's desire to rotate it orientation.
+    r"""Adjusting torque accounts for agent's desire to rotate it orientation.
 
     .. math::
        M_{adj} = \frac{I_{rot}}{\tau_{rot}} \left( \omega_{0} \left (
@@ -68,7 +66,7 @@ def torque_adjust(inertia_rot, tau_rot, phi_0, phi, omega_0, omega):
 
     Args:
         inertia_rot (float):
-            Rotational inertia
+            Rotational inertia :math:`I_{rot}`
 
         tau_rot (float):
             Characteristic time :math:`\tau_{rot}` time for agent to adjust it
@@ -87,10 +85,11 @@ def torque_adjust(inertia_rot, tau_rot, phi_0, phi, omega_0, omega):
         omega_0 (float):
             Maximum angular velocity :math:`\omega_{0}`.
 
-        omega (float):
+        omega (float): 
+            Angular velocity :math:`\omega`
 
     Returns:
-        float: Adjusting torque scalar
+        float: Adjusting torque scalar :math:`M_{adj}`
     """
     return inertia_rot / tau_rot * \
            (wrap_to_pi(phi_0 - phi) / np.pi * omega_0 - omega)

@@ -1,53 +1,45 @@
 r"""
 Interactions
 ------------
+Mathematically agent-agent and agent-obstacle interactions are governed by
+summing over all agent-agent or agent-obstacle pairs. This is analogous to 
+n-body problems in physics.
+
+Interactions between agents
 
 .. math::
    \mathbf{f}_{i}^{agent-agent} = 
    \sum_{j\neq i}^{} \left(\mathbf{f}_{ij}^{soc} + \mathbf{f}_{ij}^{c}\right)
 
 .. math::
-   \mathbf{f}_{i}^{agent-obstacles} = \sum_{w}^{} \mathbf{f}_{iw}^{c}
-
-.. math::
    M_{i}^{agent-agent} = 
    \sum_{j\neq i}^{} \left(M_{ij}^{soc} + M_{ij}^{c}\right)
+
+
+Interactions between agents and obstacles
+
+.. math::
+   \mathbf{f}_{i}^{agent-obstacles} = \sum_{w}^{} \mathbf{f}_{iw}^{c}
 
 .. math::
    M_{i}^{agent-obstacles} = \sum_{w}^{} M_{iw}^{c}
 
-Interaction module has algorithms for computing total forces affecting the
-agents. This is essentially an N-body problem.
 
-- Brute Force
+Brute Force Summation
+^^^^^^^^^^^^^^^^^^^^^
+Number of iterations for set of :math:`N > 0` agents 
 
-  Number of iterations for set of :math:`N > 0` agents  
+.. math::
+   N - 1 + N - 2 + ... + 1 =  \frac{(N - 1)^2}{2} \in \mathcal{O}(N^2)
 
-  .. math::
-      n - 1 + n - 2 + ... + 1 =  \frac{(N - 1)^2}{2} \in \mathcal{O}(N^2)
-    
-  Number of iterations for two disjoint sets of :math:`N > 0` and :math:`M > 0` 
-  agents
-  
-  .. math::
-     M N
+Number of iterations for two disjoint sets of :math:`N > 0` and :math:`M > 0` 
+agents
 
-- Block List
+.. math::
+   M N
 
-  Number of iterations if maximum number of agents that can be fit into a cell 
-  is :math:`M` is some constant.
-  
-  Iterations per block
-  
-  .. math::
-     I = \frac{(M - 1)^2}{2} + \frac{9}{2} * M^{2}
-     
-  For :math:`N` agents the number of blocks :math:`N / M`. 
-  
-  .. math::
-     I \frac{N}{M} = \frac{N}{M} \left(5 M^{2} - M + \frac{1}{2}\right) \in 
-     \mathcal{O}(N)
-
+Because the computational complexity of naive brute force summation scales 
+:math:`\mathcal{O}(N^2)` it is unfeasible to use for large numbers of agents.
 """
 
 import numba
@@ -56,7 +48,7 @@ from numba import void, i8, typeof
 
 from crowddynamics.core.interactions.distance import distance_circles, \
     distance_circle_line, distance_three_circle_line, distance_three_circles
-from crowddynamics.core.interactions.partitioning import block_list, \
+from crowddynamics.core.interactions.block_list import block_list, \
     get_block
 from crowddynamics.core.motion.contact import force_contact
 from crowddynamics.core.motion.power_law import \

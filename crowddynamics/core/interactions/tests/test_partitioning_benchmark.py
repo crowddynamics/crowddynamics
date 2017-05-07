@@ -4,7 +4,7 @@ from collections import defaultdict
 import numpy as np
 import pytest
 
-from crowddynamics.core.interactions.partitioning import block_list, \
+from crowddynamics.core.interactions.block_list import block_list, \
     MutableBlockList
 
 

@@ -7,7 +7,7 @@ import pytest
 from hypothesis import given
 from sortedcontainers.sortedlist import SortedList
 
-from crowddynamics.core.interactions.partitioning import block_list, \
+from crowddynamics.core.interactions.block_list import block_list, \
     MutableBlockList
 from crowddynamics.testing import real
 

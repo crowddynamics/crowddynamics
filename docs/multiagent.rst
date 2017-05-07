@@ -10,8 +10,8 @@ Multi-Agent Simulation
 .. autoclass:: crowddynamics.simulation.multiagent.Agents
    :noindex:
 
-.. autoclass:: crowddynamics.simulation.multiagent.MultiAgentSimulation
+.. autoclass:: crowddynamics.simulation.multiagent.LogicNode
    :noindex:
 
-.. autoclass:: crowddynamics.simulation.multiagent.LogicNode
+.. autoclass:: crowddynamics.simulation.multiagent.MultiAgentSimulation
    :noindex:

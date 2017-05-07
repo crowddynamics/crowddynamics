@@ -204,6 +204,7 @@ def fill_missing(mask, x, y, u, v):
     v[mask] = ip_v(missing)
 
 
+@log_with(arguments=False, timed=True)
 def direction_map_targets(mgrid, domain, targets, obstacles, buffer_radius):
     """Vector field guiding towards targets."""
     obstacles_buffered = obstacles.buffer(buffer_radius).intersection(domain)

@@ -7,6 +7,15 @@ Motion
 .. automodule:: crowddynamics.core.interactions.interactions
    :noindex:
 
+.. automodule:: crowddynamics.core.interactions.block_list
+   :noindex:
+
+.. automodule:: crowddynamics.core.motion.power_law
+   :noindex:
+
+.. automodule:: crowddynamics.core.motion.contact
+   :noindex:
+
 .. autoclass:: crowddynamics.core.motion.contact.force_contact
    :noindex:
 

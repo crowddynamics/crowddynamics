@@ -1,12 +1,29 @@
-"""Spatial partitioning algorithms.
-
+r"""
+Block List
+----------
 Since crowd simulations are only dependent on interactions with agents close by
 we can partition the space into smaller chunk in order to avoid having to loop
 with agents far a away.
-    
-Todo: 
-    - Convex Hull algorithm: http://doi.org/10.1016/j.asoc.2009.07.004
-    - https://docs.python.org/3/library/collections.abc.html#module-collections.abc
+
+Iterations per block
+
+.. math::
+   ((N_0-1)^{2} + N_0 \sum_{i=1}^{8} N_i) / 2
+
+Number of iterations if maximum number of agents that can be fit into a cell 
+is :math:`M` is some constant.
+
+Iterations per block
+
+.. math::
+   I = \frac{(M - 1)^2}{2} + \frac{9}{2} M^{2}
+ 
+For :math:`N` agents the number of blocks :math:`N / M`. 
+
+.. math::
+   I \frac{N}{M} = \frac{N}{M} \left(5 M^{2} - M + \frac{1}{2}\right) \in 
+   \mathcal{O}(N)
+
 """
 from collections import defaultdict, MutableSequence
 from itertools import product
@@ -26,6 +43,7 @@ class MutableBlockList(object):
     >>> {(0, 1): [1, 3, 4], (1, 2): [2]}
 
     """
+    # TODO: https://docs.python.org/3/library/collections.abc.html#module-collections.abc
 
     def __init__(self, cell_size, default_list=list):
         """Initialize
@@ -231,16 +249,36 @@ def get_block(indices, index_list, count, offset, shape):
     return index_list[start:end]
 
 
+def flat_index(indices, shape):
+    i = indices[0]
+    for j in range(1, len(indices)):
+        i *= shape[j]
+        i += indices[j]
+    return i
+
+
 def split_blocklist(parts, index_list, count, offset, shape):
-    size = len(index_list)
-    part_size = int(size / parts)
-    splits = np.zeros(parts, dtype=np.int64)
+    """Split blocklist equally for multithreading
+
+    Args:
+        parts (int): 
+        index_list: 
+        count: 
+        offset: 
+        shape: 
+    
+    Returns:
+        numpy.ndarray:
+    """
+    # Size of
+    size = int(len(index_list) / parts)
+    splits = np.zeros(shape=parts, dtype=np.int64)
 
     num = 0
-    _sum = 0
-    for i, value in enumerate(count):
-        _sum += value
-        if _sum >= (num + 1) * part_size:
+    tot_amount = 0
+    for i, amount in enumerate(count):
+        tot_amount += amount
+        if tot_amount >= (num + 1) * size:
             splits[num] = i
             num += 1
 

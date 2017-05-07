@@ -36,7 +36,7 @@ from crowddynamics.core.geometry import geom_to_linear_obstacles, validate_geom,
 from crowddynamics.core.integrator import velocity_verlet_integrator
 from crowddynamics.core.interactions.interactions import \
     agent_agent_block_list, agent_obstacle
-from crowddynamics.core.interactions.partitioning import MutableBlockList
+from crowddynamics.core.interactions.block_list import MutableBlockList
 from crowddynamics.core.motion.adjusting import force_adjust_agents, \
     torque_adjust_agents
 from crowddynamics.core.motion.fluctuation import force_fluctuation, \
@@ -79,20 +79,48 @@ def call(obj):
 class Field(object):
     r"""Multi-Agent simulation geometry aka Field consists of
 
+    .. tikz:: Example of Field
+
+       \draw[color=gray!20] (-2, -1) grid (12, 7);
+       % Domain
+       \fill[gray!20] (0, 0) rectangle (10, 6);
+       \node[] () at (5, 3) {$ \Omega $};
+       % Spawn 0
+       \fill[blue!20] (0, 3) -- ++(2, 0) -- ++(1, 1) -- ++(0, 2) 
+                           -- ++(-3, 0) -- ++(0, -3);
+       \node[] () at (1.5, 4.5) {$ \mathcal{S}_0 $};
+       % Obstacles
+       \draw[thick] (0, 0) rectangle (10, 6);
+       \draw[fill=black] (9, 2) circle (0.5);
+       \draw[fill=black] (9, 4) circle (0.5);
+       % Room 1
+       \draw[thick] (0, 3) -- ++(2, 0) -- ++(1, 1);
+       \draw[thick] (3, 5) -- ++(0, 1);
+       % Target 0
+       \draw[thick, white] (4, 6) -- ++(2, 0);
+       \draw[thick, dashed] (4, 6) -- node[above] {$ \mathcal{E}_0 $} ++(2, 0);
+       % Target 1
+       \draw[thick, white] (10, 2) -- ++(0, 2);
+       \draw[thick, dashed] (10, 2) -- node[right] {$ \mathcal{E}_1 $} ++(0, 2);
+       
+
     Domain
+        :tikz:`\draw[black, fill=gray!20] (0, 0) rectangle (0.4, 0.4);`
         **Domain** :math:`\Omega \subset \mathbb{R}^{2}` is a plane that
         contains  all the other objects in the simulation such as agents and
         obstacles. Agents that move outside the domain will be marked as
         inactive and not used to compute any of the simulation logic.
 
     Obstacles
+        :tikz:`\draw[black, fill=black] (0, 0) rectangle (0.4, 0.4);`
         **Obstacles** :math:`\mathcal{O} \subset \Omega` are impassable regions
         of the domain. Agents have have psychological tendency to try to avoid
         colliding with an obstacle, but if they do, for example being pushed by
         other agents, there will be friction force between the agent and the
         obstacles. Obstacles avoidance is handled by a navigation algorithm.
-
+        
     Targets
+        :tikz:`\draw[thick, dashed, black] (0, 0) rectangle (0.4, 0.4);`
         **Targets** :math:`\mathcal{E}_i \subset \Omega` for
         :math:`i \in \{0, ..., m-1\}` are passable regions of the domain. Agents
         can have a psychological tendency  to try to reach one or more of these
@@ -100,6 +128,7 @@ class Field(object):
         algorithm.
 
     Spawns
+        :tikz:`\draw[fill=blue!20] (0, 0) rectangle (0.4, 0.4);`
         **Spawns** :math:`\mathcal{S}_j \subset \Omega` for
         :math:`j \in \{0, ..., n-1\}` are passable regions of the domain. These
         are the regions where new agents can be placed in the beginning or
@@ -316,9 +345,11 @@ class Agents(object):
     Circular
         .. tikz::
            \begin{scope}[scale=3]
+             \draw[color=gray!20] (-2, -1) grid (2, 1);
              \node[below] () at (0, 0) {$ \mathbf{x} $};
-             \draw[] (0, 0) circle (1);
-             \draw[dashed, <->] (0, 0) -- node[above] {$ r $} (0.71, 0.71);
+             \fill (0, 0) circle(0.5pt);
+             \draw[thick] (0, 0) circle (1);
+             \draw[dashed, <->] (0, 0) -- node[above] {$ r $} ++(135:1);
            \end{scope}
 
         **Circular** agents are modelled as a disk with radius :math:`r > 0`
@@ -333,17 +364,21 @@ class Agents(object):
     Three-Circle
         .. tikz:: 
            \begin{scope}[scale=3]
+             \draw[color=gray!20] (-2, -1) grid (2, 1);
              \node[below] () at (0, 0) {$ \mathbf{x} $};
-             \draw[] (0, 0) circle (0.59);
-             \draw[] (-0.63, 0) circle (0.37);
-             \draw[] (0.63, 0) circle (0.37);
-             \draw[dashed, <->] (0, 0) -- node[above] {$ r_{t} $} (0.42, 0.42);
-             \draw[dashed, <->] (-0.63, 0) -- node[above] {$ r_{s} $} (-0.37, 0.26);
-             \draw[dashed, <->] (0.63, 0) -- node[above] {$ r_{s} $} (0.89, 0.26);
+             \fill (0, 0) circle(0.5pt);
+             \fill (-0.63, 0) circle(0.5pt);
+             \fill (0.63, 0) circle(0.5pt);
+             \draw[thick] (0, 0) circle (0.59);
+             \draw[thick] (-0.63, 0) circle (0.37);
+             \draw[thick] (0.63, 0) circle (0.37);
+             \draw[dashed, <->] (0, 0) -- node[above] {$ r_{t} $} ++(135:0.59);
+             \draw[dashed, <->] (-0.63, 0) -- node[above] {$ r_{s} $} ++(135:0.37);
+             \draw[dashed, <->] (0.63, 0) -- node[above] {$ r_{s} $} ++(45:0.37);
              \draw[dashed, <->] (0, 0) -- node[above] {$ r_{ts} $} (-0.63, 0);
              \draw[dashed, <->] (0, 0) -- node[above] {$ r_{ts} $} (0.63, 0);
-             \draw[thick, ->] (0, 0) -- node[left] {$ \mathbf{\hat{e}_n} $} (0, 0.3);
-             \draw[thick, ->] (0, 0) -- node[below] {$ \mathbf{\hat{e}_t} $} (0.3, 0);
+             %\draw[thick, ->] (0, 0) -- node[left] {$ \mathbf{\hat{e}_n} $} (0, 0.3);
+             %\draw[thick, ->] (0, 0) -- node[below] {$ \mathbf{\hat{e}_t} $} (0.3, 0);
            \end{scope}
 
         **Three-circle** agents are modelled as three disks representing the
@@ -353,24 +388,41 @@ class Agents(object):
         tangents at distance :math:`r_{ts}` from the center of mass
         :math:`\mathbf{x} \pm r_{ts} \mathbf{\hat{e}_t}`, where
         :math:`\mathbf{\hat{e}_t} = [\sin(\varphi), -\cos(\varphi)]`. Three
-        circle type has orientation of :math:`\varphi`. [Langston2006]_ 
-        [Korhonen2008b]_
+        circle type has orientation of :math:`\varphi`. Model was proposed 
+        *Crowd dynamics discrete element multi-circle model* [Langston2006]_ and
+        has been used for example in FDS+EVAC [Korhonen2008b]_.
 
     Capsule
-        .. tikz::
-           \begin{scope}[scale=3]
-             \node[below] () at (0, 0) {$ \mathbf{x} $};
-             \node[below] () at (-0.5, 0) {$ \mathbf{x}_0 $};
-             \node[below] () at (0.5, 0) {$ \mathbf{x}_1 $};
-             \draw[] (0.5, 0.5) arc (90:-90:0.5) -- ++(-1, 0) arc (270:90:0.5) 
-                     -- ++(1, 0);
-             \draw[thick, ->] (0, 0) -- node[left] {$ \mathbf{\hat{e}_n} $} (0, 0.3);
-             \draw[thick, ->] (0, 0) -- node[below] {$ \mathbf{\hat{e}_t} $} (0.3, 0);
-           \end{scope}
-    
         .. note:: Capsule is not implemented yet
 
-        **Capsule** shaped model is similar to `three-circle`. [Stuvel2016]_
+        .. tikz::
+           \begin{scope}[scale=3]
+             \draw[color=gray!20] (-2, -1) grid (2, 1);
+             \node[below] () at (0, 0) {$ \mathbf{x} $};
+             \fill (0, 0) circle(0.5pt);
+             \fill (-0.5, 0) circle(0.5pt);
+             \fill (0.5, 0) circle(0.5pt);
+             \draw[thick] (-0.5, 0) -- (0.5, 0);
+             \draw[dashed, <->] (-0.5, 0) -- node[above] {$ r $} ++(135:0.5);
+             \draw[dashed, <->] (-0.5, -0.2) -- node[below]{$ w $} (0.5, -0.2);
+             \draw[thick] (0.5, 0.5) arc (90:-90:0.5) 
+                          -- ++(-1, 0) arc (270:90:0.5) 
+                          -- ++(1, 0);
+             %\draw[thick, ->] (0, 0) -- node[left] {$ \mathbf{\hat{e}_n} $} (0, 0.3);
+             %\draw[thick, ->] (0, 0) -- node[below] {$ \mathbf{\hat{e}_t} $} (0.3, 0);
+           \end{scope}
+
+        **Capsule** shaped model proposed by Stüvel in *Dense Crowds of Virtual 
+        Humans* [Stuvel2016]_. 
+        
+        .. math::
+           r &= T / 2 \\
+           w &= W - 2 r
+        
+        where 
+        
+        - :math:`T` is the thickness of the chest
+        - :math:`W` is the width of the chest
 
     """
     logger = logging.getLogger(__name__)

@@ -1,3 +1,8 @@
+"""
+Contact
+-------
+Physical contact with other objects.
+"""
 import numba
 from numba import f8
 
@@ -11,31 +16,31 @@ def force_contact(h, n, v, t, mu, kappa, damping):
     include damping, which was added by Langston.
 
     .. math::
-       \mathbf{f}^{c} = - h \cdot \left(\mu \cdot \hat{\mathbf{n}} -
+       \mathbf{f}^{c}(h) = - h \cdot \left(\mu \cdot \hat{\mathbf{n}} -
        \kappa \cdot (\mathbf{v} \cdot \hat{\mathbf{t}}) \hat{\mathbf{t}}\right) +
-       c_{n} \cdot (\mathbf{v} \cdot \hat{\mathbf{n}}) \hat{\mathbf{n}}
+       c \cdot (\mathbf{v} \cdot \hat{\mathbf{n}}) \hat{\mathbf{n}}
 
     Args:
         h (float):
-            Skin-to-skin distance between agents
+            Skin-to-skin distance :math:`h` between agents
 
         n (numpy.ndarray):
-            Normal vector
+            Normal vector :math:`\mathbf{\hat{n}}`
 
         v (numpy.ndarray):
-            Velocity vector
+            Velocity vector :math:`\mathbf{v}`
 
         t (numpy.ndarray):
-            Tangent vector
+            Tangent vector :math:`\mathbf{\hat{t}}`
 
         mu (float):
-            Constant :math:`1.2 \cdot 10^{5}\,\mathrm{kg\,s^{-2}}`
+            Constant :math:`\mu = 1.2 \cdot 10^{5}\,\mathrm{kg\,s^{-2}}`
 
         kappa (float):
-            Constant :math:`4.0 \cdot 10^{4}\,\mathrm{kg\,m^{-1}s^{-1}}`
+            Constant :math:`\kappa = 4.0 \cdot 10^{4}\,\mathrm{kg\,m^{-1}s^{-1}}`
 
         damping (float):
-            Constant :math:`500 \,\mathrm{N}`
+            Constant :math:`c = 500 \,\mathrm{N}`
 
     Returns:
         numpy.ndarray: Contact force vector
