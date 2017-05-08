@@ -77,7 +77,7 @@ def call(obj):
 
 
 class Field(object):
-    r"""Multi-Agent simulation geometry aka Field consists of
+    r"""Multi-Agent simulation Field consists of
 
     .. tikz:: Example of Field
 

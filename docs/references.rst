@@ -10,10 +10,11 @@ Crowd simulation in game engines
 - Massive
 - Golaem
 
-Existing simulation software
+Existing simulation software and algorithms
 
 - http://pedsim.silmaril.org/
 - JuPedSim
+- http://gamma.cs.unc.edu/RVO2/
 
 Force Based Multiagent
 
@@ -25,8 +26,8 @@ Force Based Multiagent
 
 Navigation
 
-.. [#] Kretz, T., Große, A., Hengst, S., Kautzsch, L., Pohlmann, A., & Vortisch, P. (2011). Quickest Paths in Simulations of Pedestrians. Advances in Complex Systems, 14(5), 733–759. http://doi.org/10.1142/S0219525911003281
-.. [#] Cristiani, E., & Peri, D. (2015). Handling obstacles in pedestrian simulations: Models and optimization. Retrieved from http://arxiv.org/abs/1512.08528
+.. [Kretz2011a] Kretz, T., Große, A., Hengst, S., Kautzsch, L., Pohlmann, A., & Vortisch, P. (2011). Quickest Paths in Simulations of Pedestrians. Advances in Complex Systems, 14(5), 733–759. http://doi.org/10.1142/S0219525911003281
+.. [Cristiani2015b] Cristiani, E., & Peri, D. (2015). Handling obstacles in pedestrian simulations: Models and optimization. Retrieved from http://arxiv.org/abs/1512.08528
 
 Game
 
@@ -47,8 +48,6 @@ Exit capacity
 Misc
 
 .. [gkstill] FIPM, Prof. 2017. "Standing Crowd Density | Prof. Dr. G. Keith Still". Gkstill.Com. Accessed February 4 2017. http://www.gkstill.com/Support/crowd-density/CrowdDensity-1.html.
-.. [#] Kim, S., Guy, S. J., Hillesland, K., Zafar, B., Gutub, A. A. A., & Manocha, D. (2015). Velocity-based modeling of physical interactions in dense crowds. Visual Computer. http://doi.org/10.1007/s00371-014-0946-1
-.. [#] Qian, W. H., & Qian, K. (2001). Optimizing the four-arc approximation to ellipses. Computer Aided Geometric Design, 18(1), 1–19. http://doi.org/10.1016/S0167-8396(00)00033-9
 
 Meta
 

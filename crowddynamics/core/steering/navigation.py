@@ -5,12 +5,8 @@ Navigation aka path-planing algorithms computes target direction
 :math:`\mathbf{\hat{e}_0}` for each agent. Target direction accounts for agents 
 desire to move towards some direction.
 
-Currently implemented navigation 
-
-- Quickest path
-- Obstacle handling
-- Herding / Leader Follower
-
+Navigation algorithms can be combined. For examples `static potential` is 
+combination of `shortest path` and `obstacle handling`.
 """
 from typing import Tuple
 
@@ -23,7 +19,7 @@ from shapely.geometry import Polygon
 from crowddynamics.core.steering.obstacle_handling import \
     direction_map_obstacles, obstacle_handling
 from crowddynamics.core.steering.quickest_path import MeshGrid, DistanceMap, \
-    DirectionMap, meshgrid, direction_map_targets
+    DirectionMap, meshgrid, shortest_path
 
 
 @log_with(timed=True)
@@ -34,24 +30,11 @@ def static_potential(domain,
                      radius: float,
                      strength: float) -> \
         Tuple[MeshGrid, DistanceMap, DirectionMap]:
-    r"""Static potential
-
-    Navigation algorithm that does not take into account
-    the space that is occupied by dynamic agents (aka agents).
-
-    1. Discretize the domain into grid
-    2. Vector field pointing to target
-    
-        a. Solve distance map from the targets using buffered obstacles
-        b. Compute gradient of the distance map to obtain the vector field
-        c. Fill the missing values by interpolating nearest values
-
-    3. Vector field pointing to obstacles
-    
-        a. Compute distance map from the obstacles
-        b. Compute gradient of the distance map to obtain the vector field
-    
-    4. Combine these two vector fields
+    r"""
+    Navigation algorithm that uses combines `shortest path` and  
+    `obstacle handling` into single navigation mesh that guides agents towards 
+    targets so that they don't willingly collide with obstacles (they can be 
+    pushed towards obstacles by other agents).
 
     Args:
         step (float):
@@ -67,8 +50,8 @@ def static_potential(domain,
     # Compute meshgrid for solving distance maps.
     mgrid = meshgrid(step, *domain.bounds)
 
-    dir_map_targets, dmap_targets = direction_map_targets(
-        mgrid, domain, targets, obstacles, radius)
+    dir_map_targets, dmap_targets = shortest_path(mgrid, domain, targets,
+                                                  obstacles, radius)
     dir_map_obs, dmap_obs = direction_map_obstacles(mgrid, obstacles)
 
     # Combines two direction maps in a way that agents do not run into a wall

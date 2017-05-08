@@ -4,6 +4,40 @@ Universal Power Law Governing Pedestrian Interactions
 Anticipatory collision avoidance algorithm introduced in *Universal power law 
 governing pedestrian interactions* [Karamouzas2014b]_. Algorithm is derived from
 real world data from the behaviour movement of people in crowds.
+
+Force affecting agent can be derived by taking spatial gradient of the energy,
+where time-to-collision :math:`\tau` is function of the relative displacement
+of the mass centers :math:`\tilde{\mathbf{x}} = \mathbf{x}_i - \mathbf{x}_j`
+
+.. math::
+   \mathbf{f}^{soc} &= -\nabla_{\tilde{\mathbf{x}}} E(\tau) \\
+   &= - k \cdot m \left(\frac{1}{\tau^{2}}\right) \left(\frac{2}{\tau} + 
+   \frac{1}{\tau_{0}}\right) \exp\left (-\frac{\tau}{\tau_{0}}\right ) 
+   \nabla_{\tilde{\mathbf{x}}} \tau
+
+If :math:`\tau < 0` or :math:`\tau` is undefined trajectories are not
+colliding and social force is :math:`\mathbf{0}`.
+
+.. tikz::
+   
+   \draw[color=gray!20] (0, 0) grid (12, 8);
+   % Agent i
+   \coordinate (c1) at (2, 2);
+   \draw[] (c1) circle (1pt) node[below] {$ \mathbf{x}_i $};
+   \draw[] (c1) circle (1);
+   \draw[dashed, color=gray!80] (c1) -- ++(60:7);
+   \draw[thick, ->] (c1) -- node[right] {$ \mathbf{v}_i $} ++(60:1.5);
+   % Agent j
+   \coordinate (c2) at (10, 4);
+   \draw[] (c2) circle (1pt) node[below] {$ \mathbf{x}_i $};
+   \draw[] (c2) circle (1);
+   \draw[dashed, color=gray!80] (c2) -- ++(155:8);
+   \draw[thick, ->] (c2) -- node[left] {$ \mathbf{v}_i $} ++(155:1.5);
+   % Distance
+   \draw[color=gray!60, dashed] (c1) -- node[below] {$h$} (c2);
+   \draw[thick, ->] (c1) -- node[below] {$r_i$} ++(14:1);
+   \draw[thick, ->] (c2) -- node[below] {$r_j$} ++(194:1);
+
 """
 import numba
 import numpy as np
@@ -13,6 +47,9 @@ from numba.types import Tuple
 from crowddynamics.core.structures.agents import agent_type_three_circle, \
     agent_type_circular
 from crowddynamics.core.vector2D import dot, truncate
+
+
+F_SOC_MAX = 2e3  # TODO: load from config
 
 
 @numba.jit(nopython=True, nogil=True)
@@ -46,17 +83,6 @@ def potential(k, tau, tau_0):
 @numba.jit(f8(f8, f8), nopython=True, nogil=True, cache=True)
 def magnitude(tau, tau_0):
     r"""
-    Force affecting agent can be derived by taking spatial gradient of the energy,
-    where time-to-collision :math:`\tau` is function of the relative displacement
-    of the mass centers :math:`\tilde{\mathbf{x}} = \mathbf{x}_i - \mathbf{x}_j`
-
-    .. math::
-       \mathbf{f}^{soc} &= -\nabla_{\tilde{\mathbf{x}}} E(\tau) \\
-       &= - k \cdot m \left(\frac{1}{\tau^{2}}\right) \left(\frac{2}{\tau} + \frac{1}{\tau_{0}}\right) \exp\left (-\frac{\tau}{\tau_{0}}\right ) \nabla_{\tilde{\mathbf{x}}} \tau
-
-    If :math:`\tau < 0` or :math:`\tau` is undefined trajectories are not
-    colliding and social force is :math:`\mathbf{0}`.
-
     Magnitude of social force.
 
     .. math::
@@ -80,6 +106,9 @@ def magnitude(tau, tau_0):
            nopython=True, nogil=True, cache=True)
 def gradient_circle_circle(x_rel, v_rel, a, b, d):
     r"""Gradient of :math:`\tau` between two circles.
+    
+    .. math::
+       \nabla_{\tilde{\mathbf{x}}} \tau       
 
     Args:
         x_rel (numpy.ndarray): Relative position of the centers of mass.
@@ -101,6 +130,9 @@ def gradient_circle_circle(x_rel, v_rel, a, b, d):
            nopython=True, nogil=True, cache=True)
 def gradient_three_circle(x_rel, v_rel, r_off, a, b, d):
     r"""Gradient of :math:`\tau` between two three-circle representations.
+    
+    .. math::
+       \nabla_{\tilde{\mathbf{x}}} \tau
 
     Args:
         x_rel (numpy.ndarray):
@@ -184,12 +216,12 @@ def force_social_circular(agent, i, j):
     """Social force based on human anticipatory behaviour.
 
     Args:
-        agent:
-        i:
-        j:
+        agent (numpy.ndarray):
+        i (int):
+        j (int):
 
     Returns:
-
+        (numpy.ndarray, numpy.ndarray):
     """
     force_i = np.zeros(2)
     force_j = np.zeros(2)
@@ -221,8 +253,8 @@ def force_social_circular(agent, i, j):
                   magnitude(tau, agent[j]['tau_0'])
 
     # Truncation for small tau
-    truncate(force_i, agent[i]['f_soc_ij_max'])
-    truncate(force_j, agent[j]['f_soc_ij_max'])
+    truncate(force_i, F_SOC_MAX)
+    truncate(force_j, F_SOC_MAX)
 
     return force_i, force_j
 
@@ -230,16 +262,15 @@ def force_social_circular(agent, i, j):
 @numba.jit(Tuple((f8[:], f8[:]))(typeof(agent_type_three_circle)[:], i8, i8),
            nopython=True, nogil=True, cache=True)
 def force_social_three_circle(agent, i, j):
-    """
-    Minimium time-to-collision for two circles of relative displacements.
+    """Social force based on human anticipatory behaviour.
 
     Args:
-        agent:
-        i:
-        j:
+        agent (numpy.ndarray):
+        i (int):
+        j (int):
 
     Returns:
-
+        (numpy.ndarray, numpy.ndarray):
     """
     # Forces for agent i and j
     force_i = np.zeros(2)
@@ -326,7 +357,7 @@ def force_social_three_circle(agent, i, j):
     force_i[:] += - agent[i]['mass'] * agent[i]['k_soc'] * grad * magnitude(tau, agent[i]['tau_0'])
     force_j[:] -= - agent[j]['mass'] * agent[j]['k_soc'] * grad * magnitude(tau, agent[j]['tau_0'])
 
-    truncate(force_i, agent[i]['f_soc_ij_max'])
-    truncate(force_j, agent[j]['f_soc_ij_max'])
+    truncate(force_i, F_SOC_MAX)
+    truncate(force_j, F_SOC_MAX)
 
     return force_i, force_j

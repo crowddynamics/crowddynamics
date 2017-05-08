@@ -59,9 +59,7 @@ Pressure :math:`p` in crowds created by contact forces :math:`\mathbf{f}_{c}` fr
 .. math::
    p \propto \sum_{i \in N_{neighbor}} \mathbf{f}_{c_i}
 
-----
 
 Fundamental Diagram
 -------------------
 Fundamental diagram offers an empirical relationship between density :math:`\rho` and velocity :math:`\mathbf{v}` of pedestrian movement. It can also be defined as the relationship between density :math:`\rho` and flow :math:`\Phi = \rho \mathbf{v}`. [Seyfried2005]_
-

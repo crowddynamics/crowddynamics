@@ -11,12 +11,11 @@ from crowddynamics.core.steering.quickest_path import distance_map, \
 @numba.jit((f8[:, :], numba.types.Tuple((f8[:, :], f8[:, :])),
             numba.types.Tuple((f8[:, :], f8[:, :])), f8, f8),
            nopython=True, nogil=True, cache=True)
-def obstacle_handling(dmap, dir_map_obs, dir_map_targets, radius, strength):
-    r"""Merges direction maps
-
+def obstacle_handling(dmap_obs, dir_map_obs, dir_map_targets, radius, strength):
+    r"""
     Function that merges two direction maps together. Let distance map from
-    obstacles be :math:`\Phi(\mathbf{x})` and :math:`\lambda(\Phi(\mathbf{x}))`
-    be any decreasing function :math:`\frac{\partial}{\partial\Phi}\lambda(\Phi(\mathbf{x})) < 0` of
+    obstacles be :math:`\Phi(\mathbf{x})` and :math:`\lambda(x)`
+    be any decreasing function :math:`\frac{\partial}{\partial\Phi}\lambda(x) < 0` of
     distance from obstacles such that
 
     .. math::
@@ -26,14 +25,22 @@ def obstacle_handling(dmap, dir_map_obs, dir_map_targets, radius, strength):
        0 & \Phi > M > 0
        \end{cases}
 
-    Then merged direction map :math:`\hat{\mathbf{e}}_{merged}` is
+    Take weighted average between the direction from the obstacles and the 
+    direction from the target using :math:`p` using the decreasing function 
+    defined above.
 
     .. math::
        p &= \lambda(\Phi(\mathbf{x})) \\
-       \hat{\mathbf{e}}_{merged} &= p \hat{\mathbf{e}}_{obs} + (1 - p) \hat{\mathbf{e}}_{exits}
+       \hat{\mathbf{e}}_{out} &= \mathcal{N}\big(p \hat{\mathbf{e}}_{obstacle} + 
+       (1 - p) \hat{\mathbf{e}}_{target}\big)
+
+    Numerically this algorithm uses exponential function as :math:`\lambda`
+    
+    .. math::
+       c^{\frac{x}{r}}
 
     Args:
-        dmap:
+        dmap_obs:
         dir_map_obs:
         dir_map_targets:
         radius (float):
@@ -50,14 +57,15 @@ def obstacle_handling(dmap, dir_map_obs, dir_map_targets, radius, strength):
     u2, v2 = dir_map_targets
     u_out, v_out = np.copy(u2), np.copy(v2)
 
-    n, m = dmap.shape
+    n, m = dmap_obs.shape
     for i in range(n):
         for j in range(m):
             # Distance from the obstacles
-            x = -dmap[i, j]
+            x = -dmap_obs[i, j]
             if 0 < x < radius:
                 # Decreasing function
                 p = strength ** (x / radius)
+                # Weighted average
                 u_out[i, j] = - p * u1[i, j] + (1 - p) * u2[i, j]
                 v_out[i, j] = - p * v1[i, j] + (1 - p) * v2[i, j]
 

@@ -3,6 +3,8 @@ import numba
 import numpy as np
 from numba import f8
 
+from crowddynamics.core.interactions.block_list import block_list
+
 
 @numba.jit(f8[:](f8[:, :]), nopython=True, nogil=True, cache=True)
 def herding(e0_neigh):
@@ -24,8 +26,14 @@ def herding(e0_neigh):
         numpy.ndarray: 
             New direction vector :math:`\mathbf{\hat{e}_{herding}}`
     """
-    num = e0_neigh.shape[1]
-    _sum = np.zeros(shape=num)
-    for i in range(num):
-        _sum += e0_neigh[i, :]
-    return _sum / num
+    n_neigh = e0_neigh.shape[1]
+    sum_e0_neigh = np.zeros(shape=n_neigh)
+    for i in range(n_neigh):
+        sum_e0_neigh += e0_neigh[i, :]
+    return sum_e0_neigh / n_neigh
+
+
+def full(agents):
+    sight_herding = 3.0
+    index_list, count, offset, shape = block_list(agents['position'],
+                                                  sight_herding)

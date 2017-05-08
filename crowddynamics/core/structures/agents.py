@@ -33,8 +33,6 @@ translational = [
     ('kappa', np.float64),
     ('damping', np.float64),
     ('std_rand_force', np.float64),
-    ('f_soc_ij_max', np.float64),
-    ('f_soc_iw_max', np.float64),
 ]
 rotational = [
     ('inertia_rot', np.float64),

@@ -40,16 +40,39 @@ agents
 
 Because the computational complexity of naive brute force summation scales 
 :math:`\mathcal{O}(N^2)` it is unfeasible to use for large numbers of agents.
+
+
+Block List Summation
+^^^^^^^^^^^^^^^^^^^^
+Iterations per block
+
+.. math::
+   ((N_0-1)^{2} + N_0 \sum_{i=1}^{8} N_i) / 2
+
+Number of iterations if maximum number of agents that can be fit into a cell 
+is :math:`M` is some constant.
+
+Iterations per block
+
+.. math::
+   I = \frac{(M - 1)^2}{2} + \frac{9}{2} M^{2}
+ 
+For :math:`N` agents the number of blocks :math:`N / M`. 
+
+.. math::
+   I \frac{N}{M} = \frac{N}{M} \left(5 M^{2} - M + \frac{1}{2}\right) \in 
+   \mathcal{O}(N)
+
 """
 
 import numba
 import numpy as np
 from numba import void, i8, typeof
 
-from crowddynamics.core.interactions.distance import distance_circles, \
-    distance_circle_line, distance_three_circle_line, distance_three_circles
 from crowddynamics.core.interactions.block_list import block_list, \
     get_block
+from crowddynamics.core.interactions.distance import distance_circles, \
+    distance_circle_line, distance_three_circle_line, distance_three_circles
 from crowddynamics.core.motion.contact import force_contact
 from crowddynamics.core.motion.power_law import \
     force_social_circular, force_social_three_circle
@@ -57,7 +80,6 @@ from crowddynamics.core.structures.agents import agent_type_circular, \
     agent_type_three_circle, is_model
 from crowddynamics.core.structures.obstacles import obstacle_type_linear
 from crowddynamics.core.vector2D import rotate270, cross
-
 
 # TODO: load from config
 # Reach of the social force.
@@ -243,15 +265,14 @@ def agent_agent_block_list_three_circle(agents, index_list, count, offset, shape
 
 
 def agent_agent_block_list(agents):
-    index_list, count, offset, shape = block_list(agents['position'], SIGTH_SOC)
+    max_agent_radius = 0.3
+    index_list, count, offset, shape = block_list(
+        agents['position'], SIGTH_SOC + 2 * max_agent_radius)
+
     if is_model(agents, 'circular'):
         agent_agent_block_list_circular(agents, index_list, count, offset, shape)
     elif is_model(agents, 'three_circle'):
         agent_agent_block_list_three_circle(agents, index_list, count, offset, shape)
-
-
-def agent_agent_block_list_multithreaded(agent):
-    pass
 
 
 @numba.jit(void(typeof(agent_type_circular)[:], typeof(obstacle_type_linear)[:]),

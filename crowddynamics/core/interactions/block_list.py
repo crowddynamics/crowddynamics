@@ -5,24 +5,56 @@ Since crowd simulations are only dependent on interactions with agents close by
 we can partition the space into smaller chunk in order to avoid having to loop
 with agents far a away.
 
-Iterations per block
+.. tikz:: Example of block list partitioning
 
-.. math::
-   ((N_0-1)^{2} + N_0 \sum_{i=1}^{8} N_i) / 2
+   % Measures
+   \draw[<->] (-0.1, 0) -- node[left] {$n$} ++(0, 8);
+   \draw[<->] (0, -0.1) -- node[below] {$m$} ++(12, 0);
+   \draw[<->] (-0.3, 0) -- node[left] {$c$} ++(0, 1);
+   \draw[<->] (0, -0.3) -- node[below] {$c$} ++(1, 0);
+   % Grid
+   \draw[color=gray!20] (0, 0) grid (12, 8);
+   \draw[thick, <->] (13, 6) 
+                     -- node[left] {$y$} ++(0, -1) 
+                     -- node[below] {$x$} ++(1, 0);
+   \draw[] (4.5, 5.7) circle (1pt) node[below] {$\mathbf{p}_i$};
+   \draw[dashed] (4.5, 5.7) circle (1);
+   \draw[<->] (4.5, 5.7) -- node[below] {$r$} ++(45:1);
 
-Number of iterations if maximum number of agents that can be fit into a cell 
-is :math:`M` is some constant.
+Block list means partitioning scheme where the bounding box of points
+:math:`\mathbf{p}_i` is partitioned into a grid of ``shape`` :math:`n \times m` 
+with cell size of :math:`c`.
 
-Iterations per block
+Algorithm
 
-.. math::
-   I = \frac{(M - 1)^2}{2} + \frac{9}{2} M^{2}
- 
-For :math:`N` agents the number of blocks :math:`N / M`. 
+0. Cell size is equal to the interaction range :math:`c = r`.
+1. Get the indices of the block the point :math:`\mathbf{p}_i` belongs to 
+   
+   .. math::
+      \mathbf{l}_i = \left\lfloor \frac{\mathbf{p}_i}{c} \right\rfloor, \quad 
+      i \in [0, N-1]
 
-.. math::
-   I \frac{N}{M} = \frac{N}{M} \left(5 M^{2} - M + \frac{1}{2}\right) \in 
-   \mathcal{O}(N)
+2. Crate array ``count`` of counts of how many points belong to each block.
+3. Crate array ``index_list`` for indices of agents in each block.
+
+   .. tikz:: 
+      \node[above] () at (0.5, 0) {$\dots$};
+      \node[above] () at (5.5, 0) {$\dots$};
+      \draw[<->] (1, -0.1) -- node[below] {count} ++(4, 0);
+      \draw[] (1, 0) -- ++(0, -0.5) node[below] {offset};
+      \draw[color=gray!20] (0, 0) grid ++(6, 1);
+      \node[above] () at (1.5, 0) {$i_0$};
+      \node[above] () at (2.5, 0) {$i_1$};
+      \node[above] () at (3.5, 0) {$i_2$};
+      \node[above] () at (4.5, 0) {$i_3$};
+
+4. Crate array ``offset`` from cumulative sum of counts to track the starting
+   index of indices in ``index_list`` array when querying agents in each block.
+
+
+Iteration
+^^^^^^^^^
+Iterating over block list.
 
 """
 from collections import defaultdict, MutableSequence
@@ -135,11 +167,6 @@ def block_list(points, cell_size):
     the square they belong. This allows fast neighbourhood search because we
     only have to search current and neighbouring cells for points.
 
-    Algorithm
-    
-    1. Find the bounds (minimum and maximum indices) of the points
-    2. 
-
     Args:
         points (numpy.ndarray):
             Array of :math:`N` points :math:`(\mathbf{p}_i \in 
@@ -247,39 +274,3 @@ def get_block(indices, index_list, count, offset, shape):
     start = offset[index]
     end = start + count[index]
     return index_list[start:end]
-
-
-def flat_index(indices, shape):
-    i = indices[0]
-    for j in range(1, len(indices)):
-        i *= shape[j]
-        i += indices[j]
-    return i
-
-
-def split_blocklist(parts, index_list, count, offset, shape):
-    """Split blocklist equally for multithreading
-
-    Args:
-        parts (int): 
-        index_list: 
-        count: 
-        offset: 
-        shape: 
-    
-    Returns:
-        numpy.ndarray:
-    """
-    # Size of
-    size = int(len(index_list) / parts)
-    splits = np.zeros(shape=parts, dtype=np.int64)
-
-    num = 0
-    tot_amount = 0
-    for i, amount in enumerate(count):
-        tot_amount += amount
-        if tot_amount >= (num + 1) * size:
-            splits[num] = i
-            num += 1
-
-    return splits

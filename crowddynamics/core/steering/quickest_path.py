@@ -1,19 +1,3 @@
-"""Quickest path
-
-Attributes:
-    MeshGrid (namedtuple):
-        - values: Tuple (X, Y) of ndarrays of shape (n, m).
-        - shape:
-        - step: 
-        - bounds:
-        - indicer:
-    DistanceMap:
-        Ndarray of shape (n, m) where the values indicate the shortest distance
-        from target.
-    DirectionMap:
-        Tuple (U, V) of ndarray of shape (n, m), where the value are x and y
-        components of a (unit)vector field.
-"""
 from collections import namedtuple
 from typing import Tuple, Optional
 
@@ -73,7 +57,7 @@ def distance_map(mgrid: MeshGrid,
     r"""
     Distance map :math:`S(\mathbf{x})` is obtained by solving *Eikonal equation*
     (Continuos shortest path problem) using fast marching *Fast Marching Method 
-    (FMM)* (``scikit-fmm``).
+    (FMM)*.
 
     .. math::
        \left \| \nabla S(\mathbf{x}) \right \| = \frac{1}{f(\mathbf{x})}, \quad \mathbf{x} \in \Omega
@@ -109,11 +93,7 @@ def distance_map(mgrid: MeshGrid,
             Target regions :math:`\mathcal{E}` in the domain.
 
     Return:
-        (numpy.ndarray, numpy.ndarray, numpy.ma.MaskedArray):
-            List of
-            - ``mgrid``
-            - ``dmap``
-            - ``phi``
+        numpy.ma.MaskedArray: Distance map
     """
     # Numerical values for objects in the domain
     empty_region = -1.0
@@ -163,9 +143,8 @@ def travel_time_map():
 
 @log_with(arguments=False, timed=True)
 def direction_map(dmap: DistanceMap) -> DirectionMap:
-    r"""Normalized gradient of distance map.
-
-    Direction map is not defined when length of the gradient is zero.
+    r"""Computes normalized gradient of distance map. Not defined when length of 
+    the gradient is zero.
 
     .. math::
        \hat{\mathbf{e}}_{S} = -\frac{\nabla S(\mathbf{x})}{\| \nabla S(\mathbf{x}) \|}
@@ -175,12 +154,12 @@ def direction_map(dmap: DistanceMap) -> DirectionMap:
             Distance map.
 
     Returns:
-        numpy.ndarray:
-            Direction map. Array of shape: ``dmap.shape + (2,)``
+        (numpy.ndarray, numpy.ndarray): Direction map.
     """
     u, v = np.gradient(dmap)
     l = np.hypot(u, v)
-    l[l == 0] = np.nan  # Avoids zero division
+    # Avoids zero division
+    l[l == 0] = np.nan
     # Flip order from (row, col) to (x, y)
     return v / l, u / l
 
@@ -205,7 +184,7 @@ def fill_missing(mask, x, y, u, v):
 
 
 @log_with(arguments=False, timed=True)
-def direction_map_targets(mgrid, domain, targets, obstacles, buffer_radius):
+def shortest_path(mgrid, domain, targets, obstacles, buffer_radius):
     """Vector field guiding towards targets."""
     obstacles_buffered = obstacles.buffer(buffer_radius).intersection(domain)
 

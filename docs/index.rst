@@ -27,6 +27,7 @@ Crowddynamics is a Python package for crowd simulation. The project was created 
    :maxdepth: 2
 
    multiagent.rst
+   interactions.rst
    motion.rst
    steering.rst
 
