@@ -1,5 +1,5 @@
-Theory
-======
+Quantities
+==========
 
 .. todo::
    Documentation about different quantities related and observed in crowddynamics.

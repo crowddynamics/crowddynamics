@@ -50,8 +50,6 @@ extensions = [
     'sphinx.ext.ifconfig',
     'sphinx.ext.githubpages',
     'sphinxcontrib.tikz',
-    'sphinxcontrib.programoutput',
-    # 'sphinxcontrib.youtube',
 ]
 
 

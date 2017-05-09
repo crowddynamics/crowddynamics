@@ -1,11 +1,26 @@
 Installation
 ============
-.. attention::
 
-   CrowdDynamics is currently only tested *Linux*. Total functionality on *Windows* and *OS X* is currently not guaranteed.
+.. list-table:: Supported Platforms
+   :header-rows: 1
 
-.. todo::
-   Youtube video tutorial on installation
+   * - Platform
+     - Support
+   * - Linux
+     - |Travis|
+   * - Windows
+     - |Appveoyr|
+   * - OSX
+     - Not tested
+
+.. |Travis| image:: https://travis-ci.org/jaantollander/CrowdDynamics.svg?branch=master
+   :target: https://travis-ci.org/jaantollander/CrowdDynamics
+   :alt: Travis continuous intergration
+
+.. |Appveoyr| image:: https://ci.appveyor.com/api/projects/status/nlqrc850nbr9kh4e?svg=true
+   :target: https://ci.appveyor.com/project/jaantollander/CrowdDynamics
+   :alt: Appveoyr continuous intergration
+
 
 Conda
 -----
@@ -16,6 +31,11 @@ Conda
 
 Source
 ------
+
+.. raw:: html
+
+    <div style="position:relative;height:0;padding-bottom:56.25%"><iframe src="https://www.youtube.com/embed/IN63QLZBN2U?ecver=2" style="position:absolute;width:100%;height:100%;left:0" width="640" height="360" frameborder="0" allowfullscreen></iframe></div>
+
 
 .. note::
 

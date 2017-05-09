@@ -5,9 +5,20 @@ Command-Line Interface
 ----------------------
 .. todo:: Commandline tutorial (video, code)
 
-After installation using the ``crowddynamics --help`` command in the commandline displays the available commands
+After installation using the ``crowddynamics --help`` command in the commandline displays the available commands::
 
-.. command-output:: crowddynamics --help
+   Usage: crowddynamics [OPTIONS] COMMAND [ARGS]...
+
+     CrowdDynamics <version>. A tool for building and running
+     crowd simulations.
+
+   Options:
+     --version  Show the version and exit.
+     --help     Show this message and exit.
+
+   Commands:
+     ...
+
 
 Commandline interface can be used to create templates for new simulations and running simulations.
 
