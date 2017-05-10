@@ -1,6 +1,6 @@
 r"""
-Universal Power Law Governing Pedestrian Interactions
------------------------------------------------------
+Power Law
+---------
 Anticipatory collision avoidance algorithm introduced in *Universal power law 
 governing pedestrian interactions* [Karamouzas2014b]_. Algorithm is derived from
 real world data from the behaviour movement of people in crowds.

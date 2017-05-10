@@ -1,4 +1,5 @@
 """CrowdDynamics exceptions"""
+from traitlets import TraitError
 
 
 class CrowdDynamicsException(Exception):
@@ -16,8 +17,8 @@ class InvalidValue(CrowdDynamicsException, ValueError):
     incorrect value."""
 
 
-class ValidationError(CrowdDynamicsException):
-    """Argument is not correct type or value"""
+class ValidationError(CrowdDynamicsException, TraitError):
+    """Argument is invalid"""
 
 
 class OverlappingError(CrowdDynamicsException):

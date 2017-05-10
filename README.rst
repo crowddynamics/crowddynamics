@@ -1,6 +1,6 @@
 Crowd Dynamics
 ==============
-|Travis| |Appveoyr| |readthedocs| |QuantifiedCode| |Pyup| |Codecov|
+|Travis| |Appveoyr| |QuantifiedCode| |Pyup| |Codecov|
 
 .. |QuantifiedCode| image:: https://www.quantifiedcode.com/api/v1/project/d65ae0eba6ea496b84e36dcbb556d80a/badge.svg
    :target: https://www.quantifiedcode.com/app/project/d65ae0eba6ea496b84e36dcbb556d80a
@@ -9,10 +9,6 @@ Crowd Dynamics
 .. |Pyup| image:: https://pyup.io/repos/github/jaantollander/crowddynamics/shield.svg
    :target: https://pyup.io/repos/github/jaantollander/crowddynamics/
    :alt: Updates
-
-.. |readthedocs| image:: https://readthedocs.org/projects/crowddynamics/badge/?version=latest
-   :target: http://crowddynamics.readthedocs.io/en/latest/?badge=latest
-   :alt: Documentation Status
 
 .. |Travis| image:: https://travis-ci.org/jaantollander/crowddynamics.svg?branch=master
    :target: https://travis-ci.org/jaantollander/crowddynamics

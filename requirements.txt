@@ -9,6 +9,7 @@ typing==3.6.1
 ruamel.yaml==0.14.11
 sortedcontainers==1.5.7
 anytree==2.1.4
+traitlets
 
 ## Command-line interface
 click==6.7

@@ -17,7 +17,7 @@ def outdoor(size: (1, None) = 100,
             agent_type: AgentModels = 'circular',
             body_type='adult'):
     """Simulation for visualizing collision avoidance."""
-    simu = MultiAgentSimulation('Outdoor')
+    simu = MultiAgentSimulation(name='Outdoor')
     simu.field = fields.outdoor(width, height)
     simu.agents = Agents(size, agent_type)
     simu.agents.add_group(size, {
@@ -56,7 +56,7 @@ def hallway(size: (2, None) = 100,
     - Unidirectional flow
 
     """
-    simu = MultiAgentSimulation('Hallway')
+    simu = MultiAgentSimulation(name='Hallway')
     simu.field = fields.hallway(width, height)
     simu.agents = Agents(size, agent_type)
     simu.agents.add_group(size // 2, {
@@ -104,7 +104,7 @@ def rounding(size: (1, None) = 20,
 
     - Unidirectional flow
     """
-    simu = MultiAgentSimulation('Rounding')
+    simu = MultiAgentSimulation(name='Rounding')
     simu.field = fields.rounding(width, height)
     simu.agents = Agents(size, agent_type)
     simu.agents.add_group(size, {
@@ -156,7 +156,7 @@ def room_evacuation(size: (1, None) = 100,
     - Two exits
     - Multiple exits
     """
-    simu = MultiAgentSimulation('RoomEvacuation')
+    simu = MultiAgentSimulation(name='RoomEvacuation')
     simu.field = fields.room_with_exit(width, height, door_width,
                                        exit_hall_width)
     simu.agents = Agents(size, agent_type)
@@ -211,7 +211,7 @@ def braess_paradox(size: (1, None) = 100,
     - Two exits
     - Multiple exits
     """
-    simu = MultiAgentSimulation('RoomEvacuation')
+    simu = MultiAgentSimulation(name='RoomEvacuation')
     simu.field = fields.braess_paradox(width, height, door_width,
                                        exit_hall_width, xdist, radius)
     simu.agents = Agents(size, agent_type)
@@ -248,7 +248,7 @@ def uturn(size: (1, None) = 10,
           agent_type: AgentModels = 'circular',
           body_type='adult'):
     """U-Turn"""
-    simu = MultiAgentSimulation('U-Turn')
+    simu = MultiAgentSimulation(name='U-Turn')
     simu.field = fields.uturn(width, height)
     simu.agents = Agents(size, agent_type)
     simu.agents.add_group(size, {
@@ -286,7 +286,7 @@ def crossing(size=20,
              agent_type='circular',
              body_type='adult'):
     """Crossing"""
-    simu = MultiAgentSimulation('Crossing')
+    simu = MultiAgentSimulation(name='Crossing')
     simu.field = fields.crossing(l, d, u, v, k)
     simu.agents = Agents(size, agent_type)
     simu.agents.add_group(size // 2, {
@@ -334,7 +334,7 @@ def bottleneck(size: (1, None) = 10,
                agent_type: AgentModels = 'circular',
                body_type='adult'):
     """Bottleneck"""
-    simu = MultiAgentSimulation('Bottleneck')
+    simu = MultiAgentSimulation(name='Bottleneck')
     simu.field = fields.bottleneck(width, height, d, l, h)
     simu.agents = Agents(size, agent_type)
     simu.agents.add_group(size, {

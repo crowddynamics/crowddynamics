@@ -98,27 +98,6 @@ def draw_geom(geom: BaseGeometry,
         raise TypeError
 
 
-def validate_geom(geom, name, types, optional=False):
-    """Validate simulation geometry
-
-    Args:
-        geom (BaseGeometry): 
-        name (str): 
-        types: Type of iterable of types. 
-        optional (bool): True if None is valid type else False.
-    """
-    if optional and geom is None:
-        return
-
-    if not isinstance(geom, types):
-        raise InvalidType('{name} should be instance of {types}.'.format(
-            name=name.capitalize(), types=types))
-
-    if geom.is_empty or not geom.is_valid:
-        raise InvalidValue('{name} should not be empty and should be valid.'
-                           ''.format(name=name.capitalize()))
-
-
 def union(*geoms):
     """Union of geometries"""
     return reduce(lambda x, y: x | y, geoms)

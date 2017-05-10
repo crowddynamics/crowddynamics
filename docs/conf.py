@@ -9,8 +9,22 @@ import crowddynamics
 
 # -- Mock imports --------------------------------
 
-# if os.environ.get('READTHEDOCS', False):
-# from unittest.mock import MagicMock
+# from unittest.mock import Mock, MagicMock
+# import inspect
+#
+#
+# def decorator_mock(f, *args, **kwargs):
+#     if inspect.isfunction(f):
+#         return f
+#     else:
+#         return decorator_mock
+#
+#
+# import numba
+# numba.jit = Mock(side_effect=decorator_mock)
+# numba.vectorize = Mock(side_effect=decorator_mock)
+
+
 # class Mock(MagicMock):
 #     @classmethod
 #     def __getattr__(cls, name):

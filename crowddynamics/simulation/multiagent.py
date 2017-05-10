@@ -14,7 +14,6 @@ import os
 from collections import OrderedDict, Iterable
 from datetime import datetime
 from functools import lru_cache
-from itertools import chain
 from multiprocessing import Process, Event
 from typing import Optional
 
@@ -28,15 +27,16 @@ from shapely.geometry import Polygon
 from shapely.geometry import mapping, shape
 from shapely.geometry.base import BaseGeometry
 from sortedcontainers import SortedSet
+from traitlets import HasTraits, Unicode, Instance, default, validate, \
+    List
 
 from crowddynamics.config import load_config, MULTIAGENT_CFG, \
     MULTIAGENT_CFG_SPEC, AGENT_CFG, AGENT_CFG_SPEC
-from crowddynamics.core.geometry import geom_to_linear_obstacles, validate_geom, \
-    union
+from crowddynamics.core.geometry import geom_to_linear_obstacles, union
 from crowddynamics.core.integrator import velocity_verlet_integrator
+from crowddynamics.core.interactions.block_list import MutableBlockList
 from crowddynamics.core.interactions.interactions import \
     agent_agent_block_list, agent_obstacle
-from crowddynamics.core.interactions.block_list import MutableBlockList
 from crowddynamics.core.motion.adjusting import force_adjust_agents, \
     torque_adjust_agents
 from crowddynamics.core.motion.fluctuation import force_fluctuation, \
@@ -50,7 +50,7 @@ from crowddynamics.core.structures.agents import is_model, reset_motion, \
     AgentModelToType, shoulders, overlapping_circles, overlapping_three_circles
 from crowddynamics.core.tree import Node
 from crowddynamics.exceptions import CrowdDynamicsException, InvalidType, \
-    AgentStructureFull, OverlappingError
+    AgentStructureFull, OverlappingError, ValidationError
 from crowddynamics.io import save_npy, save_csv
 from crowddynamics.visualization.bokeh import set_aspect, plot_geom, \
     plot_distance_map, plot_direction_map
@@ -76,7 +76,7 @@ def call(obj):
         return obj
 
 
-class Field(object):
+class Field(HasTraits):
     r"""Multi-Agent simulation Field consists of
 
     .. tikz:: Example of Field
@@ -138,82 +138,56 @@ class Field(object):
         doesn't new agent is  placed here.
 
     """
+    # TODO: invalidate caches if field changes?
+    # TODO: validation, spawn should be convex
+    name = Unicode()
+    domain = Instance(Polygon, allow_none=True)
+    obstacles = Instance(BaseGeometry, allow_none=True)
+    targets = List(Instance(BaseGeometry))
+    spawns = List(Instance(BaseGeometry))
 
-    def __init__(self, name=None, domain=None, obstacles=None):
-        # TODO: invalidate caches if field changes?
-        # TODO: bound of the field domain bounds (convex hull bounds if None)
+    @default('name')
+    def _default_name(self):
+        return self.__class__.__name__
 
-        # Internal data
-        self.__name = None
-        self.__domain = None
-        self.__obstacles = None
-        self.__targets = []
-        self.__spawns = []
+    @validate('domain')
+    def _valid_domain(self, proposal):
+        value = proposal['value']
+        if not value.is_valid:
+            raise ValidationError('{} should not be invalid'.format(value))
+        if value.is_empty:
+            raise ValidationError('{} should not empty'.format(value))
+        return value
 
-        # Uses setters to set properties
-        self.name = name
-        self.domain = domain
-        self.obstacles = obstacles
+    @validate('obstacles')
+    def _valid_obstacles(self, proposal):
+        value = proposal['value']
+        if not value.is_valid:
+            raise ValidationError('{} should not be invalid'.format(value))
+        if value.is_empty:
+            raise ValidationError('{} should not empty'.format(value))
+        return value
 
-    @property
-    def name(self):
-        """Name of the simulation. Defaults to __class__.__name__."""
-        return self.__name if self.__name else self.__class__.__name__
+    def add_spawns(self, *spawns: Spawn):
+        """Add new spawns"""
+        for spawn in spawns:
+            self.spawns.append(spawn)
 
-    @name.setter
-    def name(self, name: str):
-        """Set name for the field"""
-        self.__name = name
+    def add_targets(self, *targets: Targets):
+        """Add new targets"""
+        for target in targets:
+            self.targets.append(target)
 
-    @property
-    def domain(self):
-        return self.__domain
+    def remove_spawn(self, index):
+        return self.spawns.pop(index)
 
-    @property
-    def obstacles(self):
-        return self.__obstacles
-
-    @property
-    def spawns(self):
-        return self.__spawns
-
-    @property
-    def targets(self):
-        return self.__targets
-
-    @domain.setter
-    def domain(self, domain: Domain):
-        validate_geom(domain, 'domain', Polygon, True)
-        self.__domain = domain
-
-    @obstacles.setter
-    def obstacles(self, obstacles: Obstacles):
-        validate_geom(obstacles, 'obstacles', (BaseGeometry,), True)
-        self.__obstacles = obstacles
+    def remove_target(self, index):
+        return self.targets.pop(index)
 
     def convex_hull(self):
         """Convex hull of union of all objects in the field."""
         field = self.obstacles | union(*self.targets) | union(*self.spawns)
         return field.convex_hull
-
-    def add_spawns(self, *spawns: Spawn):
-        """Add new spawns"""
-        for spawn in spawns:
-            # TODO: spawn should be convex
-            validate_geom(spawn, 'spawn', (Polygon,), False)
-            self.__spawns.append(spawn)
-
-    def add_targets(self, *targets: Targets):
-        """Add new targets"""
-        for target in targets:
-            validate_geom(target, 'target', (BaseGeometry,), False)
-            self.__targets.append(target)
-
-    def remove_spawn(self, index):
-        return self.__spawns.pop(index)
-
-    def remove_target(self, index):
-        return self.__targets.pop(index)
 
     @staticmethod
     def _samples(spawn, obstacles, radius=0.3):
@@ -646,7 +620,30 @@ class Agents(object):
             return False
 
 
-class MultiAgentSimulation(object):
+class LogicNode(Node):
+    """Simulation logic is programmed as a tree of dependencies of the order of
+    the execution. For example simulation's logic tree could look like::
+
+        Reset
+        └── Integrator
+            ├── Fluctuation
+            ├── Adjusting
+            │   ├── Navigation
+            │   └── Orientation
+            ├── AgentAgentInteractions
+            └── AgentObstacleInteractions
+
+    In this tree we can notice the dependencies. For example before using
+    updating `Adjusting` node we need to update `Navigation` and `Orientation`
+    nodes.
+    """
+
+    def __init__(self, simulation):
+        super(LogicNode, self).__init__()
+        self.simulation = simulation
+
+
+class MultiAgentSimulation(HasTraits):
     r"""Constructing a multi-agent simulation
 
     Field
@@ -661,14 +658,14 @@ class MultiAgentSimulation(object):
         using *post-order* traversal.
 
     """
+    name = Unicode()
+    field = Instance(Field)
+    agents = Instance(Agents)
+    tasks = Instance(LogicNode)
 
-    def __init__(self, name=None, configfile=MULTIAGENT_CFG):
+    def __init__(self, configfile=MULTIAGENT_CFG, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.configs = load_config(configfile, MULTIAGENT_CFG_SPEC)
-
-        self.__name = name
-        self.__field = None
-        self.__agents = None
-        self.__tasks = None
 
         # Generated simulation data that is shared between task nodes.
         # This should be data that can be updated and should be saved on
@@ -679,43 +676,14 @@ class MultiAgentSimulation(object):
         self.data['dt'] = 0.0
         self.data['goal_reached'] = 0
 
-    @property
-    def name(self):
-        """Name of the simulation. Defaults to ``self.__class__.__name__``."""
-        return self.__name if self.__name else self.__class__.__name__
-
-    @name.setter
-    def name(self, name):
-        self.__name = name
+    @default('name')
+    def _default_name(self):
+        return self.__class__.__name__
 
     @lru_cache()
     def name_with_timestamp(self):
         """Simulation name with timestamp. First call is cached."""
         return self.name + '_' + datetime.now().strftime('%Y-%m-%d_%H:%M:%S.%f')
-
-    @property
-    def field(self):
-        return self.__field
-
-    @field.setter
-    def field(self, field: Field):
-        self.__field = field
-
-    @property
-    def agents(self):
-        return self.__agents
-
-    @agents.setter
-    def agents(self, agents: Agents):
-        self.__agents = agents
-
-    @property
-    def logic(self):
-        return self.__tasks
-
-    @logic.setter
-    def logic(self, tasks):
-        self.__tasks = tasks
 
     def update(self):
         """Execute new iteration cycle of the simulation."""
@@ -786,29 +754,6 @@ class MultiAgentProcess(Process):
     def stop(self):
         """Sets event to true in order to stop the simulation process."""
         self.exit.set()
-
-
-class LogicNode(Node):
-    """Simulation logic is programmed as a tree of dependencies of the order of
-    the execution. For example simulation's logic tree could look like::
-
-        Reset
-        └── Integrator
-            ├── Fluctuation
-            ├── Adjusting
-            │   ├── Navigation
-            │   └── Orientation
-            ├── AgentAgentInteractions
-            └── AgentObstacleInteractions
-
-    In this tree we can notice the dependencies. For example before using
-    updating `Adjusting` node we need to update `Navigation` and `Orientation`
-    nodes.
-    """
-
-    def __init__(self, simulation: MultiAgentSimulation):
-        super(LogicNode, self).__init__()
-        self.simulation = simulation
 
 
 class Reset(LogicNode):
