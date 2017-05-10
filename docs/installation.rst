@@ -13,12 +13,12 @@ Installation
    * - OSX
      - Not tested
 
-.. |Travis| image:: https://travis-ci.org/jaantollander/CrowdDynamics.svg?branch=master
-   :target: https://travis-ci.org/jaantollander/CrowdDynamics
+.. |Travis| image:: https://travis-ci.org/jaantollander/crowddynamics.svg?branch=master
+   :target: https://travis-ci.org/jaantollander/crowddynamics
    :alt: Travis continuous intergration
 
 .. |Appveoyr| image:: https://ci.appveyor.com/api/projects/status/nlqrc850nbr9kh4e?svg=true
-   :target: https://ci.appveyor.com/project/jaantollander/CrowdDynamics
+   :target: https://ci.appveyor.com/project/jaantollander/crowddynamics
    :alt: Appveoyr continuous intergration
 
 

@@ -6,24 +6,24 @@ Crowd Dynamics
    :target: https://www.quantifiedcode.com/app/project/d65ae0eba6ea496b84e36dcbb556d80a
    :alt: Code issues
 
-.. |Pyup| image:: https://pyup.io/repos/github/jaantollander/CrowdDynamics/shield.svg
-   :target: https://pyup.io/repos/github/jaantollander/CrowdDynamics/
+.. |Pyup| image:: https://pyup.io/repos/github/jaantollander/crowddynamics/shield.svg
+   :target: https://pyup.io/repos/github/jaantollander/crowddynamics/
    :alt: Updates
 
 .. |readthedocs| image:: https://readthedocs.org/projects/crowddynamics/badge/?version=latest
    :target: http://crowddynamics.readthedocs.io/en/latest/?badge=latest
    :alt: Documentation Status
 
-.. |Travis| image:: https://travis-ci.org/jaantollander/CrowdDynamics.svg?branch=master
-   :target: https://travis-ci.org/jaantollander/CrowdDynamics
+.. |Travis| image:: https://travis-ci.org/jaantollander/crowddynamics.svg?branch=master
+   :target: https://travis-ci.org/jaantollander/crowddynamics
    :alt: Travis continuous intergration
 
 .. |Appveoyr| image:: https://ci.appveyor.com/api/projects/status/nlqrc850nbr9kh4e?svg=true
    :target: https://ci.appveyor.com/project/jaantollander/CrowdDynamics
    :alt: Appveoyr continuous intergration
 
-.. |Codecov| image:: https://codecov.io/gh/jaantollander/CrowdDynamics/branch/master/graph/badge.svg
-   :target: https://codecov.io/gh/jaantollander/CrowdDynamics
+.. |Codecov| image:: https://codecov.io/gh/jaantollander/crowddynamics/branch/master/graph/badge.svg
+   :target: https://codecov.io/gh/jaantollander/crowddynamics
    :alt: Codecov coverage hosting
 
 
