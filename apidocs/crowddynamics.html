@@ -1,0 +1,940 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>crowddynamics package &mdash; crowddynamics legacy+297.gd2a5250.dirty documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="crowddynamics legacy+297.gd2a5250.dirty documentation" href="../index.html"/>
+        <link rel="next" title="crowddynamics.core package" href="crowddynamics.core.html"/>
+        <link rel="prev" title="Steering" href="../steering.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> crowddynamics
+          
+
+          
+            
+            <img src="../_static/logo.svg" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                legacy+297legacy+297.gd2a5250.dirtygd2a5250
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">General</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage.html">Usage</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Multi-Agent Simulation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../multiagent.html">Multi-Agent Simulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../interactions.html">Interactions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../motion.html">Motion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../steering.html">Steering</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Api</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">crowddynamics package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="crowddynamics.core.html">crowddynamics.core package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="crowddynamics.simulation.html">crowddynamics.simulation package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="crowddynamics.tests.html">crowddynamics.tests package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="crowddynamics.visualization.html">crowddynamics.visualization package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-crowddynamics.cli">crowddynamics.cli module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-crowddynamics.config">crowddynamics.config module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-crowddynamics.exceptions">crowddynamics.exceptions module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-crowddynamics.io">crowddynamics.io module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-crowddynamics.logging">crowddynamics.logging module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-crowddynamics.parse">crowddynamics.parse module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-crowddynamics.testing">crowddynamics.testing module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-crowddynamics">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../apidocs_examples/examples.html">examples package</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Research</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../quantities.html">Quantities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../phenomena.html">Phenomena</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../applications.html">Applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">References</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">crowddynamics</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>crowddynamics package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/apidocs/crowddynamics.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="crowddynamics-package">
+<h1>crowddynamics package<a class="headerlink" href="#crowddynamics-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="crowddynamics.core.html">crowddynamics.core package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.core.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="crowddynamics.core.interactions.html">crowddynamics.core.interactions package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.interactions.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="crowddynamics.core.interactions.tests.html">crowddynamics.core.interactions.tests package</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="crowddynamics.core.interactions.tests.html#submodules">Submodules</a></li>
+<li class="toctree-l6"><a class="reference internal" href="crowddynamics.core.interactions.tests.html#module-crowddynamics.core.interactions.tests.test_block_list">crowddynamics.core.interactions.tests.test_block_list module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="crowddynamics.core.interactions.tests.html#module-crowddynamics.core.interactions.tests.test_block_list_benchmark">crowddynamics.core.interactions.tests.test_block_list_benchmark module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="crowddynamics.core.interactions.tests.html#module-crowddynamics.core.interactions.tests.test_distance">crowddynamics.core.interactions.tests.test_distance module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="crowddynamics.core.interactions.tests.html#module-crowddynamics.core.interactions.tests.test_interactions">crowddynamics.core.interactions.tests.test_interactions module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="crowddynamics.core.interactions.tests.html#module-crowddynamics.core.interactions.tests.test_interactions_benchmark">crowddynamics.core.interactions.tests.test_interactions_benchmark module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="crowddynamics.core.interactions.tests.html#module-crowddynamics.core.interactions.tests.test_interactions_mt">crowddynamics.core.interactions.tests.test_interactions_mt module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="crowddynamics.core.interactions.tests.html#module-crowddynamics.core.interactions.tests">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.interactions.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.interactions.html#module-crowddynamics.core.interactions.block_list">crowddynamics.core.interactions.block_list module</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="crowddynamics.core.interactions.html#block-list">Block List</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="crowddynamics.core.interactions.html#iteration">Iteration</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.interactions.html#module-crowddynamics.core.interactions.distance">crowddynamics.core.interactions.distance module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.interactions.html#module-crowddynamics.core.interactions.interactions">crowddynamics.core.interactions.interactions module</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="crowddynamics.core.interactions.html#interactions">Interactions</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="crowddynamics.core.interactions.html#brute-force-summation">Brute Force Summation</a></li>
+<li class="toctree-l6"><a class="reference internal" href="crowddynamics.core.interactions.html#block-list-summation">Block List Summation</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.interactions.html#module-crowddynamics.core.interactions.interactions_mt">crowddynamics.core.interactions.interactions_mt module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.interactions.html#module-crowddynamics.core.interactions">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crowddynamics.core.motion.html">crowddynamics.core.motion package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.motion.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="crowddynamics.core.motion.tests.html">crowddynamics.core.motion.tests package</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="crowddynamics.core.motion.tests.html#submodules">Submodules</a></li>
+<li class="toctree-l6"><a class="reference internal" href="crowddynamics.core.motion.tests.html#module-crowddynamics.core.motion.tests.test_motion">crowddynamics.core.motion.tests.test_motion module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="crowddynamics.core.motion.tests.html#module-crowddynamics.core.motion.tests.test_power_law">crowddynamics.core.motion.tests.test_power_law module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="crowddynamics.core.motion.tests.html#module-crowddynamics.core.motion.tests.test_power_law_benchmark">crowddynamics.core.motion.tests.test_power_law_benchmark module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="crowddynamics.core.motion.tests.html#module-crowddynamics.core.motion.tests">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.motion.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.motion.html#module-crowddynamics.core.motion.adjusting">crowddynamics.core.motion.adjusting module</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="crowddynamics.core.motion.html#adjusting">Adjusting</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.motion.html#module-crowddynamics.core.motion.contact">crowddynamics.core.motion.contact module</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="crowddynamics.core.motion.html#contact">Contact</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.motion.html#module-crowddynamics.core.motion.fluctuation">crowddynamics.core.motion.fluctuation module</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="crowddynamics.core.motion.html#fluctuation">Fluctuation</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.motion.html#module-crowddynamics.core.motion.helbing">crowddynamics.core.motion.helbing module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.motion.html#module-crowddynamics.core.motion.power_law">crowddynamics.core.motion.power_law module</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="crowddynamics.core.motion.html#universal-power-law-governing-pedestrian-interactions">Universal Power Law Governing Pedestrian Interactions</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.motion.html#module-crowddynamics.core.motion.subgroups">crowddynamics.core.motion.subgroups module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.motion.html#module-crowddynamics.core.motion">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crowddynamics.core.random.html">crowddynamics.core.random package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.random.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="crowddynamics.core.random.tests.html">crowddynamics.core.random.tests package</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="crowddynamics.core.random.tests.html#submodules">Submodules</a></li>
+<li class="toctree-l6"><a class="reference internal" href="crowddynamics.core.random.tests.html#module-crowddynamics.core.random.tests.test_random">crowddynamics.core.random.tests.test_random module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="crowddynamics.core.random.tests.html#module-crowddynamics.core.random.tests.test_sampling">crowddynamics.core.random.tests.test_sampling module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="crowddynamics.core.random.tests.html#module-crowddynamics.core.random.tests">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.random.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.random.html#module-crowddynamics.core.random.functions">crowddynamics.core.random.functions module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.random.html#module-crowddynamics.core.random.sampling">crowddynamics.core.random.sampling module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.random.html#module-crowddynamics.core.random">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crowddynamics.core.steering.html">crowddynamics.core.steering package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.steering.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="crowddynamics.core.steering.tests.html">crowddynamics.core.steering.tests package</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="crowddynamics.core.steering.tests.html#submodules">Submodules</a></li>
+<li class="toctree-l6"><a class="reference internal" href="crowddynamics.core.steering.tests.html#module-crowddynamics.core.steering.tests.test_herding">crowddynamics.core.steering.tests.test_herding module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="crowddynamics.core.steering.tests.html#module-crowddynamics.core.steering.tests.test_quickest_path">crowddynamics.core.steering.tests.test_quickest_path module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="crowddynamics.core.steering.tests.html#module-crowddynamics.core.steering.tests">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.steering.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.steering.html#module-crowddynamics.core.steering.functions">crowddynamics.core.steering.functions module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.steering.html#module-crowddynamics.core.steering.herding">crowddynamics.core.steering.herding module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.steering.html#module-crowddynamics.core.steering.navigation">crowddynamics.core.steering.navigation module</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="crowddynamics.core.steering.html#navigation">Navigation</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.steering.html#module-crowddynamics.core.steering.obstacle_handling">crowddynamics.core.steering.obstacle_handling module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.steering.html#module-crowddynamics.core.steering.orientation">crowddynamics.core.steering.orientation module</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="crowddynamics.core.steering.html#orientation">Orientation</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.steering.html#module-crowddynamics.core.steering.quickest_path">crowddynamics.core.steering.quickest_path module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.steering.html#module-crowddynamics.core.steering">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crowddynamics.core.structures.html">crowddynamics.core.structures package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.structures.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="crowddynamics.core.structures.tests.html">crowddynamics.core.structures.tests package</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="crowddynamics.core.structures.tests.html#submodules">Submodules</a></li>
+<li class="toctree-l6"><a class="reference internal" href="crowddynamics.core.structures.tests.html#module-crowddynamics.core.structures.tests.test_agents">crowddynamics.core.structures.tests.test_agents module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="crowddynamics.core.structures.tests.html#module-crowddynamics.core.structures.tests.test_neighborhood">crowddynamics.core.structures.tests.test_neighborhood module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="crowddynamics.core.structures.tests.html#module-crowddynamics.core.structures.tests.test_obstacles">crowddynamics.core.structures.tests.test_obstacles module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="crowddynamics.core.structures.tests.html#module-crowddynamics.core.structures.tests">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.structures.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.structures.html#module-crowddynamics.core.structures.agents">crowddynamics.core.structures.agents module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.structures.html#module-crowddynamics.core.structures.neighborhood">crowddynamics.core.structures.neighborhood module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.structures.html#module-crowddynamics.core.structures.obstacles">crowddynamics.core.structures.obstacles module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.structures.html#module-crowddynamics.core.structures">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crowddynamics.core.tests.html">crowddynamics.core.tests package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.tests.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.tests.html#module-crowddynamics.core.tests.test_evacuation">crowddynamics.core.tests.test_evacuation module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.tests.html#module-crowddynamics.core.tests.test_geometry">crowddynamics.core.tests.test_geometry module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.tests.html#module-crowddynamics.core.tests.test_integrator">crowddynamics.core.tests.test_integrator module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.tests.html#module-crowddynamics.core.tests.test_taskgraph">crowddynamics.core.tests.test_taskgraph module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.tests.html#module-crowddynamics.core.tests.test_vector2D">crowddynamics.core.tests.test_vector2D module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.tests.html#module-crowddynamics.core.tests.test_vector2D_benchmarks">crowddynamics.core.tests.test_vector2D_benchmarks module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.tests.html#module-crowddynamics.core.tests">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.core.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.core.html#module-crowddynamics.core.conftest">crowddynamics.core.conftest module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.core.html#module-crowddynamics.core.evacuation">crowddynamics.core.evacuation module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.core.html#module-crowddynamics.core.geometry">crowddynamics.core.geometry module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.core.html#module-crowddynamics.core.integrator">crowddynamics.core.integrator module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="crowddynamics.core.html#integrator">Integrator</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.core.html#module-crowddynamics.core.tree">crowddynamics.core.tree module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.core.html#module-crowddynamics.core.vector2D">crowddynamics.core.vector2D module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.core.html#module-crowddynamics.core">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="crowddynamics.simulation.html">crowddynamics.simulation package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.simulation.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.simulation.html#module-crowddynamics.simulation.multiagent">crowddynamics.simulation.multiagent module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.simulation.html#module-crowddynamics.simulation">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="crowddynamics.tests.html">crowddynamics.tests package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.tests.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.tests.html#module-crowddynamics.tests.test_cli">crowddynamics.tests.test_cli module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.tests.html#module-crowddynamics.tests.test_io">crowddynamics.tests.test_io module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.tests.html#module-crowddynamics.tests.test_plot">crowddynamics.tests.test_plot module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.tests.html#module-crowddynamics.tests.test_testing">crowddynamics.tests.test_testing module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.tests.html#module-crowddynamics.tests">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="crowddynamics.visualization.html">crowddynamics.visualization package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.visualization.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.visualization.html#module-crowddynamics.visualization.bokeh">crowddynamics.visualization.bokeh module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.visualization.html#module-crowddynamics.visualization.mpl">crowddynamics.visualization.mpl module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.visualization.html#module-crowddynamics.visualization">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-crowddynamics.cli">
+<span id="crowddynamics-cli-module"></span><h2>crowddynamics.cli module<a class="headerlink" href="#module-crowddynamics.cli" title="Permalink to this headline">¶</a></h2>
+<p>Command-line interface for running crowddynamics.</p>
+<dl class="class">
+<dt id="crowddynamics.cli.Colors">
+<em class="property">class </em><code class="descclassname">crowddynamics.cli.</code><code class="descname">Colors</code><a class="reference internal" href="../_modules/crowddynamics/cli.html#Colors"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.cli.Colors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Color palette for the commandline output colors</p>
+<dl class="attribute">
+<dt id="crowddynamics.cli.Colors.NEGATIVE">
+<code class="descname">NEGATIVE</code><em class="property"> = 'red'</em><a class="headerlink" href="#crowddynamics.cli.Colors.NEGATIVE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.cli.Colors.NEUTRAL">
+<code class="descname">NEUTRAL</code><em class="property"> = 'blue'</em><a class="headerlink" href="#crowddynamics.cli.Colors.NEUTRAL" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.cli.Colors.POSITIVE">
+<code class="descname">POSITIVE</code><em class="property"> = 'green'</em><a class="headerlink" href="#crowddynamics.cli.Colors.POSITIVE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="crowddynamics.cli.mk_run_simulation">
+<code class="descclassname">crowddynamics.cli.</code><code class="descname">mk_run_simulation</code><span class="sig-paren">(</span><em>simulation</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/cli.html#mk_run_simulation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.cli.mk_run_simulation" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="crowddynamics.cli.mkcommand">
+<code class="descclassname">crowddynamics.cli.</code><code class="descname">mkcommand</code><span class="sig-paren">(</span><em>name</em>, <em>simulation</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/cli.html#mkcommand"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.cli.mkcommand" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make command</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>name</strong> (<em>str</em>) &#8211; </li>
+<li><strong>simulation</strong> (<a class="reference internal" href="crowddynamics.simulation.html#crowddynamics.simulation.multiagent.MultiAgentSimulation" title="crowddynamics.simulation.multiagent.MultiAgentSimulation"><em>MultiAgentSimulation</em></a>) &#8211; </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">click.Command</p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition-todo admonition" id="index-0">
+<p class="first admonition-title">Todo</p>
+<ul class="last simple">
+<li>make lazy</li>
+<li>run sequentially / parallel</li>
+</ul>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="crowddynamics.cli.mkoption">
+<code class="descclassname">crowddynamics.cli.</code><code class="descname">mkoption</code><span class="sig-paren">(</span><em>spec: crowddynamics.parse.ArgSpec</em><span class="sig-paren">)</span> &#x2192; click.core.Option<a class="reference internal" href="../_modules/crowddynamics/cli.html#mkoption"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.cli.mkoption" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-crowddynamics.config">
+<span id="crowddynamics-config-module"></span><h2>crowddynamics.config module<a class="headerlink" href="#module-crowddynamics.config" title="Permalink to this headline">¶</a></h2>
+<p>CrowdDynamics simulation configuration</p>
+<dl class="function">
+<dt id="crowddynamics.config.import_simulation_callables">
+<code class="descclassname">crowddynamics.config.</code><code class="descname">import_simulation_callables</code><span class="sig-paren">(</span><em>confpath</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/config.html#import_simulation_callables"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.config.import_simulation_callables" title="Permalink to this definition">¶</a></dt>
+<dd><p>Import simulations callables</p>
+<p><a class="reference external" href="https://stackoverflow.com/questions/67631/how-to-import-a-module-given-the-full-path">https://stackoverflow.com/questions/67631/how-to-import-a-module-given-the-full-path</a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>confpath</strong> (<em>str|Path</em>) &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Yields:</th><td class="field-body"><em>(str, typing.Callable[[...], MultiAgentSimulation])</em></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="crowddynamics.config.load_config">
+<code class="descclassname">crowddynamics.config.</code><code class="descname">load_config</code><span class="sig-paren">(</span><em>infile</em>, <em>configspec=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/config.html#load_config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.config.load_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load configuration from INI file.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="crowddynamics.config.remember_cwd">
+<code class="descclassname">crowddynamics.config.</code><code class="descname">remember_cwd</code><span class="sig-paren">(</span><em>directory</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/config.html#remember_cwd"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.config.remember_cwd" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-crowddynamics.exceptions">
+<span id="crowddynamics-exceptions-module"></span><h2>crowddynamics.exceptions module<a class="headerlink" href="#module-crowddynamics.exceptions" title="Permalink to this headline">¶</a></h2>
+<p>CrowdDynamics exceptions</p>
+<dl class="exception">
+<dt id="crowddynamics.exceptions.AgentStructureFull">
+<em class="property">exception </em><code class="descclassname">crowddynamics.exceptions.</code><code class="descname">AgentStructureFull</code><a class="reference internal" href="../_modules/crowddynamics/exceptions.html#AgentStructureFull"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.exceptions.AgentStructureFull" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#crowddynamics.exceptions.CrowdDynamicsException" title="crowddynamics.exceptions.CrowdDynamicsException"><code class="xref py py-class docutils literal"><span class="pre">crowddynamics.exceptions.CrowdDynamicsException</span></code></a></p>
+<p>Agent structure is full.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="crowddynamics.exceptions.CrowdDynamicsException">
+<em class="property">exception </em><code class="descclassname">crowddynamics.exceptions.</code><code class="descname">CrowdDynamicsException</code><a class="reference internal" href="../_modules/crowddynamics/exceptions.html#CrowdDynamicsException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.exceptions.CrowdDynamicsException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">Exception</span></code></p>
+<p>CrowdDynamics base exception.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="crowddynamics.exceptions.DirectoryIsAlreadyCrowdDynamicsDirectory">
+<em class="property">exception </em><code class="descclassname">crowddynamics.exceptions.</code><code class="descname">DirectoryIsAlreadyCrowdDynamicsDirectory</code><a class="reference internal" href="../_modules/crowddynamics/exceptions.html#DirectoryIsAlreadyCrowdDynamicsDirectory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.exceptions.DirectoryIsAlreadyCrowdDynamicsDirectory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#crowddynamics.exceptions.CrowdDynamicsException" title="crowddynamics.exceptions.CrowdDynamicsException"><code class="xref py py-class docutils literal"><span class="pre">crowddynamics.exceptions.CrowdDynamicsException</span></code></a></p>
+<p>Directory is already recognized as a crowddynamics simulation
+directory</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="crowddynamics.exceptions.InvalidType">
+<em class="property">exception </em><code class="descclassname">crowddynamics.exceptions.</code><code class="descname">InvalidType</code><a class="reference internal" href="../_modules/crowddynamics/exceptions.html#InvalidType"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.exceptions.InvalidType" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#crowddynamics.exceptions.CrowdDynamicsException" title="crowddynamics.exceptions.CrowdDynamicsException"><code class="xref py py-class docutils literal"><span class="pre">crowddynamics.exceptions.CrowdDynamicsException</span></code></a>, <code class="xref py py-class docutils literal"><span class="pre">TypeError</span></code></p>
+<p>Used to indicate that the arguments to a CrowdDynamics function were
+invalid type.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="crowddynamics.exceptions.InvalidValue">
+<em class="property">exception </em><code class="descclassname">crowddynamics.exceptions.</code><code class="descname">InvalidValue</code><a class="reference internal" href="../_modules/crowddynamics/exceptions.html#InvalidValue"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.exceptions.InvalidValue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#crowddynamics.exceptions.CrowdDynamicsException" title="crowddynamics.exceptions.CrowdDynamicsException"><code class="xref py py-class docutils literal"><span class="pre">crowddynamics.exceptions.CrowdDynamicsException</span></code></a>, <code class="xref py py-class docutils literal"><span class="pre">ValueError</span></code></p>
+<p>Used to indicate that the arguments to a CrowdDynamics function had
+incorrect value.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="crowddynamics.exceptions.NotACrowdDynamicsDirectory">
+<em class="property">exception </em><code class="descclassname">crowddynamics.exceptions.</code><code class="descname">NotACrowdDynamicsDirectory</code><a class="reference internal" href="../_modules/crowddynamics/exceptions.html#NotACrowdDynamicsDirectory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.exceptions.NotACrowdDynamicsDirectory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#crowddynamics.exceptions.CrowdDynamicsException" title="crowddynamics.exceptions.CrowdDynamicsException"><code class="xref py py-class docutils literal"><span class="pre">crowddynamics.exceptions.CrowdDynamicsException</span></code></a></p>
+<p>Directory is not recognized as a crowddynamics simulation directory</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="crowddynamics.exceptions.OverlappingError">
+<em class="property">exception </em><code class="descclassname">crowddynamics.exceptions.</code><code class="descname">OverlappingError</code><a class="reference internal" href="../_modules/crowddynamics/exceptions.html#OverlappingError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.exceptions.OverlappingError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#crowddynamics.exceptions.CrowdDynamicsException" title="crowddynamics.exceptions.CrowdDynamicsException"><code class="xref py py-class docutils literal"><span class="pre">crowddynamics.exceptions.CrowdDynamicsException</span></code></a></p>
+<p>Two agents are overlapping.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="crowddynamics.exceptions.ValidationError">
+<em class="property">exception </em><code class="descclassname">crowddynamics.exceptions.</code><code class="descname">ValidationError</code><a class="reference internal" href="../_modules/crowddynamics/exceptions.html#ValidationError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.exceptions.ValidationError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#crowddynamics.exceptions.CrowdDynamicsException" title="crowddynamics.exceptions.CrowdDynamicsException"><code class="xref py py-class docutils literal"><span class="pre">crowddynamics.exceptions.CrowdDynamicsException</span></code></a></p>
+<p>Argument is not correct type or value</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-crowddynamics.io">
+<span id="crowddynamics-io-module"></span><h2>crowddynamics.io module<a class="headerlink" href="#module-crowddynamics.io" title="Permalink to this headline">¶</a></h2>
+<p>Crowddynamics IO operations for storing simulation data into disk</p>
+<p>Data flow</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">data</span> <span class="p">(</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">buffer</span> <span class="p">(</span><span class="nb">list</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">file</span> <span class="p">(</span><span class="o">.</span><span class="n">npy</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="function">
+<dt id="crowddynamics.io.find_npy_files">
+<code class="descclassname">crowddynamics.io.</code><code class="descname">find_npy_files</code><span class="sig-paren">(</span><em>directory</em>, <em>basename</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/io.html#find_npy_files"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.io.find_npy_files" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find data files</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>directory</strong> (<em>str|Path</em>) &#8211; </li>
+<li><strong>basename</strong> (<em>str</em>) &#8211; </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Yields:</th><td class="field-body"><p class="first last"><em>(int, numpy.ndarray)</em> &#8211; Tuple containing (index, data)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="crowddynamics.io.load_npy">
+<code class="descclassname">crowddynamics.io.</code><code class="descname">load_npy</code><span class="sig-paren">(</span><em>directory</em>, <em>basename</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/io.html#load_npy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.io.load_npy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load simulation data files in order</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>directory</strong> (<em>str|Path</em>) &#8211; </li>
+<li><strong>basename</strong> (<em>str</em>) &#8211; </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Yields:</th><td class="field-body"><p class="first last"><em>numpy.ndarray</em></p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">load_npy</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="s1">&#39;basename&#39;</span><span class="p">):</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="o">...</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="crowddynamics.io.load_npy_concatenated">
+<code class="descclassname">crowddynamics.io.</code><code class="descname">load_npy_concatenated</code><span class="sig-paren">(</span><em>directory</em>, <em>basename</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/io.html#load_npy_concatenated"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.io.load_npy_concatenated" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load simulation data files concatenated into one</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>directory</strong> (<em>str|Path</em>) &#8211; </li>
+<li><strong>basename</strong> (<em>str</em>) &#8211; </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy.ndarray</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">load_npy_concatenated</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="s1">&#39;basename&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="crowddynamics.io.save_csv">
+<code class="descclassname">crowddynamics.io.</code><code class="descname">save_csv</code><span class="sig-paren">(</span><em>directory</em>, <em>basename</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/io.html#save_csv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.io.save_csv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save dictionary data into csv file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>directory</strong> (<em>str|Path</em>) &#8211; </li>
+<li><strong>basename</strong> (<em>str</em>) &#8211; </li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">storage</span> <span class="o">=</span> <span class="n">save_csv</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="s1">&#39;basename&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">storage</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">storage</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>  <span class="c1"># Send some data (dict)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">storage</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>  <span class="c1"># False dumps data into buffers</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">storage</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">storage</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># True dumps data into file</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="crowddynamics.io.save_npy">
+<code class="descclassname">crowddynamics.io.</code><code class="descname">save_npy</code><span class="sig-paren">(</span><em>directory</em>, <em>basename</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/io.html#save_npy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.io.save_npy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save simulation data</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>directory</strong> (<em>str|Path</em>) &#8211; </li>
+<li><strong>basename</strong> (<em>str</em>) &#8211; </li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">storage</span> <span class="o">=</span> <span class="n">save_npy</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="s1">&#39;basename&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">storage</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>  <span class="c1"># Initialise coroutine</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">storage</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>  <span class="c1"># Send some data (ndarray)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">storage</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>  <span class="c1"># False dumps data into buffers</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">storage</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">storage</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># True dumps data into file</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="module-crowddynamics.logging">
+<span id="crowddynamics-logging-module"></span><h2>crowddynamics.logging module<a class="headerlink" href="#module-crowddynamics.logging" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="crowddynamics.logging.format_numpy">
+<code class="descclassname">crowddynamics.logging.</code><code class="descname">format_numpy</code><span class="sig-paren">(</span><em>precision=5</em>, <em>threshold=6</em>, <em>edgeitems=3</em>, <em>linewidth=None</em>, <em>suppress=False</em>, <em>nanstr=None</em>, <em>infstr=None</em>, <em>formatter=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/logging.html#format_numpy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.logging.format_numpy" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="crowddynamics.logging.format_pandas">
+<code class="descclassname">crowddynamics.logging.</code><code class="descname">format_pandas</code><span class="sig-paren">(</span><em>opts={'display.chop_threshold': None</em>, <em>'display.precision': 4</em>, <em>'display.max_columns': 8</em>, <em>'display.max_rows': 8</em>, <em>'display.max_info_columns': 8</em>, <em>'display.max_info_rows': 8}</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/logging.html#format_pandas"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.logging.format_pandas" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="crowddynamics.logging.setup_logging">
+<code class="descclassname">crowddynamics.logging.</code><code class="descname">setup_logging</code><span class="sig-paren">(</span><em>loglevel=20</em>, <em>log_cfg='/home/jaan/Projects/CrowdDynamics/crowddynamics/conf/logging.yaml'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/logging.html#setup_logging"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.logging.setup_logging" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="crowddynamics.logging.user_info">
+<code class="descclassname">crowddynamics.logging.</code><code class="descname">user_info</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/logging.html#user_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.logging.user_info" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-crowddynamics.parse">
+<span id="crowddynamics-parse-module"></span><h2>crowddynamics.parse module<a class="headerlink" href="#module-crowddynamics.parse" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="crowddynamics.parse.ArgSpec">
+<em class="property">class </em><code class="descclassname">crowddynamics.parse.</code><code class="descname">ArgSpec</code><span class="sig-paren">(</span><em>name</em>, <em>default</em>, <em>annotation</em><span class="sig-paren">)</span><a class="headerlink" href="#crowddynamics.parse.ArgSpec" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">tuple</span></code></p>
+<dl class="attribute">
+<dt id="crowddynamics.parse.ArgSpec.annotation">
+<code class="descname">annotation</code><a class="headerlink" href="#crowddynamics.parse.ArgSpec.annotation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 2</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.parse.ArgSpec.default">
+<code class="descname">default</code><a class="headerlink" href="#crowddynamics.parse.ArgSpec.default" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 1</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.parse.ArgSpec.name">
+<code class="descname">name</code><a class="headerlink" href="#crowddynamics.parse.ArgSpec.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 0</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="crowddynamics.parse.empty_to_none">
+<code class="descclassname">crowddynamics.parse.</code><code class="descname">empty_to_none</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/parse.html#empty_to_none"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.parse.empty_to_none" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert parameter.empty to none</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="crowddynamics.parse.mkspec">
+<code class="descclassname">crowddynamics.parse.</code><code class="descname">mkspec</code><span class="sig-paren">(</span><em>parameter</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/parse.html#mkspec"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.parse.mkspec" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="crowddynamics.parse.parse_signature">
+<code class="descclassname">crowddynamics.parse.</code><code class="descname">parse_signature</code><span class="sig-paren">(</span><em>function</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/parse.html#parse_signature"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.parse.parse_signature" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse signature</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="25%" />
+<col width="25%" />
+<col width="25%" />
+<col width="25%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Type</th>
+<th class="head">Validation</th>
+<th class="head">Click option</th>
+<th class="head">Qt widget</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>int</td>
+<td>interval</td>
+<td>IntRange</td>
+<td>QSpinBox</td>
+</tr>
+<tr class="row-odd"><td>float</td>
+<td>interval</td>
+<td>float with callback</td>
+<td>QDoubleSpinBox</td>
+</tr>
+<tr class="row-even"><td>bool</td>
+<td>flag</td>
+<td>Boolean flag</td>
+<td>QRadioButton</td>
+</tr>
+<tr class="row-odd"><td>str</td>
+<td>choice</td>
+<td>Choice</td>
+<td>QComboBox</td>
+</tr>
+</tbody>
+</table>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>function</strong> &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Yields:</th><td class="field-body"><em>ArgSpec</em></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-crowddynamics.testing">
+<span id="crowddynamics-testing-module"></span><h2>crowddynamics.testing module<a class="headerlink" href="#module-crowddynamics.testing" title="Permalink to this headline">¶</a></h2>
+<p>Module to generate various input values for testing code using <code class="docutils literal"><span class="pre">Hypothesis</span></code>
+library <a class="footnote-reference" href="#id2" id="id1">[1]</a>.</p>
+<table class="docutils footnote" frame="void" id="id2" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id1">[1]</a></td><td><a class="reference external" href="https://hypothesis.readthedocs.io/en/latest/data.html?highlight=example">https://hypothesis.readthedocs.io/en/latest/data.html?highlight=example</a></td></tr>
+</tbody>
+</table>
+<dl class="function">
+<dt id="crowddynamics.testing.real">
+<code class="descclassname">crowddynamics.testing.</code><code class="descname">real</code><span class="sig-paren">(</span><em>min_value=None</em>, <em>max_value=None</em>, <em>exclude_zero=None</em>, <em>shape=None</em>, <em>dtype=&lt;class 'float'&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/testing.html#real"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.testing.real" title="Permalink to this definition">¶</a></dt>
+<dd><p>Real number strategy using 64-bit floating point numbers excluding
+<code class="docutils literal"><span class="pre">nan</span></code> and <code class="docutils literal"><span class="pre">inf</span></code>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>min_value</strong> (<em>Number</em><em>, </em><em>optional</em>) &#8211; </li>
+<li><strong>max_value</strong> (<em>Number</em><em>, </em><em>optional</em>) &#8211; </li>
+<li><strong>exclude_zero</strong> (<em>str</em><em>, </em><em>optional</em>) &#8211; Choices: (None, &#8216;exact&#8217;, &#8216;near&#8217;)</li>
+<li><strong>shape</strong> (<em>int|tuple</em><em>, </em><em>optiona</em>) &#8211; <ul>
+<li>None: Scalar output</li>
+<li>int|tuple: Vector output of shape</li>
+</ul>
+</li>
+<li><strong>dtype</strong> (<em>type</em>) &#8211; Choice
+- float: Floats
+- int: Integers</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition-todo admonition" id="index-1">
+<p class="first admonition-title">Todo</p>
+<ul class="last simple">
+<li>size as strategy</li>
+<li>filtering values with assume?</li>
+</ul>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="crowddynamics.testing.unit_vector">
+<code class="descclassname">crowddynamics.testing.</code><code class="descname">unit_vector</code><span class="sig-paren">(</span><em>start=0</em>, <em>end=6.283185307179586</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/testing.html#unit_vector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.testing.unit_vector" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-crowddynamics">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-crowddynamics" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="crowddynamics.core.html" class="btn btn-neutral float-right" title="crowddynamics.core package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../steering.html" class="btn btn-neutral" title="Steering" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright Jaan Tollander de Balsch.
+      Last updated on 2017-05-10.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'legacy+297.gd2a5250.dirty',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

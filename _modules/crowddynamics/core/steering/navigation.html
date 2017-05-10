@@ -1,0 +1,359 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>crowddynamics.core.steering.navigation &mdash; crowddynamics legacy+297.gd2a5250.dirty documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../../../_static/favicon.ico"/>
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../../../genindex.html"/>
+        <link rel="search" title="Search" href="../../../../search.html"/>
+    <link rel="top" title="crowddynamics legacy+297.gd2a5250.dirty documentation" href="../../../../index.html"/>
+        <link rel="up" title="Module code" href="../../../index.html"/> 
+
+  
+  <script src="../../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../../index.html" class="icon icon-home"> crowddynamics
+          
+
+          
+            
+            <img src="../../../../_static/logo.svg" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                legacy+297legacy+297.gd2a5250.dirtygd2a5250
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">General</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../usage.html">Usage</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Multi-Agent Simulation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../multiagent.html">Multi-Agent Simulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../interactions.html">Interactions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../motion.html">Motion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../steering.html">Steering</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Api</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apidocs/crowddynamics.html">crowddynamics package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apidocs_examples/examples.html">examples package</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Research</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../quantities.html">Quantities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../phenomena.html">Phenomena</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../applications.html">Applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../references.html">References</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">crowddynamics</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+        
+      <li>crowddynamics.core.steering.navigation</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for crowddynamics.core.steering.navigation</h1><div class="highlight"><pre>
+<span></span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Navigation</span>
+<span class="sd">----------</span>
+<span class="sd">Navigation aka path-planing algorithms computes target direction </span>
+<span class="sd">:math:`\mathbf{\hat{e}_0}` for each agent. Target direction accounts for agents </span>
+<span class="sd">desire to move towards some direction.</span>
+
+<span class="sd">Navigation algorithms can be combined. For examples `static potential` is </span>
+<span class="sd">combination of `shortest path` and `obstacle handling`.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Tuple</span>
+
+<span class="kn">import</span> <span class="nn">numba</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">loggingtools</span> <span class="k">import</span> <span class="n">log_with</span>
+<span class="kn">from</span> <span class="nn">numba</span> <span class="k">import</span> <span class="n">f8</span><span class="p">,</span> <span class="n">i8</span>
+<span class="kn">from</span> <span class="nn">shapely.geometry</span> <span class="k">import</span> <span class="n">Polygon</span>
+
+<span class="kn">from</span> <span class="nn">crowddynamics.core.steering.obstacle_handling</span> <span class="k">import</span> \
+    <span class="n">direction_map_obstacles</span><span class="p">,</span> <span class="n">obstacle_handling</span>
+<span class="kn">from</span> <span class="nn">crowddynamics.core.steering.quickest_path</span> <span class="k">import</span> <span class="n">MeshGrid</span><span class="p">,</span> <span class="n">DistanceMap</span><span class="p">,</span> \
+    <span class="n">DirectionMap</span><span class="p">,</span> <span class="n">meshgrid</span><span class="p">,</span> <span class="n">shortest_path</span>
+
+
+<span class="nd">@log_with</span><span class="p">(</span><span class="n">timed</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="viewcode-block" id="static_potential"><a class="viewcode-back" href="../../../../steering.html#crowddynamics.core.steering.navigation.static_potential">[docs]</a><span class="k">def</span> <span class="nf">static_potential</span><span class="p">(</span><span class="n">domain</span><span class="p">,</span>
+                     <span class="n">targets</span><span class="p">,</span>
+                     <span class="n">obstacles</span><span class="p">,</span>
+                     <span class="n">step</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+                     <span class="n">radius</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+                     <span class="n">strength</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> \
+        <span class="n">Tuple</span><span class="p">[</span><span class="n">MeshGrid</span><span class="p">,</span> <span class="n">DistanceMap</span><span class="p">,</span> <span class="n">DirectionMap</span><span class="p">]:</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Navigation algorithm that uses combines `shortest path` and  </span>
+<span class="sd">    `obstacle handling` into single navigation mesh that guides agents towards </span>
+<span class="sd">    targets so that they don&#39;t willingly collide with obstacles (they can be </span>
+<span class="sd">    pushed towards obstacles by other agents).</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        step (float):</span>
+<span class="sd">        domain (Polygon):</span>
+<span class="sd">        targets (LineString, optional):</span>
+<span class="sd">        obstacles (LineString, optional):</span>
+<span class="sd">        strength (float):</span>
+<span class="sd">        radius (float):</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Tuple[MeshGrid, DirectionMap]:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Compute meshgrid for solving distance maps.</span>
+    <span class="n">mgrid</span> <span class="o">=</span> <span class="n">meshgrid</span><span class="p">(</span><span class="n">step</span><span class="p">,</span> <span class="o">*</span><span class="n">domain</span><span class="o">.</span><span class="n">bounds</span><span class="p">)</span>
+
+    <span class="n">dir_map_targets</span><span class="p">,</span> <span class="n">dmap_targets</span> <span class="o">=</span> <span class="n">shortest_path</span><span class="p">(</span><span class="n">mgrid</span><span class="p">,</span> <span class="n">domain</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span>
+                                                  <span class="n">obstacles</span><span class="p">,</span> <span class="n">radius</span><span class="p">)</span>
+    <span class="n">dir_map_obs</span><span class="p">,</span> <span class="n">dmap_obs</span> <span class="o">=</span> <span class="n">direction_map_obstacles</span><span class="p">(</span><span class="n">mgrid</span><span class="p">,</span> <span class="n">obstacles</span><span class="p">)</span>
+
+    <span class="c1"># Combines two direction maps in a way that agents do not run into a wall</span>
+    <span class="n">dir_map</span> <span class="o">=</span> <span class="n">obstacle_handling</span><span class="p">(</span><span class="n">dmap_obs</span><span class="p">,</span> <span class="n">dir_map_obs</span><span class="p">,</span> <span class="n">dir_map_targets</span><span class="p">,</span> <span class="n">radius</span><span class="p">,</span>
+                                <span class="n">strength</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">mgrid</span><span class="p">,</span> <span class="n">dmap_targets</span><span class="p">,</span> <span class="n">dir_map</span></div>
+
+
+<span class="nd">@numba</span><span class="o">.</span><span class="n">jit</span><span class="p">()</span>
+<div class="viewcode-block" id="is_inside"><a class="viewcode-back" href="../../../../apidocs/crowddynamics.core.steering.html#crowddynamics.core.steering.navigation.is_inside">[docs]</a><span class="k">def</span> <span class="nf">is_inside</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">lower</span><span class="p">,</span> <span class="n">upper</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">l</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">u</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">lower</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">upper</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">l</span> <span class="o">&lt;=</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">u</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">return</span> <span class="kc">True</span></div>
+
+
+<span class="nd">@numba</span><span class="o">.</span><span class="n">jit</span><span class="p">((</span><span class="n">i8</span><span class="p">[:,</span> <span class="p">:],</span> <span class="n">numba</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">Tuple</span><span class="p">((</span><span class="n">f8</span><span class="p">[:,</span> <span class="p">:],</span> <span class="n">f8</span><span class="p">[:,</span> <span class="p">:])),</span> <span class="n">f8</span><span class="p">[:,</span> <span class="p">:]),</span>
+           <span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nogil</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="viewcode-block" id="getdefault"><a class="viewcode-back" href="../../../../apidocs/crowddynamics.core.steering.html#crowddynamics.core.steering.navigation.getdefault">[docs]</a><span class="k">def</span> <span class="nf">getdefault</span><span class="p">(</span><span class="n">indices</span><span class="p">,</span> <span class="n">dir_map</span><span class="p">,</span> <span class="n">defaults</span><span class="p">):</span>
+    <span class="k">assert</span> <span class="n">indices</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">defaults</span><span class="o">.</span><span class="n">shape</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">defaults</span><span class="p">)</span>
+    <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">dir_map</span>
+    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">indices</span><span class="p">)):</span>
+        <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="o">=</span> <span class="n">indices</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">is_inside</span><span class="p">((</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">):</span>
+            <span class="n">out</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span>
+            <span class="n">out</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">out</span></div>
+
+
+<span class="nd">@numba</span><span class="o">.</span><span class="n">jit</span><span class="p">()</span>
+<div class="viewcode-block" id="set_target_direction"><a class="viewcode-back" href="../../../../apidocs/crowddynamics.core.steering.html#crowddynamics.core.steering.navigation.set_target_direction">[docs]</a><span class="k">def</span> <span class="nf">set_target_direction</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">indices</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">indices</span><span class="p">):</span>
+        <span class="n">array</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;target_direction&#39;</span><span class="p">][:]</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="p">:]</span></div>
+
+
+<div class="viewcode-block" id="navigation"><a class="viewcode-back" href="../../../../apidocs/crowddynamics.core.steering.html#crowddynamics.core.steering.navigation.navigation">[docs]</a><span class="k">def</span> <span class="nf">navigation</span><span class="p">(</span><span class="n">agents</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="n">mgrid</span><span class="p">,</span> <span class="n">dir_map</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Find directions for positions</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        position (numpy.ndarray): Shape (n, 2)</span>
+<span class="sd">        step (float):</span>
+<span class="sd">        dir_map (Tuple[numpy.ndarray, numpy.ndarray]):</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        numpy.ndarray:</span>
+
+<span class="sd">    References:</span>
+<span class="sd">        - https://docs.scipy.org/doc/numpy/reference/arrays.indexing.html</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Flip x and y to array index i and j</span>
+    <span class="n">indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fliplr</span><span class="p">(</span><span class="n">mgrid</span><span class="o">.</span><span class="n">indicer</span><span class="p">(</span><span class="n">agents</span><span class="p">[</span><span class="n">mask</span><span class="p">][</span><span class="s1">&#39;position&#39;</span><span class="p">]))</span>
+    <span class="n">new_direction</span> <span class="o">=</span> <span class="n">getdefault</span><span class="p">(</span><span class="n">indices</span><span class="p">,</span> <span class="n">dir_map</span><span class="p">,</span> <span class="n">agents</span><span class="p">[</span><span class="n">mask</span><span class="p">][</span><span class="s1">&#39;target_direction&#39;</span><span class="p">])</span>
+    <span class="n">set_target_direction</span><span class="p">(</span><span class="n">agents</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">agents</span><span class="p">))[</span><span class="n">mask</span><span class="p">],</span> <span class="n">new_direction</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright Jaan Tollander de Balsch.
+      Last updated on 2017-05-10.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../../',
+            VERSION:'legacy+297.gd2a5250.dirty',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

@@ -1,0 +1,773 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>crowddynamics.core.interactions package &mdash; crowddynamics legacy+297.gd2a5250.dirty documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="crowddynamics legacy+297.gd2a5250.dirty documentation" href="../index.html"/>
+        <link rel="up" title="crowddynamics.core package" href="crowddynamics.core.html"/>
+        <link rel="next" title="crowddynamics.core.interactions.tests package" href="crowddynamics.core.interactions.tests.html"/>
+        <link rel="prev" title="crowddynamics.core package" href="crowddynamics.core.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> crowddynamics
+          
+
+          
+            
+            <img src="../_static/logo.svg" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                legacy+297legacy+297.gd2a5250.dirtygd2a5250
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">General</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage.html">Usage</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Multi-Agent Simulation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../multiagent.html">Multi-Agent Simulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../interactions.html">Interactions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../motion.html">Motion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../steering.html">Steering</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Api</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="crowddynamics.html">crowddynamics package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="crowddynamics.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="crowddynamics.core.html">crowddynamics.core package</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="crowddynamics.core.html#subpackages">Subpackages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.html#module-crowddynamics.core.conftest">crowddynamics.core.conftest module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.html#module-crowddynamics.core.evacuation">crowddynamics.core.evacuation module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.html#module-crowddynamics.core.geometry">crowddynamics.core.geometry module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.html#module-crowddynamics.core.integrator">crowddynamics.core.integrator module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.html#module-crowddynamics.core.tree">crowddynamics.core.tree module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.html#module-crowddynamics.core.vector2D">crowddynamics.core.vector2D module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.html#module-crowddynamics.core">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crowddynamics.simulation.html">crowddynamics.simulation package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="crowddynamics.tests.html">crowddynamics.tests package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="crowddynamics.visualization.html">crowddynamics.visualization package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.html#module-crowddynamics.cli">crowddynamics.cli module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.html#module-crowddynamics.config">crowddynamics.config module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.html#module-crowddynamics.exceptions">crowddynamics.exceptions module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.html#module-crowddynamics.io">crowddynamics.io module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.html#module-crowddynamics.logging">crowddynamics.logging module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.html#module-crowddynamics.parse">crowddynamics.parse module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.html#module-crowddynamics.testing">crowddynamics.testing module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.html#module-crowddynamics">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../apidocs_examples/examples.html">examples package</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Research</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../quantities.html">Quantities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../phenomena.html">Phenomena</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../applications.html">Applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">References</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">crowddynamics</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="crowddynamics.html">crowddynamics package</a> &raquo;</li>
+        
+          <li><a href="crowddynamics.core.html">crowddynamics.core package</a> &raquo;</li>
+        
+      <li>crowddynamics.core.interactions package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/apidocs/crowddynamics.core.interactions.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="crowddynamics-core-interactions-package">
+<h1>crowddynamics.core.interactions package<a class="headerlink" href="#crowddynamics-core-interactions-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="crowddynamics.core.interactions.tests.html">crowddynamics.core.interactions.tests package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.core.interactions.tests.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.core.interactions.tests.html#module-crowddynamics.core.interactions.tests.test_block_list">crowddynamics.core.interactions.tests.test_block_list module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.core.interactions.tests.html#module-crowddynamics.core.interactions.tests.test_block_list_benchmark">crowddynamics.core.interactions.tests.test_block_list_benchmark module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.core.interactions.tests.html#module-crowddynamics.core.interactions.tests.test_distance">crowddynamics.core.interactions.tests.test_distance module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.core.interactions.tests.html#module-crowddynamics.core.interactions.tests.test_interactions">crowddynamics.core.interactions.tests.test_interactions module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.core.interactions.tests.html#module-crowddynamics.core.interactions.tests.test_interactions_benchmark">crowddynamics.core.interactions.tests.test_interactions_benchmark module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.core.interactions.tests.html#module-crowddynamics.core.interactions.tests.test_interactions_mt">crowddynamics.core.interactions.tests.test_interactions_mt module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.core.interactions.tests.html#module-crowddynamics.core.interactions.tests">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-crowddynamics.core.interactions.block_list">
+<span id="crowddynamics-core-interactions-block-list-module"></span><h2>crowddynamics.core.interactions.block_list module<a class="headerlink" href="#module-crowddynamics.core.interactions.block_list" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="block-list">
+<h3>Block List<a class="headerlink" href="#block-list" title="Permalink to this headline">¶</a></h3>
+<p>Since crowd simulations are only dependent on interactions with agents close by
+we can partition the space into smaller chunk in order to avoid having to loop
+with agents far a away.</p>
+<div class="figure">
+<p><img src="../_images/tikz-702a411ad82cfa8f72fe4e8bfdfd3b355d69c0f7.png" alt="% Measures
+\draw[&lt;-&gt;] (-0.1, 0) -- node[left] {$n$} ++(0, 8);
+\draw[&lt;-&gt;] (0, -0.1) -- node[below] {$m$} ++(12, 0);
+\draw[&lt;-&gt;] (-0.3, 0) -- node[left] {$c$} ++(0, 1);
+\draw[&lt;-&gt;] (0, -0.3) -- node[below] {$c$} ++(1, 0);
+% Grid
+\draw[color=gray!20] (0, 0) grid (12, 8);
+\draw[thick, &lt;-&gt;] (13, 6)
+                  -- node[left] {$y$} ++(0, -1)
+                  -- node[below] {$x$} ++(1, 0);
+\draw[] (4.5, 5.7) circle (1pt) node[below] {$\mathbf{p}_i$};
+\draw[dashed] (4.5, 5.7) circle (1);
+\draw[&lt;-&gt;] (4.5, 5.7) -- node[below] {$r$} ++(45:1);" /></p>
+<p class="caption">Example of block list partitioning</p></div><p>Block list means partitioning scheme where the bounding box of points
+<span class="math">\(\mathbf{p}_i\)</span> is partitioned into a grid of <code class="docutils literal"><span class="pre">shape</span></code> <span class="math">\(n \times m\)</span>
+with cell size of <span class="math">\(c\)</span>.</p>
+<p>Algorithm</p>
+<ol class="arabic" start="0">
+<li><p class="first">Cell size is equal to the interaction range <span class="math">\(c = r\)</span>.</p>
+</li>
+<li><p class="first">Get the indices of the block the point <span class="math">\(\mathbf{p}_i\)</span> belongs to</p>
+<div class="math">
+\[\mathbf{l}_i = \left\lfloor \frac{\mathbf{p}_i}{c} \right\rfloor, \quad
+i \in [0, N-1]\]</div>
+</li>
+<li><p class="first">Crate array <code class="docutils literal"><span class="pre">count</span></code> of counts of how many points belong to each block.</p>
+</li>
+<li><p class="first">Crate array <code class="docutils literal"><span class="pre">index_list</span></code> for indices of agents in each block.</p>
+<div class="figure">
+<p><img src="../_images/tikz-eb20ed79b8cc1f6a29d0c33501ae9c7938965e47.png" alt="\node[above] () at (0.5, 0) {$\dots$};
+\node[above] () at (5.5, 0) {$\dots$};
+\draw[&lt;-&gt;] (1, -0.1) -- node[below] {count} ++(4, 0);
+\draw[] (1, 0) -- ++(0, -0.5) node[below] {offset};
+\draw[color=gray!20] (0, 0) grid ++(6, 1);
+\node[above] () at (1.5, 0) {$i_0$};
+\node[above] () at (2.5, 0) {$i_1$};
+\node[above] () at (3.5, 0) {$i_2$};
+\node[above] () at (4.5, 0) {$i_3$};" /></p>
+</div></li>
+<li><p class="first">Crate array <code class="docutils literal"><span class="pre">offset</span></code> from cumulative sum of counts to track the starting
+index of indices in <code class="docutils literal"><span class="pre">index_list</span></code> array when querying agents in each block.</p>
+</li>
+</ol>
+<div class="section" id="iteration">
+<h4>Iteration<a class="headerlink" href="#iteration" title="Permalink to this headline">¶</a></h4>
+<p>Iterating over block list.</p>
+<dl class="class">
+<dt id="crowddynamics.core.interactions.block_list.MutableBlockList">
+<em class="property">class </em><code class="descclassname">crowddynamics.core.interactions.block_list.</code><code class="descname">MutableBlockList</code><span class="sig-paren">(</span><em>cell_size</em>, <em>default_list=&lt;class 'list'&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/core/interactions/block_list.html#MutableBlockList"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.interactions.block_list.MutableBlockList" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Mutable blocklist (or spatial grid hash) implementation.</p>
+<p>Dictionary where the key is index of a block/cell and values are a list of
+items belonging to that block/cell.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="p">{(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span> <span class="p">[</span><span class="mi">2</span><span class="p">]}</span>
+</pre></div>
+</div>
+<dl class="method">
+<dt id="crowddynamics.core.interactions.block_list.MutableBlockList.nearest">
+<code class="descname">nearest</code><span class="sig-paren">(</span><em>item</em>, <em>radius=1</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/core/interactions/block_list.html#MutableBlockList.nearest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.interactions.block_list.MutableBlockList.nearest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get values of neighbouring blocks</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>item</strong> &#8211; </li>
+<li><strong>radius</strong> (<em>int</em>) &#8211; </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">MutableSequence</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.core.interactions.block_list.block_list">
+<code class="descclassname">crowddynamics.core.interactions.block_list.</code><code class="descname">block_list</code><a class="reference internal" href="../_modules/crowddynamics/core/interactions/block_list.html#block_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.interactions.block_list.block_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Block list partitioning algorithm</p>
+<p>BlockList algorithm partitions space into squares and sorts points into
+the square they belong. This allows fast neighbourhood search because we
+only have to search current and neighbouring cells for points.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>points</strong> (<em>numpy.ndarray</em>) &#8211; Array of <span class="math">\(N\)</span> points <span class="math">\((\mathbf{p}_i \in
+\mathbb{R}^2)_{i=1,...,N}\)</span> (<code class="docutils literal"><span class="pre">shape=(size,</span> <span class="pre">2)</span></code>) to be block listed</li>
+<li><strong>cell_size</strong> (<em>float</em>) &#8211; Positive real number <span class="math">\(c &gt; 0\)</span>. Width and height of the
+rectangular mesh.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><ul class="simple">
+<li><code class="docutils literal"><span class="pre">index_list</span></code></li>
+<li><code class="docutils literal"><span class="pre">count</span></code></li>
+<li><code class="docutils literal"><span class="pre">offset</span></code></li>
+<li><code class="docutils literal"><span class="pre">shape</span></code></li>
+</ul>
+</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(numpy.ndarray, numpy.ndarray, numpy.ndarray, numpy.ndarray)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.core.interactions.block_list.get_block">
+<code class="descclassname">crowddynamics.core.interactions.block_list.</code><code class="descname">get_block</code><a class="reference internal" href="../_modules/crowddynamics/core/interactions/block_list.html#get_block"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.interactions.block_list.get_block" title="Permalink to this definition">¶</a></dt>
+<dd><p>Multidimensional indexing</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="mi">1</span><span class="o">-</span><span class="n">D</span><span class="p">:</span> <span class="p">[</span><span class="o">...</span><span class="p">]</span>
+<span class="n">dims</span><span class="p">:</span> <span class="n">n0</span>
+<span class="n">key</span><span class="p">:</span> <span class="n">x0</span>
+<span class="n">index</span><span class="p">:</span> <span class="n">x0</span>
+
+<span class="mi">2</span><span class="o">-</span><span class="n">D</span><span class="p">:</span> <span class="p">[[</span><span class="o">...</span><span class="p">],</span> <span class="p">[</span><span class="o">...</span><span class="p">]]</span>
+<span class="n">dims</span><span class="p">:</span> <span class="p">(</span><span class="n">n0</span><span class="p">,</span> <span class="n">n1</span><span class="p">)</span>
+<span class="n">key</span><span class="p">:</span> <span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">x1</span><span class="p">)</span>
+<span class="n">index</span><span class="p">:</span> <span class="n">x0</span> <span class="o">*</span> <span class="n">n1</span> <span class="o">+</span> <span class="n">x1</span>
+
+<span class="mi">3</span><span class="o">-</span><span class="n">D</span><span class="p">:</span> <span class="p">[[[</span><span class="o">...</span><span class="p">],</span> <span class="p">[</span><span class="o">...</span><span class="p">]],</span> <span class="p">[[</span><span class="o">...</span><span class="p">],</span> <span class="p">[</span><span class="o">...</span><span class="p">]]]</span>
+<span class="n">dims</span><span class="p">:</span> <span class="p">(</span><span class="n">n0</span><span class="p">,</span> <span class="n">n1</span><span class="p">,</span> <span class="n">n2</span><span class="p">)</span>
+<span class="n">key</span><span class="p">:(</span><span class="n">x0</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span>
+<span class="n">index</span><span class="p">:</span> <span class="n">x0</span> <span class="o">*</span> <span class="n">n1</span> <span class="o">*</span> <span class="n">n2</span> <span class="o">+</span> <span class="n">x1</span> <span class="o">*</span> <span class="n">n2</span> <span class="o">+</span> <span class="n">x2</span>
+      <span class="p">(</span><span class="n">x0</span> <span class="o">*</span> <span class="n">n1</span> <span class="o">+</span> <span class="n">x1</span><span class="p">)</span> <span class="o">*</span> <span class="n">n2</span> <span class="o">+</span> <span class="n">x2</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>indices</strong> (<em>numpy.ndarray | tuple</em>) &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">numpy.ndarray</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+</div>
+</div>
+<div class="section" id="module-crowddynamics.core.interactions.distance">
+<span id="crowddynamics-core-interactions-distance-module"></span><h2>crowddynamics.core.interactions.distance module<a class="headerlink" href="#module-crowddynamics.core.interactions.distance" title="Permalink to this headline">¶</a></h2>
+<p>Distance functions for potentials.</p>
+<p>Some of the functions also compute rotational moments for computing torque like</p>
+<div class="math">
+\[\mathbf{M} = \mathbf{r}_{\mathrm{moment}} \times (\mathbf{f}_{}^{soc} + \mathbf{f}_{}^{c})\]</div>
+<dl class="attribute">
+<dt id="crowddynamics.core.interactions.distance.distance_circle_line">
+<code class="descclassname">crowddynamics.core.interactions.distance.</code><code class="descname">distance_circle_line</code><a class="reference internal" href="../_modules/crowddynamics/core/interactions/distance.html#distance_circle_line"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.interactions.distance.distance_circle_line" title="Permalink to this definition">¶</a></dt>
+<dd><p>Skin-to-Skin distance between circle and line</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> (<em>numpy.ndarray</em>) &#8211; </li>
+<li><strong>r</strong> (<em>float</em>) &#8211; </li>
+<li><strong>p0</strong> (<em>numpy.ndarray</em>) &#8211; </li>
+<li><strong>p1</strong> (<em>numpy.ndarray</em>) &#8211; </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">(skin-to-skin distance, normal vector)</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(float, numpy.ndarray)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.core.interactions.distance.distance_circles">
+<code class="descclassname">crowddynamics.core.interactions.distance.</code><code class="descname">distance_circles</code><a class="reference internal" href="../_modules/crowddynamics/core/interactions/distance.html#distance_circles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.interactions.distance.distance_circles" title="Permalink to this definition">¶</a></dt>
+<dd><p>Skin-to-Skin distance <span class="math">\(h\)</span>  with normal <span class="math">\(\mathbf{\hat{n}}\)</span>
+between two circles.</p>
+<div class="math">
+\[\begin{split}h &amp;= \|\mathbf{x}_0 - \mathbf{x}_1\| - (r_0 + r_1) \\
+\mathbf{\hat{n}} &amp;= \frac{\mathbf{x}_0 - \mathbf{x}_1}{\|\mathbf{x}_0 - \mathbf{x}_1\|}\end{split}\]</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x0</strong> (<em>numpy.ndarray</em>) &#8211; </li>
+<li><strong>r0</strong> (<em>float</em>) &#8211; </li>
+<li><strong>x1</strong> (<em>numpy.ndarray</em>) &#8211; </li>
+<li><strong>r1</strong> (<em>float</em>) &#8211; </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">(skin-to-skin distance, normal vector)</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(float, numpy.ndarray)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.core.interactions.distance.distance_three_circle_line">
+<code class="descclassname">crowddynamics.core.interactions.distance.</code><code class="descname">distance_three_circle_line</code><a class="reference internal" href="../_modules/crowddynamics/core/interactions/distance.html#distance_three_circle_line"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.interactions.distance.distance_three_circle_line" title="Permalink to this definition">¶</a></dt>
+<dd><p>Skin-to-Skin distance between three circle model and line</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> (<em></em><em>(</em><em>numpy.ndarray</em><em>, </em><em>numpy.ndarray</em><em>, </em><em>numpy.ndarray</em><em>)</em><em></em>) &#8211; </li>
+<li><strong>r</strong> (<em></em><em>(</em><em>float</em><em>, </em><em>float</em><em>, </em><em>float</em><em>)</em><em></em>) &#8211; </li>
+<li><strong>p</strong> (<em>numpy.ndarray</em>) &#8211; </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">(float, numpy.ndarray, numpy.ndarray)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.core.interactions.distance.distance_three_circles">
+<code class="descclassname">crowddynamics.core.interactions.distance.</code><code class="descname">distance_three_circles</code><a class="reference internal" href="../_modules/crowddynamics/core/interactions/distance.html#distance_three_circles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.interactions.distance.distance_three_circles" title="Permalink to this definition">¶</a></dt>
+<dd><p>Skin-to-Skin distance <span class="math">\(h\)</span> with normal <span class="math">\(\mathbf{\hat{n}}\)</span> and
+rotational moments <span class="math">\(\mathbf{r}_{\mathrm{moment}_i}\)</span> between two three-circle
+models with.</p>
+<div class="math">
+\[\begin{split}X_i &amp;= \{\mathbf{x}_{torso}, \mathbf{x}_{left shoulder}, \mathbf{x}_{right shoulder}&nbsp;\} \\
+R_i &amp;= \{r_{torso}, r_{shoulder}, r_{shoulder}&nbsp;\}\end{split}\]</div>
+<div class="math">
+\[h = \min_{(\mathbf{x}_0, r_0) \in (X_0, R_0)} \min_{(\mathbf{x}_1, r_1) \in (X_1, R_1)} \left( \|\mathbf{x}_0 - \mathbf{x}_1\| - (r_0 + r_1) \right)\]</div>
+<p>With minimized values of <span class="math">\(\mathbf{x}_0\)</span>, <span class="math">\(\mathbf{x}_1\)</span>,
+<span class="math">\(r_0\)</span> and <span class="math">\(r_1\)</span> compute</p>
+<div class="math">
+\[\begin{split}\mathbf{\hat{n}} &amp;= \frac{\mathbf{x}_0 - \mathbf{x}_1}{\|\mathbf{x}_0 - \mathbf{x}_1\|} \\
+\mathbf{r}_{\mathrm{moment}_0} &amp;= \mathbf{x}_0 + r_0 \mathbf{\hat{n}} - \mathbf{x}_{\mathrm{torso}} \\
+\mathbf{r}_{\mathrm{moment}_1} &amp;= \mathbf{x}_1 - r_1 \mathbf{\hat{n}} - \mathbf{x}_{\mathrm{torso}}\end{split}\]</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x0</strong> (<em></em><em>(</em><em>numpy.ndarray</em><em>, </em><em>numpy.ndarray</em><em>, </em><em>numpy.ndarray</em><em>)</em><em></em>) &#8211; </li>
+<li><strong>r0</strong> (<em></em><em>(</em><em>float</em><em>, </em><em>float</em><em>, </em><em>float</em><em>)</em><em></em>) &#8211; </li>
+<li><strong>x1</strong> (<em></em><em>(</em><em>numpy.ndarray</em><em>, </em><em>numpy.ndarray</em><em>, </em><em>numpy.ndarray</em><em>)</em><em></em>) &#8211; </li>
+<li><strong>r1</strong> (<em></em><em>(</em><em>float</em><em>, </em><em>float</em><em>, </em><em>float</em><em>)</em><em></em>) &#8211; </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(float, numpy.ndarray, numpy.ndarray, numpy.ndarray)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-crowddynamics.core.interactions.interactions">
+<span id="crowddynamics-core-interactions-interactions-module"></span><h2>crowddynamics.core.interactions.interactions module<a class="headerlink" href="#module-crowddynamics.core.interactions.interactions" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="interactions">
+<h3>Interactions<a class="headerlink" href="#interactions" title="Permalink to this headline">¶</a></h3>
+<p>Mathematically agent-agent and agent-obstacle interactions are governed by
+summing over all agent-agent or agent-obstacle pairs. This is analogous to
+n-body problems in physics.</p>
+<p>Interactions between agents</p>
+<div class="math">
+\[\mathbf{f}_{i}^{agent-agent} =
+\sum_{j\neq i}^{} \left(\mathbf{f}_{ij}^{soc} + \mathbf{f}_{ij}^{c}\right)\]</div>
+<div class="math">
+\[M_{i}^{agent-agent} =
+\sum_{j\neq i}^{} \left(M_{ij}^{soc} + M_{ij}^{c}\right)\]</div>
+<p>Interactions between agents and obstacles</p>
+<div class="math">
+\[\mathbf{f}_{i}^{agent-obstacles} = \sum_{w}^{} \mathbf{f}_{iw}^{c}\]</div>
+<div class="math">
+\[M_{i}^{agent-obstacles} = \sum_{w}^{} M_{iw}^{c}\]</div>
+<div class="section" id="brute-force-summation">
+<h4>Brute Force Summation<a class="headerlink" href="#brute-force-summation" title="Permalink to this headline">¶</a></h4>
+<p>Number of iterations for set of <span class="math">\(N &gt; 0\)</span> agents</p>
+<div class="math">
+\[N - 1 + N - 2 + ... + 1 =  \frac{(N - 1)^2}{2} \in \mathcal{O}(N^2)\]</div>
+<p>Number of iterations for two disjoint sets of <span class="math">\(N &gt; 0\)</span> and <span class="math">\(M &gt; 0\)</span>
+agents</p>
+<div class="math">
+\[M N\]</div>
+<p>Because the computational complexity of naive brute force summation scales
+<span class="math">\(\mathcal{O}(N^2)\)</span> it is unfeasible to use for large numbers of agents.</p>
+</div>
+<div class="section" id="block-list-summation">
+<h4>Block List Summation<a class="headerlink" href="#block-list-summation" title="Permalink to this headline">¶</a></h4>
+<p>Iterations per block</p>
+<div class="math">
+\[((N_0-1)^{2} + N_0 \sum_{i=1}^{8} N_i) / 2\]</div>
+<p>Number of iterations if maximum number of agents that can be fit into a cell
+is <span class="math">\(M\)</span> is some constant.</p>
+<p>Iterations per block</p>
+<div class="math">
+\[I = \frac{(M - 1)^2}{2} + \frac{9}{2} M^{2}\]</div>
+<p>For <span class="math">\(N\)</span> agents the number of blocks <span class="math">\(N / M\)</span>.</p>
+<div class="math">
+\[I \frac{N}{M} = \frac{N}{M} \left(5 M^{2} - M + \frac{1}{2}\right) \in
+\mathcal{O}(N)\]</div>
+<dl class="function">
+<dt id="crowddynamics.core.interactions.interactions.agent_agent_block_list">
+<code class="descclassname">crowddynamics.core.interactions.interactions.</code><code class="descname">agent_agent_block_list</code><span class="sig-paren">(</span><em>agents</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/core/interactions/interactions.html#agent_agent_block_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.interactions.interactions.agent_agent_block_list" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.core.interactions.interactions.agent_agent_block_list_circular">
+<code class="descclassname">crowddynamics.core.interactions.interactions.</code><code class="descname">agent_agent_block_list_circular</code><a class="reference internal" href="../_modules/crowddynamics/core/interactions/interactions.html#agent_agent_block_list_circular"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.interactions.interactions.agent_agent_block_list_circular" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iteration over all agents using block list algorithm.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.core.interactions.interactions.agent_agent_block_list_three_circle">
+<code class="descclassname">crowddynamics.core.interactions.interactions.</code><code class="descname">agent_agent_block_list_three_circle</code><a class="reference internal" href="../_modules/crowddynamics/core/interactions/interactions.html#agent_agent_block_list_three_circle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.interactions.interactions.agent_agent_block_list_three_circle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iteration over all agents using block list algorithm.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.core.interactions.interactions.agent_agent_brute_circular">
+<code class="descclassname">crowddynamics.core.interactions.interactions.</code><code class="descname">agent_agent_brute_circular</code><a class="reference internal" href="../_modules/crowddynamics/core/interactions/interactions.html#agent_agent_brute_circular"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.interactions.interactions.agent_agent_brute_circular" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute interaction forces between set of agents using brute force.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.core.interactions.interactions.agent_agent_brute_disjoint_circular">
+<code class="descclassname">crowddynamics.core.interactions.interactions.</code><code class="descname">agent_agent_brute_disjoint_circular</code><a class="reference internal" href="../_modules/crowddynamics/core/interactions/interactions.html#agent_agent_brute_disjoint_circular"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.interactions.interactions.agent_agent_brute_disjoint_circular" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute interaction forces between two disjoint sets and of agents using
+brute force. Disjoint sets <code class="docutils literal"><span class="pre">indices_0</span> <span class="pre">∩</span> <span class="pre">indices_1</span> <span class="pre">=</span> <span class="pre">∅</span></code>.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.core.interactions.interactions.agent_agent_brute_disjoint_three_circle">
+<code class="descclassname">crowddynamics.core.interactions.interactions.</code><code class="descname">agent_agent_brute_disjoint_three_circle</code><a class="reference internal" href="../_modules/crowddynamics/core/interactions/interactions.html#agent_agent_brute_disjoint_three_circle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.interactions.interactions.agent_agent_brute_disjoint_three_circle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute interaction forces between two disjoint sets and of agents using
+brute force. Disjoint sets <code class="docutils literal"><span class="pre">indices_0</span> <span class="pre">∩</span> <span class="pre">indices_1</span> <span class="pre">=</span> <span class="pre">∅</span></code>.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.core.interactions.interactions.agent_agent_brute_three_circle">
+<code class="descclassname">crowddynamics.core.interactions.interactions.</code><code class="descname">agent_agent_brute_three_circle</code><a class="reference internal" href="../_modules/crowddynamics/core/interactions/interactions.html#agent_agent_brute_three_circle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.interactions.interactions.agent_agent_brute_three_circle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute interaction forces between set of agents using brute force.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.core.interactions.interactions.agent_agent_interaction_circle">
+<code class="descclassname">crowddynamics.core.interactions.interactions.</code><code class="descname">agent_agent_interaction_circle</code><a class="reference internal" href="../_modules/crowddynamics/core/interactions/interactions.html#agent_agent_interaction_circle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.interactions.interactions.agent_agent_interaction_circle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Interaction between two circular agents.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.core.interactions.interactions.agent_agent_interaction_three_circle">
+<code class="descclassname">crowddynamics.core.interactions.interactions.</code><code class="descname">agent_agent_interaction_three_circle</code><a class="reference internal" href="../_modules/crowddynamics/core/interactions/interactions.html#agent_agent_interaction_three_circle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.interactions.interactions.agent_agent_interaction_three_circle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Interaction between two three circle agents.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="crowddynamics.core.interactions.interactions.agent_obstacle">
+<code class="descclassname">crowddynamics.core.interactions.interactions.</code><code class="descname">agent_obstacle</code><span class="sig-paren">(</span><em>agents</em>, <em>obstacles</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/core/interactions/interactions.html#agent_obstacle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.interactions.interactions.agent_obstacle" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.core.interactions.interactions.agent_obstacle_interaction_circle">
+<code class="descclassname">crowddynamics.core.interactions.interactions.</code><code class="descname">agent_obstacle_interaction_circle</code><a class="reference internal" href="../_modules/crowddynamics/core/interactions/interactions.html#agent_obstacle_interaction_circle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.interactions.interactions.agent_obstacle_interaction_circle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Interaction between circular agent and line obstacle.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.core.interactions.interactions.agent_obstacle_interaction_three_circle">
+<code class="descclassname">crowddynamics.core.interactions.interactions.</code><code class="descname">agent_obstacle_interaction_three_circle</code><a class="reference internal" href="../_modules/crowddynamics/core/interactions/interactions.html#agent_obstacle_interaction_three_circle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.interactions.interactions.agent_obstacle_interaction_three_circle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Interaction between three circle agent and line obstacle.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.core.interactions.interactions.circular_agent_linear_wall">
+<code class="descclassname">crowddynamics.core.interactions.interactions.</code><code class="descname">circular_agent_linear_wall</code><a class="reference internal" href="../_modules/crowddynamics/core/interactions/interactions.html#circular_agent_linear_wall"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.interactions.interactions.circular_agent_linear_wall" title="Permalink to this definition">¶</a></dt>
+<dd><p>Agent wall</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.core.interactions.interactions.three_circle_agent_linear_wall">
+<code class="descclassname">crowddynamics.core.interactions.interactions.</code><code class="descname">three_circle_agent_linear_wall</code><a class="reference internal" href="../_modules/crowddynamics/core/interactions/interactions.html#three_circle_agent_linear_wall"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.interactions.interactions.three_circle_agent_linear_wall" title="Permalink to this definition">¶</a></dt>
+<dd><p>Agent wall</p>
+</dd></dl>
+
+</div>
+</div>
+</div>
+<div class="section" id="module-crowddynamics.core.interactions.interactions_mt">
+<span id="crowddynamics-core-interactions-interactions-mt-module"></span><h2>crowddynamics.core.interactions.interactions_mt module<a class="headerlink" href="#module-crowddynamics.core.interactions.interactions_mt" title="Permalink to this headline">¶</a></h2>
+<dl class="attribute">
+<dt id="crowddynamics.core.interactions.interactions_mt.agent_agent_block_list_circular">
+<code class="descclassname">crowddynamics.core.interactions.interactions_mt.</code><code class="descname">agent_agent_block_list_circular</code><a class="reference internal" href="../_modules/crowddynamics/core/interactions/interactions_mt.html#agent_agent_block_list_circular"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.interactions.interactions_mt.agent_agent_block_list_circular" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="crowddynamics.core.interactions.interactions_mt.agent_agent_block_list_multithreaded">
+<code class="descclassname">crowddynamics.core.interactions.interactions_mt.</code><code class="descname">agent_agent_block_list_multithreaded</code><span class="sig-paren">(</span><em>agents</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/core/interactions/interactions_mt.html#agent_agent_block_list_multithreaded"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.interactions.interactions_mt.agent_agent_block_list_multithreaded" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.core.interactions.interactions_mt.agent_agent_block_list_three_circle">
+<code class="descclassname">crowddynamics.core.interactions.interactions_mt.</code><code class="descname">agent_agent_block_list_three_circle</code><a class="reference internal" href="../_modules/crowddynamics/core/interactions/interactions_mt.html#agent_agent_block_list_three_circle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.interactions.interactions_mt.agent_agent_block_list_three_circle" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="crowddynamics.core.interactions.interactions_mt.flat_index">
+<code class="descclassname">crowddynamics.core.interactions.interactions_mt.</code><code class="descname">flat_index</code><span class="sig-paren">(</span><em>indices</em>, <em>shape</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/core/interactions/interactions_mt.html#flat_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.interactions.interactions_mt.flat_index" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.core.interactions.interactions_mt.get_block_flat">
+<code class="descclassname">crowddynamics.core.interactions.interactions_mt.</code><code class="descname">get_block_flat</code><a class="reference internal" href="../_modules/crowddynamics/core/interactions/interactions_mt.html#get_block_flat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.interactions.interactions_mt.get_block_flat" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.core.interactions.interactions_mt.split_by_interactions">
+<code class="descclassname">crowddynamics.core.interactions.interactions_mt.</code><code class="descname">split_by_interactions</code><a class="reference internal" href="../_modules/crowddynamics/core/interactions/interactions_mt.html#split_by_interactions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.interactions.interactions_mt.split_by_interactions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Split blocklist equally by number of interactions for multithreading</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-crowddynamics.core.interactions">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-crowddynamics.core.interactions" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="crowddynamics.core.interactions.tests.html" class="btn btn-neutral float-right" title="crowddynamics.core.interactions.tests package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="crowddynamics.core.html" class="btn btn-neutral" title="crowddynamics.core package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright Jaan Tollander de Balsch.
+      Last updated on 2017-05-10.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'legacy+297.gd2a5250.dirty',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

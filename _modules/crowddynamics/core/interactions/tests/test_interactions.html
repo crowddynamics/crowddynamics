@@ -1,0 +1,274 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>crowddynamics.core.interactions.tests.test_interactions &mdash; crowddynamics legacy+297.gd2a5250.dirty documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../../../../_static/favicon.ico"/>
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../../../../genindex.html"/>
+        <link rel="search" title="Search" href="../../../../../search.html"/>
+    <link rel="top" title="crowddynamics legacy+297.gd2a5250.dirty documentation" href="../../../../../index.html"/>
+        <link rel="up" title="Module code" href="../../../../index.html"/> 
+
+  
+  <script src="../../../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../../../index.html" class="icon icon-home"> crowddynamics
+          
+
+          
+            
+            <img src="../../../../../_static/logo.svg" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                legacy+297legacy+297.gd2a5250.dirtygd2a5250
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">General</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../usage.html">Usage</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Multi-Agent Simulation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../multiagent.html">Multi-Agent Simulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../interactions.html">Interactions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../motion.html">Motion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../steering.html">Steering</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Api</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apidocs/crowddynamics.html">crowddynamics package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apidocs_examples/examples.html">examples package</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Research</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../quantities.html">Quantities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../phenomena.html">Phenomena</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../applications.html">Applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../references.html">References</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">crowddynamics</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../../../index.html">Module code</a> &raquo;</li>
+        
+      <li>crowddynamics.core.interactions.tests.test_interactions</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for crowddynamics.core.interactions.tests.test_interactions</h1><div class="highlight"><pre>
+<span></span>
+<span class="kn">from</span> <span class="nn">crowddynamics.core.interactions.interactions</span> <span class="k">import</span> \
+    <span class="n">agent_agent_interaction_circle</span><span class="p">,</span> <span class="n">agent_agent_interaction_three_circle</span><span class="p">,</span> \
+    <span class="n">agent_agent_block_list</span>
+
+
+<div class="viewcode-block" id="test_agent_agent_interaction_circle"><a class="viewcode-back" href="../../../../../apidocs/crowddynamics.core.interactions.tests.html#crowddynamics.core.interactions.tests.test_interactions.test_agent_agent_interaction_circle">[docs]</a><span class="k">def</span> <span class="nf">test_agent_agent_interaction_circle</span><span class="p">(</span><span class="n">agents_circular</span><span class="p">):</span>
+    <span class="n">agent_agent_interaction_circle</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">agents_circular</span><span class="o">.</span><span class="n">array</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="kc">True</span></div>
+
+
+<div class="viewcode-block" id="test_agent_agent_interaction_three_circle"><a class="viewcode-back" href="../../../../../apidocs/crowddynamics.core.interactions.tests.html#crowddynamics.core.interactions.tests.test_interactions.test_agent_agent_interaction_three_circle">[docs]</a><span class="k">def</span> <span class="nf">test_agent_agent_interaction_three_circle</span><span class="p">(</span><span class="n">agents_three_circle</span><span class="p">):</span>
+    <span class="n">agent_agent_interaction_three_circle</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">agents_three_circle</span><span class="o">.</span><span class="n">array</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="kc">True</span></div>
+
+
+<div class="viewcode-block" id="test_agent_agent_block_list_circular"><a class="viewcode-back" href="../../../../../apidocs/crowddynamics.core.interactions.tests.html#crowddynamics.core.interactions.tests.test_interactions.test_agent_agent_block_list_circular">[docs]</a><span class="k">def</span> <span class="nf">test_agent_agent_block_list_circular</span><span class="p">(</span><span class="n">agents_circular</span><span class="p">):</span>
+    <span class="n">agent_agent_block_list</span><span class="p">(</span><span class="n">agents_circular</span><span class="o">.</span><span class="n">array</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="kc">True</span></div>
+
+
+<div class="viewcode-block" id="test_agent_agent_block_list_three_circle"><a class="viewcode-back" href="../../../../../apidocs/crowddynamics.core.interactions.tests.html#crowddynamics.core.interactions.tests.test_interactions.test_agent_agent_block_list_three_circle">[docs]</a><span class="k">def</span> <span class="nf">test_agent_agent_block_list_three_circle</span><span class="p">(</span><span class="n">agents_three_circle</span><span class="p">):</span>
+    <span class="n">agent_agent_block_list</span><span class="p">(</span><span class="n">agents_three_circle</span><span class="o">.</span><span class="n">array</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="kc">True</span></div>
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright Jaan Tollander de Balsch.
+      Last updated on 2017-05-10.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../../../',
+            VERSION:'legacy+297.gd2a5250.dirty',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

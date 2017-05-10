@@ -1,0 +1,461 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>crowddynamics.core.structures.agents &mdash; crowddynamics legacy+297.gd2a5250.dirty documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../../../_static/favicon.ico"/>
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../../../genindex.html"/>
+        <link rel="search" title="Search" href="../../../../search.html"/>
+    <link rel="top" title="crowddynamics legacy+297.gd2a5250.dirty documentation" href="../../../../index.html"/>
+        <link rel="up" title="Module code" href="../../../index.html"/> 
+
+  
+  <script src="../../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../../index.html" class="icon icon-home"> crowddynamics
+          
+
+          
+            
+            <img src="../../../../_static/logo.svg" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                legacy+297legacy+297.gd2a5250.dirtygd2a5250
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">General</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../usage.html">Usage</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Multi-Agent Simulation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../multiagent.html">Multi-Agent Simulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../interactions.html">Interactions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../motion.html">Motion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../steering.html">Steering</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Api</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apidocs/crowddynamics.html">crowddynamics package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apidocs_examples/examples.html">examples package</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Research</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../quantities.html">Quantities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../phenomena.html">Phenomena</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../applications.html">Applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../references.html">References</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">crowddynamics</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+        
+      <li>crowddynamics.core.structures.agents</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for crowddynamics.core.structures.agents</h1><div class="highlight"><pre>
+<span></span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Agent structure&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">numba</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">numba</span> <span class="k">import</span> <span class="n">typeof</span><span class="p">,</span> <span class="n">void</span><span class="p">,</span> <span class="n">boolean</span><span class="p">,</span> <span class="n">float64</span>
+<span class="kn">from</span> <span class="nn">numba.types</span> <span class="k">import</span> <span class="n">UniTuple</span>
+
+<span class="kn">from</span> <span class="nn">crowddynamics.core.interactions.distance</span> <span class="k">import</span> <span class="n">distance_circles</span><span class="p">,</span> \
+    <span class="n">distance_circle_line</span><span class="p">,</span> <span class="n">distance_three_circle_line</span>
+<span class="kn">from</span> <span class="nn">crowddynamics.core.interactions.distance</span> <span class="k">import</span> <span class="n">distance_three_circles</span>
+<span class="kn">from</span> <span class="nn">crowddynamics.core.structures.obstacles</span> <span class="k">import</span> <span class="n">obstacle_type_linear</span>
+<span class="kn">from</span> <span class="nn">crowddynamics.core.vector2D</span> <span class="k">import</span> <span class="n">unit_vector</span><span class="p">,</span> <span class="n">rotate270</span>
+
+<span class="n">states</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s1">&#39;active&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">bool_</span><span class="p">),</span>
+<span class="p">]</span>
+<span class="n">navigation</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s1">&#39;target&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;target_reached&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">bool_</span><span class="p">),</span>
+<span class="p">]</span>
+<span class="n">translational</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s1">&#39;mass&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;radius&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;position&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;velocity&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;target_velocity&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;target_direction&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;force&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;force_prev&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;tau_adj&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;k_soc&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;tau_0&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;mu&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;kappa&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;damping&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;std_rand_force&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">),</span>
+<span class="p">]</span>
+<span class="n">rotational</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s1">&#39;inertia_rot&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;orientation&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;angular_velocity&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;target_orientation&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;target_angular_velocity&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;torque&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;torque_prev&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;tau_rot&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;std_rand_torque&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">),</span>
+<span class="p">]</span>
+<span class="n">three_circle</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s1">&#39;r_t&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;r_s&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;r_ts&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;position_ls&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;position_rs&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+<span class="p">]</span>
+
+<span class="n">agent_type_circular</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span>
+    <span class="n">states</span> <span class="o">+</span>
+    <span class="n">navigation</span> <span class="o">+</span>
+    <span class="n">translational</span>
+<span class="p">)</span>
+<span class="n">agent_type_three_circle</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span>
+    <span class="n">states</span> <span class="o">+</span>
+    <span class="n">navigation</span> <span class="o">+</span>
+    <span class="n">translational</span> <span class="o">+</span>
+    <span class="n">rotational</span> <span class="o">+</span>
+    <span class="n">three_circle</span>
+<span class="p">)</span>
+
+
+<span class="n">AgentModelToType</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;circular&#39;</span><span class="p">:</span> <span class="n">agent_type_circular</span><span class="p">,</span>
+    <span class="s1">&#39;three_circle&#39;</span><span class="p">:</span> <span class="n">agent_type_three_circle</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="n">AgentTypeToModel</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">agent_type_circular</span><span class="p">:</span> <span class="s1">&#39;circular&#39;</span><span class="p">,</span>
+    <span class="n">agent_type_three_circle</span><span class="p">:</span> <span class="s1">&#39;three_circle&#39;</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="n">AgentModels</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">AgentModelToType</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="register_agent_model"><a class="viewcode-back" href="../../../../apidocs/crowddynamics.core.structures.html#crowddynamics.core.structures.agents.register_agent_model">[docs]</a><span class="k">def</span> <span class="nf">register_agent_model</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">dtype</span><span class="p">):</span>
+    <span class="n">AgentModelToType</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">dtype</span>
+    <span class="n">AgentTypeToModel</span><span class="p">[</span><span class="n">dtype</span><span class="p">]</span> <span class="o">=</span> <span class="n">name</span></div>
+
+
+<div class="viewcode-block" id="is_model"><a class="viewcode-back" href="../../../../apidocs/crowddynamics.core.structures.html#crowddynamics.core.structures.agents.is_model">[docs]</a><span class="k">def</span> <span class="nf">is_model</span><span class="p">(</span><span class="n">agents</span><span class="p">,</span> <span class="n">model</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Test if agent if type same type as model name</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        agents (numpy.ndarray): </span>
+<span class="sd">        model (str): </span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        bool:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="n">agents</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span> <span class="o">==</span> <span class="nb">hash</span><span class="p">(</span><span class="n">AgentModelToType</span><span class="p">[</span><span class="n">model</span><span class="p">])</span></div>
+
+
+<div class="viewcode-block" id="of_model"><a class="viewcode-back" href="../../../../apidocs/crowddynamics.core.structures.html#crowddynamics.core.structures.agents.of_model">[docs]</a><span class="k">def</span> <span class="nf">of_model</span><span class="p">(</span><span class="n">agents</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Returns the model name of agents&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">AgentTypeToModel</span><span class="p">[</span><span class="n">agents</span><span class="o">.</span><span class="n">dtype</span><span class="p">]</span></div>
+
+
+<span class="nd">@numba</span><span class="o">.</span><span class="n">jit</span><span class="p">(</span><span class="n">void</span><span class="p">(</span><span class="n">typeof</span><span class="p">(</span><span class="n">agent_type_three_circle</span><span class="p">)[:]),</span>
+           <span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nogil</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="viewcode-block" id="shoulders"><a class="viewcode-back" href="../../../../apidocs/crowddynamics.core.structures.html#crowddynamics.core.structures.agents.shoulders">[docs]</a><span class="k">def</span> <span class="nf">shoulders</span><span class="p">(</span><span class="n">agents</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Positions of the center of mass, left- and right shoulders.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        agents (ndarray):</span>
+<span class="sd">            Numpy array of datatype ``dtype=agent_type_three_circle``.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">agent</span> <span class="ow">in</span> <span class="n">agents</span><span class="p">:</span>
+        <span class="n">tangent</span> <span class="o">=</span> <span class="n">rotate270</span><span class="p">(</span><span class="n">unit_vector</span><span class="p">(</span><span class="n">agent</span><span class="p">[</span><span class="s1">&#39;orientation&#39;</span><span class="p">]))</span>
+        <span class="n">offset</span> <span class="o">=</span> <span class="n">tangent</span> <span class="o">*</span> <span class="n">agent</span><span class="p">[</span><span class="s1">&#39;r_ts&#39;</span><span class="p">]</span>
+        <span class="n">agent</span><span class="p">[</span><span class="s1">&#39;position_ls&#39;</span><span class="p">][:]</span> <span class="o">=</span> <span class="n">agent</span><span class="p">[</span><span class="s1">&#39;position&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">offset</span>
+        <span class="n">agent</span><span class="p">[</span><span class="s1">&#39;position_rs&#39;</span><span class="p">][:]</span> <span class="o">=</span> <span class="n">agent</span><span class="p">[</span><span class="s1">&#39;position&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">offset</span></div>
+
+
+<span class="nd">@numba</span><span class="o">.</span><span class="n">generated_jit</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="viewcode-block" id="reset_motion"><a class="viewcode-back" href="../../../../apidocs/crowddynamics.core.structures.html#crowddynamics.core.structures.agents.reset_motion">[docs]</a><span class="k">def</span> <span class="nf">reset_motion</span><span class="p">(</span><span class="n">agent</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_reset</span><span class="p">(</span><span class="n">agent</span><span class="p">):</span>
+        <span class="n">agent</span><span class="p">[</span><span class="s1">&#39;force&#39;</span><span class="p">][:]</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">def</span> <span class="nf">_reset2</span><span class="p">(</span><span class="n">agent</span><span class="p">):</span>
+        <span class="n">agent</span><span class="p">[</span><span class="s1">&#39;force&#39;</span><span class="p">][:]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">agent</span><span class="p">[</span><span class="s1">&#39;torque&#39;</span><span class="p">][:]</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">if</span> <span class="n">agent</span><span class="o">.</span><span class="n">dtype</span> <span class="ow">is</span> <span class="n">numba</span><span class="o">.</span><span class="n">from_dtype</span><span class="p">(</span><span class="n">agent_type_circular</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">_reset</span>
+    <span class="k">if</span> <span class="n">agent</span><span class="o">.</span><span class="n">dtype</span> <span class="ow">is</span> <span class="n">numba</span><span class="o">.</span><span class="n">from_dtype</span><span class="p">(</span><span class="n">agent_type_three_circle</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">_reset2</span></div>
+
+
+<span class="nd">@numba</span><span class="o">.</span><span class="n">jit</span><span class="p">([</span><span class="n">boolean</span><span class="p">(</span><span class="n">typeof</span><span class="p">(</span><span class="n">agent_type_circular</span><span class="p">)[:],</span> <span class="n">float64</span><span class="p">[:],</span> <span class="n">float64</span><span class="p">)],</span>
+           <span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nogil</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="viewcode-block" id="overlapping_circles"><a class="viewcode-back" href="../../../../apidocs/crowddynamics.core.structures.html#crowddynamics.core.structures.agents.overlapping_circles">[docs]</a><span class="k">def</span> <span class="nf">overlapping_circles</span><span class="p">(</span><span class="n">agents</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">r</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Test if two circles are overlapping.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        agents:</span>
+<span class="sd">        x: Position of agent that is tested</span>
+<span class="sd">        r: Radius of agent that is tested</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        bool:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">agent</span> <span class="ow">in</span> <span class="n">agents</span><span class="p">:</span>
+        <span class="n">h</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">distance_circles</span><span class="p">(</span><span class="n">agent</span><span class="p">[</span><span class="s1">&#39;position&#39;</span><span class="p">],</span> <span class="n">agent</span><span class="p">[</span><span class="s1">&#39;radius&#39;</span><span class="p">],</span> <span class="n">x</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">h</span> <span class="o">&lt;</span> <span class="mf">0.0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">return</span> <span class="kc">False</span></div>
+
+
+<span class="nd">@numba</span><span class="o">.</span><span class="n">jit</span><span class="p">([</span><span class="n">boolean</span><span class="p">(</span><span class="n">typeof</span><span class="p">(</span><span class="n">agent_type_three_circle</span><span class="p">)[:],</span>
+                    <span class="n">UniTuple</span><span class="p">(</span><span class="n">float64</span><span class="p">[:],</span> <span class="mi">3</span><span class="p">),</span> <span class="n">UniTuple</span><span class="p">(</span><span class="n">float64</span><span class="p">,</span> <span class="mi">3</span><span class="p">))],</span>
+           <span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nogil</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="viewcode-block" id="overlapping_three_circles"><a class="viewcode-back" href="../../../../apidocs/crowddynamics.core.structures.html#crowddynamics.core.structures.agents.overlapping_three_circles">[docs]</a><span class="k">def</span> <span class="nf">overlapping_three_circles</span><span class="p">(</span><span class="n">agents</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">r</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Test if two three-circle models are overlapping.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        x1: Positions of other agents</span>
+<span class="sd">        r1: Radii of other agents</span>
+<span class="sd">        x: Position of agent that is tested</span>
+<span class="sd">        r: Radius of agent that is tested</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        bool:</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">agent</span> <span class="ow">in</span> <span class="n">agents</span><span class="p">:</span>
+        <span class="n">h</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">distance_three_circles</span><span class="p">(</span>
+            <span class="p">(</span><span class="n">agent</span><span class="p">[</span><span class="s1">&#39;position&#39;</span><span class="p">],</span> <span class="n">agent</span><span class="p">[</span><span class="s1">&#39;position_ls&#39;</span><span class="p">],</span> <span class="n">agent</span><span class="p">[</span><span class="s1">&#39;position_rs&#39;</span><span class="p">]),</span>
+            <span class="p">(</span><span class="n">agent</span><span class="p">[</span><span class="s1">&#39;r_t&#39;</span><span class="p">],</span> <span class="n">agent</span><span class="p">[</span><span class="s1">&#39;r_s&#39;</span><span class="p">],</span> <span class="n">agent</span><span class="p">[</span><span class="s1">&#39;r_s&#39;</span><span class="p">]),</span>
+            <span class="n">x</span><span class="p">,</span> <span class="n">r</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">h</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">return</span> <span class="kc">False</span></div>
+
+
+<span class="nd">@numba</span><span class="o">.</span><span class="n">jit</span><span class="p">([</span><span class="n">boolean</span><span class="p">(</span><span class="n">typeof</span><span class="p">(</span><span class="n">agent_type_circular</span><span class="p">)[:],</span>
+                    <span class="n">typeof</span><span class="p">(</span><span class="n">obstacle_type_linear</span><span class="p">)[:])],</span>
+           <span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nogil</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="viewcode-block" id="overlapping_circle_line"><a class="viewcode-back" href="../../../../apidocs/crowddynamics.core.structures.html#crowddynamics.core.structures.agents.overlapping_circle_line">[docs]</a><span class="k">def</span> <span class="nf">overlapping_circle_line</span><span class="p">(</span><span class="n">agents</span><span class="p">,</span> <span class="n">obstacles</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">agent</span> <span class="ow">in</span> <span class="n">agents</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">obstacle</span> <span class="ow">in</span> <span class="n">obstacles</span><span class="p">:</span>
+            <span class="n">h</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">distance_circle_line</span><span class="p">(</span><span class="n">agent</span><span class="p">[</span><span class="s1">&#39;position&#39;</span><span class="p">],</span> <span class="n">agent</span><span class="p">[</span><span class="s1">&#39;radius&#39;</span><span class="p">],</span>
+                                        <span class="n">obstacle</span><span class="p">[</span><span class="s1">&#39;p0&#39;</span><span class="p">],</span> <span class="n">obstacle</span><span class="p">[</span><span class="s1">&#39;p1&#39;</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">h</span> <span class="o">&lt;</span> <span class="mf">0.0</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">return</span> <span class="kc">False</span></div>
+
+
+<span class="nd">@numba</span><span class="o">.</span><span class="n">jit</span><span class="p">([</span><span class="n">boolean</span><span class="p">(</span><span class="n">typeof</span><span class="p">(</span><span class="n">agent_type_three_circle</span><span class="p">)[:],</span>
+                    <span class="n">typeof</span><span class="p">(</span><span class="n">obstacle_type_linear</span><span class="p">)[:])],</span>
+           <span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nogil</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="viewcode-block" id="overlapping_three_circle_line"><a class="viewcode-back" href="../../../../apidocs/crowddynamics.core.structures.html#crowddynamics.core.structures.agents.overlapping_three_circle_line">[docs]</a><span class="k">def</span> <span class="nf">overlapping_three_circle_line</span><span class="p">(</span><span class="n">agents</span><span class="p">,</span> <span class="n">obstacles</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">agent</span> <span class="ow">in</span> <span class="n">agents</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">obstacle</span> <span class="ow">in</span> <span class="n">obstacles</span><span class="p">:</span>
+            <span class="n">h</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">distance_three_circle_line</span><span class="p">(</span>
+                <span class="p">(</span><span class="n">agent</span><span class="p">[</span><span class="s1">&#39;position&#39;</span><span class="p">],</span> <span class="n">agent</span><span class="p">[</span><span class="s1">&#39;position_ls&#39;</span><span class="p">],</span> <span class="n">agent</span><span class="p">[</span><span class="s1">&#39;position_rs&#39;</span><span class="p">]),</span>
+                <span class="p">(</span><span class="n">agent</span><span class="p">[</span><span class="s1">&#39;r_t&#39;</span><span class="p">],</span> <span class="n">agent</span><span class="p">[</span><span class="s1">&#39;r_s&#39;</span><span class="p">],</span> <span class="n">agent</span><span class="p">[</span><span class="s1">&#39;r_s&#39;</span><span class="p">]),</span>
+                <span class="n">obstacle</span><span class="p">[</span><span class="s1">&#39;p0&#39;</span><span class="p">],</span>
+                <span class="n">obstacle</span><span class="p">[</span><span class="s1">&#39;p1&#39;</span><span class="p">]</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="n">h</span> <span class="o">&lt;</span> <span class="mf">0.0</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">return</span> <span class="kc">False</span></div>
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright Jaan Tollander de Balsch.
+      Last updated on 2017-05-10.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../../',
+            VERSION:'legacy+297.gd2a5250.dirty',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

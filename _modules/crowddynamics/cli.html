@@ -1,0 +1,501 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>crowddynamics.cli &mdash; crowddynamics legacy+297.gd2a5250.dirty documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../genindex.html"/>
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="crowddynamics legacy+297.gd2a5250.dirty documentation" href="../../index.html"/>
+        <link rel="up" title="Module code" href="../index.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> crowddynamics
+          
+
+          
+            
+            <img src="../../_static/logo.svg" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                legacy+297legacy+297.gd2a5250.dirtygd2a5250
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">General</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage.html">Usage</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Multi-Agent Simulation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../multiagent.html">Multi-Agent Simulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../interactions.html">Interactions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../motion.html">Motion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../steering.html">Steering</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Api</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../apidocs/crowddynamics.html">crowddynamics package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../apidocs_examples/examples.html">examples package</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Research</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../quantities.html">Quantities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../phenomena.html">Phenomena</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../applications.html">Applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../references.html">References</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">crowddynamics</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>crowddynamics.cli</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for crowddynamics.cli</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Command-line interface for running crowddynamics.&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">pprint</span> <span class="k">import</span> <span class="n">pformat</span>
+
+<span class="kn">import</span> <span class="nn">click</span>
+<span class="kn">import</span> <span class="nn">ruamel.yaml</span> <span class="k">as</span> <span class="nn">yaml</span>
+<span class="kn">from</span> <span class="nn">configobj</span> <span class="k">import</span> <span class="n">ConfigObj</span>
+
+<span class="kn">from</span> <span class="nn">crowddynamics</span> <span class="k">import</span> <span class="n">__version__</span>
+<span class="kn">from</span> <span class="nn">crowddynamics.config</span> <span class="k">import</span> <span class="n">CROWDDYNAMICS_CFG</span><span class="p">,</span> <span class="n">CROWDDYNAMICS_CFG_SPEC</span><span class="p">,</span> \
+    <span class="n">load_config</span>
+<span class="kn">from</span> <span class="nn">crowddynamics.exceptions</span> <span class="k">import</span> <span class="n">NotACrowdDynamicsDirectory</span><span class="p">,</span> \
+    <span class="n">DirectoryIsAlreadyCrowdDynamicsDirectory</span><span class="p">,</span> \
+    <span class="n">InvalidType</span>
+<span class="kn">from</span> <span class="nn">crowddynamics.logging</span> <span class="k">import</span> <span class="n">setup_logging</span><span class="p">,</span> <span class="n">LOGLEVELS</span>
+<span class="kn">from</span> <span class="nn">crowddynamics.parse</span> <span class="k">import</span> <span class="n">parse_signature</span><span class="p">,</span> <span class="n">ArgSpec</span>
+
+<span class="n">ENVIRONMENT_YML</span> <span class="o">=</span> <span class="s1">&#39;environment.yml&#39;</span>
+
+
+<div class="viewcode-block" id="Colors"><a class="viewcode-back" href="../../apidocs/crowddynamics.html#crowddynamics.cli.Colors">[docs]</a><span class="k">class</span> <span class="nc">Colors</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Color palette for the commandline output colors&quot;&quot;&quot;</span>
+    <span class="n">NEUTRAL</span> <span class="o">=</span> <span class="s1">&#39;blue&#39;</span>
+    <span class="n">POSITIVE</span> <span class="o">=</span> <span class="s1">&#39;green&#39;</span>
+    <span class="n">NEGATIVE</span> <span class="o">=</span> <span class="s1">&#39;red&#39;</span></div>
+
+
+<span class="nd">@click</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="n">help</span><span class="o">=</span><span class="s2">&quot;CrowdDynamics </span><span class="si">{version}</span><span class="s2">. A tool for building and running &quot;</span>
+                  <span class="s2">&quot;crowd simulations.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">version</span><span class="o">=</span><span class="n">__version__</span><span class="p">))</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">version_option</span><span class="p">(</span><span class="n">__version__</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="k">pass</span>
+
+
+<span class="nd">@main</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s1">&#39;dirpath&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">startproject</span><span class="p">(</span><span class="n">dirpath</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Create new simulation project in the filesystem ::</span>
+
+<span class="sd">        &lt;name&gt;</span>
+<span class="sd">        ├── crowddynamics.cfg</span>
+<span class="sd">        ├── environment.yml</span>
+<span class="sd">        ├── ...</span>
+<span class="sd">        </span>
+<span class="sd">    - crowddynamics.cfg</span>
+<span class="sd">        Configurations and path to simulations.</span>
+<span class="sd">    - environment.yml</span>
+<span class="sd">        Conda environment to install and run simulations.</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        dirpath (str):</span>
+<span class="sd">          - ``.``: Current directory</span>
+<span class="sd">          - ``path/to/name``: Path to directory called ``name``  </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">click</span><span class="o">.</span><span class="n">secho</span><span class="p">(</span><span class="s1">&#39;Creating project: </span><span class="si">{name}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">dirpath</span><span class="p">),</span>
+                <span class="n">fg</span><span class="o">=</span><span class="n">Colors</span><span class="o">.</span><span class="n">NEUTRAL</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dirpath</span><span class="p">,</span> <span class="n">CROWDDYNAMICS_CFG</span><span class="p">)):</span>
+        <span class="n">click</span><span class="o">.</span><span class="n">secho</span><span class="p">(</span><span class="s1">&#39;Dirpath is already crowddynamics directory.&#39;</span><span class="p">,</span>
+                    <span class="n">fg</span><span class="o">=</span><span class="n">Colors</span><span class="o">.</span><span class="n">NEGATIVE</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">DirectoryIsAlreadyCrowdDynamicsDirectory</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># Project directory</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">dirpath</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">click</span><span class="o">.</span><span class="n">secho</span><span class="p">(</span><span class="s1">&#39;Created successfully&#39;</span><span class="p">,</span> <span class="n">fg</span><span class="o">=</span><span class="n">Colors</span><span class="o">.</span><span class="n">POSITIVE</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">FileExistsError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+        <span class="n">click</span><span class="o">.</span><span class="n">secho</span><span class="p">(</span><span class="s1">&#39;Creation failed&#39;</span><span class="p">,</span> <span class="n">fg</span><span class="o">=</span><span class="n">Colors</span><span class="o">.</span><span class="n">NEGATIVE</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">error</span>
+
+    <span class="c1"># crowddynamics.cfg</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">ConfigObj</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dirpath</span><span class="p">,</span> <span class="n">CROWDDYNAMICS_CFG</span><span class="p">))</span>
+    <span class="n">config</span><span class="p">[</span><span class="s1">&#39;simulations&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">config</span><span class="o">.</span><span class="n">write</span><span class="p">()</span>
+
+    <span class="c1"># environment.yml</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;channels&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;conda-forge&#39;</span><span class="p">],</span>
+            <span class="s1">&#39;dependencies&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;crowddynamics&#39;</span><span class="p">]}</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dirpath</span><span class="p">,</span> <span class="n">ENVIRONMENT_YML</span><span class="p">),</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">envfile</span><span class="p">:</span>
+        <span class="n">yaml</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">envfile</span><span class="p">,</span> <span class="n">default_flow_style</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+
+<span class="nd">@main</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">new</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Create new simulation. Must be called inside a crowddynamics directory ::</span>
+
+<span class="sd">        project</span>
+<span class="sd">        ├── crowddynamics.cfg</span>
+<span class="sd">        ├── environment.yml</span>
+<span class="sd">        ├── __init__.py</span>
+<span class="sd">        ├── &lt;name&gt;.py</span>
+<span class="sd">        ...</span>
+<span class="sd">    </span>
+<span class="sd">    - &lt;name&gt;.py</span>
+<span class="sd">        Template for making new crowd simulations.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">base</span><span class="p">,</span> <span class="n">ext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">ext</span> <span class="o">==</span> <span class="s1">&#39;.py&#39;</span><span class="p">:</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">base</span>
+    <span class="n">filename</span> <span class="o">=</span> <span class="n">name</span> <span class="o">+</span> <span class="s1">&#39;.py&#39;</span>
+
+    <span class="n">click</span><span class="o">.</span><span class="n">secho</span><span class="p">(</span><span class="s1">&#39;Creating simulation: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">),</span> <span class="n">fg</span><span class="o">=</span><span class="n">Colors</span><span class="o">.</span><span class="n">NEUTRAL</span><span class="p">)</span>
+
+    <span class="c1"># Check if we are inside crowddynamics project directory</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">CROWDDYNAMICS_CFG</span><span class="p">):</span>
+        <span class="n">click</span><span class="o">.</span><span class="n">secho</span><span class="p">(</span><span class="s1">&#39;Current directory is not a simulation directory &#39;</span>
+                    <span class="s1">&#39;Run &quot;startproject&quot; to initialise simulation.&#39;</span><span class="p">,</span>
+                    <span class="n">fg</span><span class="o">=</span><span class="n">Colors</span><span class="o">.</span><span class="n">NEGATIVE</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">NotACrowdDynamicsDirectory</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="s1">&#39;__init__.py&#39;</span><span class="p">):</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;__init__.py&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+            <span class="n">fp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">filename</span><span class="p">),</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+            <span class="n">fp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="n">click</span><span class="o">.</span><span class="n">secho</span><span class="p">(</span><span class="s1">&#39;Created successfully&#39;</span><span class="p">,</span> <span class="n">fg</span><span class="o">=</span><span class="n">Colors</span><span class="o">.</span><span class="n">POSITIVE</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">click</span><span class="o">.</span><span class="n">secho</span><span class="p">(</span><span class="s1">&#39;Creation failed.&#39;</span><span class="p">,</span> <span class="n">fg</span><span class="o">=</span><span class="n">Colors</span><span class="o">.</span><span class="n">NEGATIVE</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">FileExistsError</span>
+
+    <span class="c1"># Append simulation metadata to simulations sections in crowddynamics.cfg</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">load_config</span><span class="p">(</span><span class="n">CROWDDYNAMICS_CFG</span><span class="p">,</span> <span class="n">configspec</span><span class="o">=</span><span class="n">CROWDDYNAMICS_CFG_SPEC</span><span class="p">)</span>
+    <span class="c1"># TODO: comply with configspec</span>
+    <span class="c1"># cfg = {name: {&#39;filename&#39;: filename}}</span>
+    <span class="c1"># try:</span>
+    <span class="c1">#     config[&#39;simulations&#39;].update(cfg)</span>
+    <span class="c1"># except KeyError:</span>
+    <span class="c1">#     config[&#39;simulations&#39;] = cfg</span>
+    <span class="c1"># config.write()</span>
+
+
+<span class="nd">@main</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s1">&#39;list&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">list_of_simulations</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;List of available simulations&quot;&quot;&quot;</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">load_config</span><span class="p">(</span><span class="n">CROWDDYNAMICS_CFG</span><span class="p">,</span> <span class="n">configspec</span><span class="o">=</span><span class="n">CROWDDYNAMICS_CFG_SPEC</span><span class="p">)</span>
+    <span class="n">click</span><span class="o">.</span><span class="n">secho</span><span class="p">(</span><span class="s1">&#39;List of available simulations:&#39;</span><span class="p">,</span> <span class="n">fg</span><span class="o">=</span><span class="n">Colors</span><span class="o">.</span><span class="n">NEUTRAL</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">config</span> <span class="ow">in</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;simulations&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">click</span><span class="o">.</span><span class="n">secho</span><span class="p">(</span><span class="s1">&#39;- &#39;</span> <span class="o">+</span> <span class="n">name</span> <span class="o">+</span> <span class="s1">&#39;: &#39;</span> <span class="o">+</span> <span class="n">pformat</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;functions&#39;</span><span class="p">]),</span>
+                    <span class="n">fg</span><span class="o">=</span><span class="n">Colors</span><span class="o">.</span><span class="n">POSITIVE</span><span class="p">)</span>
+
+
+<span class="nd">@main</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="n">chain</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;--loglevel&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">click</span><span class="o">.</span><span class="n">Choice</span><span class="p">(</span><span class="n">LOGLEVELS</span><span class="p">),</span>
+              <span class="n">default</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">,</span>
+              <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Choices for setting logging level.&#39;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;--num&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+              <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Number of simulations to run.&#39;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;--maxiter&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+              <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Maximum number of iterations&#39;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;--timeout&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+              <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Time limit for the simulation.&#39;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;--parallel&#39;</span><span class="p">,</span> <span class="n">is_flag</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+              <span class="n">help</span><span class="o">=</span><span class="s1">&#39;If parallel flag is set simulations will be run in &#39;</span>
+                   <span class="s1">&#39;multiple processes.&#39;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;--profile&#39;</span><span class="p">,</span> <span class="n">is_flag</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+              <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Flag whether to profile the simulation.&#39;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">pass_context</span>
+<span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">loglevel</span><span class="p">,</span> <span class="n">num</span><span class="p">,</span> <span class="n">maxiter</span><span class="p">,</span> <span class="n">timeout</span><span class="p">,</span> <span class="n">parallel</span><span class="p">,</span> <span class="n">profile</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Run simulation from the command-line.&quot;&quot;&quot;</span>
+    <span class="n">setup_logging</span><span class="p">(</span><span class="n">loglevel</span><span class="p">)</span>
+
+    <span class="c1"># Pass the options into the context</span>
+    <span class="n">context</span><span class="o">.</span><span class="n">obj</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">num</span><span class="o">=</span><span class="n">num</span><span class="p">,</span> <span class="n">maxiter</span><span class="o">=</span><span class="n">maxiter</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">,</span> <span class="n">profile</span><span class="o">=</span><span class="n">profile</span><span class="p">,</span>
+        <span class="n">parallel</span><span class="o">=</span><span class="n">parallel</span>
+    <span class="p">)</span>
+
+
+<div class="viewcode-block" id="mkoption"><a class="viewcode-back" href="../../apidocs/crowddynamics.html#crowddynamics.cli.mkoption">[docs]</a><span class="k">def</span> <span class="nf">mkoption</span><span class="p">(</span><span class="n">spec</span><span class="p">:</span> <span class="n">ArgSpec</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">click</span><span class="o">.</span><span class="n">Option</span><span class="p">:</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="o">.</span><span class="n">default</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">click</span><span class="o">.</span><span class="n">Option</span><span class="p">((</span><span class="s1">&#39;--&#39;</span> <span class="o">+</span> <span class="n">spec</span><span class="o">.</span><span class="n">name</span><span class="p">,),</span>
+                            <span class="n">default</span><span class="o">=</span><span class="n">spec</span><span class="o">.</span><span class="n">default</span><span class="p">,</span>
+                            <span class="nb">type</span><span class="o">=</span><span class="n">click</span><span class="o">.</span><span class="n">IntRange</span><span class="p">(</span><span class="n">spec</span><span class="o">.</span><span class="n">annotation</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                                                <span class="n">spec</span><span class="o">.</span><span class="n">annotation</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="o">.</span><span class="n">default</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">click</span><span class="o">.</span><span class="n">Option</span><span class="p">((</span><span class="s1">&#39;--&#39;</span> <span class="o">+</span> <span class="n">spec</span><span class="o">.</span><span class="n">name</span><span class="p">,),</span>
+                            <span class="n">default</span><span class="o">=</span><span class="n">spec</span><span class="o">.</span><span class="n">default</span><span class="p">,</span>
+                            <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="o">.</span><span class="n">default</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">click</span><span class="o">.</span><span class="n">Option</span><span class="p">((</span><span class="s1">&#39;--&#39;</span> <span class="o">+</span> <span class="n">spec</span><span class="o">.</span><span class="n">name</span><span class="p">,),</span>
+                            <span class="n">default</span><span class="o">=</span><span class="n">spec</span><span class="o">.</span><span class="n">default</span><span class="p">,</span>
+                            <span class="n">is_flag</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="o">.</span><span class="n">default</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">click</span><span class="o">.</span><span class="n">Option</span><span class="p">((</span><span class="s1">&#39;--&#39;</span> <span class="o">+</span> <span class="n">spec</span><span class="o">.</span><span class="n">name</span><span class="p">,),</span>
+                            <span class="n">default</span><span class="o">=</span><span class="n">spec</span><span class="o">.</span><span class="n">default</span><span class="p">,</span>
+                            <span class="nb">type</span><span class="o">=</span><span class="n">click</span><span class="o">.</span><span class="n">Choice</span><span class="p">(</span><span class="n">spec</span><span class="o">.</span><span class="n">annotation</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">InvalidType</span><span class="p">(</span>
+            <span class="s1">&#39;Type: &quot;</span><span class="si">{}</span><span class="s1">&quot; for spec.default is not supported&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">spec</span><span class="o">.</span><span class="n">default</span><span class="p">)))</span></div>
+
+
+<div class="viewcode-block" id="mk_run_simulation"><a class="viewcode-back" href="../../apidocs/crowddynamics.html#crowddynamics.cli.mk_run_simulation">[docs]</a><span class="k">def</span> <span class="nf">mk_run_simulation</span><span class="p">(</span><span class="n">simulation</span><span class="p">):</span>
+    <span class="nd">@click</span><span class="o">.</span><span class="n">pass_context</span>
+    <span class="k">def</span> <span class="nf">run_simulation</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;&quot;Callback function that is called when the command is executed.&quot;&quot;&quot;</span>
+        <span class="n">num</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">obj</span><span class="p">[</span><span class="s1">&#39;num&#39;</span><span class="p">]</span>
+        <span class="n">maxiter</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">obj</span><span class="p">[</span><span class="s1">&#39;maxiter&#39;</span><span class="p">]</span>
+
+        <span class="c1"># Initialise the ``num`` simulations</span>
+        <span class="c1"># simulations = []</span>
+        <span class="c1"># for _ in range(num):</span>
+        <span class="c1">#     simu = simulation()</span>
+        <span class="c1">#     simu.set(*args, **kwargs)</span>
+        <span class="c1">#     simulations.append(simu)</span>
+
+        <span class="c1"># Run options from the context</span>
+        <span class="c1"># if num &gt; 1 and context.obj[&#39;parallel&#39;]:</span>
+        <span class="c1">#     processes = run_parallel(*simulations, maxiter)</span>
+        <span class="c1">#     for process in processes:</span>
+        <span class="c1">#         pass</span>
+        <span class="c1"># else:</span>
+        <span class="c1">#     # run_sequentially(*simulations, maxiter)</span>
+        <span class="c1">#     pass</span>
+    <span class="k">return</span> <span class="n">run_simulation</span></div>
+
+
+<div class="viewcode-block" id="mkcommand"><a class="viewcode-back" href="../../apidocs/crowddynamics.html#crowddynamics.cli.mkcommand">[docs]</a><span class="k">def</span> <span class="nf">mkcommand</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">simulation</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Make command</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        name (str):</span>
+<span class="sd">        simulation (MultiAgentSimulation):</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        click.Command:</span>
+
+<span class="sd">    Todo:</span>
+<span class="sd">        - make lazy</span>
+<span class="sd">        - run sequentially / parallel</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Make new command for running the simulation.</span>
+    <span class="n">command</span> <span class="o">=</span> <span class="n">click</span><span class="o">.</span><span class="n">Command</span><span class="p">(</span><span class="n">name</span><span class="p">,</span>
+                            <span class="n">callback</span><span class="o">=</span><span class="n">mk_run_simulation</span><span class="p">(</span><span class="n">simulation</span><span class="p">),</span>
+                            <span class="n">help</span><span class="o">=</span><span class="n">simulation</span><span class="o">.</span><span class="vm">__doc__</span><span class="p">)</span>
+
+    <span class="c1"># Add the command into run group</span>
+    <span class="n">run</span><span class="o">.</span><span class="n">add_command</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+
+    <span class="c1"># Add options for setting up the simulation</span>
+    <span class="k">for</span> <span class="n">spec</span> <span class="ow">in</span> <span class="n">parse_signature</span><span class="p">(</span><span class="n">simulation</span><span class="o">.</span><span class="n">set</span><span class="p">):</span>
+        <span class="n">command</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mkoption</span><span class="p">(</span><span class="n">spec</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">command</span></div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright Jaan Tollander de Balsch.
+      Last updated on 2017-05-10.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'legacy+297.gd2a5250.dirty',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

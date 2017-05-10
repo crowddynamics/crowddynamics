@@ -1,0 +1,517 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Steering &mdash; crowddynamics legacy+297.gd2a5250.dirty documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="crowddynamics legacy+297.gd2a5250.dirty documentation" href="index.html"/>
+        <link rel="next" title="crowddynamics package" href="apidocs/crowddynamics.html"/>
+        <link rel="prev" title="Motion" href="motion.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> crowddynamics
+          
+
+          
+            
+            <img src="_static/logo.svg" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                legacy+297legacy+297.gd2a5250.dirtygd2a5250
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">General</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Multi-Agent Simulation</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="multiagent.html">Multi-Agent Simulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interactions.html">Interactions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="motion.html">Motion</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Steering</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#navigation">Navigation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#orientation">Orientation</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Api</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="apidocs/crowddynamics.html">crowddynamics package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="apidocs_examples/examples.html">examples package</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Research</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="quantities.html">Quantities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="phenomena.html">Phenomena</a></li>
+<li class="toctree-l1"><a class="reference internal" href="applications.html">Applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="references.html">References</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">crowddynamics</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Steering</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/steering.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="steering">
+<h1>Steering<a class="headerlink" href="#steering" title="Permalink to this headline">¶</a></h1>
+<table border="1" class="docutils" id="id5">
+<caption><span class="caption-text">Navigation Algorithms</span><a class="headerlink" href="#id5" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col width="33%" />
+<col width="33%" />
+<col width="33%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Algorithm</th>
+<th class="head">Type</th>
+<th class="head">Source</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Shortest Path</td>
+<td>Discrete</td>
+<td><a class="reference internal" href="references.html#kretz2011a" id="id1">[Kretz2011a]</a>, <a class="reference internal" href="references.html#cristiani2015b" id="id2">[Cristiani2015b]</a></td>
+</tr>
+<tr class="row-odd"><td>Obstacle Handling</td>
+<td>Discrete</td>
+<td><a class="reference internal" href="references.html#cristiani2015b" id="id3">[Cristiani2015b]</a></td>
+</tr>
+<tr class="row-even"><td>Herding</td>
+<td>Continuous</td>
+<td><a class="reference internal" href="references.html#helbing2000a" id="id4">[Helbing2000a]</a></td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="navigation">
+<h2>Navigation<a class="headerlink" href="#navigation" title="Permalink to this headline">¶</a></h2>
+<p>Navigation aka path-planing algorithms computes target direction
+<span class="math">\(\mathbf{\hat{e}_0}\)</span> for each agent. Target direction accounts for agents
+desire to move towards some direction.</p>
+<p>Navigation algorithms can be combined. For examples <cite>static potential</cite> is
+combination of <cite>shortest path</cite> and <cite>obstacle handling</cite>.</p>
+</div>
+<div class="figure" id="id6">
+<a class="reference external image-reference" href="_images/vector_field.png"><img alt="Vector Field" src="_images/vector_field.png" /></a>
+<p class="caption"><span class="caption-text"><em>Example of vector field created by static potential which combines obstacle
+handling and shortest path algorithms</em></span></p>
+</div>
+<dl class="class">
+<dt>
+<em class="property">class </em><code class="descclassname">crowddynamics.core.steering.navigation.</code><code class="descname">static_potential</code><a class="reference internal" href="_modules/crowddynamics/core/steering/navigation.html#static_potential"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Navigation algorithm that uses combines <cite>shortest path</cite> and
+<cite>obstacle handling</cite> into single navigation mesh that guides agents towards
+targets so that they don&#8217;t willingly collide with obstacles (they can be
+pushed towards obstacles by other agents).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>step</strong> (<em>float</em>) &#8211; </li>
+<li><strong>domain</strong> (<em>Polygon</em>) &#8211; </li>
+<li><strong>targets</strong> (<em>LineString</em><em>, </em><em>optional</em>) &#8211; </li>
+<li><strong>obstacles</strong> (<em>LineString</em><em>, </em><em>optional</em>) &#8211; </li>
+<li><strong>strength</strong> (<em>float</em>) &#8211; </li>
+<li><strong>radius</strong> (<em>float</em>) &#8211; </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">Tuple[<a class="reference internal" href="apidocs/crowddynamics.core.steering.html#crowddynamics.core.steering.quickest_path.MeshGrid" title="crowddynamics.core.steering.quickest_path.MeshGrid">MeshGrid</a>, DirectionMap]</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<code class="descclassname">crowddynamics.core.steering.quickest_path.</code><code class="descname">distance_map</code><span class="sig-paren">(</span><em>mgrid: crowddynamics.core.steering.quickest_path.MeshGrid, targets: shapely.geometry.base.BaseGeometry, obstacles: typing.Union[shapely.geometry.base.BaseGeometry, NoneType]</em><span class="sig-paren">)</span> &#x2192; numpy.ma.core.MaskedArray<a class="reference internal" href="_modules/crowddynamics/core/steering/quickest_path.html#distance_map"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Distance map <span class="math">\(S(\mathbf{x})\)</span> is obtained by solving <em>Eikonal equation</em>
+(Continuos shortest path problem) using fast marching <em>Fast Marching Method
+(FMM)</em>.</p>
+<div class="math">
+\[\left \| \nabla S(\mathbf{x}) \right \| = \frac{1}{f(\mathbf{x})}, \quad \mathbf{x} \in \Omega\]</div>
+<p>where</p>
+<ul class="simple">
+<li>Function <span class="math">\(f : \bar{\Omega} \mapsto (0, +\infty)\)</span> is the speed of
+travel at <span class="math">\(\mathbf{x}\)</span></li>
+</ul>
+<p>Boundary conditions for the distance map</p>
+<div class="math">
+\[\begin{split}\begin{cases}
+S(\mathbf{x}) = 0, &amp; \mathbf{x} \in \mathcal{E} \\
+S(\mathbf{x}) \to \infty, &amp; \mathbf{x} \in \mathcal{O}
+\end{cases}\end{split}\]</div>
+<p>Initial values for speed</p>
+<div class="math">
+\[\begin{split}\begin{cases}
+f(\mathbf{x}) = 1, &amp; \mathbf{x} \in \Omega \setminus \mathcal{O} \\
+f(\mathbf{x}) \to 0, &amp; \mathbf{x} \in \mathcal{O}
+\end{cases}\end{split}\]</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>mgrid</strong> (<a class="reference internal" href="apidocs/crowddynamics.core.steering.html#crowddynamics.core.steering.quickest_path.MeshGrid" title="crowddynamics.core.steering.quickest_path.MeshGrid"><em>MeshGrid</em></a>) &#8211; </li>
+<li><strong>obstacles</strong> (<em>BaseGeometry</em><em>, </em><em>optional</em>) &#8211; Impassable regions <span class="math">\(\mathcal{O}\)</span> in the domain.</li>
+<li><strong>targets</strong> (<em>BaseGeometry</em><em>, </em><em>optional</em>) &#8211; Target regions <span class="math">\(\mathcal{E}\)</span> in the domain.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Distance map</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy.ma.MaskedArray</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<code class="descclassname">crowddynamics.core.steering.quickest_path.</code><code class="descname">direction_map</code><span class="sig-paren">(</span><em>dmap: numpy.ma.core.MaskedArray</em><span class="sig-paren">)</span> &#x2192; typing.Tuple[numpy.ma.core.MaskedArray, numpy.ma.core.MaskedArray]<a class="reference internal" href="_modules/crowddynamics/core/steering/quickest_path.html#direction_map"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Computes normalized gradient of distance map. Not defined when length of
+the gradient is zero.</p>
+<div class="math">
+\[\hat{\mathbf{e}}_{S} = -\frac{\nabla S(\mathbf{x})}{\| \nabla S(\mathbf{x}) \|}\]</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>dmap</strong> (<em>numpy.ndarray</em>) &#8211; Distance map.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Direction map.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">(numpy.ndarray, numpy.ndarray)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<code class="descclassname">crowddynamics.core.steering.obstacle_handling.</code><code class="descname">obstacle_handling</code><span class="sig-paren">(</span><em>dmap_obs</em>, <em>dir_map_obs</em>, <em>dir_map_targets</em>, <em>radius</em>, <em>strength</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crowddynamics/core/steering/obstacle_handling.html#obstacle_handling"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Function that merges two direction maps together. Let distance map from
+obstacles be <span class="math">\(\Phi(\mathbf{x})\)</span> and <span class="math">\(\lambda(x)\)</span>
+be any decreasing function <span class="math">\(\frac{\partial}{\partial\Phi}\lambda(x) &lt; 0\)</span> of
+distance from obstacles such that</p>
+<div class="math">
+\[\begin{split}\lambda(\Phi) &amp;=
+\begin{cases}
+1 &amp; \Phi = 0 \\
+0 &amp; \Phi &gt; M &gt; 0
+\end{cases}\end{split}\]</div>
+<p>Take weighted average between the direction from the obstacles and the
+direction from the target using <span class="math">\(p\)</span> using the decreasing function
+defined above.</p>
+<div class="math">
+\[\begin{split}p &amp;= \lambda(\Phi(\mathbf{x})) \\
+\hat{\mathbf{e}}_{out} &amp;= \mathcal{N}\big(p \hat{\mathbf{e}}_{obstacle} +
+(1 - p) \hat{\mathbf{e}}_{target}\big)\end{split}\]</div>
+<p>Numerically this algorithm uses exponential function as <span class="math">\(\lambda\)</span></p>
+<div class="math">
+\[c^{\frac{x}{r}}\]</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>dmap_obs</strong> &#8211; </li>
+<li><strong>dir_map_obs</strong> &#8211; </li>
+<li><strong>dir_map_targets</strong> &#8211; </li>
+<li><strong>radius</strong> (<em>float</em>) &#8211; Radius</li>
+<li><strong>strength</strong> (<em>float</em>) &#8211; Value between (0, 1). Value denoting the strength of dir_map1 at
+distance of radius.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">Tuple[numpy.ndarray, numpy.ndarray]</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt>
+<em class="property">class </em><code class="descclassname">crowddynamics.core.steering.functions.</code><code class="descname">weighted_average</code><a class="reference internal" href="_modules/crowddynamics/core/steering/functions.html#weighted_average"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Weighted average of two (unit)vectors</p>
+<div class="math">
+\[\mathbf{\hat{e}}_{out} =
+\mathcal{N} \big(p \mathbf{\hat{e}_{0}} + (1 - p) \mathbf{\hat{e}_{1}} \big)\]</div>
+<p>where</p>
+<ul class="simple">
+<li><span class="math">\(\mathcal{N}(\mathbf{v}) = \frac{\mathbf{v}}{\|\mathbf{v}\|}\)</span> is the
+normalization of the vector</li>
+</ul>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>e0</strong> (<em>numpy.ndarray</em>) &#8211; Unit vector <span class="math">\(\mathbf{\hat{e}_{0}}\)</span></li>
+<li><strong>e1</strong> (<em>numpy.ndarray</em>) &#8211; Unit vector <span class="math">\(\mathbf{\hat{e}_{1}}\)</span></li>
+<li><strong>p</strong> (<em>float</em>) &#8211; Weight between <span class="math">\(p \in [0, 1]\)</span></li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy.ndarray</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt>
+<em class="property">class </em><code class="descclassname">crowddynamics.core.steering.herding.</code><code class="descname">herding</code><a class="reference internal" href="_modules/crowddynamics/core/steering/herding.html#herding"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Herding effect. Computed from the average directions of neighbouring
+agents.</p>
+<div class="math">
+\[\mathbf{\hat{e}_{herding}} =
+\frac{\sum_{j \in Neigh} \mathbf{\hat{e}}_j}{N_{neigh}}\]</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>e0</strong> (<em>numpy.ndarray</em>) &#8211; Agents desired direction</li>
+<li><strong>e0_neigh</strong> (<em>numpy.ndarray</em>) &#8211; Directions of the neighbouring agents</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">New direction vector <span class="math">\(\mathbf{\hat{e}_{herding}}\)</span></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy.ndarray</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<div class="section" id="orientation">
+<h2>Orientation<a class="headerlink" href="#orientation" title="Permalink to this headline">¶</a></h2>
+<p>Target orientation <span class="math">\(\varphi_{0}\)</span> finding algorithms.</p>
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="apidocs/crowddynamics.html" class="btn btn-neutral float-right" title="crowddynamics package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="motion.html" class="btn btn-neutral" title="Motion" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright Jaan Tollander de Balsch.
+      Last updated on 2017-05-10.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'legacy+297.gd2a5250.dirty',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

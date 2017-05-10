@@ -1,0 +1,374 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>crowddynamics.core.geometry &mdash; crowddynamics legacy+297.gd2a5250.dirty documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../../genindex.html"/>
+        <link rel="search" title="Search" href="../../../search.html"/>
+    <link rel="top" title="crowddynamics legacy+297.gd2a5250.dirty documentation" href="../../../index.html"/>
+        <link rel="up" title="Module code" href="../../index.html"/> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> crowddynamics
+          
+
+          
+            
+            <img src="../../../_static/logo.svg" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                legacy+297legacy+297.gd2a5250.dirtygd2a5250
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">General</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Usage</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Multi-Agent Simulation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../multiagent.html">Multi-Agent Simulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../interactions.html">Interactions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../motion.html">Motion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../steering.html">Steering</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Api</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../apidocs/crowddynamics.html">crowddynamics package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../apidocs_examples/examples.html">examples package</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Research</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../quantities.html">Quantities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../phenomena.html">Phenomena</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../applications.html">Applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../references.html">References</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">crowddynamics</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>crowddynamics.core.geometry</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for crowddynamics.core.geometry</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Functions for manipulating Shapely geometry objects</span>
+
+<span class="sd">References:</span>
+<span class="sd">    - http://toblerity.org/shapely/manual.html</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">Iterable</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="k">import</span> <span class="n">reduce</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="k">import</span> <span class="n">chain</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">Callable</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">skimage.draw</span>
+<span class="kn">from</span> <span class="nn">loggingtools</span> <span class="k">import</span> <span class="n">log_with</span>
+<span class="kn">from</span> <span class="nn">matplotlib.path</span> <span class="k">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">shapely</span> <span class="k">import</span> <span class="n">speedups</span>
+<span class="kn">from</span> <span class="nn">shapely.geometry</span> <span class="k">import</span> <span class="n">Polygon</span><span class="p">,</span> <span class="n">LineString</span><span class="p">,</span> <span class="n">Point</span>
+<span class="kn">from</span> <span class="nn">shapely.geometry.base</span> <span class="k">import</span> <span class="n">BaseGeometry</span><span class="p">,</span> <span class="n">BaseMultipartGeometry</span>
+
+<span class="kn">from</span> <span class="nn">crowddynamics.core.structures.obstacles</span> <span class="k">import</span> <span class="n">obstacle_type_linear</span>
+<span class="kn">from</span> <span class="nn">crowddynamics.exceptions</span> <span class="k">import</span> <span class="n">InvalidType</span><span class="p">,</span> <span class="n">InvalidValue</span>
+
+<span class="k">if</span> <span class="n">speedups</span><span class="o">.</span><span class="n">available</span><span class="p">:</span>
+    <span class="n">speedups</span><span class="o">.</span><span class="n">enable</span><span class="p">()</span>
+
+
+<span class="n">PointPair</span> <span class="o">=</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span>
+<span class="n">LineSegment</span> <span class="o">=</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">PointPair</span><span class="p">,</span> <span class="n">PointPair</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="geom_to_linesegment"><a class="viewcode-back" href="../../../apidocs/crowddynamics.core.html#crowddynamics.core.geometry.geom_to_linesegment">[docs]</a><span class="k">def</span> <span class="nf">geom_to_linesegment</span><span class="p">(</span><span class="n">geom</span><span class="p">:</span> <span class="n">BaseGeometry</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="n">LineSegment</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;Converts shapes to point pairs.</span>
+
+<span class="sd">    &gt;&gt;&gt; ls = LineString([(1, 2), (3, 4)])</span>
+<span class="sd">    &gt;&gt;&gt; list(geom_to_linesegment(ls))</span>
+<span class="sd">    [((1.0, 2.0), (3.0, 4.0))]</span>
+<span class="sd">    &gt;&gt;&gt; poly = Polygon([(5, 6), (7, 8), (9, 10)])</span>
+<span class="sd">    &gt;&gt;&gt; list(geom_to_linesegment(poly))</span>
+<span class="sd">    [((5.0, 6.0), (7.0, 8.0)),</span>
+<span class="sd">     ((7.0, 8.0), (9.0, 10.0)),</span>
+<span class="sd">     ((9.0, 10.0), (5.0, 6.0))]</span>
+<span class="sd">    &gt;&gt;&gt; list(geom_to_linesegment(ls | poly))</span>
+<span class="sd">    [((1.0, 2.0), (3.0, 4.0)), </span>
+<span class="sd">     ((5.0, 6.0), (7.0, 8.0)), </span>
+<span class="sd">     ((7.0, 8.0), (9.0, 10.0)), </span>
+<span class="sd">     ((9.0, 10.0), (5.0, 6.0))]</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        geom (BaseGeometry): BaseGeometry type.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Iterable[LineSegment]: Iterable of linesegments </span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">geom</span><span class="p">,</span> <span class="n">Point</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">iter</span><span class="p">(())</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">geom</span><span class="p">,</span> <span class="n">LineString</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">zip</span><span class="p">(</span><span class="n">geom</span><span class="o">.</span><span class="n">coords</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">geom</span><span class="o">.</span><span class="n">coords</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">geom</span><span class="p">,</span> <span class="n">Polygon</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">zip</span><span class="p">(</span><span class="n">geom</span><span class="o">.</span><span class="n">exterior</span><span class="o">.</span><span class="n">coords</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">geom</span><span class="o">.</span><span class="n">exterior</span><span class="o">.</span><span class="n">coords</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">geom</span><span class="p">,</span> <span class="n">BaseMultipartGeometry</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">chain</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">geom_to_linesegment</span><span class="p">,</span> <span class="n">geom</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Argument is not subclass of </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">BaseGeometry</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="geom_to_linear_obstacles"><a class="viewcode-back" href="../../../apidocs/crowddynamics.core.html#crowddynamics.core.geometry.geom_to_linear_obstacles">[docs]</a><span class="k">def</span> <span class="nf">geom_to_linear_obstacles</span><span class="p">(</span><span class="n">geom</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Converts shape(s) to array of linear obstacles.&quot;&quot;&quot;</span>
+    <span class="n">segments</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">geom_to_linesegment</span><span class="p">(</span><span class="n">geom</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">segments</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">obstacle_type_linear</span><span class="p">)</span></div>
+
+
+<span class="nd">@log_with</span><span class="p">(</span><span class="n">arguments</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">timed</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="viewcode-block" id="draw_geom"><a class="viewcode-back" href="../../../apidocs/crowddynamics.core.html#crowddynamics.core.geometry.draw_geom">[docs]</a><span class="k">def</span> <span class="nf">draw_geom</span><span class="p">(</span><span class="n">geom</span><span class="p">:</span> <span class="n">BaseGeometry</span><span class="p">,</span>
+              <span class="n">grid</span><span class="p">,</span>
+              <span class="n">indicer</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span>
+              <span class="n">value</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Draw geom to grid&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">geom</span><span class="p">,</span> <span class="n">Point</span><span class="p">):</span>
+        <span class="k">pass</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">geom</span><span class="p">,</span> <span class="n">LineString</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">geom_to_linesegment</span><span class="p">(</span><span class="n">geom</span><span class="p">):</span>
+            <span class="n">r0</span><span class="p">,</span> <span class="n">c0</span><span class="p">,</span> <span class="n">r1</span><span class="p">,</span> <span class="n">c1</span> <span class="o">=</span> <span class="n">indicer</span><span class="p">(</span><span class="n">line</span><span class="p">)</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+            <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">skimage</span><span class="o">.</span><span class="n">draw</span><span class="o">.</span><span class="n">line</span><span class="p">(</span><span class="n">r0</span><span class="p">,</span> <span class="n">c0</span><span class="p">,</span> <span class="n">r1</span><span class="p">,</span> <span class="n">c1</span><span class="p">)</span>
+            <span class="n">grid</span><span class="p">[</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">geom</span><span class="p">,</span> <span class="n">Polygon</span><span class="p">):</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="n">indicer</span><span class="p">(</span><span class="n">geom</span><span class="o">.</span><span class="n">exterior</span><span class="p">)</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">skimage</span><span class="o">.</span><span class="n">draw</span><span class="o">.</span><span class="n">polygon</span><span class="p">(</span><span class="n">i</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">i</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">])</span>
+        <span class="n">grid</span><span class="p">[</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">skimage</span><span class="o">.</span><span class="n">draw</span><span class="o">.</span><span class="n">polygon_perimeter</span><span class="p">(</span><span class="n">i</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">i</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">])</span>
+        <span class="n">grid</span><span class="p">[</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">map</span><span class="p">(</span><span class="n">indicer</span><span class="p">,</span> <span class="n">geom</span><span class="o">.</span><span class="n">interiors</span><span class="p">):</span>
+            <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">skimage</span><span class="o">.</span><span class="n">draw</span><span class="o">.</span><span class="n">polygon</span><span class="p">(</span><span class="n">j</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">j</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">])</span>
+            <span class="n">grid</span><span class="p">[</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">geom</span><span class="p">,</span> <span class="n">BaseMultipartGeometry</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">geo</span> <span class="ow">in</span> <span class="n">geom</span><span class="p">:</span>
+            <span class="n">draw_geom</span><span class="p">(</span><span class="n">geo</span><span class="p">,</span> <span class="n">grid</span><span class="p">,</span> <span class="n">indicer</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span></div>
+
+
+<div class="viewcode-block" id="validate_geom"><a class="viewcode-back" href="../../../apidocs/crowddynamics.core.html#crowddynamics.core.geometry.validate_geom">[docs]</a><span class="k">def</span> <span class="nf">validate_geom</span><span class="p">(</span><span class="n">geom</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">types</span><span class="p">,</span> <span class="n">optional</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Validate simulation geometry</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        geom (BaseGeometry): </span>
+<span class="sd">        name (str): </span>
+<span class="sd">        types: Type of iterable of types. </span>
+<span class="sd">        optional (bool): True if None is valid type else False.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">optional</span> <span class="ow">and</span> <span class="n">geom</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">geom</span><span class="p">,</span> <span class="n">types</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">InvalidType</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{name}</span><span class="s1"> should be instance of </span><span class="si">{types}</span><span class="s1">.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="o">.</span><span class="n">capitalize</span><span class="p">(),</span> <span class="n">types</span><span class="o">=</span><span class="n">types</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="n">geom</span><span class="o">.</span><span class="n">is_empty</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">geom</span><span class="o">.</span><span class="n">is_valid</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">InvalidValue</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{name}</span><span class="s1"> should not be empty and should be valid.&#39;</span>
+                           <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()))</span></div>
+
+
+<div class="viewcode-block" id="union"><a class="viewcode-back" href="../../../apidocs/crowddynamics.core.html#crowddynamics.core.geometry.union">[docs]</a><span class="k">def</span> <span class="nf">union</span><span class="p">(</span><span class="o">*</span><span class="n">geoms</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Union of geometries&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">reduce</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">x</span> <span class="o">|</span> <span class="n">y</span><span class="p">,</span> <span class="n">geoms</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright Jaan Tollander de Balsch.
+      Last updated on 2017-05-10.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'legacy+297.gd2a5250.dirty',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

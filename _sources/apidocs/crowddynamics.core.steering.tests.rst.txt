@@ -1,0 +1,30 @@
+crowddynamics\.core\.steering\.tests package
+============================================
+
+Submodules
+----------
+
+crowddynamics\.core\.steering\.tests\.test\_herding module
+----------------------------------------------------------
+
+.. automodule:: crowddynamics.core.steering.tests.test_herding
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+crowddynamics\.core\.steering\.tests\.test\_quickest\_path module
+-----------------------------------------------------------------
+
+.. automodule:: crowddynamics.core.steering.tests.test_quickest_path
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: crowddynamics.core.steering.tests
+    :members:
+    :undoc-members:
+    :show-inheritance:

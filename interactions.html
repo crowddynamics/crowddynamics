@@ -1,0 +1,407 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Interactions &mdash; crowddynamics legacy+297.gd2a5250.dirty documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="crowddynamics legacy+297.gd2a5250.dirty documentation" href="index.html"/>
+        <link rel="next" title="Motion" href="motion.html"/>
+        <link rel="prev" title="Multi-Agent Simulation" href="multiagent.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> crowddynamics
+          
+
+          
+            
+            <img src="_static/logo.svg" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                legacy+297legacy+297.gd2a5250.dirtygd2a5250
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">General</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Multi-Agent Simulation</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="multiagent.html">Multi-Agent Simulation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Interactions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id1">Interactions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#brute-force-summation">Brute Force Summation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#block-list-summation">Block List Summation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#block-list">Block List</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#iteration">Iteration</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="motion.html">Motion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="steering.html">Steering</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Api</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="apidocs/crowddynamics.html">crowddynamics package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="apidocs_examples/examples.html">examples package</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Research</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="quantities.html">Quantities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="phenomena.html">Phenomena</a></li>
+<li class="toctree-l1"><a class="reference internal" href="applications.html">Applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="references.html">References</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">crowddynamics</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Interactions</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/interactions.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="interactions">
+<h1>Interactions<a class="headerlink" href="#interactions" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="id1">
+<h2>Interactions<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<p>Mathematically agent-agent and agent-obstacle interactions are governed by
+summing over all agent-agent or agent-obstacle pairs. This is analogous to
+n-body problems in physics.</p>
+<p>Interactions between agents</p>
+<div class="math">
+\[\mathbf{f}_{i}^{agent-agent} =
+\sum_{j\neq i}^{} \left(\mathbf{f}_{ij}^{soc} + \mathbf{f}_{ij}^{c}\right)\]</div>
+<div class="math">
+\[M_{i}^{agent-agent} =
+\sum_{j\neq i}^{} \left(M_{ij}^{soc} + M_{ij}^{c}\right)\]</div>
+<p>Interactions between agents and obstacles</p>
+<div class="math">
+\[\mathbf{f}_{i}^{agent-obstacles} = \sum_{w}^{} \mathbf{f}_{iw}^{c}\]</div>
+<div class="math">
+\[M_{i}^{agent-obstacles} = \sum_{w}^{} M_{iw}^{c}\]</div>
+<div class="section" id="brute-force-summation">
+<h3>Brute Force Summation<a class="headerlink" href="#brute-force-summation" title="Permalink to this headline">¶</a></h3>
+<p>Number of iterations for set of <span class="math">\(N &gt; 0\)</span> agents</p>
+<div class="math">
+\[N - 1 + N - 2 + ... + 1 =  \frac{(N - 1)^2}{2} \in \mathcal{O}(N^2)\]</div>
+<p>Number of iterations for two disjoint sets of <span class="math">\(N &gt; 0\)</span> and <span class="math">\(M &gt; 0\)</span>
+agents</p>
+<div class="math">
+\[M N\]</div>
+<p>Because the computational complexity of naive brute force summation scales
+<span class="math">\(\mathcal{O}(N^2)\)</span> it is unfeasible to use for large numbers of agents.</p>
+</div>
+<div class="section" id="block-list-summation">
+<h3>Block List Summation<a class="headerlink" href="#block-list-summation" title="Permalink to this headline">¶</a></h3>
+<p>Iterations per block</p>
+<div class="math">
+\[((N_0-1)^{2} + N_0 \sum_{i=1}^{8} N_i) / 2\]</div>
+<p>Number of iterations if maximum number of agents that can be fit into a cell
+is <span class="math">\(M\)</span> is some constant.</p>
+<p>Iterations per block</p>
+<div class="math">
+\[I = \frac{(M - 1)^2}{2} + \frac{9}{2} M^{2}\]</div>
+<p>For <span class="math">\(N\)</span> agents the number of blocks <span class="math">\(N / M\)</span>.</p>
+<div class="math">
+\[I \frac{N}{M} = \frac{N}{M} \left(5 M^{2} - M + \frac{1}{2}\right) \in
+\mathcal{O}(N)\]</div>
+</div>
+</div>
+<div class="section" id="block-list">
+<h2>Block List<a class="headerlink" href="#block-list" title="Permalink to this headline">¶</a></h2>
+<p>Since crowd simulations are only dependent on interactions with agents close by
+we can partition the space into smaller chunk in order to avoid having to loop
+with agents far a away.</p>
+<div class="figure">
+<p><img src="_images/tikz-702a411ad82cfa8f72fe4e8bfdfd3b355d69c0f7.png" alt="% Measures
+\draw[&lt;-&gt;] (-0.1, 0) -- node[left] {$n$} ++(0, 8);
+\draw[&lt;-&gt;] (0, -0.1) -- node[below] {$m$} ++(12, 0);
+\draw[&lt;-&gt;] (-0.3, 0) -- node[left] {$c$} ++(0, 1);
+\draw[&lt;-&gt;] (0, -0.3) -- node[below] {$c$} ++(1, 0);
+% Grid
+\draw[color=gray!20] (0, 0) grid (12, 8);
+\draw[thick, &lt;-&gt;] (13, 6)
+                  -- node[left] {$y$} ++(0, -1)
+                  -- node[below] {$x$} ++(1, 0);
+\draw[] (4.5, 5.7) circle (1pt) node[below] {$\mathbf{p}_i$};
+\draw[dashed] (4.5, 5.7) circle (1);
+\draw[&lt;-&gt;] (4.5, 5.7) -- node[below] {$r$} ++(45:1);" /></p>
+<p class="caption">Example of block list partitioning</p></div><p>Block list means partitioning scheme where the bounding box of points
+<span class="math">\(\mathbf{p}_i\)</span> is partitioned into a grid of <code class="docutils literal"><span class="pre">shape</span></code> <span class="math">\(n \times m\)</span>
+with cell size of <span class="math">\(c\)</span>.</p>
+<p>Algorithm</p>
+<ol class="arabic" start="0">
+<li><p class="first">Cell size is equal to the interaction range <span class="math">\(c = r\)</span>.</p>
+</li>
+<li><p class="first">Get the indices of the block the point <span class="math">\(\mathbf{p}_i\)</span> belongs to</p>
+<div class="math">
+\[\mathbf{l}_i = \left\lfloor \frac{\mathbf{p}_i}{c} \right\rfloor, \quad
+i \in [0, N-1]\]</div>
+</li>
+<li><p class="first">Crate array <code class="docutils literal"><span class="pre">count</span></code> of counts of how many points belong to each block.</p>
+</li>
+<li><p class="first">Crate array <code class="docutils literal"><span class="pre">index_list</span></code> for indices of agents in each block.</p>
+<div class="figure">
+<p><img src="_images/tikz-eb20ed79b8cc1f6a29d0c33501ae9c7938965e47.png" alt="\node[above] () at (0.5, 0) {$\dots$};
+\node[above] () at (5.5, 0) {$\dots$};
+\draw[&lt;-&gt;] (1, -0.1) -- node[below] {count} ++(4, 0);
+\draw[] (1, 0) -- ++(0, -0.5) node[below] {offset};
+\draw[color=gray!20] (0, 0) grid ++(6, 1);
+\node[above] () at (1.5, 0) {$i_0$};
+\node[above] () at (2.5, 0) {$i_1$};
+\node[above] () at (3.5, 0) {$i_2$};
+\node[above] () at (4.5, 0) {$i_3$};" /></p>
+</div></li>
+<li><p class="first">Crate array <code class="docutils literal"><span class="pre">offset</span></code> from cumulative sum of counts to track the starting
+index of indices in <code class="docutils literal"><span class="pre">index_list</span></code> array when querying agents in each block.</p>
+</li>
+</ol>
+<div class="section" id="iteration">
+<h3>Iteration<a class="headerlink" href="#iteration" title="Permalink to this headline">¶</a></h3>
+<p>Iterating over block list.</p>
+</div>
+</div>
+<dl class="class">
+<dt>
+<em class="property">class </em><code class="descclassname">crowddynamics.core.interactions.block_list.</code><code class="descname">block_list</code><a class="reference internal" href="_modules/crowddynamics/core/interactions/block_list.html#block_list"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Block list partitioning algorithm</p>
+<p>BlockList algorithm partitions space into squares and sorts points into
+the square they belong. This allows fast neighbourhood search because we
+only have to search current and neighbouring cells for points.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>points</strong> (<em>numpy.ndarray</em>) &#8211; Array of <span class="math">\(N\)</span> points <span class="math">\((\mathbf{p}_i \in
+\mathbb{R}^2)_{i=1,...,N}\)</span> (<code class="docutils literal"><span class="pre">shape=(size,</span> <span class="pre">2)</span></code>) to be block listed</li>
+<li><strong>cell_size</strong> (<em>float</em>) &#8211; Positive real number <span class="math">\(c &gt; 0\)</span>. Width and height of the
+rectangular mesh.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><ul class="simple">
+<li><code class="docutils literal"><span class="pre">index_list</span></code></li>
+<li><code class="docutils literal"><span class="pre">count</span></code></li>
+<li><code class="docutils literal"><span class="pre">offset</span></code></li>
+<li><code class="docutils literal"><span class="pre">shape</span></code></li>
+</ul>
+</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(numpy.ndarray, numpy.ndarray, numpy.ndarray, numpy.ndarray)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="motion.html" class="btn btn-neutral float-right" title="Motion" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="multiagent.html" class="btn btn-neutral" title="Multi-Agent Simulation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright Jaan Tollander de Balsch.
+      Last updated on 2017-05-10.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'legacy+297.gd2a5250.dirty',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

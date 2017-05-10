@@ -1,0 +1,62 @@
+crowddynamics\.core\.tests package
+==================================
+
+Submodules
+----------
+
+crowddynamics\.core\.tests\.test\_evacuation module
+---------------------------------------------------
+
+.. automodule:: crowddynamics.core.tests.test_evacuation
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+crowddynamics\.core\.tests\.test\_geometry module
+-------------------------------------------------
+
+.. automodule:: crowddynamics.core.tests.test_geometry
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+crowddynamics\.core\.tests\.test\_integrator module
+---------------------------------------------------
+
+.. automodule:: crowddynamics.core.tests.test_integrator
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+crowddynamics\.core\.tests\.test\_taskgraph module
+--------------------------------------------------
+
+.. automodule:: crowddynamics.core.tests.test_taskgraph
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+crowddynamics\.core\.tests\.test\_vector2D module
+-------------------------------------------------
+
+.. automodule:: crowddynamics.core.tests.test_vector2D
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+crowddynamics\.core\.tests\.test\_vector2D\_benchmarks module
+-------------------------------------------------------------
+
+.. automodule:: crowddynamics.core.tests.test_vector2D_benchmarks
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: crowddynamics.core.tests
+    :members:
+    :undoc-members:
+    :show-inheritance:

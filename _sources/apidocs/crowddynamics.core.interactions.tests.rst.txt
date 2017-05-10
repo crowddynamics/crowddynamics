@@ -1,0 +1,62 @@
+crowddynamics\.core\.interactions\.tests package
+================================================
+
+Submodules
+----------
+
+crowddynamics\.core\.interactions\.tests\.test\_block\_list module
+------------------------------------------------------------------
+
+.. automodule:: crowddynamics.core.interactions.tests.test_block_list
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+crowddynamics\.core\.interactions\.tests\.test\_block\_list\_benchmark module
+-----------------------------------------------------------------------------
+
+.. automodule:: crowddynamics.core.interactions.tests.test_block_list_benchmark
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+crowddynamics\.core\.interactions\.tests\.test\_distance module
+---------------------------------------------------------------
+
+.. automodule:: crowddynamics.core.interactions.tests.test_distance
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+crowddynamics\.core\.interactions\.tests\.test\_interactions module
+-------------------------------------------------------------------
+
+.. automodule:: crowddynamics.core.interactions.tests.test_interactions
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+crowddynamics\.core\.interactions\.tests\.test\_interactions\_benchmark module
+------------------------------------------------------------------------------
+
+.. automodule:: crowddynamics.core.interactions.tests.test_interactions_benchmark
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+crowddynamics\.core\.interactions\.tests\.test\_interactions\_mt module
+-----------------------------------------------------------------------
+
+.. automodule:: crowddynamics.core.interactions.tests.test_interactions_mt
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: crowddynamics.core.interactions.tests
+    :members:
+    :undoc-members:
+    :show-inheritance:

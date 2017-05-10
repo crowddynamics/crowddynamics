@@ -1,0 +1,371 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>crowddynamics.core.motion.adjusting &mdash; crowddynamics legacy+297.gd2a5250.dirty documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../../../_static/favicon.ico"/>
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../../../genindex.html"/>
+        <link rel="search" title="Search" href="../../../../search.html"/>
+    <link rel="top" title="crowddynamics legacy+297.gd2a5250.dirty documentation" href="../../../../index.html"/>
+        <link rel="up" title="Module code" href="../../../index.html"/> 
+
+  
+  <script src="../../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../../index.html" class="icon icon-home"> crowddynamics
+          
+
+          
+            
+            <img src="../../../../_static/logo.svg" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                legacy+297legacy+297.gd2a5250.dirtygd2a5250
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">General</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../usage.html">Usage</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Multi-Agent Simulation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../multiagent.html">Multi-Agent Simulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../interactions.html">Interactions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../motion.html">Motion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../steering.html">Steering</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Api</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apidocs/crowddynamics.html">crowddynamics package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apidocs_examples/examples.html">examples package</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Research</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../quantities.html">Quantities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../phenomena.html">Phenomena</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../applications.html">Applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../references.html">References</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">crowddynamics</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+        
+      <li>crowddynamics.core.motion.adjusting</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for crowddynamics.core.motion.adjusting</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Adjusting</span>
+<span class="sd">---------</span>
+<span class="sd">Adjusting motion account for agents desire to move and rotate towards their </span>
+<span class="sd">desired goal.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">numba</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">numba</span> <span class="k">import</span> <span class="n">f8</span><span class="p">,</span> <span class="n">void</span><span class="p">,</span> <span class="n">typeof</span>
+
+<span class="kn">from</span> <span class="nn">crowddynamics.core.structures.agents</span> <span class="k">import</span> <span class="n">agent_type_circular</span><span class="p">,</span> \
+    <span class="n">agent_type_three_circle</span>
+<span class="kn">from</span> <span class="nn">crowddynamics.core.vector2D</span> <span class="k">import</span> <span class="n">wrap_to_pi</span>
+
+
+<span class="nd">@numba</span><span class="o">.</span><span class="n">jit</span><span class="p">([</span><span class="n">f8</span><span class="p">[:](</span><span class="n">f8</span><span class="p">,</span> <span class="n">f8</span><span class="p">,</span> <span class="n">f8</span><span class="p">,</span> <span class="n">f8</span><span class="p">[:],</span> <span class="n">f8</span><span class="p">[:])],</span>
+           <span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nogil</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="viewcode-block" id="force_adjust"><a class="viewcode-back" href="../../../../motion.html#crowddynamics.core.motion.adjusting.force_adjust">[docs]</a><span class="k">def</span> <span class="nf">force_adjust</span><span class="p">(</span><span class="n">mass</span><span class="p">,</span> <span class="n">tau_adj</span><span class="p">,</span> <span class="n">v0</span><span class="p">,</span> <span class="n">e0</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    *Adjusting* aka *driving* force accounts of agent&#39;s desire to reach a</span>
+<span class="sd">    certain destination. In high crowd densities term *manoeuvring* is used.</span>
+<span class="sd">    Force affecting the agent takes form</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">       \mathbf{f}_{adj} = \frac{m}{\tau_{adj}} (v_{0} \mathbf{\hat{e}_{0}} - \mathbf{v}),</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        mass (float):</span>
+<span class="sd">            Mass :math:`m`</span>
+
+<span class="sd">        tau_adj (float):</span>
+<span class="sd">            Characteristic time :math:`\tau_{adj}` time for agent to adjust it</span>
+<span class="sd">            movement. Value :math:`0.5` is often used, but for example impatient</span>
+<span class="sd">            agent that tend to push other agent more this value can be reduced.</span>
+
+<span class="sd">        v0 (float):</span>
+<span class="sd">            Target velocity :math:`v_{0}` is usually *average walking speed* for</span>
+<span class="sd">            agent in its current situation.</span>
+
+<span class="sd">        e0 (numpy.ndarray):</span>
+<span class="sd">            Target direction :math:`\mathbf{\hat{e}_{0}}` is solved by</span>
+<span class="sd">            *navigation* or *path planning* algorithm. More details in the</span>
+<span class="sd">            navigation section.</span>
+
+<span class="sd">        v (numpy.ndarray):</span>
+<span class="sd">            Velocity :math:`\mathbf{v}`</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        numpy.ndarray: Adjusting force vector :math:`\mathbf{f}_{adj}`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">mass</span> <span class="o">/</span> <span class="n">tau_adj</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">v0</span> <span class="o">*</span> <span class="n">e0</span> <span class="o">-</span> <span class="n">v</span><span class="p">)</span></div>
+
+
+<span class="nd">@numba</span><span class="o">.</span><span class="n">jit</span><span class="p">([</span><span class="n">f8</span><span class="p">(</span><span class="n">f8</span><span class="p">,</span> <span class="n">f8</span><span class="p">,</span> <span class="n">f8</span><span class="p">,</span> <span class="n">f8</span><span class="p">,</span> <span class="n">f8</span><span class="p">,</span> <span class="n">f8</span><span class="p">)],</span>
+           <span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nogil</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="viewcode-block" id="torque_adjust"><a class="viewcode-back" href="../../../../motion.html#crowddynamics.core.motion.adjusting.torque_adjust">[docs]</a><span class="k">def</span> <span class="nf">torque_adjust</span><span class="p">(</span><span class="n">inertia_rot</span><span class="p">,</span> <span class="n">tau_rot</span><span class="p">,</span> <span class="n">phi_0</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">omega_0</span><span class="p">,</span> <span class="n">omega</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Adjusting torque accounts for agent&#39;s desire to rotate it orientation.</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">       M_{adj} = \frac{I_{rot}}{\tau_{rot}} \left( \omega_{0} \left (</span>
+<span class="sd">                 \frac{\varphi - \varphi_{0}}{\pi} \right ) - \omega\right),</span>
+
+<span class="sd">    Angular difference :math:`\varphi - \varphi_{0}` is wrapped between interval</span>
+<span class="sd">    :math:`[-\pi, \pi]` so that division by :math:`\pi` returns value between</span>
+<span class="sd">    :math:`[-1, 1]`. This gives direction and magnitude for the torque.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        inertia_rot (float):</span>
+<span class="sd">            Rotational inertia :math:`I_{rot}`</span>
+
+<span class="sd">        tau_rot (float):</span>
+<span class="sd">            Characteristic time :math:`\tau_{rot}` time for agent to adjust it</span>
+<span class="sd">            orientation.</span>
+
+<span class="sd">        phi_0 (float):</span>
+<span class="sd">            Target orientation :math:`\varphi_{0}`. In low and medium crowd</span>
+<span class="sd">            densities the angle of the target direction can be sufficient for</span>
+<span class="sd">            target orientation. In high crowd densities agents may twist their</span>
+<span class="sd">            body differently for example to try to squeeze through narrow</span>
+<span class="sd">            spaces, requiring more sophisticated algorithms.</span>
+
+<span class="sd">        phi (float):</span>
+<span class="sd">            Current orientation :math:`\varphi`</span>
+
+<span class="sd">        omega_0 (float):</span>
+<span class="sd">            Maximum angular velocity :math:`\omega_{0}`.</span>
+
+<span class="sd">        omega (float): </span>
+<span class="sd">            Angular velocity :math:`\omega`</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        float: Adjusting torque scalar :math:`M_{adj}`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">inertia_rot</span> <span class="o">/</span> <span class="n">tau_rot</span> <span class="o">*</span> \
+           <span class="p">(</span><span class="n">wrap_to_pi</span><span class="p">(</span><span class="n">phi_0</span> <span class="o">-</span> <span class="n">phi</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">omega_0</span> <span class="o">-</span> <span class="n">omega</span><span class="p">)</span></div>
+
+
+<span class="nd">@numba</span><span class="o">.</span><span class="n">jit</span><span class="p">([</span><span class="n">void</span><span class="p">(</span><span class="n">typeof</span><span class="p">(</span><span class="n">agent_type_circular</span><span class="p">)[:]),</span>
+            <span class="n">void</span><span class="p">(</span><span class="n">typeof</span><span class="p">(</span><span class="n">agent_type_three_circle</span><span class="p">)[:])],</span>
+           <span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nogil</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="viewcode-block" id="force_adjust_agents"><a class="viewcode-back" href="../../../../apidocs/crowddynamics.core.motion.html#crowddynamics.core.motion.adjusting.force_adjust_agents">[docs]</a><span class="k">def</span> <span class="nf">force_adjust_agents</span><span class="p">(</span><span class="n">agents</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Apply adjusting force to agents&quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">agent</span> <span class="ow">in</span> <span class="n">agents</span><span class="p">:</span>
+        <span class="n">agent</span><span class="p">[</span><span class="s1">&#39;force&#39;</span><span class="p">][:]</span> <span class="o">+=</span> <span class="n">force_adjust</span><span class="p">(</span><span class="n">agent</span><span class="p">[</span><span class="s1">&#39;mass&#39;</span><span class="p">],</span>
+                                          <span class="n">agent</span><span class="p">[</span><span class="s1">&#39;tau_adj&#39;</span><span class="p">],</span>
+                                          <span class="n">agent</span><span class="p">[</span><span class="s1">&#39;target_velocity&#39;</span><span class="p">],</span>
+                                          <span class="n">agent</span><span class="p">[</span><span class="s1">&#39;target_direction&#39;</span><span class="p">],</span>
+                                          <span class="n">agent</span><span class="p">[</span><span class="s1">&#39;velocity&#39;</span><span class="p">])</span></div>
+
+
+<span class="nd">@numba</span><span class="o">.</span><span class="n">jit</span><span class="p">(</span><span class="n">void</span><span class="p">(</span><span class="n">typeof</span><span class="p">(</span><span class="n">agent_type_three_circle</span><span class="p">)[:]),</span>
+           <span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nogil</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="viewcode-block" id="torque_adjust_agents"><a class="viewcode-back" href="../../../../apidocs/crowddynamics.core.motion.html#crowddynamics.core.motion.adjusting.torque_adjust_agents">[docs]</a><span class="k">def</span> <span class="nf">torque_adjust_agents</span><span class="p">(</span><span class="n">agents</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Apply adjusting torque to agents&quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">agent</span> <span class="ow">in</span> <span class="n">agents</span><span class="p">:</span>
+        <span class="n">agent</span><span class="p">[</span><span class="s1">&#39;torque&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="n">torque_adjust</span><span class="p">(</span><span class="n">agent</span><span class="p">[</span><span class="s1">&#39;inertia_rot&#39;</span><span class="p">],</span>
+                                         <span class="n">agent</span><span class="p">[</span><span class="s1">&#39;tau_rot&#39;</span><span class="p">],</span>
+                                         <span class="n">agent</span><span class="p">[</span><span class="s1">&#39;target_orientation&#39;</span><span class="p">],</span>
+                                         <span class="n">agent</span><span class="p">[</span><span class="s1">&#39;orientation&#39;</span><span class="p">],</span>
+                                         <span class="n">agent</span><span class="p">[</span><span class="s1">&#39;target_angular_velocity&#39;</span><span class="p">],</span>
+                                         <span class="n">agent</span><span class="p">[</span><span class="s1">&#39;angular_velocity&#39;</span><span class="p">])</span></div>
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright Jaan Tollander de Balsch.
+      Last updated on 2017-05-10.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../../',
+            VERSION:'legacy+297.gd2a5250.dirty',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

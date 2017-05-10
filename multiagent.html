@@ -1,0 +1,463 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Multi-Agent Simulation &mdash; crowddynamics legacy+297.gd2a5250.dirty documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="crowddynamics legacy+297.gd2a5250.dirty documentation" href="index.html"/>
+        <link rel="next" title="Interactions" href="interactions.html"/>
+        <link rel="prev" title="Usage" href="usage.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> crowddynamics
+          
+
+          
+            
+            <img src="_static/logo.svg" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                legacy+297legacy+297.gd2a5250.dirtygd2a5250
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">General</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Multi-Agent Simulation</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Multi-Agent Simulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interactions.html">Interactions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="motion.html">Motion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="steering.html">Steering</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Api</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="apidocs/crowddynamics.html">crowddynamics package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="apidocs_examples/examples.html">examples package</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Research</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="quantities.html">Quantities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="phenomena.html">Phenomena</a></li>
+<li class="toctree-l1"><a class="reference internal" href="applications.html">Applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="references.html">References</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">crowddynamics</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Multi-Agent Simulation</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/multiagent.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="multi-agent-simulation">
+<h1>Multi-Agent Simulation<a class="headerlink" href="#multi-agent-simulation" title="Permalink to this headline">¶</a></h1>
+<table border="1" class="docutils" id="id5">
+<caption><span class="caption-text">Model Specification</span><a class="headerlink" href="#id5" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>Space</td>
+<td>Continuous space <span class="math">\(\mathbb{R}^2\)</span></td>
+</tr>
+<tr class="row-even"><td>Scale</td>
+<td>Microscopic. Agents are modelled as rigid bodies.</td>
+</tr>
+<tr class="row-odd"><td>Motion</td>
+<td>Classical mechanics for modelling movement.</td>
+</tr>
+</tbody>
+</table>
+<dl class="class">
+<dt>
+<em class="property">class </em><code class="descclassname">crowddynamics.simulation.multiagent.</code><code class="descname">Field</code><span class="sig-paren">(</span><em>name=None</em>, <em>domain=None</em>, <em>obstacles=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crowddynamics/simulation/multiagent.html#Field"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Multi-Agent simulation Field consists of</p>
+<div class="figure">
+<p><img src="_images/tikz-e90de630ed1c23a95fdae2652a6bb0f68bb041bd.png" alt="\draw[color=gray!20] (-2, -1) grid (12, 7);
+% Domain
+\fill[gray!20] (0, 0) rectangle (10, 6);
+\node[] () at (5, 3) {$ \Omega $};
+% Spawn 0
+\fill[blue!20] (0, 3) -- ++(2, 0) -- ++(1, 1) -- ++(0, 2)
+                    -- ++(-3, 0) -- ++(0, -3);
+\node[] () at (1.5, 4.5) {$ \mathcal{S}_0 $};
+% Obstacles
+\draw[thick] (0, 0) rectangle (10, 6);
+\draw[fill=black] (9, 2) circle (0.5);
+\draw[fill=black] (9, 4) circle (0.5);
+% Room 1
+\draw[thick] (0, 3) -- ++(2, 0) -- ++(1, 1);
+\draw[thick] (3, 5) -- ++(0, 1);
+% Target 0
+\draw[thick, white] (4, 6) -- ++(2, 0);
+\draw[thick, dashed] (4, 6) -- node[above] {$ \mathcal{E}_0 $} ++(2, 0);
+% Target 1
+\draw[thick, white] (10, 2) -- ++(0, 2);
+\draw[thick, dashed] (10, 2) -- node[right] {$ \mathcal{E}_1 $} ++(0, 2);" /></p>
+<p class="caption">Example of Field</p></div><dl class="docutils">
+<dt>Domain</dt>
+<dd><img class="math" src="_images/tikz-20bbdf99171a3d41754f0147e3cebd21c5485bad.png" alt="\draw[black, fill=gray!20] (0, 0) rectangle (0.4, 0.4);"/>
+<strong>Domain</strong> <span class="math">\(\Omega \subset \mathbb{R}^{2}\)</span> is a plane that
+contains  all the other objects in the simulation such as agents and
+obstacles. Agents that move outside the domain will be marked as
+inactive and not used to compute any of the simulation logic.</dd>
+<dt>Obstacles</dt>
+<dd><img class="math" src="_images/tikz-06f9031e37a964de7dd873a19edb3e5f69050d90.png" alt="\draw[black, fill=black] (0, 0) rectangle (0.4, 0.4);"/>
+<strong>Obstacles</strong> <span class="math">\(\mathcal{O} \subset \Omega\)</span> are impassable regions
+of the domain. Agents have have psychological tendency to try to avoid
+colliding with an obstacle, but if they do, for example being pushed by
+other agents, there will be friction force between the agent and the
+obstacles. Obstacles avoidance is handled by a navigation algorithm.</dd>
+<dt>Targets</dt>
+<dd><img class="math" src="_images/tikz-d4b179364775c1be743188621e7d72c2aa2db162.png" alt="\draw[thick, dashed, black] (0, 0) rectangle (0.4, 0.4);"/>
+<strong>Targets</strong> <span class="math">\(\mathcal{E}_i \subset \Omega\)</span> for
+<span class="math">\(i \in \{0, ..., m-1\}\)</span> are passable regions of the domain. Agents
+can have a psychological tendency  to try to reach one or more of these
+regions. This psycological tendency is also handled by a navigation
+algorithm.</dd>
+<dt>Spawns</dt>
+<dd><img class="math" src="_images/tikz-d1078615264fd8b9afa678ca123e8c392cedd09b.png" alt="\draw[fill=blue!20] (0, 0) rectangle (0.4, 0.4);"/>
+<strong>Spawns</strong> <span class="math">\(\mathcal{S}_j \subset \Omega\)</span> for
+<span class="math">\(j \in \{0, ..., n-1\}\)</span> are passable regions of the domain. These
+are the regions where new agents can be placed in the beginning or
+during the simulation. Polygon sampling algorithm handles the sampling
+of new potential points for  placing the agent and then algorithm test
+that the agent does not  overlap with other agents of obstacles. If it
+doesn&#8217;t new agent is  placed here.</dd>
+</dl>
+</dd></dl>
+
+<dl class="class">
+<dt>
+<em class="property">class </em><code class="descclassname">crowddynamics.simulation.multiagent.</code><code class="descname">Agents</code><span class="sig-paren">(</span><em>size</em>, <em>agent_type='circular'</em>, <em>agent_cfg='/home/jaan/Projects/CrowdDynamics/crowddynamics/conf/agent.cfg'</em>, <em>agent_cfg_spec='/home/jaan/Projects/CrowdDynamics/crowddynamics/conf/agent_spec.cfg'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crowddynamics/simulation/multiagent.html#Agents"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Multi-Agent simulation agent types.</p>
+<dl class="docutils">
+<dt>Circular</dt>
+<dd><div class="first figure">
+<p><img src="_images/tikz-ec4c08f237f600b06898ca0fe089292a8bb970d8.png" alt="\begin{scope}[scale=3]
+  \draw[color=gray!20] (-2, -1) grid (2, 1);
+  \node[below] () at (0, 0) {$ \mathbf{x} $};
+  \fill (0, 0) circle(0.5pt);
+  \draw[thick] (0, 0) circle (1);
+  \draw[dashed, &lt;-&gt;] (0, 0) -- node[above] {$ r $} ++(135:1);
+\end{scope}" /></p>
+</div><p class="last"><strong>Circular</strong> agents are modelled as a disk with radius <span class="math">\(r &gt; 0\)</span>
+from the center of mass <span class="math">\(\mathbf{x}\)</span>. This type of agents do not
+have orientation. This is the simplest model for an agent and works
+quite well for sparse and medium density crowds, but modelling higher
+density crowds with this model can be unrealistic because circular
+model is too wide in the  perpendicular width compared to three-circle
+or capsule representations  and lacks the ability change orientation to
+fit through smaller spaces. <a class="reference internal" href="references.html#helbing2000a" id="id1">[Helbing2000a]</a></p>
+</dd>
+<dt>Three-Circle</dt>
+<dd><div class="first figure">
+<p><img src="_images/tikz-5b091b82a33875cf372621dc71e195d501efa1a1.png" alt="\begin{scope}[scale=3]
+  \draw[color=gray!20] (-2, -1) grid (2, 1);
+  \node[below] () at (0, 0) {$ \mathbf{x} $};
+  \fill (0, 0) circle(0.5pt);
+  \fill (-0.63, 0) circle(0.5pt);
+  \fill (0.63, 0) circle(0.5pt);
+  \draw[thick] (0, 0) circle (0.59);
+  \draw[thick] (-0.63, 0) circle (0.37);
+  \draw[thick] (0.63, 0) circle (0.37);
+  \draw[dashed, &lt;-&gt;] (0, 0) -- node[above] {$ r_{t} $} ++(135:0.59);
+  \draw[dashed, &lt;-&gt;] (-0.63, 0) -- node[above] {$ r_{s} $} ++(135:0.37);
+  \draw[dashed, &lt;-&gt;] (0.63, 0) -- node[above] {$ r_{s} $} ++(45:0.37);
+  \draw[dashed, &lt;-&gt;] (0, 0) -- node[above] {$ r_{ts} $} (-0.63, 0);
+  \draw[dashed, &lt;-&gt;] (0, 0) -- node[above] {$ r_{ts} $} (0.63, 0);
+  %\draw[thick, -&gt;] (0, 0) -- node[left] {$ \mathbf{\hat{e}_n} $} (0, 0.3);
+  %\draw[thick, -&gt;] (0, 0) -- node[below] {$ \mathbf{\hat{e}_t} $} (0.3, 0);
+\end{scope}" /></p>
+</div><p class="last"><strong>Three-circle</strong> agents are modelled as three disks representing the
+torso and two shoulders of an average human. Torso is a disk with radius
+<span class="math">\(r_t &gt; 0\)</span> from the center of mass <span class="math">\(\mathbf{x}\)</span>. Two
+shoulders are disks with radius <span class="math">\(r_s\)</span> located at along the
+tangents at distance <span class="math">\(r_{ts}\)</span> from the center of mass
+<span class="math">\(\mathbf{x} \pm r_{ts} \mathbf{\hat{e}_t}\)</span>, where
+<span class="math">\(\mathbf{\hat{e}_t} = [\sin(\varphi), -\cos(\varphi)]\)</span>. Three
+circle type has orientation of <span class="math">\(\varphi\)</span>. Model was proposed
+<em>Crowd dynamics discrete element multi-circle model</em> <a class="reference internal" href="references.html#langston2006" id="id2">[Langston2006]</a> and
+has been used for example in FDS+EVAC <a class="reference internal" href="references.html#korhonen2008b" id="id3">[Korhonen2008b]</a>.</p>
+</dd>
+<dt>Capsule</dt>
+<dd><div class="first admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Capsule is not implemented yet</p>
+</div>
+<div class="figure">
+<p><img src="_images/tikz-58c7e8634768e133b180533f23acbdab00f7d5b7.png" alt="\begin{scope}[scale=3]
+  \draw[color=gray!20] (-2, -1) grid (2, 1);
+  \node[below] () at (0, 0) {$ \mathbf{x} $};
+  \fill (0, 0) circle(0.5pt);
+  \fill (-0.5, 0) circle(0.5pt);
+  \fill (0.5, 0) circle(0.5pt);
+  \draw[thick] (-0.5, 0) -- (0.5, 0);
+  \draw[dashed, &lt;-&gt;] (-0.5, 0) -- node[above] {$ r $} ++(135:0.5);
+  \draw[dashed, &lt;-&gt;] (-0.5, -0.2) -- node[below]{$ w $} (0.5, -0.2);
+  \draw[thick] (0.5, 0.5) arc (90:-90:0.5)
+               -- ++(-1, 0) arc (270:90:0.5)
+               -- ++(1, 0);
+  %\draw[thick, -&gt;] (0, 0) -- node[left] {$ \mathbf{\hat{e}_n} $} (0, 0.3);
+  %\draw[thick, -&gt;] (0, 0) -- node[below] {$ \mathbf{\hat{e}_t} $} (0.3, 0);
+\end{scope}" /></p>
+</div><p><strong>Capsule</strong> shaped model proposed by Stüvel in <em>Dense Crowds of Virtual
+Humans</em> <a class="reference internal" href="references.html#stuvel2016" id="id4">[Stuvel2016]</a>.</p>
+<div class="math">
+\[\begin{split}r &amp;= T / 2 \\
+w &amp;= W - 2 r\end{split}\]</div>
+<p>where</p>
+<ul class="last simple">
+<li><span class="math">\(T\)</span> is the thickness of the chest</li>
+<li><span class="math">\(W\)</span> is the width of the chest</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="class">
+<dt>
+<em class="property">class </em><code class="descclassname">crowddynamics.simulation.multiagent.</code><code class="descname">LogicNode</code><span class="sig-paren">(</span><em>simulation: crowddynamics.simulation.multiagent.MultiAgentSimulation</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crowddynamics/simulation/multiagent.html#LogicNode"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Simulation logic is programmed as a tree of dependencies of the order of
+the execution. For example simulation&#8217;s logic tree could look like:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>Reset
+└── Integrator
+    ├── Fluctuation
+    ├── Adjusting
+    │   ├── Navigation
+    │   └── Orientation
+    ├── AgentAgentInteractions
+    └── AgentObstacleInteractions
+</pre></div>
+</div>
+<p>In this tree we can notice the dependencies. For example before using
+updating <cite>Adjusting</cite> node we need to update <cite>Navigation</cite> and <cite>Orientation</cite>
+nodes.</p>
+</dd></dl>
+
+<dl class="class">
+<dt>
+<em class="property">class </em><code class="descclassname">crowddynamics.simulation.multiagent.</code><code class="descname">MultiAgentSimulation</code><span class="sig-paren">(</span><em>name=None</em>, <em>configfile='/home/jaan/Projects/CrowdDynamics/crowddynamics/conf/multiagent.cfg'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crowddynamics/simulation/multiagent.html#MultiAgentSimulation"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Constructing a multi-agent simulation</p>
+<dl class="docutils">
+<dt>Field</dt>
+<dd>Instance of <a class="reference internal" href="apidocs/crowddynamics.simulation.html#crowddynamics.simulation.multiagent.Field" title="crowddynamics.simulation.multiagent.Field"><code class="xref py py-class docutils literal"><span class="pre">Field</span></code></a>.</dd>
+<dt>Agents</dt>
+<dd>Instance of <a class="reference internal" href="apidocs/crowddynamics.simulation.html#crowddynamics.simulation.multiagent.Agents" title="crowddynamics.simulation.multiagent.Agents"><code class="xref py py-class docutils literal"><span class="pre">Agents</span></code></a>.</dd>
+<dt>Logic</dt>
+<dd><strong>Logic</strong> of the simulation consists of tree of <a class="reference internal" href="apidocs/crowddynamics.simulation.html#crowddynamics.simulation.multiagent.LogicNode" title="crowddynamics.simulation.multiagent.LogicNode"><code class="xref py py-class docutils literal"><span class="pre">LogicNode</span></code></a>.
+Simulation is updated by calling the update function of  each logic node
+using <em>post-order</em> traversal.</dd>
+</dl>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="interactions.html" class="btn btn-neutral float-right" title="Interactions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="usage.html" class="btn btn-neutral" title="Usage" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright Jaan Tollander de Balsch.
+      Last updated on 2017-05-10.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'legacy+297.gd2a5250.dirty',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

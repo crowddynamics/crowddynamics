@@ -1,0 +1,422 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>crowddynamics.core.interactions.tests package &mdash; crowddynamics legacy+297.gd2a5250.dirty documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="crowddynamics legacy+297.gd2a5250.dirty documentation" href="../index.html"/>
+        <link rel="up" title="crowddynamics.core.interactions package" href="crowddynamics.core.interactions.html"/>
+        <link rel="next" title="crowddynamics.core.motion package" href="crowddynamics.core.motion.html"/>
+        <link rel="prev" title="crowddynamics.core.interactions package" href="crowddynamics.core.interactions.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> crowddynamics
+          
+
+          
+            
+            <img src="../_static/logo.svg" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                legacy+297legacy+297.gd2a5250.dirtygd2a5250
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">General</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage.html">Usage</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Multi-Agent Simulation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../multiagent.html">Multi-Agent Simulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../interactions.html">Interactions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../motion.html">Motion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../steering.html">Steering</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Api</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="crowddynamics.html">crowddynamics package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="crowddynamics.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="crowddynamics.core.html">crowddynamics.core package</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="crowddynamics.core.html#subpackages">Subpackages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.html#module-crowddynamics.core.conftest">crowddynamics.core.conftest module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.html#module-crowddynamics.core.evacuation">crowddynamics.core.evacuation module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.html#module-crowddynamics.core.geometry">crowddynamics.core.geometry module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.html#module-crowddynamics.core.integrator">crowddynamics.core.integrator module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.html#module-crowddynamics.core.tree">crowddynamics.core.tree module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.html#module-crowddynamics.core.vector2D">crowddynamics.core.vector2D module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.html#module-crowddynamics.core">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crowddynamics.simulation.html">crowddynamics.simulation package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="crowddynamics.tests.html">crowddynamics.tests package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="crowddynamics.visualization.html">crowddynamics.visualization package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.html#module-crowddynamics.cli">crowddynamics.cli module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.html#module-crowddynamics.config">crowddynamics.config module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.html#module-crowddynamics.exceptions">crowddynamics.exceptions module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.html#module-crowddynamics.io">crowddynamics.io module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.html#module-crowddynamics.logging">crowddynamics.logging module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.html#module-crowddynamics.parse">crowddynamics.parse module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.html#module-crowddynamics.testing">crowddynamics.testing module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.html#module-crowddynamics">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../apidocs_examples/examples.html">examples package</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Research</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../quantities.html">Quantities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../phenomena.html">Phenomena</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../applications.html">Applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">References</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">crowddynamics</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="crowddynamics.html">crowddynamics package</a> &raquo;</li>
+        
+          <li><a href="crowddynamics.core.html">crowddynamics.core package</a> &raquo;</li>
+        
+          <li><a href="crowddynamics.core.interactions.html">crowddynamics.core.interactions package</a> &raquo;</li>
+        
+      <li>crowddynamics.core.interactions.tests package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/apidocs/crowddynamics.core.interactions.tests.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="crowddynamics-core-interactions-tests-package">
+<h1>crowddynamics.core.interactions.tests package<a class="headerlink" href="#crowddynamics-core-interactions-tests-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-crowddynamics.core.interactions.tests.test_block_list">
+<span id="crowddynamics-core-interactions-tests-test-block-list-module"></span><h2>crowddynamics.core.interactions.tests.test_block_list module<a class="headerlink" href="#module-crowddynamics.core.interactions.tests.test_block_list" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="crowddynamics.core.interactions.tests.test_block_list.points">
+<code class="descclassname">crowddynamics.core.interactions.tests.test_block_list.</code><code class="descname">points</code><span class="sig-paren">(</span><em>dimensions</em>, <em>interval=(-1.0</em>, <em>1.0)</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/core/interactions/tests/test_block_list.html#points"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.interactions.tests.test_block_list.points" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="crowddynamics.core.interactions.tests.test_block_list.test_block_list">
+<code class="descclassname">crowddynamics.core.interactions.tests.test_block_list.</code><code class="descname">test_block_list</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/core/interactions/tests/test_block_list.html#test_block_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.interactions.tests.test_block_list.test_block_list" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="crowddynamics.core.interactions.tests.test_block_list.test_mutable_block_list">
+<code class="descclassname">crowddynamics.core.interactions.tests.test_block_list.</code><code class="descname">test_mutable_block_list</code><span class="sig-paren">(</span><em>dimensions</em>, <em>default_list</em>, <em>cell_size=1.0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/core/interactions/tests/test_block_list.html#test_mutable_block_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.interactions.tests.test_block_list.test_mutable_block_list" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-crowddynamics.core.interactions.tests.test_block_list_benchmark">
+<span id="crowddynamics-core-interactions-tests-test-block-list-benchmark-module"></span><h2>crowddynamics.core.interactions.tests.test_block_list_benchmark module<a class="headerlink" href="#module-crowddynamics.core.interactions.tests.test_block_list_benchmark" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="crowddynamics.core.interactions.tests.test_block_list_benchmark.test_blocklist_benchmark">
+<code class="descclassname">crowddynamics.core.interactions.tests.test_block_list_benchmark.</code><code class="descname">test_blocklist_benchmark</code><span class="sig-paren">(</span><em>benchmark</em>, <em>size</em>, <em>cell_size</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/core/interactions/tests/test_block_list_benchmark.html#test_blocklist_benchmark"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.interactions.tests.test_block_list_benchmark.test_blocklist_benchmark" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="crowddynamics.core.interactions.tests.test_block_list_benchmark.test_defaultdict_setitem">
+<code class="descclassname">crowddynamics.core.interactions.tests.test_block_list_benchmark.</code><code class="descname">test_defaultdict_setitem</code><span class="sig-paren">(</span><em>benchmark</em>, <em>size</em>, <em>cell_size</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/core/interactions/tests/test_block_list_benchmark.html#test_defaultdict_setitem"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.interactions.tests.test_block_list_benchmark.test_defaultdict_setitem" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="crowddynamics.core.interactions.tests.test_block_list_benchmark.test_mutable_blocklist_getitem">
+<code class="descclassname">crowddynamics.core.interactions.tests.test_block_list_benchmark.</code><code class="descname">test_mutable_blocklist_getitem</code><span class="sig-paren">(</span><em>benchmark</em>, <em>size</em>, <em>cell_size</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/core/interactions/tests/test_block_list_benchmark.html#test_mutable_blocklist_getitem"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.interactions.tests.test_block_list_benchmark.test_mutable_blocklist_getitem" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="crowddynamics.core.interactions.tests.test_block_list_benchmark.test_mutable_blocklist_setitem">
+<code class="descclassname">crowddynamics.core.interactions.tests.test_block_list_benchmark.</code><code class="descname">test_mutable_blocklist_setitem</code><span class="sig-paren">(</span><em>benchmark</em>, <em>size</em>, <em>cell_size</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/core/interactions/tests/test_block_list_benchmark.html#test_mutable_blocklist_setitem"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.interactions.tests.test_block_list_benchmark.test_mutable_blocklist_setitem" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-crowddynamics.core.interactions.tests.test_distance">
+<span id="crowddynamics-core-interactions-tests-test-distance-module"></span><h2>crowddynamics.core.interactions.tests.test_distance module<a class="headerlink" href="#module-crowddynamics.core.interactions.tests.test_distance" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="crowddynamics.core.interactions.tests.test_distance.test_distance_circle_circle">
+<code class="descclassname">crowddynamics.core.interactions.tests.test_distance.</code><code class="descname">test_distance_circle_circle</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/core/interactions/tests/test_distance.html#test_distance_circle_circle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.interactions.tests.test_distance.test_distance_circle_circle" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="crowddynamics.core.interactions.tests.test_distance.test_distance_circle_line">
+<code class="descclassname">crowddynamics.core.interactions.tests.test_distance.</code><code class="descname">test_distance_circle_line</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/core/interactions/tests/test_distance.html#test_distance_circle_line"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.interactions.tests.test_distance.test_distance_circle_line" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="crowddynamics.core.interactions.tests.test_distance.test_distance_three_circle">
+<code class="descclassname">crowddynamics.core.interactions.tests.test_distance.</code><code class="descname">test_distance_three_circle</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/core/interactions/tests/test_distance.html#test_distance_three_circle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.interactions.tests.test_distance.test_distance_three_circle" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="crowddynamics.core.interactions.tests.test_distance.test_distance_three_circle_line">
+<code class="descclassname">crowddynamics.core.interactions.tests.test_distance.</code><code class="descname">test_distance_three_circle_line</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/core/interactions/tests/test_distance.html#test_distance_three_circle_line"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.interactions.tests.test_distance.test_distance_three_circle_line" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-crowddynamics.core.interactions.tests.test_interactions">
+<span id="crowddynamics-core-interactions-tests-test-interactions-module"></span><h2>crowddynamics.core.interactions.tests.test_interactions module<a class="headerlink" href="#module-crowddynamics.core.interactions.tests.test_interactions" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="crowddynamics.core.interactions.tests.test_interactions.test_agent_agent_block_list_circular">
+<code class="descclassname">crowddynamics.core.interactions.tests.test_interactions.</code><code class="descname">test_agent_agent_block_list_circular</code><span class="sig-paren">(</span><em>agents_circular</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/core/interactions/tests/test_interactions.html#test_agent_agent_block_list_circular"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.interactions.tests.test_interactions.test_agent_agent_block_list_circular" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="crowddynamics.core.interactions.tests.test_interactions.test_agent_agent_block_list_three_circle">
+<code class="descclassname">crowddynamics.core.interactions.tests.test_interactions.</code><code class="descname">test_agent_agent_block_list_three_circle</code><span class="sig-paren">(</span><em>agents_three_circle</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/core/interactions/tests/test_interactions.html#test_agent_agent_block_list_three_circle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.interactions.tests.test_interactions.test_agent_agent_block_list_three_circle" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="crowddynamics.core.interactions.tests.test_interactions.test_agent_agent_interaction_circle">
+<code class="descclassname">crowddynamics.core.interactions.tests.test_interactions.</code><code class="descname">test_agent_agent_interaction_circle</code><span class="sig-paren">(</span><em>agents_circular</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/core/interactions/tests/test_interactions.html#test_agent_agent_interaction_circle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.interactions.tests.test_interactions.test_agent_agent_interaction_circle" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="crowddynamics.core.interactions.tests.test_interactions.test_agent_agent_interaction_three_circle">
+<code class="descclassname">crowddynamics.core.interactions.tests.test_interactions.</code><code class="descname">test_agent_agent_interaction_three_circle</code><span class="sig-paren">(</span><em>agents_three_circle</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/core/interactions/tests/test_interactions.html#test_agent_agent_interaction_three_circle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.interactions.tests.test_interactions.test_agent_agent_interaction_three_circle" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-crowddynamics.core.interactions.tests.test_interactions_benchmark">
+<span id="crowddynamics-core-interactions-tests-test-interactions-benchmark-module"></span><h2>crowddynamics.core.interactions.tests.test_interactions_benchmark module<a class="headerlink" href="#module-crowddynamics.core.interactions.tests.test_interactions_benchmark" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="crowddynamics.core.interactions.tests.test_interactions_benchmark.test_agent_agent_block_list">
+<code class="descclassname">crowddynamics.core.interactions.tests.test_interactions_benchmark.</code><code class="descname">test_agent_agent_block_list</code><span class="sig-paren">(</span><em>benchmark</em>, <em>size</em>, <em>agent_type</em>, <em>algorithm</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/core/interactions/tests/test_interactions_benchmark.html#test_agent_agent_block_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.interactions.tests.test_interactions_benchmark.test_agent_agent_block_list" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-crowddynamics.core.interactions.tests.test_interactions_mt">
+<span id="crowddynamics-core-interactions-tests-test-interactions-mt-module"></span><h2>crowddynamics.core.interactions.tests.test_interactions_mt module<a class="headerlink" href="#module-crowddynamics.core.interactions.tests.test_interactions_mt" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="crowddynamics.core.interactions.tests.test_interactions_mt.test_agent_agent_block_list_circular_cmp">
+<code class="descclassname">crowddynamics.core.interactions.tests.test_interactions_mt.</code><code class="descname">test_agent_agent_block_list_circular_cmp</code><span class="sig-paren">(</span><em>agents_circular</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/core/interactions/tests/test_interactions_mt.html#test_agent_agent_block_list_circular_cmp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.interactions.tests.test_interactions_mt.test_agent_agent_block_list_circular_cmp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="crowddynamics.core.interactions.tests.test_interactions_mt.test_agent_agent_block_list_circular_multithreaded">
+<code class="descclassname">crowddynamics.core.interactions.tests.test_interactions_mt.</code><code class="descname">test_agent_agent_block_list_circular_multithreaded</code><span class="sig-paren">(</span><em>agents_circular</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/core/interactions/tests/test_interactions_mt.html#test_agent_agent_block_list_circular_multithreaded"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.interactions.tests.test_interactions_mt.test_agent_agent_block_list_circular_multithreaded" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="crowddynamics.core.interactions.tests.test_interactions_mt.test_agent_agent_block_list_three_circle_cmp">
+<code class="descclassname">crowddynamics.core.interactions.tests.test_interactions_mt.</code><code class="descname">test_agent_agent_block_list_three_circle_cmp</code><span class="sig-paren">(</span><em>agents_three_circle</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/core/interactions/tests/test_interactions_mt.html#test_agent_agent_block_list_three_circle_cmp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.interactions.tests.test_interactions_mt.test_agent_agent_block_list_three_circle_cmp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="crowddynamics.core.interactions.tests.test_interactions_mt.test_agent_agent_block_list_three_circle_multithreaded">
+<code class="descclassname">crowddynamics.core.interactions.tests.test_interactions_mt.</code><code class="descname">test_agent_agent_block_list_three_circle_multithreaded</code><span class="sig-paren">(</span><em>agents_three_circle</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/core/interactions/tests/test_interactions_mt.html#test_agent_agent_block_list_three_circle_multithreaded"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.interactions.tests.test_interactions_mt.test_agent_agent_block_list_three_circle_multithreaded" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-crowddynamics.core.interactions.tests">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-crowddynamics.core.interactions.tests" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="crowddynamics.core.motion.html" class="btn btn-neutral float-right" title="crowddynamics.core.motion package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="crowddynamics.core.interactions.html" class="btn btn-neutral" title="crowddynamics.core.interactions package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright Jaan Tollander de Balsch.
+      Last updated on 2017-05-10.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'legacy+297.gd2a5250.dirty',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

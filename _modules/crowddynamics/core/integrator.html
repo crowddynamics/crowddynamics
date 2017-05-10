@@ -1,0 +1,505 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>crowddynamics.core.integrator &mdash; crowddynamics legacy+297.gd2a5250.dirty documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../../genindex.html"/>
+        <link rel="search" title="Search" href="../../../search.html"/>
+    <link rel="top" title="crowddynamics legacy+297.gd2a5250.dirty documentation" href="../../../index.html"/>
+        <link rel="up" title="Module code" href="../../index.html"/> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> crowddynamics
+          
+
+          
+            
+            <img src="../../../_static/logo.svg" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                legacy+297legacy+297.gd2a5250.dirtygd2a5250
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">General</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Usage</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Multi-Agent Simulation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../multiagent.html">Multi-Agent Simulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../interactions.html">Interactions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../motion.html">Motion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../steering.html">Steering</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Api</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../apidocs/crowddynamics.html">crowddynamics package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../apidocs_examples/examples.html">examples package</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Research</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../quantities.html">Quantities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../phenomena.html">Phenomena</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../applications.html">Applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../references.html">References</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">crowddynamics</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>crowddynamics.core.integrator</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for crowddynamics.core.integrator</h1><div class="highlight"><pre>
+<span></span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Integrator</span>
+<span class="sd">----------</span>
+<span class="sd">Numerical solver for differential system consisting of translational and </span>
+<span class="sd">rotational motion which produces the movement for agents in crowddynamics</span>
+
+<span class="sd">.. math::</span>
+<span class="sd">   \begin{cases}</span>
+<span class="sd">   m \frac{d^{2}}{d t^{2}} \mathbf{x}(t) = \mathbf{f}(t) + \boldsymbol{\xi}(t) \\</span>
+<span class="sd">   I \frac{d^{2}}{d t^{2}} \varphi(t) = M(t) + \eta(t)</span>
+<span class="sd">   \end{cases}</span>
+
+<span class="sd">where</span>
+
+<span class="sd">- Total force :math:`\mathbf{f}(t) = \mathbf{f}^{adjusting} + \mathbf{f}^{agent-agent} + \mathbf{f}^{agent-obstacles}`</span>
+<span class="sd">- Random fluctutation force :math:`\boldsymbol{\xi}(t)`</span>
+<span class="sd">- Total torque :math:`M(t) = M^{adjusting} + M^{agent-agent} + M^{agent-obstacles}`</span>
+<span class="sd">- Random fluctuation torque :math:`\eta(t)`</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">numba</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">numba</span> <span class="k">import</span> <span class="n">f8</span><span class="p">,</span> <span class="n">void</span><span class="p">,</span> <span class="n">typeof</span>
+
+<span class="kn">from</span> <span class="nn">crowddynamics.core.structures.agents</span> <span class="k">import</span> <span class="n">agent_type_three_circle</span><span class="p">,</span> \
+    <span class="n">agent_type_circular</span><span class="p">,</span> <span class="n">shoulders</span>
+<span class="kn">from</span> <span class="nn">crowddynamics.core.vector2D</span> <span class="k">import</span> <span class="n">wrap_to_pi</span><span class="p">,</span> <span class="n">length</span>
+
+
+<span class="nd">@numba</span><span class="o">.</span><span class="n">jit</span><span class="p">([</span><span class="n">f8</span><span class="p">(</span><span class="n">typeof</span><span class="p">(</span><span class="n">agent_type_circular</span><span class="p">)[:],</span> <span class="n">f8</span><span class="p">,</span> <span class="n">f8</span><span class="p">),</span>
+            <span class="n">f8</span><span class="p">(</span><span class="n">typeof</span><span class="p">(</span><span class="n">agent_type_three_circle</span><span class="p">)[:],</span> <span class="n">f8</span><span class="p">,</span> <span class="n">f8</span><span class="p">)],</span>
+           <span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nogil</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="viewcode-block" id="adaptive_timestep"><a class="viewcode-back" href="../../../apidocs/crowddynamics.core.html#crowddynamics.core.integrator.adaptive_timestep">[docs]</a><span class="k">def</span> <span class="nf">adaptive_timestep</span><span class="p">(</span><span class="n">agents</span><span class="p">,</span> <span class="n">dt_min</span><span class="p">,</span> <span class="n">dt_max</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Timestep is selected from interval :math:`[\Delta t_{min}, \Delta t_{max}]`</span>
+<span class="sd">    by bounding the maximum step size :math:`\Delta x` an agent can take per</span>
+<span class="sd">    iteration cycle, obtained from</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">       \Delta x = c \Delta t_{max} \max_{i\in A} v_i^0 \\</span>
+
+<span class="sd">    where</span>
+
+<span class="sd">    - :math:`c &gt; 0` is scaling coefficient</span>
+<span class="sd">    - :math:`v_i^0` is agent&#39;s target velocity</span>
+<span class="sd">    - :math:`\max_{i\in A} v_i^0` is the maximum of all target velocities</span>
+
+<span class="sd">    Timestep is then obtained from</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">       \Delta t_{mid} &amp;= \frac{\Delta x}{\max_{i \in A} v_i} \\</span>
+<span class="sd">       \Delta t &amp;=</span>
+<span class="sd">       \begin{cases}</span>
+<span class="sd">       \Delta t_{min} &amp; \Delta t_{mid} &lt; \Delta t_{min} \\</span>
+<span class="sd">       \Delta t_{mid} &amp;  \\</span>
+<span class="sd">       \Delta t_{max} &amp; \Delta t_{mid} &gt; \Delta t_{max} \\</span>
+<span class="sd">       \end{cases}</span>
+
+<span class="sd">    where</span>
+
+<span class="sd">    - :math:`v_i` is agent&#39;s current velocity</span>
+
+
+<span class="sd">    Args:</span>
+<span class="sd">        dt_min:</span>
+<span class="sd">            Minimum timestep :math:`\Delta x_{min}` for adaptive integration.</span>
+
+<span class="sd">        dt_max:</span>
+<span class="sd">            Maximum timestep :math:`\Delta x_{max}` for adaptive integration.</span>
+
+<span class="sd">        velocity:</span>
+
+<span class="sd">        target_velocity:</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        float:</span>
+
+<span class="sd">    References</span>
+
+<span class="sd">    https://en.wikipedia.org/wiki/Adaptive_stepsize</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">v_max</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="k">for</span> <span class="n">agent</span> <span class="ow">in</span> <span class="n">agents</span><span class="p">:</span>
+        <span class="n">l</span> <span class="o">=</span> <span class="n">length</span><span class="p">(</span><span class="n">agent</span><span class="p">[</span><span class="s1">&#39;velocity&#39;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">l</span> <span class="o">&gt;</span> <span class="n">v_max</span><span class="p">:</span>
+            <span class="n">v_max</span> <span class="o">=</span> <span class="n">l</span>
+
+    <span class="k">if</span> <span class="n">v_max</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">dt_max</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="mf">1.1</span>
+    <span class="n">dx_max</span> <span class="o">=</span> <span class="n">c</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">agents</span><span class="p">[:][</span><span class="s1">&#39;target_velocity&#39;</span><span class="p">])</span> <span class="o">*</span> <span class="n">dt_max</span>
+    <span class="n">dt</span> <span class="o">=</span> <span class="n">dx_max</span> <span class="o">/</span> <span class="n">v_max</span>
+    <span class="k">if</span> <span class="n">dt</span> <span class="o">&gt;</span> <span class="n">dt_max</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">dt_max</span>
+    <span class="k">elif</span> <span class="n">dt</span> <span class="o">&lt;</span> <span class="n">dt_min</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">dt_min</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">dt</span></div>
+
+
+<span class="nd">@numba</span><span class="o">.</span><span class="n">jit</span><span class="p">([</span><span class="n">void</span><span class="p">(</span><span class="n">typeof</span><span class="p">(</span><span class="n">agent_type_circular</span><span class="p">)[:],</span> <span class="n">f8</span><span class="p">),</span>
+            <span class="n">void</span><span class="p">(</span><span class="n">typeof</span><span class="p">(</span><span class="n">agent_type_three_circle</span><span class="p">)[:],</span> <span class="n">f8</span><span class="p">)],</span>
+           <span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nogil</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="viewcode-block" id="translational_euler"><a class="viewcode-back" href="../../../apidocs/crowddynamics.core.html#crowddynamics.core.integrator.translational_euler">[docs]</a><span class="k">def</span> <span class="nf">translational_euler</span><span class="p">(</span><span class="n">agents</span><span class="p">,</span> <span class="n">dt</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Update translational motion using Eulers&#39;s method&quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">agent</span> <span class="ow">in</span> <span class="n">agents</span><span class="p">:</span>
+        <span class="n">acceleration</span> <span class="o">=</span> <span class="n">agent</span><span class="p">[</span><span class="s1">&#39;force&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="n">agent</span><span class="p">[</span><span class="s1">&#39;mass&#39;</span><span class="p">]</span>
+        <span class="n">agent</span><span class="p">[</span><span class="s1">&#39;position&#39;</span><span class="p">][:]</span> <span class="o">+=</span> <span class="n">agent</span><span class="p">[</span><span class="s1">&#39;velocity&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">dt</span> <span class="o">+</span> \
+                                <span class="n">acceleration</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">dt</span> <span class="o">**</span> <span class="mi">2</span>
+        <span class="n">agent</span><span class="p">[</span><span class="s1">&#39;velocity&#39;</span><span class="p">][:]</span> <span class="o">+=</span> <span class="n">acceleration</span> <span class="o">*</span> <span class="n">dt</span></div>
+
+
+<span class="nd">@numba</span><span class="o">.</span><span class="n">jit</span><span class="p">(</span><span class="n">void</span><span class="p">(</span><span class="n">typeof</span><span class="p">(</span><span class="n">agent_type_three_circle</span><span class="p">)[:],</span> <span class="n">f8</span><span class="p">),</span>
+           <span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nogil</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="viewcode-block" id="rotational_euler"><a class="viewcode-back" href="../../../apidocs/crowddynamics.core.html#crowddynamics.core.integrator.rotational_euler">[docs]</a><span class="k">def</span> <span class="nf">rotational_euler</span><span class="p">(</span><span class="n">agents</span><span class="p">,</span> <span class="n">dt</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Update rotational motion using Euler&#39;s method&quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">agent</span> <span class="ow">in</span> <span class="n">agents</span><span class="p">:</span>
+        <span class="n">angular_acceleration</span> <span class="o">=</span> <span class="n">agent</span><span class="p">[</span><span class="s1">&#39;torque&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="n">agent</span><span class="p">[</span><span class="s1">&#39;inertia_rot&#39;</span><span class="p">]</span>
+        <span class="n">agent</span><span class="p">[</span><span class="s1">&#39;orientation&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="n">agent</span><span class="p">[</span><span class="s1">&#39;angular_velocity&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">dt</span> <span class="o">+</span> \
+                                <span class="n">angular_acceleration</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">dt</span> <span class="o">**</span> <span class="mi">2</span>
+        <span class="n">agent</span><span class="p">[</span><span class="s1">&#39;angular_velocity&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="n">angular_acceleration</span> <span class="o">*</span> <span class="n">dt</span>
+        <span class="n">agent</span><span class="p">[</span><span class="s1">&#39;orientation&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">wrap_to_pi</span><span class="p">(</span><span class="n">agent</span><span class="p">[</span><span class="s1">&#39;orientation&#39;</span><span class="p">])</span>
+    <span class="n">shoulders</span><span class="p">(</span><span class="n">agents</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="euler_integrator"><a class="viewcode-back" href="../../../apidocs/crowddynamics.core.html#crowddynamics.core.integrator.euler_integrator">[docs]</a><span class="k">def</span> <span class="nf">euler_integrator</span><span class="p">(</span><span class="n">agents</span><span class="p">,</span> <span class="n">dt_min</span><span class="p">,</span> <span class="n">dt_max</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Differential system is integrated using numerical integration scheme using</span>
+<span class="sd">    discrete adaptive timestep :math:`\Delta t`.</span>
+
+<span class="sd">    Acceleration on an agent</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">       a_{k} &amp;= \mathbf{f}_{k} / m \\</span>
+<span class="sd">       \mathbf{x}_{k+1} &amp;= \mathbf{x}_{k} + \mathbf{v}_{k} \Delta t + \frac{1}{2} a_{k} \Delta t^{2} \\</span>
+<span class="sd">       \mathbf{v}_{k+1} &amp;= \mathbf{v}_{k} + a_{k} \Delta t \\</span>
+
+<span class="sd">    Angular acceleration</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">       \alpha_{k} &amp;= M_{k} / I \\</span>
+<span class="sd">       \varphi_{k+1} &amp;= \varphi_{k} + \omega_{k} \Delta t + \frac{1}{2} \alpha_{k} \Delta t^{2} \\</span>
+<span class="sd">       \omega_{k+1} &amp;= \omega_{k} + \alpha_{k} \Delta t \\</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        agents (Agent):</span>
+
+<span class="sd">        dt_min (float):</span>
+<span class="sd">            Minimum timestep :math:`\Delta x_{min}` for adaptive integration.</span>
+
+<span class="sd">        dt_max (float):</span>
+<span class="sd">            Maximum timestep :math:`\Delta x_{max}` for adaptive integration.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        float: Timestep :math:`\Delta t` that was used for integration.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">dt</span> <span class="o">=</span> <span class="n">adaptive_timestep</span><span class="p">(</span><span class="n">agents</span><span class="p">,</span> <span class="n">dt_min</span><span class="p">,</span> <span class="n">dt_max</span><span class="p">)</span>
+    <span class="n">translational_euler</span><span class="p">(</span><span class="n">agents</span><span class="p">,</span> <span class="n">dt</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">agents</span><span class="o">.</span><span class="n">dtype</span> <span class="ow">is</span> <span class="n">agent_type_three_circle</span><span class="p">:</span>
+        <span class="n">rotational_euler</span><span class="p">(</span><span class="n">agents</span><span class="p">,</span> <span class="n">dt</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">dt</span></div>
+
+
+<span class="nd">@numba</span><span class="o">.</span><span class="n">jit</span><span class="p">([</span><span class="n">void</span><span class="p">(</span><span class="n">typeof</span><span class="p">(</span><span class="n">agent_type_circular</span><span class="p">)[:],</span> <span class="n">f8</span><span class="p">),</span>
+            <span class="n">void</span><span class="p">(</span><span class="n">typeof</span><span class="p">(</span><span class="n">agent_type_three_circle</span><span class="p">)[:],</span> <span class="n">f8</span><span class="p">)],</span>
+           <span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nogil</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="viewcode-block" id="translational_verlet"><a class="viewcode-back" href="../../../apidocs/crowddynamics.core.html#crowddynamics.core.integrator.translational_verlet">[docs]</a><span class="k">def</span> <span class="nf">translational_verlet</span><span class="p">(</span><span class="n">agents</span><span class="p">,</span> <span class="n">dt</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Translational motion using velocity verlet method&quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">agent</span> <span class="ow">in</span> <span class="n">agents</span><span class="p">:</span>
+        <span class="n">old_acceleration</span> <span class="o">=</span> <span class="n">agent</span><span class="p">[</span><span class="s1">&#39;force_prev&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="n">agent</span><span class="p">[</span><span class="s1">&#39;mass&#39;</span><span class="p">]</span>
+        <span class="n">new_acceleration</span> <span class="o">=</span> <span class="n">agent</span><span class="p">[</span><span class="s1">&#39;force&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="n">agent</span><span class="p">[</span><span class="s1">&#39;mass&#39;</span><span class="p">]</span>
+        <span class="n">agent</span><span class="p">[</span><span class="s1">&#39;force_prev&#39;</span><span class="p">][:]</span> <span class="o">=</span> <span class="n">agent</span><span class="p">[</span><span class="s1">&#39;force&#39;</span><span class="p">]</span>
+
+        <span class="n">agent</span><span class="p">[</span><span class="s1">&#39;velocity&#39;</span><span class="p">][:]</span> <span class="o">+=</span> <span class="p">(</span><span class="n">old_acceleration</span> <span class="o">+</span> <span class="n">new_acceleration</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">dt</span>
+        <span class="n">agent</span><span class="p">[</span><span class="s1">&#39;position&#39;</span><span class="p">][:]</span> <span class="o">+=</span> <span class="n">agent</span><span class="p">[</span><span class="s1">&#39;velocity&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">dt</span> <span class="o">+</span> \
+                                <span class="n">new_acceleration</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">dt</span> <span class="o">**</span> <span class="mi">2</span></div>
+
+
+<span class="nd">@numba</span><span class="o">.</span><span class="n">jit</span><span class="p">(</span><span class="n">void</span><span class="p">(</span><span class="n">typeof</span><span class="p">(</span><span class="n">agent_type_three_circle</span><span class="p">)[:],</span> <span class="n">f8</span><span class="p">),</span>
+           <span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nogil</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="viewcode-block" id="rotational_verlet"><a class="viewcode-back" href="../../../apidocs/crowddynamics.core.html#crowddynamics.core.integrator.rotational_verlet">[docs]</a><span class="k">def</span> <span class="nf">rotational_verlet</span><span class="p">(</span><span class="n">agents</span><span class="p">,</span> <span class="n">dt</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Rotational motion using velocity verlet method&quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">agent</span> <span class="ow">in</span> <span class="n">agents</span><span class="p">:</span>
+        <span class="n">old_angular_acceleration</span> <span class="o">=</span> <span class="n">agent</span><span class="p">[</span><span class="s1">&#39;torque_prev&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="n">agent</span><span class="p">[</span><span class="s1">&#39;inertia_rot&#39;</span><span class="p">]</span>
+        <span class="n">new_angular_acceleration</span> <span class="o">=</span> <span class="n">agent</span><span class="p">[</span><span class="s1">&#39;torque&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="n">agent</span><span class="p">[</span><span class="s1">&#39;inertia_rot&#39;</span><span class="p">]</span>
+        <span class="n">agent</span><span class="p">[</span><span class="s1">&#39;torque_prev&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">agent</span><span class="p">[</span><span class="s1">&#39;torque&#39;</span><span class="p">]</span>
+
+        <span class="n">agent</span><span class="p">[</span><span class="s1">&#39;angular_velocity&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="p">(</span><span class="n">old_angular_acceleration</span> <span class="o">+</span>
+                                      <span class="n">new_angular_acceleration</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">dt</span>
+        <span class="n">agent</span><span class="p">[</span><span class="s1">&#39;orientation&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="n">agent</span><span class="p">[</span><span class="s1">&#39;angular_velocity&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">dt</span> <span class="o">+</span> \
+                                <span class="n">new_angular_acceleration</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">dt</span> <span class="o">**</span> <span class="mi">2</span>
+
+        <span class="n">agent</span><span class="p">[</span><span class="s1">&#39;orientation&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">wrap_to_pi</span><span class="p">(</span><span class="n">agent</span><span class="p">[</span><span class="s1">&#39;orientation&#39;</span><span class="p">])</span>
+    <span class="n">shoulders</span><span class="p">(</span><span class="n">agents</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="velocity_verlet_integrator_init"><a class="viewcode-back" href="../../../apidocs/crowddynamics.core.html#crowddynamics.core.integrator.velocity_verlet_integrator_init">[docs]</a><span class="k">def</span> <span class="nf">velocity_verlet_integrator_init</span><span class="p">(</span><span class="n">agents</span><span class="p">,</span> <span class="n">dt_min</span><span class="p">,</span> <span class="n">dt_max</span><span class="p">):</span>
+    <span class="n">dt</span> <span class="o">=</span> <span class="n">adaptive_timestep</span><span class="p">(</span><span class="n">agents</span><span class="p">,</span> <span class="n">dt_min</span><span class="p">,</span> <span class="n">dt_max</span><span class="p">)</span>
+    <span class="n">translational_euler</span><span class="p">(</span><span class="n">agents</span><span class="p">,</span> <span class="n">dt</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">agent</span> <span class="ow">in</span> <span class="n">agents</span><span class="p">:</span>
+        <span class="n">agent</span><span class="p">[</span><span class="s1">&#39;force_prev&#39;</span><span class="p">][:]</span> <span class="o">=</span> <span class="n">agent</span><span class="p">[</span><span class="s1">&#39;force&#39;</span><span class="p">][:]</span>
+    <span class="k">if</span> <span class="n">agents</span><span class="o">.</span><span class="n">dtype</span> <span class="ow">is</span> <span class="n">agent_type_three_circle</span><span class="p">:</span>
+        <span class="n">rotational_euler</span><span class="p">(</span><span class="n">agents</span><span class="p">,</span> <span class="n">dt</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">agent</span> <span class="ow">in</span> <span class="n">agents</span><span class="p">:</span>
+            <span class="n">agent</span><span class="p">[</span><span class="s1">&#39;torque_prev&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">agent</span><span class="p">[</span><span class="s1">&#39;torque&#39;</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">dt</span></div>
+
+
+<div class="viewcode-block" id="velocity_verlet_integrator"><a class="viewcode-back" href="../../../apidocs/crowddynamics.core.html#crowddynamics.core.integrator.velocity_verlet_integrator">[docs]</a><span class="k">def</span> <span class="nf">velocity_verlet_integrator</span><span class="p">(</span><span class="n">agents</span><span class="p">,</span> <span class="n">dt_min</span><span class="p">,</span> <span class="n">dt_max</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Velocity verlet integrator algorithm</span>
+
+<span class="sd">    Translational motion</span>
+
+<span class="sd">    1. </span>
+
+<span class="sd">        .. math::</span>
+<span class="sd">            \mathbf{v}_{k+1/2} = \mathbf{v}_{k} + \frac{1}{2} a_{k} \Delta t</span>
+<span class="sd">    </span>
+<span class="sd">    2.</span>
+<span class="sd">    </span>
+<span class="sd">        .. math::</span>
+<span class="sd">            \mathbf{x}_{k+1} = \mathbf{x}_{k} + \mathbf{v}_{k+1/2} \Delta t</span>
+<span class="sd">    </span>
+<span class="sd">    3. </span>
+<span class="sd">    </span>
+<span class="sd">        .. math::</span>
+<span class="sd">            a_{k+1} = \mathbf{f}_{k+1} / m</span>
+<span class="sd">    </span>
+<span class="sd">    4. </span>
+<span class="sd">    </span>
+<span class="sd">        .. math::</span>
+<span class="sd">            \mathbf{v}_{k+1} = \mathbf{v}_{k+1/2} + \frac{1}{2} a_{k+1} \Delta t</span>
+
+<span class="sd">    .. Todo::  Rotational motion</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        agents (Agent):</span>
+
+<span class="sd">        dt_min (float):</span>
+<span class="sd">            Minimum timestep :math:`\Delta x_{min}` for adaptive integration.</span>
+
+<span class="sd">        dt_max (float):</span>
+<span class="sd">            Maximum timestep :math:`\Delta x_{max}` for adaptive integration.</span>
+
+<span class="sd">    Yields:</span>
+<span class="sd">        float: Timestep :math:`\Delta t` that was used for integration.</span>
+
+<span class="sd">    References</span>
+<span class="sd">        - https://en.wikipedia.org/wiki/Verlet_integration#Velocity_Verlet</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">dt</span> <span class="o">=</span> <span class="n">adaptive_timestep</span><span class="p">(</span><span class="n">agents</span><span class="p">,</span> <span class="n">dt_min</span><span class="p">,</span> <span class="n">dt_max</span><span class="p">)</span>
+    <span class="n">translational_verlet</span><span class="p">(</span><span class="n">agents</span><span class="p">,</span> <span class="n">dt</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">agents</span><span class="o">.</span><span class="n">dtype</span> <span class="ow">is</span> <span class="n">agent_type_three_circle</span><span class="p">:</span>
+        <span class="n">rotational_verlet</span><span class="p">(</span><span class="n">agents</span><span class="p">,</span> <span class="n">dt</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">dt</span></div>
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright Jaan Tollander de Balsch.
+      Last updated on 2017-05-10.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'legacy+297.gd2a5250.dirty',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

@@ -1,0 +1,1112 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>crowddynamics.core package &mdash; crowddynamics legacy+297.gd2a5250.dirty documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="crowddynamics legacy+297.gd2a5250.dirty documentation" href="../index.html"/>
+        <link rel="up" title="crowddynamics package" href="crowddynamics.html"/>
+        <link rel="next" title="crowddynamics.core.interactions package" href="crowddynamics.core.interactions.html"/>
+        <link rel="prev" title="crowddynamics package" href="crowddynamics.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> crowddynamics
+          
+
+          
+            
+            <img src="../_static/logo.svg" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                legacy+297legacy+297.gd2a5250.dirtygd2a5250
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">General</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage.html">Usage</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Multi-Agent Simulation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../multiagent.html">Multi-Agent Simulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../interactions.html">Interactions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../motion.html">Motion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../steering.html">Steering</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Api</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="crowddynamics.html">crowddynamics package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="crowddynamics.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">crowddynamics.core package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#subpackages">Subpackages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-crowddynamics.core.conftest">crowddynamics.core.conftest module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-crowddynamics.core.evacuation">crowddynamics.core.evacuation module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-crowddynamics.core.geometry">crowddynamics.core.geometry module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-crowddynamics.core.integrator">crowddynamics.core.integrator module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-crowddynamics.core.tree">crowddynamics.core.tree module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-crowddynamics.core.vector2D">crowddynamics.core.vector2D module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-crowddynamics.core">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crowddynamics.simulation.html">crowddynamics.simulation package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="crowddynamics.tests.html">crowddynamics.tests package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="crowddynamics.visualization.html">crowddynamics.visualization package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.html#module-crowddynamics.cli">crowddynamics.cli module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.html#module-crowddynamics.config">crowddynamics.config module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.html#module-crowddynamics.exceptions">crowddynamics.exceptions module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.html#module-crowddynamics.io">crowddynamics.io module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.html#module-crowddynamics.logging">crowddynamics.logging module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.html#module-crowddynamics.parse">crowddynamics.parse module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.html#module-crowddynamics.testing">crowddynamics.testing module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.html#module-crowddynamics">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../apidocs_examples/examples.html">examples package</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Research</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../quantities.html">Quantities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../phenomena.html">Phenomena</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../applications.html">Applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">References</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">crowddynamics</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="crowddynamics.html">crowddynamics package</a> &raquo;</li>
+        
+      <li>crowddynamics.core package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/apidocs/crowddynamics.core.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="crowddynamics-core-package">
+<h1>crowddynamics.core package<a class="headerlink" href="#crowddynamics-core-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="crowddynamics.core.interactions.html">crowddynamics.core.interactions package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.core.interactions.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="crowddynamics.core.interactions.tests.html">crowddynamics.core.interactions.tests package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.interactions.tests.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.interactions.tests.html#module-crowddynamics.core.interactions.tests.test_block_list">crowddynamics.core.interactions.tests.test_block_list module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.interactions.tests.html#module-crowddynamics.core.interactions.tests.test_block_list_benchmark">crowddynamics.core.interactions.tests.test_block_list_benchmark module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.interactions.tests.html#module-crowddynamics.core.interactions.tests.test_distance">crowddynamics.core.interactions.tests.test_distance module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.interactions.tests.html#module-crowddynamics.core.interactions.tests.test_interactions">crowddynamics.core.interactions.tests.test_interactions module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.interactions.tests.html#module-crowddynamics.core.interactions.tests.test_interactions_benchmark">crowddynamics.core.interactions.tests.test_interactions_benchmark module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.interactions.tests.html#module-crowddynamics.core.interactions.tests.test_interactions_mt">crowddynamics.core.interactions.tests.test_interactions_mt module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.interactions.tests.html#module-crowddynamics.core.interactions.tests">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.core.interactions.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.core.interactions.html#module-crowddynamics.core.interactions.block_list">crowddynamics.core.interactions.block_list module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="crowddynamics.core.interactions.html#block-list">Block List</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.interactions.html#iteration">Iteration</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.core.interactions.html#module-crowddynamics.core.interactions.distance">crowddynamics.core.interactions.distance module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.core.interactions.html#module-crowddynamics.core.interactions.interactions">crowddynamics.core.interactions.interactions module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="crowddynamics.core.interactions.html#interactions">Interactions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.interactions.html#brute-force-summation">Brute Force Summation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.interactions.html#block-list-summation">Block List Summation</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.core.interactions.html#module-crowddynamics.core.interactions.interactions_mt">crowddynamics.core.interactions.interactions_mt module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.core.interactions.html#module-crowddynamics.core.interactions">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="crowddynamics.core.motion.html">crowddynamics.core.motion package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.core.motion.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="crowddynamics.core.motion.tests.html">crowddynamics.core.motion.tests package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.motion.tests.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.motion.tests.html#module-crowddynamics.core.motion.tests.test_motion">crowddynamics.core.motion.tests.test_motion module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.motion.tests.html#module-crowddynamics.core.motion.tests.test_power_law">crowddynamics.core.motion.tests.test_power_law module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.motion.tests.html#module-crowddynamics.core.motion.tests.test_power_law_benchmark">crowddynamics.core.motion.tests.test_power_law_benchmark module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.motion.tests.html#module-crowddynamics.core.motion.tests">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.core.motion.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.core.motion.html#module-crowddynamics.core.motion.adjusting">crowddynamics.core.motion.adjusting module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="crowddynamics.core.motion.html#adjusting">Adjusting</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.core.motion.html#module-crowddynamics.core.motion.contact">crowddynamics.core.motion.contact module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="crowddynamics.core.motion.html#contact">Contact</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.core.motion.html#module-crowddynamics.core.motion.fluctuation">crowddynamics.core.motion.fluctuation module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="crowddynamics.core.motion.html#fluctuation">Fluctuation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.core.motion.html#module-crowddynamics.core.motion.helbing">crowddynamics.core.motion.helbing module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.core.motion.html#module-crowddynamics.core.motion.power_law">crowddynamics.core.motion.power_law module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="crowddynamics.core.motion.html#universal-power-law-governing-pedestrian-interactions">Universal Power Law Governing Pedestrian Interactions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.core.motion.html#module-crowddynamics.core.motion.subgroups">crowddynamics.core.motion.subgroups module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.core.motion.html#module-crowddynamics.core.motion">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="crowddynamics.core.random.html">crowddynamics.core.random package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.core.random.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="crowddynamics.core.random.tests.html">crowddynamics.core.random.tests package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.random.tests.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.random.tests.html#module-crowddynamics.core.random.tests.test_random">crowddynamics.core.random.tests.test_random module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.random.tests.html#module-crowddynamics.core.random.tests.test_sampling">crowddynamics.core.random.tests.test_sampling module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.random.tests.html#module-crowddynamics.core.random.tests">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.core.random.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.core.random.html#module-crowddynamics.core.random.functions">crowddynamics.core.random.functions module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.core.random.html#module-crowddynamics.core.random.sampling">crowddynamics.core.random.sampling module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.core.random.html#module-crowddynamics.core.random">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="crowddynamics.core.steering.html">crowddynamics.core.steering package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.core.steering.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="crowddynamics.core.steering.tests.html">crowddynamics.core.steering.tests package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.steering.tests.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.steering.tests.html#module-crowddynamics.core.steering.tests.test_herding">crowddynamics.core.steering.tests.test_herding module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.steering.tests.html#module-crowddynamics.core.steering.tests.test_quickest_path">crowddynamics.core.steering.tests.test_quickest_path module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.steering.tests.html#module-crowddynamics.core.steering.tests">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.core.steering.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.core.steering.html#module-crowddynamics.core.steering.functions">crowddynamics.core.steering.functions module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.core.steering.html#module-crowddynamics.core.steering.herding">crowddynamics.core.steering.herding module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.core.steering.html#module-crowddynamics.core.steering.navigation">crowddynamics.core.steering.navigation module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="crowddynamics.core.steering.html#navigation">Navigation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.core.steering.html#module-crowddynamics.core.steering.obstacle_handling">crowddynamics.core.steering.obstacle_handling module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.core.steering.html#module-crowddynamics.core.steering.orientation">crowddynamics.core.steering.orientation module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="crowddynamics.core.steering.html#orientation">Orientation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.core.steering.html#module-crowddynamics.core.steering.quickest_path">crowddynamics.core.steering.quickest_path module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.core.steering.html#module-crowddynamics.core.steering">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="crowddynamics.core.structures.html">crowddynamics.core.structures package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.core.structures.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="crowddynamics.core.structures.tests.html">crowddynamics.core.structures.tests package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.structures.tests.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.structures.tests.html#module-crowddynamics.core.structures.tests.test_agents">crowddynamics.core.structures.tests.test_agents module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.structures.tests.html#module-crowddynamics.core.structures.tests.test_neighborhood">crowddynamics.core.structures.tests.test_neighborhood module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.structures.tests.html#module-crowddynamics.core.structures.tests.test_obstacles">crowddynamics.core.structures.tests.test_obstacles module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.structures.tests.html#module-crowddynamics.core.structures.tests">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.core.structures.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.core.structures.html#module-crowddynamics.core.structures.agents">crowddynamics.core.structures.agents module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.core.structures.html#module-crowddynamics.core.structures.neighborhood">crowddynamics.core.structures.neighborhood module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.core.structures.html#module-crowddynamics.core.structures.obstacles">crowddynamics.core.structures.obstacles module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.core.structures.html#module-crowddynamics.core.structures">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="crowddynamics.core.tests.html">crowddynamics.core.tests package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.core.tests.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.core.tests.html#module-crowddynamics.core.tests.test_evacuation">crowddynamics.core.tests.test_evacuation module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.core.tests.html#module-crowddynamics.core.tests.test_geometry">crowddynamics.core.tests.test_geometry module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.core.tests.html#module-crowddynamics.core.tests.test_integrator">crowddynamics.core.tests.test_integrator module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.core.tests.html#module-crowddynamics.core.tests.test_taskgraph">crowddynamics.core.tests.test_taskgraph module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.core.tests.html#module-crowddynamics.core.tests.test_vector2D">crowddynamics.core.tests.test_vector2D module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.core.tests.html#module-crowddynamics.core.tests.test_vector2D_benchmarks">crowddynamics.core.tests.test_vector2D_benchmarks module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.core.tests.html#module-crowddynamics.core.tests">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-crowddynamics.core.conftest">
+<span id="crowddynamics-core-conftest-module"></span><h2>crowddynamics.core.conftest module<a class="headerlink" href="#module-crowddynamics.core.conftest" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="crowddynamics.core.conftest.agents_circular">
+<code class="descclassname">crowddynamics.core.conftest.</code><code class="descname">agents_circular</code><span class="sig-paren">(</span><em>size=10</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/core/conftest.html#agents_circular"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.conftest.agents_circular" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="crowddynamics.core.conftest.agents_three_circle">
+<code class="descclassname">crowddynamics.core.conftest.</code><code class="descname">agents_three_circle</code><span class="sig-paren">(</span><em>size=10</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/core/conftest.html#agents_three_circle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.conftest.agents_three_circle" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="crowddynamics.core.conftest.linear_walls">
+<code class="descclassname">crowddynamics.core.conftest.</code><code class="descname">linear_walls</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/core/conftest.html#linear_walls"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.conftest.linear_walls" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-crowddynamics.core.evacuation">
+<span id="crowddynamics-core-evacuation-module"></span><h2>crowddynamics.core.evacuation module<a class="headerlink" href="#module-crowddynamics.core.evacuation" title="Permalink to this headline">¶</a></h2>
+<p>Evacuation related functions</p>
+<dl class="attribute">
+<dt id="crowddynamics.core.evacuation.agent_closer_to_exit">
+<code class="descclassname">crowddynamics.core.evacuation.</code><code class="descname">agent_closer_to_exit</code><a class="reference internal" href="../_modules/crowddynamics/core/evacuation.html#agent_closer_to_exit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.evacuation.agent_closer_to_exit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Amount of positions (agents) closer to center of the exit.</p>
+<ol class="arabic simple">
+<li>Denote <span class="math">\(i\)</span> as indices of the positions <span class="math">\(\mathbf{x}\)</span>.</li>
+<li>Distance from narrow exit can be estimated</li>
+</ol>
+<blockquote>
+<div><div class="math">
+\[d_i = \| \mathbf{c} - \mathbf{x}_{i} \|\]</div>
+</div></blockquote>
+<ol class="arabic simple" start="3">
+<li>By sorting the values <span class="math">\(d_i\)</span> by its indices we obtain array</li>
+</ol>
+<blockquote>
+<div><div class="math">
+\[a_i = \underset{i \in P}{\operatorname{arg\,sort}}(d_i)\]</div>
+<p>where</p>
+<ul class="simple">
+<li>Values: Indices of the positions sorted by the distance from the exit</li>
+<li>Indices: Number of positions closer to the exit</li>
+</ul>
+</div></blockquote>
+<ol class="arabic simple" start="4">
+<li>By sorting the values <span class="math">\(a_i\)</span> by it indices we obtain array</li>
+</ol>
+<blockquote>
+<div><div class="math">
+\[\lambda_i = \operatorname{arg\,sort} (a_i)\]</div>
+<p>where</p>
+<ul class="simple">
+<li>Values: Number of positions closer to the exit</li>
+<li>Indices: Indices of the positions</li>
+</ul>
+</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>c_door</strong> (<em>numpy.ndarray</em>) &#8211; Center of the exit <span class="math">\(\mathbf{c}\)</span>.</li>
+<li><strong>position</strong> (<em>numpy.ndarray</em>) &#8211; Positions <span class="math">\(\mathbf{x}\)</span> of the agents.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Array <span class="math">\(\lambda_i\)</span></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy.ndarray</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="crowddynamics.core.evacuation.exit_selection">
+<code class="descclassname">crowddynamics.core.evacuation.</code><code class="descname">exit_selection</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/core/evacuation.html#exit_selection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.evacuation.exit_selection" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.core.evacuation.narrow_exit_capacity">
+<code class="descclassname">crowddynamics.core.evacuation.</code><code class="descname">narrow_exit_capacity</code><a class="reference internal" href="../_modules/crowddynamics/core/evacuation.html#narrow_exit_capacity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.evacuation.narrow_exit_capacity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Estimation of the capacity of narrow exit.</p>
+<p>Capacity estimation <span class="math">\(\beta\)</span> of unidirectional flow through narrow
+bottleneck. Capacity of the bottleneck increases in stepwise manner.</p>
+<p>Simple estimation</p>
+<div class="math">
+\[\beta_{simple} = c \left \lfloor \frac{d_{door}}{d_{agent}} \right \rfloor\]</div>
+<p>More sophisticated estimation <a class="reference internal" href="../references.html#hoogendoorn2005a" id="id1">[Hoogendoorn2005a]</a>, <a class="reference internal" href="../references.html#seyfried2007a" id="id2">[Seyfried2007a]</a>
+when <span class="math">\(d_{door} \geq d_{agent}\)</span></p>
+<div class="math">
+\[\beta_{hoogen} = c \left \lfloor \frac{d_{door} - (d_{agent} - d_{layer})}{d_{layer}} \right \rfloor\]</div>
+<p>We have relationship between simple and hoogendoorn&#8217;s estimation</p>
+<div class="math">
+\[\beta_{hoogen} = \beta_{simple}, \quad d_{layer} = d_{agent}\]</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>d_door</strong> (<em>float</em>) &#8211; Width of the door <span class="math">\(0\,\mathrm{m} &lt; d_{door} &lt; 3\,\mathrm{m}\)</span>.</li>
+<li><strong>d_agent</strong> (<em>float</em>) &#8211; Width of the agent <span class="math">\(d_{agent} &gt; 0\,\mathrm{m}\)</span>.</li>
+<li><strong>d_layer</strong> (<em>float</em><em>, </em><em>optional</em>) &#8211; Width of layer <span class="math">\(d_{layer}\)</span>. Reference value:
+<span class="math">\(0.45\,\mathrm{m}\)</span></li>
+<li><strong>coeff</strong> (<em>float</em>) &#8211; Scaling coefficient <span class="math">\(c &gt; 0\)</span> for the estimation.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><p>Depending on the value of <code class="docutils literal"><span class="pre">d_layer</span></code> either simple or hoogen
+estimation is returned</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">None</span></code>: Uses simple estimation <span class="math">\(\beta_{simple}\)</span></li>
+<li><code class="docutils literal"><span class="pre">float</span></code>: Uses Hoogendoorn&#8217;s estimation <span class="math">\(\beta_{hoogen}\)</span></li>
+</ul>
+</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">float</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-crowddynamics.core.geometry">
+<span id="crowddynamics-core-geometry-module"></span><h2>crowddynamics.core.geometry module<a class="headerlink" href="#module-crowddynamics.core.geometry" title="Permalink to this headline">¶</a></h2>
+<p>Functions for manipulating Shapely geometry objects</p>
+<p class="rubric">References</p>
+<ul class="simple">
+<li><a class="reference external" href="http://toblerity.org/shapely/manual.html">http://toblerity.org/shapely/manual.html</a></li>
+</ul>
+<dl class="function">
+<dt id="crowddynamics.core.geometry.draw_geom">
+<code class="descclassname">crowddynamics.core.geometry.</code><code class="descname">draw_geom</code><span class="sig-paren">(</span><em>geom: shapely.geometry.base.BaseGeometry</em>, <em>grid</em>, <em>indicer: typing.Callable</em>, <em>value</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/core/geometry.html#draw_geom"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.geometry.draw_geom" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw geom to grid</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="crowddynamics.core.geometry.geom_to_linear_obstacles">
+<code class="descclassname">crowddynamics.core.geometry.</code><code class="descname">geom_to_linear_obstacles</code><span class="sig-paren">(</span><em>geom</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/core/geometry.html#geom_to_linear_obstacles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.geometry.geom_to_linear_obstacles" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts shape(s) to array of linear obstacles.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="crowddynamics.core.geometry.geom_to_linesegment">
+<code class="descclassname">crowddynamics.core.geometry.</code><code class="descname">geom_to_linesegment</code><span class="sig-paren">(</span><em>geom: shapely.geometry.base.BaseGeometry</em><span class="sig-paren">)</span> &#x2192; typing.Iterator[typing.Tuple[typing.Tuple[float, float], typing.Tuple[float, float]]]<a class="reference internal" href="../_modules/crowddynamics/core/geometry.html#geom_to_linesegment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.geometry.geom_to_linesegment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts shapes to point pairs.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ls</span> <span class="o">=</span> <span class="n">LineString</span><span class="p">([(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">geom_to_linesegment</span><span class="p">(</span><span class="n">ls</span><span class="p">))</span>
+<span class="go">[((1.0, 2.0), (3.0, 4.0))]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">poly</span> <span class="o">=</span> <span class="n">Polygon</span><span class="p">([(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span> <span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">),</span> <span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">)])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">geom_to_linesegment</span><span class="p">(</span><span class="n">poly</span><span class="p">))</span>
+<span class="go">[((5.0, 6.0), (7.0, 8.0)),</span>
+<span class="go"> ((7.0, 8.0), (9.0, 10.0)),</span>
+<span class="go"> ((9.0, 10.0), (5.0, 6.0))]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">geom_to_linesegment</span><span class="p">(</span><span class="n">ls</span> <span class="o">|</span> <span class="n">poly</span><span class="p">))</span>
+<span class="go">[((1.0, 2.0), (3.0, 4.0)),</span>
+<span class="go"> ((5.0, 6.0), (7.0, 8.0)),</span>
+<span class="go"> ((7.0, 8.0), (9.0, 10.0)),</span>
+<span class="go"> ((9.0, 10.0), (5.0, 6.0))]</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>geom</strong> (<em>BaseGeometry</em>) &#8211; BaseGeometry type.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Iterable of linesegments</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">Iterable[LineSegment]</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="crowddynamics.core.geometry.union">
+<code class="descclassname">crowddynamics.core.geometry.</code><code class="descname">union</code><span class="sig-paren">(</span><em>*geoms</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/core/geometry.html#union"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.geometry.union" title="Permalink to this definition">¶</a></dt>
+<dd><p>Union of geometries</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="crowddynamics.core.geometry.validate_geom">
+<code class="descclassname">crowddynamics.core.geometry.</code><code class="descname">validate_geom</code><span class="sig-paren">(</span><em>geom</em>, <em>name</em>, <em>types</em>, <em>optional=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/core/geometry.html#validate_geom"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.geometry.validate_geom" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validate simulation geometry</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>geom</strong> (<em>BaseGeometry</em>) &#8211; </li>
+<li><strong>name</strong> (<em>str</em>) &#8211; </li>
+<li><strong>types</strong> &#8211; Type of iterable of types.</li>
+<li><strong>optional</strong> (<em>bool</em>) &#8211; True if None is valid type else False.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-crowddynamics.core.integrator">
+<span id="crowddynamics-core-integrator-module"></span><h2>crowddynamics.core.integrator module<a class="headerlink" href="#module-crowddynamics.core.integrator" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="integrator">
+<h3>Integrator<a class="headerlink" href="#integrator" title="Permalink to this headline">¶</a></h3>
+<p>Numerical solver for differential system consisting of translational and
+rotational motion which produces the movement for agents in crowddynamics</p>
+<div class="math">
+\[\begin{split}\begin{cases}
+m \frac{d^{2}}{d t^{2}} \mathbf{x}(t) = \mathbf{f}(t) + \boldsymbol{\xi}(t) \\
+I \frac{d^{2}}{d t^{2}} \varphi(t) = M(t) + \eta(t)
+\end{cases}\end{split}\]</div>
+<p>where</p>
+<ul class="simple">
+<li>Total force <span class="math">\(\mathbf{f}(t) = \mathbf{f}^{adjusting} + \mathbf{f}^{agent-agent} + \mathbf{f}^{agent-obstacles}\)</span></li>
+<li>Random fluctutation force <span class="math">\(\boldsymbol{\xi}(t)\)</span></li>
+<li>Total torque <span class="math">\(M(t) = M^{adjusting} + M^{agent-agent} + M^{agent-obstacles}\)</span></li>
+<li>Random fluctuation torque <span class="math">\(\eta(t)\)</span></li>
+</ul>
+<dl class="attribute">
+<dt id="crowddynamics.core.integrator.adaptive_timestep">
+<code class="descclassname">crowddynamics.core.integrator.</code><code class="descname">adaptive_timestep</code><a class="reference internal" href="../_modules/crowddynamics/core/integrator.html#adaptive_timestep"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.integrator.adaptive_timestep" title="Permalink to this definition">¶</a></dt>
+<dd><p>Timestep is selected from interval <span class="math">\([\Delta t_{min}, \Delta t_{max}]\)</span>
+by bounding the maximum step size <span class="math">\(\Delta x\)</span> an agent can take per
+iteration cycle, obtained from</p>
+<div class="math">
+\[\begin{split}\Delta x = c \Delta t_{max} \max_{i\in A} v_i^0 \\\end{split}\]</div>
+<p>where</p>
+<ul class="simple">
+<li><span class="math">\(c &gt; 0\)</span> is scaling coefficient</li>
+<li><span class="math">\(v_i^0\)</span> is agent&#8217;s target velocity</li>
+<li><span class="math">\(\max_{i\in A} v_i^0\)</span> is the maximum of all target velocities</li>
+</ul>
+<p>Timestep is then obtained from</p>
+<div class="math">
+\[\begin{split}\Delta t_{mid} &amp;= \frac{\Delta x}{\max_{i \in A} v_i} \\
+\Delta t &amp;=
+\begin{cases}
+\Delta t_{min} &amp; \Delta t_{mid} &lt; \Delta t_{min} \\
+\Delta t_{mid} &amp;  \\
+\Delta t_{max} &amp; \Delta t_{mid} &gt; \Delta t_{max} \\
+\end{cases}\end{split}\]</div>
+<p>where</p>
+<ul class="simple">
+<li><span class="math">\(v_i\)</span> is agent&#8217;s current velocity</li>
+</ul>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>dt_min</strong> &#8211; Minimum timestep <span class="math">\(\Delta x_{min}\)</span> for adaptive integration.</li>
+<li><strong>dt_max</strong> &#8211; Maximum timestep <span class="math">\(\Delta x_{max}\)</span> for adaptive integration.</li>
+<li><strong>velocity</strong> &#8211; </li>
+<li><strong>target_velocity</strong> &#8211; </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">float</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p>References</p>
+<p><a class="reference external" href="https://en.wikipedia.org/wiki/Adaptive_stepsize">https://en.wikipedia.org/wiki/Adaptive_stepsize</a></p>
+</dd></dl>
+
+<dl class="function">
+<dt id="crowddynamics.core.integrator.euler_integrator">
+<code class="descclassname">crowddynamics.core.integrator.</code><code class="descname">euler_integrator</code><span class="sig-paren">(</span><em>agents</em>, <em>dt_min</em>, <em>dt_max</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/core/integrator.html#euler_integrator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.integrator.euler_integrator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Differential system is integrated using numerical integration scheme using
+discrete adaptive timestep <span class="math">\(\Delta t\)</span>.</p>
+<p>Acceleration on an agent</p>
+<div class="math">
+\[\begin{split}a_{k} &amp;= \mathbf{f}_{k} / m \\
+\mathbf{x}_{k+1} &amp;= \mathbf{x}_{k} + \mathbf{v}_{k} \Delta t + \frac{1}{2} a_{k} \Delta t^{2} \\
+\mathbf{v}_{k+1} &amp;= \mathbf{v}_{k} + a_{k} \Delta t \\\end{split}\]</div>
+<p>Angular acceleration</p>
+<div class="math">
+\[\begin{split}\alpha_{k} &amp;= M_{k} / I \\
+\varphi_{k+1} &amp;= \varphi_{k} + \omega_{k} \Delta t + \frac{1}{2} \alpha_{k} \Delta t^{2} \\
+\omega_{k+1} &amp;= \omega_{k} + \alpha_{k} \Delta t \\\end{split}\]</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>agents</strong> (<em>Agent</em>) &#8211; </li>
+<li><strong>dt_min</strong> (<em>float</em>) &#8211; Minimum timestep <span class="math">\(\Delta x_{min}\)</span> for adaptive integration.</li>
+<li><strong>dt_max</strong> (<em>float</em>) &#8211; Maximum timestep <span class="math">\(\Delta x_{max}\)</span> for adaptive integration.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Timestep <span class="math">\(\Delta t\)</span> that was used for integration.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">float</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.core.integrator.rotational_euler">
+<code class="descclassname">crowddynamics.core.integrator.</code><code class="descname">rotational_euler</code><a class="reference internal" href="../_modules/crowddynamics/core/integrator.html#rotational_euler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.integrator.rotational_euler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update rotational motion using Euler&#8217;s method</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.core.integrator.rotational_verlet">
+<code class="descclassname">crowddynamics.core.integrator.</code><code class="descname">rotational_verlet</code><a class="reference internal" href="../_modules/crowddynamics/core/integrator.html#rotational_verlet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.integrator.rotational_verlet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rotational motion using velocity verlet method</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.core.integrator.translational_euler">
+<code class="descclassname">crowddynamics.core.integrator.</code><code class="descname">translational_euler</code><a class="reference internal" href="../_modules/crowddynamics/core/integrator.html#translational_euler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.integrator.translational_euler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update translational motion using Eulers&#8217;s method</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.core.integrator.translational_verlet">
+<code class="descclassname">crowddynamics.core.integrator.</code><code class="descname">translational_verlet</code><a class="reference internal" href="../_modules/crowddynamics/core/integrator.html#translational_verlet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.integrator.translational_verlet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Translational motion using velocity verlet method</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="crowddynamics.core.integrator.velocity_verlet_integrator">
+<code class="descclassname">crowddynamics.core.integrator.</code><code class="descname">velocity_verlet_integrator</code><span class="sig-paren">(</span><em>agents</em>, <em>dt_min</em>, <em>dt_max</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/core/integrator.html#velocity_verlet_integrator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.integrator.velocity_verlet_integrator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Velocity verlet integrator algorithm</p>
+<p>Translational motion</p>
+<ol class="arabic">
+<li><div class="first math">
+\[\mathbf{v}_{k+1/2} = \mathbf{v}_{k} + \frac{1}{2} a_{k} \Delta t\]</div>
+</li>
+<li><div class="first math">
+\[\mathbf{x}_{k+1} = \mathbf{x}_{k} + \mathbf{v}_{k+1/2} \Delta t\]</div>
+</li>
+<li><div class="first math">
+\[a_{k+1} = \mathbf{f}_{k+1} / m\]</div>
+</li>
+<li><div class="first math">
+\[\mathbf{v}_{k+1} = \mathbf{v}_{k+1/2} + \frac{1}{2} a_{k+1} \Delta t\]</div>
+</li>
+</ol>
+<div class="admonition-todo admonition" id="index-0">
+<p class="first admonition-title">Todo</p>
+<p class="last">Rotational motion</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>agents</strong> (<em>Agent</em>) &#8211; </li>
+<li><strong>dt_min</strong> (<em>float</em>) &#8211; Minimum timestep <span class="math">\(\Delta x_{min}\)</span> for adaptive integration.</li>
+<li><strong>dt_max</strong> (<em>float</em>) &#8211; Maximum timestep <span class="math">\(\Delta x_{max}\)</span> for adaptive integration.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Yields:</th><td class="field-body"><p class="first last"><em>float</em> &#8211; Timestep <span class="math">\(\Delta t\)</span> that was used for integration.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>References</dt>
+<dd><ul class="first last simple">
+<li><a class="reference external" href="https://en.wikipedia.org/wiki/Verlet_integration#Velocity_Verlet">https://en.wikipedia.org/wiki/Verlet_integration#Velocity_Verlet</a></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="crowddynamics.core.integrator.velocity_verlet_integrator_init">
+<code class="descclassname">crowddynamics.core.integrator.</code><code class="descname">velocity_verlet_integrator_init</code><span class="sig-paren">(</span><em>agents</em>, <em>dt_min</em>, <em>dt_max</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/core/integrator.html#velocity_verlet_integrator_init"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.integrator.velocity_verlet_integrator_init" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+</div>
+<div class="section" id="module-crowddynamics.core.tree">
+<span id="crowddynamics-core-tree-module"></span><h2>crowddynamics.core.tree module<a class="headerlink" href="#module-crowddynamics.core.tree" title="Permalink to this headline">¶</a></h2>
+<p>Tree node for implementing simulation logic</p>
+<p><a class="reference external" href="https://www.python.org/doc/essays/graphs/">https://www.python.org/doc/essays/graphs/</a>
+<a class="reference external" href="http://dask.pydata.org/en/latest/">http://dask.pydata.org/en/latest/</a>
+<a class="reference external" href="http://dask.pydata.org/en/latest/graphs.html">http://dask.pydata.org/en/latest/graphs.html</a>
+<a class="reference external" href="https://en.wikipedia.org/wiki/Tree_(data_structure">https://en.wikipedia.org/wiki/Tree_(data_structure</a>)
+<a class="reference external" href="https://github.com/c0fec0de/anytree">https://github.com/c0fec0de/anytree</a></p>
+<div class="admonition-todo admonition" id="index-1">
+<p class="first admonition-title">Todo</p>
+<ul class="last simple">
+<li>update method timer</li>
+</ul>
+</div>
+<dl class="class">
+<dt id="crowddynamics.core.tree.Node">
+<em class="property">class </em><code class="descclassname">crowddynamics.core.tree.</code><code class="descname">Node</code><span class="sig-paren">(</span><em>tree</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/core/tree.html#Node"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.tree.Node" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">anytree.node.NodeMixin</span></code></p>
+<p>Node for implementing trees for controlling evaluation order for
+simulation logic.</p>
+<dl class="method">
+<dt id="crowddynamics.core.tree.Node.add_children">
+<code class="descname">add_children</code><span class="sig-paren">(</span><em>node</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/core/tree.html#Node.add_children"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.tree.Node.add_children" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add new child node.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>node</strong> &#8211; TaskNode</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="crowddynamics.core.tree.Node.inject_after">
+<code class="descname">inject_after</code><span class="sig-paren">(</span><em>node</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/core/tree.html#Node.inject_after"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.tree.Node.inject_after" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inject after</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>node</strong> (<a class="reference internal" href="#crowddynamics.core.tree.Node" title="crowddynamics.core.tree.Node"><em>Node</em></a>) &#8211; </td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="crowddynamics.core.tree.Node.inject_before">
+<code class="descname">inject_before</code><span class="sig-paren">(</span><em>node</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/core/tree.html#Node.inject_before"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.tree.Node.inject_before" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inject before</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>node</strong> (<a class="reference internal" href="#crowddynamics.core.tree.Node" title="crowddynamics.core.tree.Node"><em>Node</em></a>) &#8211; </td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.core.tree.Node.name">
+<code class="descname">name</code><a class="headerlink" href="#crowddynamics.core.tree.Node.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Name</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><dl class="docutils">
+<dt>Return name set by user. If name is not set returns class</dt>
+<dd>name.</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="crowddynamics.core.tree.Node.update">
+<code class="descname">update</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/core/tree.html#Node.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.tree.Node.update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method that is called when the node is evaluated. Overridden by super
+classes.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-crowddynamics.core.vector2D">
+<span id="crowddynamics-core-vector2d-module"></span><h2>crowddynamics.core.vector2D module<a class="headerlink" href="#module-crowddynamics.core.vector2D" title="Permalink to this headline">¶</a></h2>
+<p>Functions operating on 2-Dimensional vectors.</p>
+<dl class="attribute">
+<dt id="crowddynamics.core.vector2D.angle">
+<code class="descclassname">crowddynamics.core.vector2D.</code><code class="descname">angle</code><a class="reference internal" href="../_modules/crowddynamics/core/vector2D.html#angle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.vector2D.angle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Angle of 2d vector in radians.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>v</strong> (<em>numpy.ndarray</em>) &#8211; 2D vector</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Angle in [-pi, pi]</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">float|numpy.ndarray</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.core.vector2D.cross">
+<code class="descclassname">crowddynamics.core.vector2D.</code><code class="descname">cross</code><a class="reference internal" href="../_modules/crowddynamics/core/vector2D.html#cross"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.vector2D.cross" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cross product for 2D vectors. Right corner from 3D cross product.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>v0</strong> (<em>numpy.ndarray</em>) &#8211; </li>
+<li><strong>v1</strong> (<em>numpy.ndarray</em>) &#8211; </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">float</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.core.vector2D.dot">
+<code class="descclassname">crowddynamics.core.vector2D.</code><code class="descname">dot</code><a class="reference internal" href="../_modules/crowddynamics/core/vector2D.html#dot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.vector2D.dot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dot product for 2D vectors.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>v0</strong> (<em>numpy.ndarray</em>) &#8211; </li>
+<li><strong>v1</strong> (<em>numpy.ndarray</em>) &#8211; </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">float</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.core.vector2D.length">
+<code class="descclassname">crowddynamics.core.vector2D.</code><code class="descname">length</code><a class="reference internal" href="../_modules/crowddynamics/core/vector2D.html#length"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.vector2D.length" title="Permalink to this definition">¶</a></dt>
+<dd><p>Length</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>v</strong> (<em>numpy.ndarray</em>) &#8211; 2D vector</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Length of the vector in [0, infty)</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">float|numpy.ndarray</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.core.vector2D.normalize">
+<code class="descclassname">crowddynamics.core.vector2D.</code><code class="descname">normalize</code><a class="reference internal" href="../_modules/crowddynamics/core/vector2D.html#normalize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.vector2D.normalize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Normalize</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>v</strong> (<em>numpy.ndarray</em>) &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">numpy.ndarray</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.core.vector2D.rotate270">
+<code class="descclassname">crowddynamics.core.vector2D.</code><code class="descname">rotate270</code><a class="reference internal" href="../_modules/crowddynamics/core/vector2D.html#rotate270"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.vector2D.rotate270" title="Permalink to this definition">¶</a></dt>
+<dd><p>90 degree clockwise rotation for 2D vector.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>v</strong> (<em>numpy.ndarray</em>) &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">numpy.ndarray</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.core.vector2D.rotate90">
+<code class="descclassname">crowddynamics.core.vector2D.</code><code class="descname">rotate90</code><a class="reference internal" href="../_modules/crowddynamics/core/vector2D.html#rotate90"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.vector2D.rotate90" title="Permalink to this definition">¶</a></dt>
+<dd><p>90 degree counterclockwise rotation for 2D vector.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>v</strong> (<em>numpy.ndarray</em>) &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">numpy.ndarray</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.core.vector2D.truncate">
+<code class="descclassname">crowddynamics.core.vector2D.</code><code class="descname">truncate</code><a class="reference internal" href="../_modules/crowddynamics/core/vector2D.html#truncate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.vector2D.truncate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Truncate vector <span class="math">\(\mathbf{v}\)</span> to length <span class="math">\(l &gt; 0\)</span> if
+<span class="math">\(\|\mathbf{v}\| &gt; l\)</span>.</p>
+<div class="math">
+\[\begin{split}\begin{cases}
+l \frac{\mathbf{v}}{\|\mathbf{v}\|} &amp; \|\mathbf{v}\| &gt; l \\
+\mathbf{v} &amp; \|\mathbf{v}\| \leq l \\
+\end{cases}\end{split}\]</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>v</strong> (<em>numpy.ndarray</em>) &#8211; </li>
+<li><strong>l</strong> (<em>float</em>) &#8211; </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">None</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.core.vector2D.unit_vector">
+<code class="descclassname">crowddynamics.core.vector2D.</code><code class="descname">unit_vector</code><a class="reference internal" href="../_modules/crowddynamics/core/vector2D.html#unit_vector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.vector2D.unit_vector" title="Permalink to this definition">¶</a></dt>
+<dd><p>Unit vector</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-crowddynamics.core">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-crowddynamics.core" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="crowddynamics.core.interactions.html" class="btn btn-neutral float-right" title="crowddynamics.core.interactions package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="crowddynamics.html" class="btn btn-neutral" title="crowddynamics package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright Jaan Tollander de Balsch.
+      Last updated on 2017-05-10.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'legacy+297.gd2a5250.dirty',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

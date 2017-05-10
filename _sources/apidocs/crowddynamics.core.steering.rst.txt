@@ -1,0 +1,69 @@
+crowddynamics\.core\.steering package
+=====================================
+
+Subpackages
+-----------
+
+.. toctree::
+
+    crowddynamics.core.steering.tests
+
+Submodules
+----------
+
+crowddynamics\.core\.steering\.functions module
+-----------------------------------------------
+
+.. automodule:: crowddynamics.core.steering.functions
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+crowddynamics\.core\.steering\.herding module
+---------------------------------------------
+
+.. automodule:: crowddynamics.core.steering.herding
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+crowddynamics\.core\.steering\.navigation module
+------------------------------------------------
+
+.. automodule:: crowddynamics.core.steering.navigation
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+crowddynamics\.core\.steering\.obstacle\_handling module
+--------------------------------------------------------
+
+.. automodule:: crowddynamics.core.steering.obstacle_handling
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+crowddynamics\.core\.steering\.orientation module
+-------------------------------------------------
+
+.. automodule:: crowddynamics.core.steering.orientation
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+crowddynamics\.core\.steering\.quickest\_path module
+----------------------------------------------------
+
+.. automodule:: crowddynamics.core.steering.quickest_path
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: crowddynamics.core.steering
+    :members:
+    :undoc-members:
+    :show-inheritance:

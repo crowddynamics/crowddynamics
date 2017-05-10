@@ -1,0 +1,550 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>crowddynamics.core.interactions.interactions &mdash; crowddynamics legacy+297.gd2a5250.dirty documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../../../_static/favicon.ico"/>
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../../../genindex.html"/>
+        <link rel="search" title="Search" href="../../../../search.html"/>
+    <link rel="top" title="crowddynamics legacy+297.gd2a5250.dirty documentation" href="../../../../index.html"/>
+        <link rel="up" title="Module code" href="../../../index.html"/> 
+
+  
+  <script src="../../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../../index.html" class="icon icon-home"> crowddynamics
+          
+
+          
+            
+            <img src="../../../../_static/logo.svg" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                legacy+297legacy+297.gd2a5250.dirtygd2a5250
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">General</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../usage.html">Usage</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Multi-Agent Simulation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../multiagent.html">Multi-Agent Simulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../interactions.html">Interactions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../motion.html">Motion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../steering.html">Steering</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Api</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apidocs/crowddynamics.html">crowddynamics package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apidocs_examples/examples.html">examples package</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Research</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../quantities.html">Quantities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../phenomena.html">Phenomena</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../applications.html">Applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../references.html">References</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">crowddynamics</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+        
+      <li>crowddynamics.core.interactions.interactions</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for crowddynamics.core.interactions.interactions</h1><div class="highlight"><pre>
+<span></span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Interactions</span>
+<span class="sd">------------</span>
+<span class="sd">Mathematically agent-agent and agent-obstacle interactions are governed by</span>
+<span class="sd">summing over all agent-agent or agent-obstacle pairs. This is analogous to </span>
+<span class="sd">n-body problems in physics.</span>
+
+<span class="sd">Interactions between agents</span>
+
+<span class="sd">.. math::</span>
+<span class="sd">   \mathbf{f}_{i}^{agent-agent} = </span>
+<span class="sd">   \sum_{j\neq i}^{} \left(\mathbf{f}_{ij}^{soc} + \mathbf{f}_{ij}^{c}\right)</span>
+
+<span class="sd">.. math::</span>
+<span class="sd">   M_{i}^{agent-agent} = </span>
+<span class="sd">   \sum_{j\neq i}^{} \left(M_{ij}^{soc} + M_{ij}^{c}\right)</span>
+
+
+<span class="sd">Interactions between agents and obstacles</span>
+
+<span class="sd">.. math::</span>
+<span class="sd">   \mathbf{f}_{i}^{agent-obstacles} = \sum_{w}^{} \mathbf{f}_{iw}^{c}</span>
+
+<span class="sd">.. math::</span>
+<span class="sd">   M_{i}^{agent-obstacles} = \sum_{w}^{} M_{iw}^{c}</span>
+
+
+<span class="sd">Brute Force Summation</span>
+<span class="sd">^^^^^^^^^^^^^^^^^^^^^</span>
+<span class="sd">Number of iterations for set of :math:`N &gt; 0` agents </span>
+
+<span class="sd">.. math::</span>
+<span class="sd">   N - 1 + N - 2 + ... + 1 =  \frac{(N - 1)^2}{2} \in \mathcal{O}(N^2)</span>
+
+<span class="sd">Number of iterations for two disjoint sets of :math:`N &gt; 0` and :math:`M &gt; 0` </span>
+<span class="sd">agents</span>
+
+<span class="sd">.. math::</span>
+<span class="sd">   M N</span>
+
+<span class="sd">Because the computational complexity of naive brute force summation scales </span>
+<span class="sd">:math:`\mathcal{O}(N^2)` it is unfeasible to use for large numbers of agents.</span>
+
+
+<span class="sd">Block List Summation</span>
+<span class="sd">^^^^^^^^^^^^^^^^^^^^</span>
+<span class="sd">Iterations per block</span>
+
+<span class="sd">.. math::</span>
+<span class="sd">   ((N_0-1)^{2} + N_0 \sum_{i=1}^{8} N_i) / 2</span>
+
+<span class="sd">Number of iterations if maximum number of agents that can be fit into a cell </span>
+<span class="sd">is :math:`M` is some constant.</span>
+
+<span class="sd">Iterations per block</span>
+
+<span class="sd">.. math::</span>
+<span class="sd">   I = \frac{(M - 1)^2}{2} + \frac{9}{2} M^{2}</span>
+<span class="sd"> </span>
+<span class="sd">For :math:`N` agents the number of blocks :math:`N / M`. </span>
+
+<span class="sd">.. math::</span>
+<span class="sd">   I \frac{N}{M} = \frac{N}{M} \left(5 M^{2} - M + \frac{1}{2}\right) \in </span>
+<span class="sd">   \mathcal{O}(N)</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">numba</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">numba</span> <span class="k">import</span> <span class="n">void</span><span class="p">,</span> <span class="n">i8</span><span class="p">,</span> <span class="n">typeof</span>
+
+<span class="kn">from</span> <span class="nn">crowddynamics.core.interactions.block_list</span> <span class="k">import</span> <span class="n">block_list</span><span class="p">,</span> \
+    <span class="n">get_block</span>
+<span class="kn">from</span> <span class="nn">crowddynamics.core.interactions.distance</span> <span class="k">import</span> <span class="n">distance_circles</span><span class="p">,</span> \
+    <span class="n">distance_circle_line</span><span class="p">,</span> <span class="n">distance_three_circle_line</span><span class="p">,</span> <span class="n">distance_three_circles</span>
+<span class="kn">from</span> <span class="nn">crowddynamics.core.motion.contact</span> <span class="k">import</span> <span class="n">force_contact</span>
+<span class="kn">from</span> <span class="nn">crowddynamics.core.motion.power_law</span> <span class="k">import</span> \
+    <span class="n">force_social_circular</span><span class="p">,</span> <span class="n">force_social_three_circle</span>
+<span class="kn">from</span> <span class="nn">crowddynamics.core.structures.agents</span> <span class="k">import</span> <span class="n">agent_type_circular</span><span class="p">,</span> \
+    <span class="n">agent_type_three_circle</span><span class="p">,</span> <span class="n">is_model</span>
+<span class="kn">from</span> <span class="nn">crowddynamics.core.structures.obstacles</span> <span class="k">import</span> <span class="n">obstacle_type_linear</span>
+<span class="kn">from</span> <span class="nn">crowddynamics.core.vector2D</span> <span class="k">import</span> <span class="n">rotate270</span><span class="p">,</span> <span class="n">cross</span>
+
+<span class="c1"># TODO: load from config</span>
+<span class="c1"># Reach of the social force.</span>
+<span class="n">SIGTH_SOC</span> <span class="o">=</span> <span class="mf">3.0</span>
+
+
+<span class="c1"># Individual interactions</span>
+
+
+<span class="nd">@numba</span><span class="o">.</span><span class="n">jit</span><span class="p">(</span><span class="n">void</span><span class="p">(</span><span class="n">i8</span><span class="p">,</span> <span class="n">i8</span><span class="p">,</span> <span class="n">typeof</span><span class="p">(</span><span class="n">agent_type_circular</span><span class="p">)[:]),</span>
+           <span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nogil</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="viewcode-block" id="agent_agent_interaction_circle"><a class="viewcode-back" href="../../../../apidocs/crowddynamics.core.interactions.html#crowddynamics.core.interactions.interactions.agent_agent_interaction_circle">[docs]</a><span class="k">def</span> <span class="nf">agent_agent_interaction_circle</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">agents</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Interaction between two circular agents.&quot;&quot;&quot;</span>
+    <span class="n">h</span><span class="p">,</span> <span class="n">n</span> <span class="o">=</span> <span class="n">distance_circles</span><span class="p">(</span><span class="n">agents</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;position&#39;</span><span class="p">],</span> <span class="n">agents</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;radius&#39;</span><span class="p">],</span>
+                            <span class="n">agents</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="s1">&#39;position&#39;</span><span class="p">],</span> <span class="n">agents</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="s1">&#39;radius&#39;</span><span class="p">])</span>
+
+    <span class="k">if</span> <span class="n">h</span> <span class="o">&lt;</span> <span class="n">SIGTH_SOC</span><span class="p">:</span>
+        <span class="n">force_i</span><span class="p">,</span> <span class="n">force_j</span> <span class="o">=</span> <span class="n">force_social_circular</span><span class="p">(</span><span class="n">agents</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">h</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">t</span> <span class="o">=</span> <span class="n">rotate270</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>  <span class="c1"># Tangent vector</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="n">agents</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;velocity&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">agents</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="s1">&#39;velocity&#39;</span><span class="p">]</span>  <span class="c1"># Relative velocity</span>
+            <span class="n">force_i</span> <span class="o">+=</span> <span class="n">force_contact</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">agents</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;mu&#39;</span><span class="p">],</span> <span class="n">agents</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;kappa&#39;</span><span class="p">],</span> <span class="n">agents</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;damping&#39;</span><span class="p">])</span>
+            <span class="n">force_j</span> <span class="o">-=</span> <span class="n">force_contact</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">agents</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="s1">&#39;mu&#39;</span><span class="p">],</span> <span class="n">agents</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="s1">&#39;kappa&#39;</span><span class="p">],</span> <span class="n">agents</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="s1">&#39;damping&#39;</span><span class="p">])</span>
+
+        <span class="n">agents</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;force&#39;</span><span class="p">][:]</span> <span class="o">+=</span> <span class="n">force_i</span>
+        <span class="n">agents</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="s1">&#39;force&#39;</span><span class="p">][:]</span> <span class="o">+=</span> <span class="n">force_j</span></div>
+
+
+<span class="nd">@numba</span><span class="o">.</span><span class="n">jit</span><span class="p">(</span><span class="n">void</span><span class="p">(</span><span class="n">i8</span><span class="p">,</span> <span class="n">i8</span><span class="p">,</span> <span class="n">typeof</span><span class="p">(</span><span class="n">agent_type_three_circle</span><span class="p">)[:]),</span>
+           <span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nogil</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="viewcode-block" id="agent_agent_interaction_three_circle"><a class="viewcode-back" href="../../../../apidocs/crowddynamics.core.interactions.html#crowddynamics.core.interactions.interactions.agent_agent_interaction_three_circle">[docs]</a><span class="k">def</span> <span class="nf">agent_agent_interaction_three_circle</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">agents</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Interaction between two three circle agents.&quot;&quot;&quot;</span>
+    <span class="c1"># Positions: center, left, right</span>
+    <span class="n">x_i</span> <span class="o">=</span> <span class="p">(</span><span class="n">agents</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;position&#39;</span><span class="p">],</span> <span class="n">agents</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;position_ls&#39;</span><span class="p">],</span> <span class="n">agents</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;position_rs&#39;</span><span class="p">])</span>
+    <span class="n">x_j</span> <span class="o">=</span> <span class="p">(</span><span class="n">agents</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="s1">&#39;position&#39;</span><span class="p">],</span> <span class="n">agents</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="s1">&#39;position_ls&#39;</span><span class="p">],</span> <span class="n">agents</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="s1">&#39;position_rs&#39;</span><span class="p">])</span>
+
+    <span class="c1"># Radii of torso and shoulders</span>
+    <span class="n">r_i</span> <span class="o">=</span> <span class="p">(</span><span class="n">agents</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;r_t&#39;</span><span class="p">],</span> <span class="n">agents</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;r_s&#39;</span><span class="p">],</span> <span class="n">agents</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;r_s&#39;</span><span class="p">])</span>
+    <span class="n">r_j</span> <span class="o">=</span> <span class="p">(</span><span class="n">agents</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="s1">&#39;r_t&#39;</span><span class="p">],</span> <span class="n">agents</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="s1">&#39;r_s&#39;</span><span class="p">],</span> <span class="n">agents</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="s1">&#39;r_s&#39;</span><span class="p">])</span>
+
+    <span class="n">h</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">r_moment_i</span><span class="p">,</span> <span class="n">r_moment_j</span> <span class="o">=</span> <span class="n">distance_three_circles</span><span class="p">(</span><span class="n">x_i</span><span class="p">,</span> <span class="n">r_i</span><span class="p">,</span> <span class="n">x_j</span><span class="p">,</span> <span class="n">r_j</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">h</span> <span class="o">&lt;</span> <span class="n">SIGTH_SOC</span><span class="p">:</span>
+        <span class="n">force_i</span><span class="p">,</span> <span class="n">force_j</span> <span class="o">=</span> <span class="n">force_social_three_circle</span><span class="p">(</span><span class="n">agents</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">h</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">t</span> <span class="o">=</span> <span class="n">rotate270</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>  <span class="c1"># Tangent vector</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="n">agents</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;velocity&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">agents</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="s1">&#39;velocity&#39;</span><span class="p">]</span>  <span class="c1"># Relative velocity</span>
+            <span class="n">force_i</span> <span class="o">+=</span> <span class="n">force_contact</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">agents</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;mu&#39;</span><span class="p">],</span> <span class="n">agents</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;kappa&#39;</span><span class="p">],</span> <span class="n">agents</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;damping&#39;</span><span class="p">])</span>
+            <span class="n">force_j</span> <span class="o">-=</span> <span class="n">force_contact</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">agents</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="s1">&#39;mu&#39;</span><span class="p">],</span> <span class="n">agents</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="s1">&#39;kappa&#39;</span><span class="p">],</span> <span class="n">agents</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="s1">&#39;damping&#39;</span><span class="p">])</span>
+
+        <span class="n">agents</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;force&#39;</span><span class="p">][:]</span> <span class="o">+=</span> <span class="n">force_i</span>
+        <span class="n">agents</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="s1">&#39;force&#39;</span><span class="p">][:]</span> <span class="o">+=</span> <span class="n">force_j</span>
+
+        <span class="n">agents</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;torque&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="n">cross</span><span class="p">(</span><span class="n">r_moment_i</span><span class="p">,</span> <span class="n">force_i</span><span class="p">)</span>
+        <span class="n">agents</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="s1">&#39;torque&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="n">cross</span><span class="p">(</span><span class="n">r_moment_j</span><span class="p">,</span> <span class="n">force_j</span><span class="p">)</span></div>
+
+
+<span class="nd">@numba</span><span class="o">.</span><span class="n">jit</span><span class="p">(</span><span class="n">void</span><span class="p">(</span><span class="n">i8</span><span class="p">,</span> <span class="n">i8</span><span class="p">,</span> <span class="n">typeof</span><span class="p">(</span><span class="n">agent_type_circular</span><span class="p">)[:],</span>
+                <span class="n">typeof</span><span class="p">(</span><span class="n">obstacle_type_linear</span><span class="p">)[:]),</span>
+           <span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nogil</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="viewcode-block" id="agent_obstacle_interaction_circle"><a class="viewcode-back" href="../../../../apidocs/crowddynamics.core.interactions.html#crowddynamics.core.interactions.interactions.agent_obstacle_interaction_circle">[docs]</a><span class="k">def</span> <span class="nf">agent_obstacle_interaction_circle</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">agents</span><span class="p">,</span> <span class="n">obstacles</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Interaction between circular agent and line obstacle.&quot;&quot;&quot;</span>
+    <span class="n">h</span><span class="p">,</span> <span class="n">n</span> <span class="o">=</span> <span class="n">distance_circle_line</span><span class="p">(</span><span class="n">agents</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;position&#39;</span><span class="p">],</span> <span class="n">agents</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;radius&#39;</span><span class="p">],</span>
+                                <span class="n">obstacles</span><span class="p">[</span><span class="n">w</span><span class="p">][</span><span class="s1">&#39;p0&#39;</span><span class="p">],</span> <span class="n">obstacles</span><span class="p">[</span><span class="n">w</span><span class="p">][</span><span class="s1">&#39;p1&#39;</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">h</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">rotate270</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>  <span class="c1"># Tangent</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="n">agents</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;velocity&#39;</span><span class="p">]</span>
+        <span class="n">force</span> <span class="o">=</span> <span class="n">force_contact</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">agents</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;mu&#39;</span><span class="p">],</span>
+                              <span class="n">agents</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;kappa&#39;</span><span class="p">],</span> <span class="n">agents</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;damping&#39;</span><span class="p">])</span>
+
+        <span class="n">agents</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;force&#39;</span><span class="p">][:]</span> <span class="o">+=</span> <span class="n">force</span></div>
+
+
+<span class="nd">@numba</span><span class="o">.</span><span class="n">jit</span><span class="p">(</span><span class="n">void</span><span class="p">(</span><span class="n">i8</span><span class="p">,</span> <span class="n">i8</span><span class="p">,</span> <span class="n">typeof</span><span class="p">(</span><span class="n">agent_type_three_circle</span><span class="p">)[:],</span>
+                <span class="n">typeof</span><span class="p">(</span><span class="n">obstacle_type_linear</span><span class="p">)[:]),</span>
+           <span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nogil</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="viewcode-block" id="agent_obstacle_interaction_three_circle"><a class="viewcode-back" href="../../../../apidocs/crowddynamics.core.interactions.html#crowddynamics.core.interactions.interactions.agent_obstacle_interaction_three_circle">[docs]</a><span class="k">def</span> <span class="nf">agent_obstacle_interaction_three_circle</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">agents</span><span class="p">,</span> <span class="n">obstacles</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Interaction between three circle agent and line obstacle.&quot;&quot;&quot;</span>
+    <span class="n">x_i</span> <span class="o">=</span> <span class="p">(</span><span class="n">agents</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;position&#39;</span><span class="p">],</span> <span class="n">agents</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;position_ls&#39;</span><span class="p">],</span> <span class="n">agents</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;position_rs&#39;</span><span class="p">])</span>
+    <span class="n">r_i</span> <span class="o">=</span> <span class="p">(</span><span class="n">agents</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;r_t&#39;</span><span class="p">],</span> <span class="n">agents</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;r_s&#39;</span><span class="p">],</span> <span class="n">agents</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;r_s&#39;</span><span class="p">])</span>
+
+    <span class="n">h</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">r_moment</span> <span class="o">=</span> <span class="n">distance_three_circle_line</span><span class="p">(</span><span class="n">x_i</span><span class="p">,</span> <span class="n">r_i</span><span class="p">,</span>
+                                                <span class="n">obstacles</span><span class="p">[</span><span class="n">w</span><span class="p">][</span><span class="s1">&#39;p0&#39;</span><span class="p">],</span> <span class="n">obstacles</span><span class="p">[</span><span class="n">w</span><span class="p">][</span><span class="s1">&#39;p1&#39;</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">h</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">rotate270</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>  <span class="c1"># Tangent</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="n">agents</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;velocity&#39;</span><span class="p">]</span>
+        <span class="n">force</span> <span class="o">=</span> <span class="n">force_contact</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">agents</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;mu&#39;</span><span class="p">],</span>
+                              <span class="n">agents</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;kappa&#39;</span><span class="p">],</span> <span class="n">agents</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;damping&#39;</span><span class="p">])</span>
+
+        <span class="n">agents</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;force&#39;</span><span class="p">][:]</span> <span class="o">+=</span> <span class="n">force</span>
+        <span class="n">agents</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;torque&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="n">cross</span><span class="p">(</span><span class="n">r_moment</span><span class="p">,</span> <span class="n">force</span><span class="p">)</span></div>
+
+
+<span class="c1"># Full interactions</span>
+
+
+<span class="nd">@numba</span><span class="o">.</span><span class="n">jit</span><span class="p">(</span><span class="n">void</span><span class="p">(</span><span class="n">typeof</span><span class="p">(</span><span class="n">agent_type_circular</span><span class="p">)[:],</span> <span class="n">i8</span><span class="p">[:]),</span>
+           <span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nogil</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="viewcode-block" id="agent_agent_brute_circular"><a class="viewcode-back" href="../../../../apidocs/crowddynamics.core.interactions.html#crowddynamics.core.interactions.interactions.agent_agent_brute_circular">[docs]</a><span class="k">def</span> <span class="nf">agent_agent_brute_circular</span><span class="p">(</span><span class="n">agents</span><span class="p">,</span> <span class="n">indices</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Compute interaction forces between set of agents using brute force.&quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">l</span><span class="p">,</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">indices</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]):</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">indices</span><span class="p">[</span><span class="n">l</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:]:</span>
+            <span class="n">agent_agent_interaction_circle</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">agents</span><span class="p">)</span></div>
+
+
+<span class="nd">@numba</span><span class="o">.</span><span class="n">jit</span><span class="p">(</span><span class="n">void</span><span class="p">(</span><span class="n">typeof</span><span class="p">(</span><span class="n">agent_type_three_circle</span><span class="p">)[:],</span> <span class="n">i8</span><span class="p">[:]),</span>
+           <span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nogil</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="viewcode-block" id="agent_agent_brute_three_circle"><a class="viewcode-back" href="../../../../apidocs/crowddynamics.core.interactions.html#crowddynamics.core.interactions.interactions.agent_agent_brute_three_circle">[docs]</a><span class="k">def</span> <span class="nf">agent_agent_brute_three_circle</span><span class="p">(</span><span class="n">agents</span><span class="p">,</span> <span class="n">indices</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Compute interaction forces between set of agents using brute force.&quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">l</span><span class="p">,</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">indices</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]):</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">indices</span><span class="p">[</span><span class="n">l</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:]:</span>
+            <span class="n">agent_agent_interaction_three_circle</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">agents</span><span class="p">)</span></div>
+
+
+<span class="nd">@numba</span><span class="o">.</span><span class="n">jit</span><span class="p">(</span><span class="n">void</span><span class="p">(</span><span class="n">typeof</span><span class="p">(</span><span class="n">agent_type_circular</span><span class="p">)[:],</span> <span class="n">i8</span><span class="p">[:],</span> <span class="n">i8</span><span class="p">[:]),</span>
+           <span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nogil</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="viewcode-block" id="agent_agent_brute_disjoint_circular"><a class="viewcode-back" href="../../../../apidocs/crowddynamics.core.interactions.html#crowddynamics.core.interactions.interactions.agent_agent_brute_disjoint_circular">[docs]</a><span class="k">def</span> <span class="nf">agent_agent_brute_disjoint_circular</span><span class="p">(</span><span class="n">agents</span><span class="p">,</span> <span class="n">indices_0</span><span class="p">,</span> <span class="n">indices_1</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Compute interaction forces between two disjoint sets and of agents using</span>
+<span class="sd">    brute force. Disjoint sets ``indices_0 ∩ indices_1 = ∅``.&quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">indices_0</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">indices_1</span><span class="p">:</span>
+            <span class="n">agent_agent_interaction_circle</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">agents</span><span class="p">)</span></div>
+
+
+<span class="nd">@numba</span><span class="o">.</span><span class="n">jit</span><span class="p">(</span><span class="n">void</span><span class="p">(</span><span class="n">typeof</span><span class="p">(</span><span class="n">agent_type_three_circle</span><span class="p">)[:],</span> <span class="n">i8</span><span class="p">[:],</span> <span class="n">i8</span><span class="p">[:]),</span>
+           <span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nogil</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="viewcode-block" id="agent_agent_brute_disjoint_three_circle"><a class="viewcode-back" href="../../../../apidocs/crowddynamics.core.interactions.html#crowddynamics.core.interactions.interactions.agent_agent_brute_disjoint_three_circle">[docs]</a><span class="k">def</span> <span class="nf">agent_agent_brute_disjoint_three_circle</span><span class="p">(</span><span class="n">agents</span><span class="p">,</span> <span class="n">indices_0</span><span class="p">,</span> <span class="n">indices_1</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Compute interaction forces between two disjoint sets and of agents using</span>
+<span class="sd">    brute force. Disjoint sets ``indices_0 ∩ indices_1 = ∅``.&quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">indices_0</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">indices_1</span><span class="p">:</span>
+            <span class="n">agent_agent_interaction_three_circle</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">agents</span><span class="p">)</span></div>
+
+
+<span class="nd">@numba</span><span class="o">.</span><span class="n">jit</span><span class="p">(</span><span class="n">void</span><span class="p">(</span><span class="n">typeof</span><span class="p">(</span><span class="n">agent_type_circular</span><span class="p">)[:],</span>
+                <span class="n">i8</span><span class="p">[:],</span> <span class="n">i8</span><span class="p">[:],</span> <span class="n">i8</span><span class="p">[:],</span> <span class="n">i8</span><span class="p">[:]),</span>
+           <span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nogil</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="viewcode-block" id="agent_agent_block_list_circular"><a class="viewcode-back" href="../../../../apidocs/crowddynamics.core.interactions.html#crowddynamics.core.interactions.interactions.agent_agent_block_list_circular">[docs]</a><span class="k">def</span> <span class="nf">agent_agent_block_list_circular</span><span class="p">(</span><span class="n">agents</span><span class="p">,</span> <span class="n">index_list</span><span class="p">,</span> <span class="n">count</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">shape</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Iteration over all agents using block list algorithm.&quot;&quot;&quot;</span>
+    <span class="c1"># Neighbouring blocks</span>
+    <span class="n">nb</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+    <span class="n">n</span><span class="p">,</span> <span class="n">m</span> <span class="o">=</span> <span class="n">shape</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">m</span><span class="p">):</span>
+            <span class="c1"># Forces between agents inside the block</span>
+            <span class="n">ilist</span> <span class="o">=</span> <span class="n">get_block</span><span class="p">((</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">),</span> <span class="n">index_list</span><span class="p">,</span> <span class="n">count</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">shape</span><span class="p">)</span>
+            <span class="n">agent_agent_brute_circular</span><span class="p">(</span><span class="n">agents</span><span class="p">,</span> <span class="n">ilist</span><span class="p">)</span>
+
+            <span class="c1"># Forces between agent inside the block and neighbouring agents</span>
+            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">nb</span><span class="p">)):</span>
+                <span class="n">i2</span><span class="p">,</span> <span class="n">j2</span> <span class="o">=</span> <span class="n">nb</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+                <span class="k">if</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="n">i2</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">n</span> <span class="ow">and</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="p">(</span><span class="n">j</span> <span class="o">+</span> <span class="n">j2</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">m</span><span class="p">:</span>
+                    <span class="n">ilist2</span> <span class="o">=</span> <span class="n">get_block</span><span class="p">((</span><span class="n">i</span> <span class="o">+</span> <span class="n">i2</span><span class="p">,</span> <span class="n">j</span> <span class="o">+</span> <span class="n">j2</span><span class="p">),</span> <span class="n">index_list</span><span class="p">,</span> <span class="n">count</span><span class="p">,</span>
+                                       <span class="n">offset</span><span class="p">,</span> <span class="n">shape</span><span class="p">)</span>
+                    <span class="n">agent_agent_brute_disjoint_circular</span><span class="p">(</span><span class="n">agents</span><span class="p">,</span> <span class="n">ilist</span><span class="p">,</span> <span class="n">ilist2</span><span class="p">)</span></div>
+
+
+<span class="nd">@numba</span><span class="o">.</span><span class="n">jit</span><span class="p">(</span><span class="n">void</span><span class="p">(</span><span class="n">typeof</span><span class="p">(</span><span class="n">agent_type_three_circle</span><span class="p">)[:],</span>
+                <span class="n">i8</span><span class="p">[:],</span> <span class="n">i8</span><span class="p">[:],</span> <span class="n">i8</span><span class="p">[:],</span> <span class="n">i8</span><span class="p">[:]),</span>
+           <span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nogil</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="viewcode-block" id="agent_agent_block_list_three_circle"><a class="viewcode-back" href="../../../../apidocs/crowddynamics.core.interactions.html#crowddynamics.core.interactions.interactions.agent_agent_block_list_three_circle">[docs]</a><span class="k">def</span> <span class="nf">agent_agent_block_list_three_circle</span><span class="p">(</span><span class="n">agents</span><span class="p">,</span> <span class="n">index_list</span><span class="p">,</span> <span class="n">count</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">shape</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Iteration over all agents using block list algorithm.&quot;&quot;&quot;</span>
+    <span class="c1"># Neighbouring blocks</span>
+    <span class="n">nb</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+    <span class="n">n</span><span class="p">,</span> <span class="n">m</span> <span class="o">=</span> <span class="n">shape</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">m</span><span class="p">):</span>
+            <span class="c1"># Forces between agents inside the block</span>
+            <span class="n">ilist</span> <span class="o">=</span> <span class="n">get_block</span><span class="p">((</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">),</span> <span class="n">index_list</span><span class="p">,</span> <span class="n">count</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">shape</span><span class="p">)</span>
+            <span class="n">agent_agent_brute_three_circle</span><span class="p">(</span><span class="n">agents</span><span class="p">,</span> <span class="n">ilist</span><span class="p">)</span>
+
+            <span class="c1"># Forces between agent inside the block and neighbouring agents</span>
+            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">nb</span><span class="p">)):</span>
+                <span class="n">i2</span><span class="p">,</span> <span class="n">j2</span> <span class="o">=</span> <span class="n">nb</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+                <span class="k">if</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="n">i2</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">n</span> <span class="ow">and</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="p">(</span><span class="n">j</span> <span class="o">+</span> <span class="n">j2</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">m</span><span class="p">:</span>
+                    <span class="n">ilist2</span> <span class="o">=</span> <span class="n">get_block</span><span class="p">((</span><span class="n">i</span> <span class="o">+</span> <span class="n">i2</span><span class="p">,</span> <span class="n">j</span> <span class="o">+</span> <span class="n">j2</span><span class="p">),</span> <span class="n">index_list</span><span class="p">,</span> <span class="n">count</span><span class="p">,</span>
+                                       <span class="n">offset</span><span class="p">,</span> <span class="n">shape</span><span class="p">)</span>
+                    <span class="n">agent_agent_brute_disjoint_three_circle</span><span class="p">(</span><span class="n">agents</span><span class="p">,</span>
+                                                            <span class="n">ilist</span><span class="p">,</span>
+                                                            <span class="n">ilist2</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="agent_agent_block_list"><a class="viewcode-back" href="../../../../apidocs/crowddynamics.core.interactions.html#crowddynamics.core.interactions.interactions.agent_agent_block_list">[docs]</a><span class="k">def</span> <span class="nf">agent_agent_block_list</span><span class="p">(</span><span class="n">agents</span><span class="p">):</span>
+    <span class="n">max_agent_radius</span> <span class="o">=</span> <span class="mf">0.3</span>
+    <span class="n">index_list</span><span class="p">,</span> <span class="n">count</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">shape</span> <span class="o">=</span> <span class="n">block_list</span><span class="p">(</span>
+        <span class="n">agents</span><span class="p">[</span><span class="s1">&#39;position&#39;</span><span class="p">],</span> <span class="n">SIGTH_SOC</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">max_agent_radius</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">is_model</span><span class="p">(</span><span class="n">agents</span><span class="p">,</span> <span class="s1">&#39;circular&#39;</span><span class="p">):</span>
+        <span class="n">agent_agent_block_list_circular</span><span class="p">(</span><span class="n">agents</span><span class="p">,</span> <span class="n">index_list</span><span class="p">,</span> <span class="n">count</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">shape</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">is_model</span><span class="p">(</span><span class="n">agents</span><span class="p">,</span> <span class="s1">&#39;three_circle&#39;</span><span class="p">):</span>
+        <span class="n">agent_agent_block_list_three_circle</span><span class="p">(</span><span class="n">agents</span><span class="p">,</span> <span class="n">index_list</span><span class="p">,</span> <span class="n">count</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">shape</span><span class="p">)</span></div>
+
+
+<span class="nd">@numba</span><span class="o">.</span><span class="n">jit</span><span class="p">(</span><span class="n">void</span><span class="p">(</span><span class="n">typeof</span><span class="p">(</span><span class="n">agent_type_circular</span><span class="p">)[:],</span> <span class="n">typeof</span><span class="p">(</span><span class="n">obstacle_type_linear</span><span class="p">)[:]),</span>
+           <span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nogil</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="viewcode-block" id="circular_agent_linear_wall"><a class="viewcode-back" href="../../../../apidocs/crowddynamics.core.interactions.html#crowddynamics.core.interactions.interactions.circular_agent_linear_wall">[docs]</a><span class="k">def</span> <span class="nf">circular_agent_linear_wall</span><span class="p">(</span><span class="n">agents</span><span class="p">,</span> <span class="n">obstacles</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Agent wall&quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">agents</span><span class="p">)):</span>
+        <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">obstacles</span><span class="p">)):</span>
+            <span class="n">agent_obstacle_interaction_circle</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">agents</span><span class="p">,</span> <span class="n">obstacles</span><span class="p">)</span></div>
+
+
+<span class="nd">@numba</span><span class="o">.</span><span class="n">jit</span><span class="p">(</span><span class="n">void</span><span class="p">(</span><span class="n">typeof</span><span class="p">(</span><span class="n">agent_type_three_circle</span><span class="p">)[:],</span> <span class="n">typeof</span><span class="p">(</span><span class="n">obstacle_type_linear</span><span class="p">)[:]),</span>
+           <span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nogil</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="viewcode-block" id="three_circle_agent_linear_wall"><a class="viewcode-back" href="../../../../apidocs/crowddynamics.core.interactions.html#crowddynamics.core.interactions.interactions.three_circle_agent_linear_wall">[docs]</a><span class="k">def</span> <span class="nf">three_circle_agent_linear_wall</span><span class="p">(</span><span class="n">agents</span><span class="p">,</span> <span class="n">obstacles</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Agent wall&quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">agents</span><span class="p">)):</span>
+        <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">obstacles</span><span class="p">)):</span>
+            <span class="n">agent_obstacle_interaction_three_circle</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">agents</span><span class="p">,</span> <span class="n">obstacles</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="agent_obstacle"><a class="viewcode-back" href="../../../../apidocs/crowddynamics.core.interactions.html#crowddynamics.core.interactions.interactions.agent_obstacle">[docs]</a><span class="k">def</span> <span class="nf">agent_obstacle</span><span class="p">(</span><span class="n">agents</span><span class="p">,</span> <span class="n">obstacles</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">is_model</span><span class="p">(</span><span class="n">agents</span><span class="p">,</span> <span class="s1">&#39;circular&#39;</span><span class="p">):</span>
+        <span class="n">circular_agent_linear_wall</span><span class="p">(</span><span class="n">agents</span><span class="p">,</span> <span class="n">obstacles</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">is_model</span><span class="p">(</span><span class="n">agents</span><span class="p">,</span> <span class="s1">&#39;three_circle&#39;</span><span class="p">):</span>
+        <span class="n">three_circle_agent_linear_wall</span><span class="p">(</span><span class="n">agents</span><span class="p">,</span> <span class="n">obstacles</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright Jaan Tollander de Balsch.
+      Last updated on 2017-05-10.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../../',
+            VERSION:'legacy+297.gd2a5250.dirty',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

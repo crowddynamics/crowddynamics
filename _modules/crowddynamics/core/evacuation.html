@@ -1,0 +1,363 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>crowddynamics.core.evacuation &mdash; crowddynamics legacy+297.gd2a5250.dirty documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../../genindex.html"/>
+        <link rel="search" title="Search" href="../../../search.html"/>
+    <link rel="top" title="crowddynamics legacy+297.gd2a5250.dirty documentation" href="../../../index.html"/>
+        <link rel="up" title="Module code" href="../../index.html"/> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> crowddynamics
+          
+
+          
+            
+            <img src="../../../_static/logo.svg" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                legacy+297legacy+297.gd2a5250.dirtygd2a5250
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">General</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Usage</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Multi-Agent Simulation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../multiagent.html">Multi-Agent Simulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../interactions.html">Interactions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../motion.html">Motion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../steering.html">Steering</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Api</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../apidocs/crowddynamics.html">crowddynamics package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../apidocs_examples/examples.html">examples package</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Research</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../quantities.html">Quantities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../phenomena.html">Phenomena</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../applications.html">Applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../references.html">References</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">crowddynamics</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>crowddynamics.core.evacuation</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for crowddynamics.core.evacuation</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Evacuation related functions&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">numba</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">crowddynamics.core.vector2D</span> <span class="k">import</span> <span class="n">length</span>
+<span class="kn">from</span> <span class="nn">numba</span> <span class="k">import</span> <span class="n">i8</span><span class="p">,</span> <span class="n">f8</span><span class="p">,</span> <span class="n">optional</span>
+
+
+<span class="nd">@numba</span><span class="o">.</span><span class="n">jit</span><span class="p">(</span><span class="n">f8</span><span class="p">(</span><span class="n">f8</span><span class="p">,</span> <span class="n">f8</span><span class="p">,</span> <span class="n">optional</span><span class="p">(</span><span class="n">f8</span><span class="p">),</span> <span class="n">f8</span><span class="p">),</span>
+           <span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nogil</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="viewcode-block" id="narrow_exit_capacity"><a class="viewcode-back" href="../../../apidocs/crowddynamics.core.html#crowddynamics.core.evacuation.narrow_exit_capacity">[docs]</a><span class="k">def</span> <span class="nf">narrow_exit_capacity</span><span class="p">(</span><span class="n">d_door</span><span class="p">,</span> <span class="n">d_agent</span><span class="p">,</span> <span class="n">d_layer</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">coeff</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Estimation of the capacity of narrow exit.</span>
+
+<span class="sd">    Capacity estimation :math:`\beta` of unidirectional flow through narrow</span>
+<span class="sd">    bottleneck. Capacity of the bottleneck increases in stepwise manner.</span>
+
+<span class="sd">    Simple estimation</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">       \beta_{simple} = c \left \lfloor \frac{d_{door}}{d_{agent}} \right \rfloor</span>
+
+<span class="sd">    More sophisticated estimation [Hoogendoorn2005a]_, [Seyfried2007a]_</span>
+<span class="sd">    when :math:`d_{door} \geq d_{agent}`</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">       \beta_{hoogen} = c \left \lfloor \frac{d_{door} - (d_{agent} - d_{layer})}{d_{layer}} \right \rfloor</span>
+
+<span class="sd">    We have relationship between simple and hoogendoorn&#39;s estimation</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">       \beta_{hoogen} = \beta_{simple}, \quad d_{layer} = d_{agent}</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        d_door (float):</span>
+<span class="sd">            Width of the door :math:`0\,\mathrm{m} &lt; d_{door} &lt; 3\,\mathrm{m}`.</span>
+
+<span class="sd">        d_agent (float):</span>
+<span class="sd">            Width of the agent :math:`d_{agent} &gt; 0\,\mathrm{m}`.</span>
+
+<span class="sd">        d_layer (float, optional):</span>
+<span class="sd">            Width of layer :math:`d_{layer}`. Reference value:</span>
+<span class="sd">            :math:`0.45\,\mathrm{m}`</span>
+
+<span class="sd">        coeff (float):</span>
+<span class="sd">            Scaling coefficient :math:`c &gt; 0` for the estimation.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        float:</span>
+<span class="sd">            Depending on the value of ``d_layer`` either simple or hoogen</span>
+<span class="sd">            estimation is returned</span>
+
+<span class="sd">            - ``None``: Uses simple estimation :math:`\beta_{simple}`</span>
+<span class="sd">            - ``float``: Uses Hoogendoorn&#39;s estimation :math:`\beta_{hoogen}`</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">d_door</span> <span class="o">&lt;</span> <span class="n">d_agent</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mf">0.0</span>
+    <span class="k">elif</span> <span class="n">d_layer</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">coeff</span> <span class="o">*</span> <span class="p">(</span><span class="n">d_door</span> <span class="o">//</span> <span class="n">d_agent</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">coeff</span> <span class="o">*</span> <span class="p">((</span><span class="n">d_door</span> <span class="o">-</span> <span class="p">(</span><span class="n">d_agent</span> <span class="o">-</span> <span class="n">d_layer</span><span class="p">))</span> <span class="o">//</span> <span class="n">d_layer</span><span class="p">)</span></div>
+
+
+<span class="nd">@numba</span><span class="o">.</span><span class="n">jit</span><span class="p">(</span><span class="n">i8</span><span class="p">[:](</span><span class="n">f8</span><span class="p">[:],</span> <span class="n">f8</span><span class="p">[:,</span> <span class="p">:]),</span>
+           <span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nogil</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="viewcode-block" id="agent_closer_to_exit"><a class="viewcode-back" href="../../../apidocs/crowddynamics.core.html#crowddynamics.core.evacuation.agent_closer_to_exit">[docs]</a><span class="k">def</span> <span class="nf">agent_closer_to_exit</span><span class="p">(</span><span class="n">c_door</span><span class="p">,</span> <span class="n">position</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Amount of positions (agents) closer to center of the exit.</span>
+
+<span class="sd">    1) Denote :math:`i` as indices of the positions :math:`\mathbf{x}`.</span>
+<span class="sd">    2) Distance from narrow exit can be estimated</span>
+
+<span class="sd">      .. math::</span>
+<span class="sd">         d_i = \| \mathbf{c} - \mathbf{x}_{i} \|</span>
+
+<span class="sd">    3) By sorting the values :math:`d_i` by its indices we obtain array</span>
+
+<span class="sd">      .. math::</span>
+<span class="sd">          a_i = \underset{i \in P}{\operatorname{arg\,sort}}(d_i)</span>
+
+<span class="sd">      where</span>
+
+<span class="sd">      - Values: Indices of the positions sorted by the distance from the exit</span>
+<span class="sd">      - Indices: Number of positions closer to the exit</span>
+
+<span class="sd">    4) By sorting the values :math:`a_i` by it indices we obtain array</span>
+
+<span class="sd">      .. math::</span>
+<span class="sd">         \lambda_i = \operatorname{arg\,sort} (a_i)</span>
+
+<span class="sd">      where</span>
+
+<span class="sd">      - Values: Number of positions closer to the exit</span>
+<span class="sd">      - Indices: Indices of the positions</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        c_door (numpy.ndarray):</span>
+<span class="sd">            Center of the exit :math:`\mathbf{c}`.</span>
+
+<span class="sd">        position (numpy.ndarray):</span>
+<span class="sd">            Positions :math:`\mathbf{x}` of the agents.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        numpy.ndarray:</span>
+<span class="sd">            Array :math:`\lambda_i`</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">distances</span> <span class="o">=</span> <span class="n">length</span><span class="p">(</span><span class="n">c_door</span> <span class="o">-</span> <span class="n">position</span><span class="p">)</span>
+    <span class="n">d_sorted</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">distances</span><span class="p">)</span>
+    <span class="n">num</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">d_sorted</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">num</span></div>
+
+
+<div class="viewcode-block" id="exit_selection"><a class="viewcode-back" href="../../../apidocs/crowddynamics.core.html#crowddynamics.core.evacuation.exit_selection">[docs]</a><span class="k">def</span> <span class="nf">exit_selection</span><span class="p">():</span>
+    <span class="k">pass</span></div>
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright Jaan Tollander de Balsch.
+      Last updated on 2017-05-10.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'legacy+297.gd2a5250.dirty',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

@@ -1,0 +1,454 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>examples package &mdash; crowddynamics legacy+297.gd2a5250.dirty documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="crowddynamics legacy+297.gd2a5250.dirty documentation" href="../index.html"/>
+        <link rel="next" title="examples.tests package" href="examples.tests.html"/>
+        <link rel="prev" title="crowddynamics.visualization package" href="../apidocs/crowddynamics.visualization.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> crowddynamics
+          
+
+          
+            
+            <img src="../_static/logo.svg" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                legacy+297legacy+297.gd2a5250.dirtygd2a5250
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">General</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage.html">Usage</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Multi-Agent Simulation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../multiagent.html">Multi-Agent Simulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../interactions.html">Interactions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../motion.html">Motion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../steering.html">Steering</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Api</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../apidocs/crowddynamics.html">crowddynamics package</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">examples package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="examples.tests.html">examples.tests package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-examples.examples">examples.examples module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-examples.fields">examples.fields module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-examples.run">examples.run module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-examples.validation">examples.validation module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-examples">Module contents</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Research</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../quantities.html">Quantities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../phenomena.html">Phenomena</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../applications.html">Applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">References</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">crowddynamics</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>examples package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/apidocs_examples/examples.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="examples-package">
+<h1>examples package<a class="headerlink" href="#examples-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="examples.tests.html">examples.tests package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="examples.tests.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.tests.html#module-examples.tests.test_examples">examples.tests.test_examples module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.tests.html#module-examples.tests">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-examples.examples">
+<span id="examples-examples-module"></span><h2>examples.examples module<a class="headerlink" href="#module-examples.examples" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="examples.examples.bottleneck">
+<code class="descclassname">examples.examples.</code><code class="descname">bottleneck</code><span class="sig-paren">(</span><em>size: (1</em>, <em>None) = 10</em>, <em>width: (1.0</em>, <em>None) = 20.0</em>, <em>height: (1.0</em>, <em>None) = 10.0</em>, <em>d=4.0</em>, <em>l=2.0</em>, <em>h=1.0</em>, <em>agent_type: ['circular'</em>, <em>'three_circle'] = 'circular'</em>, <em>body_type='adult'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/examples/examples.html#bottleneck"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#examples.examples.bottleneck" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bottleneck</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="examples.examples.braess_paradox">
+<code class="descclassname">examples.examples.</code><code class="descname">braess_paradox</code><span class="sig-paren">(</span><em>size: (1</em>, <em>None) = 100</em>, <em>width: (1.0</em>, <em>None) = 10.0</em>, <em>height: (1.0</em>, <em>None) = 20.0</em>, <em>agent_type: ['circular'</em>, <em>'three_circle'] = 'circular'</em>, <em>body_type='adult'</em>, <em>door_width: (0.0</em>, <em>None) = 1.2</em>, <em>exit_hall_width: (0.0</em>, <em>None) = 2.0</em>, <em>radius=0.75</em>, <em>xdist=1.0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/examples/examples.html#braess_paradox"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#examples.examples.braess_paradox" title="Permalink to this definition">¶</a></dt>
+<dd><p>Room Evacuation</p>
+<ul class="simple">
+<li>Unidirectional flow</li>
+<li>Door width</li>
+<li>Door capacity</li>
+<li>Herding</li>
+<li>Exit selection</li>
+</ul>
+<p>Variables</p>
+<ul class="simple">
+<li>Number of exits</li>
+<li>One exit</li>
+<li>Two exits</li>
+<li>Multiple exits</li>
+</ul>
+</dd></dl>
+
+<dl class="function">
+<dt id="examples.examples.crossing">
+<code class="descclassname">examples.examples.</code><code class="descname">crossing</code><span class="sig-paren">(</span><em>size=20</em>, <em>l=10</em>, <em>d=10</em>, <em>u=5</em>, <em>v=5</em>, <em>k: (0.0</em>, <em>1.0) = 0.5</em>, <em>agent_type='circular'</em>, <em>body_type='adult'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/examples/examples.html#crossing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#examples.examples.crossing" title="Permalink to this definition">¶</a></dt>
+<dd><p>Crossing</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="examples.examples.hallway">
+<code class="descclassname">examples.examples.</code><code class="descname">hallway</code><span class="sig-paren">(</span><em>size: (2</em>, <em>None) = 100</em>, <em>width: (1.0</em>, <em>None) = 40.0</em>, <em>height: (1.0</em>, <em>None) = 5.0</em>, <em>agent_type: ['circular'</em>, <em>'three_circle'] = 'circular'</em>, <em>body_type='adult'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/examples/examples.html#hallway"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#examples.examples.hallway" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hallway</p>
+<ul class="simple">
+<li>Low / medium / high crowd density</li>
+<li>Overtaking</li>
+<li>Counterflow</li>
+<li>Bidirectional flow</li>
+<li>Unidirectional flow</li>
+</ul>
+</dd></dl>
+
+<dl class="function">
+<dt id="examples.examples.outdoor">
+<code class="descclassname">examples.examples.</code><code class="descname">outdoor</code><span class="sig-paren">(</span><em>size: (1</em>, <em>None) = 100</em>, <em>width: (1.0</em>, <em>None) = 20.0</em>, <em>height: (1.0</em>, <em>None) = 20.0</em>, <em>agent_type: ['circular'</em>, <em>'three_circle'] = 'circular'</em>, <em>body_type='adult'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/examples/examples.html#outdoor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#examples.examples.outdoor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Simulation for visualizing collision avoidance.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="examples.examples.room_evacuation">
+<code class="descclassname">examples.examples.</code><code class="descname">room_evacuation</code><span class="sig-paren">(</span><em>size: (1</em>, <em>None) = 100</em>, <em>width: (1.0</em>, <em>None) = 10.0</em>, <em>height: (1.0</em>, <em>None) = 20.0</em>, <em>agent_type: ['circular'</em>, <em>'three_circle'] = 'circular'</em>, <em>body_type='adult'</em>, <em>door_width: (0.0</em>, <em>None) = 1.2</em>, <em>exit_hall_width: (0.0</em>, <em>None) = 2.0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/examples/examples.html#room_evacuation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#examples.examples.room_evacuation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Room Evacuation</p>
+<ul class="simple">
+<li>Unidirectional flow</li>
+<li>Door width</li>
+<li>Door capacity</li>
+<li>Herding</li>
+<li>Exit selection</li>
+</ul>
+<p>Variables</p>
+<ul class="simple">
+<li>Number of exits</li>
+<li>One exit</li>
+<li>Two exits</li>
+<li>Multiple exits</li>
+</ul>
+</dd></dl>
+
+<dl class="function">
+<dt id="examples.examples.rounding">
+<code class="descclassname">examples.examples.</code><code class="descname">rounding</code><span class="sig-paren">(</span><em>size: (1</em>, <em>None) = 20</em>, <em>width: (1.0</em>, <em>None) = 15.0</em>, <em>height: (1.0</em>, <em>None) = 15.0</em>, <em>agent_type: ['circular'</em>, <em>'three_circle'] = 'circular'</em>, <em>body_type='adult'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/examples/examples.html#rounding"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#examples.examples.rounding" title="Permalink to this definition">¶</a></dt>
+<dd><p>Simulation for testing navigation algorithm.</p>
+<ul class="simple">
+<li>Unidirectional flow</li>
+</ul>
+</dd></dl>
+
+<dl class="function">
+<dt id="examples.examples.uturn">
+<code class="descclassname">examples.examples.</code><code class="descname">uturn</code><span class="sig-paren">(</span><em>size: (1</em>, <em>None) = 10</em>, <em>width: (1.0</em>, <em>None) = 20.0</em>, <em>height: (1.0</em>, <em>None) = 10.0</em>, <em>agent_type: ['circular'</em>, <em>'three_circle'] = 'circular'</em>, <em>body_type='adult'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/examples/examples.html#uturn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#examples.examples.uturn" title="Permalink to this definition">¶</a></dt>
+<dd><p>U-Turn</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-examples.fields">
+<span id="examples-fields-module"></span><h2>examples.fields module<a class="headerlink" href="#module-examples.fields" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="examples.fields.bottleneck">
+<code class="descclassname">examples.fields.</code><code class="descname">bottleneck</code><span class="sig-paren">(</span><em>width</em>, <em>height</em>, <em>d</em>, <em>l</em>, <em>h</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/examples/fields.html#bottleneck"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#examples.fields.bottleneck" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="examples.fields.braess_paradox">
+<code class="descclassname">examples.fields.</code><code class="descname">braess_paradox</code><span class="sig-paren">(</span><em>width</em>, <em>height</em>, <em>door_width</em>, <em>exit_hall_width</em>, <em>xdist=1.0</em>, <em>radius=0.75</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/examples/fields.html#braess_paradox"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#examples.fields.braess_paradox" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="examples.fields.crossing">
+<code class="descclassname">examples.fields.</code><code class="descname">crossing</code><span class="sig-paren">(</span><em>l</em>, <em>d</em>, <em>u</em>, <em>v</em>, <em>k=0.3333333333333333</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/examples/fields.html#crossing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#examples.fields.crossing" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="examples.fields.hallway">
+<code class="descclassname">examples.fields.</code><code class="descname">hallway</code><span class="sig-paren">(</span><em>width</em>, <em>height</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/examples/fields.html#hallway"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#examples.fields.hallway" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="examples.fields.outdoor">
+<code class="descclassname">examples.fields.</code><code class="descname">outdoor</code><span class="sig-paren">(</span><em>width</em>, <em>height</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/examples/fields.html#outdoor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#examples.fields.outdoor" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="examples.fields.room_with_exit">
+<code class="descclassname">examples.fields.</code><code class="descname">room_with_exit</code><span class="sig-paren">(</span><em>width</em>, <em>height</em>, <em>door_width</em>, <em>exit_hall_width</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/examples/fields.html#room_with_exit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#examples.fields.room_with_exit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="examples.fields.room_with_two_exits">
+<code class="descclassname">examples.fields.</code><code class="descname">room_with_two_exits</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/examples/fields.html#room_with_two_exits"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#examples.fields.room_with_two_exits" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="examples.fields.rounding">
+<code class="descclassname">examples.fields.</code><code class="descname">rounding</code><span class="sig-paren">(</span><em>width</em>, <em>height</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/examples/fields.html#rounding"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#examples.fields.rounding" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="examples.fields.uturn">
+<code class="descclassname">examples.fields.</code><code class="descname">uturn</code><span class="sig-paren">(</span><em>width</em>, <em>height</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/examples/fields.html#uturn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#examples.fields.uturn" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-examples.run">
+<span id="examples-run-module"></span><h2>examples.run module<a class="headerlink" href="#module-examples.run" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-examples.validation">
+<span id="examples-validation-module"></span><h2>examples.validation module<a class="headerlink" href="#module-examples.validation" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="examples.validation.collision_avoidance">
+<code class="descclassname">examples.validation.</code><code class="descname">collision_avoidance</code><span class="sig-paren">(</span><em>width: (1.0</em>, <em>None) = 40.0</em>, <em>height: (1.0</em>, <em>None) = 2.0</em>, <em>agent_type: ['circular'</em>, <em>'three_circle'] = 'circular'</em>, <em>body_type='adult'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/examples/validation.html#collision_avoidance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#examples.validation.collision_avoidance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Example of collision avoidance</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="examples.validation.obstacle_friction">
+<code class="descclassname">examples.validation.</code><code class="descname">obstacle_friction</code><span class="sig-paren">(</span><em>width: (1.0</em>, <em>None) = 40.0</em>, <em>height: (1.0</em>, <em>None) = 1.0</em>, <em>agent_type: ['circular'</em>, <em>'three_circle'] = 'circular'</em>, <em>body_type='adult'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/examples/validation.html#obstacle_friction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#examples.validation.obstacle_friction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Example of friction from obstacles</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="examples.validation.obstacle_handling">
+<code class="descclassname">examples.validation.</code><code class="descname">obstacle_handling</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/examples/validation.html#obstacle_handling"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#examples.validation.obstacle_handling" title="Permalink to this definition">¶</a></dt>
+<dd><p>Example of obstacle handling</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-examples">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-examples" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="examples.tests.html" class="btn btn-neutral float-right" title="examples.tests package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../apidocs/crowddynamics.visualization.html" class="btn btn-neutral" title="crowddynamics.visualization package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright Jaan Tollander de Balsch.
+      Last updated on 2017-05-10.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'legacy+297.gd2a5250.dirty',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

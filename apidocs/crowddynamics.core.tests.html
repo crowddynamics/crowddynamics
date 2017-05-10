@@ -1,0 +1,510 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>crowddynamics.core.tests package &mdash; crowddynamics legacy+297.gd2a5250.dirty documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="crowddynamics legacy+297.gd2a5250.dirty documentation" href="../index.html"/>
+        <link rel="up" title="crowddynamics.core package" href="crowddynamics.core.html"/>
+        <link rel="next" title="crowddynamics.simulation package" href="crowddynamics.simulation.html"/>
+        <link rel="prev" title="crowddynamics.core.structures.tests package" href="crowddynamics.core.structures.tests.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> crowddynamics
+          
+
+          
+            
+            <img src="../_static/logo.svg" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                legacy+297legacy+297.gd2a5250.dirtygd2a5250
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">General</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage.html">Usage</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Multi-Agent Simulation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../multiagent.html">Multi-Agent Simulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../interactions.html">Interactions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../motion.html">Motion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../steering.html">Steering</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Api</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="crowddynamics.html">crowddynamics package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="crowddynamics.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="crowddynamics.core.html">crowddynamics.core package</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="crowddynamics.core.html#subpackages">Subpackages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.html#module-crowddynamics.core.conftest">crowddynamics.core.conftest module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.html#module-crowddynamics.core.evacuation">crowddynamics.core.evacuation module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.html#module-crowddynamics.core.geometry">crowddynamics.core.geometry module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.html#module-crowddynamics.core.integrator">crowddynamics.core.integrator module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.html#module-crowddynamics.core.tree">crowddynamics.core.tree module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.html#module-crowddynamics.core.vector2D">crowddynamics.core.vector2D module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.html#module-crowddynamics.core">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crowddynamics.simulation.html">crowddynamics.simulation package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="crowddynamics.tests.html">crowddynamics.tests package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="crowddynamics.visualization.html">crowddynamics.visualization package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.html#module-crowddynamics.cli">crowddynamics.cli module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.html#module-crowddynamics.config">crowddynamics.config module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.html#module-crowddynamics.exceptions">crowddynamics.exceptions module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.html#module-crowddynamics.io">crowddynamics.io module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.html#module-crowddynamics.logging">crowddynamics.logging module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.html#module-crowddynamics.parse">crowddynamics.parse module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.html#module-crowddynamics.testing">crowddynamics.testing module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.html#module-crowddynamics">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../apidocs_examples/examples.html">examples package</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Research</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../quantities.html">Quantities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../phenomena.html">Phenomena</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../applications.html">Applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">References</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">crowddynamics</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="crowddynamics.html">crowddynamics package</a> &raquo;</li>
+        
+          <li><a href="crowddynamics.core.html">crowddynamics.core package</a> &raquo;</li>
+        
+      <li>crowddynamics.core.tests package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/apidocs/crowddynamics.core.tests.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="crowddynamics-core-tests-package">
+<h1>crowddynamics.core.tests package<a class="headerlink" href="#crowddynamics-core-tests-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-crowddynamics.core.tests.test_evacuation">
+<span id="crowddynamics-core-tests-test-evacuation-module"></span><h2>crowddynamics.core.tests.test_evacuation module<a class="headerlink" href="#module-crowddynamics.core.tests.test_evacuation" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="crowddynamics.core.tests.test_evacuation.test_agent_closer_to_exit">
+<code class="descclassname">crowddynamics.core.tests.test_evacuation.</code><code class="descname">test_agent_closer_to_exit</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/core/tests/test_evacuation.html#test_agent_closer_to_exit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.tests.test_evacuation.test_agent_closer_to_exit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="crowddynamics.core.tests.test_evacuation.test_narrow_exit_capacity">
+<code class="descclassname">crowddynamics.core.tests.test_evacuation.</code><code class="descname">test_narrow_exit_capacity</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/core/tests/test_evacuation.html#test_narrow_exit_capacity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.tests.test_evacuation.test_narrow_exit_capacity" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-crowddynamics.core.tests.test_geometry">
+<span id="crowddynamics-core-tests-test-geometry-module"></span><h2>crowddynamics.core.tests.test_geometry module<a class="headerlink" href="#module-crowddynamics.core.tests.test_geometry" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="crowddynamics.core.tests.test_geometry.test_geom_to_linesegment">
+<code class="descclassname">crowddynamics.core.tests.test_geometry.</code><code class="descname">test_geom_to_linesegment</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/core/tests/test_geometry.html#test_geom_to_linesegment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.tests.test_geometry.test_geom_to_linesegment" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-crowddynamics.core.tests.test_integrator">
+<span id="crowddynamics-core-tests-test-integrator-module"></span><h2>crowddynamics.core.tests.test_integrator module<a class="headerlink" href="#module-crowddynamics.core.tests.test_integrator" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="crowddynamics.core.tests.test_integrator.test_adaptive_timestep1">
+<code class="descclassname">crowddynamics.core.tests.test_integrator.</code><code class="descname">test_adaptive_timestep1</code><span class="sig-paren">(</span><em>agents_circular</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/core/tests/test_integrator.html#test_adaptive_timestep1"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.tests.test_integrator.test_adaptive_timestep1" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="crowddynamics.core.tests.test_integrator.test_adaptive_timestep2">
+<code class="descclassname">crowddynamics.core.tests.test_integrator.</code><code class="descname">test_adaptive_timestep2</code><span class="sig-paren">(</span><em>agents_three_circle</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/core/tests/test_integrator.html#test_adaptive_timestep2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.tests.test_integrator.test_adaptive_timestep2" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="crowddynamics.core.tests.test_integrator.test_euler_integration1">
+<code class="descclassname">crowddynamics.core.tests.test_integrator.</code><code class="descname">test_euler_integration1</code><span class="sig-paren">(</span><em>agents_circular</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/core/tests/test_integrator.html#test_euler_integration1"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.tests.test_integrator.test_euler_integration1" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="crowddynamics.core.tests.test_integrator.test_euler_integration2">
+<code class="descclassname">crowddynamics.core.tests.test_integrator.</code><code class="descname">test_euler_integration2</code><span class="sig-paren">(</span><em>agents_three_circle</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/core/tests/test_integrator.html#test_euler_integration2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.tests.test_integrator.test_euler_integration2" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="crowddynamics.core.tests.test_integrator.test_velocity_verlet1">
+<code class="descclassname">crowddynamics.core.tests.test_integrator.</code><code class="descname">test_velocity_verlet1</code><span class="sig-paren">(</span><em>agents_circular</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/core/tests/test_integrator.html#test_velocity_verlet1"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.tests.test_integrator.test_velocity_verlet1" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="crowddynamics.core.tests.test_integrator.test_velocity_verlet2">
+<code class="descclassname">crowddynamics.core.tests.test_integrator.</code><code class="descname">test_velocity_verlet2</code><span class="sig-paren">(</span><em>agents_three_circle</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/core/tests/test_integrator.html#test_velocity_verlet2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.tests.test_integrator.test_velocity_verlet2" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-crowddynamics.core.tests.test_taskgraph">
+<span id="crowddynamics-core-tests-test-taskgraph-module"></span><h2>crowddynamics.core.tests.test_taskgraph module<a class="headerlink" href="#module-crowddynamics.core.tests.test_taskgraph" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="crowddynamics.core.tests.test_taskgraph.newnode">
+<code class="descclassname">crowddynamics.core.tests.test_taskgraph.</code><code class="descname">newnode</code><span class="sig-paren">(</span><em>index=0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/core/tests/test_taskgraph.html#newnode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.tests.test_taskgraph.newnode" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="crowddynamics.core.tests.test_taskgraph.test_tasknode">
+<code class="descclassname">crowddynamics.core.tests.test_taskgraph.</code><code class="descname">test_tasknode</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/core/tests/test_taskgraph.html#test_tasknode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.tests.test_taskgraph.test_tasknode" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="crowddynamics.core.tests.test_taskgraph.tree_strategy">
+<code class="descclassname">crowddynamics.core.tests.test_taskgraph.</code><code class="descname">tree_strategy</code><span class="sig-paren">(</span><em>maxsize_st=integers(min_value=1</em>, <em>max_value=100)</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/core/tests/test_taskgraph.html#tree_strategy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.tests.test_taskgraph.tree_strategy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Search strategy that task graphs.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>draw</strong> &#8211; </li>
+<li><strong>root</strong> &#8211; </li>
+<li><strong>maxsize_st</strong> &#8211; </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">SearchStrategy</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-crowddynamics.core.tests.test_vector2D">
+<span id="crowddynamics-core-tests-test-vector2d-module"></span><h2>crowddynamics.core.tests.test_vector2D module<a class="headerlink" href="#module-crowddynamics.core.tests.test_vector2D" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="crowddynamics.core.tests.test_vector2D.test_angle">
+<code class="descclassname">crowddynamics.core.tests.test_vector2D.</code><code class="descname">test_angle</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/core/tests/test_vector2D.html#test_angle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.tests.test_vector2D.test_angle" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="crowddynamics.core.tests.test_vector2D.test_angle_vec">
+<code class="descclassname">crowddynamics.core.tests.test_vector2D.</code><code class="descname">test_angle_vec</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/core/tests/test_vector2D.html#test_angle_vec"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.tests.test_vector2D.test_angle_vec" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="crowddynamics.core.tests.test_vector2D.test_cross">
+<code class="descclassname">crowddynamics.core.tests.test_vector2D.</code><code class="descname">test_cross</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/core/tests/test_vector2D.html#test_cross"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.tests.test_vector2D.test_cross" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="crowddynamics.core.tests.test_vector2D.test_dot">
+<code class="descclassname">crowddynamics.core.tests.test_vector2D.</code><code class="descname">test_dot</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/core/tests/test_vector2D.html#test_dot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.tests.test_vector2D.test_dot" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="crowddynamics.core.tests.test_vector2D.test_length">
+<code class="descclassname">crowddynamics.core.tests.test_vector2D.</code><code class="descname">test_length</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/core/tests/test_vector2D.html#test_length"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.tests.test_vector2D.test_length" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="crowddynamics.core.tests.test_vector2D.test_length_vec">
+<code class="descclassname">crowddynamics.core.tests.test_vector2D.</code><code class="descname">test_length_vec</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/core/tests/test_vector2D.html#test_length_vec"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.tests.test_vector2D.test_length_vec" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="crowddynamics.core.tests.test_vector2D.test_normalize">
+<code class="descclassname">crowddynamics.core.tests.test_vector2D.</code><code class="descname">test_normalize</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/core/tests/test_vector2D.html#test_normalize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.tests.test_vector2D.test_normalize" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="crowddynamics.core.tests.test_vector2D.test_rotate270">
+<code class="descclassname">crowddynamics.core.tests.test_vector2D.</code><code class="descname">test_rotate270</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/core/tests/test_vector2D.html#test_rotate270"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.tests.test_vector2D.test_rotate270" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="crowddynamics.core.tests.test_vector2D.test_rotate90">
+<code class="descclassname">crowddynamics.core.tests.test_vector2D.</code><code class="descname">test_rotate90</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/core/tests/test_vector2D.html#test_rotate90"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.tests.test_vector2D.test_rotate90" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="crowddynamics.core.tests.test_vector2D.test_truncate">
+<code class="descclassname">crowddynamics.core.tests.test_vector2D.</code><code class="descname">test_truncate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/core/tests/test_vector2D.html#test_truncate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.tests.test_vector2D.test_truncate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="crowddynamics.core.tests.test_vector2D.test_unit_vector">
+<code class="descclassname">crowddynamics.core.tests.test_vector2D.</code><code class="descname">test_unit_vector</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/core/tests/test_vector2D.html#test_unit_vector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.tests.test_vector2D.test_unit_vector" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="crowddynamics.core.tests.test_vector2D.test_unit_vector_vec">
+<code class="descclassname">crowddynamics.core.tests.test_vector2D.</code><code class="descname">test_unit_vector_vec</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/core/tests/test_vector2D.html#test_unit_vector_vec"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.tests.test_vector2D.test_unit_vector_vec" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="crowddynamics.core.tests.test_vector2D.test_wrap_to_pi">
+<code class="descclassname">crowddynamics.core.tests.test_vector2D.</code><code class="descname">test_wrap_to_pi</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/core/tests/test_vector2D.html#test_wrap_to_pi"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.tests.test_vector2D.test_wrap_to_pi" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-crowddynamics.core.tests.test_vector2D_benchmarks">
+<span id="crowddynamics-core-tests-test-vector2d-benchmarks-module"></span><h2>crowddynamics.core.tests.test_vector2D_benchmarks module<a class="headerlink" href="#module-crowddynamics.core.tests.test_vector2D_benchmarks" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="crowddynamics.core.tests.test_vector2D_benchmarks.test_angle">
+<code class="descclassname">crowddynamics.core.tests.test_vector2D_benchmarks.</code><code class="descname">test_angle</code><span class="sig-paren">(</span><em>benchmark</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/core/tests/test_vector2D_benchmarks.html#test_angle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.tests.test_vector2D_benchmarks.test_angle" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="crowddynamics.core.tests.test_vector2D_benchmarks.test_cross">
+<code class="descclassname">crowddynamics.core.tests.test_vector2D_benchmarks.</code><code class="descname">test_cross</code><span class="sig-paren">(</span><em>benchmark</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/core/tests/test_vector2D_benchmarks.html#test_cross"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.tests.test_vector2D_benchmarks.test_cross" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="crowddynamics.core.tests.test_vector2D_benchmarks.test_dot">
+<code class="descclassname">crowddynamics.core.tests.test_vector2D_benchmarks.</code><code class="descname">test_dot</code><span class="sig-paren">(</span><em>benchmark</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/core/tests/test_vector2D_benchmarks.html#test_dot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.tests.test_vector2D_benchmarks.test_dot" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="crowddynamics.core.tests.test_vector2D_benchmarks.test_length">
+<code class="descclassname">crowddynamics.core.tests.test_vector2D_benchmarks.</code><code class="descname">test_length</code><span class="sig-paren">(</span><em>benchmark</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/core/tests/test_vector2D_benchmarks.html#test_length"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.tests.test_vector2D_benchmarks.test_length" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="crowddynamics.core.tests.test_vector2D_benchmarks.test_normalize">
+<code class="descclassname">crowddynamics.core.tests.test_vector2D_benchmarks.</code><code class="descname">test_normalize</code><span class="sig-paren">(</span><em>benchmark</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/core/tests/test_vector2D_benchmarks.html#test_normalize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.tests.test_vector2D_benchmarks.test_normalize" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="crowddynamics.core.tests.test_vector2D_benchmarks.test_rotate270">
+<code class="descclassname">crowddynamics.core.tests.test_vector2D_benchmarks.</code><code class="descname">test_rotate270</code><span class="sig-paren">(</span><em>benchmark</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/core/tests/test_vector2D_benchmarks.html#test_rotate270"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.tests.test_vector2D_benchmarks.test_rotate270" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="crowddynamics.core.tests.test_vector2D_benchmarks.test_rotate90">
+<code class="descclassname">crowddynamics.core.tests.test_vector2D_benchmarks.</code><code class="descname">test_rotate90</code><span class="sig-paren">(</span><em>benchmark</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/core/tests/test_vector2D_benchmarks.html#test_rotate90"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.tests.test_vector2D_benchmarks.test_rotate90" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="crowddynamics.core.tests.test_vector2D_benchmarks.test_truncate">
+<code class="descclassname">crowddynamics.core.tests.test_vector2D_benchmarks.</code><code class="descname">test_truncate</code><span class="sig-paren">(</span><em>benchmark</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/core/tests/test_vector2D_benchmarks.html#test_truncate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.tests.test_vector2D_benchmarks.test_truncate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="crowddynamics.core.tests.test_vector2D_benchmarks.test_unit_vector">
+<code class="descclassname">crowddynamics.core.tests.test_vector2D_benchmarks.</code><code class="descname">test_unit_vector</code><span class="sig-paren">(</span><em>benchmark</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/core/tests/test_vector2D_benchmarks.html#test_unit_vector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.tests.test_vector2D_benchmarks.test_unit_vector" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-crowddynamics.core.tests">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-crowddynamics.core.tests" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="crowddynamics.simulation.html" class="btn btn-neutral float-right" title="crowddynamics.simulation package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="crowddynamics.core.structures.tests.html" class="btn btn-neutral" title="crowddynamics.core.structures.tests package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright Jaan Tollander de Balsch.
+      Last updated on 2017-05-10.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'legacy+297.gd2a5250.dirty',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
