@@ -27,6 +27,16 @@ setup(
     },
     include_package_data=True,
     install_requires=[],
+    extra_require={
+        'docs': ['sphinx',
+                 'sphinx-rtd-theme',
+                 'graphviz',
+                 'sphinxcontrib-tikz'],
+        'tests': ['pytest',
+                  'pytest-cov',
+                  'pytest-benchmark',
+                  'hypothesis'],
+    },
     zip_safe=False,
     keywords='',
     classifiers=[
@@ -40,6 +50,4 @@ setup(
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
     ],
-    test_suite='crowddynamics.tests',
-    test_requirements=[],
 )

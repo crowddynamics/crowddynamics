@@ -1,10 +1,11 @@
 # Install env with command:
 # conda env create python=3.x -n crowd3x -f environment.yml
 
+name: crowd36
 channels:
     - conda-forge
-#    - intel
 dependencies:
+    - python=3.6
     - numpy
     - numba
     - scipy
