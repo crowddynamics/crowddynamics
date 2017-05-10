@@ -19,7 +19,7 @@ Crowd Dynamics
    :alt: Travis continuous intergration
 
 .. |Appveoyr| image:: https://ci.appveyor.com/api/projects/status/nlqrc850nbr9kh4e?svg=true
-   :target: https://ci.appveyor.com/project/jaantollander/CrowdDynamics
+   :target: https://ci.appveyor.com/project/jaantollander/crowddynamics
    :alt: Appveoyr continuous intergration
 
 .. |Codecov| image:: https://codecov.io/gh/jaantollander/crowddynamics/branch/master/graph/badge.svg
