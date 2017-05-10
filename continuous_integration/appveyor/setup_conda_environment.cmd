@@ -21,7 +21,7 @@ call activate %CONDA_ENV%
 @rem Install optional dependencies for tests
 %CONDA_INSTALL% numpy numba scipy scikit-image shapely matplotlib bokeh tqdm
 
-%PIP_INSTALL% configobj loggingtools versioneer typing sortedcontainers anytree ruamel.yaml scikit-fmm click colorama colorlog pytest pytest-cov coverage hypothesis pytest-benchmark codecov
+%PIP_INSTALL% configobj loggingtools versioneer typing sortedcontainers anytree ruamel.yaml scikit-fmm click colorama colorlog traitlets pytest pytest-cov coverage hypothesis pytest-benchmark codecov
 
 
 @rem Display final environment (for reproducing)
