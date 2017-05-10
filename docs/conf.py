@@ -7,10 +7,22 @@ sys.path.insert(0, os.path.abspath('.'))
 sys.path.insert(0, os.path.abspath('..'))
 import crowddynamics
 
+# -- Mock imports --------------------------------
+
+# if os.environ.get('READTHEDOCS', False):
+# from unittest.mock import MagicMock
+# class Mock(MagicMock):
+#     @classmethod
+#     def __getattr__(cls, name):
+#         return MagicMock()
+# MOCK_MODULES = []
+# sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
+
 
 # -- Build apidocs automatically when sphinx is run ----------------------
 
 from sphinx.apidoc import main
+
 ROOT_PATH = os.path.dirname(os.path.dirname(__file__))
 
 out_path = 'apidocs'
@@ -26,7 +38,6 @@ main(['--separate',
       '--output-dir', out_path2, module_path2,
       '--no-toc',
       '--force'])
-
 
 # -- General configuration ------------------------------------------------
 
@@ -53,9 +64,9 @@ author = 'Jaan Tollander de Balsch'
 # Copyright string
 copyright = author
 
-
 # Version and Release
-version = crowddynamics.__version__.join(crowddynamics.__version__.split('.')[:2])
+version = crowddynamics.__version__.join(
+    crowddynamics.__version__.split('.')[:2])
 release = crowddynamics.__version__
 
 # Style
@@ -63,7 +74,6 @@ language = 'en'
 today_fmt = '%Y-%m-%d'
 pygments_style = 'sphinx'
 todo_include_todos = True
-
 
 # -- Bokeh -----------------------------------------------------------
 # http://bokeh.pydata.org/en/latest/docs/reference/sphinxext.html#bokeh-sphinxext-bokeh-plot
@@ -81,7 +91,6 @@ extensions += ['sphinx.ext.graphviz']
 graphviz_dot = 'dot'
 graphviz_dot_args = []
 graphviz_output_format = 'png'  # svg
-
 
 # -- Napoleon --------------------------------------------------------
 # http://www.sphinx-doc.org/en/stable/ext/napoleon.html
@@ -103,6 +112,7 @@ graphviz_output_format = 'png'  # svg
 # -- Options for HTML output ----------------------------------------------
 
 import sphinx_rtd_theme
+
 html_theme = 'sphinx_rtd_theme'
 html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 html_theme_options = {}
@@ -136,7 +146,6 @@ latex_elements['preamble'] += r"""
 """
 
 latex_logo = None
-
 
 """
 Latex documents
