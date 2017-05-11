@@ -1,4 +1,4 @@
 # Optional but useful packages and tools for developing
 jupyter
 sympy
-doit
+doit==0.30.3
