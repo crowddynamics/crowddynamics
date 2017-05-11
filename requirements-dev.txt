@@ -1,4 +1,4 @@
 # Optional but useful packages and tools for developing
 jupyter
-sympy
+sympy==1.0
 doit
