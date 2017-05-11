@@ -1,12 +1,3 @@
-r"""
-
-.. csv-table:: Model Specification
-
-   "Space", "Continuous space :math:`\mathbb{R}^2`"
-   "Scale", "Microscopic. Agents are modelled as rigid bodies."
-   "Motion", "Classical mechanics for modelling movement."
-
-"""
 import json
 import logging
 import multiprocessing
@@ -43,7 +34,9 @@ from crowddynamics.core.motion.fluctuation import force_fluctuation, \
     torque_fluctuation
 from crowddynamics.core.random.functions import truncnorm
 from crowddynamics.core.random.sampling import polygon_sample
-from crowddynamics.core.steering.navigation import navigation, static_potential
+from crowddynamics.core.steering.herding import herding_block_list
+from crowddynamics.core.steering.navigation import navigation, static_potential, \
+    herding
 from crowddynamics.core.steering.orientation import \
     orient_towards_target_direction
 from crowddynamics.core.structures.agents import is_model, reset_motion, \
@@ -196,7 +189,7 @@ class Field(HasTraits):
         vertices = np.asarray(geom.convex_hull.exterior)
         return polygon_sample(vertices)
 
-    def sample_spawn(self, spawn_index: int, radius: float=0.3):
+    def sample_spawn(self, spawn_index: int, radius: float = 0.3):
         """Generator for sampling points inside spawn without overlapping with
         obstacles"""
         return self._samples(self.spawns[spawn_index], self.obstacles, radius)
@@ -218,6 +211,7 @@ class Field(HasTraits):
 
     def dump_json(self, fname: str):
         """Dump field into JSON"""
+
         def _mapping(geom):
             if isinstance(geom, Iterable):
                 return list(map(mapping, geom))
@@ -240,6 +234,7 @@ class Field(HasTraits):
 
     def load_json(self, fname: str):
         """Load field from JSON"""
+
         def _shape(geom):
             if isinstance(geom, Iterable):
                 return list(map(shape, geom))
@@ -433,8 +428,12 @@ class Agents(object):
 
         # Faster check for neighbouring agents for initializing agents into
         # random positions.
-        constants = self.config['constants']
-        self.grid = MutableBlockList(cell_size=constants['cell_size'])
+        self.grid = MutableBlockList(
+            cell_size=self.config['constants']['cell_size'])
+
+    @property
+    def size(self):
+        return self.array.size
 
     @staticmethod
     def reset_agent(index, agents):
@@ -496,10 +495,6 @@ class Agents(object):
                 #     of_model(agents), attribute
                 # ))
                 pass
-
-    @property
-    def size(self):
-        return self.array.size
 
     def add(self, attributes, check_overlapping=True):
         """Add new agent with given attributes
@@ -816,6 +811,13 @@ class Navigation(LogicNode):
             navigation(agents, targets == target, mgrid, direction_map)
 
 
+class Herding(LogicNode):
+    def update(self, *args, **kwargs):
+        sight_herding = 3.0
+        agents = self.simulation.agents.array
+        herding(agents, agents['herding'], sight_herding)
+
+
 class Orientation(LogicNode):
     def update(self):
         if is_model(self.simulation.agents.array, 'three_circle'):
@@ -830,7 +832,8 @@ class SaveSimulationData(LogicNode):
     def __init__(self, simulation, directory, save_condition=_save_condition):
         super().__init__(simulation)
         self.save_condition = save_condition
-        self.directory = os.path.join(directory, self.simulation.name_with_timestamp())
+        self.directory = os.path.join(directory,
+                                      self.simulation.name_with_timestamp())
         os.makedirs(self.directory)
 
         self.simulation.field.dump_geometry(

@@ -16,6 +16,7 @@ states = [
 navigation = [
     ('target', np.uint8),
     ('target_reached', np.bool_),
+    ('herding', np.bool_),
 ]
 translational = [
     ('mass', np.float64),

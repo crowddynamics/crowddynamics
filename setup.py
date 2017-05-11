@@ -17,7 +17,7 @@ setup(
     long_description=readfile('README.rst'),
     author='Jaan Tollander de Balsch',
     author_email='de.tollander@aalto.fi',
-    url='https://github.com/jaantollander/CrowdDynamics',
+    url='https://github.com/jaantollander/crowddynamics',
     license=readfile('LICENSE.txt'),
     packages=find_packages(),
     entry_points={

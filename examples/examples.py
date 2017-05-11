@@ -7,7 +7,7 @@ from crowddynamics.core.vector2D import unit_vector
 from crowddynamics.simulation.multiagent import MultiAgentSimulation, \
     Orientation, Integrator, Fluctuation, Adjusting, \
     AgentAgentInteractions, Reset, AgentObstacleInteractions, Navigation, \
-    InsideDomain, Agents
+    InsideDomain, Agents, Herding
 
 
 @log_with()
@@ -362,4 +362,47 @@ def bottleneck(size: (1, None) = 10,
             )
         )
 
+    return simu
+
+
+def herding_outdoor(size: (2, None) = 100,
+                    width: (1.0, None) = 20.0,
+                    height: (1.0, None) = 20.0,
+                    agent_type: AgentModels = 'circular',
+                    body_type='adult'):
+    simu = MultiAgentSimulation(name='Outdoor')
+    simu.field = fields.outdoor(width, height)
+    simu.agents = Agents(size, agent_type)
+    # Followers
+    simu.agents.add_group(size - 1, {
+        'body_type': body_type,
+        'position': simu.field.sample_spawn(0),
+        'orientation': lambda: np.random.uniform(-np.pi, np.pi),
+        'velocity': np.zeros(2),
+        'angular_velocity': 0.0,
+        'target_direction': np.array((0, 0)),
+        'target_orientation': lambda: np.random.uniform(-np.pi, np.pi),
+        'herding': True,
+    })
+    # Leaders
+    simu.agents.add_group(1, {
+        'body_type': body_type,
+        'position': np.array((0, height / 2)),
+        'orientation': 0.0,
+        'velocity': np.array((1, 0)),
+        'angular_velocity': 0.0,
+        'target_direction': unit_vector(0.0),
+        'target_orientation': 0.0
+    })
+    simu.logic = \
+        Reset(simu) << (
+            Integrator(simu) << (
+                Fluctuation(simu),
+                Adjusting(simu) << (
+                    Orientation(simu),
+                    Herding(simu)
+                ),
+                AgentAgentInteractions(simu),
+            )
+        )
     return simu

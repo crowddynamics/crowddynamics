@@ -14,8 +14,8 @@ Crowd Dynamics
    :target: https://travis-ci.org/jaantollander/crowddynamics
    :alt: Travis continuous intergration
 
-.. |Appveoyr| image:: https://ci.appveyor.com/api/projects/status/nlqrc850nbr9kh4e?svg=true
-   :target: https://ci.appveyor.com/project/jaantollander/crowddynamics
+.. |Appveoyr| image:: https://ci.appveyor.com/api/projects/status/2d9nsf41xjcpn0ka?svg=true
+   :target: https://ci.appveyor.com/project/jaantollander/crowddynamics-wi50b
    :alt: Appveoyr continuous intergration
 
 .. |Codecov| image:: https://codecov.io/gh/jaantollander/crowddynamics/branch/master/graph/badge.svg
@@ -23,15 +23,9 @@ Crowd Dynamics
    :alt: Codecov coverage hosting
 
 
-Crowddynamics is a library for creating crowd simulations in Python.
+Crowddynamics is a simulation environment written in Python package for simulation movement of crowds. Project was created in summer 2016 for Systems Analysis Laboratory (SAL) in Aalto University in Finland. More about the project can be read from the project's documentation_.
 
-License
--------
-Project is licensed under GPL3. See `License <LICENSE.txt>`_
-
-Plugins
--------
-List of plugins for crowddynamics:
+.. _documentation: http://jaantollander.github.io/crowddynamics/
 
 
 Authors

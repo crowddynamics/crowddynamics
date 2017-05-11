@@ -1,0 +1,4 @@
+# Optional but useful packages and tools for developing
+jupyter
+sympy
+doit

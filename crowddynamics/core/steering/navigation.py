@@ -16,6 +16,7 @@ from loggingtools import log_with
 from numba import f8, i8
 from shapely.geometry import Polygon
 
+from crowddynamics.core.steering.herding import herding_block_list
 from crowddynamics.core.steering.obstacle_handling import \
     direction_map_obstacles, obstacle_handling
 from crowddynamics.core.steering.quickest_path import MeshGrid, DistanceMap, \
@@ -106,4 +107,11 @@ def navigation(agents, mask, mgrid, dir_map):
     # Flip x and y to array index i and j
     indices = np.fliplr(mgrid.indicer(agents[mask]['position']))
     new_direction = getdefault(indices, dir_map, agents[mask]['target_direction'])
+    set_target_direction(agents, np.arange(len(agents))[mask], new_direction)
+
+
+def herding(agents, mask, sight_herding):
+    new_direction = herding_block_list(agents[mask]['position'],
+                                       agents[mask]['velocity'],
+                                       sight_herding)
     set_target_direction(agents, np.arange(len(agents))[mask], new_direction)
