@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>crowddynamics.core.steering package &mdash; crowddynamics legacy+297.gd2a5250.dirty documentation</title>
+  <title>crowddynamics.core.steering package &mdash; crowddynamics legacy+302.g559af75.dirty documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="crowddynamics legacy+297.gd2a5250.dirty documentation" href="../index.html"/>
+    <link rel="top" title="crowddynamics legacy+302.g559af75.dirty documentation" href="../index.html"/>
         <link rel="up" title="crowddynamics.core package" href="crowddynamics.core.html"/>
         <link rel="next" title="crowddynamics.core.steering.tests package" href="crowddynamics.core.steering.tests.html"/>
         <link rel="prev" title="crowddynamics.core.random.tests package" href="crowddynamics.core.random.tests.html"/> 
@@ -72,7 +72,7 @@
             
             
               <div class="version">
-                legacy+297legacy+297.gd2a5250.dirtygd2a5250
+                legacy+302legacy+302.g559af75.dirtyg559af75
               </div>
             
           
@@ -100,6 +100,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developing.html">Developing</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Multi-Agent Simulation</span></p>
 <ul>
@@ -274,13 +275,14 @@ normalization of the vector</li>
 <span id="crowddynamics-core-steering-herding-module"></span><h2>crowddynamics.core.steering.herding module<a class="headerlink" href="#module-crowddynamics.core.steering.herding" title="Permalink to this headline">¶</a></h2>
 <p>Herding / Flocking / Leader-Follower effect</p>
 <dl class="function">
-<dt id="crowddynamics.core.steering.herding.full">
-<code class="descclassname">crowddynamics.core.steering.herding.</code><code class="descname">full</code><span class="sig-paren">(</span><em>agents</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/core/steering/herding.html#full"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.steering.herding.full" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dt id="crowddynamics.core.steering.herding.herding_block_list">
+<code class="descclassname">crowddynamics.core.steering.herding.</code><code class="descname">herding_block_list</code><span class="sig-paren">(</span><em>position</em>, <em>direction</em>, <em>sight_herding</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/core/steering/herding.html#herding_block_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.steering.herding.herding_block_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute herding using block list</p>
+</dd></dl>
 
 <dl class="attribute">
-<dt id="crowddynamics.core.steering.herding.herding">
-<code class="descclassname">crowddynamics.core.steering.herding.</code><code class="descname">herding</code><a class="reference internal" href="../_modules/crowddynamics/core/steering/herding.html#herding"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.steering.herding.herding" title="Permalink to this definition">¶</a></dt>
+<dt id="crowddynamics.core.steering.herding.herding_interaction">
+<code class="descclassname">crowddynamics.core.steering.herding.</code><code class="descname">herding_interaction</code><a class="reference internal" href="../_modules/crowddynamics/core/steering/herding.html#herding_interaction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.steering.herding.herding_interaction" title="Permalink to this definition">¶</a></dt>
 <dd><p>Herding effect. Computed from the average directions of neighbouring
 agents.</p>
 <div class="math">
@@ -291,8 +293,13 @@ agents.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>e0</strong> (<em>numpy.ndarray</em>) &#8211; Agents desired direction</li>
-<li><strong>e0_neigh</strong> (<em>numpy.ndarray</em>) &#8211; Directions of the neighbouring agents</li>
+<li><strong>position</strong> (<em>numpy.ndarray</em>) &#8211; Positions of herding agents</li>
+<li><strong>direction</strong> (<em>numpy.ndarray</em>) &#8211; Directions (unit vectors) of herding agents</li>
+<li><strong>sight_herding</strong> &#8211; </li>
+<li><strong>index_list</strong> &#8211; </li>
+<li><strong>count</strong> &#8211; </li>
+<li><strong>offset</strong> &#8211; </li>
+<li><strong>shape</strong> &#8211; </li>
 </ul>
 </td>
 </tr>
@@ -319,6 +326,11 @@ combination of <cite>shortest path</cite> and <cite>obstacle handling</cite>.</p
 <dl class="attribute">
 <dt id="crowddynamics.core.steering.navigation.getdefault">
 <code class="descclassname">crowddynamics.core.steering.navigation.</code><code class="descname">getdefault</code><a class="reference internal" href="../_modules/crowddynamics/core/steering/navigation.html#getdefault"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.steering.navigation.getdefault" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="crowddynamics.core.steering.navigation.herding">
+<code class="descclassname">crowddynamics.core.steering.navigation.</code><code class="descname">herding</code><span class="sig-paren">(</span><em>agents</em>, <em>mask</em>, <em>sight_herding</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/core/steering/navigation.html#herding"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.steering.navigation.herding" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -660,7 +672,7 @@ f(\mathbf{x}) &amp;\to 0, \quad \mathbf{x} \in \mathcal{O}\end{split}\]</div>
   <div role="contentinfo">
     <p>
         &copy; Copyright Jaan Tollander de Balsch.
-      Last updated on 2017-05-10.
+      Last updated on 2017-05-11.
 
     </p>
   </div>
@@ -682,7 +694,7 @@ f(\mathbf{x}) &amp;\to 0, \quad \mathbf{x} \in \mathcal{O}\end{split}\]</div>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'legacy+297.gd2a5250.dirty',
+            VERSION:'legacy+302.g559af75.dirty',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

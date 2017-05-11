@@ -1,10 +1,7 @@
-.. warning::
-   Crowd Dynamics is in very early states of its development and a lot of changes can be made to source code and documentation.
-
-
 Crowd Dynamics
 ==============
-Crowddynamics is a Python package for crowd simulation. The project was created in summer 2016 for Systems Analysis Laboratory (SAL) in Aalto University in Finland. Initial goal of the project was to study game theoretical model for egress congestion using existing multi-agent simulation models as a base for creating movement.
+.. warning::
+   Crowd Dynamics is in early states of development and major changes can be made to source code and documentation.
 
 
 .. toctree::
@@ -13,6 +10,7 @@ Crowddynamics is a Python package for crowd simulation. The project was created 
 
    installation.rst
    usage.rst
+   developing.rst
 
 
 .. toctree::

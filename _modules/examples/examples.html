@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>examples.examples &mdash; crowddynamics legacy+297.gd2a5250.dirty documentation</title>
+  <title>examples.examples &mdash; crowddynamics legacy+302.g559af75.dirty documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="crowddynamics legacy+297.gd2a5250.dirty documentation" href="../../index.html"/>
+    <link rel="top" title="crowddynamics legacy+302.g559af75.dirty documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   
@@ -70,7 +70,7 @@
             
             
               <div class="version">
-                legacy+297legacy+297.gd2a5250.dirtygd2a5250
+                legacy+302legacy+302.g559af75.dirtyg559af75
               </div>
             
           
@@ -98,6 +98,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../developing.html">Developing</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Multi-Agent Simulation</span></p>
 <ul>
@@ -190,7 +191,7 @@
 <span class="kn">from</span> <span class="nn">crowddynamics.simulation.multiagent</span> <span class="k">import</span> <span class="n">MultiAgentSimulation</span><span class="p">,</span> \
     <span class="n">Orientation</span><span class="p">,</span> <span class="n">Integrator</span><span class="p">,</span> <span class="n">Fluctuation</span><span class="p">,</span> <span class="n">Adjusting</span><span class="p">,</span> \
     <span class="n">AgentAgentInteractions</span><span class="p">,</span> <span class="n">Reset</span><span class="p">,</span> <span class="n">AgentObstacleInteractions</span><span class="p">,</span> <span class="n">Navigation</span><span class="p">,</span> \
-    <span class="n">InsideDomain</span><span class="p">,</span> <span class="n">Agents</span>
+    <span class="n">InsideDomain</span><span class="p">,</span> <span class="n">Agents</span><span class="p">,</span> <span class="n">Herding</span>
 
 
 <span class="nd">@log_with</span><span class="p">()</span>
@@ -200,7 +201,7 @@
             <span class="n">agent_type</span><span class="p">:</span> <span class="n">AgentModels</span> <span class="o">=</span> <span class="s1">&#39;circular&#39;</span><span class="p">,</span>
             <span class="n">body_type</span><span class="o">=</span><span class="s1">&#39;adult&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Simulation for visualizing collision avoidance.&quot;&quot;&quot;</span>
-    <span class="n">simu</span> <span class="o">=</span> <span class="n">MultiAgentSimulation</span><span class="p">(</span><span class="s1">&#39;Outdoor&#39;</span><span class="p">)</span>
+    <span class="n">simu</span> <span class="o">=</span> <span class="n">MultiAgentSimulation</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Outdoor&#39;</span><span class="p">)</span>
     <span class="n">simu</span><span class="o">.</span><span class="n">field</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">outdoor</span><span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">)</span>
     <span class="n">simu</span><span class="o">.</span><span class="n">agents</span> <span class="o">=</span> <span class="n">Agents</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="n">agent_type</span><span class="p">)</span>
     <span class="n">simu</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">add_group</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="p">{</span>
@@ -239,7 +240,7 @@
 <span class="sd">    - Unidirectional flow</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">simu</span> <span class="o">=</span> <span class="n">MultiAgentSimulation</span><span class="p">(</span><span class="s1">&#39;Hallway&#39;</span><span class="p">)</span>
+    <span class="n">simu</span> <span class="o">=</span> <span class="n">MultiAgentSimulation</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Hallway&#39;</span><span class="p">)</span>
     <span class="n">simu</span><span class="o">.</span><span class="n">field</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">hallway</span><span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">)</span>
     <span class="n">simu</span><span class="o">.</span><span class="n">agents</span> <span class="o">=</span> <span class="n">Agents</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="n">agent_type</span><span class="p">)</span>
     <span class="n">simu</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">add_group</span><span class="p">(</span><span class="n">size</span> <span class="o">//</span> <span class="mi">2</span><span class="p">,</span> <span class="p">{</span>
@@ -287,7 +288,7 @@
 
 <span class="sd">    - Unidirectional flow</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">simu</span> <span class="o">=</span> <span class="n">MultiAgentSimulation</span><span class="p">(</span><span class="s1">&#39;Rounding&#39;</span><span class="p">)</span>
+    <span class="n">simu</span> <span class="o">=</span> <span class="n">MultiAgentSimulation</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Rounding&#39;</span><span class="p">)</span>
     <span class="n">simu</span><span class="o">.</span><span class="n">field</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">rounding</span><span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">)</span>
     <span class="n">simu</span><span class="o">.</span><span class="n">agents</span> <span class="o">=</span> <span class="n">Agents</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="n">agent_type</span><span class="p">)</span>
     <span class="n">simu</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">add_group</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="p">{</span>
@@ -339,7 +340,7 @@
 <span class="sd">    - Two exits</span>
 <span class="sd">    - Multiple exits</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">simu</span> <span class="o">=</span> <span class="n">MultiAgentSimulation</span><span class="p">(</span><span class="s1">&#39;RoomEvacuation&#39;</span><span class="p">)</span>
+    <span class="n">simu</span> <span class="o">=</span> <span class="n">MultiAgentSimulation</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;RoomEvacuation&#39;</span><span class="p">)</span>
     <span class="n">simu</span><span class="o">.</span><span class="n">field</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">room_with_exit</span><span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">door_width</span><span class="p">,</span>
                                        <span class="n">exit_hall_width</span><span class="p">)</span>
     <span class="n">simu</span><span class="o">.</span><span class="n">agents</span> <span class="o">=</span> <span class="n">Agents</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="n">agent_type</span><span class="p">)</span>
@@ -394,7 +395,7 @@
 <span class="sd">    - Two exits</span>
 <span class="sd">    - Multiple exits</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">simu</span> <span class="o">=</span> <span class="n">MultiAgentSimulation</span><span class="p">(</span><span class="s1">&#39;RoomEvacuation&#39;</span><span class="p">)</span>
+    <span class="n">simu</span> <span class="o">=</span> <span class="n">MultiAgentSimulation</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;RoomEvacuation&#39;</span><span class="p">)</span>
     <span class="n">simu</span><span class="o">.</span><span class="n">field</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">braess_paradox</span><span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">door_width</span><span class="p">,</span>
                                        <span class="n">exit_hall_width</span><span class="p">,</span> <span class="n">xdist</span><span class="p">,</span> <span class="n">radius</span><span class="p">)</span>
     <span class="n">simu</span><span class="o">.</span><span class="n">agents</span> <span class="o">=</span> <span class="n">Agents</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="n">agent_type</span><span class="p">)</span>
@@ -431,7 +432,7 @@
           <span class="n">agent_type</span><span class="p">:</span> <span class="n">AgentModels</span> <span class="o">=</span> <span class="s1">&#39;circular&#39;</span><span class="p">,</span>
           <span class="n">body_type</span><span class="o">=</span><span class="s1">&#39;adult&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;U-Turn&quot;&quot;&quot;</span>
-    <span class="n">simu</span> <span class="o">=</span> <span class="n">MultiAgentSimulation</span><span class="p">(</span><span class="s1">&#39;U-Turn&#39;</span><span class="p">)</span>
+    <span class="n">simu</span> <span class="o">=</span> <span class="n">MultiAgentSimulation</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;U-Turn&#39;</span><span class="p">)</span>
     <span class="n">simu</span><span class="o">.</span><span class="n">field</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">uturn</span><span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">)</span>
     <span class="n">simu</span><span class="o">.</span><span class="n">agents</span> <span class="o">=</span> <span class="n">Agents</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="n">agent_type</span><span class="p">)</span>
     <span class="n">simu</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">add_group</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="p">{</span>
@@ -469,7 +470,7 @@
              <span class="n">agent_type</span><span class="o">=</span><span class="s1">&#39;circular&#39;</span><span class="p">,</span>
              <span class="n">body_type</span><span class="o">=</span><span class="s1">&#39;adult&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Crossing&quot;&quot;&quot;</span>
-    <span class="n">simu</span> <span class="o">=</span> <span class="n">MultiAgentSimulation</span><span class="p">(</span><span class="s1">&#39;Crossing&#39;</span><span class="p">)</span>
+    <span class="n">simu</span> <span class="o">=</span> <span class="n">MultiAgentSimulation</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Crossing&#39;</span><span class="p">)</span>
     <span class="n">simu</span><span class="o">.</span><span class="n">field</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">crossing</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
     <span class="n">simu</span><span class="o">.</span><span class="n">agents</span> <span class="o">=</span> <span class="n">Agents</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="n">agent_type</span><span class="p">)</span>
     <span class="n">simu</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">add_group</span><span class="p">(</span><span class="n">size</span> <span class="o">//</span> <span class="mi">2</span><span class="p">,</span> <span class="p">{</span>
@@ -517,7 +518,7 @@
                <span class="n">agent_type</span><span class="p">:</span> <span class="n">AgentModels</span> <span class="o">=</span> <span class="s1">&#39;circular&#39;</span><span class="p">,</span>
                <span class="n">body_type</span><span class="o">=</span><span class="s1">&#39;adult&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Bottleneck&quot;&quot;&quot;</span>
-    <span class="n">simu</span> <span class="o">=</span> <span class="n">MultiAgentSimulation</span><span class="p">(</span><span class="s1">&#39;Bottleneck&#39;</span><span class="p">)</span>
+    <span class="n">simu</span> <span class="o">=</span> <span class="n">MultiAgentSimulation</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Bottleneck&#39;</span><span class="p">)</span>
     <span class="n">simu</span><span class="o">.</span><span class="n">field</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">bottleneck</span><span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">h</span><span class="p">)</span>
     <span class="n">simu</span><span class="o">.</span><span class="n">agents</span> <span class="o">=</span> <span class="n">Agents</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="n">agent_type</span><span class="p">)</span>
     <span class="n">simu</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">add_group</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="p">{</span>
@@ -546,6 +547,49 @@
         <span class="p">)</span>
 
     <span class="k">return</span> <span class="n">simu</span></div>
+
+
+<div class="viewcode-block" id="herding_outdoor"><a class="viewcode-back" href="../../apidocs_examples/examples.html#examples.examples.herding_outdoor">[docs]</a><span class="k">def</span> <span class="nf">herding_outdoor</span><span class="p">(</span><span class="n">size</span><span class="p">:</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
+                    <span class="n">width</span><span class="p">:</span> <span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="o">=</span> <span class="mf">20.0</span><span class="p">,</span>
+                    <span class="n">height</span><span class="p">:</span> <span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="o">=</span> <span class="mf">20.0</span><span class="p">,</span>
+                    <span class="n">agent_type</span><span class="p">:</span> <span class="n">AgentModels</span> <span class="o">=</span> <span class="s1">&#39;circular&#39;</span><span class="p">,</span>
+                    <span class="n">body_type</span><span class="o">=</span><span class="s1">&#39;adult&#39;</span><span class="p">):</span>
+    <span class="n">simu</span> <span class="o">=</span> <span class="n">MultiAgentSimulation</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Outdoor&#39;</span><span class="p">)</span>
+    <span class="n">simu</span><span class="o">.</span><span class="n">field</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">outdoor</span><span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">)</span>
+    <span class="n">simu</span><span class="o">.</span><span class="n">agents</span> <span class="o">=</span> <span class="n">Agents</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="n">agent_type</span><span class="p">)</span>
+    <span class="c1"># Followers</span>
+    <span class="n">simu</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">add_group</span><span class="p">(</span><span class="n">size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="p">{</span>
+        <span class="s1">&#39;body_type&#39;</span><span class="p">:</span> <span class="n">body_type</span><span class="p">,</span>
+        <span class="s1">&#39;position&#39;</span><span class="p">:</span> <span class="n">simu</span><span class="o">.</span><span class="n">field</span><span class="o">.</span><span class="n">sample_spawn</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+        <span class="s1">&#39;orientation&#39;</span><span class="p">:</span> <span class="k">lambda</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">),</span>
+        <span class="s1">&#39;velocity&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span>
+        <span class="s1">&#39;angular_velocity&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
+        <span class="s1">&#39;target_direction&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span>
+        <span class="s1">&#39;target_orientation&#39;</span><span class="p">:</span> <span class="k">lambda</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">),</span>
+        <span class="s1">&#39;herding&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="p">})</span>
+    <span class="c1"># Leaders</span>
+    <span class="n">simu</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">add_group</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="p">{</span>
+        <span class="s1">&#39;body_type&#39;</span><span class="p">:</span> <span class="n">body_type</span><span class="p">,</span>
+        <span class="s1">&#39;position&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="n">height</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)),</span>
+        <span class="s1">&#39;orientation&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
+        <span class="s1">&#39;velocity&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span>
+        <span class="s1">&#39;angular_velocity&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
+        <span class="s1">&#39;target_direction&#39;</span><span class="p">:</span> <span class="n">unit_vector</span><span class="p">(</span><span class="mf">0.0</span><span class="p">),</span>
+        <span class="s1">&#39;target_orientation&#39;</span><span class="p">:</span> <span class="mf">0.0</span>
+    <span class="p">})</span>
+    <span class="n">simu</span><span class="o">.</span><span class="n">logic</span> <span class="o">=</span> \
+        <span class="n">Reset</span><span class="p">(</span><span class="n">simu</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="p">(</span>
+            <span class="n">Integrator</span><span class="p">(</span><span class="n">simu</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="p">(</span>
+                <span class="n">Fluctuation</span><span class="p">(</span><span class="n">simu</span><span class="p">),</span>
+                <span class="n">Adjusting</span><span class="p">(</span><span class="n">simu</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="p">(</span>
+                    <span class="n">Orientation</span><span class="p">(</span><span class="n">simu</span><span class="p">),</span>
+                    <span class="n">Herding</span><span class="p">(</span><span class="n">simu</span><span class="p">)</span>
+                <span class="p">),</span>
+                <span class="n">AgentAgentInteractions</span><span class="p">(</span><span class="n">simu</span><span class="p">),</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="n">simu</span></div>
 </pre></div>
 
            </div>
@@ -561,7 +605,7 @@
   <div role="contentinfo">
     <p>
         &copy; Copyright Jaan Tollander de Balsch.
-      Last updated on 2017-05-10.
+      Last updated on 2017-05-11.
 
     </p>
   </div>
@@ -583,7 +627,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'legacy+297.gd2a5250.dirty',
+            VERSION:'legacy+302.g559af75.dirty',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

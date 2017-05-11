@@ -1,0 +1,488 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Developing &mdash; crowddynamics legacy+302.g559af75.dirty documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="crowddynamics legacy+302.g559af75.dirty documentation" href="index.html"/>
+        <link rel="next" title="Multi-Agent Simulation" href="multiagent.html"/>
+        <link rel="prev" title="Usage" href="usage.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> crowddynamics
+          
+
+          
+            
+            <img src="_static/logo.svg" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                legacy+302legacy+302.g559af75.dirtyg559af75
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">General</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Developing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#operating-system">Operating System</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#programming">Programming</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#editors">Editors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#version-control">Version Control</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#documenting">Documenting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#testing">Testing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#task-management">Task Management</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Multi-Agent Simulation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="multiagent.html">Multi-Agent Simulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interactions.html">Interactions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="motion.html">Motion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="steering.html">Steering</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Api</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="apidocs/crowddynamics.html">crowddynamics package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="apidocs_examples/examples.html">examples package</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Research</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="quantities.html">Quantities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="phenomena.html">Phenomena</a></li>
+<li class="toctree-l1"><a class="reference internal" href="applications.html">Applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="references.html">References</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">crowddynamics</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Developing</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/developing.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="developing">
+<h1>Developing<a class="headerlink" href="#developing" title="Permalink to this headline">¶</a></h1>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">We assume that developers have the basic knowledge of commandline.</p>
+</div>
+<div class="section" id="operating-system">
+<h2>Operating System<a class="headerlink" href="#operating-system" title="Permalink to this headline">¶</a></h2>
+<p>Using <em>Linux</em> is recommended. Latest <a class="reference external" href="https://www.ubuntu.com/">Ubuntu</a> distribution should work well. Windows still remains untested and might not fully work.</p>
+</div>
+<div class="section" id="programming">
+<h2>Programming<a class="headerlink" href="#programming" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="33%" />
+<col width="33%" />
+<col width="33%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Product</th>
+<th class="head">&#160;</th>
+<th class="head">&#160;</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><a class="reference external" href="https://www.continuum.io/">Anaconda</a></td>
+<td>Scientific Python distribution</td>
+<td>&#160;</td>
+</tr>
+</tbody>
+</table>
+<p>Anaconda is used for managing Python environments. Anaconda can install precompiled binaries which is very useful for installing dependencies required by <code class="docutils literal"><span class="pre">crowddynamics</span></code>. It makes installation process faster and more reliable because users don&#8217;t have to compile external C dependencies themselves. This also relieves the effort of making crowddynamics available on Windows, which often different C compiler that Linux or might lack one.</p>
+</div>
+<div class="section" id="editors">
+<h2>Editors<a class="headerlink" href="#editors" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils" id="id1">
+<caption><span class="caption-text">Software Tools</span><a class="headerlink" href="#id1" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col width="33%" />
+<col width="33%" />
+<col width="33%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Product</th>
+<th class="head">Type</th>
+<th class="head">&#160;</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><a class="reference external" href="https://www.jetbrains.com/pycharm/">PyCharm</a></td>
+<td>Desktop GUI application</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td><a class="reference external" href="https://atom.io/">Atom</a></td>
+<td>Desktop GUI application</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td><a class="reference external" href="https://jupyter.org/">Jupyter</a></td>
+<td>Browser Application</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td><a class="reference external" href="https://kite.com/">Kite</a></td>
+<td>Intelligent code assistant</td>
+<td>&#160;</td>
+</tr>
+</tbody>
+</table>
+<p>Choice of editor comes to mostly to personal preference. I personally recommend PyCharm for which students can get the pro version for free. PyCharm is excellent editor that gives intelligent code suggestions and integrates other useful tools such as debugger and version control into one tools.</p>
+<p>Also using terminal based editor such as VIM or emacs should work fine.</p>
+</div>
+<div class="section" id="version-control">
+<h2>Version Control<a class="headerlink" href="#version-control" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils" id="id2">
+<caption><span class="caption-text">Software Management Tools and Services</span><a class="headerlink" href="#id2" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col width="33%" />
+<col width="33%" />
+<col width="33%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Tool</th>
+<th class="head">&#160;</th>
+<th class="head">&#160;</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><a class="reference external" href="https://git-scm.com/">Git</a></td>
+<td>Version Control System</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td><a class="reference external" href="https://github.com/">GitHub</a></td>
+<td>Hosting Repository</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td><a class="reference external" href="https://travis-ci.org/">TravisCI</a></td>
+<td>Continuous integration for linux</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td><a class="reference external" href="https://www.appveyor.com/">Appveyor</a></td>
+<td>Continuous integration for windows</td>
+<td>&#160;</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="documenting">
+<h2>Documenting<a class="headerlink" href="#documenting" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils" id="id3">
+<caption><span class="caption-text">Documenting Tools</span><a class="headerlink" href="#id3" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Tool</th>
+<th class="head">&#160;</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><a class="reference external" href="http://docutils.sourceforge.net/rst.html">ReStructuredText</a></td>
+<td>Markup syntax used for writing documentation</td>
+</tr>
+<tr class="row-odd"><td><a class="reference external" href="https://www.latex-project.org/">LaTeX</a></td>
+<td>High-quality typesetting system used for writing scientific documentation.</td>
+</tr>
+<tr class="row-even"><td><a class="reference external" href="http://www.sphinx-doc.org/en/stable/">Sphinx</a></td>
+<td>Python documentation tool.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference external" href="https://github.com/rtfd/sphinx_rtd_theme">sphinx_rtd_theme</a></td>
+<td>Theme used for HTML documentation.</td>
+</tr>
+<tr class="row-even"><td><a class="reference external" href="https://sphinxcontrib-napoleon.readthedocs.io/en/latest/example_google.html">Google Style Docstring</a></td>
+<td>Style for documenting docstring of functions and classes.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference external" href="https://pages.github.com/">GitHubPages</a></td>
+<td>Static website hosted from the projects GitHub repository.</td>
+</tr>
+<tr class="row-even"><td><a class="reference external" href="http://www.graphviz.org/">graphviz</a></td>
+<td>Graph visualization tool</td>
+</tr>
+<tr class="row-odd"><td><a class="reference external" href="https://en.wikipedia.org/wiki/PGF/TikZ">tikz</a></td>
+<td>Tool for producing vector graphics using tex macros.</td>
+</tr>
+<tr class="row-even"><td><a class="reference external" href="http://bokeh.pydata.org/en/latest/">bokeh</a></td>
+<td>Python interactive visualization library.</td>
+</tr>
+</tbody>
+</table>
+<p>Documenting the source code</p>
+<table border="1" class="docutils" id="id4">
+<caption><span class="caption-text">Video Documentation Tools</span><a class="headerlink" href="#id4" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Tool</th>
+<th class="head">&#160;</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><a class="reference external" href="http://www.maartenbaert.be/simplescreenrecorder/">SimpleScreenRecorder</a></td>
+<td>Simple free video recording tool for Linux.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference external" href="https://kdenlive.org/">Kdenlive</a></td>
+<td>Video editing tool for Linux.</td>
+</tr>
+</tbody>
+</table>
+<p>Video documentation can be published to Youtube.</p>
+</div>
+<div class="section" id="testing">
+<h2>Testing<a class="headerlink" href="#testing" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">&#160;</th>
+<th class="head">&#160;</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><a class="reference external" href="https://docs.pytest.org/en/latest/">pytest</a></td>
+<td>Python testing framework</td>
+</tr>
+<tr class="row-odd"><td><a class="reference external" href="https://pytest-cov.readthedocs.io/en/latest/">pytest-cov</a></td>
+<td>Pytest plugin for measuring coverage</td>
+</tr>
+<tr class="row-even"><td><a class="reference external" href="https://readthedocs.org/projects/pytest-benchmark/">pytest-benchmark</a></td>
+<td>Pytest plugin for benchmarking code</td>
+</tr>
+<tr class="row-odd"><td><a class="reference external" href="http://hypothesis.works/">hypothesis</a></td>
+<td>Pytest plugin for property based testing</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="task-management">
+<h2>Task Management<a class="headerlink" href="#task-management" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">&#160;</th>
+<th class="head">&#160;</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><a class="reference external" href="http://pydoit.org/">doit</a></td>
+<td>Task automation tool</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="multiagent.html" class="btn btn-neutral float-right" title="Multi-Agent Simulation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="usage.html" class="btn btn-neutral" title="Usage" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright Jaan Tollander de Balsch.
+      Last updated on 2017-05-11.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'legacy+302.g559af75.dirty',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

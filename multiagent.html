@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Multi-Agent Simulation &mdash; crowddynamics legacy+297.gd2a5250.dirty documentation</title>
+  <title>Multi-Agent Simulation &mdash; crowddynamics legacy+302.g559af75.dirty documentation</title>
   
 
   
@@ -37,9 +37,9 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="crowddynamics legacy+297.gd2a5250.dirty documentation" href="index.html"/>
+    <link rel="top" title="crowddynamics legacy+302.g559af75.dirty documentation" href="index.html"/>
         <link rel="next" title="Interactions" href="interactions.html"/>
-        <link rel="prev" title="Usage" href="usage.html"/> 
+        <link rel="prev" title="Developing" href="developing.html"/> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
@@ -71,7 +71,7 @@
             
             
               <div class="version">
-                legacy+297legacy+297.gd2a5250.dirtygd2a5250
+                legacy+302legacy+302.g559af75.dirtyg559af75
               </div>
             
           
@@ -99,6 +99,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developing.html">Developing</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Multi-Agent Simulation</span></p>
 <ul class="current">
@@ -190,10 +191,10 @@
 <col width="50%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td>Space</td>
+<tr class="row-odd"><td>Field</td>
 <td>Continuous space <span class="math">\(\mathbb{R}^2\)</span></td>
 </tr>
-<tr class="row-even"><td>Scale</td>
+<tr class="row-even"><td>Agents</td>
 <td>Microscopic. Agents are modelled as rigid bodies.</td>
 </tr>
 <tr class="row-odd"><td>Motion</td>
@@ -203,7 +204,7 @@
 </table>
 <dl class="class">
 <dt>
-<em class="property">class </em><code class="descclassname">crowddynamics.simulation.multiagent.</code><code class="descname">Field</code><span class="sig-paren">(</span><em>name=None</em>, <em>domain=None</em>, <em>obstacles=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crowddynamics/simulation/multiagent.html#Field"><span class="viewcode-link">[source]</span></a></dt>
+<em class="property">class </em><code class="descclassname">crowddynamics.simulation.multiagent.</code><code class="descname">Field</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crowddynamics/simulation/multiagent.html#Field"><span class="viewcode-link">[source]</span></a></dt>
 <dd><p>Multi-Agent simulation Field consists of</p>
 <div class="figure">
 <p><img src="_images/tikz-e90de630ed1c23a95fdae2652a6bb0f68bb041bd.png" alt="\draw[color=gray!20] (-2, -1) grid (12, 7);
@@ -350,7 +351,7 @@ w &amp;= W - 2 r\end{split}\]</div>
 
 <dl class="class">
 <dt>
-<em class="property">class </em><code class="descclassname">crowddynamics.simulation.multiagent.</code><code class="descname">LogicNode</code><span class="sig-paren">(</span><em>simulation: crowddynamics.simulation.multiagent.MultiAgentSimulation</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crowddynamics/simulation/multiagent.html#LogicNode"><span class="viewcode-link">[source]</span></a></dt>
+<em class="property">class </em><code class="descclassname">crowddynamics.simulation.multiagent.</code><code class="descname">LogicNode</code><span class="sig-paren">(</span><em>simulation</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crowddynamics/simulation/multiagent.html#LogicNode"><span class="viewcode-link">[source]</span></a></dt>
 <dd><p>Simulation logic is programmed as a tree of dependencies of the order of
 the execution. For example simulation&#8217;s logic tree could look like:</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span>Reset
@@ -370,15 +371,15 @@ nodes.</p>
 
 <dl class="class">
 <dt>
-<em class="property">class </em><code class="descclassname">crowddynamics.simulation.multiagent.</code><code class="descname">MultiAgentSimulation</code><span class="sig-paren">(</span><em>name=None</em>, <em>configfile='/home/jaan/Projects/CrowdDynamics/crowddynamics/conf/multiagent.cfg'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crowddynamics/simulation/multiagent.html#MultiAgentSimulation"><span class="viewcode-link">[source]</span></a></dt>
+<em class="property">class </em><code class="descclassname">crowddynamics.simulation.multiagent.</code><code class="descname">MultiAgentSimulation</code><span class="sig-paren">(</span><em>configfile='/home/jaan/Projects/CrowdDynamics/crowddynamics/conf/multiagent.cfg'</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crowddynamics/simulation/multiagent.html#MultiAgentSimulation"><span class="viewcode-link">[source]</span></a></dt>
 <dd><p>Constructing a multi-agent simulation</p>
 <dl class="docutils">
 <dt>Field</dt>
-<dd>Instance of <a class="reference internal" href="apidocs/crowddynamics.simulation.html#crowddynamics.simulation.multiagent.Field" title="crowddynamics.simulation.multiagent.Field"><code class="xref py py-class docutils literal"><span class="pre">Field</span></code></a>.</dd>
+<dd>Instance of <code class="xref py py-class docutils literal"><span class="pre">Field</span></code>.</dd>
 <dt>Agents</dt>
-<dd>Instance of <a class="reference internal" href="apidocs/crowddynamics.simulation.html#crowddynamics.simulation.multiagent.Agents" title="crowddynamics.simulation.multiagent.Agents"><code class="xref py py-class docutils literal"><span class="pre">Agents</span></code></a>.</dd>
+<dd>Instance of <code class="xref py py-class docutils literal"><span class="pre">Agents</span></code>.</dd>
 <dt>Logic</dt>
-<dd><strong>Logic</strong> of the simulation consists of tree of <a class="reference internal" href="apidocs/crowddynamics.simulation.html#crowddynamics.simulation.multiagent.LogicNode" title="crowddynamics.simulation.multiagent.LogicNode"><code class="xref py py-class docutils literal"><span class="pre">LogicNode</span></code></a>.
+<dd><strong>Logic</strong> of the simulation consists of tree of <code class="xref py py-class docutils literal"><span class="pre">LogicNode</span></code>.
 Simulation is updated by calling the update function of  each logic node
 using <em>post-order</em> traversal.</dd>
 </dl>
@@ -399,7 +400,7 @@ using <em>post-order</em> traversal.</dd>
         <a href="interactions.html" class="btn btn-neutral float-right" title="Interactions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="usage.html" class="btn btn-neutral" title="Usage" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="developing.html" class="btn btn-neutral" title="Developing" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -409,7 +410,7 @@ using <em>post-order</em> traversal.</dd>
   <div role="contentinfo">
     <p>
         &copy; Copyright Jaan Tollander de Balsch.
-      Last updated on 2017-05-10.
+      Last updated on 2017-05-11.
 
     </p>
   </div>
@@ -431,7 +432,7 @@ using <em>post-order</em> traversal.</dd>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'legacy+297.gd2a5250.dirty',
+            VERSION:'legacy+302.g559af75.dirty',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

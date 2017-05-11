@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>crowddynamics.core.steering.herding &mdash; crowddynamics legacy+297.gd2a5250.dirty documentation</title>
+  <title>crowddynamics.core.steering.herding &mdash; crowddynamics legacy+302.g559af75.dirty documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../../../genindex.html"/>
         <link rel="search" title="Search" href="../../../../search.html"/>
-    <link rel="top" title="crowddynamics legacy+297.gd2a5250.dirty documentation" href="../../../../index.html"/>
+    <link rel="top" title="crowddynamics legacy+302.g559af75.dirty documentation" href="../../../../index.html"/>
         <link rel="up" title="Module code" href="../../../index.html"/> 
 
   
@@ -70,7 +70,7 @@
             
             
               <div class="version">
-                legacy+297legacy+297.gd2a5250.dirtygd2a5250
+                legacy+302legacy+302.g559af75.dirtyg559af75
               </div>
             
           
@@ -98,6 +98,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../developing.html">Developing</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Multi-Agent Simulation</span></p>
 <ul>
@@ -185,12 +186,17 @@
 <span class="kn">import</span> <span class="nn">numba</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">numba</span> <span class="k">import</span> <span class="n">f8</span>
+<span class="kn">from</span> <span class="nn">numba</span> <span class="k">import</span> <span class="n">i8</span>
 
 <span class="kn">from</span> <span class="nn">crowddynamics.core.interactions.block_list</span> <span class="k">import</span> <span class="n">block_list</span>
+<span class="kn">from</span> <span class="nn">crowddynamics.core.interactions.block_list</span> <span class="k">import</span> <span class="n">get_block</span>
+<span class="kn">from</span> <span class="nn">crowddynamics.core.vector2D</span> <span class="k">import</span> <span class="n">length</span><span class="p">,</span> <span class="n">normalize</span>
 
 
-<span class="nd">@numba</span><span class="o">.</span><span class="n">jit</span><span class="p">(</span><span class="n">f8</span><span class="p">[:](</span><span class="n">f8</span><span class="p">[:,</span> <span class="p">:]),</span> <span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nogil</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<div class="viewcode-block" id="herding"><a class="viewcode-back" href="../../../../steering.html#crowddynamics.core.steering.herding.herding">[docs]</a><span class="k">def</span> <span class="nf">herding</span><span class="p">(</span><span class="n">e0_neigh</span><span class="p">):</span>
+<span class="nd">@numba</span><span class="o">.</span><span class="n">jit</span><span class="p">([</span><span class="n">f8</span><span class="p">[:,</span> <span class="p">:](</span><span class="n">f8</span><span class="p">[:,</span> <span class="p">:],</span> <span class="n">f8</span><span class="p">[:,</span> <span class="p">:],</span> <span class="n">f8</span><span class="p">,</span> <span class="n">i8</span><span class="p">[:],</span> <span class="n">i8</span><span class="p">[:],</span> <span class="n">i8</span><span class="p">[:],</span> <span class="n">i8</span><span class="p">[:])],</span>
+           <span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nogil</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="viewcode-block" id="herding_interaction"><a class="viewcode-back" href="../../../../steering.html#crowddynamics.core.steering.herding.herding_interaction">[docs]</a><span class="k">def</span> <span class="nf">herding_interaction</span><span class="p">(</span><span class="n">position</span><span class="p">,</span> <span class="n">direction</span><span class="p">,</span> <span class="n">sight_herding</span><span class="p">,</span> <span class="n">index_list</span><span class="p">,</span> <span class="n">count</span><span class="p">,</span>
+                        <span class="n">offset</span><span class="p">,</span> <span class="n">shape</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Herding effect. Computed from the average directions of neighbouring </span>
 <span class="sd">    agents.</span>
 
@@ -199,27 +205,65 @@
 <span class="sd">       \frac{\sum_{j \in Neigh} \mathbf{\hat{e}}_j}{N_{neigh}}</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        e0 (numpy.ndarray):</span>
-<span class="sd">            Agents desired direction</span>
-<span class="sd">            </span>
-<span class="sd">        e0_neigh (numpy.ndarray):</span>
-<span class="sd">            Directions of the neighbouring agents</span>
+<span class="sd">        position (numpy.ndarray):</span>
+<span class="sd">            Positions of herding agents</span>
+<span class="sd">        direction (numpy.ndarray):</span>
+<span class="sd">            Directions (unit vectors) of herding agents</span>
+<span class="sd">        sight_herding: </span>
+<span class="sd">        index_list: </span>
+<span class="sd">        count: </span>
+<span class="sd">        offset: </span>
+<span class="sd">        shape: </span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        numpy.ndarray: </span>
 <span class="sd">            New direction vector :math:`\mathbf{\hat{e}_{herding}}`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">n_neigh</span> <span class="o">=</span> <span class="n">e0_neigh</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-    <span class="n">sum_e0_neigh</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="n">n_neigh</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_neigh</span><span class="p">):</span>
-        <span class="n">sum_e0_neigh</span> <span class="o">+=</span> <span class="n">e0_neigh</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span>
-    <span class="k">return</span> <span class="n">sum_e0_neigh</span> <span class="o">/</span> <span class="n">n_neigh</span></div>
+    <span class="c1"># Neighbouring blocks</span>
+    <span class="n">nb</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+    <span class="n">n</span><span class="p">,</span> <span class="n">m</span> <span class="o">=</span> <span class="n">shape</span>
+
+    <span class="n">sum_e0_neigh</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">direction</span><span class="p">)</span>
+    <span class="c1"># n_neigh = np.zeros((position.shape[0], 1), dtype=np.int64)</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">m</span><span class="p">):</span>
+            <span class="c1"># Herding between agents inside the block</span>
+            <span class="n">ilist</span> <span class="o">=</span> <span class="n">get_block</span><span class="p">((</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">),</span> <span class="n">index_list</span><span class="p">,</span> <span class="n">count</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">shape</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">l</span><span class="p">,</span> <span class="n">i_agent</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ilist</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]):</span>
+                <span class="k">for</span> <span class="n">j_agent</span> <span class="ow">in</span> <span class="n">ilist</span><span class="p">[</span><span class="n">l</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:]:</span>
+                    <span class="n">sum_e0_neigh</span><span class="p">[</span><span class="n">i_agent</span><span class="p">]</span> <span class="o">+=</span> <span class="n">direction</span><span class="p">[</span><span class="n">j_agent</span><span class="p">]</span>
+                    <span class="n">sum_e0_neigh</span><span class="p">[</span><span class="n">j_agent</span><span class="p">]</span> <span class="o">+=</span> <span class="n">direction</span><span class="p">[</span><span class="n">i_agent</span><span class="p">]</span>
+                    <span class="c1"># n_neigh[i_agent] += 1</span>
+                    <span class="c1"># n_neigh[j_agent] += 1</span>
+
+            <span class="c1"># Herding between agent inside the block and neighbouring agents</span>
+            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">nb</span><span class="p">)):</span>
+                <span class="n">i2</span><span class="p">,</span> <span class="n">j2</span> <span class="o">=</span> <span class="n">nb</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+                <span class="k">if</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="n">i2</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">n</span> <span class="ow">and</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="p">(</span><span class="n">j</span> <span class="o">+</span> <span class="n">j2</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">m</span><span class="p">:</span>
+                    <span class="n">ilist2</span> <span class="o">=</span> <span class="n">get_block</span><span class="p">((</span><span class="n">i</span> <span class="o">+</span> <span class="n">i2</span><span class="p">,</span> <span class="n">j</span> <span class="o">+</span> <span class="n">j2</span><span class="p">),</span> <span class="n">index_list</span><span class="p">,</span> <span class="n">count</span><span class="p">,</span>
+                                       <span class="n">offset</span><span class="p">,</span> <span class="n">shape</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">i_agent</span> <span class="ow">in</span> <span class="n">ilist</span><span class="p">:</span>
+                        <span class="k">for</span> <span class="n">j_agent</span> <span class="ow">in</span> <span class="n">ilist2</span><span class="p">:</span>
+                            <span class="k">if</span> <span class="n">length</span><span class="p">(</span><span class="n">position</span><span class="p">[</span><span class="n">i_agent</span><span class="p">]</span> <span class="o">-</span> <span class="n">position</span><span class="p">[</span><span class="n">j_agent</span><span class="p">])</span> \
+                                    <span class="o">&lt;=</span> <span class="n">sight_herding</span><span class="p">:</span>
+                                <span class="n">sum_e0_neigh</span><span class="p">[</span><span class="n">i_agent</span><span class="p">]</span> <span class="o">+=</span> <span class="n">direction</span><span class="p">[</span><span class="n">j_agent</span><span class="p">]</span>
+                                <span class="n">sum_e0_neigh</span><span class="p">[</span><span class="n">j_agent</span><span class="p">]</span> <span class="o">+=</span> <span class="n">direction</span><span class="p">[</span><span class="n">i_agent</span><span class="p">]</span>
+                                <span class="c1"># n_neigh[i_agent] += 1</span>
+                                <span class="c1"># n_neigh[j_agent] += 1</span>
+
+    <span class="c1"># Normalize</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">sum_e0_neigh</span><span class="p">)):</span>
+        <span class="n">sum_e0_neigh</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">normalize</span><span class="p">(</span><span class="n">sum_e0_neigh</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+
+    <span class="k">return</span> <span class="n">sum_e0_neigh</span></div>
 
 
-<div class="viewcode-block" id="full"><a class="viewcode-back" href="../../../../apidocs/crowddynamics.core.steering.html#crowddynamics.core.steering.herding.full">[docs]</a><span class="k">def</span> <span class="nf">full</span><span class="p">(</span><span class="n">agents</span><span class="p">):</span>
-    <span class="n">sight_herding</span> <span class="o">=</span> <span class="mf">3.0</span>
-    <span class="n">index_list</span><span class="p">,</span> <span class="n">count</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">shape</span> <span class="o">=</span> <span class="n">block_list</span><span class="p">(</span><span class="n">agents</span><span class="p">[</span><span class="s1">&#39;position&#39;</span><span class="p">],</span>
-                                                  <span class="n">sight_herding</span><span class="p">)</span></div>
+<div class="viewcode-block" id="herding_block_list"><a class="viewcode-back" href="../../../../apidocs/crowddynamics.core.steering.html#crowddynamics.core.steering.herding.herding_block_list">[docs]</a><span class="k">def</span> <span class="nf">herding_block_list</span><span class="p">(</span><span class="n">position</span><span class="p">,</span> <span class="n">direction</span><span class="p">,</span> <span class="n">sight_herding</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Compute herding using block list&quot;&quot;&quot;</span>
+    <span class="n">index_list</span><span class="p">,</span> <span class="n">count</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">shape</span> <span class="o">=</span> <span class="n">block_list</span><span class="p">(</span><span class="n">position</span><span class="p">,</span> <span class="n">sight_herding</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">herding_interaction</span><span class="p">(</span><span class="n">position</span><span class="p">,</span> <span class="n">direction</span><span class="p">,</span> <span class="n">sight_herding</span><span class="p">,</span> <span class="n">index_list</span><span class="p">,</span> <span class="n">count</span><span class="p">,</span>
+                               <span class="n">offset</span><span class="p">,</span> <span class="n">shape</span><span class="p">)</span></div>
 </pre></div>
 
            </div>
@@ -235,7 +279,7 @@
   <div role="contentinfo">
     <p>
         &copy; Copyright Jaan Tollander de Balsch.
-      Last updated on 2017-05-10.
+      Last updated on 2017-05-11.
 
     </p>
   </div>
@@ -257,7 +301,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../../',
-            VERSION:'legacy+297.gd2a5250.dirty',
+            VERSION:'legacy+302.g559af75.dirty',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

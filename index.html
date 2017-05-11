@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Crowd Dynamics &mdash; crowddynamics legacy+297.gd2a5250.dirty documentation</title>
+  <title>Crowd Dynamics &mdash; crowddynamics legacy+302.g559af75.dirty documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="crowddynamics legacy+297.gd2a5250.dirty documentation" href="#"/>
+    <link rel="top" title="crowddynamics legacy+302.g559af75.dirty documentation" href="#"/>
         <link rel="next" title="Installation" href="installation.html"/> 
 
   
@@ -70,7 +70,7 @@
             
             
               <div class="version">
-                legacy+297legacy+297.gd2a5250.dirtygd2a5250
+                legacy+302legacy+302.g559af75.dirtyg559af75
               </div>
             
           
@@ -98,6 +98,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developing.html">Developing</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Multi-Agent Simulation</span></p>
 <ul>
@@ -180,19 +181,18 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="admonition warning">
-<p class="first admonition-title">Warning</p>
-<p class="last">Crowd Dynamics is in very early states of its development and a lot of changes can be made to source code and documentation.</p>
-</div>
-<div class="section" id="crowd-dynamics">
+  <div class="section" id="crowd-dynamics">
 <h1>Crowd Dynamics<a class="headerlink" href="#crowd-dynamics" title="Permalink to this headline">¶</a></h1>
-<p>Crowddynamics is a Python package for crowd simulation. The project was created in summer 2016 for Systems Analysis Laboratory (SAL) in Aalto University in Finland. Initial goal of the project was to study game theoretical model for egress congestion using existing multi-agent simulation models as a base for creating movement.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Crowd Dynamics is in early states of development and major changes can be made to source code and documentation.</p>
+</div>
 <div class="toctree-wrapper compound">
 <p class="caption"><span class="caption-text">General</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="installation.html#conda">Conda</a></li>
-<li class="toctree-l2"><a class="reference internal" href="installation.html#source">Source</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#using-conda">Using Conda</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#from-source">From Source</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a><ul>
@@ -201,6 +201,16 @@
 <li class="toctree-l2"><a class="reference internal" href="usage.html#creating-new-simulations">Creating New Simulations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="usage.html#running-simulations">Running Simulations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="usage.html#analysing-simulation-data">Analysing Simulation Data</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="developing.html">Developing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="developing.html#operating-system">Operating System</a></li>
+<li class="toctree-l2"><a class="reference internal" href="developing.html#programming">Programming</a></li>
+<li class="toctree-l2"><a class="reference internal" href="developing.html#editors">Editors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="developing.html#version-control">Version Control</a></li>
+<li class="toctree-l2"><a class="reference internal" href="developing.html#documenting">Documenting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="developing.html#testing">Testing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="developing.html#task-management">Task Management</a></li>
 </ul>
 </li>
 </ul>
@@ -216,7 +226,7 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="motion.html">Motion</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="motion.html#integrator">Integrator</a></li>
-<li class="toctree-l2"><a class="reference internal" href="motion.html#universal-power-law-governing-pedestrian-interactions">Universal Power Law Governing Pedestrian Interactions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="motion.html#power-law">Power Law</a></li>
 <li class="toctree-l2"><a class="reference internal" href="motion.html#contact">Contact</a></li>
 <li class="toctree-l2"><a class="reference internal" href="motion.html#fluctuation">Fluctuation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="motion.html#adjusting">Adjusting</a></li>
@@ -315,7 +325,7 @@
   <div role="contentinfo">
     <p>
         &copy; Copyright Jaan Tollander de Balsch.
-      Last updated on 2017-05-10.
+      Last updated on 2017-05-11.
 
     </p>
   </div>
@@ -337,7 +347,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'legacy+297.gd2a5250.dirty',
+            VERSION:'legacy+302.g559af75.dirty',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

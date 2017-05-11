@@ -9,7 +9,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Index &mdash; crowddynamics legacy+297.gd2a5250.dirty documentation</title>
+  <title>Index &mdash; crowddynamics legacy+302.g559af75.dirty documentation</title>
   
 
   
@@ -38,7 +38,7 @@
         <link rel="index" title="Index"
               href="#"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="crowddynamics legacy+297.gd2a5250.dirty documentation" href="index.html"/> 
+    <link rel="top" title="crowddynamics legacy+302.g559af75.dirty documentation" href="index.html"/> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
@@ -70,7 +70,7 @@
             
             
               <div class="version">
-                legacy+297legacy+297.gd2a5250.dirtygd2a5250
+                legacy+302legacy+302.g559af75.dirtyg559af75
               </div>
             
           
@@ -98,6 +98,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developing.html">Developing</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Multi-Agent Simulation</span></p>
 <ul>
@@ -603,8 +604,6 @@
 </li>
       <li><a href="apidocs/crowddynamics.html#crowddynamics.logging.format_pandas">format_pandas() (in module crowddynamics.logging)</a>
 </li>
-      <li><a href="apidocs/crowddynamics.core.steering.html#crowddynamics.core.steering.herding.full">full() (in module crowddynamics.core.steering.herding)</a>
-</li>
   </ul></td>
 </tr></table>
 
@@ -639,9 +638,17 @@
         <li><a href="apidocs_examples/examples.html#examples.fields.hallway">(in module examples.fields)</a>
 </li>
       </ul></li>
+      <li><a href="apidocs/crowddynamics.simulation.html#crowddynamics.simulation.multiagent.Herding">Herding (class in crowddynamics.simulation.multiagent)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="apidocs/crowddynamics.core.steering.html#crowddynamics.core.steering.herding.herding">herding (in module crowddynamics.core.steering.herding)</a>
+      <li><a href="apidocs/crowddynamics.core.steering.html#crowddynamics.core.steering.navigation.herding">herding() (in module crowddynamics.core.steering.navigation)</a>
+</li>
+      <li><a href="apidocs/crowddynamics.core.steering.html#crowddynamics.core.steering.herding.herding_block_list">herding_block_list() (in module crowddynamics.core.steering.herding)</a>
+</li>
+      <li><a href="apidocs/crowddynamics.core.steering.html#crowddynamics.core.steering.herding.herding_interaction">herding_interaction (in module crowddynamics.core.steering.herding)</a>
+</li>
+      <li><a href="apidocs_examples/examples.html#examples.examples.herding_outdoor">herding_outdoor() (in module examples.examples)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -689,10 +696,10 @@
 </li>
       <li><a href="apidocs/crowddynamics.html#crowddynamics.config.load_config">load_config() (in module crowddynamics.config)</a>
 </li>
-      <li><a href="apidocs/crowddynamics.simulation.html#crowddynamics.simulation.multiagent.Field.load_json">load_json() (crowddynamics.simulation.multiagent.Field method)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="apidocs/crowddynamics.simulation.html#crowddynamics.simulation.multiagent.Field.load_json">load_json() (crowddynamics.simulation.multiagent.Field method)</a>
+</li>
       <li><a href="apidocs/crowddynamics.html#crowddynamics.io.load_npy">load_npy() (in module crowddynamics.io)</a>
 </li>
       <li><a href="apidocs/crowddynamics.html#crowddynamics.io.load_npy_concatenated">load_npy_concatenated() (in module crowddynamics.io)</a>
@@ -703,8 +710,6 @@
         <li><a href="apidocs/crowddynamics.simulation.html#crowddynamics.simulation.multiagent.MultiAgentProcess.logger">(crowddynamics.simulation.multiagent.MultiAgentProcess attribute)</a>
 </li>
       </ul></li>
-      <li><a href="apidocs/crowddynamics.simulation.html#crowddynamics.simulation.multiagent.MultiAgentSimulation.logic">logic (crowddynamics.simulation.multiagent.MultiAgentSimulation attribute)</a>
-</li>
       <li><a href="apidocs/crowddynamics.simulation.html#crowddynamics.simulation.multiagent.LogicNode">LogicNode (class in crowddynamics.simulation.multiagent)</a>
 </li>
   </ul></td>
@@ -979,6 +984,8 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="apidocs/crowddynamics.simulation.html#crowddynamics.simulation.multiagent.Field.targets">targets (crowddynamics.simulation.multiagent.Field attribute)</a>
 </li>
+      <li><a href="apidocs/crowddynamics.simulation.html#crowddynamics.simulation.multiagent.MultiAgentSimulation.tasks">tasks (crowddynamics.simulation.multiagent.MultiAgentSimulation attribute)</a>
+</li>
       <li><a href="apidocs/crowddynamics.core.tests.html#crowddynamics.core.tests.test_integrator.test_adaptive_timestep1">test_adaptive_timestep1() (in module crowddynamics.core.tests.test_integrator)</a>
 </li>
       <li><a href="apidocs/crowddynamics.core.tests.html#crowddynamics.core.tests.test_integrator.test_adaptive_timestep2">test_adaptive_timestep2() (in module crowddynamics.core.tests.test_integrator)</a>
@@ -1085,10 +1092,10 @@
 </li>
       <li><a href="apidocs/crowddynamics.core.random.tests.html#crowddynamics.core.random.tests.test_sampling.test_linestring_sample">test_linestring_sample() (in module crowddynamics.core.random.tests.test_sampling)</a>
 </li>
-      <li><a href="apidocs/crowddynamics.core.steering.tests.html#crowddynamics.core.steering.tests.test_quickest_path.test_merge_dir_maps">test_merge_dir_maps() (in module crowddynamics.core.steering.tests.test_quickest_path)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="apidocs/crowddynamics.core.steering.tests.html#crowddynamics.core.steering.tests.test_quickest_path.test_merge_dir_maps">test_merge_dir_maps() (in module crowddynamics.core.steering.tests.test_quickest_path)</a>
+</li>
       <li><a href="apidocs/crowddynamics.core.interactions.tests.html#crowddynamics.core.interactions.tests.test_block_list.test_mutable_block_list">test_mutable_block_list() (in module crowddynamics.core.interactions.tests.test_block_list)</a>
 </li>
       <li><a href="apidocs/crowddynamics.core.interactions.tests.html#crowddynamics.core.interactions.tests.test_block_list_benchmark.test_mutable_blocklist_getitem">test_mutable_blocklist_getitem() (in module crowddynamics.core.interactions.tests.test_block_list_benchmark)</a>
@@ -1222,6 +1229,8 @@
 </li>
         <li><a href="apidocs/crowddynamics.simulation.html#crowddynamics.simulation.multiagent.Fluctuation.update">(crowddynamics.simulation.multiagent.Fluctuation method)</a>
 </li>
+        <li><a href="apidocs/crowddynamics.simulation.html#crowddynamics.simulation.multiagent.Herding.update">(crowddynamics.simulation.multiagent.Herding method)</a>
+</li>
         <li><a href="apidocs/crowddynamics.simulation.html#crowddynamics.simulation.multiagent.InsideDomain.update">(crowddynamics.simulation.multiagent.InsideDomain method)</a>
 </li>
         <li><a href="apidocs/crowddynamics.simulation.html#crowddynamics.simulation.multiagent.Integrator.update">(crowddynamics.simulation.multiagent.Integrator method)</a>
@@ -1253,14 +1262,12 @@
 <h2 id="V">V</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="apidocs/crowddynamics.core.html#crowddynamics.core.geometry.validate_geom">validate_geom() (in module crowddynamics.core.geometry)</a>
-</li>
       <li><a href="apidocs/crowddynamics.html#crowddynamics.exceptions.ValidationError">ValidationError</a>
+</li>
+      <li><a href="apidocs/crowddynamics.core.steering.html#crowddynamics.core.steering.quickest_path.MeshGrid.values">values (crowddynamics.core.steering.quickest_path.MeshGrid attribute)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="apidocs/crowddynamics.core.steering.html#crowddynamics.core.steering.quickest_path.MeshGrid.values">values (crowddynamics.core.steering.quickest_path.MeshGrid attribute)</a>
-</li>
       <li><a href="apidocs/crowddynamics.core.html#crowddynamics.core.integrator.velocity_verlet_integrator">velocity_verlet_integrator() (in module crowddynamics.core.integrator)</a>
 </li>
       <li><a href="apidocs/crowddynamics.core.html#crowddynamics.core.integrator.velocity_verlet_integrator_init">velocity_verlet_integrator_init() (in module crowddynamics.core.integrator)</a>
@@ -1291,7 +1298,7 @@
   <div role="contentinfo">
     <p>
         &copy; Copyright Jaan Tollander de Balsch.
-      Last updated on 2017-05-10.
+      Last updated on 2017-05-11.
 
     </p>
   </div>
@@ -1313,7 +1320,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'legacy+297.gd2a5250.dirty',
+            VERSION:'legacy+302.g559af75.dirty',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

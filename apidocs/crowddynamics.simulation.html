@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>crowddynamics.simulation package &mdash; crowddynamics legacy+297.gd2a5250.dirty documentation</title>
+  <title>crowddynamics.simulation package &mdash; crowddynamics legacy+302.g559af75.dirty documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="crowddynamics legacy+297.gd2a5250.dirty documentation" href="../index.html"/>
+    <link rel="top" title="crowddynamics legacy+302.g559af75.dirty documentation" href="../index.html"/>
         <link rel="up" title="crowddynamics package" href="crowddynamics.html"/>
         <link rel="next" title="crowddynamics.tests package" href="crowddynamics.tests.html"/>
         <link rel="prev" title="crowddynamics.core.tests package" href="crowddynamics.core.tests.html"/> 
@@ -72,7 +72,7 @@
             
             
               <div class="version">
-                legacy+297legacy+297.gd2a5250.dirtygd2a5250
+                legacy+302legacy+302.g559af75.dirtyg559af75
               </div>
             
           
@@ -100,6 +100,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developing.html">Developing</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Multi-Agent Simulation</span></p>
 <ul>
@@ -214,27 +215,9 @@
 </div>
 <div class="section" id="module-crowddynamics.simulation.multiagent">
 <span id="crowddynamics-simulation-multiagent-module"></span><h2>crowddynamics.simulation.multiagent module<a class="headerlink" href="#module-crowddynamics.simulation.multiagent" title="Permalink to this headline">¶</a></h2>
-<table border="1" class="docutils" id="id5">
-<caption><span class="caption-text">Model Specification</span><a class="headerlink" href="#id5" title="Permalink to this table">¶</a></caption>
-<colgroup>
-<col width="50%" />
-<col width="50%" />
-</colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td>Space</td>
-<td>Continuous space <span class="math">\(\mathbb{R}^2\)</span></td>
-</tr>
-<tr class="row-even"><td>Scale</td>
-<td>Microscopic. Agents are modelled as rigid bodies.</td>
-</tr>
-<tr class="row-odd"><td>Motion</td>
-<td>Classical mechanics for modelling movement.</td>
-</tr>
-</tbody>
-</table>
 <dl class="class">
 <dt id="crowddynamics.simulation.multiagent.Adjusting">
-<em class="property">class </em><code class="descclassname">crowddynamics.simulation.multiagent.</code><code class="descname">Adjusting</code><span class="sig-paren">(</span><em>simulation: crowddynamics.simulation.multiagent.MultiAgentSimulation</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/simulation/multiagent.html#Adjusting"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.simulation.multiagent.Adjusting" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">crowddynamics.simulation.multiagent.</code><code class="descname">Adjusting</code><span class="sig-paren">(</span><em>simulation</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/simulation/multiagent.html#Adjusting"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.simulation.multiagent.Adjusting" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#crowddynamics.simulation.multiagent.LogicNode" title="crowddynamics.simulation.multiagent.LogicNode"><code class="xref py py-class docutils literal"><span class="pre">crowddynamics.simulation.multiagent.LogicNode</span></code></a></p>
 <dl class="method">
 <dt id="crowddynamics.simulation.multiagent.Adjusting.update">
@@ -245,7 +228,7 @@
 
 <dl class="class">
 <dt id="crowddynamics.simulation.multiagent.AgentAgentInteractions">
-<em class="property">class </em><code class="descclassname">crowddynamics.simulation.multiagent.</code><code class="descname">AgentAgentInteractions</code><span class="sig-paren">(</span><em>simulation: crowddynamics.simulation.multiagent.MultiAgentSimulation</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/simulation/multiagent.html#AgentAgentInteractions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.simulation.multiagent.AgentAgentInteractions" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">crowddynamics.simulation.multiagent.</code><code class="descname">AgentAgentInteractions</code><span class="sig-paren">(</span><em>simulation</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/simulation/multiagent.html#AgentAgentInteractions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.simulation.multiagent.AgentAgentInteractions" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#crowddynamics.simulation.multiagent.LogicNode" title="crowddynamics.simulation.multiagent.LogicNode"><code class="xref py py-class docutils literal"><span class="pre">crowddynamics.simulation.multiagent.LogicNode</span></code></a></p>
 <dl class="method">
 <dt id="crowddynamics.simulation.multiagent.AgentAgentInteractions.update">
@@ -256,7 +239,7 @@
 
 <dl class="class">
 <dt id="crowddynamics.simulation.multiagent.AgentObstacleInteractions">
-<em class="property">class </em><code class="descclassname">crowddynamics.simulation.multiagent.</code><code class="descname">AgentObstacleInteractions</code><span class="sig-paren">(</span><em>simulation: crowddynamics.simulation.multiagent.MultiAgentSimulation</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/simulation/multiagent.html#AgentObstacleInteractions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.simulation.multiagent.AgentObstacleInteractions" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">crowddynamics.simulation.multiagent.</code><code class="descname">AgentObstacleInteractions</code><span class="sig-paren">(</span><em>simulation</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/simulation/multiagent.html#AgentObstacleInteractions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.simulation.multiagent.AgentObstacleInteractions" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#crowddynamics.simulation.multiagent.LogicNode" title="crowddynamics.simulation.multiagent.LogicNode"><code class="xref py py-class docutils literal"><span class="pre">crowddynamics.simulation.multiagent.LogicNode</span></code></a></p>
 <dl class="method">
 <dt id="crowddynamics.simulation.multiagent.AgentObstacleInteractions.update">
@@ -476,8 +459,8 @@ w &amp;= W - 2 r\end{split}\]</div>
 
 <dl class="class">
 <dt id="crowddynamics.simulation.multiagent.Field">
-<em class="property">class </em><code class="descclassname">crowddynamics.simulation.multiagent.</code><code class="descname">Field</code><span class="sig-paren">(</span><em>name=None</em>, <em>domain=None</em>, <em>obstacles=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/simulation/multiagent.html#Field"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.simulation.multiagent.Field" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<em class="property">class </em><code class="descclassname">crowddynamics.simulation.multiagent.</code><code class="descname">Field</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/simulation/multiagent.html#Field"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.simulation.multiagent.Field" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">traitlets.traitlets.HasTraits</span></code></p>
 <p>Multi-Agent simulation Field consists of</p>
 <div class="figure">
 <p><img src="../_images/tikz-e90de630ed1c23a95fdae2652a6bb0f68bb041bd.png" alt="\draw[color=gray!20] (-2, -1) grid (12, 7);
@@ -553,7 +536,10 @@ doesn&#8217;t new agent is  placed here.</dd>
 <dl class="attribute">
 <dt id="crowddynamics.simulation.multiagent.Field.domain">
 <code class="descname">domain</code><a class="headerlink" href="#crowddynamics.simulation.multiagent.Field.domain" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>A trait whose value must be an instance of a specified class.</p>
+<p>The value can also be an instance of a subclass of the specified class.</p>
+<p>Subclasses can declare default classes by overriding the klass attribute</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="crowddynamics.simulation.multiagent.Field.dump_json">
@@ -570,7 +556,7 @@ doesn&#8217;t new agent is  placed here.</dd>
 <dl class="attribute">
 <dt id="crowddynamics.simulation.multiagent.Field.name">
 <code class="descname">name</code><a class="headerlink" href="#crowddynamics.simulation.multiagent.Field.name" title="Permalink to this definition">¶</a></dt>
-<dd><p>Name of the simulation. Defaults to __class__.__name__.</p>
+<dd><p>A trait for unicode strings.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -581,7 +567,10 @@ doesn&#8217;t new agent is  placed here.</dd>
 <dl class="attribute">
 <dt id="crowddynamics.simulation.multiagent.Field.obstacles">
 <code class="descname">obstacles</code><a class="headerlink" href="#crowddynamics.simulation.multiagent.Field.obstacles" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>A trait whose value must be an instance of a specified class.</p>
+<p>The value can also be an instance of a subclass of the specified class.</p>
+<p>Subclasses can declare default classes by overriding the klass attribute</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="crowddynamics.simulation.multiagent.Field.plot">
@@ -608,22 +597,35 @@ obstacles</p>
 <dl class="attribute">
 <dt id="crowddynamics.simulation.multiagent.Field.spawns">
 <code class="descname">spawns</code><a class="headerlink" href="#crowddynamics.simulation.multiagent.Field.spawns" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>An instance of a Python list.</p>
+</dd></dl>
 
 <dl class="attribute">
 <dt id="crowddynamics.simulation.multiagent.Field.targets">
 <code class="descname">targets</code><a class="headerlink" href="#crowddynamics.simulation.multiagent.Field.targets" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>An instance of a Python list.</p>
+</dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="crowddynamics.simulation.multiagent.Fluctuation">
-<em class="property">class </em><code class="descclassname">crowddynamics.simulation.multiagent.</code><code class="descname">Fluctuation</code><span class="sig-paren">(</span><em>simulation: crowddynamics.simulation.multiagent.MultiAgentSimulation</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/simulation/multiagent.html#Fluctuation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.simulation.multiagent.Fluctuation" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">crowddynamics.simulation.multiagent.</code><code class="descname">Fluctuation</code><span class="sig-paren">(</span><em>simulation</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/simulation/multiagent.html#Fluctuation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.simulation.multiagent.Fluctuation" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#crowddynamics.simulation.multiagent.LogicNode" title="crowddynamics.simulation.multiagent.LogicNode"><code class="xref py py-class docutils literal"><span class="pre">crowddynamics.simulation.multiagent.LogicNode</span></code></a></p>
 <dl class="method">
 <dt id="crowddynamics.simulation.multiagent.Fluctuation.update">
 <code class="descname">update</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/simulation/multiagent.html#Fluctuation.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.simulation.multiagent.Fluctuation.update" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="crowddynamics.simulation.multiagent.Herding">
+<em class="property">class </em><code class="descclassname">crowddynamics.simulation.multiagent.</code><code class="descname">Herding</code><span class="sig-paren">(</span><em>simulation</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/simulation/multiagent.html#Herding"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.simulation.multiagent.Herding" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#crowddynamics.simulation.multiagent.LogicNode" title="crowddynamics.simulation.multiagent.LogicNode"><code class="xref py py-class docutils literal"><span class="pre">crowddynamics.simulation.multiagent.LogicNode</span></code></a></p>
+<dl class="method">
+<dt id="crowddynamics.simulation.multiagent.Herding.update">
+<code class="descname">update</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/simulation/multiagent.html#Herding.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.simulation.multiagent.Herding.update" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -641,7 +643,7 @@ obstacles</p>
 
 <dl class="class">
 <dt id="crowddynamics.simulation.multiagent.Integrator">
-<em class="property">class </em><code class="descclassname">crowddynamics.simulation.multiagent.</code><code class="descname">Integrator</code><span class="sig-paren">(</span><em>simulation: crowddynamics.simulation.multiagent.MultiAgentSimulation</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/simulation/multiagent.html#Integrator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.simulation.multiagent.Integrator" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">crowddynamics.simulation.multiagent.</code><code class="descname">Integrator</code><span class="sig-paren">(</span><em>simulation</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/simulation/multiagent.html#Integrator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.simulation.multiagent.Integrator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#crowddynamics.simulation.multiagent.LogicNode" title="crowddynamics.simulation.multiagent.LogicNode"><code class="xref py py-class docutils literal"><span class="pre">crowddynamics.simulation.multiagent.LogicNode</span></code></a></p>
 <dl class="method">
 <dt id="crowddynamics.simulation.multiagent.Integrator.update">
@@ -652,7 +654,7 @@ obstacles</p>
 
 <dl class="class">
 <dt id="crowddynamics.simulation.multiagent.LogicNode">
-<em class="property">class </em><code class="descclassname">crowddynamics.simulation.multiagent.</code><code class="descname">LogicNode</code><span class="sig-paren">(</span><em>simulation: crowddynamics.simulation.multiagent.MultiAgentSimulation</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/simulation/multiagent.html#LogicNode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.simulation.multiagent.LogicNode" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">crowddynamics.simulation.multiagent.</code><code class="descname">LogicNode</code><span class="sig-paren">(</span><em>simulation</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/simulation/multiagent.html#LogicNode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.simulation.multiagent.LogicNode" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="crowddynamics.core.html#crowddynamics.core.tree.Node" title="crowddynamics.core.tree.Node"><code class="xref py py-class docutils literal"><span class="pre">crowddynamics.core.tree.Node</span></code></a></p>
 <p>Simulation logic is programmed as a tree of dependencies of the order of
 the execution. For example simulation&#8217;s logic tree could look like:</p>
@@ -706,8 +708,8 @@ when start is called.</p>
 
 <dl class="class">
 <dt id="crowddynamics.simulation.multiagent.MultiAgentSimulation">
-<em class="property">class </em><code class="descclassname">crowddynamics.simulation.multiagent.</code><code class="descname">MultiAgentSimulation</code><span class="sig-paren">(</span><em>name=None</em>, <em>configfile='/home/jaan/Projects/CrowdDynamics/crowddynamics/conf/multiagent.cfg'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/simulation/multiagent.html#MultiAgentSimulation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.simulation.multiagent.MultiAgentSimulation" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<em class="property">class </em><code class="descclassname">crowddynamics.simulation.multiagent.</code><code class="descname">MultiAgentSimulation</code><span class="sig-paren">(</span><em>configfile='/home/jaan/Projects/CrowdDynamics/crowddynamics/conf/multiagent.cfg'</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/simulation/multiagent.html#MultiAgentSimulation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.simulation.multiagent.MultiAgentSimulation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">traitlets.traitlets.HasTraits</span></code></p>
 <p>Constructing a multi-agent simulation</p>
 <dl class="docutils">
 <dt>Field</dt>
@@ -722,7 +724,10 @@ using <em>post-order</em> traversal.</dd>
 <dl class="attribute">
 <dt id="crowddynamics.simulation.multiagent.MultiAgentSimulation.agents">
 <code class="descname">agents</code><a class="headerlink" href="#crowddynamics.simulation.multiagent.MultiAgentSimulation.agents" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>A trait whose value must be an instance of a specified class.</p>
+<p>The value can also be an instance of a subclass of the specified class.</p>
+<p>Subclasses can declare default classes by overriding the klass attribute</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="crowddynamics.simulation.multiagent.MultiAgentSimulation.dump_config">
@@ -732,17 +737,15 @@ using <em>post-order</em> traversal.</dd>
 <dl class="attribute">
 <dt id="crowddynamics.simulation.multiagent.MultiAgentSimulation.field">
 <code class="descname">field</code><a class="headerlink" href="#crowddynamics.simulation.multiagent.MultiAgentSimulation.field" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="crowddynamics.simulation.multiagent.MultiAgentSimulation.logic">
-<code class="descname">logic</code><a class="headerlink" href="#crowddynamics.simulation.multiagent.MultiAgentSimulation.logic" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>A trait whose value must be an instance of a specified class.</p>
+<p>The value can also be an instance of a subclass of the specified class.</p>
+<p>Subclasses can declare default classes by overriding the klass attribute</p>
+</dd></dl>
 
 <dl class="attribute">
 <dt id="crowddynamics.simulation.multiagent.MultiAgentSimulation.name">
 <code class="descname">name</code><a class="headerlink" href="#crowddynamics.simulation.multiagent.MultiAgentSimulation.name" title="Permalink to this definition">¶</a></dt>
-<dd><p>Name of the simulation. Defaults to <code class="docutils literal"><span class="pre">self.__class__.__name__</span></code>.</p>
+<dd><p>A trait for unicode strings.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -770,6 +773,14 @@ using <em>post-order</em> traversal.</dd>
 </table>
 </dd></dl>
 
+<dl class="attribute">
+<dt id="crowddynamics.simulation.multiagent.MultiAgentSimulation.tasks">
+<code class="descname">tasks</code><a class="headerlink" href="#crowddynamics.simulation.multiagent.MultiAgentSimulation.tasks" title="Permalink to this definition">¶</a></dt>
+<dd><p>A trait whose value must be an instance of a specified class.</p>
+<p>The value can also be an instance of a subclass of the specified class.</p>
+<p>Subclasses can declare default classes by overriding the klass attribute</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="crowddynamics.simulation.multiagent.MultiAgentSimulation.update">
 <code class="descname">update</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/simulation/multiagent.html#MultiAgentSimulation.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.simulation.multiagent.MultiAgentSimulation.update" title="Permalink to this definition">¶</a></dt>
@@ -780,7 +791,7 @@ using <em>post-order</em> traversal.</dd>
 
 <dl class="class">
 <dt id="crowddynamics.simulation.multiagent.Navigation">
-<em class="property">class </em><code class="descclassname">crowddynamics.simulation.multiagent.</code><code class="descname">Navigation</code><span class="sig-paren">(</span><em>simulation: crowddynamics.simulation.multiagent.MultiAgentSimulation</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/simulation/multiagent.html#Navigation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.simulation.multiagent.Navigation" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">crowddynamics.simulation.multiagent.</code><code class="descname">Navigation</code><span class="sig-paren">(</span><em>simulation</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/simulation/multiagent.html#Navigation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.simulation.multiagent.Navigation" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#crowddynamics.simulation.multiagent.LogicNode" title="crowddynamics.simulation.multiagent.LogicNode"><code class="xref py py-class docutils literal"><span class="pre">crowddynamics.simulation.multiagent.LogicNode</span></code></a></p>
 <dl class="method">
 <dt id="crowddynamics.simulation.multiagent.Navigation.update">
@@ -791,7 +802,7 @@ using <em>post-order</em> traversal.</dd>
 
 <dl class="class">
 <dt id="crowddynamics.simulation.multiagent.Orientation">
-<em class="property">class </em><code class="descclassname">crowddynamics.simulation.multiagent.</code><code class="descname">Orientation</code><span class="sig-paren">(</span><em>simulation: crowddynamics.simulation.multiagent.MultiAgentSimulation</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/simulation/multiagent.html#Orientation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.simulation.multiagent.Orientation" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">crowddynamics.simulation.multiagent.</code><code class="descname">Orientation</code><span class="sig-paren">(</span><em>simulation</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/simulation/multiagent.html#Orientation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.simulation.multiagent.Orientation" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#crowddynamics.simulation.multiagent.LogicNode" title="crowddynamics.simulation.multiagent.LogicNode"><code class="xref py py-class docutils literal"><span class="pre">crowddynamics.simulation.multiagent.LogicNode</span></code></a></p>
 <dl class="method">
 <dt id="crowddynamics.simulation.multiagent.Orientation.update">
@@ -802,7 +813,7 @@ using <em>post-order</em> traversal.</dd>
 
 <dl class="class">
 <dt id="crowddynamics.simulation.multiagent.Reset">
-<em class="property">class </em><code class="descclassname">crowddynamics.simulation.multiagent.</code><code class="descname">Reset</code><span class="sig-paren">(</span><em>simulation: crowddynamics.simulation.multiagent.MultiAgentSimulation</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/simulation/multiagent.html#Reset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.simulation.multiagent.Reset" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">crowddynamics.simulation.multiagent.</code><code class="descname">Reset</code><span class="sig-paren">(</span><em>simulation</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/simulation/multiagent.html#Reset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.simulation.multiagent.Reset" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#crowddynamics.simulation.multiagent.LogicNode" title="crowddynamics.simulation.multiagent.LogicNode"><code class="xref py py-class docutils literal"><span class="pre">crowddynamics.simulation.multiagent.LogicNode</span></code></a></p>
 <dl class="method">
 <dt id="crowddynamics.simulation.multiagent.Reset.update">
@@ -884,7 +895,7 @@ using <em>post-order</em> traversal.</dd>
   <div role="contentinfo">
     <p>
         &copy; Copyright Jaan Tollander de Balsch.
-      Last updated on 2017-05-10.
+      Last updated on 2017-05-11.
 
     </p>
   </div>
@@ -906,7 +917,7 @@ using <em>post-order</em> traversal.</dd>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'legacy+297.gd2a5250.dirty',
+            VERSION:'legacy+302.g559af75.dirty',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

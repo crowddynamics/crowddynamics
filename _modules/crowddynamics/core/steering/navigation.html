@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>crowddynamics.core.steering.navigation &mdash; crowddynamics legacy+297.gd2a5250.dirty documentation</title>
+  <title>crowddynamics.core.steering.navigation &mdash; crowddynamics legacy+302.g559af75.dirty documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../../../genindex.html"/>
         <link rel="search" title="Search" href="../../../../search.html"/>
-    <link rel="top" title="crowddynamics legacy+297.gd2a5250.dirty documentation" href="../../../../index.html"/>
+    <link rel="top" title="crowddynamics legacy+302.g559af75.dirty documentation" href="../../../../index.html"/>
         <link rel="up" title="Module code" href="../../../index.html"/> 
 
   
@@ -70,7 +70,7 @@
             
             
               <div class="version">
-                legacy+297legacy+297.gd2a5250.dirtygd2a5250
+                legacy+302legacy+302.g559af75.dirtyg559af75
               </div>
             
           
@@ -98,6 +98,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../developing.html">Developing</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Multi-Agent Simulation</span></p>
 <ul>
@@ -199,6 +200,7 @@
 <span class="kn">from</span> <span class="nn">numba</span> <span class="k">import</span> <span class="n">f8</span><span class="p">,</span> <span class="n">i8</span>
 <span class="kn">from</span> <span class="nn">shapely.geometry</span> <span class="k">import</span> <span class="n">Polygon</span>
 
+<span class="kn">from</span> <span class="nn">crowddynamics.core.steering.herding</span> <span class="k">import</span> <span class="n">herding_block_list</span>
 <span class="kn">from</span> <span class="nn">crowddynamics.core.steering.obstacle_handling</span> <span class="k">import</span> \
     <span class="n">direction_map_obstacles</span><span class="p">,</span> <span class="n">obstacle_handling</span>
 <span class="kn">from</span> <span class="nn">crowddynamics.core.steering.quickest_path</span> <span class="k">import</span> <span class="n">MeshGrid</span><span class="p">,</span> <span class="n">DistanceMap</span><span class="p">,</span> \
@@ -290,6 +292,13 @@
     <span class="n">indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fliplr</span><span class="p">(</span><span class="n">mgrid</span><span class="o">.</span><span class="n">indicer</span><span class="p">(</span><span class="n">agents</span><span class="p">[</span><span class="n">mask</span><span class="p">][</span><span class="s1">&#39;position&#39;</span><span class="p">]))</span>
     <span class="n">new_direction</span> <span class="o">=</span> <span class="n">getdefault</span><span class="p">(</span><span class="n">indices</span><span class="p">,</span> <span class="n">dir_map</span><span class="p">,</span> <span class="n">agents</span><span class="p">[</span><span class="n">mask</span><span class="p">][</span><span class="s1">&#39;target_direction&#39;</span><span class="p">])</span>
     <span class="n">set_target_direction</span><span class="p">(</span><span class="n">agents</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">agents</span><span class="p">))[</span><span class="n">mask</span><span class="p">],</span> <span class="n">new_direction</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="herding"><a class="viewcode-back" href="../../../../apidocs/crowddynamics.core.steering.html#crowddynamics.core.steering.navigation.herding">[docs]</a><span class="k">def</span> <span class="nf">herding</span><span class="p">(</span><span class="n">agents</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="n">sight_herding</span><span class="p">):</span>
+    <span class="n">new_direction</span> <span class="o">=</span> <span class="n">herding_block_list</span><span class="p">(</span><span class="n">agents</span><span class="p">[</span><span class="n">mask</span><span class="p">][</span><span class="s1">&#39;position&#39;</span><span class="p">],</span>
+                                       <span class="n">agents</span><span class="p">[</span><span class="n">mask</span><span class="p">][</span><span class="s1">&#39;velocity&#39;</span><span class="p">],</span>
+                                       <span class="n">sight_herding</span><span class="p">)</span>
+    <span class="n">set_target_direction</span><span class="p">(</span><span class="n">agents</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">agents</span><span class="p">))[</span><span class="n">mask</span><span class="p">],</span> <span class="n">new_direction</span><span class="p">)</span></div>
 </pre></div>
 
            </div>
@@ -305,7 +314,7 @@
   <div role="contentinfo">
     <p>
         &copy; Copyright Jaan Tollander de Balsch.
-      Last updated on 2017-05-10.
+      Last updated on 2017-05-11.
 
     </p>
   </div>
@@ -327,7 +336,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../../',
-            VERSION:'legacy+297.gd2a5250.dirty',
+            VERSION:'legacy+302.g559af75.dirty',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
