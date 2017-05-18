@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>crowddynamics.core.random.tests.test_random &mdash; crowddynamics legacy+302.g559af75.dirty documentation</title>
+  <title>crowddynamics.core.rand.tests.test_random &mdash; crowddynamics legacy+303.g1e68f25.dirty documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../../../../genindex.html"/>
         <link rel="search" title="Search" href="../../../../../search.html"/>
-    <link rel="top" title="crowddynamics legacy+302.g559af75.dirty documentation" href="../../../../../index.html"/>
+    <link rel="top" title="crowddynamics legacy+303.g1e68f25.dirty documentation" href="../../../../../index.html"/>
         <link rel="up" title="Module code" href="../../../../index.html"/> 
 
   
@@ -70,7 +70,7 @@
             
             
               <div class="version">
-                legacy+302legacy+302.g559af75.dirtyg559af75
+                legacy+303legacy+303.g1e68f25.dirtyg1e68f25
               </div>
             
           
@@ -99,25 +99,25 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../usage.html">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../developing.html">Developing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../resources.html">Resources</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Multi-Agent Simulation</span></p>
+<p class="caption"><span class="caption-text">Crowddynamics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../multiagent.html">Multi-Agent Simulation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../interactions.html">Interactions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../motion.html">Motion</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../steering.html">Steering</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../quantities.html">Quantities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../evacuation.html">Evacuation</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Research</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../phenomena.html">Phenomena</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Api</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../apidocs/crowddynamics.html">crowddynamics package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../apidocs_examples/examples.html">examples package</a></li>
-</ul>
-<p class="caption"><span class="caption-text">Research</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../quantities.html">Quantities</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../phenomena.html">Phenomena</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../applications.html">Applications</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../references.html">References</a></li>
 </ul>
 
             
@@ -164,7 +164,7 @@
         
           <li><a href="../../../../index.html">Module code</a> &raquo;</li>
         
-      <li>crowddynamics.core.random.tests.test_random</li>
+      <li>crowddynamics.core.rand.tests.test_random</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -181,15 +181,15 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <h1>Source code for crowddynamics.core.random.tests.test_random</h1><div class="highlight"><pre>
+  <h1>Source code for crowddynamics.core.rand.tests.test_random</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">hypothesis</span> <span class="k">import</span> <span class="n">given</span><span class="p">,</span> <span class="n">assume</span>
 
-<span class="kn">from</span> <span class="nn">crowddynamics.core.random.functions</span> <span class="k">import</span> <span class="n">poisson_clock</span><span class="p">,</span> <span class="n">poisson_timings</span>
+<span class="kn">from</span> <span class="nn">crowddynamics.core.rand.functions</span> <span class="k">import</span> <span class="n">poisson_clock</span><span class="p">,</span> <span class="n">poisson_timings</span>
 <span class="kn">from</span> <span class="nn">crowddynamics.testing</span> <span class="k">import</span> <span class="n">real</span>
 
 
 <span class="nd">@given</span><span class="p">(</span><span class="n">interval</span><span class="o">=</span><span class="n">real</span><span class="p">(</span><span class="mf">0.001</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">),</span> <span class="n">dt</span><span class="o">=</span><span class="n">real</span><span class="p">(</span><span class="mf">0.001</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">))</span>
-<div class="viewcode-block" id="test_poisson_clock"><a class="viewcode-back" href="../../../../../apidocs/crowddynamics.core.random.tests.html#crowddynamics.core.random.tests.test_random.test_poisson_clock">[docs]</a><span class="k">def</span> <span class="nf">test_poisson_clock</span><span class="p">(</span><span class="n">interval</span><span class="p">,</span> <span class="n">dt</span><span class="p">):</span>
+<div class="viewcode-block" id="test_poisson_clock"><a class="viewcode-back" href="../../../../../apidocs/crowddynamics.core.rand.tests.html#crowddynamics.core.rand.tests.test_random.test_poisson_clock">[docs]</a><span class="k">def</span> <span class="nf">test_poisson_clock</span><span class="p">(</span><span class="n">interval</span><span class="p">,</span> <span class="n">dt</span><span class="p">):</span>
     <span class="c1"># Limit the ratio so test doesn&#39;t run forever</span>
     <span class="n">assume</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">100</span> <span class="o">&lt;</span> <span class="n">interval</span> <span class="o">/</span> <span class="n">dt</span> <span class="o">&lt;</span> <span class="mi">100</span><span class="p">)</span>
 
@@ -203,7 +203,7 @@
 <span class="nd">@given</span><span class="p">(</span><span class="n">players</span><span class="o">=</span><span class="n">real</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="o">**</span><span class="mi">7</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">),</span>
        <span class="n">interval</span><span class="o">=</span><span class="n">real</span><span class="p">(</span><span class="mf">0.001</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">),</span>
        <span class="n">dt</span><span class="o">=</span><span class="n">real</span><span class="p">(</span><span class="mf">0.001</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">))</span>
-<div class="viewcode-block" id="test_poisson_timings"><a class="viewcode-back" href="../../../../../apidocs/crowddynamics.core.random.tests.html#crowddynamics.core.random.tests.test_random.test_poisson_timings">[docs]</a><span class="k">def</span> <span class="nf">test_poisson_timings</span><span class="p">(</span><span class="n">players</span><span class="p">,</span> <span class="n">interval</span><span class="p">,</span> <span class="n">dt</span><span class="p">):</span>
+<div class="viewcode-block" id="test_poisson_timings"><a class="viewcode-back" href="../../../../../apidocs/crowddynamics.core.rand.tests.html#crowddynamics.core.rand.tests.test_random.test_poisson_timings">[docs]</a><span class="k">def</span> <span class="nf">test_poisson_timings</span><span class="p">(</span><span class="n">players</span><span class="p">,</span> <span class="n">interval</span><span class="p">,</span> <span class="n">dt</span><span class="p">):</span>
     <span class="c1"># Limit the ratio so test doesn&#39;t run forever</span>
     <span class="n">assume</span><span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="mi">100</span> <span class="o">&lt;</span> <span class="n">interval</span> <span class="o">/</span> <span class="n">dt</span> <span class="o">&lt;</span> <span class="mi">100</span><span class="p">)</span>
 
@@ -225,7 +225,7 @@
   <div role="contentinfo">
     <p>
         &copy; Copyright Jaan Tollander de Balsch.
-      Last updated on 2017-05-11.
+      Last updated on 2017-05-18.
 
     </p>
   </div>
@@ -247,7 +247,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../../../',
-            VERSION:'legacy+302.g559af75.dirty',
+            VERSION:'legacy+303.g1e68f25.dirty',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

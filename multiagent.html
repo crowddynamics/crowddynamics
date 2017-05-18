@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Multi-Agent Simulation &mdash; crowddynamics legacy+302.g559af75.dirty documentation</title>
+  <title>Multi-Agent Simulation &mdash; crowddynamics legacy+303.g1e68f25.dirty documentation</title>
   
 
   
@@ -37,9 +37,9 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="crowddynamics legacy+302.g559af75.dirty documentation" href="index.html"/>
+    <link rel="top" title="crowddynamics legacy+303.g1e68f25.dirty documentation" href="index.html"/>
         <link rel="next" title="Interactions" href="interactions.html"/>
-        <link rel="prev" title="Developing" href="developing.html"/> 
+        <link rel="prev" title="Resources" href="resources.html"/> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
@@ -71,7 +71,7 @@
             
             
               <div class="version">
-                legacy+302legacy+302.g559af75.dirtyg559af75
+                legacy+303legacy+303.g1e68f25.dirtyg1e68f25
               </div>
             
           
@@ -100,25 +100,31 @@
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="developing.html">Developing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="resources.html">Resources</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Multi-Agent Simulation</span></p>
+<p class="caption"><span class="caption-text">Crowddynamics</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Multi-Agent Simulation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Multi-Agent Simulation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#field">Field</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#agents">Agents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#logic">Logic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#references">References</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="interactions.html">Interactions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="motion.html">Motion</a></li>
 <li class="toctree-l1"><a class="reference internal" href="steering.html">Steering</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quantities.html">Quantities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="evacuation.html">Evacuation</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Research</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="phenomena.html">Phenomena</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Api</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="apidocs/crowddynamics.html">crowddynamics package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="apidocs_examples/examples.html">examples package</a></li>
-</ul>
-<p class="caption"><span class="caption-text">Research</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="quantities.html">Quantities</a></li>
-<li class="toctree-l1"><a class="reference internal" href="phenomena.html">Phenomena</a></li>
-<li class="toctree-l1"><a class="reference internal" href="applications.html">Applications</a></li>
-<li class="toctree-l1"><a class="reference internal" href="references.html">References</a></li>
 </ul>
 
             
@@ -184,37 +190,41 @@
             
   <div class="section" id="multi-agent-simulation">
 <h1>Multi-Agent Simulation<a class="headerlink" href="#multi-agent-simulation" title="Permalink to this headline">¶</a></h1>
-<table border="1" class="docutils" id="id5">
-<caption><span class="caption-text">Model Specification</span><a class="headerlink" href="#id5" title="Permalink to this table">¶</a></caption>
-<colgroup>
-<col width="50%" />
-<col width="50%" />
-</colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td>Field</td>
-<td>Continuous space <span class="math">\(\mathbb{R}^2\)</span></td>
-</tr>
-<tr class="row-even"><td>Agents</td>
-<td>Microscopic. Agents are modelled as rigid bodies.</td>
-</tr>
-<tr class="row-odd"><td>Motion</td>
-<td>Classical mechanics for modelling movement.</td>
-</tr>
-</tbody>
-</table>
+<dl class="class">
+<dt>
+<em class="property">class </em><code class="descclassname">crowddynamics.simulation.multiagent.</code><code class="descname">MultiAgentSimulation</code><span class="sig-paren">(</span><em>configfile='/home/jaan/Projects/CrowdDynamics/crowddynamics/conf/multiagent.cfg'</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crowddynamics/simulation/multiagent.html#MultiAgentSimulation"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Constructing a multi-agent simulation</p>
+<dl class="docutils">
+<dt>Field</dt>
+<dd>Instance of <code class="xref py py-class docutils literal"><span class="pre">Field</span></code>.</dd>
+<dt>Agents</dt>
+<dd>Instance of <code class="xref py py-class docutils literal"><span class="pre">Agents</span></code>.</dd>
+<dt>Logic</dt>
+<dd><strong>Logic</strong> of the simulation consists of tree of <code class="xref py py-class docutils literal"><span class="pre">LogicNode</span></code>.
+Simulation is updated by calling the update function of  each logic node
+using <em>post-order</em> traversal.</dd>
+</dl>
+</dd></dl>
+
+<div class="section" id="field">
+<h2>Field<a class="headerlink" href="#field" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt>
 <em class="property">class </em><code class="descclassname">crowddynamics.simulation.multiagent.</code><code class="descname">Field</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crowddynamics/simulation/multiagent.html#Field"><span class="viewcode-link">[source]</span></a></dt>
 <dd><p>Multi-Agent simulation Field consists of</p>
 <div class="figure">
-<p><img src="_images/tikz-e90de630ed1c23a95fdae2652a6bb0f68bb041bd.png" alt="\draw[color=gray!20] (-2, -1) grid (12, 7);
+<p><img src="_images/tikz-0f44439ad94496fb021d93a98ad69515e6fa5cc3.png" alt="\draw[color=gray!20] (-2, -1) grid (12, 7);
 % Domain
 \fill[gray!20] (0, 0) rectangle (10, 6);
 \node[] () at (5, 3) {$ \Omega $};
 % Spawn 0
 \fill[blue!20] (0, 3) -- ++(2, 0) -- ++(1, 1) -- ++(0, 2)
-                    -- ++(-3, 0) -- ++(0, -3);
+               -- ++(-3, 0) -- ++(0, -3);
 \node[] () at (1.5, 4.5) {$ \mathcal{S}_0 $};
+% Spawn 1
+\fill[blue!20] (3, 0) -- ++(0, 1) -- ++(1, 1) -- ++(2, 0) -- ++(1, -1)
+               -- ++(0, -1);
+\node[] () at (5, 0.5) {$ \mathcal{S}_1 $};
 % Obstacles
 \draw[thick] (0, 0) rectangle (10, 6);
 \draw[fill=black] (9, 2) circle (0.5);
@@ -261,18 +271,22 @@ doesn&#8217;t new agent is  placed here.</dd>
 </dl>
 </dd></dl>
 
+</div>
+<div class="section" id="agents">
+<h2>Agents<a class="headerlink" href="#agents" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt>
 <em class="property">class </em><code class="descclassname">crowddynamics.simulation.multiagent.</code><code class="descname">Agents</code><span class="sig-paren">(</span><em>size</em>, <em>agent_type='circular'</em>, <em>agent_cfg='/home/jaan/Projects/CrowdDynamics/crowddynamics/conf/agent.cfg'</em>, <em>agent_cfg_spec='/home/jaan/Projects/CrowdDynamics/crowddynamics/conf/agent_spec.cfg'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crowddynamics/simulation/multiagent.html#Agents"><span class="viewcode-link">[source]</span></a></dt>
-<dd><p>Multi-Agent simulation agent types.</p>
+<dd><p>Multi-Agent simulation agent types. Modelled as rigid bodies.</p>
 <dl class="docutils">
 <dt>Circular</dt>
 <dd><div class="first figure">
-<p><img src="_images/tikz-ec4c08f237f600b06898ca0fe089292a8bb970d8.png" alt="\begin{scope}[scale=3]
+<p><img src="_images/tikz-1fb5700d5e3c3ec98ccb6e7ad0ec15a682ee40a2.png" alt="\begin{scope}[scale=3]
   \draw[color=gray!20] (-2, -1) grid (2, 1);
+  \draw[thick] (0, 0) circle (1);
+  \fill[color=gray!20, opacity=0.5] (0, 0) circle (1);
   \node[below] () at (0, 0) {$ \mathbf{x} $};
   \fill (0, 0) circle(0.5pt);
-  \draw[thick] (0, 0) circle (1);
   \draw[dashed, &lt;-&gt;] (0, 0) -- node[above] {$ r $} ++(135:1);
 \end{scope}" /></p>
 </div><p class="last"><strong>Circular</strong> agents are modelled as a disk with radius <span class="math">\(r &gt; 0\)</span>
@@ -282,19 +296,22 @@ quite well for sparse and medium density crowds, but modelling higher
 density crowds with this model can be unrealistic because circular
 model is too wide in the  perpendicular width compared to three-circle
 or capsule representations  and lacks the ability change orientation to
-fit through smaller spaces. <a class="reference internal" href="references.html#helbing2000a" id="id1">[Helbing2000a]</a></p>
+fit through smaller spaces. <a class="reference internal" href="#helbing2000a" id="id1">[Helbing2000a]</a></p>
 </dd>
 <dt>Three-Circle</dt>
 <dd><div class="first figure">
-<p><img src="_images/tikz-5b091b82a33875cf372621dc71e195d501efa1a1.png" alt="\begin{scope}[scale=3]
+<p><img src="_images/tikz-1178fa2b5519daa20fc43cdaac6a4ab138c20828.png" alt="\begin{scope}[scale=3]
   \draw[color=gray!20] (-2, -1) grid (2, 1);
+  \draw[thick] (0, 0) circle (0.59);
+  \draw[thick] (-0.63, 0) circle (0.37);
+  \draw[thick] (0.63, 0) circle (0.37);
+  \fill[gray!20, opacity=0.5] (0, 0) circle (0.59);
+  \fill[gray!20, opacity=0.5] (-0.63, 0) circle (0.37);
+  \fill[gray!20, opacity=0.5] (0.63, 0) circle (0.37);
   \node[below] () at (0, 0) {$ \mathbf{x} $};
   \fill (0, 0) circle(0.5pt);
   \fill (-0.63, 0) circle(0.5pt);
   \fill (0.63, 0) circle(0.5pt);
-  \draw[thick] (0, 0) circle (0.59);
-  \draw[thick] (-0.63, 0) circle (0.37);
-  \draw[thick] (0.63, 0) circle (0.37);
   \draw[dashed, &lt;-&gt;] (0, 0) -- node[above] {$ r_{t} $} ++(135:0.59);
   \draw[dashed, &lt;-&gt;] (-0.63, 0) -- node[above] {$ r_{s} $} ++(135:0.37);
   \draw[dashed, &lt;-&gt;] (0.63, 0) -- node[above] {$ r_{s} $} ++(45:0.37);
@@ -311,8 +328,8 @@ tangents at distance <span class="math">\(r_{ts}\)</span> from the center of mas
 <span class="math">\(\mathbf{x} \pm r_{ts} \mathbf{\hat{e}_t}\)</span>, where
 <span class="math">\(\mathbf{\hat{e}_t} = [\sin(\varphi), -\cos(\varphi)]\)</span>. Three
 circle type has orientation of <span class="math">\(\varphi\)</span>. Model was proposed
-<em>Crowd dynamics discrete element multi-circle model</em> <a class="reference internal" href="references.html#langston2006" id="id2">[Langston2006]</a> and
-has been used for example in FDS+EVAC <a class="reference internal" href="references.html#korhonen2008b" id="id3">[Korhonen2008b]</a>.</p>
+<em>Crowd dynamics discrete element multi-circle model</em> <a class="reference internal" href="#langston2006" id="id2">[Langston2006]</a> and
+has been used for example in FDS+EVAC <a class="reference internal" href="#korhonen2008b" id="id3">[Korhonen2008b]</a>.</p>
 </dd>
 <dt>Capsule</dt>
 <dd><div class="first admonition note">
@@ -320,8 +337,14 @@ has been used for example in FDS+EVAC <a class="reference internal" href="refere
 <p class="last">Capsule is not implemented yet</p>
 </div>
 <div class="figure">
-<p><img src="_images/tikz-58c7e8634768e133b180533f23acbdab00f7d5b7.png" alt="\begin{scope}[scale=3]
+<p><img src="_images/tikz-713c55955f021dc73d4d99b979805277b79e0f64.png" alt="\begin{scope}[scale=3]
   \draw[color=gray!20] (-2, -1) grid (2, 1);
+  \draw[thick] (0.5, 0.5) arc (90:-90:0.5)
+               -- ++(-1, 0) arc (270:90:0.5)
+               -- ++(1, 0);
+   \fill[gray!20, opacity=0.5] (0.5, 0.5) arc (90:-90:0.5)
+               -- ++(-1, 0) arc (270:90:0.5)
+               -- ++(1, 0);
   \node[below] () at (0, 0) {$ \mathbf{x} $};
   \fill (0, 0) circle(0.5pt);
   \fill (-0.5, 0) circle(0.5pt);
@@ -329,14 +352,12 @@ has been used for example in FDS+EVAC <a class="reference internal" href="refere
   \draw[thick] (-0.5, 0) -- (0.5, 0);
   \draw[dashed, &lt;-&gt;] (-0.5, 0) -- node[above] {$ r $} ++(135:0.5);
   \draw[dashed, &lt;-&gt;] (-0.5, -0.2) -- node[below]{$ w $} (0.5, -0.2);
-  \draw[thick] (0.5, 0.5) arc (90:-90:0.5)
-               -- ++(-1, 0) arc (270:90:0.5)
-               -- ++(1, 0);
   %\draw[thick, -&gt;] (0, 0) -- node[left] {$ \mathbf{\hat{e}_n} $} (0, 0.3);
   %\draw[thick, -&gt;] (0, 0) -- node[below] {$ \mathbf{\hat{e}_t} $} (0.3, 0);
 \end{scope}" /></p>
-</div><p><strong>Capsule</strong> shaped model proposed by Stüvel in <em>Dense Crowds of Virtual
-Humans</em> <a class="reference internal" href="references.html#stuvel2016" id="id4">[Stuvel2016]</a>.</p>
+</div><p><strong>Capsule</strong> shaped model used in <em>Dense Crowds of Virtual Humans</em>
+<a class="reference internal" href="#stuvel2016" id="id4">[Stuvel2016]</a> and <em>Simulating competitive egress of noncircular
+pedestrians</em> <a class="reference internal" href="#hidalgo2017" id="id5">[Hidalgo2017]</a>.</p>
 <div class="math">
 \[\begin{split}r &amp;= T / 2 \\
 w &amp;= W - 2 r\end{split}\]</div>
@@ -349,6 +370,9 @@ w &amp;= W - 2 r\end{split}\]</div>
 </dl>
 </dd></dl>
 
+</div>
+<div class="section" id="logic">
+<h2>Logic<a class="headerlink" href="#logic" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt>
 <em class="property">class </em><code class="descclassname">crowddynamics.simulation.multiagent.</code><code class="descname">LogicNode</code><span class="sig-paren">(</span><em>simulation</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crowddynamics/simulation/multiagent.html#LogicNode"><span class="viewcode-link">[source]</span></a></dt>
@@ -369,22 +393,46 @@ updating <cite>Adjusting</cite> node we need to update <cite>Navigation</cite> a
 nodes.</p>
 </dd></dl>
 
-<dl class="class">
-<dt>
-<em class="property">class </em><code class="descclassname">crowddynamics.simulation.multiagent.</code><code class="descname">MultiAgentSimulation</code><span class="sig-paren">(</span><em>configfile='/home/jaan/Projects/CrowdDynamics/crowddynamics/conf/multiagent.cfg'</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crowddynamics/simulation/multiagent.html#MultiAgentSimulation"><span class="viewcode-link">[source]</span></a></dt>
-<dd><p>Constructing a multi-agent simulation</p>
-<dl class="docutils">
-<dt>Field</dt>
-<dd>Instance of <code class="xref py py-class docutils literal"><span class="pre">Field</span></code>.</dd>
-<dt>Agents</dt>
-<dd>Instance of <code class="xref py py-class docutils literal"><span class="pre">Agents</span></code>.</dd>
-<dt>Logic</dt>
-<dd><strong>Logic</strong> of the simulation consists of tree of <code class="xref py py-class docutils literal"><span class="pre">LogicNode</span></code>.
-Simulation is updated by calling the update function of  each logic node
-using <em>post-order</em> traversal.</dd>
-</dl>
-</dd></dl>
-
+</div>
+<div class="section" id="references">
+<h2>References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h2>
+<table class="docutils citation" frame="void" id="helbing2000a" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id1">[Helbing2000a]</a></td><td>Helbing, D., Farkas, I., &amp; Vicsek, T. (2000). Simulating dynamical features of escape panic. Nature, 407(6803), 487–490. <a class="reference external" href="http://doi.org/10.1038/35035023">http://doi.org/10.1038/35035023</a></td></tr>
+</tbody>
+</table>
+<table class="docutils citation" frame="void" id="langston2006" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id2">[Langston2006]</a></td><td>Langston, P. A., Masling, R., &amp; Asmar, B. N. (2006). Crowd dynamics discrete element multi-circle model. Safety Science. <a class="reference external" href="http://doi.org/10.1016/j.ssci.2005.11.007">http://doi.org/10.1016/j.ssci.2005.11.007</a></td></tr>
+</tbody>
+</table>
+<table class="docutils citation" frame="void" id="korhonen2008b" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id3">[Korhonen2008b]</a></td><td>Korhonen, T., Hostikka, S., Heliövaara, S., &amp; Ehtamo, H. (2008). FDS+ Evac: An Agent Based Fire Evacuation Model. Pedestrian and Evacuation Dynamics 2008, 109–120. <a class="reference external" href="http://doi.org/10.1007/978-3-642-04504-2">http://doi.org/10.1007/978-3-642-04504-2</a></td></tr>
+</tbody>
+</table>
+<table class="docutils citation" frame="void" id="karamouzas2014b" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label">[Karamouzas2014b]</td><td>Karamouzas, I., Skinner, B., &amp; Guy, S. J. (2014). Universal power law governing pedestrian interactions. Physical Review Letters. <a class="reference external" href="http://doi.org/10.1103/PhysRevLett.113.238701">http://doi.org/10.1103/PhysRevLett.113.238701</a></td></tr>
+</tbody>
+</table>
+<table class="docutils citation" frame="void" id="stuvel2016" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id4">[Stuvel2016]</a></td><td>Stüvel, S. A. (2016). Dense Crowds of Virtual Humans.</td></tr>
+</tbody>
+</table>
+<table class="docutils citation" frame="void" id="hidalgo2017" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id5">[Hidalgo2017]</a></td><td>Hidalgo, R. C., Parisi, D. R., &amp; Zuriguel, I. (2017). Simulating competitive egress of noncircular pedestrians. PHYSICAL REVIEW E, 95. <a class="reference external" href="https://doi.org/10.1103/PhysRevE.95.042319">https://doi.org/10.1103/PhysRevE.95.042319</a></td></tr>
+</tbody>
+</table>
+</div>
 </div>
 
 
@@ -400,7 +448,7 @@ using <em>post-order</em> traversal.</dd>
         <a href="interactions.html" class="btn btn-neutral float-right" title="Interactions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="developing.html" class="btn btn-neutral" title="Developing" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="resources.html" class="btn btn-neutral" title="Resources" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -410,7 +458,7 @@ using <em>post-order</em> traversal.</dd>
   <div role="contentinfo">
     <p>
         &copy; Copyright Jaan Tollander de Balsch.
-      Last updated on 2017-05-11.
+      Last updated on 2017-05-18.
 
     </p>
   </div>
@@ -432,7 +480,7 @@ using <em>post-order</em> traversal.</dd>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'legacy+302.g559af75.dirty',
+            VERSION:'legacy+303.g1e68f25.dirty',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

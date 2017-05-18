@@ -4,6 +4,14 @@ crowddynamics\.simulation package
 Submodules
 ----------
 
+crowddynamics\.simulation\.agent module
+---------------------------------------
+
+.. automodule:: crowddynamics.simulation.agent
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 crowddynamics\.simulation\.multiagent module
 --------------------------------------------
 

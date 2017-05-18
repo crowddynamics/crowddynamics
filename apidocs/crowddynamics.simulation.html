@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>crowddynamics.simulation package &mdash; crowddynamics legacy+302.g559af75.dirty documentation</title>
+  <title>crowddynamics.simulation package &mdash; crowddynamics legacy+303.g1e68f25.dirty documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="crowddynamics legacy+302.g559af75.dirty documentation" href="../index.html"/>
+    <link rel="top" title="crowddynamics legacy+303.g1e68f25.dirty documentation" href="../index.html"/>
         <link rel="up" title="crowddynamics package" href="crowddynamics.html"/>
         <link rel="next" title="crowddynamics.tests package" href="crowddynamics.tests.html"/>
         <link rel="prev" title="crowddynamics.core.tests package" href="crowddynamics.core.tests.html"/> 
@@ -72,7 +72,7 @@
             
             
               <div class="version">
-                legacy+302legacy+302.g559af75.dirtyg559af75
+                legacy+303legacy+303.g1e68f25.dirtyg1e68f25
               </div>
             
           
@@ -101,13 +101,20 @@
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../usage.html">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../developing.html">Developing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../resources.html">Resources</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Multi-Agent Simulation</span></p>
+<p class="caption"><span class="caption-text">Crowddynamics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../multiagent.html">Multi-Agent Simulation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../interactions.html">Interactions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../motion.html">Motion</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../steering.html">Steering</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../quantities.html">Quantities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../evacuation.html">Evacuation</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Research</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../phenomena.html">Phenomena</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Api</span></p>
 <ul class="current">
@@ -116,6 +123,7 @@
 <li class="toctree-l3"><a class="reference internal" href="crowddynamics.core.html">crowddynamics.core package</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">crowddynamics.simulation package</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-crowddynamics.simulation.agent">crowddynamics.simulation.agent module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-crowddynamics.simulation.multiagent">crowddynamics.simulation.multiagent module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-crowddynamics.simulation">Module contents</a></li>
 </ul>
@@ -136,13 +144,6 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../apidocs_examples/examples.html">examples package</a></li>
-</ul>
-<p class="caption"><span class="caption-text">Research</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../quantities.html">Quantities</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../phenomena.html">Phenomena</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../applications.html">Applications</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../references.html">References</a></li>
 </ul>
 
             
@@ -213,6 +214,549 @@
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
+<div class="section" id="module-crowddynamics.simulation.agent">
+<span id="crowddynamics-simulation-agent-module"></span><h2>crowddynamics.simulation.agent module<a class="headerlink" href="#module-crowddynamics.simulation.agent" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="crowddynamics.simulation.agent.AgentType">
+<em class="property">class </em><code class="descclassname">crowddynamics.simulation.agent.</code><code class="descname">AgentType</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/simulation/agent.html#AgentType"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.simulation.agent.AgentType" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">traitlets.traitlets.HasTraits</span></code></p>
+<p>Mixin for different agent types. Implements some common methods.</p>
+<dl class="method">
+<dt id="crowddynamics.simulation.agent.AgentType.array">
+<code class="descname">array</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#crowddynamics.simulation.agent.AgentType.array" title="Permalink to this definition">¶</a></dt>
+<dd><p>Array interface for using <code class="docutils literal"><span class="pre">numpy.array</span></code> on the agent type.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">numpy.ndarray</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="crowddynamics.simulation.agent.AgentType.docstring">
+<em class="property">classmethod </em><code class="descname">docstring</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/simulation/agent.html#AgentType.docstring"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.simulation.agent.AgentType.docstring" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="classmethod">
+<dt id="crowddynamics.simulation.agent.AgentType.dtype">
+<em class="property">classmethod </em><code class="descname">dtype</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/simulation/agent.html#AgentType.dtype"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.simulation.agent.AgentType.dtype" title="Permalink to this definition">¶</a></dt>
+<dd><p>Structured numpy.dtype for forming an array of the value of agent
+type.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Numpy structured dtype for the agent type</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">numpy.dtype</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="crowddynamics.simulation.agent.AgentType.overlapping">
+<code class="descname">overlapping</code><span class="sig-paren">(</span><em>others</em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="../_modules/crowddynamics/simulation/agent.html#AgentType.overlapping"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.simulation.agent.AgentType.overlapping" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determines if agent is overlapping with any of the agent supplied
+in other argument.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>others</strong> &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">bool</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="crowddynamics.simulation.agent.Agents">
+<em class="property">class </em><code class="descclassname">crowddynamics.simulation.agent.</code><code class="descname">Agents</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/simulation/agent.html#Agents"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.simulation.agent.Agents" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">traitlets.traitlets.HasTraits</span></code></p>
+<dl class="method">
+<dt id="crowddynamics.simulation.agent.Agents.add_group">
+<code class="descname">add_group</code><span class="sig-paren">(</span><em>size</em>, <em>attributes</em>, <em>check_overlapping=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/simulation/agent.html#Agents.add_group"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.simulation.agent.Agents.add_group" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add group of agents</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>size</strong> (<em>int</em>) &#8211; </li>
+<li><strong>attributes</strong> &#8211; </li>
+<li><strong>check_overlapping</strong> (<em>bool</em>) &#8211; </li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="crowddynamics.simulation.agent.Agents.next">
+<em class="property">static </em><code class="descname">next</code><span class="sig-paren">(</span><em>obj</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/simulation/agent.html#Agents.next"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.simulation.agent.Agents.next" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iterate, call or return the value.</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="crowddynamics.simulation.agent.Agents.progress_bar">
+<em class="property">static </em><code class="descname">progress_bar</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/simulation/agent.html#Agents.progress_bar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.simulation.agent.Agents.progress_bar" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.simulation.agent.Agents.size">
+<code class="descname">size</code><a class="headerlink" href="#crowddynamics.simulation.agent.Agents.size" title="Permalink to this definition">¶</a></dt>
+<dd><p>An int trait.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.simulation.agent.Agents.type">
+<code class="descname">type</code><a class="headerlink" href="#crowddynamics.simulation.agent.Agents.type" title="Permalink to this definition">¶</a></dt>
+<dd><p>A trait whose value must be a subclass of a specified class.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="crowddynamics.simulation.agent.Body">
+<em class="property">class </em><code class="descclassname">crowddynamics.simulation.agent.</code><code class="descname">Body</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/simulation/agent.html#Body"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.simulation.agent.Body" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">traitlets.traitlets.HasTraits</span></code></p>
+<dl class="attribute">
+<dt id="crowddynamics.simulation.agent.Body.inertia_rot">
+<code class="descname">inertia_rot</code><a class="headerlink" href="#crowddynamics.simulation.agent.Body.inertia_rot" title="Permalink to this definition">¶</a></dt>
+<dd><p>A float trait.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.simulation.agent.Body.mass">
+<code class="descname">mass</code><a class="headerlink" href="#crowddynamics.simulation.agent.Body.mass" title="Permalink to this definition">¶</a></dt>
+<dd><p>A float trait.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.simulation.agent.Body.r_s">
+<code class="descname">r_s</code><a class="headerlink" href="#crowddynamics.simulation.agent.Body.r_s" title="Permalink to this definition">¶</a></dt>
+<dd><p>A float trait.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.simulation.agent.Body.r_t">
+<code class="descname">r_t</code><a class="headerlink" href="#crowddynamics.simulation.agent.Body.r_t" title="Permalink to this definition">¶</a></dt>
+<dd><p>A float trait.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.simulation.agent.Body.r_ts">
+<code class="descname">r_ts</code><a class="headerlink" href="#crowddynamics.simulation.agent.Body.r_ts" title="Permalink to this definition">¶</a></dt>
+<dd><p>A float trait.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.simulation.agent.Body.radius">
+<code class="descname">radius</code><a class="headerlink" href="#crowddynamics.simulation.agent.Body.radius" title="Permalink to this definition">¶</a></dt>
+<dd><p>A float trait.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.simulation.agent.Body.target_angular_velocity">
+<code class="descname">target_angular_velocity</code><a class="headerlink" href="#crowddynamics.simulation.agent.Body.target_angular_velocity" title="Permalink to this definition">¶</a></dt>
+<dd><p>A float trait.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.simulation.agent.Body.target_velocity">
+<code class="descname">target_velocity</code><a class="headerlink" href="#crowddynamics.simulation.agent.Body.target_velocity" title="Permalink to this definition">¶</a></dt>
+<dd><p>A float trait.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="crowddynamics.simulation.agent.BodyType">
+<em class="property">class </em><code class="descclassname">crowddynamics.simulation.agent.</code><code class="descname">BodyType</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/simulation/agent.html#BodyType"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.simulation.agent.BodyType" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#crowddynamics.simulation.agent.Body" title="crowddynamics.simulation.agent.Body"><code class="xref py py-class docutils literal"><span class="pre">crowddynamics.simulation.agent.Body</span></code></a></p>
+<dl class="attribute">
+<dt id="crowddynamics.simulation.agent.BodyType.configs">
+<code class="descname">configs</code><a class="headerlink" href="#crowddynamics.simulation.agent.BodyType.configs" title="Permalink to this definition">¶</a></dt>
+<dd><p>A trait whose value must be an instance of a specified class.</p>
+<p>The value can also be an instance of a subclass of the specified class.</p>
+<p>Subclasses can declare default classes by overriding the klass attribute</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.simulation.agent.BodyType.configs_path">
+<code class="descname">configs_path</code><a class="headerlink" href="#crowddynamics.simulation.agent.BodyType.configs_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>A trait for unicode strings.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="crowddynamics.simulation.agent.BodyType.from_config">
+<code class="descname">from_config</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/simulation/agent.html#BodyType.from_config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.simulation.agent.BodyType.from_config" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="crowddynamics.simulation.agent.BodyType.items">
+<code class="descname">items</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/simulation/agent.html#BodyType.items"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.simulation.agent.BodyType.items" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.simulation.agent.BodyType.mass_mean">
+<code class="descname">mass_mean</code><a class="headerlink" href="#crowddynamics.simulation.agent.BodyType.mass_mean" title="Permalink to this definition">¶</a></dt>
+<dd><p>A float trait.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.simulation.agent.BodyType.mass_scale">
+<code class="descname">mass_scale</code><a class="headerlink" href="#crowddynamics.simulation.agent.BodyType.mass_scale" title="Permalink to this definition">¶</a></dt>
+<dd><p>A float trait.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.simulation.agent.BodyType.name">
+<code class="descname">name</code><a class="headerlink" href="#crowddynamics.simulation.agent.BodyType.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>A trait for unicode strings.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.simulation.agent.BodyType.radius_mean">
+<code class="descname">radius_mean</code><a class="headerlink" href="#crowddynamics.simulation.agent.BodyType.radius_mean" title="Permalink to this definition">¶</a></dt>
+<dd><p>A float trait.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.simulation.agent.BodyType.radius_scale">
+<code class="descname">radius_scale</code><a class="headerlink" href="#crowddynamics.simulation.agent.BodyType.radius_scale" title="Permalink to this definition">¶</a></dt>
+<dd><p>A float trait.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.simulation.agent.BodyType.ratio_rs">
+<code class="descname">ratio_rs</code><a class="headerlink" href="#crowddynamics.simulation.agent.BodyType.ratio_rs" title="Permalink to this definition">¶</a></dt>
+<dd><p>A float trait.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.simulation.agent.BodyType.ratio_rt">
+<code class="descname">ratio_rt</code><a class="headerlink" href="#crowddynamics.simulation.agent.BodyType.ratio_rt" title="Permalink to this definition">¶</a></dt>
+<dd><p>A float trait.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.simulation.agent.BodyType.ratio_ts">
+<code class="descname">ratio_ts</code><a class="headerlink" href="#crowddynamics.simulation.agent.BodyType.ratio_ts" title="Permalink to this definition">¶</a></dt>
+<dd><p>A float trait.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.simulation.agent.BodyType.spec_path">
+<code class="descname">spec_path</code><a class="headerlink" href="#crowddynamics.simulation.agent.BodyType.spec_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>A trait for unicode strings.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.simulation.agent.BodyType.velocity_mean">
+<code class="descname">velocity_mean</code><a class="headerlink" href="#crowddynamics.simulation.agent.BodyType.velocity_mean" title="Permalink to this definition">¶</a></dt>
+<dd><p>A float trait.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.simulation.agent.BodyType.velocity_scale">
+<code class="descname">velocity_scale</code><a class="headerlink" href="#crowddynamics.simulation.agent.BodyType.velocity_scale" title="Permalink to this definition">¶</a></dt>
+<dd><p>A float trait.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="crowddynamics.simulation.agent.Capsule">
+<em class="property">class </em><code class="descclassname">crowddynamics.simulation.agent.</code><code class="descname">Capsule</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/simulation/agent.html#Capsule"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.simulation.agent.Capsule" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#crowddynamics.simulation.agent.AgentType" title="crowddynamics.simulation.agent.AgentType"><code class="xref py py-class docutils literal"><span class="pre">crowddynamics.simulation.agent.AgentType</span></code></a>, <a class="reference internal" href="#crowddynamics.simulation.agent.States" title="crowddynamics.simulation.agent.States"><code class="xref py py-class docutils literal"><span class="pre">crowddynamics.simulation.agent.States</span></code></a>, <a class="reference internal" href="#crowddynamics.simulation.agent.Body" title="crowddynamics.simulation.agent.Body"><code class="xref py py-class docutils literal"><span class="pre">crowddynamics.simulation.agent.Body</span></code></a>, <a class="reference internal" href="#crowddynamics.simulation.agent.TranslationalMotion" title="crowddynamics.simulation.agent.TranslationalMotion"><code class="xref py py-class docutils literal"><span class="pre">crowddynamics.simulation.agent.TranslationalMotion</span></code></a>, <a class="reference internal" href="#crowddynamics.simulation.agent.RotationalMotion" title="crowddynamics.simulation.agent.RotationalMotion"><code class="xref py py-class docutils literal"><span class="pre">crowddynamics.simulation.agent.RotationalMotion</span></code></a></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="crowddynamics.simulation.agent.Circular">
+<em class="property">class </em><code class="descclassname">crowddynamics.simulation.agent.</code><code class="descname">Circular</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/simulation/agent.html#Circular"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.simulation.agent.Circular" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#crowddynamics.simulation.agent.AgentType" title="crowddynamics.simulation.agent.AgentType"><code class="xref py py-class docutils literal"><span class="pre">crowddynamics.simulation.agent.AgentType</span></code></a>, <a class="reference internal" href="#crowddynamics.simulation.agent.States" title="crowddynamics.simulation.agent.States"><code class="xref py py-class docutils literal"><span class="pre">crowddynamics.simulation.agent.States</span></code></a>, <a class="reference internal" href="#crowddynamics.simulation.agent.Body" title="crowddynamics.simulation.agent.Body"><code class="xref py py-class docutils literal"><span class="pre">crowddynamics.simulation.agent.Body</span></code></a>, <a class="reference internal" href="#crowddynamics.simulation.agent.TranslationalMotion" title="crowddynamics.simulation.agent.TranslationalMotion"><code class="xref py py-class docutils literal"><span class="pre">crowddynamics.simulation.agent.TranslationalMotion</span></code></a></p>
+<dl class="method">
+<dt id="crowddynamics.simulation.agent.Circular.overlapping">
+<code class="descname">overlapping</code><span class="sig-paren">(</span><em>others</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/simulation/agent.html#Circular.overlapping"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.simulation.agent.Circular.overlapping" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="crowddynamics.simulation.agent.RotationalMotion">
+<em class="property">class </em><code class="descclassname">crowddynamics.simulation.agent.</code><code class="descname">RotationalMotion</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/simulation/agent.html#RotationalMotion"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.simulation.agent.RotationalMotion" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">traitlets.traitlets.HasTraits</span></code></p>
+<dl class="attribute">
+<dt id="crowddynamics.simulation.agent.RotationalMotion.angular_velocity">
+<code class="descname">angular_velocity</code><a class="headerlink" href="#crowddynamics.simulation.agent.RotationalMotion.angular_velocity" title="Permalink to this definition">¶</a></dt>
+<dd><p>A float trait.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.simulation.agent.RotationalMotion.orientation">
+<code class="descname">orientation</code><a class="headerlink" href="#crowddynamics.simulation.agent.RotationalMotion.orientation" title="Permalink to this definition">¶</a></dt>
+<dd><p>A float trait.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.simulation.agent.RotationalMotion.std_rand_torque">
+<code class="descname">std_rand_torque</code><a class="headerlink" href="#crowddynamics.simulation.agent.RotationalMotion.std_rand_torque" title="Permalink to this definition">¶</a></dt>
+<dd><p>A float trait.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.simulation.agent.RotationalMotion.target_orientation">
+<code class="descname">target_orientation</code><a class="headerlink" href="#crowddynamics.simulation.agent.RotationalMotion.target_orientation" title="Permalink to this definition">¶</a></dt>
+<dd><p>A float trait.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.simulation.agent.RotationalMotion.tau_rot">
+<code class="descname">tau_rot</code><a class="headerlink" href="#crowddynamics.simulation.agent.RotationalMotion.tau_rot" title="Permalink to this definition">¶</a></dt>
+<dd><p>A float trait.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.simulation.agent.RotationalMotion.torque">
+<code class="descname">torque</code><a class="headerlink" href="#crowddynamics.simulation.agent.RotationalMotion.torque" title="Permalink to this definition">¶</a></dt>
+<dd><p>A float trait.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.simulation.agent.RotationalMotion.torque_prev">
+<code class="descname">torque_prev</code><a class="headerlink" href="#crowddynamics.simulation.agent.RotationalMotion.torque_prev" title="Permalink to this definition">¶</a></dt>
+<dd><p>A float trait.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="crowddynamics.simulation.agent.States">
+<em class="property">class </em><code class="descclassname">crowddynamics.simulation.agent.</code><code class="descname">States</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/simulation/agent.html#States"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.simulation.agent.States" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">traitlets.traitlets.HasTraits</span></code></p>
+<dl class="attribute">
+<dt id="crowddynamics.simulation.agent.States.active">
+<code class="descname">active</code><a class="headerlink" href="#crowddynamics.simulation.agent.States.active" title="Permalink to this definition">¶</a></dt>
+<dd><p>A boolean (True, False) trait.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.simulation.agent.States.herding">
+<code class="descname">herding</code><a class="headerlink" href="#crowddynamics.simulation.agent.States.herding" title="Permalink to this definition">¶</a></dt>
+<dd><p>A boolean (True, False) trait.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.simulation.agent.States.target">
+<code class="descname">target</code><a class="headerlink" href="#crowddynamics.simulation.agent.States.target" title="Permalink to this definition">¶</a></dt>
+<dd><p>An int trait.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.simulation.agent.States.target_reached">
+<code class="descname">target_reached</code><a class="headerlink" href="#crowddynamics.simulation.agent.States.target_reached" title="Permalink to this definition">¶</a></dt>
+<dd><p>A boolean (True, False) trait.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="crowddynamics.simulation.agent.ThreeCircle">
+<em class="property">class </em><code class="descclassname">crowddynamics.simulation.agent.</code><code class="descname">ThreeCircle</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/simulation/agent.html#ThreeCircle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.simulation.agent.ThreeCircle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#crowddynamics.simulation.agent.AgentType" title="crowddynamics.simulation.agent.AgentType"><code class="xref py py-class docutils literal"><span class="pre">crowddynamics.simulation.agent.AgentType</span></code></a>, <a class="reference internal" href="#crowddynamics.simulation.agent.States" title="crowddynamics.simulation.agent.States"><code class="xref py py-class docutils literal"><span class="pre">crowddynamics.simulation.agent.States</span></code></a>, <a class="reference internal" href="#crowddynamics.simulation.agent.Body" title="crowddynamics.simulation.agent.Body"><code class="xref py py-class docutils literal"><span class="pre">crowddynamics.simulation.agent.Body</span></code></a>, <a class="reference internal" href="#crowddynamics.simulation.agent.TranslationalMotion" title="crowddynamics.simulation.agent.TranslationalMotion"><code class="xref py py-class docutils literal"><span class="pre">crowddynamics.simulation.agent.TranslationalMotion</span></code></a>, <a class="reference internal" href="#crowddynamics.simulation.agent.RotationalMotion" title="crowddynamics.simulation.agent.RotationalMotion"><code class="xref py py-class docutils literal"><span class="pre">crowddynamics.simulation.agent.RotationalMotion</span></code></a></p>
+<dl class="method">
+<dt id="crowddynamics.simulation.agent.ThreeCircle.overlapping">
+<code class="descname">overlapping</code><span class="sig-paren">(</span><em>others</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/simulation/agent.html#ThreeCircle.overlapping"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.simulation.agent.ThreeCircle.overlapping" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.simulation.agent.ThreeCircle.position_ls">
+<code class="descname">position_ls</code><a class="headerlink" href="#crowddynamics.simulation.agent.ThreeCircle.position_ls" title="Permalink to this definition">¶</a></dt>
+<dd><p>A numpy array trait type.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.simulation.agent.ThreeCircle.position_rs">
+<code class="descname">position_rs</code><a class="headerlink" href="#crowddynamics.simulation.agent.ThreeCircle.position_rs" title="Permalink to this definition">¶</a></dt>
+<dd><p>A numpy array trait type.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="crowddynamics.simulation.agent.TranslationalMotion">
+<em class="property">class </em><code class="descclassname">crowddynamics.simulation.agent.</code><code class="descname">TranslationalMotion</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/simulation/agent.html#TranslationalMotion"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.simulation.agent.TranslationalMotion" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">traitlets.traitlets.HasTraits</span></code></p>
+<dl class="attribute">
+<dt id="crowddynamics.simulation.agent.TranslationalMotion.damping">
+<code class="descname">damping</code><a class="headerlink" href="#crowddynamics.simulation.agent.TranslationalMotion.damping" title="Permalink to this definition">¶</a></dt>
+<dd><p>A float trait.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.simulation.agent.TranslationalMotion.force">
+<code class="descname">force</code><a class="headerlink" href="#crowddynamics.simulation.agent.TranslationalMotion.force" title="Permalink to this definition">¶</a></dt>
+<dd><p>A numpy array trait type.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.simulation.agent.TranslationalMotion.force_prev">
+<code class="descname">force_prev</code><a class="headerlink" href="#crowddynamics.simulation.agent.TranslationalMotion.force_prev" title="Permalink to this definition">¶</a></dt>
+<dd><p>A numpy array trait type.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.simulation.agent.TranslationalMotion.k_soc">
+<code class="descname">k_soc</code><a class="headerlink" href="#crowddynamics.simulation.agent.TranslationalMotion.k_soc" title="Permalink to this definition">¶</a></dt>
+<dd><p>A float trait.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.simulation.agent.TranslationalMotion.kappa">
+<code class="descname">kappa</code><a class="headerlink" href="#crowddynamics.simulation.agent.TranslationalMotion.kappa" title="Permalink to this definition">¶</a></dt>
+<dd><p>A float trait.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.simulation.agent.TranslationalMotion.mu">
+<code class="descname">mu</code><a class="headerlink" href="#crowddynamics.simulation.agent.TranslationalMotion.mu" title="Permalink to this definition">¶</a></dt>
+<dd><p>A float trait.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.simulation.agent.TranslationalMotion.position">
+<code class="descname">position</code><a class="headerlink" href="#crowddynamics.simulation.agent.TranslationalMotion.position" title="Permalink to this definition">¶</a></dt>
+<dd><p>A numpy array trait type.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.simulation.agent.TranslationalMotion.std_rand_force">
+<code class="descname">std_rand_force</code><a class="headerlink" href="#crowddynamics.simulation.agent.TranslationalMotion.std_rand_force" title="Permalink to this definition">¶</a></dt>
+<dd><p>A float trait.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.simulation.agent.TranslationalMotion.target_direction">
+<code class="descname">target_direction</code><a class="headerlink" href="#crowddynamics.simulation.agent.TranslationalMotion.target_direction" title="Permalink to this definition">¶</a></dt>
+<dd><p>A numpy array trait type.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.simulation.agent.TranslationalMotion.tau_0">
+<code class="descname">tau_0</code><a class="headerlink" href="#crowddynamics.simulation.agent.TranslationalMotion.tau_0" title="Permalink to this definition">¶</a></dt>
+<dd><p>A float trait.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.simulation.agent.TranslationalMotion.tau_adj">
+<code class="descname">tau_adj</code><a class="headerlink" href="#crowddynamics.simulation.agent.TranslationalMotion.tau_adj" title="Permalink to this definition">¶</a></dt>
+<dd><p>A float trait.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.simulation.agent.TranslationalMotion.velocity">
+<code class="descname">velocity</code><a class="headerlink" href="#crowddynamics.simulation.agent.TranslationalMotion.velocity" title="Permalink to this definition">¶</a></dt>
+<dd><p>A numpy array trait type.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="crowddynamics.simulation.agent.class_traits">
+<code class="descclassname">crowddynamics.simulation.agent.</code><code class="descname">class_traits</code><span class="sig-paren">(</span><em>cls</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/simulation/agent.html#class_traits"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.simulation.agent.class_traits" title="Permalink to this definition">¶</a></dt>
+<dd><p>Traverse the class hierarchy and accumulate all traits.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>cls</strong> &#8211; Subclass of HasTraits</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Yields:</th><td class="field-body"><em>(name, TraitType)</em> &#8211; Tuple of trait name and type</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="crowddynamics.simulation.agent.length_validator">
+<code class="descclassname">crowddynamics.simulation.agent.</code><code class="descname">length_validator</code><span class="sig-paren">(</span><em>*lengths</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/simulation/agent.html#length_validator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.simulation.agent.length_validator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validates the length of <code class="xref py py-class docutils literal"><span class="pre">traittypes.Array</span></code> trait.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>*lengths</strong> (<em>numbers.Real</em>) &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Validator function</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">Callable[trait, value]</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="crowddynamics.simulation.agent.shape_validator">
+<code class="descclassname">crowddynamics.simulation.agent.</code><code class="descname">shape_validator</code><span class="sig-paren">(</span><em>*dimensions</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/simulation/agent.html#shape_validator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.simulation.agent.shape_validator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validate the shape of <code class="xref py py-class docutils literal"><span class="pre">traittypes.Array</span></code> trait.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>*dimensions</strong> (<em>int</em>) &#8211; Dimensions of the array</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Validator function</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">Callable[trait, value]</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="crowddynamics.simulation.agent.trait_to_dtype">
+<code class="descclassname">crowddynamics.simulation.agent.</code><code class="descname">trait_to_dtype</code><span class="sig-paren">(</span><em>name</em>, <em>trait</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/simulation/agent.html#trait_to_dtype"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.simulation.agent.trait_to_dtype" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert TraitType to numpy.dtype in format (name, dtype, shape):</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">Int</span> <span class="o">-&gt;</span> <span class="n">numpy</span><span class="o">.</span><span class="n">int64</span>
+<span class="n">Float</span> <span class="o">-&gt;</span> <span class="n">numpy</span><span class="o">.</span><span class="n">float64</span>
+<span class="n">Complex</span> <span class="o">-&gt;</span> <span class="n">numpy</span><span class="o">.</span><span class="n">complex128</span>
+<span class="n">Bool</span> <span class="o">-&gt;</span> <span class="n">numpy</span><span class="o">.</span><span class="n">bool_</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>name</strong> (<em>str</em>) &#8211; </li>
+<li><strong>trait</strong> (<em>TraitType</em>) &#8211; </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(str, numpy.dtype, tuple)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
 <div class="section" id="module-crowddynamics.simulation.multiagent">
 <span id="crowddynamics-simulation-multiagent-module"></span><h2>crowddynamics.simulation.multiagent module<a class="headerlink" href="#module-crowddynamics.simulation.multiagent" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
@@ -252,15 +796,16 @@
 <dt id="crowddynamics.simulation.multiagent.Agents">
 <em class="property">class </em><code class="descclassname">crowddynamics.simulation.multiagent.</code><code class="descname">Agents</code><span class="sig-paren">(</span><em>size</em>, <em>agent_type='circular'</em>, <em>agent_cfg='/home/jaan/Projects/CrowdDynamics/crowddynamics/conf/agent.cfg'</em>, <em>agent_cfg_spec='/home/jaan/Projects/CrowdDynamics/crowddynamics/conf/agent_spec.cfg'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/simulation/multiagent.html#Agents"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.simulation.multiagent.Agents" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
-<p>Multi-Agent simulation agent types.</p>
+<p>Multi-Agent simulation agent types. Modelled as rigid bodies.</p>
 <dl class="docutils">
 <dt>Circular</dt>
 <dd><div class="first figure">
-<p><img src="../_images/tikz-ec4c08f237f600b06898ca0fe089292a8bb970d8.png" alt="\begin{scope}[scale=3]
+<p><img src="../_images/tikz-1fb5700d5e3c3ec98ccb6e7ad0ec15a682ee40a2.png" alt="\begin{scope}[scale=3]
   \draw[color=gray!20] (-2, -1) grid (2, 1);
+  \draw[thick] (0, 0) circle (1);
+  \fill[color=gray!20, opacity=0.5] (0, 0) circle (1);
   \node[below] () at (0, 0) {$ \mathbf{x} $};
   \fill (0, 0) circle(0.5pt);
-  \draw[thick] (0, 0) circle (1);
   \draw[dashed, &lt;-&gt;] (0, 0) -- node[above] {$ r $} ++(135:1);
 \end{scope}" /></p>
 </div><p class="last"><strong>Circular</strong> agents are modelled as a disk with radius <span class="math">\(r &gt; 0\)</span>
@@ -270,19 +815,22 @@ quite well for sparse and medium density crowds, but modelling higher
 density crowds with this model can be unrealistic because circular
 model is too wide in the  perpendicular width compared to three-circle
 or capsule representations  and lacks the ability change orientation to
-fit through smaller spaces. <a class="reference internal" href="../references.html#helbing2000a" id="id1">[Helbing2000a]</a></p>
+fit through smaller spaces. <a class="reference internal" href="../multiagent.html#helbing2000a" id="id1">[Helbing2000a]</a></p>
 </dd>
 <dt>Three-Circle</dt>
 <dd><div class="first figure">
-<p><img src="../_images/tikz-5b091b82a33875cf372621dc71e195d501efa1a1.png" alt="\begin{scope}[scale=3]
+<p><img src="../_images/tikz-1178fa2b5519daa20fc43cdaac6a4ab138c20828.png" alt="\begin{scope}[scale=3]
   \draw[color=gray!20] (-2, -1) grid (2, 1);
+  \draw[thick] (0, 0) circle (0.59);
+  \draw[thick] (-0.63, 0) circle (0.37);
+  \draw[thick] (0.63, 0) circle (0.37);
+  \fill[gray!20, opacity=0.5] (0, 0) circle (0.59);
+  \fill[gray!20, opacity=0.5] (-0.63, 0) circle (0.37);
+  \fill[gray!20, opacity=0.5] (0.63, 0) circle (0.37);
   \node[below] () at (0, 0) {$ \mathbf{x} $};
   \fill (0, 0) circle(0.5pt);
   \fill (-0.63, 0) circle(0.5pt);
   \fill (0.63, 0) circle(0.5pt);
-  \draw[thick] (0, 0) circle (0.59);
-  \draw[thick] (-0.63, 0) circle (0.37);
-  \draw[thick] (0.63, 0) circle (0.37);
   \draw[dashed, &lt;-&gt;] (0, 0) -- node[above] {$ r_{t} $} ++(135:0.59);
   \draw[dashed, &lt;-&gt;] (-0.63, 0) -- node[above] {$ r_{s} $} ++(135:0.37);
   \draw[dashed, &lt;-&gt;] (0.63, 0) -- node[above] {$ r_{s} $} ++(45:0.37);
@@ -299,8 +847,8 @@ tangents at distance <span class="math">\(r_{ts}\)</span> from the center of mas
 <span class="math">\(\mathbf{x} \pm r_{ts} \mathbf{\hat{e}_t}\)</span>, where
 <span class="math">\(\mathbf{\hat{e}_t} = [\sin(\varphi), -\cos(\varphi)]\)</span>. Three
 circle type has orientation of <span class="math">\(\varphi\)</span>. Model was proposed
-<em>Crowd dynamics discrete element multi-circle model</em> <a class="reference internal" href="../references.html#langston2006" id="id2">[Langston2006]</a> and
-has been used for example in FDS+EVAC <a class="reference internal" href="../references.html#korhonen2008b" id="id3">[Korhonen2008b]</a>.</p>
+<em>Crowd dynamics discrete element multi-circle model</em> <a class="reference internal" href="../multiagent.html#langston2006" id="id2">[Langston2006]</a> and
+has been used for example in FDS+EVAC <a class="reference internal" href="../multiagent.html#korhonen2008b" id="id3">[Korhonen2008b]</a>.</p>
 </dd>
 <dt>Capsule</dt>
 <dd><div class="first admonition note">
@@ -308,8 +856,14 @@ has been used for example in FDS+EVAC <a class="reference internal" href="../ref
 <p class="last">Capsule is not implemented yet</p>
 </div>
 <div class="figure">
-<p><img src="../_images/tikz-58c7e8634768e133b180533f23acbdab00f7d5b7.png" alt="\begin{scope}[scale=3]
+<p><img src="../_images/tikz-713c55955f021dc73d4d99b979805277b79e0f64.png" alt="\begin{scope}[scale=3]
   \draw[color=gray!20] (-2, -1) grid (2, 1);
+  \draw[thick] (0.5, 0.5) arc (90:-90:0.5)
+               -- ++(-1, 0) arc (270:90:0.5)
+               -- ++(1, 0);
+   \fill[gray!20, opacity=0.5] (0.5, 0.5) arc (90:-90:0.5)
+               -- ++(-1, 0) arc (270:90:0.5)
+               -- ++(1, 0);
   \node[below] () at (0, 0) {$ \mathbf{x} $};
   \fill (0, 0) circle(0.5pt);
   \fill (-0.5, 0) circle(0.5pt);
@@ -317,14 +871,12 @@ has been used for example in FDS+EVAC <a class="reference internal" href="../ref
   \draw[thick] (-0.5, 0) -- (0.5, 0);
   \draw[dashed, &lt;-&gt;] (-0.5, 0) -- node[above] {$ r $} ++(135:0.5);
   \draw[dashed, &lt;-&gt;] (-0.5, -0.2) -- node[below]{$ w $} (0.5, -0.2);
-  \draw[thick] (0.5, 0.5) arc (90:-90:0.5)
-               -- ++(-1, 0) arc (270:90:0.5)
-               -- ++(1, 0);
   %\draw[thick, -&gt;] (0, 0) -- node[left] {$ \mathbf{\hat{e}_n} $} (0, 0.3);
   %\draw[thick, -&gt;] (0, 0) -- node[below] {$ \mathbf{\hat{e}_t} $} (0.3, 0);
 \end{scope}" /></p>
-</div><p><strong>Capsule</strong> shaped model proposed by Stüvel in <em>Dense Crowds of Virtual
-Humans</em> <a class="reference internal" href="../references.html#stuvel2016" id="id4">[Stuvel2016]</a>.</p>
+</div><p><strong>Capsule</strong> shaped model used in <em>Dense Crowds of Virtual Humans</em>
+<a class="reference internal" href="../multiagent.html#stuvel2016" id="id4">[Stuvel2016]</a> and <em>Simulating competitive egress of noncircular
+pedestrians</em> <a class="reference internal" href="../multiagent.html#hidalgo2017" id="id5">[Hidalgo2017]</a>.</p>
 <div class="math">
 \[\begin{split}r &amp;= T / 2 \\
 w &amp;= W - 2 r\end{split}\]</div>
@@ -336,41 +888,8 @@ w &amp;= W - 2 r\end{split}\]</div>
 </dd>
 </dl>
 <dl class="method">
-<dt id="crowddynamics.simulation.multiagent.Agents.add">
-<code class="descname">add</code><span class="sig-paren">(</span><em>attributes</em>, <em>check_overlapping=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/simulation/multiagent.html#Agents.add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.simulation.multiagent.Agents.add" title="Permalink to this definition">¶</a></dt>
-<dd><p>Add new agent with given attributes</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>check_overlapping</strong> (<em>bool</em>) &#8211; </li>
-<li><strong>attributes</strong> &#8211; <ul>
-<li>body_type:</li>
-<li>position: Initial position of the agent</li>
-<li>orientation: Initial orientation [-π, π] of the agent.</li>
-<li>velocity: Initial velocity</li>
-<li>angular_velocity: Angular velocity</li>
-<li>target_direction: Unit vector to desired direction</li>
-<li>target_orientation:</li>
-</ul>
-</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first last simple">
-<li><code class="xref py py-exc docutils literal"><span class="pre">AgentStructureFull</span></code> &#8211; When no more agents can be added.</li>
-<li><code class="xref py py-exc docutils literal"><span class="pre">OverlappingError</span></code> &#8211; When two agents overlap each other.</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
 <dt id="crowddynamics.simulation.multiagent.Agents.add_group">
-<code class="descname">add_group</code><span class="sig-paren">(</span><em>amount</em>, <em>attributes</em>, <em>check_overlapping=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/simulation/multiagent.html#Agents.add_group"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.simulation.multiagent.Agents.add_group" title="Permalink to this definition">¶</a></dt>
+<code class="descname">add_group</code><span class="sig-paren">(</span><em>size</em>, <em>attributes</em>, <em>check_overlapping=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/simulation/multiagent.html#Agents.add_group"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.simulation.multiagent.Agents.add_group" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add group of agents</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -378,7 +897,7 @@ w &amp;= W - 2 r\end{split}\]</div>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>check_overlapping</strong> &#8211; </li>
-<li><strong>amount</strong> (<em>int</em>) &#8211; </li>
+<li><strong>size</strong> (<em>int</em>) &#8211; </li>
 <li><strong>attributes</strong> (<em>dict|Callable</em><em>[</em><em>dict</em><em>]</em><em></em>) &#8211; </li>
 </ul>
 </td>
@@ -391,26 +910,6 @@ w &amp;= W - 2 r\end{split}\]</div>
 <dt id="crowddynamics.simulation.multiagent.Agents.body_to_values">
 <em class="property">static </em><code class="descname">body_to_values</code><span class="sig-paren">(</span><em>body</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/simulation/multiagent.html#Agents.body_to_values"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.simulation.multiagent.Agents.body_to_values" title="Permalink to this definition">¶</a></dt>
 <dd><p>Body to values</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>body</strong> (<em>dict</em>) &#8211; <p>Dictionary with keys:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">ratio_rt</span> <span class="o">=</span> <span class="nb">float</span>
-<span class="n">ratio_rs</span> <span class="o">=</span> <span class="nb">float</span>
-<span class="n">ratio_ts</span> <span class="o">=</span> <span class="nb">float</span>
-<span class="n">radius</span> <span class="o">=</span> <span class="nb">float</span>
-<span class="n">radius_scale</span> <span class="o">=</span> <span class="nb">float</span>
-<span class="n">velocity</span> <span class="o">=</span> <span class="nb">float</span>
-<span class="n">velocity_scale</span> <span class="o">=</span> <span class="nb">float</span>
-<span class="n">mass</span> <span class="o">=</span> <span class="nb">float</span>
-<span class="n">mass_scale</span> <span class="o">=</span> <span class="nb">float</span>
-</pre></div>
-</div>
-</td>
-</tr>
-</tbody>
-</table>
 </dd></dl>
 
 <dl class="attribute">
@@ -450,11 +949,6 @@ w &amp;= W - 2 r\end{split}\]</div>
 </table>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="crowddynamics.simulation.multiagent.Agents.size">
-<code class="descname">size</code><a class="headerlink" href="#crowddynamics.simulation.multiagent.Agents.size" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
 </dd></dl>
 
 <dl class="class">
@@ -463,14 +957,18 @@ w &amp;= W - 2 r\end{split}\]</div>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">traitlets.traitlets.HasTraits</span></code></p>
 <p>Multi-Agent simulation Field consists of</p>
 <div class="figure">
-<p><img src="../_images/tikz-e90de630ed1c23a95fdae2652a6bb0f68bb041bd.png" alt="\draw[color=gray!20] (-2, -1) grid (12, 7);
+<p><img src="../_images/tikz-0f44439ad94496fb021d93a98ad69515e6fa5cc3.png" alt="\draw[color=gray!20] (-2, -1) grid (12, 7);
 % Domain
 \fill[gray!20] (0, 0) rectangle (10, 6);
 \node[] () at (5, 3) {$ \Omega $};
 % Spawn 0
 \fill[blue!20] (0, 3) -- ++(2, 0) -- ++(1, 1) -- ++(0, 2)
-                    -- ++(-3, 0) -- ++(0, -3);
+               -- ++(-3, 0) -- ++(0, -3);
 \node[] () at (1.5, 4.5) {$ \mathcal{S}_0 $};
+% Spawn 1
+\fill[blue!20] (3, 0) -- ++(0, 1) -- ++(1, 1) -- ++(2, 0) -- ++(1, -1)
+               -- ++(0, -1);
+\node[] () at (5, 0.5) {$ \mathcal{S}_1 $};
 % Obstacles
 \draw[thick] (0, 0) rectangle (10, 6);
 \draw[fill=black] (9, 2) circle (0.5);
@@ -895,7 +1393,7 @@ using <em>post-order</em> traversal.</dd>
   <div role="contentinfo">
     <p>
         &copy; Copyright Jaan Tollander de Balsch.
-      Last updated on 2017-05-11.
+      Last updated on 2017-05-18.
 
     </p>
   </div>
@@ -917,7 +1415,7 @@ using <em>post-order</em> traversal.</dd>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'legacy+302.g559af75.dirty',
+            VERSION:'legacy+303.g1e68f25.dirty',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

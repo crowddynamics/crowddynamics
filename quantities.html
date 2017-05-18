@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Quantities &mdash; crowddynamics legacy+302.g559af75.dirty documentation</title>
+  <title>Quantities &mdash; crowddynamics legacy+303.g1e68f25.dirty documentation</title>
   
 
   
@@ -37,9 +37,9 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="crowddynamics legacy+302.g559af75.dirty documentation" href="index.html"/>
-        <link rel="next" title="Phenomena" href="phenomena.html"/>
-        <link rel="prev" title="examples.tests package" href="apidocs_examples/examples.tests.html"/> 
+    <link rel="top" title="crowddynamics legacy+303.g1e68f25.dirty documentation" href="index.html"/>
+        <link rel="next" title="Evacuation" href="evacuation.html"/>
+        <link rel="prev" title="Steering" href="steering.html"/> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
@@ -71,7 +71,7 @@
             
             
               <div class="version">
-                legacy+302legacy+302.g559af75.dirtyg559af75
+                legacy+303legacy+303.g1e68f25.dirtyg1e68f25
               </div>
             
           
@@ -100,31 +100,33 @@
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="developing.html">Developing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="resources.html">Resources</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Multi-Agent Simulation</span></p>
-<ul>
+<p class="caption"><span class="caption-text">Crowddynamics</span></p>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="multiagent.html">Multi-Agent Simulation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="interactions.html">Interactions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="motion.html">Motion</a></li>
 <li class="toctree-l1"><a class="reference internal" href="steering.html">Steering</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Quantities</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#velocity">Velocity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#density">Density</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#flow">Flow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pressure">Pressure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#fundamental-diagram">Fundamental Diagram</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#references">References</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="evacuation.html">Evacuation</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Research</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="phenomena.html">Phenomena</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Api</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="apidocs/crowddynamics.html">crowddynamics package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="apidocs_examples/examples.html">examples package</a></li>
-</ul>
-<p class="caption"><span class="caption-text">Research</span></p>
-<ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Quantities</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#density">Density</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#flow">Flow</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#pressure">Pressure</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#fundamental-diagram">Fundamental Diagram</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="phenomena.html">Phenomena</a></li>
-<li class="toctree-l1"><a class="reference internal" href="applications.html">Applications</a></li>
-<li class="toctree-l1"><a class="reference internal" href="references.html">References</a></li>
 </ul>
 
             
@@ -190,13 +192,98 @@
             
   <div class="section" id="quantities">
 <h1>Quantities<a class="headerlink" href="#quantities" title="Permalink to this headline">¶</a></h1>
+<p>This section is about different quantities related and observed in crowd dynamics.</p>
+<div class="section" id="velocity">
+<h2>Velocity<a class="headerlink" href="#velocity" title="Permalink to this headline">¶</a></h2>
 <div class="admonition-todo admonition" id="index-0">
 <p class="first admonition-title">Todo</p>
-<p class="last">Documentation about different quantities related and observed in crowddynamics.</p>
+<p class="last">About measuring velocity from crowd trajectory data</p>
+</div>
 </div>
 <div class="section" id="density">
 <h2>Density<a class="headerlink" href="#density" title="Permalink to this headline">¶</a></h2>
-<p>Crowd density <span class="math">\(\rho\)</span> is the number of agent per unit of area <span class="math">\(\mathrm{P / m^{2}}\)</span>. Realistic values range from <span class="math">\(0\)</span> to <span class="math">\(10\)</span> people per square metre. Density ranges can be classified in increasing order <a class="reference internal" href="references.html#gkstill" id="id1">[gkstill]</a></p>
+<dl class="class">
+<dt>
+<em class="property">class </em><code class="descclassname">crowddynamics.core.quantities.</code><code class="descname">density_classical</code><a class="reference internal" href="_modules/crowddynamics/core/quantities.html#density_classical"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Classical definition of density defined the density <span class="math">\(D\)</span> as number
+of agents per unit of area.</p>
+<div class="math">
+\[D = \frac{N}{|A|}\quad \left[\mathrm{\frac{1}{m^{2}}}\right]\]</div>
+<p>where</p>
+<ul class="simple">
+<li><span class="math">\(N\)</span> is the number of agents</li>
+<li><span class="math">\(|A|\)</span> is the size of the area</li>
+</ul>
+<p>However the classical definition of density does not work as well when
+measuring density of crowd or granular media as it does for measuring
+density of fluids which have <span class="math">\(&gt; 10^{18}\)</span> particles per
+<span class="math">\(\mathrm{mm}^3\)</span>.</p>
+</dd></dl>
+
+<dl class="class">
+<dt>
+<em class="property">class </em><code class="descclassname">crowddynamics.core.quantities.</code><code class="descname">density_voronoi</code><a class="reference internal" href="_modules/crowddynamics/core/quantities.html#density_voronoi"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Density definition base on Voronoi-diagram. <a class="reference internal" href="#steffen2010" id="id1">[Steffen2010]</a></p>
+<p>Compute Voronoi-diagram for each position <span class="math">\(\mathbf{p}_i\)</span> giving cells
+<span class="math">\(A_i\)</span> to each agent <span class="math">\(i\)</span>. Area of Voronoi cell is denoted
+<span class="math">\(|A_i|\)</span>. Area <span class="math">\(A\)</span> is the area inside which we measure the
+density.</p>
+<dl class="docutils">
+<dt>Definition 1</dt>
+<dd><p class="first"><span class="math">\(S = \{i : \mathbf{q} \in A_i \wedge \mathbf{q} \in A\}\)</span> is the
+set of agents whose Voronoi-diagram has points that belong to area
+<span class="math">\(A\)</span>.</p>
+<div class="math">
+\[\begin{split}p_i(\mathbf{x}) =
+\frac{1}{|A_i|}
+\begin{cases}
+    1 &amp; \mathbf{x}&nbsp;\in A_i \\
+    0 &amp; \text{otherwise}
+\end{cases}\end{split}\]</div>
+<div class="math">
+\[p(\mathbf{x}) = \sum_{i \in S} p_i(\mathbf{x})\]</div>
+<div class="last math">
+\[\begin{split}D_V &amp;= \frac{1}{|A|} \int_A p(\mathbf{x}) d\mathbf{x} \\
+    &amp;= \frac{1}{|A|} \int_A \sum_{i \in S} p_i(\mathbf{x}) d\mathbf{x} \\
+    &amp;= \frac{1}{|A|} \sum_{i \in S} \int_A  p_i(\mathbf{x}) d\mathbf{x} \\
+    &amp;= \frac{1}{|A|} \sum_{i \in S} \frac{1}{|A_i|} \int_A
+       \begin{cases}
+           1 &amp; \mathbf{x}&nbsp;\in A_i \\
+           0 &amp; \text{otherwise}
+       \end{cases}
+       d\mathbf{x} \\
+    &amp;= \frac{1}{|A|} \sum_{i \in S} \frac{|A \cap A_i|}{|A_i|}\end{split}\]</div>
+</dd>
+<dt>Definition 2</dt>
+<dd><p class="first"><span class="math">\(S = \{i : \mathbf{p}_i \in A\}\)</span> is the set of agents and
+<span class="math">\(N = |S|\)</span> the number of agents that is inside area <span class="math">\(A\)</span>.</p>
+<div class="last math">
+\[D_{V^\prime} = \frac{N}{\sum_{i \in S} |A_i|}\]</div>
+</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>points</strong> (<em>numpy.ndarray</em>) &#8211; Two dimensional points <span class="math">\(\mathbf{p}_{i \in \mathbb{N}}\)</span></li>
+<li><strong>cell_size</strong> (<em>float</em>) &#8211; Cell size of the meshgrid. Each cell represents an area <span class="math">\(A\)</span>
+inside which density is measured.</li>
+<li><strong>definition</strong> (<em>int</em>) &#8211; Integer <code class="docutils literal"><span class="pre">{1,</span> <span class="pre">2}</span></code> denoting which definition of density to use.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Grid of values density values for each cell.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy.ndarray</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<p>Density ranges can be classified in increasing order <a class="reference internal" href="#gkstill" id="id2">[gkstill]</a></p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="33%" />
@@ -232,14 +319,13 @@
 </tr>
 </tbody>
 </table>
-<p>Another way to define density in unit-less quantity is to define it to be the percentage of area occupied. This has value range <span class="math">\(0\)</span> to <span class="math">\(1\)</span>.</p>
 </div>
 <div class="section" id="flow">
 <h2>Flow<a class="headerlink" href="#flow" title="Permalink to this headline">¶</a></h2>
 <p>Crowd flow which has similarities with granular flow, gas kinetics and fluid-dynamics measures the magnitude and how the crowd flows. Rate of flow is defined as number of agents per second</p>
 <div class="math">
-\[J = \frac{\Delta N}{\Delta t}\]</div>
-<p>There are several types of crowd flow, which can be classified <a class="reference internal" href="references.html#duives2014" id="id2">[Duives2014]</a></p>
+\[F = \frac{\Delta N}{\Delta t}\quad \left[\frac{1}{s}\right]\]</div>
+<p>There are several types of crowd flow, which can be classified <a class="reference internal" href="#duives2014" id="id3">[Duives2014]</a></p>
 <img src="_images/graphviz-21e582b159f2c84670b1aabe51ff807f67da300c.png" alt="digraph crowdmotion {
     /* Entities */
     motion [label=&quot;Crowd Motion&quot;]
@@ -293,7 +379,34 @@
 </div>
 <div class="section" id="fundamental-diagram">
 <h2>Fundamental Diagram<a class="headerlink" href="#fundamental-diagram" title="Permalink to this headline">¶</a></h2>
-<p>Fundamental diagram offers an empirical relationship between density <span class="math">\(\rho\)</span> and velocity <span class="math">\(\mathbf{v}\)</span> of pedestrian movement. It can also be defined as the relationship between density <span class="math">\(\rho\)</span> and flow <span class="math">\(\Phi = \rho \mathbf{v}\)</span>. <a class="reference internal" href="references.html#seyfried2005" id="id3">[Seyfried2005]</a></p>
+<p>Fundamental diagram offers an empirical relationship between density <span class="math">\(\rho\)</span> and velocity <span class="math">\(\mathbf{v}\)</span> of pedestrian movement. It can also be defined as the relationship between density <span class="math">\(\rho\)</span> and flow <span class="math">\(\Phi = \rho \mathbf{v}\)</span>. <a class="reference internal" href="#seyfried2005" id="id4">[Seyfried2005]</a></p>
+</div>
+<div class="section" id="references">
+<h2>References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h2>
+<table class="docutils citation" frame="void" id="gkstill" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id2">[gkstill]</a></td><td>FIPM, Prof. 2017. &#8220;Standing Crowd Density | Prof. Dr. G. Keith Still&#8221;. Gkstill.Com. Accessed February 4 2017. <a class="reference external" href="http://www.gkstill.com/Support/crowd-density/CrowdDensity-1.html">http://www.gkstill.com/Support/crowd-density/CrowdDensity-1.html</a>.</td></tr>
+</tbody>
+</table>
+<table class="docutils citation" frame="void" id="seyfried2005" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id4">[Seyfried2005]</a></td><td>Seyfried, A., Steffen, B., Klingsch, W., &amp; Boltes, M. (2005). The fundamental diagram of pedestrian movement revisited. Journal of Statistical Mechanics: Theory and Experiment, 2005(10), P10002–P10002. <a class="reference external" href="http://doi.org/10.1088/1742-5468/2005/10/P10002">http://doi.org/10.1088/1742-5468/2005/10/P10002</a></td></tr>
+</tbody>
+</table>
+<table class="docutils citation" frame="void" id="steffen2010" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id1">[Steffen2010]</a></td><td>Steffen, B., &amp; Seyfried, A. (2010). Methods for measuring pedestrian density, flow, speed and direction with minimal scatter. Physica A: Statistical Mechanics and Its Applications, 389(9), 1902–1910. <a class="reference external" href="https://doi.org/10.1016/j.physa.2009.12.015">https://doi.org/10.1016/j.physa.2009.12.015</a></td></tr>
+</tbody>
+</table>
+<table class="docutils citation" frame="void" id="duives2014" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id3">[Duives2014]</a></td><td>Duives, D. C., Daamen, W., &amp; Hoogendoorn, S. P. (2014). State-of-the-art crowd motion simulation models. Transportation Research Part C: Emerging Technologies. <a class="reference external" href="http://doi.org/10.1016/j.trc.2013.02.005">http://doi.org/10.1016/j.trc.2013.02.005</a></td></tr>
+</tbody>
+</table>
 </div>
 </div>
 
@@ -307,10 +420,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="phenomena.html" class="btn btn-neutral float-right" title="Phenomena" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="evacuation.html" class="btn btn-neutral float-right" title="Evacuation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="apidocs_examples/examples.tests.html" class="btn btn-neutral" title="examples.tests package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="steering.html" class="btn btn-neutral" title="Steering" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -320,7 +433,7 @@
   <div role="contentinfo">
     <p>
         &copy; Copyright Jaan Tollander de Balsch.
-      Last updated on 2017-05-11.
+      Last updated on 2017-05-18.
 
     </p>
   </div>
@@ -342,7 +455,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'legacy+302.g559af75.dirty',
+            VERSION:'legacy+303.g1e68f25.dirty',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

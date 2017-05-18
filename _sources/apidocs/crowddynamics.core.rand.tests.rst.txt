@@ -1,0 +1,30 @@
+crowddynamics\.core\.rand\.tests package
+========================================
+
+Submodules
+----------
+
+crowddynamics\.core\.rand\.tests\.test\_random module
+-----------------------------------------------------
+
+.. automodule:: crowddynamics.core.rand.tests.test_random
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+crowddynamics\.core\.rand\.tests\.test\_sampling module
+-------------------------------------------------------
+
+.. automodule:: crowddynamics.core.rand.tests.test_sampling
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: crowddynamics.core.rand.tests
+    :members:
+    :undoc-members:
+    :show-inheritance:

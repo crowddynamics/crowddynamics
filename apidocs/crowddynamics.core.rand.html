@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>crowddynamics.core.random package &mdash; crowddynamics legacy+302.g559af75.dirty documentation</title>
+  <title>crowddynamics.core.rand package &mdash; crowddynamics legacy+303.g1e68f25.dirty documentation</title>
   
 
   
@@ -37,9 +37,9 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="crowddynamics legacy+302.g559af75.dirty documentation" href="../index.html"/>
+    <link rel="top" title="crowddynamics legacy+303.g1e68f25.dirty documentation" href="../index.html"/>
         <link rel="up" title="crowddynamics.core package" href="crowddynamics.core.html"/>
-        <link rel="next" title="crowddynamics.core.random.tests package" href="crowddynamics.core.random.tests.html"/>
+        <link rel="next" title="crowddynamics.core.rand.tests package" href="crowddynamics.core.rand.tests.html"/>
         <link rel="prev" title="crowddynamics.core.motion.tests package" href="crowddynamics.core.motion.tests.html"/> 
 
   
@@ -72,7 +72,7 @@
             
             
               <div class="version">
-                legacy+302legacy+302.g559af75.dirtyg559af75
+                legacy+303legacy+303.g1e68f25.dirtyg1e68f25
               </div>
             
           
@@ -101,13 +101,20 @@
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../usage.html">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../developing.html">Developing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../resources.html">Resources</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Multi-Agent Simulation</span></p>
+<p class="caption"><span class="caption-text">Crowddynamics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../multiagent.html">Multi-Agent Simulation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../interactions.html">Interactions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../motion.html">Motion</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../steering.html">Steering</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../quantities.html">Quantities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../evacuation.html">Evacuation</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Research</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../phenomena.html">Phenomena</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Api</span></p>
 <ul class="current">
@@ -118,8 +125,10 @@
 <li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.html#submodules">Submodules</a></li>
 <li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.html#module-crowddynamics.core.conftest">crowddynamics.core.conftest module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.html#module-crowddynamics.core.evacuation">crowddynamics.core.evacuation module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.html#module-crowddynamics.core.geom2D">crowddynamics.core.geom2D module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.html#module-crowddynamics.core.geometry">crowddynamics.core.geometry module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.html#module-crowddynamics.core.integrator">crowddynamics.core.integrator module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.html#module-crowddynamics.core.quantities">crowddynamics.core.quantities module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.html#module-crowddynamics.core.tree">crowddynamics.core.tree module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.html#module-crowddynamics.core.vector2D">crowddynamics.core.vector2D module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.html#module-crowddynamics.core">Module contents</a></li>
@@ -142,13 +151,6 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../apidocs_examples/examples.html">examples package</a></li>
-</ul>
-<p class="caption"><span class="caption-text">Research</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../quantities.html">Quantities</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../phenomena.html">Phenomena</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../applications.html">Applications</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../references.html">References</a></li>
 </ul>
 
             
@@ -197,13 +199,13 @@
         
           <li><a href="crowddynamics.core.html">crowddynamics.core package</a> &raquo;</li>
         
-      <li>crowddynamics.core.random package</li>
+      <li>crowddynamics.core.rand package</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../_sources/apidocs/crowddynamics.core.random.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/apidocs/crowddynamics.core.rand.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -216,17 +218,17 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="crowddynamics-core-random-package">
-<h1>crowddynamics.core.random package<a class="headerlink" href="#crowddynamics-core-random-package" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="crowddynamics-core-rand-package">
+<h1>crowddynamics.core.rand package<a class="headerlink" href="#crowddynamics-core-rand-package" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="subpackages">
 <h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="crowddynamics.core.random.tests.html">crowddynamics.core.random.tests package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="crowddynamics.core.random.tests.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="crowddynamics.core.random.tests.html#module-crowddynamics.core.random.tests.test_random">crowddynamics.core.random.tests.test_random module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="crowddynamics.core.random.tests.html#module-crowddynamics.core.random.tests.test_sampling">crowddynamics.core.random.tests.test_sampling module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="crowddynamics.core.random.tests.html#module-crowddynamics.core.random.tests">Module contents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="crowddynamics.core.rand.tests.html">crowddynamics.core.rand.tests package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.core.rand.tests.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.core.rand.tests.html#module-crowddynamics.core.rand.tests.test_random">crowddynamics.core.rand.tests.test_random module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.core.rand.tests.html#module-crowddynamics.core.rand.tests.test_sampling">crowddynamics.core.rand.tests.test_sampling module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.core.rand.tests.html#module-crowddynamics.core.rand.tests">Module contents</a></li>
 </ul>
 </li>
 </ul>
@@ -235,11 +237,11 @@
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="module-crowddynamics.core.random.functions">
-<span id="crowddynamics-core-random-functions-module"></span><h2>crowddynamics.core.random.functions module<a class="headerlink" href="#module-crowddynamics.core.random.functions" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-crowddynamics.core.rand.functions">
+<span id="crowddynamics-core-rand-functions-module"></span><h2>crowddynamics.core.rand.functions module<a class="headerlink" href="#module-crowddynamics.core.rand.functions" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
-<dt id="crowddynamics.core.random.functions.estimate_number_poisson_timings">
-<code class="descclassname">crowddynamics.core.random.functions.</code><code class="descname">estimate_number_poisson_timings</code><span class="sig-paren">(</span><em>interval</em>, <em>dt</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/core/random/functions.html#estimate_number_poisson_timings"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.random.functions.estimate_number_poisson_timings" title="Permalink to this definition">¶</a></dt>
+<dt id="crowddynamics.core.rand.functions.estimate_number_poisson_timings">
+<code class="descclassname">crowddynamics.core.rand.functions.</code><code class="descname">estimate_number_poisson_timings</code><span class="sig-paren">(</span><em>interval</em>, <em>dt</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/core/rand/functions.html#estimate_number_poisson_timings"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.rand.functions.estimate_number_poisson_timings" title="Permalink to this definition">¶</a></dt>
 <dd><p>Estimated number of points generated by poisson process.</p>
 <div class="math">
 \[N &amp;\sim \operatorname{Poi}(\lambda)\]</div>
@@ -249,8 +251,8 @@
 </dd></dl>
 
 <dl class="attribute">
-<dt id="crowddynamics.core.random.functions.poisson_clock">
-<code class="descclassname">crowddynamics.core.random.functions.</code><code class="descname">poisson_clock</code><a class="reference internal" href="../_modules/crowddynamics/core/random/functions.html#poisson_clock"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.random.functions.poisson_clock" title="Permalink to this definition">¶</a></dt>
+<dt id="crowddynamics.core.rand.functions.poisson_clock">
+<code class="descclassname">crowddynamics.core.rand.functions.</code><code class="descname">poisson_clock</code><a class="reference internal" href="../_modules/crowddynamics/core/rand/functions.html#poisson_clock"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.rand.functions.poisson_clock" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generated points in time using Poisson process.</p>
 <p>Time between updates are independent random variables defined</p>
 <div class="math">
@@ -289,8 +291,8 @@ N(s) &amp;\sim \operatorname{Poi}(\lambda)\end{split}\]</div>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="crowddynamics.core.random.functions.poisson_timings">
-<code class="descclassname">crowddynamics.core.random.functions.</code><code class="descname">poisson_timings</code><a class="reference internal" href="../_modules/crowddynamics/core/random/functions.html#poisson_timings"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.random.functions.poisson_timings" title="Permalink to this definition">¶</a></dt>
+<dt id="crowddynamics.core.rand.functions.poisson_timings">
+<code class="descclassname">crowddynamics.core.rand.functions.</code><code class="descname">poisson_timings</code><a class="reference internal" href="../_modules/crowddynamics/core/rand/functions.html#poisson_timings"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.rand.functions.poisson_timings" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update times for all agent in the game using Poisson clock.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -314,13 +316,13 @@ N(s) &amp;\sim \operatorname{Poi}(\lambda)\end{split}\]</div>
 </dd></dl>
 
 <dl class="function">
-<dt id="crowddynamics.core.random.functions.random_vector">
-<code class="descclassname">crowddynamics.core.random.functions.</code><code class="descname">random_vector</code><span class="sig-paren">(</span><em>size</em>, <em>orient=(0.0</em>, <em>6.283185307179586)</em>, <em>mag=1.0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/core/random/functions.html#random_vector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.random.functions.random_vector" title="Permalink to this definition">¶</a></dt>
+<dt id="crowddynamics.core.rand.functions.random_vector">
+<code class="descclassname">crowddynamics.core.rand.functions.</code><code class="descname">random_vector</code><span class="sig-paren">(</span><em>size</em>, <em>orient=(0.0</em>, <em>6.283185307179586)</em>, <em>mag=1.0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/core/rand/functions.html#random_vector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.rand.functions.random_vector" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
-<dt id="crowddynamics.core.random.functions.truncnorm">
-<code class="descclassname">crowddynamics.core.random.functions.</code><code class="descname">truncnorm</code><span class="sig-paren">(</span><em>start</em>, <em>end</em>, <em>loc=0.0</em>, <em>scale=1.0</em>, <em>abs_scale=None</em>, <em>size=1</em>, <em>random_state=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/core/random/functions.html#truncnorm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.random.functions.truncnorm" title="Permalink to this definition">¶</a></dt>
+<dt id="crowddynamics.core.rand.functions.truncnorm">
+<code class="descclassname">crowddynamics.core.rand.functions.</code><code class="descname">truncnorm</code><span class="sig-paren">(</span><em>start</em>, <em>end</em>, <em>loc=0.0</em>, <em>scale=1.0</em>, <em>abs_scale=None</em>, <em>size=1</em>, <em>random_state=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/core/rand/functions.html#truncnorm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.rand.functions.truncnorm" title="Permalink to this definition">¶</a></dt>
 <dd><p>Truncated normal distribution from <code class="docutils literal"><span class="pre">scipy.stats</span></code>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -353,17 +355,17 @@ N(s) &amp;\sim \operatorname{Poi}(\lambda)\end{split}\]</div>
 </dd></dl>
 
 </div>
-<div class="section" id="module-crowddynamics.core.random.sampling">
-<span id="crowddynamics-core-random-sampling-module"></span><h2>crowddynamics.core.random.sampling module<a class="headerlink" href="#module-crowddynamics.core.random.sampling" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-crowddynamics.core.rand.sampling">
+<span id="crowddynamics-core-rand-sampling-module"></span><h2>crowddynamics.core.rand.sampling module<a class="headerlink" href="#module-crowddynamics.core.rand.sampling" title="Permalink to this headline">¶</a></h2>
 <p>Sampling points on polygons.</p>
 <dl class="attribute">
-<dt id="crowddynamics.core.random.sampling.linestring_length_cumsum">
-<code class="descclassname">crowddynamics.core.random.sampling.</code><code class="descname">linestring_length_cumsum</code><a class="reference internal" href="../_modules/crowddynamics/core/random/sampling.html#linestring_length_cumsum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.random.sampling.linestring_length_cumsum" title="Permalink to this definition">¶</a></dt>
+<dt id="crowddynamics.core.rand.sampling.linestring_length_cumsum">
+<code class="descclassname">crowddynamics.core.rand.sampling.</code><code class="descname">linestring_length_cumsum</code><a class="reference internal" href="../_modules/crowddynamics/core/rand/sampling.html#linestring_length_cumsum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.rand.sampling.linestring_length_cumsum" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
-<dt id="crowddynamics.core.random.sampling.linestring_sample">
-<code class="descclassname">crowddynamics.core.random.sampling.</code><code class="descname">linestring_sample</code><span class="sig-paren">(</span><em>vertices</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/core/random/sampling.html#linestring_sample"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.random.sampling.linestring_sample" title="Permalink to this definition">¶</a></dt>
+<dt id="crowddynamics.core.rand.sampling.linestring_sample">
+<code class="descclassname">crowddynamics.core.rand.sampling.</code><code class="descname">linestring_sample</code><span class="sig-paren">(</span><em>vertices</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/core/rand/sampling.html#linestring_sample"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.rand.sampling.linestring_sample" title="Permalink to this definition">¶</a></dt>
 <dd><p>Uniform sampling of linestring</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -378,8 +380,8 @@ N(s) &amp;\sim \operatorname{Poi}(\lambda)\end{split}\]</div>
 </dd></dl>
 
 <dl class="function">
-<dt id="crowddynamics.core.random.sampling.polygon_sample">
-<code class="descclassname">crowddynamics.core.random.sampling.</code><code class="descname">polygon_sample</code><span class="sig-paren">(</span><em>vertices</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/core/random/sampling.html#polygon_sample"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.random.sampling.polygon_sample" title="Permalink to this definition">¶</a></dt>
+<dt id="crowddynamics.core.rand.sampling.polygon_sample">
+<code class="descclassname">crowddynamics.core.rand.sampling.</code><code class="descname">polygon_sample</code><span class="sig-paren">(</span><em>vertices</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/core/rand/sampling.html#polygon_sample"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.rand.sampling.polygon_sample" title="Permalink to this definition">¶</a></dt>
 <dd><p>Uniform sampling of points inside a convex polygon. Non convex polygons
 will be treated as the input would be their convex hull.</p>
 <p>Steps of the algorithm</p>
@@ -411,8 +413,8 @@ will be treated as the input would be their convex hull.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="crowddynamics.core.random.sampling.random_sample_line">
-<code class="descclassname">crowddynamics.core.random.sampling.</code><code class="descname">random_sample_line</code><a class="reference internal" href="../_modules/crowddynamics/core/random/sampling.html#random_sample_line"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.random.sampling.random_sample_line" title="Permalink to this definition">¶</a></dt>
+<dt id="crowddynamics.core.rand.sampling.random_sample_line">
+<code class="descclassname">crowddynamics.core.rand.sampling.</code><code class="descname">random_sample_line</code><a class="reference internal" href="../_modules/crowddynamics/core/rand/sampling.html#random_sample_line"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.rand.sampling.random_sample_line" title="Permalink to this definition">¶</a></dt>
 <dd><p>Random sample line</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -432,8 +434,8 @@ will be treated as the input would be their convex hull.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="crowddynamics.core.random.sampling.random_sample_triangle">
-<code class="descclassname">crowddynamics.core.random.sampling.</code><code class="descname">random_sample_triangle</code><a class="reference internal" href="../_modules/crowddynamics/core/random/sampling.html#random_sample_triangle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.random.sampling.random_sample_triangle" title="Permalink to this definition">¶</a></dt>
+<dt id="crowddynamics.core.rand.sampling.random_sample_triangle">
+<code class="descclassname">crowddynamics.core.rand.sampling.</code><code class="descname">random_sample_triangle</code><a class="reference internal" href="../_modules/crowddynamics/core/rand/sampling.html#random_sample_triangle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.rand.sampling.random_sample_triangle" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate uniform random sample from inside of a triangle defined by points
 <span class="math">\(a\)</span>, <span class="math">\(b\)</span> and <span class="math">\(c\)</span>. <a class="footnote-reference" href="#id4" id="id3">[1]</a></p>
 <div class="math">
@@ -472,36 +474,8 @@ will be treated as the input would be their convex hull.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="crowddynamics.core.random.sampling.triangle_area">
-<code class="descclassname">crowddynamics.core.random.sampling.</code><code class="descname">triangle_area</code><a class="reference internal" href="../_modules/crowddynamics/core/random/sampling.html#triangle_area"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.random.sampling.triangle_area" title="Permalink to this definition">¶</a></dt>
-<dd><p>Area of a triangle given by points <span class="math">\(\mathbf{a}\)</span>, <span class="math">\(\mathbf{b}\)</span>,
-and <span class="math">\(\mathbf{c}\)</span>.</p>
-<div class="math">
-\[\frac{|a_0 (b_1 - c_1) + b_0 (c_1 - a_1) + c_0 (a_1 - b_1)|}{2}\]</div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>a</strong> (<em>numpy.ndarray</em>) &#8211; Vertex of the triangle</li>
-<li><strong>b</strong> (<em>numpy.ndarray</em>) &#8211; Vertex of the triangle</li>
-<li><strong>c</strong> (<em>numpy.ndarray</em>) &#8211; Vertex of the triangle</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Area of the triangle</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">float</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="crowddynamics.core.random.sampling.triangle_area_cumsum">
-<code class="descclassname">crowddynamics.core.random.sampling.</code><code class="descname">triangle_area_cumsum</code><a class="reference internal" href="../_modules/crowddynamics/core/random/sampling.html#triangle_area_cumsum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.random.sampling.triangle_area_cumsum" title="Permalink to this definition">¶</a></dt>
+<dt id="crowddynamics.core.rand.sampling.triangle_area_cumsum">
+<code class="descclassname">crowddynamics.core.rand.sampling.</code><code class="descname">triangle_area_cumsum</code><a class="reference internal" href="../_modules/crowddynamics/core/rand/sampling.html#triangle_area_cumsum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.rand.sampling.triangle_area_cumsum" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes cumulative sum of the areas of the triangle mesh.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -518,8 +492,8 @@ and <span class="math">\(\mathbf{c}\)</span>.</p>
 </dd></dl>
 
 </div>
-<div class="section" id="module-crowddynamics.core.random">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-crowddynamics.core.random" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-crowddynamics.core.rand">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-crowddynamics.core.rand" title="Permalink to this headline">¶</a></h2>
 </div>
 </div>
 
@@ -533,7 +507,7 @@ and <span class="math">\(\mathbf{c}\)</span>.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="crowddynamics.core.random.tests.html" class="btn btn-neutral float-right" title="crowddynamics.core.random.tests package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="crowddynamics.core.rand.tests.html" class="btn btn-neutral float-right" title="crowddynamics.core.rand.tests package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="crowddynamics.core.motion.tests.html" class="btn btn-neutral" title="crowddynamics.core.motion.tests package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
@@ -546,7 +520,7 @@ and <span class="math">\(\mathbf{c}\)</span>.</p>
   <div role="contentinfo">
     <p>
         &copy; Copyright Jaan Tollander de Balsch.
-      Last updated on 2017-05-11.
+      Last updated on 2017-05-18.
 
     </p>
   </div>
@@ -568,7 +542,7 @@ and <span class="math">\(\mathbf{c}\)</span>.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'legacy+302.g559af75.dirty',
+            VERSION:'legacy+303.g1e68f25.dirty',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

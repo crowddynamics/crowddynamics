@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>crowddynamics.core.random.functions &mdash; crowddynamics legacy+302.g559af75.dirty documentation</title>
+  <title>crowddynamics.core.rand.functions &mdash; crowddynamics legacy+303.g1e68f25.dirty documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../../../genindex.html"/>
         <link rel="search" title="Search" href="../../../../search.html"/>
-    <link rel="top" title="crowddynamics legacy+302.g559af75.dirty documentation" href="../../../../index.html"/>
+    <link rel="top" title="crowddynamics legacy+303.g1e68f25.dirty documentation" href="../../../../index.html"/>
         <link rel="up" title="Module code" href="../../../index.html"/> 
 
   
@@ -70,7 +70,7 @@
             
             
               <div class="version">
-                legacy+302legacy+302.g559af75.dirtyg559af75
+                legacy+303legacy+303.g1e68f25.dirtyg1e68f25
               </div>
             
           
@@ -99,25 +99,25 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../usage.html">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../developing.html">Developing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../resources.html">Resources</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Multi-Agent Simulation</span></p>
+<p class="caption"><span class="caption-text">Crowddynamics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../multiagent.html">Multi-Agent Simulation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../interactions.html">Interactions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../motion.html">Motion</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../steering.html">Steering</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../quantities.html">Quantities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../evacuation.html">Evacuation</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Research</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../phenomena.html">Phenomena</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Api</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../apidocs/crowddynamics.html">crowddynamics package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../apidocs_examples/examples.html">examples package</a></li>
-</ul>
-<p class="caption"><span class="caption-text">Research</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../quantities.html">Quantities</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../phenomena.html">Phenomena</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../applications.html">Applications</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../references.html">References</a></li>
 </ul>
 
             
@@ -164,7 +164,7 @@
         
           <li><a href="../../../index.html">Module code</a> &raquo;</li>
         
-      <li>crowddynamics.core.random.functions</li>
+      <li>crowddynamics.core.rand.functions</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -181,7 +181,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <h1>Source code for crowddynamics.core.random.functions</h1><div class="highlight"><pre>
+  <h1>Source code for crowddynamics.core.rand.functions</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">numba</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">scipy.stats</span>
@@ -189,7 +189,7 @@
 <span class="kn">from</span> <span class="nn">numba</span> <span class="k">import</span> <span class="n">f8</span><span class="p">,</span> <span class="n">i8</span>
 
 
-<div class="viewcode-block" id="truncnorm"><a class="viewcode-back" href="../../../../apidocs/crowddynamics.core.random.html#crowddynamics.core.random.functions.truncnorm">[docs]</a><span class="k">def</span> <span class="nf">truncnorm</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">abs_scale</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+<div class="viewcode-block" id="truncnorm"><a class="viewcode-back" href="../../../../apidocs/crowddynamics.core.rand.html#crowddynamics.core.rand.functions.truncnorm">[docs]</a><span class="k">def</span> <span class="nf">truncnorm</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">abs_scale</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
               <span class="n">random_state</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Truncated normal distribution from ``scipy.stats``.</span>
 
@@ -216,13 +216,13 @@
     <span class="k">return</span> <span class="n">tn</span></div>
 
 
-<div class="viewcode-block" id="random_vector"><a class="viewcode-back" href="../../../../apidocs/crowddynamics.core.random.html#crowddynamics.core.random.functions.random_vector">[docs]</a><span class="k">def</span> <span class="nf">random_vector</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="n">orient</span><span class="o">=</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">),</span> <span class="n">mag</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
+<div class="viewcode-block" id="random_vector"><a class="viewcode-back" href="../../../../apidocs/crowddynamics.core.rand.html#crowddynamics.core.rand.functions.random_vector">[docs]</a><span class="k">def</span> <span class="nf">random_vector</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="n">orient</span><span class="o">=</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">),</span> <span class="n">mag</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
     <span class="n">orientation</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">orient</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">orient</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">size</span><span class="o">=</span><span class="n">size</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">mag</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">orientation</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">orientation</span><span class="p">)),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></div>
 
 
 <span class="nd">@numba</span><span class="o">.</span><span class="n">jit</span><span class="p">((</span><span class="n">f8</span><span class="p">,</span> <span class="n">f8</span><span class="p">),</span> <span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nogil</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<div class="viewcode-block" id="poisson_clock"><a class="viewcode-back" href="../../../../apidocs/crowddynamics.core.random.html#crowddynamics.core.random.functions.poisson_clock">[docs]</a><span class="k">def</span> <span class="nf">poisson_clock</span><span class="p">(</span><span class="n">interval</span><span class="p">,</span> <span class="n">dt</span><span class="p">):</span>
+<div class="viewcode-block" id="poisson_clock"><a class="viewcode-back" href="../../../../apidocs/crowddynamics.core.rand.html#crowddynamics.core.rand.functions.poisson_clock">[docs]</a><span class="k">def</span> <span class="nf">poisson_clock</span><span class="p">(</span><span class="n">interval</span><span class="p">,</span> <span class="n">dt</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Generated points in time using Poisson process.</span>
 
 <span class="sd">    Time between updates are independent random variables defined</span>
@@ -281,7 +281,7 @@
 
 
 <span class="nd">@numba</span><span class="o">.</span><span class="n">jit</span><span class="p">((</span><span class="n">i8</span><span class="p">[:],</span> <span class="n">f8</span><span class="p">,</span> <span class="n">f8</span><span class="p">),</span> <span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nogil</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<div class="viewcode-block" id="poisson_timings"><a class="viewcode-back" href="../../../../apidocs/crowddynamics.core.random.html#crowddynamics.core.random.functions.poisson_timings">[docs]</a><span class="k">def</span> <span class="nf">poisson_timings</span><span class="p">(</span><span class="n">players</span><span class="p">,</span> <span class="n">interval</span><span class="p">,</span> <span class="n">dt</span><span class="p">):</span>
+<div class="viewcode-block" id="poisson_timings"><a class="viewcode-back" href="../../../../apidocs/crowddynamics.core.rand.html#crowddynamics.core.rand.functions.poisson_timings">[docs]</a><span class="k">def</span> <span class="nf">poisson_timings</span><span class="p">(</span><span class="n">players</span><span class="p">,</span> <span class="n">interval</span><span class="p">,</span> <span class="n">dt</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Update times for all agent in the game using Poisson clock.</span>
 
@@ -312,7 +312,7 @@
         <span class="k">yield</span> <span class="n">indices</span><span class="p">[</span><span class="n">j</span><span class="p">]</span></div>
 
 
-<div class="viewcode-block" id="estimate_number_poisson_timings"><a class="viewcode-back" href="../../../../apidocs/crowddynamics.core.random.html#crowddynamics.core.random.functions.estimate_number_poisson_timings">[docs]</a><span class="k">def</span> <span class="nf">estimate_number_poisson_timings</span><span class="p">(</span><span class="n">interval</span><span class="p">,</span> <span class="n">dt</span><span class="p">):</span>
+<div class="viewcode-block" id="estimate_number_poisson_timings"><a class="viewcode-back" href="../../../../apidocs/crowddynamics.core.rand.html#crowddynamics.core.rand.functions.estimate_number_poisson_timings">[docs]</a><span class="k">def</span> <span class="nf">estimate_number_poisson_timings</span><span class="p">(</span><span class="n">interval</span><span class="p">,</span> <span class="n">dt</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Estimated number of points generated by poisson process.</span>
 
 <span class="sd">    .. math::</span>
@@ -340,7 +340,7 @@
   <div role="contentinfo">
     <p>
         &copy; Copyright Jaan Tollander de Balsch.
-      Last updated on 2017-05-11.
+      Last updated on 2017-05-18.
 
     </p>
   </div>
@@ -362,7 +362,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../../',
-            VERSION:'legacy+302.g559af75.dirty',
+            VERSION:'legacy+303.g1e68f25.dirty',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

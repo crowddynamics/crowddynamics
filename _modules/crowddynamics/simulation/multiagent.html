@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>crowddynamics.simulation.multiagent &mdash; crowddynamics legacy+302.g559af75.dirty documentation</title>
+  <title>crowddynamics.simulation.multiagent &mdash; crowddynamics legacy+303.g1e68f25.dirty documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../../genindex.html"/>
         <link rel="search" title="Search" href="../../../search.html"/>
-    <link rel="top" title="crowddynamics legacy+302.g559af75.dirty documentation" href="../../../index.html"/>
+    <link rel="top" title="crowddynamics legacy+303.g1e68f25.dirty documentation" href="../../../index.html"/>
         <link rel="up" title="Module code" href="../../index.html"/> 
 
   
@@ -70,7 +70,7 @@
             
             
               <div class="version">
-                legacy+302legacy+302.g559af75.dirtyg559af75
+                legacy+303legacy+303.g1e68f25.dirtyg1e68f25
               </div>
             
           
@@ -99,25 +99,25 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../developing.html">Developing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../resources.html">Resources</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Multi-Agent Simulation</span></p>
+<p class="caption"><span class="caption-text">Crowddynamics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../multiagent.html">Multi-Agent Simulation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../interactions.html">Interactions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../motion.html">Motion</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../steering.html">Steering</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quantities.html">Quantities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../evacuation.html">Evacuation</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Research</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../phenomena.html">Phenomena</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Api</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../apidocs/crowddynamics.html">crowddynamics package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../apidocs_examples/examples.html">examples package</a></li>
-</ul>
-<p class="caption"><span class="caption-text">Research</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../quantities.html">Quantities</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../phenomena.html">Phenomena</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../applications.html">Applications</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../references.html">References</a></li>
 </ul>
 
             
@@ -216,9 +216,8 @@
     <span class="n">torque_adjust_agents</span>
 <span class="kn">from</span> <span class="nn">crowddynamics.core.motion.fluctuation</span> <span class="k">import</span> <span class="n">force_fluctuation</span><span class="p">,</span> \
     <span class="n">torque_fluctuation</span>
-<span class="kn">from</span> <span class="nn">crowddynamics.core.random.functions</span> <span class="k">import</span> <span class="n">truncnorm</span>
-<span class="kn">from</span> <span class="nn">crowddynamics.core.random.sampling</span> <span class="k">import</span> <span class="n">polygon_sample</span>
-<span class="kn">from</span> <span class="nn">crowddynamics.core.steering.herding</span> <span class="k">import</span> <span class="n">herding_block_list</span>
+<span class="kn">from</span> <span class="nn">crowddynamics.core.rand.functions</span> <span class="k">import</span> <span class="n">truncnorm</span>
+<span class="kn">from</span> <span class="nn">crowddynamics.core.rand.sampling</span> <span class="k">import</span> <span class="n">polygon_sample</span>
 <span class="kn">from</span> <span class="nn">crowddynamics.core.steering.navigation</span> <span class="k">import</span> <span class="n">navigation</span><span class="p">,</span> <span class="n">static_potential</span><span class="p">,</span> \
     <span class="n">herding</span>
 <span class="kn">from</span> <span class="nn">crowddynamics.core.steering.orientation</span> <span class="k">import</span> \
@@ -264,8 +263,12 @@
 <span class="sd">       \node[] () at (5, 3) {$ \Omega $};</span>
 <span class="sd">       % Spawn 0</span>
 <span class="sd">       \fill[blue!20] (0, 3) -- ++(2, 0) -- ++(1, 1) -- ++(0, 2) </span>
-<span class="sd">                           -- ++(-3, 0) -- ++(0, -3);</span>
+<span class="sd">                      -- ++(-3, 0) -- ++(0, -3);</span>
 <span class="sd">       \node[] () at (1.5, 4.5) {$ \mathcal{S}_0 $};</span>
+<span class="sd">       % Spawn 1</span>
+<span class="sd">       \fill[blue!20] (3, 0) -- ++(0, 1) -- ++(1, 1) -- ++(2, 0) -- ++(1, -1)</span>
+<span class="sd">                      -- ++(0, -1);</span>
+<span class="sd">       \node[] () at (5, 0.5) {$ \mathcal{S}_1 $};</span>
 <span class="sd">       % Obstacles</span>
 <span class="sd">       \draw[thick] (0, 0) rectangle (10, 6);</span>
 <span class="sd">       \draw[fill=black] (9, 2) circle (0.5);</span>
@@ -345,12 +348,12 @@
             <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> should not empty&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">value</span>
 
-<div class="viewcode-block" id="Field.add_spawns"><a class="viewcode-back" href="../../../multiagent.html#crowddynamics.simulation.multiagent.Field.add_spawns">[docs]</a>    <span class="k">def</span> <span class="nf">add_spawns</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">spawns</span><span class="p">:</span> <span class="n">Spawn</span><span class="p">):</span>
+<div class="viewcode-block" id="Field.add_spawns"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.multiagent.Field.add_spawns">[docs]</a>    <span class="k">def</span> <span class="nf">add_spawns</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">spawns</span><span class="p">:</span> <span class="n">Spawn</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Add new spawns&quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">spawn</span> <span class="ow">in</span> <span class="n">spawns</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">spawns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">spawn</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Field.add_targets"><a class="viewcode-back" href="../../../multiagent.html#crowddynamics.simulation.multiagent.Field.add_targets">[docs]</a>    <span class="k">def</span> <span class="nf">add_targets</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">targets</span><span class="p">:</span> <span class="n">Targets</span><span class="p">):</span>
+<div class="viewcode-block" id="Field.add_targets"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.multiagent.Field.add_targets">[docs]</a>    <span class="k">def</span> <span class="nf">add_targets</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">targets</span><span class="p">:</span> <span class="n">Targets</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Add new targets&quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">target</span> <span class="ow">in</span> <span class="n">targets</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">targets</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">target</span><span class="p">)</span></div>
@@ -361,7 +364,7 @@
 <div class="viewcode-block" id="Field.remove_target"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.multiagent.Field.remove_target">[docs]</a>    <span class="k">def</span> <span class="nf">remove_target</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">targets</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">index</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Field.convex_hull"><a class="viewcode-back" href="../../../multiagent.html#crowddynamics.simulation.multiagent.Field.convex_hull">[docs]</a>    <span class="k">def</span> <span class="nf">convex_hull</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Field.convex_hull"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.multiagent.Field.convex_hull">[docs]</a>    <span class="k">def</span> <span class="nf">convex_hull</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Convex hull of union of all objects in the field.&quot;&quot;&quot;</span>
         <span class="n">field</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">obstacles</span> <span class="o">|</span> <span class="n">union</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">targets</span><span class="p">)</span> <span class="o">|</span> <span class="n">union</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">spawns</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">field</span><span class="o">.</span><span class="n">convex_hull</span></div>
@@ -373,7 +376,7 @@
         <span class="n">vertices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">geom</span><span class="o">.</span><span class="n">convex_hull</span><span class="o">.</span><span class="n">exterior</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">polygon_sample</span><span class="p">(</span><span class="n">vertices</span><span class="p">)</span>
 
-<div class="viewcode-block" id="Field.sample_spawn"><a class="viewcode-back" href="../../../multiagent.html#crowddynamics.simulation.multiagent.Field.sample_spawn">[docs]</a>    <span class="k">def</span> <span class="nf">sample_spawn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spawn_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">radius</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.3</span><span class="p">):</span>
+<div class="viewcode-block" id="Field.sample_spawn"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.multiagent.Field.sample_spawn">[docs]</a>    <span class="k">def</span> <span class="nf">sample_spawn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spawn_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">radius</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.3</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Generator for sampling points inside spawn without overlapping with</span>
 <span class="sd">        obstacles&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_samples</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spawns</span><span class="p">[</span><span class="n">spawn_index</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">obstacles</span><span class="p">,</span> <span class="n">radius</span><span class="p">)</span></div>
@@ -393,7 +396,7 @@
         <span class="k">return</span> <span class="n">static_potential</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">domain</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">obstacles</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span>
                                 <span class="n">radius</span><span class="p">,</span> <span class="n">strength</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Field.dump_json"><a class="viewcode-back" href="../../../multiagent.html#crowddynamics.simulation.multiagent.Field.dump_json">[docs]</a>    <span class="k">def</span> <span class="nf">dump_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fname</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<div class="viewcode-block" id="Field.dump_json"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.multiagent.Field.dump_json">[docs]</a>    <span class="k">def</span> <span class="nf">dump_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fname</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Dump field into JSON&quot;&quot;&quot;</span>
 
         <span class="k">def</span> <span class="nf">_mapping</span><span class="p">(</span><span class="n">geom</span><span class="p">):</span>
@@ -416,7 +419,7 @@
             <span class="c1"># TODO: maybe compact layout?</span>
             <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">fp</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">separators</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;, &#39;</span><span class="p">,</span> <span class="s1">&#39;: &#39;</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="Field.load_json"><a class="viewcode-back" href="../../../multiagent.html#crowddynamics.simulation.multiagent.Field.load_json">[docs]</a>    <span class="k">def</span> <span class="nf">load_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fname</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<div class="viewcode-block" id="Field.load_json"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.multiagent.Field.load_json">[docs]</a>    <span class="k">def</span> <span class="nf">load_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fname</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Load field from JSON&quot;&quot;&quot;</span>
 
         <span class="k">def</span> <span class="nf">_shape</span><span class="p">(</span><span class="n">geom</span><span class="p">):</span>
@@ -493,15 +496,16 @@
 
 
 <div class="viewcode-block" id="Agents"><a class="viewcode-back" href="../../../multiagent.html#crowddynamics.simulation.multiagent.Agents">[docs]</a><span class="k">class</span> <span class="nc">Agents</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Multi-Agent simulation agent types.</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Multi-Agent simulation agent types. Modelled as rigid bodies.</span>
 <span class="sd">     </span>
 <span class="sd">    Circular</span>
 <span class="sd">        .. tikz::</span>
 <span class="sd">           \begin{scope}[scale=3]</span>
 <span class="sd">             \draw[color=gray!20] (-2, -1) grid (2, 1);</span>
+<span class="sd">             \draw[thick] (0, 0) circle (1);</span>
+<span class="sd">             \fill[color=gray!20, opacity=0.5] (0, 0) circle (1);</span>
 <span class="sd">             \node[below] () at (0, 0) {$ \mathbf{x} $};</span>
 <span class="sd">             \fill (0, 0) circle(0.5pt);</span>
-<span class="sd">             \draw[thick] (0, 0) circle (1);</span>
 <span class="sd">             \draw[dashed, &lt;-&gt;] (0, 0) -- node[above] {$ r $} ++(135:1);</span>
 <span class="sd">           \end{scope}</span>
 
@@ -518,13 +522,16 @@
 <span class="sd">        .. tikz:: </span>
 <span class="sd">           \begin{scope}[scale=3]</span>
 <span class="sd">             \draw[color=gray!20] (-2, -1) grid (2, 1);</span>
+<span class="sd">             \draw[thick] (0, 0) circle (0.59);</span>
+<span class="sd">             \draw[thick] (-0.63, 0) circle (0.37);</span>
+<span class="sd">             \draw[thick] (0.63, 0) circle (0.37);</span>
+<span class="sd">             \fill[gray!20, opacity=0.5] (0, 0) circle (0.59);</span>
+<span class="sd">             \fill[gray!20, opacity=0.5] (-0.63, 0) circle (0.37);</span>
+<span class="sd">             \fill[gray!20, opacity=0.5] (0.63, 0) circle (0.37);</span>
 <span class="sd">             \node[below] () at (0, 0) {$ \mathbf{x} $};</span>
 <span class="sd">             \fill (0, 0) circle(0.5pt);</span>
 <span class="sd">             \fill (-0.63, 0) circle(0.5pt);</span>
 <span class="sd">             \fill (0.63, 0) circle(0.5pt);</span>
-<span class="sd">             \draw[thick] (0, 0) circle (0.59);</span>
-<span class="sd">             \draw[thick] (-0.63, 0) circle (0.37);</span>
-<span class="sd">             \draw[thick] (0.63, 0) circle (0.37);</span>
 <span class="sd">             \draw[dashed, &lt;-&gt;] (0, 0) -- node[above] {$ r_{t} $} ++(135:0.59);</span>
 <span class="sd">             \draw[dashed, &lt;-&gt;] (-0.63, 0) -- node[above] {$ r_{s} $} ++(135:0.37);</span>
 <span class="sd">             \draw[dashed, &lt;-&gt;] (0.63, 0) -- node[above] {$ r_{s} $} ++(45:0.37);</span>
@@ -551,6 +558,12 @@
 <span class="sd">        .. tikz::</span>
 <span class="sd">           \begin{scope}[scale=3]</span>
 <span class="sd">             \draw[color=gray!20] (-2, -1) grid (2, 1);</span>
+<span class="sd">             \draw[thick] (0.5, 0.5) arc (90:-90:0.5) </span>
+<span class="sd">                          -- ++(-1, 0) arc (270:90:0.5) </span>
+<span class="sd">                          -- ++(1, 0);</span>
+<span class="sd">              \fill[gray!20, opacity=0.5] (0.5, 0.5) arc (90:-90:0.5) </span>
+<span class="sd">                          -- ++(-1, 0) arc (270:90:0.5) </span>
+<span class="sd">                          -- ++(1, 0);</span>
 <span class="sd">             \node[below] () at (0, 0) {$ \mathbf{x} $};</span>
 <span class="sd">             \fill (0, 0) circle(0.5pt);</span>
 <span class="sd">             \fill (-0.5, 0) circle(0.5pt);</span>
@@ -558,15 +571,13 @@
 <span class="sd">             \draw[thick] (-0.5, 0) -- (0.5, 0);</span>
 <span class="sd">             \draw[dashed, &lt;-&gt;] (-0.5, 0) -- node[above] {$ r $} ++(135:0.5);</span>
 <span class="sd">             \draw[dashed, &lt;-&gt;] (-0.5, -0.2) -- node[below]{$ w $} (0.5, -0.2);</span>
-<span class="sd">             \draw[thick] (0.5, 0.5) arc (90:-90:0.5) </span>
-<span class="sd">                          -- ++(-1, 0) arc (270:90:0.5) </span>
-<span class="sd">                          -- ++(1, 0);</span>
 <span class="sd">             %\draw[thick, -&gt;] (0, 0) -- node[left] {$ \mathbf{\hat{e}_n} $} (0, 0.3);</span>
 <span class="sd">             %\draw[thick, -&gt;] (0, 0) -- node[below] {$ \mathbf{\hat{e}_t} $} (0.3, 0);</span>
 <span class="sd">           \end{scope}</span>
 
-<span class="sd">        **Capsule** shaped model proposed by Stüvel in *Dense Crowds of Virtual </span>
-<span class="sd">        Humans* [Stuvel2016]_. </span>
+<span class="sd">        **Capsule** shaped model used in *Dense Crowds of Virtual Humans* </span>
+<span class="sd">        [Stuvel2016]_ and *Simulating competitive egress of noncircular </span>
+<span class="sd">        pedestrians* [Hidalgo2017]_.</span>
 <span class="sd">        </span>
 <span class="sd">        .. math::</span>
 <span class="sd">           r &amp;= T / 2 \\</span>
@@ -579,6 +590,9 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+    <span class="c1"># TODO: remove size -&gt; make it resize with addition of new agents</span>
+    <span class="c1"># TODO: traits: agent_type, body_types, configuration</span>
+    <span class="c1"># TODO: set attributes -&gt; attributes to Callable[_, dict]</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                  <span class="n">size</span><span class="p">,</span>
@@ -612,35 +626,17 @@
 
         <span class="c1"># Faster check for neighbouring agents for initializing agents into</span>
         <span class="c1"># random positions.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">grid</span> <span class="o">=</span> <span class="n">MutableBlockList</span><span class="p">(</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_grid</span> <span class="o">=</span> <span class="n">MutableBlockList</span><span class="p">(</span>
             <span class="n">cell_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;constants&#39;</span><span class="p">][</span><span class="s1">&#39;cell_size&#39;</span><span class="p">])</span>
 
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">array</span><span class="o">.</span><span class="n">size</span>
-
     <span class="nd">@staticmethod</span>
-<div class="viewcode-block" id="Agents.reset_agent"><a class="viewcode-back" href="../../../multiagent.html#crowddynamics.simulation.multiagent.Agents.reset_agent">[docs]</a>    <span class="k">def</span> <span class="nf">reset_agent</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">agents</span><span class="p">):</span>
+<div class="viewcode-block" id="Agents.reset_agent"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.multiagent.Agents.reset_agent">[docs]</a>    <span class="k">def</span> <span class="nf">reset_agent</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">agents</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Reset agent&quot;&quot;&quot;</span>
         <span class="n">agents</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">agents</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span></div>
 
     <span class="nd">@staticmethod</span>
-<div class="viewcode-block" id="Agents.body_to_values"><a class="viewcode-back" href="../../../multiagent.html#crowddynamics.simulation.multiagent.Agents.body_to_values">[docs]</a>    <span class="k">def</span> <span class="nf">body_to_values</span><span class="p">(</span><span class="n">body</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Body to values</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            body (dict): Dictionary with keys::</span>
-
-<span class="sd">                ratio_rt = float</span>
-<span class="sd">                ratio_rs = float</span>
-<span class="sd">                ratio_ts = float</span>
-<span class="sd">                radius = float</span>
-<span class="sd">                radius_scale = float</span>
-<span class="sd">                velocity = float</span>
-<span class="sd">                velocity_scale = float</span>
-<span class="sd">                mass = float</span>
-<span class="sd">                mass_scale = float</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="Agents.body_to_values"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.multiagent.Agents.body_to_values">[docs]</a>    <span class="k">def</span> <span class="nf">body_to_values</span><span class="p">(</span><span class="n">body</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Body to values&quot;&quot;&quot;</span>
         <span class="n">radius</span> <span class="o">=</span> <span class="n">_truncnorm</span><span class="p">(</span><span class="n">body</span><span class="p">[</span><span class="s1">&#39;radius&#39;</span><span class="p">],</span> <span class="n">body</span><span class="p">[</span><span class="s1">&#39;radius_scale&#39;</span><span class="p">])</span>
         <span class="n">mass</span> <span class="o">=</span> <span class="n">_truncnorm</span><span class="p">(</span><span class="n">body</span><span class="p">[</span><span class="s1">&#39;mass&#39;</span><span class="p">],</span> <span class="n">body</span><span class="p">[</span><span class="s1">&#39;mass_scale&#39;</span><span class="p">])</span>
         <span class="c1"># Rotational inertia of mass 80 kg and radius 0.27 m agent.</span>
@@ -659,7 +655,7 @@
         <span class="p">}</span></div>
 
     <span class="nd">@staticmethod</span>
-<div class="viewcode-block" id="Agents.set_agent_attributes"><a class="viewcode-back" href="../../../multiagent.html#crowddynamics.simulation.multiagent.Agents.set_agent_attributes">[docs]</a>    <span class="k">def</span> <span class="nf">set_agent_attributes</span><span class="p">(</span><span class="n">agents</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">attributes</span><span class="p">):</span>
+<div class="viewcode-block" id="Agents.set_agent_attributes"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.multiagent.Agents.set_agent_attributes">[docs]</a>    <span class="k">def</span> <span class="nf">set_agent_attributes</span><span class="p">(</span><span class="n">agents</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">attributes</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set attributes for agent</span>
 
 <span class="sd">        Args:</span>
@@ -680,7 +676,7 @@
                 <span class="c1"># ))</span>
                 <span class="k">pass</span></div>
 
-<div class="viewcode-block" id="Agents.add"><a class="viewcode-back" href="../../../multiagent.html#crowddynamics.simulation.multiagent.Agents.add">[docs]</a>    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attributes</span><span class="p">,</span> <span class="n">check_overlapping</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attributes</span><span class="p">,</span> <span class="n">check_overlapping</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Add new agent with given attributes</span>
 
 <span class="sd">        Args:</span>
@@ -726,7 +722,7 @@
         <span class="n">position</span> <span class="o">=</span> <span class="n">agent</span><span class="p">[</span><span class="s1">&#39;position&#39;</span><span class="p">]</span>
 
         <span class="k">if</span> <span class="n">check_overlapping</span><span class="p">:</span>
-            <span class="n">neighbours</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">nearest</span><span class="p">(</span><span class="n">position</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">neighbours</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_grid</span><span class="o">.</span><span class="n">nearest</span><span class="p">(</span><span class="n">position</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
             <span class="n">agents</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">array</span><span class="p">[</span><span class="n">neighbours</span><span class="p">]</span>
 
             <span class="k">if</span> <span class="n">is_model</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">array</span><span class="p">,</span> <span class="s1">&#39;circular&#39;</span><span class="p">):</span>
@@ -746,32 +742,32 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="n">CrowdDynamicsException</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="p">[</span><span class="n">position</span><span class="p">]</span> <span class="o">=</span> <span class="n">index</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_grid</span><span class="p">[</span><span class="n">position</span><span class="p">]</span> <span class="o">=</span> <span class="n">index</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_active</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">array</span><span class="p">[</span><span class="n">index</span><span class="p">][</span><span class="s1">&#39;active&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="k">return</span> <span class="n">index</span></div>
+        <span class="k">return</span> <span class="n">index</span>
 
     <span class="nd">@log_with</span><span class="p">(</span><span class="n">qualname</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">timed</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ignore</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;self&#39;</span><span class="p">,))</span>
-<div class="viewcode-block" id="Agents.add_group"><a class="viewcode-back" href="../../../multiagent.html#crowddynamics.simulation.multiagent.Agents.add_group">[docs]</a>    <span class="k">def</span> <span class="nf">add_group</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">amount</span><span class="p">,</span> <span class="n">attributes</span><span class="p">,</span> <span class="n">check_overlapping</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="Agents.add_group"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.multiagent.Agents.add_group">[docs]</a>    <span class="k">def</span> <span class="nf">add_group</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">attributes</span><span class="p">,</span> <span class="n">check_overlapping</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Add group of agents</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            check_overlapping:</span>
-<span class="sd">            amount (int):</span>
+<span class="sd">            size (int):</span>
 <span class="sd">            attributes (dict|Callable[dict]):</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">overlaps</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">iteration</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="n">iterations_max</span> <span class="o">=</span> <span class="mi">10</span> <span class="o">*</span> <span class="n">amount</span>
+        <span class="n">iterations_max</span> <span class="o">=</span> <span class="mi">10</span> <span class="o">*</span> <span class="n">size</span>
 
         <span class="c1"># Progress bar for displaying number of agents placed</span>
         <span class="c1"># FIXME: tqdm does not work with tests</span>
         <span class="c1"># success = tqdm(desc=&#39;Agents placed: &#39;, total=amount)</span>
         <span class="c1"># overlapping = tqdm(desc=&#39;Agent overlaps: &#39;, total=iterations_max)</span>
-        <span class="k">while</span> <span class="n">iteration</span> <span class="o">&lt;</span> <span class="n">amount</span> <span class="ow">and</span> <span class="n">overlaps</span> <span class="o">&lt;</span> <span class="n">iterations_max</span><span class="p">:</span>
+        <span class="k">while</span> <span class="n">iteration</span> <span class="o">&lt;</span> <span class="n">size</span> <span class="ow">and</span> <span class="n">overlaps</span> <span class="o">&lt;</span> <span class="n">iterations_max</span><span class="p">:</span>
             <span class="n">a</span> <span class="o">=</span> <span class="n">attributes</span><span class="p">()</span> <span class="k">if</span> <span class="n">callable</span><span class="p">(</span><span class="n">attributes</span><span class="p">)</span> <span class="k">else</span> <span class="n">attributes</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">check_overlapping</span><span class="o">=</span><span class="n">check_overlapping</span><span class="p">)</span>
+                <span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_add</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">check_overlapping</span><span class="o">=</span><span class="n">check_overlapping</span><span class="p">)</span>
                 <span class="c1"># success.update(1)</span>
             <span class="k">except</span> <span class="n">OverlappingError</span><span class="p">:</span>
                 <span class="n">overlaps</span> <span class="o">+=</span> <span class="mi">1</span>
@@ -787,7 +783,7 @@
             <span class="n">shoulders</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">array</span><span class="p">)</span></div>
 
     <span class="nd">@log_with</span><span class="p">(</span><span class="n">qualname</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">timed</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ignore</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;self&#39;</span><span class="p">,))</span>
-<div class="viewcode-block" id="Agents.remove"><a class="viewcode-back" href="../../../multiagent.html#crowddynamics.simulation.multiagent.Agents.remove">[docs]</a>    <span class="k">def</span> <span class="nf">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+<div class="viewcode-block" id="Agents.remove"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.multiagent.Agents.remove">[docs]</a>    <span class="k">def</span> <span class="nf">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Remove agent&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">index</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_active</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_active</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
@@ -860,18 +856,18 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
 
     <span class="nd">@lru_cache</span><span class="p">()</span>
-<div class="viewcode-block" id="MultiAgentSimulation.name_with_timestamp"><a class="viewcode-back" href="../../../multiagent.html#crowddynamics.simulation.multiagent.MultiAgentSimulation.name_with_timestamp">[docs]</a>    <span class="k">def</span> <span class="nf">name_with_timestamp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="MultiAgentSimulation.name_with_timestamp"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.multiagent.MultiAgentSimulation.name_with_timestamp">[docs]</a>    <span class="k">def</span> <span class="nf">name_with_timestamp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Simulation name with timestamp. First call is cached.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">_%H:%M:%S.</span><span class="si">%f</span><span class="s1">&#39;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="MultiAgentSimulation.update"><a class="viewcode-back" href="../../../multiagent.html#crowddynamics.simulation.multiagent.MultiAgentSimulation.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="MultiAgentSimulation.update"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.multiagent.MultiAgentSimulation.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Execute new iteration cycle of the simulation.&quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">PostOrderIter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">logic</span><span class="o">.</span><span class="n">root</span><span class="p">):</span>
             <span class="n">node</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;iterations&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span></div>
 
     <span class="nd">@log_with</span><span class="p">(</span><span class="n">qualname</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ignore</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;self&#39;</span><span class="p">})</span>
-<div class="viewcode-block" id="MultiAgentSimulation.run"><a class="viewcode-back" href="../../../multiagent.html#crowddynamics.simulation.multiagent.MultiAgentSimulation.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exit_condition</span><span class="o">=</span><span class="k">lambda</span> <span class="n">_</span><span class="p">:</span> <span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="MultiAgentSimulation.run"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.multiagent.MultiAgentSimulation.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exit_condition</span><span class="o">=</span><span class="k">lambda</span> <span class="n">_</span><span class="p">:</span> <span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Updates simulation until exit condition is met (returns True).</span>
 
 <span class="sd">        Args:</span>
@@ -1091,7 +1087,7 @@
   <div role="contentinfo">
     <p>
         &copy; Copyright Jaan Tollander de Balsch.
-      Last updated on 2017-05-11.
+      Last updated on 2017-05-18.
 
     </p>
   </div>
@@ -1113,7 +1109,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'legacy+302.g559af75.dirty',
+            VERSION:'legacy+303.g1e68f25.dirty',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

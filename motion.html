@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Motion &mdash; crowddynamics legacy+302.g559af75.dirty documentation</title>
+  <title>Motion &mdash; crowddynamics legacy+303.g1e68f25.dirty documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="crowddynamics legacy+302.g559af75.dirty documentation" href="index.html"/>
+    <link rel="top" title="crowddynamics legacy+303.g1e68f25.dirty documentation" href="index.html"/>
         <link rel="next" title="Steering" href="steering.html"/>
         <link rel="prev" title="Interactions" href="interactions.html"/> 
 
@@ -71,7 +71,7 @@
             
             
               <div class="version">
-                legacy+302legacy+302.g559af75.dirtyg559af75
+                legacy+303legacy+303.g1e68f25.dirtyg1e68f25
               </div>
             
           
@@ -100,8 +100,9 @@
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="developing.html">Developing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="resources.html">Resources</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Multi-Agent Simulation</span></p>
+<p class="caption"><span class="caption-text">Crowddynamics</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="multiagent.html">Multi-Agent Simulation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="interactions.html">Interactions</a></li>
@@ -114,18 +115,17 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="steering.html">Steering</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quantities.html">Quantities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="evacuation.html">Evacuation</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Research</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="phenomena.html">Phenomena</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Api</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="apidocs/crowddynamics.html">crowddynamics package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="apidocs_examples/examples.html">examples package</a></li>
-</ul>
-<p class="caption"><span class="caption-text">Research</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="quantities.html">Quantities</a></li>
-<li class="toctree-l1"><a class="reference internal" href="phenomena.html">Phenomena</a></li>
-<li class="toctree-l1"><a class="reference internal" href="applications.html">Applications</a></li>
-<li class="toctree-l1"><a class="reference internal" href="references.html">References</a></li>
 </ul>
 
             
@@ -211,19 +211,19 @@
 </tr>
 <tr class="row-odd"><td>Collision Avoidance / Social Force</td>
 <td>&#160;</td>
-<td><a class="reference internal" href="references.html#karamouzas2014b" id="id1">[Karamouzas2014b]</a></td>
+<td><a class="reference internal" href="multiagent.html#karamouzas2014b" id="id1">[Karamouzas2014b]</a></td>
 </tr>
 <tr class="row-even"><td>Contact Force and Torque</td>
 <td>&#160;</td>
-<td><a class="reference internal" href="references.html#helbing2000a" id="id2">[Helbing2000a]</a>, <a class="reference internal" href="references.html#langston2006" id="id3">[Langston2006]</a>, <a class="reference internal" href="references.html#korhonen2008b" id="id4">[Korhonen2008b]</a></td>
+<td><a class="reference internal" href="multiagent.html#helbing2000a" id="id2">[Helbing2000a]</a>, <a class="reference internal" href="multiagent.html#langston2006" id="id3">[Langston2006]</a>, <a class="reference internal" href="multiagent.html#korhonen2008b" id="id4">[Korhonen2008b]</a></td>
 </tr>
 <tr class="row-odd"><td>Adjusting Force and Torque</td>
 <td>&#160;</td>
-<td><a class="reference internal" href="references.html#helbing2000a" id="id5">[Helbing2000a]</a>, <a class="reference internal" href="references.html#korhonen2008b" id="id6">[Korhonen2008b]</a></td>
+<td><a class="reference internal" href="multiagent.html#helbing2000a" id="id5">[Helbing2000a]</a>, <a class="reference internal" href="multiagent.html#korhonen2008b" id="id6">[Korhonen2008b]</a></td>
 </tr>
 <tr class="row-even"><td>Fluctuation and Torque</td>
 <td>&#160;</td>
-<td><a class="reference internal" href="references.html#helbing2000a" id="id7">[Helbing2000a]</a>, <a class="reference internal" href="references.html#korhonen2008b" id="id8">[Korhonen2008b]</a></td>
+<td><a class="reference internal" href="multiagent.html#helbing2000a" id="id7">[Helbing2000a]</a>, <a class="reference internal" href="multiagent.html#korhonen2008b" id="id8">[Korhonen2008b]</a></td>
 </tr>
 </tbody>
 </table>
@@ -247,7 +247,7 @@ I \frac{d^{2}}{d t^{2}} \varphi(t) = M(t) + \eta(t)
 <div class="section" id="power-law">
 <h2>Power Law<a class="headerlink" href="#power-law" title="Permalink to this headline">¶</a></h2>
 <p>Anticipatory collision avoidance algorithm introduced in <em>Universal power law
-governing pedestrian interactions</em> <a class="reference internal" href="references.html#karamouzas2014b" id="id9">[Karamouzas2014b]</a>. Algorithm is derived from
+governing pedestrian interactions</em> <a class="reference internal" href="multiagent.html#karamouzas2014b" id="id9">[Karamouzas2014b]</a>. Algorithm is derived from
 real world data from the behaviour movement of people in crowds.</p>
 <p>Force affecting agent can be derived by taking spatial gradient of the energy,
 where time-to-collision <span class="math">\(\tau\)</span> is function of the relative displacement
@@ -626,7 +626,7 @@ spaces, requiring more sophisticated algorithms.</li>
   <div role="contentinfo">
     <p>
         &copy; Copyright Jaan Tollander de Balsch.
-      Last updated on 2017-05-11.
+      Last updated on 2017-05-18.
 
     </p>
   </div>
@@ -648,7 +648,7 @@ spaces, requiring more sophisticated algorithms.</li>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'legacy+302.g559af75.dirty',
+            VERSION:'legacy+303.g1e68f25.dirty',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

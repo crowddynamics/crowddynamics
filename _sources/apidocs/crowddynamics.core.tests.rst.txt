@@ -12,6 +12,14 @@ crowddynamics\.core\.tests\.test\_evacuation module
     :undoc-members:
     :show-inheritance:
 
+crowddynamics\.core\.tests\.test\_geom2D module
+-----------------------------------------------
+
+.. automodule:: crowddynamics.core.tests.test_geom2D
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 crowddynamics\.core\.tests\.test\_geometry module
 -------------------------------------------------
 

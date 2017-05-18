@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>crowddynamics.core package &mdash; crowddynamics legacy+302.g559af75.dirty documentation</title>
+  <title>crowddynamics.core package &mdash; crowddynamics legacy+303.g1e68f25.dirty documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="crowddynamics legacy+302.g559af75.dirty documentation" href="../index.html"/>
+    <link rel="top" title="crowddynamics legacy+303.g1e68f25.dirty documentation" href="../index.html"/>
         <link rel="up" title="crowddynamics package" href="crowddynamics.html"/>
         <link rel="next" title="crowddynamics.core.interactions package" href="crowddynamics.core.interactions.html"/>
         <link rel="prev" title="crowddynamics package" href="crowddynamics.html"/> 
@@ -72,7 +72,7 @@
             
             
               <div class="version">
-                legacy+302legacy+302.g559af75.dirtyg559af75
+                legacy+303legacy+303.g1e68f25.dirtyg1e68f25
               </div>
             
           
@@ -101,13 +101,20 @@
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../usage.html">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../developing.html">Developing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../resources.html">Resources</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Multi-Agent Simulation</span></p>
+<p class="caption"><span class="caption-text">Crowddynamics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../multiagent.html">Multi-Agent Simulation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../interactions.html">Interactions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../motion.html">Motion</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../steering.html">Steering</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../quantities.html">Quantities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../evacuation.html">Evacuation</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Research</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../phenomena.html">Phenomena</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Api</span></p>
 <ul class="current">
@@ -118,8 +125,10 @@
 <li class="toctree-l4"><a class="reference internal" href="#submodules">Submodules</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-crowddynamics.core.conftest">crowddynamics.core.conftest module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-crowddynamics.core.evacuation">crowddynamics.core.evacuation module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-crowddynamics.core.geom2D">crowddynamics.core.geom2D module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-crowddynamics.core.geometry">crowddynamics.core.geometry module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-crowddynamics.core.integrator">crowddynamics.core.integrator module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-crowddynamics.core.quantities">crowddynamics.core.quantities module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-crowddynamics.core.tree">crowddynamics.core.tree module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-crowddynamics.core.vector2D">crowddynamics.core.vector2D module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-crowddynamics.core">Module contents</a></li>
@@ -142,13 +151,6 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../apidocs_examples/examples.html">examples package</a></li>
-</ul>
-<p class="caption"><span class="caption-text">Research</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../quantities.html">Quantities</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../phenomena.html">Phenomena</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../applications.html">Applications</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../references.html">References</a></li>
 </ul>
 
             
@@ -290,21 +292,21 @@
 <li class="toctree-l2"><a class="reference internal" href="crowddynamics.core.motion.html#module-crowddynamics.core.motion">Module contents</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="crowddynamics.core.random.html">crowddynamics.core.random package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="crowddynamics.core.random.html#subpackages">Subpackages</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="crowddynamics.core.random.tests.html">crowddynamics.core.random.tests package</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.random.tests.html#submodules">Submodules</a></li>
-<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.random.tests.html#module-crowddynamics.core.random.tests.test_random">crowddynamics.core.random.tests.test_random module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.random.tests.html#module-crowddynamics.core.random.tests.test_sampling">crowddynamics.core.random.tests.test_sampling module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.random.tests.html#module-crowddynamics.core.random.tests">Module contents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="crowddynamics.core.rand.html">crowddynamics.core.rand package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.core.rand.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="crowddynamics.core.rand.tests.html">crowddynamics.core.rand.tests package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.rand.tests.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.rand.tests.html#module-crowddynamics.core.rand.tests.test_random">crowddynamics.core.rand.tests.test_random module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.rand.tests.html#module-crowddynamics.core.rand.tests.test_sampling">crowddynamics.core.rand.tests.test_sampling module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.rand.tests.html#module-crowddynamics.core.rand.tests">Module contents</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="crowddynamics.core.random.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="crowddynamics.core.random.html#module-crowddynamics.core.random.functions">crowddynamics.core.random.functions module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="crowddynamics.core.random.html#module-crowddynamics.core.random.sampling">crowddynamics.core.random.sampling module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="crowddynamics.core.random.html#module-crowddynamics.core.random">Module contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.core.rand.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.core.rand.html#module-crowddynamics.core.rand.functions">crowddynamics.core.rand.functions module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.core.rand.html#module-crowddynamics.core.rand.sampling">crowddynamics.core.rand.sampling module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.core.rand.html#module-crowddynamics.core.rand">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="crowddynamics.core.steering.html">crowddynamics.core.steering package</a><ul>
@@ -356,6 +358,7 @@
 <li class="toctree-l1"><a class="reference internal" href="crowddynamics.core.tests.html">crowddynamics.core.tests package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="crowddynamics.core.tests.html#submodules">Submodules</a></li>
 <li class="toctree-l2"><a class="reference internal" href="crowddynamics.core.tests.html#module-crowddynamics.core.tests.test_evacuation">crowddynamics.core.tests.test_evacuation module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.core.tests.html#module-crowddynamics.core.tests.test_geom2D">crowddynamics.core.tests.test_geom2D module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="crowddynamics.core.tests.html#module-crowddynamics.core.tests.test_geometry">crowddynamics.core.tests.test_geometry module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="crowddynamics.core.tests.html#module-crowddynamics.core.tests.test_integrator">crowddynamics.core.tests.test_integrator module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="crowddynamics.core.tests.html#module-crowddynamics.core.tests.test_taskgraph">crowddynamics.core.tests.test_taskgraph module</a></li>
@@ -447,37 +450,67 @@
 </table>
 </dd></dl>
 
-<dl class="function">
-<dt id="crowddynamics.core.evacuation.exit_selection">
-<code class="descclassname">crowddynamics.core.evacuation.</code><code class="descname">exit_selection</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/core/evacuation.html#exit_selection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.evacuation.exit_selection" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
 <dl class="attribute">
 <dt id="crowddynamics.core.evacuation.narrow_exit_capacity">
 <code class="descclassname">crowddynamics.core.evacuation.</code><code class="descname">narrow_exit_capacity</code><a class="reference internal" href="../_modules/crowddynamics/core/evacuation.html#narrow_exit_capacity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.evacuation.narrow_exit_capacity" title="Permalink to this definition">¶</a></dt>
-<dd><p>Estimation of the capacity of narrow exit.</p>
-<p>Capacity estimation <span class="math">\(\beta\)</span> of unidirectional flow through narrow
+<dd><p>Capacity estimation <span class="math">\(\beta\)</span> of unidirectional flow through narrow
 bottleneck. Capacity of the bottleneck increases in stepwise manner.</p>
-<p>Simple estimation</p>
-<div class="math">
+<dl class="docutils">
+<dt>Estimation 1</dt>
+<dd><p class="first">Simple estimation</p>
+<div class="last math">
 \[\beta_{simple} = c \left \lfloor \frac{d_{door}}{d_{agent}} \right \rfloor\]</div>
-<p>More sophisticated estimation <a class="reference internal" href="../references.html#hoogendoorn2005a" id="id1">[Hoogendoorn2005a]</a>, <a class="reference internal" href="../references.html#seyfried2007a" id="id2">[Seyfried2007a]</a>
-when <span class="math">\(d_{door} \geq d_{agent}\)</span></p>
-<div class="math">
-\[\beta_{hoogen} = c \left \lfloor \frac{d_{door} - (d_{agent} - d_{layer})}{d_{layer}} \right \rfloor\]</div>
-<p>We have relationship between simple and hoogendoorn&#8217;s estimation</p>
+</dd>
+<dt>Estimation 2</dt>
+<dd><p class="first">More sophisticated estimation <a class="reference internal" href="../evacuation.html#hoogendoorn2005a" id="id1">[Hoogendoorn2005a]</a>, <a class="reference internal" href="../evacuation.html#seyfried2007a" id="id2">[Seyfried2007a]</a></p>
+<div class="last math">
+\[\beta_{hoogen} = c \left \lfloor \frac{d_{door} - (d_{agent} - d_{layer})}{d_{layer}} \right \rfloor,\quad d_{door} \geq d_{agent}\]</div>
+</dd>
+</dl>
+<p>We have relationship between simple and Hoogendoorn&#8217;s estimation</p>
 <div class="math">
 \[\beta_{hoogen} = \beta_{simple}, \quad d_{layer} = d_{agent}\]</div>
+<table border="1" class="docutils" id="id4">
+<caption><span class="caption-text">Variables</span><a class="headerlink" href="#id4" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col width="33%" />
+<col width="33%" />
+<col width="33%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Variable</th>
+<th class="head">Reference value</th>
+<th class="head">Unit</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><span class="math">\(d_{door} \in [0, 3]\)</span></td>
+<td>&#160;</td>
+<td>m</td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(d_{agent} &gt; 0\)</span></td>
+<td>&#160;</td>
+<td>m</td>
+</tr>
+<tr class="row-even"><td><span class="math">\(d_{layer} &gt; 0\)</span></td>
+<td><span class="math">\(0.45\)</span></td>
+<td>m</td>
+</tr>
+<tr class="row-odd"><td><span class="math">\(c &gt; 0\)</span></td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+</tbody>
+</table>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>d_door</strong> (<em>float</em>) &#8211; Width of the door <span class="math">\(0\,\mathrm{m} &lt; d_{door} &lt; 3\,\mathrm{m}\)</span>.</li>
-<li><strong>d_agent</strong> (<em>float</em>) &#8211; Width of the agent <span class="math">\(d_{agent} &gt; 0\,\mathrm{m}\)</span>.</li>
-<li><strong>d_layer</strong> (<em>float</em><em>, </em><em>optional</em>) &#8211; Width of layer <span class="math">\(d_{layer}\)</span>. Reference value:
-<span class="math">\(0.45\,\mathrm{m}\)</span></li>
-<li><strong>coeff</strong> (<em>float</em>) &#8211; Scaling coefficient <span class="math">\(c &gt; 0\)</span> for the estimation.</li>
+<li><strong>d_door</strong> (<em>float</em>) &#8211; Width of the door <span class="math">\(d_{door}\)</span>.</li>
+<li><strong>d_agent</strong> (<em>float</em>) &#8211; Width of the agent <span class="math">\(d_{agent}\)</span>.</li>
+<li><strong>d_layer</strong> (<em>float</em><em>, </em><em>optional</em>) &#8211; Width of layer <span class="math">\(d_{layer}\)</span>.</li>
+<li><strong>coeff</strong> (<em>float</em>) &#8211; Scaling coefficient <span class="math">\(c\)</span>.</li>
 </ul>
 </td>
 </tr>
@@ -492,6 +525,35 @@ estimation is returned</p>
 </tr>
 <tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">float</p>
 </td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-crowddynamics.core.geom2D">
+<span id="crowddynamics-core-geom2d-module"></span><h2>crowddynamics.core.geom2D module<a class="headerlink" href="#module-crowddynamics.core.geom2D" title="Permalink to this headline">¶</a></h2>
+<dl class="attribute">
+<dt id="crowddynamics.core.geom2D.polygon_area">
+<code class="descclassname">crowddynamics.core.geom2D.</code><code class="descname">polygon_area</code><a class="reference internal" href="../_modules/crowddynamics/core/geom2D.html#polygon_area"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.geom2D.polygon_area" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shoelace formula for computing area of polygon</p>
+<div class="math">
+\[A = \sum_{i=1}^{n} x_i \left(y_{i+1} - y_{i-1}\right), \quad i\mod n\]</div>
+<p class="rubric">References</p>
+<ul class="simple">
+<li><a class="reference external" href="https://en.wikipedia.org/wiki/Shoelace_formula">https://en.wikipedia.org/wiki/Shoelace_formula</a></li>
+<li><a class="reference external" href="https://stackoverflow.com/questions/451426/how-do-i-calculate-the-area-of-a-2d-polygon/717367#717367">https://stackoverflow.com/questions/451426/how-do-i-calculate-the-area-of-a-2d-polygon/717367#717367</a></li>
+<li><a class="reference external" href="https://stackoverflow.com/questions/24467972/calculate-area-of-polygon-given-x-y-coordinates">https://stackoverflow.com/questions/24467972/calculate-area-of-polygon-given-x-y-coordinates</a></li>
+</ul>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>vertices</strong> (<em>numpy.ndarray</em>) &#8211; Vertices of the polygon</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Area of the polygon</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">float</td>
 </tr>
 </tbody>
 </table>
@@ -741,6 +803,90 @@ discrete adaptive timestep <span class="math">\(\Delta t\)</span>.</p>
 
 </div>
 </div>
+<div class="section" id="module-crowddynamics.core.quantities">
+<span id="crowddynamics-core-quantities-module"></span><h2>crowddynamics.core.quantities module<a class="headerlink" href="#module-crowddynamics.core.quantities" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="crowddynamics.core.quantities.density_classical">
+<code class="descclassname">crowddynamics.core.quantities.</code><code class="descname">density_classical</code><span class="sig-paren">(</span><em>points</em>, <em>cell_size</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/core/quantities.html#density_classical"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.quantities.density_classical" title="Permalink to this definition">¶</a></dt>
+<dd><p>Classical definition of density defined the density <span class="math">\(D\)</span> as number
+of agents per unit of area.</p>
+<div class="math">
+\[D = \frac{N}{|A|}\quad \left[\mathrm{\frac{1}{m^{2}}}\right]\]</div>
+<p>where</p>
+<ul class="simple">
+<li><span class="math">\(N\)</span> is the number of agents</li>
+<li><span class="math">\(|A|\)</span> is the size of the area</li>
+</ul>
+<p>However the classical definition of density does not work as well when
+measuring density of crowd or granular media as it does for measuring
+density of fluids which have <span class="math">\(&gt; 10^{18}\)</span> particles per
+<span class="math">\(\mathrm{mm}^3\)</span>.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="crowddynamics.core.quantities.density_voronoi">
+<code class="descclassname">crowddynamics.core.quantities.</code><code class="descname">density_voronoi</code><span class="sig-paren">(</span><em>points</em>, <em>cell_size</em>, <em>definition=2</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/core/quantities.html#density_voronoi"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.quantities.density_voronoi" title="Permalink to this definition">¶</a></dt>
+<dd><p>Density definition base on Voronoi-diagram. <a class="reference internal" href="../quantities.html#steffen2010" id="id3">[Steffen2010]</a></p>
+<p>Compute Voronoi-diagram for each position <span class="math">\(\mathbf{p}_i\)</span> giving cells
+<span class="math">\(A_i\)</span> to each agent <span class="math">\(i\)</span>. Area of Voronoi cell is denoted
+<span class="math">\(|A_i|\)</span>. Area <span class="math">\(A\)</span> is the area inside which we measure the
+density.</p>
+<dl class="docutils">
+<dt>Definition 1</dt>
+<dd><p class="first"><span class="math">\(S = \{i : \mathbf{q} \in A_i \wedge \mathbf{q} \in A\}\)</span> is the
+set of agents whose Voronoi-diagram has points that belong to area
+<span class="math">\(A\)</span>.</p>
+<div class="math">
+\[\begin{split}p_i(\mathbf{x}) =
+\frac{1}{|A_i|}
+\begin{cases}
+    1 &amp; \mathbf{x}&nbsp;\in A_i \\
+    0 &amp; \text{otherwise}
+\end{cases}\end{split}\]</div>
+<div class="math">
+\[p(\mathbf{x}) = \sum_{i \in S} p_i(\mathbf{x})\]</div>
+<div class="last math">
+\[\begin{split}D_V &amp;= \frac{1}{|A|} \int_A p(\mathbf{x}) d\mathbf{x} \\
+    &amp;= \frac{1}{|A|} \int_A \sum_{i \in S} p_i(\mathbf{x}) d\mathbf{x} \\
+    &amp;= \frac{1}{|A|} \sum_{i \in S} \int_A  p_i(\mathbf{x}) d\mathbf{x} \\
+    &amp;= \frac{1}{|A|} \sum_{i \in S} \frac{1}{|A_i|} \int_A
+       \begin{cases}
+           1 &amp; \mathbf{x}&nbsp;\in A_i \\
+           0 &amp; \text{otherwise}
+       \end{cases}
+       d\mathbf{x} \\
+    &amp;= \frac{1}{|A|} \sum_{i \in S} \frac{|A \cap A_i|}{|A_i|}\end{split}\]</div>
+</dd>
+<dt>Definition 2</dt>
+<dd><p class="first"><span class="math">\(S = \{i : \mathbf{p}_i \in A\}\)</span> is the set of agents and
+<span class="math">\(N = |S|\)</span> the number of agents that is inside area <span class="math">\(A\)</span>.</p>
+<div class="last math">
+\[D_{V^\prime} = \frac{N}{\sum_{i \in S} |A_i|}\]</div>
+</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>points</strong> (<em>numpy.ndarray</em>) &#8211; Two dimensional points <span class="math">\(\mathbf{p}_{i \in \mathbb{N}}\)</span></li>
+<li><strong>cell_size</strong> (<em>float</em>) &#8211; Cell size of the meshgrid. Each cell represents an area <span class="math">\(A\)</span>
+inside which density is measured.</li>
+<li><strong>definition</strong> (<em>int</em>) &#8211; Integer <code class="docutils literal"><span class="pre">{1,</span> <span class="pre">2}</span></code> denoting which definition of density to use.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Grid of values density values for each cell.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy.ndarray</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
 <div class="section" id="module-crowddynamics.core.tree">
 <span id="crowddynamics-core-tree-module"></span><h2>crowddynamics.core.tree module<a class="headerlink" href="#module-crowddynamics.core.tree" title="Permalink to this headline">¶</a></h2>
 <p>Tree node for implementing simulation logic</p>
@@ -839,7 +985,7 @@ classes.</p>
 <dl class="attribute">
 <dt id="crowddynamics.core.vector2D.angle">
 <code class="descclassname">crowddynamics.core.vector2D.</code><code class="descname">angle</code><a class="reference internal" href="../_modules/crowddynamics/core/vector2D.html#angle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.vector2D.angle" title="Permalink to this definition">¶</a></dt>
-<dd><p>Angle of 2d vector in radians.</p>
+<dd><p>Angle of 2d vector in radians (angle between vector and x-axis).</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -858,6 +1004,8 @@ classes.</p>
 <dt id="crowddynamics.core.vector2D.cross">
 <code class="descclassname">crowddynamics.core.vector2D.</code><code class="descname">cross</code><a class="reference internal" href="../_modules/crowddynamics/core/vector2D.html#cross"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.vector2D.cross" title="Permalink to this definition">¶</a></dt>
 <dd><p>Cross product for 2D vectors. Right corner from 3D cross product.</p>
+<div class="math">
+\[\mathbf{v}_0 \times \mathbf{v}_1\]</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -882,6 +1030,8 @@ classes.</p>
 <dt id="crowddynamics.core.vector2D.dot">
 <code class="descclassname">crowddynamics.core.vector2D.</code><code class="descname">dot</code><a class="reference internal" href="../_modules/crowddynamics/core/vector2D.html#dot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.vector2D.dot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Dot product for 2D vectors.</p>
+<div class="math">
+\[\mathbf{v}_0 \cdot \mathbf{v}_1\]</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -905,7 +1055,9 @@ classes.</p>
 <dl class="attribute">
 <dt id="crowddynamics.core.vector2D.length">
 <code class="descclassname">crowddynamics.core.vector2D.</code><code class="descname">length</code><a class="reference internal" href="../_modules/crowddynamics/core/vector2D.html#length"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.vector2D.length" title="Permalink to this definition">¶</a></dt>
-<dd><p>Length</p>
+<dd><p>Length of an vector</p>
+<div class="math">
+\[\|\mathbf{v}\|\]</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -942,7 +1094,13 @@ classes.</p>
 <dt id="crowddynamics.core.vector2D.rotate270">
 <code class="descclassname">crowddynamics.core.vector2D.</code><code class="descname">rotate270</code><a class="reference internal" href="../_modules/crowddynamics/core/vector2D.html#rotate270"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.vector2D.rotate270" title="Permalink to this definition">¶</a></dt>
 <dd><p>90 degree clockwise rotation for 2D vector.</p>
-<table class="docutils field-list" frame="void" rules="none">
+<div class="figure">
+<p><img src="../_images/tikz-2bc15e5f57e59dd246a0eab8e09dc7868e0c2288.png" alt="\begin{scope}[scale=0.5]
+\draw[color=gray!20] (-1, -1) grid (6, 6);
+\draw[thick, gray, dashed, -&gt;] (0, 0) -- (0:5);
+\draw[thick, -&gt;] (0, 0) -- (90:5);
+\end{scope}" /></p>
+</div><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
@@ -960,7 +1118,13 @@ classes.</p>
 <dt id="crowddynamics.core.vector2D.rotate90">
 <code class="descclassname">crowddynamics.core.vector2D.</code><code class="descname">rotate90</code><a class="reference internal" href="../_modules/crowddynamics/core/vector2D.html#rotate90"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.vector2D.rotate90" title="Permalink to this definition">¶</a></dt>
 <dd><p>90 degree counterclockwise rotation for 2D vector.</p>
-<table class="docutils field-list" frame="void" rules="none">
+<div class="figure">
+<p><img src="../_images/tikz-2d65fa7745750d25c1f031584baf83faae586ae9.png" alt="\begin{scope}[scale=0.5]
+\draw[color=gray!20] (-1, -1) grid (6, 6);
+\draw[thick, gray, dashed, -&gt;] (0, 0) -- (90:5);
+\draw[thick, -&gt;] (0, 0) -- (0:5);
+\end{scope}" /></p>
+</div><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
@@ -1039,7 +1203,7 @@ l \frac{\mathbf{v}}{\|\mathbf{v}\|} &amp; \|\mathbf{v}\| &gt; l \\
   <div role="contentinfo">
     <p>
         &copy; Copyright Jaan Tollander de Balsch.
-      Last updated on 2017-05-11.
+      Last updated on 2017-05-18.
 
     </p>
   </div>
@@ -1061,7 +1225,7 @@ l \frac{\mathbf{v}}{\|\mathbf{v}\|} &amp; \|\mathbf{v}\| &gt; l \\
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'legacy+302.g559af75.dirty',
+            VERSION:'legacy+303.g1e68f25.dirty',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

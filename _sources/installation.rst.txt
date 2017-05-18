@@ -39,7 +39,7 @@ From Source
 
 Install Conda Package Manager
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Install *Conda* package manager which . `Miniconda <http://conda.pydata.org/miniconda.html>`_ is faster to install than the full `Anaconda <https://www.continuum.io/downloads>`_ distribution which comes bundled with lots of other useful scientific packages, but are not required to run ``crowddynamics``.
+Install *Conda* package manager. `Miniconda <http://conda.pydata.org/miniconda.html>`_ is faster to install than the full `Anaconda <https://www.continuum.io/downloads>`_ distribution which comes bundled with lots of other useful scientific packages, but are not required to run ``crowddynamics``.
 
 
 Download the Source Code

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>crowddynamics.core.motion package &mdash; crowddynamics legacy+302.g559af75.dirty documentation</title>
+  <title>crowddynamics.core.motion package &mdash; crowddynamics legacy+303.g1e68f25.dirty documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="crowddynamics legacy+302.g559af75.dirty documentation" href="../index.html"/>
+    <link rel="top" title="crowddynamics legacy+303.g1e68f25.dirty documentation" href="../index.html"/>
         <link rel="up" title="crowddynamics.core package" href="crowddynamics.core.html"/>
         <link rel="next" title="crowddynamics.core.motion.tests package" href="crowddynamics.core.motion.tests.html"/>
         <link rel="prev" title="crowddynamics.core.interactions.tests package" href="crowddynamics.core.interactions.tests.html"/> 
@@ -72,7 +72,7 @@
             
             
               <div class="version">
-                legacy+302legacy+302.g559af75.dirtyg559af75
+                legacy+303legacy+303.g1e68f25.dirtyg1e68f25
               </div>
             
           
@@ -101,13 +101,20 @@
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../usage.html">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../developing.html">Developing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../resources.html">Resources</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Multi-Agent Simulation</span></p>
+<p class="caption"><span class="caption-text">Crowddynamics</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../multiagent.html">Multi-Agent Simulation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../interactions.html">Interactions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../motion.html">Motion</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../steering.html">Steering</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../quantities.html">Quantities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../evacuation.html">Evacuation</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Research</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../phenomena.html">Phenomena</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Api</span></p>
 <ul class="current">
@@ -118,8 +125,10 @@
 <li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.html#submodules">Submodules</a></li>
 <li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.html#module-crowddynamics.core.conftest">crowddynamics.core.conftest module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.html#module-crowddynamics.core.evacuation">crowddynamics.core.evacuation module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.html#module-crowddynamics.core.geom2D">crowddynamics.core.geom2D module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.html#module-crowddynamics.core.geometry">crowddynamics.core.geometry module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.html#module-crowddynamics.core.integrator">crowddynamics.core.integrator module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.html#module-crowddynamics.core.quantities">crowddynamics.core.quantities module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.html#module-crowddynamics.core.tree">crowddynamics.core.tree module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.html#module-crowddynamics.core.vector2D">crowddynamics.core.vector2D module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="crowddynamics.core.html#module-crowddynamics.core">Module contents</a></li>
@@ -142,13 +151,6 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../apidocs_examples/examples.html">examples package</a></li>
-</ul>
-<p class="caption"><span class="caption-text">Research</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../quantities.html">Quantities</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../phenomena.html">Phenomena</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../applications.html">Applications</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../references.html">References</a></li>
 </ul>
 
             
@@ -447,7 +449,7 @@ truncated normal distribution.</p>
 <dt id="crowddynamics.core.motion.helbing.force_social_helbing">
 <code class="descclassname">crowddynamics.core.motion.helbing.</code><code class="descname">force_social_helbing</code><a class="reference internal" href="../_modules/crowddynamics/core/motion/helbing.html#force_social_helbing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.core.motion.helbing.force_social_helbing" title="Permalink to this definition">¶</a></dt>
 <dd><p>Helbing&#8217;s model&#8217;s original social force. Independent of the velocity or
-direction of the agent. <a class="reference internal" href="../references.html#helbing2000a" id="id1">[Helbing2000a]</a></p>
+direction of the agent. <a class="reference internal" href="../multiagent.html#helbing2000a" id="id1">[Helbing2000a]</a></p>
 <div class="math">
 \[A \exp\left(-\frac{h}{B}\right) \mathbf{\hat{n}}\]</div>
 <table class="docutils field-list" frame="void" rules="none">
@@ -478,7 +480,7 @@ direction of the agent. <a class="reference internal" href="../references.html#h
 <div class="section" id="power-law">
 <h3>Power Law<a class="headerlink" href="#power-law" title="Permalink to this headline">¶</a></h3>
 <p>Anticipatory collision avoidance algorithm introduced in <em>Universal power law
-governing pedestrian interactions</em> <a class="reference internal" href="../references.html#karamouzas2014b" id="id2">[Karamouzas2014b]</a>. Algorithm is derived from
+governing pedestrian interactions</em> <a class="reference internal" href="../multiagent.html#karamouzas2014b" id="id2">[Karamouzas2014b]</a>. Algorithm is derived from
 real world data from the behaviour movement of people in crowds.</p>
 <p>Force affecting agent can be derived by taking spatial gradient of the energy,
 where time-to-collision <span class="math">\(\tau\)</span> is function of the relative displacement
@@ -785,7 +787,7 @@ Model by Langston for subgroups at most 4 people.</p>
   <div role="contentinfo">
     <p>
         &copy; Copyright Jaan Tollander de Balsch.
-      Last updated on 2017-05-11.
+      Last updated on 2017-05-18.
 
     </p>
   </div>
@@ -807,7 +809,7 @@ Model by Langston for subgroups at most 4 people.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'legacy+302.g559af75.dirty',
+            VERSION:'legacy+303.g1e68f25.dirty',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

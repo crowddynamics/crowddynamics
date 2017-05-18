@@ -1,0 +1,37 @@
+crowddynamics\.core\.rand package
+=================================
+
+Subpackages
+-----------
+
+.. toctree::
+
+    crowddynamics.core.rand.tests
+
+Submodules
+----------
+
+crowddynamics\.core\.rand\.functions module
+-------------------------------------------
+
+.. automodule:: crowddynamics.core.rand.functions
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+crowddynamics\.core\.rand\.sampling module
+------------------------------------------
+
+.. automodule:: crowddynamics.core.rand.sampling
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: crowddynamics.core.rand
+    :members:
+    :undoc-members:
+    :show-inheritance:
