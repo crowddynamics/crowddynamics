@@ -1,12 +1,23 @@
 Quantities
 ==========
+This section is about different quantities related and observed in crowd dynamics.
 
-.. todo::
-   Documentation about different quantities related and observed in crowddynamics.
+
+Velocity
+--------
+.. todo:: About measuring velocity from crowd trajectory data
+
 
 Density
 -------
-Crowd density :math:`\rho` is the number of agent per unit of area :math:`\mathrm{P / m^{2}}`. Realistic values range from :math:`0` to :math:`10` people per square metre. Density ranges can be classified in increasing order [gkstill]_
+
+.. autoclass:: crowddynamics.core.quantities.density_classical
+      :noindex:
+
+.. autoclass:: crowddynamics.core.quantities.density_voronoi
+      :noindex:
+
+Density ranges can be classified in increasing order [gkstill]_
 
 .. list-table::
    :header-rows: 1
@@ -30,15 +41,13 @@ Crowd density :math:`\rho` is the number of agent per unit of area :math:`\mathr
      - :math:`\geq 5.0`
      -
 
-Another way to define density in unit-less quantity is to define it to be the percentage of area occupied. This has value range :math:`0` to :math:`1`.
-
 
 Flow
 ----
 Crowd flow which has similarities with granular flow, gas kinetics and fluid-dynamics measures the magnitude and how the crowd flows. Rate of flow is defined as number of agents per second
 
 .. math::
-   J = \frac{\Delta N}{\Delta t}
+   F = \frac{\Delta N}{\Delta t}\quad \left[\frac{1}{s}\right]
 
 There are several types of crowd flow, which can be classified [Duives2014]_
 
@@ -63,3 +72,11 @@ Pressure :math:`p` in crowds created by contact forces :math:`\mathbf{f}_{c}` fr
 Fundamental Diagram
 -------------------
 Fundamental diagram offers an empirical relationship between density :math:`\rho` and velocity :math:`\mathbf{v}` of pedestrian movement. It can also be defined as the relationship between density :math:`\rho` and flow :math:`\Phi = \rho \mathbf{v}`. [Seyfried2005]_
+
+
+References
+----------
+.. [gkstill] FIPM, Prof. 2017. "Standing Crowd Density | Prof. Dr. G. Keith Still". Gkstill.Com. Accessed February 4 2017. http://www.gkstill.com/Support/crowd-density/CrowdDensity-1.html.
+.. [Seyfried2005] Seyfried, A., Steffen, B., Klingsch, W., & Boltes, M. (2005). The fundamental diagram of pedestrian movement revisited. Journal of Statistical Mechanics: Theory and Experiment, 2005(10), P10002–P10002. http://doi.org/10.1088/1742-5468/2005/10/P10002
+.. [Steffen2010] Steffen, B., & Seyfried, A. (2010). Methods for measuring pedestrian density, flow, speed and direction with minimal scatter. Physica A: Statistical Mechanics and Its Applications, 389(9), 1902–1910. https://doi.org/10.1016/j.physa.2009.12.015
+.. [Duives2014] Duives, D. C., Daamen, W., & Hoogendoorn, S. P. (2014). State-of-the-art crowd motion simulation models. Transportation Research Part C: Emerging Technologies. http://doi.org/10.1016/j.trc.2013.02.005

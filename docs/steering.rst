@@ -48,3 +48,9 @@ Steering
 
 .. automodule:: crowddynamics.core.steering.orientation
    :noindex:
+
+
+References
+----------
+.. [Kretz2011a] Kretz, T., Große, A., Hengst, S., Kautzsch, L., Pohlmann, A., & Vortisch, P. (2011). Quickest Paths in Simulations of Pedestrians. Advances in Complex Systems, 14(5), 733–759. http://doi.org/10.1142/S0219525911003281
+.. [Cristiani2015b] Cristiani, E., & Peri, D. (2015). Handling obstacles in pedestrian simulations: Models and optimization. Retrieved from http://arxiv.org/abs/1512.08528

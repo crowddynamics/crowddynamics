@@ -11,16 +11,26 @@ Crowd Dynamics
    installation.rst
    usage.rst
    developing.rst
+   resources.rst
 
 
 .. toctree::
-   :caption: Multi-Agent Simulation
+   :caption: Crowddynamics
    :maxdepth: 2
 
    multiagent.rst
    interactions.rst
    motion.rst
    steering.rst
+   quantities.rst
+   evacuation.rst
+
+
+.. toctree::
+   :caption: Research
+   :maxdepth: 2
+
+   phenomena.rst
 
 
 .. toctree::
@@ -29,16 +39,6 @@ Crowd Dynamics
 
    apidocs/crowddynamics.rst
    apidocs_examples/examples.rst
-
-
-.. toctree::
-   :caption: Research
-   :maxdepth: 2
-
-   quantities.rst
-   phenomena.rst
-   applications.rst
-   references.rst
 
 
 Indices and tables

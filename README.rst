@@ -27,6 +27,13 @@ Crowddynamics is a simulation environment written in Python package for simulati
 
 .. _documentation: http://jaantollander.github.io/crowddynamics/
 
+Real life applications for crowd research and crowd dynamics are
+
+* Improving safety of buildings, mass events and crowded places in general.
+* Evacuation time estimation and understanding evacuation processes
+* Venue design and improving the flow rates of the crowd in critical parts, subways for example.
+* Producing realistic movement in games, animations and virtual reality
+
 
 Authors
 -------
