@@ -4,7 +4,7 @@ setuptools==35.0.2
 ## Testing
 pytest==3.0.7
 pytest-cov==2.4.0
-hypothesis==3.8.2
+hypothesis==3.9.0
 pytest-benchmark==3.0.0
 codecov==2.0.9
 
