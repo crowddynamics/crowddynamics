@@ -8,40 +8,58 @@ from numba import i8, f8, optional
 @numba.jit(f8(f8, f8, optional(f8), f8),
            nopython=True, nogil=True, cache=True)
 def narrow_exit_capacity(d_door, d_agent, d_layer=None, coeff=1.0):
-    r"""Estimation of the capacity of narrow exit.
-
+    r"""
     Capacity estimation :math:`\beta` of unidirectional flow through narrow
     bottleneck. Capacity of the bottleneck increases in stepwise manner.
 
-    Simple estimation
+    Estimation 1
+        Simple estimation
+        
+        .. math::
+           \beta_{simple} = c \left \lfloor \frac{d_{door}}{d_{agent}} \right \rfloor
 
-    .. math::
-       \beta_{simple} = c \left \lfloor \frac{d_{door}}{d_{agent}} \right \rfloor
+    Estimation 2
+        More sophisticated estimation [Hoogendoorn2005a]_, [Seyfried2007a]_
 
-    More sophisticated estimation [Hoogendoorn2005a]_, [Seyfried2007a]_
-    when :math:`d_{door} \geq d_{agent}`
+        .. math::
+           \beta_{hoogen} = c \left \lfloor \frac{d_{door} - (d_{agent} - d_{layer})}{d_{layer}} \right \rfloor,\quad d_{door} \geq d_{agent}
 
-    .. math::
-       \beta_{hoogen} = c \left \lfloor \frac{d_{door} - (d_{agent} - d_{layer})}{d_{layer}} \right \rfloor
-
-    We have relationship between simple and hoogendoorn's estimation
+    We have relationship between simple and Hoogendoorn's estimation
 
     .. math::
        \beta_{hoogen} = \beta_{simple}, \quad d_{layer} = d_{agent}
 
+    .. list-table:: Variables
+       :header-rows: 1
+       
+       * - Variable
+         - Reference value
+         - Unit
+       * - :math:`d_{door} \in [0, 3]`
+         - 
+         - m
+       * - :math:`d_{agent} > 0`
+         - 
+         - m
+       * - :math:`d_{layer} > 0`
+         - :math:`0.45`
+         - m
+       * - :math:`c > 0`
+         -
+         -
+
     Args:
         d_door (float):
-            Width of the door :math:`0\,\mathrm{m} < d_{door} < 3\,\mathrm{m}`.
+            Width of the door :math:`d_{door}`.
 
         d_agent (float):
-            Width of the agent :math:`d_{agent} > 0\,\mathrm{m}`.
+            Width of the agent :math:`d_{agent}`.
 
         d_layer (float, optional):
-            Width of layer :math:`d_{layer}`. Reference value:
-            :math:`0.45\,\mathrm{m}`
+            Width of layer :math:`d_{layer}`.
 
         coeff (float):
-            Scaling coefficient :math:`c > 0` for the estimation.
+            Scaling coefficient :math:`c`.
 
     Returns:
         float:
@@ -107,7 +125,3 @@ def agent_closer_to_exit(c_door, position):
     d_sorted = np.argsort(distances)
     num = np.argsort(d_sorted)
     return num
-
-
-def exit_selection():
-    pass

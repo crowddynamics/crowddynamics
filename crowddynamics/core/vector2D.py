@@ -39,6 +39,13 @@ def wrap_to_pi(rad):
 @numba.jit(f8[:](f8[:]), nopython=True, nogil=True, cache=True)
 def rotate90(v):
     r"""90 degree counterclockwise rotation for 2D vector.
+    
+    .. tikz::
+       \begin{scope}[scale=0.5]
+       \draw[color=gray!20] (-1, -1) grid (6, 6);
+       \draw[thick, gray, dashed, ->] (0, 0) -- (90:5);
+       \draw[thick, ->] (0, 0) -- (0:5);
+       \end{scope}
 
     Args:
         v (numpy.ndarray):
@@ -56,6 +63,13 @@ def rotate90(v):
 def rotate270(v):
     r"""90 degree clockwise rotation for 2D vector.
 
+    .. tikz::
+       \begin{scope}[scale=0.5]
+       \draw[color=gray!20] (-1, -1) grid (6, 6);
+       \draw[thick, gray, dashed, ->] (0, 0) -- (0:5);
+       \draw[thick, ->] (0, 0) -- (90:5);
+       \end{scope}
+
     Args:
         v (numpy.ndarray):
 
@@ -71,7 +85,7 @@ def rotate270(v):
 @numba.jit([f8(f8[:]), f8[:](f8[:, :])],
            nopython=True, nogil=True, cache=True)
 def angle(v):
-    r"""Angle of 2d vector in radians.
+    r"""Angle of 2d vector in radians (angle between vector and x-axis).
 
     Args:
         v (numpy.ndarray): 2D vector
@@ -85,7 +99,10 @@ def angle(v):
 @numba.jit([f8(f8[:]), f8[:](f8[:, :])],
            nopython=True, nogil=True, cache=True)
 def length(v):
-    r"""Length
+    r"""Length of an vector
+    
+    .. math::
+       \|\mathbf{v}\|
 
     Args:
         v (numpy.ndarray): 2D vector
@@ -100,6 +117,9 @@ def length(v):
            nopython=True, nogil=True, cache=True)
 def dot(v0, v1):
     r"""Dot product for 2D vectors.
+    
+    .. math::
+       \mathbf{v}_0 \cdot \mathbf{v}_1
 
     Args:
         v0 (numpy.ndarray):
@@ -115,6 +135,9 @@ def dot(v0, v1):
            nopython=True, nogil=True, cache=True)
 def cross(v0, v1):
     r"""Cross product for 2D vectors. Right corner from 3D cross product.
+
+    .. math::
+       \mathbf{v}_0 \times \mathbf{v}_1
 
     Args:
         v0 (numpy.ndarray):

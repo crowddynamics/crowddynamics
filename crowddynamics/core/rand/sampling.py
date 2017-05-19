@@ -4,6 +4,8 @@ import numpy as np
 from numba import f8
 from scipy.spatial.qhull import Delaunay
 
+from crowddynamics.core.geom2D import polygon_area
+
 
 @numba.jit(f8[:](f8[:, :]), nopython=True, nogil=True, cache=True)
 def linestring_length_cumsum(vertices):
@@ -53,29 +55,6 @@ def linestring_sample(vertices):
         yield random_sample_line(vertices[i], vertices[i+1])
 
 
-@numba.jit(f8(f8[:], f8[:], f8[:]), nopython=True, nogil=True, cache=True)
-def triangle_area(a, b, c):
-    r"""
-    Area of a triangle given by points :math:`\mathbf{a}`, :math:`\mathbf{b}`,
-    and :math:`\mathbf{c}`.
-
-    .. math::
-       \frac{|a_0 (b_1 - c_1) + b_0 (c_1 - a_1) + c_0 (a_1 - b_1)|}{2}
-
-    Args:
-        a (numpy.ndarray): Vertex of the triangle
-        b (numpy.ndarray): Vertex of the triangle
-        c (numpy.ndarray): Vertex of the triangle
-
-    Returns:
-        float: Area of the triangle
-
-    """
-    return np.abs(a[0] * (b[1] - c[1]) +
-                  b[0] * (c[1] - a[1]) +
-                  c[0] * (a[1] - b[1])) / 2
-
-
 @numba.jit([f8[:](f8[:, :, :])], nopython=True, nogil=True, cache=True)
 def triangle_area_cumsum(trimesh):
     r"""Computes cumulative sum of the areas of the triangle mesh.
@@ -92,8 +71,7 @@ def triangle_area_cumsum(trimesh):
     rows = trimesh.shape[0]
     cumsum = np.zeros(rows)
     for i in range(rows):
-        a, b, c = trimesh[i, 0, :], trimesh[i, 1, :], trimesh[i, 2, :]
-        area += triangle_area(a, b, c)
+        area += polygon_area(trimesh[i, :, :])
         cumsum[i] = area
     return cumsum
 

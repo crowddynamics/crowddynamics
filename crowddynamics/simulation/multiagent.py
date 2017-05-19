@@ -32,9 +32,8 @@ from crowddynamics.core.motion.adjusting import force_adjust_agents, \
     torque_adjust_agents
 from crowddynamics.core.motion.fluctuation import force_fluctuation, \
     torque_fluctuation
-from crowddynamics.core.random.functions import truncnorm
-from crowddynamics.core.random.sampling import polygon_sample
-from crowddynamics.core.steering.herding import herding_block_list
+from crowddynamics.core.rand.functions import truncnorm
+from crowddynamics.core.rand.sampling import polygon_sample
 from crowddynamics.core.steering.navigation import navigation, static_potential, \
     herding
 from crowddynamics.core.steering.orientation import \
@@ -80,8 +79,12 @@ class Field(HasTraits):
        \node[] () at (5, 3) {$ \Omega $};
        % Spawn 0
        \fill[blue!20] (0, 3) -- ++(2, 0) -- ++(1, 1) -- ++(0, 2) 
-                           -- ++(-3, 0) -- ++(0, -3);
+                      -- ++(-3, 0) -- ++(0, -3);
        \node[] () at (1.5, 4.5) {$ \mathcal{S}_0 $};
+       % Spawn 1
+       \fill[blue!20] (3, 0) -- ++(0, 1) -- ++(1, 1) -- ++(2, 0) -- ++(1, -1)
+                      -- ++(0, -1);
+       \node[] () at (5, 0.5) {$ \mathcal{S}_1 $};
        % Obstacles
        \draw[thick] (0, 0) rectangle (10, 6);
        \draw[fill=black] (9, 2) circle (0.5);
@@ -309,15 +312,16 @@ class Field(HasTraits):
 
 
 class Agents(object):
-    r"""Multi-Agent simulation agent types.
+    r"""Multi-Agent simulation agent types. Modelled as rigid bodies.
      
     Circular
         .. tikz::
            \begin{scope}[scale=3]
              \draw[color=gray!20] (-2, -1) grid (2, 1);
+             \draw[thick] (0, 0) circle (1);
+             \fill[color=gray!20, opacity=0.5] (0, 0) circle (1);
              \node[below] () at (0, 0) {$ \mathbf{x} $};
              \fill (0, 0) circle(0.5pt);
-             \draw[thick] (0, 0) circle (1);
              \draw[dashed, <->] (0, 0) -- node[above] {$ r $} ++(135:1);
            \end{scope}
 
@@ -334,13 +338,16 @@ class Agents(object):
         .. tikz:: 
            \begin{scope}[scale=3]
              \draw[color=gray!20] (-2, -1) grid (2, 1);
+             \draw[thick] (0, 0) circle (0.59);
+             \draw[thick] (-0.63, 0) circle (0.37);
+             \draw[thick] (0.63, 0) circle (0.37);
+             \fill[gray!20, opacity=0.5] (0, 0) circle (0.59);
+             \fill[gray!20, opacity=0.5] (-0.63, 0) circle (0.37);
+             \fill[gray!20, opacity=0.5] (0.63, 0) circle (0.37);
              \node[below] () at (0, 0) {$ \mathbf{x} $};
              \fill (0, 0) circle(0.5pt);
              \fill (-0.63, 0) circle(0.5pt);
              \fill (0.63, 0) circle(0.5pt);
-             \draw[thick] (0, 0) circle (0.59);
-             \draw[thick] (-0.63, 0) circle (0.37);
-             \draw[thick] (0.63, 0) circle (0.37);
              \draw[dashed, <->] (0, 0) -- node[above] {$ r_{t} $} ++(135:0.59);
              \draw[dashed, <->] (-0.63, 0) -- node[above] {$ r_{s} $} ++(135:0.37);
              \draw[dashed, <->] (0.63, 0) -- node[above] {$ r_{s} $} ++(45:0.37);
@@ -367,6 +374,12 @@ class Agents(object):
         .. tikz::
            \begin{scope}[scale=3]
              \draw[color=gray!20] (-2, -1) grid (2, 1);
+             \draw[thick] (0.5, 0.5) arc (90:-90:0.5) 
+                          -- ++(-1, 0) arc (270:90:0.5) 
+                          -- ++(1, 0);
+              \fill[gray!20, opacity=0.5] (0.5, 0.5) arc (90:-90:0.5) 
+                          -- ++(-1, 0) arc (270:90:0.5) 
+                          -- ++(1, 0);
              \node[below] () at (0, 0) {$ \mathbf{x} $};
              \fill (0, 0) circle(0.5pt);
              \fill (-0.5, 0) circle(0.5pt);
@@ -374,15 +387,13 @@ class Agents(object):
              \draw[thick] (-0.5, 0) -- (0.5, 0);
              \draw[dashed, <->] (-0.5, 0) -- node[above] {$ r $} ++(135:0.5);
              \draw[dashed, <->] (-0.5, -0.2) -- node[below]{$ w $} (0.5, -0.2);
-             \draw[thick] (0.5, 0.5) arc (90:-90:0.5) 
-                          -- ++(-1, 0) arc (270:90:0.5) 
-                          -- ++(1, 0);
              %\draw[thick, ->] (0, 0) -- node[left] {$ \mathbf{\hat{e}_n} $} (0, 0.3);
              %\draw[thick, ->] (0, 0) -- node[below] {$ \mathbf{\hat{e}_t} $} (0.3, 0);
            \end{scope}
 
-        **Capsule** shaped model proposed by Stüvel in *Dense Crowds of Virtual 
-        Humans* [Stuvel2016]_. 
+        **Capsule** shaped model used in *Dense Crowds of Virtual Humans* 
+        [Stuvel2016]_ and *Simulating competitive egress of noncircular 
+        pedestrians* [Hidalgo2017]_.
         
         .. math::
            r &= T / 2 \\
@@ -395,6 +406,9 @@ class Agents(object):
 
     """
     logger = logging.getLogger(__name__)
+    # TODO: remove size -> make it resize with addition of new agents
+    # TODO: traits: agent_type, body_types, configuration
+    # TODO: set attributes -> attributes to Callable[_, dict]
 
     def __init__(self,
                  size,
@@ -428,12 +442,8 @@ class Agents(object):
 
         # Faster check for neighbouring agents for initializing agents into
         # random positions.
-        self.grid = MutableBlockList(
+        self._grid = MutableBlockList(
             cell_size=self.config['constants']['cell_size'])
-
-    @property
-    def size(self):
-        return self.array.size
 
     @staticmethod
     def reset_agent(index, agents):
@@ -442,21 +452,7 @@ class Agents(object):
 
     @staticmethod
     def body_to_values(body):
-        """Body to values
-
-        Args:
-            body (dict): Dictionary with keys::
-
-                ratio_rt = float
-                ratio_rs = float
-                ratio_ts = float
-                radius = float
-                radius_scale = float
-                velocity = float
-                velocity_scale = float
-                mass = float
-                mass_scale = float
-        """
+        """Body to values"""
         radius = _truncnorm(body['radius'], body['radius_scale'])
         mass = _truncnorm(body['mass'], body['mass_scale'])
         # Rotational inertia of mass 80 kg and radius 0.27 m agent.
@@ -496,7 +492,7 @@ class Agents(object):
                 # ))
                 pass
 
-    def add(self, attributes, check_overlapping=True):
+    def _add(self, attributes, check_overlapping=True):
         """Add new agent with given attributes
 
         Args:
@@ -542,7 +538,7 @@ class Agents(object):
         position = agent['position']
 
         if check_overlapping:
-            neighbours = self.grid.nearest(position, radius=1)
+            neighbours = self._grid.nearest(position, radius=1)
             agents = self.array[neighbours]
 
             if is_model(self.array, 'circular'):
@@ -562,32 +558,32 @@ class Agents(object):
             else:
                 raise CrowdDynamicsException
 
-        self.grid[position] = index
+        self._grid[position] = index
         self._active.add(index)
         self.array[index]['active'] = True
         return index
 
     @log_with(qualname=True, timed=True, ignore=('self',))
-    def add_group(self, amount, attributes, check_overlapping=True):
+    def add_group(self, size, attributes, check_overlapping=True):
         """Add group of agents
 
         Args:
             check_overlapping:
-            amount (int):
+            size (int):
             attributes (dict|Callable[dict]):
         """
         overlaps = 0
         iteration = 0
-        iterations_max = 10 * amount
+        iterations_max = 10 * size
 
         # Progress bar for displaying number of agents placed
         # FIXME: tqdm does not work with tests
         # success = tqdm(desc='Agents placed: ', total=amount)
         # overlapping = tqdm(desc='Agent overlaps: ', total=iterations_max)
-        while iteration < amount and overlaps < iterations_max:
+        while iteration < size and overlaps < iterations_max:
             a = attributes() if callable(attributes) else attributes
             try:
-                index = self.add(a, check_overlapping=check_overlapping)
+                index = self._add(a, check_overlapping=check_overlapping)
                 # success.update(1)
             except OverlappingError:
                 overlaps += 1

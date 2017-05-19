@@ -6,8 +6,9 @@ from hypothesis import given, assume
 from hypothesis.extra.numpy import arrays
 from shapely.geometry import Polygon, Point
 
-from crowddynamics.core.random.sampling import triangle_area, \
-    random_sample_triangle, triangle_area_cumsum, polygon_sample, \
+from crowddynamics.core.geom2D import polygon_area
+from crowddynamics.core.rand.sampling import random_sample_triangle, \
+    triangle_area_cumsum, polygon_sample, \
     linestring_sample
 from crowddynamics.testing import real
 
@@ -25,13 +26,6 @@ def test_linestring_sample(poly):
         assert np.isclose(ls.distance(Point(p)), 0.0)
 
 
-@given(real(shape=2), real(shape=2), real(shape=2))
-def test_triangle_area(a, b, c):
-    area = triangle_area(a, b, c)
-    assert isinstance(area, float)
-    assert np.isnan(area) or area >= 0.0
-
-
 @given(arrays(np.float64, (10, 3, 2), st.floats(-100, 100, False, False)))
 def test_triangle_area_cumsum(trimesh):
     cumsum = triangle_area_cumsum(trimesh)
@@ -45,7 +39,7 @@ def test_triangle_area_cumsum(trimesh):
        real(min_value=-100, max_value=100, shape=2))
 def test_random_sample_triangle(a, b, c):
     # Assume that the area of the triangle is not zero.
-    area = triangle_area(a, b, c)
+    area = polygon_area(np.stack((a, b, c)))
     assume(not np.isclose(area, 0.0))
 
     triangle = Polygon((a, b, c))
