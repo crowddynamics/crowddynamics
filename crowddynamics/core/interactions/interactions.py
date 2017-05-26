@@ -76,14 +76,13 @@ from crowddynamics.core.interactions.distance import distance_circles, \
 from crowddynamics.core.motion.contact import force_contact
 from crowddynamics.core.motion.power_law import \
     force_social_circular, force_social_three_circle
-from crowddynamics.core.structures.agents import agent_type_circular, \
+from crowddynamics.simulation.agents import agent_type_circular, \
     agent_type_three_circle, is_model
-from crowddynamics.core.structures.obstacles import obstacle_type_linear
+from crowddynamics.core.struct import obstacle_type_linear
 from crowddynamics.core.vector2D import rotate270, cross
 
-# TODO: load from config
-# Reach of the social force.
-SIGTH_SOC = 3.0
+
+SIGTH_SOC = 3.0  # TODO: load from config
 
 
 # Individual interactions

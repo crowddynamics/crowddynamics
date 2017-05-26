@@ -90,8 +90,10 @@ def remove_files(*paths):
         for pathname in p.glob(str(path)):
             try:
                 if pathname.is_dir():
+                    print('Removing directory {}'.format(pathname))
                     shutil.rmtree(str(pathname))
                 else:
+                    print('Removing file {}'.format(pathname))
                     os.remove(str(pathname))
             except FileNotFoundError:
                 pass
@@ -121,14 +123,19 @@ def task_clean_build():
 
 def task_clean_pyc():
     """Clean python file artifacts"""
-    # TODO: recursive
     files = ['*.pyc', '*.pyo', '*~', '__pycache__']
-    return {'actions': [(remove_files, files)]}
+    files_rec = ['**/' + file for file in files]
+    return {'actions': [(remove_files, files + files_rec)]}
 
 
 def task_clean_test():
     """Clean test and coverage artifacts"""
-    files = ['.tox/', '.coverage', 'htmlcov/', '.benchmarks', '.cache',
+    files = ['.tox/',
+             '.coverage',
+             'htmlcov/',
+             '**/htmlcov/',
+             '.benchmarks',
+             '.cache',
              '.hypothesis']
     return {'actions': [(remove_files, files)]}
 
@@ -143,4 +150,9 @@ def task_clean_apidocs():
     """Clean documentation"""
     files = [os.path.join(SOURCEDIR, 'apidocs'),
              os.path.join(SOURCEDIR, 'apidocs_examples')]
+    return {'actions': [(remove_files, files)]}
+
+
+def task_clean_logs():
+    files = ['.logs', '**/.logs']
     return {'actions': [(remove_files, files)]}

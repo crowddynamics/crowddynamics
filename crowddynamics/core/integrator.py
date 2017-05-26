@@ -21,7 +21,7 @@ import numba
 import numpy as np
 from numba import f8, void, typeof
 
-from crowddynamics.core.structures.agents import agent_type_three_circle, \
+from crowddynamics.simulation.agents import agent_type_three_circle, \
     agent_type_circular, shoulders
 from crowddynamics.core.vector2D import wrap_to_pi, length
 

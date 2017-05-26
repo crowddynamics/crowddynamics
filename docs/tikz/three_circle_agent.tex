@@ -1,0 +1,20 @@
+\begin{scope}[scale=3]
+    \draw[color=gray!20] (-2, -1) grid (2, 1);
+    \draw[thick] (0, 0) circle (0.59);
+    \draw[thick] (-0.63, 0) circle (0.37);
+    \draw[thick] (0.63, 0) circle (0.37);
+    \fill[gray!20, opacity=0.5] (0, 0) circle (0.59);
+    \fill[gray!20, opacity=0.5] (-0.63, 0) circle (0.37);
+    \fill[gray!20, opacity=0.5] (0.63, 0) circle (0.37);
+    \node[below] () at (0, 0) {$ \mathbf{x} $};
+    \fill (0, 0) circle(0.5pt);
+    \fill (-0.63, 0) circle(0.5pt);
+    \fill (0.63, 0) circle(0.5pt);
+    \draw[dashed, <->] (0, 0) -- node[above] {$ r_{t} $} ++(135:0.59);
+    \draw[dashed, <->] (-0.63, 0) -- node[above] {$ r_{s} $} ++(135:0.37);
+    \draw[dashed, <->] (0.63, 0) -- node[above] {$ r_{s} $} ++(45:0.37);
+    \draw[dashed, <->] (0, 0) -- node[above] {$ r_{ts} $} (-0.63, 0);
+    \draw[dashed, <->] (0, 0) -- node[above] {$ r_{ts} $} (0.63, 0);
+    %\draw[thick, ->] (0, 0) -- node[left] {$ \mathbf{\hat{e}_n} $} (0, 0.3);
+    %\draw[thick, ->] (0, 0) -- node[below] {$ \mathbf{\hat{e}_t} $} (0.3, 0);
+\end{scope}

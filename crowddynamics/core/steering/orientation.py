@@ -6,7 +6,7 @@ Target orientation :math:`\varphi_{0}` finding algorithms.
 import numba
 from numba import void, typeof
 
-from crowddynamics.core.structures.agents import agent_type_three_circle
+from crowddynamics.simulation.agents import agent_type_three_circle
 from crowddynamics.core.vector2D import angle
 
 

@@ -16,7 +16,7 @@ from shapely import speedups
 from shapely.geometry import Polygon, LineString, Point
 from shapely.geometry.base import BaseGeometry, BaseMultipartGeometry
 
-from crowddynamics.core.structures.obstacles import obstacle_type_linear
+from crowddynamics.core.struct import obstacle_type_linear
 from crowddynamics.exceptions import InvalidType, InvalidValue
 
 if speedups.available:

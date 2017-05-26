@@ -6,11 +6,15 @@ Data flow ::
 
 """
 import os
+from collections import Iterable, Mapping
 from io import StringIO
 import csv
+import json
 
 import numpy as np
 
+
+# NPY : Array data
 
 def save_npy(directory, basename):
     """Save simulation data
@@ -94,6 +98,8 @@ def load_npy_concatenated(directory, basename):
     return np.vstack(list(load_npy(directory, basename)))
 
 
+# CSV : Simulation data
+
 def save_csv(directory, basename):
     """Save dictionary data into csv file.
     
@@ -134,3 +140,53 @@ def save_csv(directory, basename):
             dump = yield  # bool
             if dump:
                 dumper()
+
+
+# JSON : Simulation metadata and Shapely geometries
+
+def geometry_mapping(geom):
+    from shapely.geometry import mapping
+
+    if isinstance(geom, Iterable):
+        return [mapping(geo) for geo in geom]
+    elif isinstance(geom, Mapping):
+        return {name: mapping(geo) for name, geo in geom.items()}
+    else:
+        return mapping(geom) if geom else geom
+
+
+def geometry_shape(geom):
+    from shapely.geometry import shape
+
+    if isinstance(geom, Iterable):
+        return [shape(geo) for geo in geom]
+    elif isinstance(geom, Mapping):
+        return {name: shape(geo) for name, geo in geom.items()}
+    else:
+        return shape(geom) if geom else geom
+
+
+def save_geometry_json(filename, geometries):
+    """Save dictonary of geometries to filename (.json).
+    
+    Args:
+        filename: 
+        geometries (dict): 
+
+    """
+    with open(filename, 'a') as fp:
+        obj = {name: geometry_mapping(geom) for name, geom in
+               geometries.items()}
+        json.dump(obj, fp, indent=2, separators=(', ', ': '))
+
+
+def load_geometry_json(filename):
+    """Load dictonary of geometries from filename (.json).
+
+        Args:
+            filename: 
+
+        """
+    with open(filename, 'r') as fp:
+        obj = json.load(fp)
+        return {name: geometry_shape(geo) for name, geo in obj.items()}

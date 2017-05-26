@@ -39,6 +39,7 @@ pip install -q \
     colorama \
     colorlog \
     traitlets \
+    traittypes \
     pytest \
     pytest-cov \
     coverage \

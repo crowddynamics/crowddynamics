@@ -1,5 +1,4 @@
 """CrowdDynamics simulation configuration"""
-import contextlib
 import importlib.util
 import logging
 import os
@@ -7,7 +6,8 @@ import os
 from configobj import ConfigObj
 from validate import Validator
 
-from crowddynamics.exceptions import ValidationError
+from crowddynamics.exceptions import ValidationError, deprecated
+from crowddynamics.utils import remember_cwd
 
 CONFIG_ROOT = os.path.join(os.path.dirname(__file__), 'conf')
 
@@ -16,11 +16,8 @@ LOG_CFG = os.path.join(CONFIG_ROOT, 'logging.yaml')
 CROWDDYNAMICS_CFG_SPEC = os.path.join(CONFIG_ROOT, 'crowddynamics_spec.cfg')
 CROWDDYNAMICS_CFG = 'crowddynamics.cfg'
 
-AGENT_CFG_SPEC = os.path.join(CONFIG_ROOT, 'agent_spec.cfg')
-AGENT_CFG = os.path.join(CONFIG_ROOT, 'agent.cfg')
-
-MULTIAGENT_CFG = os.path.join(CONFIG_ROOT, 'multiagent.cfg')
-MULTIAGENT_CFG_SPEC = os.path.join(CONFIG_ROOT, 'multiagent_spec.cfg')
+BODY_TYPES_CFG = os.path.join(CONFIG_ROOT, 'body_types.cfg')
+BODY_TYPES_CFG_SPEC = os.path.join(CONFIG_ROOT, 'body_types_spec.cfg')
 
 
 def load_config(infile, configspec=None):
@@ -31,16 +28,7 @@ def load_config(infile, configspec=None):
     return config
 
 
-@contextlib.contextmanager
-def remember_cwd(directory):
-    curdir = os.getcwd()
-    try:
-        os.chdir(directory)
-        yield
-    finally:
-        os.chdir(curdir)
-
-
+@deprecated
 def import_simulation_callables(confpath):
     """Import simulations callables
     

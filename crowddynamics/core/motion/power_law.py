@@ -44,7 +44,7 @@ import numpy as np
 from numba import f8, i8, typeof
 from numba.types import Tuple
 
-from crowddynamics.core.structures.agents import agent_type_three_circle, \
+from crowddynamics.simulation.agents import agent_type_three_circle, \
     agent_type_circular
 from crowddynamics.core.vector2D import dot, truncate
 

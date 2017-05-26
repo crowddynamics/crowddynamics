@@ -16,6 +16,7 @@ examples/*.html
 /docs/apidocs_examples/
 *.logs/
 *_build/
+notebooks/
 
 
 # Created by .ignore support plugin (hsz.mobi)

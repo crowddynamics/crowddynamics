@@ -5,10 +5,14 @@ import bokeh.io
 import bokeh.plotting
 import numpy as np
 from bokeh.models import Range1d
-from bokeh.plotting.figure import Figure
-from shapely.geometry import LineString, Point, Polygon
-from shapely.geometry.base import BaseMultipartGeometry, BaseGeometry
+from bokeh.plotting import Figure
+from shapely.geometry import Point, LineString, Polygon
+from shapely.geometry.base import BaseGeometry, BaseMultipartGeometry
 
+
+# Bokeh
+
+# TODO: implement bokeh interface with bokeh descriptors
 
 def set_aspect(fig, x, y, aspect=1, margin=0.1):
     """Set the plot ranges to achieve a given aspect ratio.
@@ -80,7 +84,7 @@ def figure(filename, show=False, save=False, **kwargs):
         bokeh.io.save(fig)
 
 
-def plot_geom(fig: Figure, geom: BaseGeometry, **kwargs):
+def add_geom(fig: Figure, geom: BaseGeometry, **kwargs):
     """Add Shapely geom into Bokeh plot.
 
     Args:
@@ -95,13 +99,13 @@ def plot_geom(fig: Figure, geom: BaseGeometry, **kwargs):
         fig.patch(*geom.exterior.xy, **kwargs)
     elif isinstance(geom, BaseMultipartGeometry):
         for item in geom:
-            plot_geom(fig, item, **kwargs)
+            add_geom(fig, item, **kwargs)
     else:
         raise TypeError('Object geom {geom} no instance of {types}.'.format(
             geom=geom, types=BaseGeometry))
 
 
-def plot_field(fig, field):
+def add_field(fig, field):
     """Plot Field
     
     Args:
@@ -111,18 +115,18 @@ def plot_field(fig, field):
     """
 
     # Plot spawn and target indices
-    plot_geom(fig, field.domain, alpha=0.05)
+    add_geom(fig, field.domain, alpha=0.05)
 
     for spawn in field.spawns:
-        plot_geom(fig, spawn, alpha=0.5, line_width=0, color='green')
+        add_geom(fig, spawn, alpha=0.5, line_width=0, color='green')
 
     for target in field.targets:
-        plot_geom(fig, target, alpha=0.5, line_dash='dashed', color='olive')
+        add_geom(fig, target, alpha=0.5, line_dash='dashed', color='olive')
 
-    plot_geom(fig, field.obstacles, alpha=0.8)
+    add_geom(fig, field.obstacles, alpha=0.8)
 
 
-def plot_distance_map(fig, mgrid, distance_map, **kwargs):
+def add_distance_map(fig, mgrid, distance_map, **kwargs):
     """Contour plot of distance from target
     
     http://bokeh.pydata.org/en/latest/docs/gallery/image.html
@@ -138,7 +142,7 @@ def plot_distance_map(fig, mgrid, distance_map, **kwargs):
     fig.image([distance_map], minx, miny, maxx, maxy, **kwargs)
 
 
-def plot_direction_map(fig: Figure, mgrid, direction_map, freq=2, **kwargs):
+def add_direction_map(fig: Figure, mgrid, direction_map, freq=2, **kwargs):
     """Quiver plot of direction map
     
     http://bokeh.pydata.org/en/latest/docs/gallery/quiver.html
@@ -163,3 +167,24 @@ def plot_direction_map(fig: Figure, mgrid, direction_map, freq=2, **kwargs):
     fig.triangle(x1, y1, size=4.0,
                  angle=np.arctan2(V[::freq, ::freq].flatten(),
                                   U[::freq, ::freq].flatten()) - np.pi / 2)
+
+
+# Anytree
+
+def render_tree(tree, filepath):
+    """Wrapper around rendering trees into `png` or `dot` formats. Tree are 
+    rendered from the root node.
+    
+    Args:
+        tree (NodeMixin): 
+        filepath (str|Path): 
+    """
+    from anytree.dotexport import RenderTreeGraph
+    tree = RenderTreeGraph(tree.root)
+    base, ext = os.path.splitext(filepath)
+    if ext == '.png':
+        tree.to_picture(filename=filepath)
+    elif ext == '.dot':
+        tree.to_dotfile(filename=filepath)
+    else:
+        raise Exception

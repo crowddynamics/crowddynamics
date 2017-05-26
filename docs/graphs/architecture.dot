@@ -1,9 +1,0 @@
-digraph architecture {
-    "Command line" -> "start project";
-    "Command line" -> "generate simulation";
-    "Command line" -> "Find Simulations";
-    "Find Simulations" -> "List";
-    "Find Simulations" -> "Run";
-    "Run" -> "Parse Signature";
-
-}

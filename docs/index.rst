@@ -18,6 +18,7 @@ Crowd Dynamics
    :caption: Crowddynamics
    :maxdepth: 2
 
+   architecture.rst
    multiagent.rst
    interactions.rst
    motion.rst
