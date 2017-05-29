@@ -2,5 +2,5 @@
 sphinx==1.5.5
 sphinx-autobuild==0.6.0
 sphinx-rtd-theme==0.2.4
-graphviz==0.6
+graphviz==0.7.1
 sphinxcontrib-tikz==0.4.4
