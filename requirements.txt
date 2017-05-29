@@ -17,7 +17,7 @@ traittypes==0.0.6
 click==6.7
 colorama==0.3.9
 colorlog==2.10.0
-tqdm==4.11.2
+tqdm==4.14.0
 
 ## Core
 numpy==1.12.1
