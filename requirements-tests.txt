@@ -1,7 +1,7 @@
 setuptools==35.0.2
 
 ## Static Type Checking
-mypy
+mypy==0.511
 
 
 ## Testing
