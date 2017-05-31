@@ -156,6 +156,29 @@ Distributing
 .. todo:: Distributing crowddynamics through conda
 
 
+Research
+--------
+.. list-table::
+   :header-rows: 1
+
+   * - Tool
+     -
+   * - Mendeley_
+     -
+   * - Zotero_
+     -
+   * - ResearchGate_
+     -
+   * - Arxiv_
+     -
+
+
+.. _Mendeley: https://www.mendeley.com/
+.. _Zotero: https://www.zotero.org/
+.. _ResearchGate: https://www.researchgate.net
+.. _Arxiv: https://arxiv.org/
+
+
 .. Links
 .. _crowddynamics: https://github.com/jaantollander/crowddynamics
 .. _Ubuntu: https://www.ubuntu.com/

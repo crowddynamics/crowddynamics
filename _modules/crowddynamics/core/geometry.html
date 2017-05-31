@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>crowddynamics.core.geometry &mdash; crowddynamics legacy+303.g1e68f25.dirty documentation</title>
+  <title>crowddynamics.core.geometry &mdash; crowddynamics legacy+318.gb8d04f6.dirty documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../../genindex.html"/>
         <link rel="search" title="Search" href="../../../search.html"/>
-    <link rel="top" title="crowddynamics legacy+303.g1e68f25.dirty documentation" href="../../../index.html"/>
+    <link rel="top" title="crowddynamics legacy+318.gb8d04f6.dirty documentation" href="../../../index.html"/>
         <link rel="up" title="Module code" href="../../index.html"/> 
 
   
@@ -70,7 +70,7 @@
             
             
               <div class="version">
-                legacy+303legacy+303.g1e68f25.dirtyg1e68f25
+                legacy+318legacy+318.gb8d04f6.dirtygb8d04f6
               </div>
             
           
@@ -103,6 +103,7 @@
 </ul>
 <p class="caption"><span class="caption-text">Crowddynamics</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../architecture.html">Architecture</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../multiagent.html">Multi-Agent Simulation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../interactions.html">Interactions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../motion.html">Motion</a></li>
@@ -117,7 +118,6 @@
 <p class="caption"><span class="caption-text">Api</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../apidocs/crowddynamics.html">crowddynamics package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../apidocs_examples/examples.html">examples package</a></li>
 </ul>
 
             
@@ -190,28 +190,62 @@
 <span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">Iterable</span>
 <span class="kn">from</span> <span class="nn">functools</span> <span class="k">import</span> <span class="n">reduce</span>
 <span class="kn">from</span> <span class="nn">itertools</span> <span class="k">import</span> <span class="n">chain</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">Callable</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Callable</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">shapely.geometry</span> <span class="k">as</span> <span class="nn">geometry</span>
 <span class="kn">import</span> <span class="nn">skimage.draw</span>
 <span class="kn">from</span> <span class="nn">loggingtools</span> <span class="k">import</span> <span class="n">log_with</span>
-<span class="kn">from</span> <span class="nn">matplotlib.path</span> <span class="k">import</span> <span class="n">Path</span>
 <span class="kn">from</span> <span class="nn">shapely</span> <span class="k">import</span> <span class="n">speedups</span>
 <span class="kn">from</span> <span class="nn">shapely.geometry</span> <span class="k">import</span> <span class="n">Polygon</span><span class="p">,</span> <span class="n">LineString</span><span class="p">,</span> <span class="n">Point</span>
 <span class="kn">from</span> <span class="nn">shapely.geometry.base</span> <span class="k">import</span> <span class="n">BaseGeometry</span><span class="p">,</span> <span class="n">BaseMultipartGeometry</span>
 
-<span class="kn">from</span> <span class="nn">crowddynamics.core.structures.obstacles</span> <span class="k">import</span> <span class="n">obstacle_type_linear</span>
-<span class="kn">from</span> <span class="nn">crowddynamics.exceptions</span> <span class="k">import</span> <span class="n">InvalidType</span><span class="p">,</span> <span class="n">InvalidValue</span>
+<span class="kn">from</span> <span class="nn">crowddynamics.core.struct</span> <span class="k">import</span> <span class="n">obstacle_type_linear</span>
 
 <span class="k">if</span> <span class="n">speedups</span><span class="o">.</span><span class="n">available</span><span class="p">:</span>
     <span class="n">speedups</span><span class="o">.</span><span class="n">enable</span><span class="p">()</span>
 
 
-<span class="n">PointPair</span> <span class="o">=</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span>
-<span class="n">LineSegment</span> <span class="o">=</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">PointPair</span><span class="p">,</span> <span class="n">PointPair</span><span class="p">]</span>
+<div class="viewcode-block" id="GeomTypes"><a class="viewcode-back" href="../../../apidocs/crowddynamics.core.html#crowddynamics.core.geometry.GeomTypes">[docs]</a><span class="k">class</span> <span class="nc">GeomTypes</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="n">POINT</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="n">LINESTRING</span> <span class="o">=</span> <span class="mf">1.0</span>
+    <span class="n">POLYGON_HOLE</span> <span class="o">=</span> <span class="mf">2.0</span>
+    <span class="n">POLYGON_SHELL</span> <span class="o">=</span> <span class="mf">3.0</span></div>
 
 
-<div class="viewcode-block" id="geom_to_linesegment"><a class="viewcode-back" href="../../../apidocs/crowddynamics.core.html#crowddynamics.core.geometry.geom_to_linesegment">[docs]</a><span class="k">def</span> <span class="nf">geom_to_linesegment</span><span class="p">(</span><span class="n">geom</span><span class="p">:</span> <span class="n">BaseGeometry</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="n">LineSegment</span><span class="p">]:</span>
+<span class="k">def</span> <span class="nf">_geom_to_array</span><span class="p">(</span><span class="n">geom</span><span class="p">:</span> <span class="n">BaseGeometry</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">geom</span><span class="p">,</span> <span class="n">geometry</span><span class="o">.</span><span class="n">Point</span><span class="p">):</span>
+        <span class="k">yield</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([(</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">GeomTypes</span><span class="o">.</span><span class="n">POINT</span><span class="p">)])</span>
+        <span class="k">yield</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">geom</span><span class="o">.</span><span class="n">coords</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">geom</span><span class="p">,</span> <span class="n">geometry</span><span class="o">.</span><span class="n">LineString</span><span class="p">):</span>
+        <span class="k">yield</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([(</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">GeomTypes</span><span class="o">.</span><span class="n">LINESTRING</span><span class="p">)])</span>
+        <span class="k">yield</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">geom</span><span class="o">.</span><span class="n">coords</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">geom</span><span class="p">,</span> <span class="n">geometry</span><span class="o">.</span><span class="n">Polygon</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">interior</span> <span class="ow">in</span> <span class="n">geom</span><span class="o">.</span><span class="n">interiors</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([(</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">GeomTypes</span><span class="o">.</span><span class="n">POLYGON_HOLE</span><span class="p">)])</span>
+            <span class="k">yield</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">interior</span><span class="p">)</span>
+        <span class="k">yield</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([(</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">GeomTypes</span><span class="o">.</span><span class="n">POLYGON_SHELL</span><span class="p">)])</span>
+        <span class="k">yield</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">geom</span><span class="o">.</span><span class="n">exterior</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">geom</span><span class="p">,</span> <span class="n">BaseMultipartGeometry</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">chain</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">geom_to_array</span><span class="p">,</span> <span class="n">geom</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span>
+
+
+<div class="viewcode-block" id="geom_to_array"><a class="viewcode-back" href="../../../apidocs/crowddynamics.core.html#crowddynamics.core.geometry.geom_to_array">[docs]</a><span class="k">def</span> <span class="nf">geom_to_array</span><span class="p">(</span><span class="n">geom</span><span class="p">:</span> <span class="n">BaseGeometry</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Breaking geometry object into continuous array where objects are</span>
+<span class="sd">     separated by array of elements (np.nan, FLAG)</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        geom:</span>
+
+<span class="sd">    Returns:</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">_geom_to_array</span><span class="p">(</span><span class="n">geom</span><span class="p">)))</span></div>
+
+
+<div class="viewcode-block" id="geom_to_linesegment"><a class="viewcode-back" href="../../../apidocs/crowddynamics.core.html#crowddynamics.core.geometry.geom_to_linesegment">[docs]</a><span class="k">def</span> <span class="nf">geom_to_linesegment</span><span class="p">(</span><span class="n">geom</span><span class="p">:</span> <span class="n">BaseGeometry</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Converts shapes to point pairs.</span>
 
 <span class="sd">    &gt;&gt;&gt; ls = LineString([(1, 2), (3, 4)])</span>
@@ -300,7 +334,7 @@
   <div role="contentinfo">
     <p>
         &copy; Copyright Jaan Tollander de Balsch.
-      Last updated on 2017-05-18.
+      Last updated on 2017-05-31.
 
     </p>
   </div>
@@ -322,7 +356,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'legacy+303.g1e68f25.dirty',
+            VERSION:'legacy+318.gb8d04f6.dirty',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

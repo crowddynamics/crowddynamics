@@ -7,9 +7,9 @@ Subpackages
 .. toctree::
 
     crowddynamics.core
+    crowddynamics.examples
     crowddynamics.simulation
     crowddynamics.tests
-    crowddynamics.visualization
 
 Submodules
 ----------
@@ -26,6 +26,14 @@ crowddynamics\.config module
 ----------------------------
 
 .. automodule:: crowddynamics.config
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+crowddynamics\.conftest module
+------------------------------
+
+.. automodule:: crowddynamics.conftest
     :members:
     :undoc-members:
     :show-inheritance:
@@ -54,18 +62,34 @@ crowddynamics\.logging module
     :undoc-members:
     :show-inheritance:
 
-crowddynamics\.parse module
----------------------------
-
-.. automodule:: crowddynamics.parse
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 crowddynamics\.testing module
 -----------------------------
 
 .. automodule:: crowddynamics.testing
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+crowddynamics\.traits module
+----------------------------
+
+.. automodule:: crowddynamics.traits
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+crowddynamics\.utils module
+---------------------------
+
+.. automodule:: crowddynamics.utils
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+crowddynamics\.visualizations module
+------------------------------------
+
+.. automodule:: crowddynamics.visualizations
     :members:
     :undoc-members:
     :show-inheritance:

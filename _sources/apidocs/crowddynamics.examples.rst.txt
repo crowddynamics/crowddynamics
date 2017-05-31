@@ -1,0 +1,45 @@
+crowddynamics\.examples package
+===============================
+
+Subpackages
+-----------
+
+.. toctree::
+
+    crowddynamics.examples.tests
+
+Submodules
+----------
+
+crowddynamics\.examples\.fields module
+--------------------------------------
+
+.. automodule:: crowddynamics.examples.fields
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+crowddynamics\.examples\.profiled module
+----------------------------------------
+
+.. automodule:: crowddynamics.examples.profiled
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+crowddynamics\.examples\.simulations module
+-------------------------------------------
+
+.. automodule:: crowddynamics.examples.simulations
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: crowddynamics.examples
+    :members:
+    :undoc-members:
+    :show-inheritance:

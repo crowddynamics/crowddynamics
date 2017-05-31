@@ -1,0 +1,22 @@
+crowddynamics\.examples\.tests package
+======================================
+
+Submodules
+----------
+
+crowddynamics\.examples\.tests\.test\_simulations module
+--------------------------------------------------------
+
+.. automodule:: crowddynamics.examples.tests.test_simulations
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: crowddynamics.examples.tests
+    :members:
+    :undoc-members:
+    :show-inheritance:

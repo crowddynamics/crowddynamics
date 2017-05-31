@@ -36,14 +36,6 @@ crowddynamics\.core\.tests\.test\_integrator module
     :undoc-members:
     :show-inheritance:
 
-crowddynamics\.core\.tests\.test\_taskgraph module
---------------------------------------------------
-
-.. automodule:: crowddynamics.core.tests.test_taskgraph
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 crowddynamics\.core\.tests\.test\_vector2D module
 -------------------------------------------------
 

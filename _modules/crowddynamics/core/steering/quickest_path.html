@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>crowddynamics.core.steering.quickest_path &mdash; crowddynamics legacy+303.g1e68f25.dirty documentation</title>
+  <title>crowddynamics.core.steering.quickest_path &mdash; crowddynamics legacy+318.gb8d04f6.dirty documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../../../genindex.html"/>
         <link rel="search" title="Search" href="../../../../search.html"/>
-    <link rel="top" title="crowddynamics legacy+303.g1e68f25.dirty documentation" href="../../../../index.html"/>
+    <link rel="top" title="crowddynamics legacy+318.gb8d04f6.dirty documentation" href="../../../../index.html"/>
         <link rel="up" title="Module code" href="../../../index.html"/> 
 
   
@@ -70,7 +70,7 @@
             
             
               <div class="version">
-                legacy+303legacy+303.g1e68f25.dirtyg1e68f25
+                legacy+318legacy+318.gb8d04f6.dirtygb8d04f6
               </div>
             
           
@@ -103,6 +103,7 @@
 </ul>
 <p class="caption"><span class="caption-text">Crowddynamics</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../architecture.html">Architecture</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../multiagent.html">Multi-Agent Simulation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../interactions.html">Interactions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../motion.html">Motion</a></li>
@@ -117,7 +118,6 @@
 <p class="caption"><span class="caption-text">Api</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../apidocs/crowddynamics.html">crowddynamics package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../apidocs_examples/examples.html">examples package</a></li>
 </ul>
 
             
@@ -183,7 +183,7 @@
             
   <h1>Source code for crowddynamics.core.steering.quickest_path</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">namedtuple</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">NamedTuple</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">skfmm</span>
@@ -194,8 +194,12 @@
 
 <span class="kn">from</span> <span class="nn">crowddynamics.core.geometry</span> <span class="k">import</span> <span class="n">draw_geom</span>
 
-<span class="n">MeshGrid</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;MeshGrid&#39;</span><span class="p">,</span> <span class="s1">&#39;values shape step bounds indicer&#39;</span><span class="p">)</span>
-<span class="n">DistanceMap</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">MaskedArray</span>
+<span class="n">MeshGrid</span> <span class="o">=</span> <span class="n">NamedTuple</span><span class="p">(</span><span class="s1">&#39;MeshGrid&#39;</span><span class="p">,</span> <span class="p">[(</span><span class="s1">&#39;values&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">),</span>
+                                   <span class="p">(</span><span class="s1">&#39;shape&#39;</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">),</span>
+                                   <span class="p">(</span><span class="s1">&#39;step&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span>
+                                   <span class="p">(</span><span class="s1">&#39;bounds&#39;</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">),</span>
+                                   <span class="p">(</span><span class="s1">&#39;indicer&#39;</span><span class="p">,</span> <span class="n">Callable</span><span class="p">)])</span>
+<span class="n">DistanceMap</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>  <span class="c1"># can be masked array</span>
 <span class="n">DirectionMap</span> <span class="o">=</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">MaskedArray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">MaskedArray</span><span class="p">]</span>
 
 
@@ -397,7 +401,7 @@
   <div role="contentinfo">
     <p>
         &copy; Copyright Jaan Tollander de Balsch.
-      Last updated on 2017-05-18.
+      Last updated on 2017-05-31.
 
     </p>
   </div>
@@ -419,7 +423,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../../',
-            VERSION:'legacy+303.g1e68f25.dirty',
+            VERSION:'legacy+318.gb8d04f6.dirty',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

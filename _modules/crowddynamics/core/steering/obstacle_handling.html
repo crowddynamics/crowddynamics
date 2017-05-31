@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>crowddynamics.core.steering.obstacle_handling &mdash; crowddynamics legacy+303.g1e68f25.dirty documentation</title>
+  <title>crowddynamics.core.steering.obstacle_handling &mdash; crowddynamics legacy+318.gb8d04f6.dirty documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../../../genindex.html"/>
         <link rel="search" title="Search" href="../../../../search.html"/>
-    <link rel="top" title="crowddynamics legacy+303.g1e68f25.dirty documentation" href="../../../../index.html"/>
+    <link rel="top" title="crowddynamics legacy+318.gb8d04f6.dirty documentation" href="../../../../index.html"/>
         <link rel="up" title="Module code" href="../../../index.html"/> 
 
   
@@ -70,7 +70,7 @@
             
             
               <div class="version">
-                legacy+303legacy+303.g1e68f25.dirtyg1e68f25
+                legacy+318legacy+318.gb8d04f6.dirtygb8d04f6
               </div>
             
           
@@ -103,6 +103,7 @@
 </ul>
 <p class="caption"><span class="caption-text">Crowddynamics</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../architecture.html">Architecture</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../multiagent.html">Multi-Agent Simulation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../interactions.html">Interactions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../motion.html">Motion</a></li>
@@ -117,7 +118,6 @@
 <p class="caption"><span class="caption-text">Api</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../apidocs/crowddynamics.html">crowddynamics package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../apidocs_examples/examples.html">examples package</a></li>
 </ul>
 
             
@@ -195,7 +195,7 @@
 <span class="nd">@numba</span><span class="o">.</span><span class="n">jit</span><span class="p">((</span><span class="n">f8</span><span class="p">[:,</span> <span class="p">:],</span> <span class="n">numba</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">Tuple</span><span class="p">((</span><span class="n">f8</span><span class="p">[:,</span> <span class="p">:],</span> <span class="n">f8</span><span class="p">[:,</span> <span class="p">:])),</span>
             <span class="n">numba</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">Tuple</span><span class="p">((</span><span class="n">f8</span><span class="p">[:,</span> <span class="p">:],</span> <span class="n">f8</span><span class="p">[:,</span> <span class="p">:])),</span> <span class="n">f8</span><span class="p">,</span> <span class="n">f8</span><span class="p">),</span>
            <span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nogil</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<div class="viewcode-block" id="obstacle_handling"><a class="viewcode-back" href="../../../../steering.html#crowddynamics.core.steering.obstacle_handling.obstacle_handling">[docs]</a><span class="k">def</span> <span class="nf">obstacle_handling</span><span class="p">(</span><span class="n">dmap_obs</span><span class="p">,</span> <span class="n">dir_map_obs</span><span class="p">,</span> <span class="n">dir_map_targets</span><span class="p">,</span> <span class="n">radius</span><span class="p">,</span> <span class="n">strength</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">obstacle_handling</span><span class="p">(</span><span class="n">dmap_obs</span><span class="p">,</span> <span class="n">dir_map_obs</span><span class="p">,</span> <span class="n">dir_map_targets</span><span class="p">,</span> <span class="n">radius</span><span class="p">,</span> <span class="n">strength</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Function that merges two direction maps together. Let distance map from</span>
 <span class="sd">    obstacles be :math:`\Phi(\mathbf{x})` and :math:`\lambda(x)`</span>
@@ -255,7 +255,7 @@
 
     <span class="c1"># Normalize the output</span>
     <span class="n">l</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hypot</span><span class="p">(</span><span class="n">u_out</span><span class="p">,</span> <span class="n">v_out</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">u_out</span> <span class="o">/</span> <span class="n">l</span><span class="p">,</span> <span class="n">v_out</span> <span class="o">/</span> <span class="n">l</span></div>
+    <span class="k">return</span> <span class="n">u_out</span> <span class="o">/</span> <span class="n">l</span><span class="p">,</span> <span class="n">v_out</span> <span class="o">/</span> <span class="n">l</span>
 
 
 <span class="nd">@log_with</span><span class="p">(</span><span class="n">arguments</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">timed</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -279,7 +279,7 @@
   <div role="contentinfo">
     <p>
         &copy; Copyright Jaan Tollander de Balsch.
-      Last updated on 2017-05-18.
+      Last updated on 2017-05-31.
 
     </p>
   </div>
@@ -301,7 +301,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../../',
-            VERSION:'legacy+303.g1e68f25.dirty',
+            VERSION:'legacy+318.gb8d04f6.dirty',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

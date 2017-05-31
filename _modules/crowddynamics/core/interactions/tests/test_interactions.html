@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>crowddynamics.core.interactions.tests.test_interactions &mdash; crowddynamics legacy+303.g1e68f25.dirty documentation</title>
+  <title>crowddynamics.core.interactions.tests.test_interactions &mdash; crowddynamics legacy+318.gb8d04f6.dirty documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../../../../genindex.html"/>
         <link rel="search" title="Search" href="../../../../../search.html"/>
-    <link rel="top" title="crowddynamics legacy+303.g1e68f25.dirty documentation" href="../../../../../index.html"/>
+    <link rel="top" title="crowddynamics legacy+318.gb8d04f6.dirty documentation" href="../../../../../index.html"/>
         <link rel="up" title="Module code" href="../../../../index.html"/> 
 
   
@@ -70,7 +70,7 @@
             
             
               <div class="version">
-                legacy+303legacy+303.g1e68f25.dirtyg1e68f25
+                legacy+318legacy+318.gb8d04f6.dirtygb8d04f6
               </div>
             
           
@@ -103,6 +103,7 @@
 </ul>
 <p class="caption"><span class="caption-text">Crowddynamics</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../architecture.html">Architecture</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../multiagent.html">Multi-Agent Simulation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../interactions.html">Interactions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../motion.html">Motion</a></li>
@@ -117,7 +118,6 @@
 <p class="caption"><span class="caption-text">Api</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../apidocs/crowddynamics.html">crowddynamics package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../apidocs_examples/examples.html">examples package</a></li>
 </ul>
 
             
@@ -182,29 +182,86 @@
            <div itemprop="articleBody">
             
   <h1>Source code for crowddynamics.core.interactions.tests.test_interactions</h1><div class="highlight"><pre>
-<span></span>
-<span class="kn">from</span> <span class="nn">crowddynamics.core.interactions.interactions</span> <span class="k">import</span> \
-    <span class="n">agent_agent_interaction_circle</span><span class="p">,</span> <span class="n">agent_agent_interaction_three_circle</span><span class="p">,</span> \
-    <span class="n">agent_agent_block_list</span>
+<span></span><span class="kn">import</span> <span class="nn">pytest</span>
+<span class="kn">import</span> <span class="nn">hypothesis.strategies</span> <span class="k">as</span> <span class="nn">st</span>
+<span class="kn">from</span> <span class="nn">hypothesis.core</span> <span class="k">import</span> <span class="n">given</span>
+<span class="kn">from</span> <span class="nn">hypothesis.extra.numpy</span> <span class="k">import</span> <span class="n">arrays</span>
+
+<span class="kn">from</span> <span class="nn">crowddynamics.core.interactions.interactions</span> <span class="k">import</span> <span class="p">(</span>
+    <span class="n">interaction_agent_agent_circular</span><span class="p">,</span>
+    <span class="n">interaction_agent_agent_three_circle</span><span class="p">,</span>
+    <span class="n">agent_agent_block_list</span><span class="p">,</span>
+    <span class="n">agent_circular_obstacle</span><span class="p">,</span> <span class="n">agent_three_circle_obstacle</span><span class="p">)</span>
+<span class="kn">import</span> <span class="nn">crowddynamics.testing</span> <span class="k">as</span> <span class="nn">testing</span>
+<span class="kn">from</span> <span class="nn">crowddynamics.core.struct</span> <span class="k">import</span> <span class="n">obstacle_type_linear</span>
+<span class="kn">from</span> <span class="nn">crowddynamics.simulation.agents</span> <span class="k">import</span> <span class="n">Circular</span><span class="p">,</span> <span class="n">ThreeCircle</span>
 
 
-<div class="viewcode-block" id="test_agent_agent_interaction_circle"><a class="viewcode-back" href="../../../../../apidocs/crowddynamics.core.interactions.tests.html#crowddynamics.core.interactions.tests.test_interactions.test_agent_agent_interaction_circle">[docs]</a><span class="k">def</span> <span class="nf">test_agent_agent_interaction_circle</span><span class="p">(</span><span class="n">agents_circular</span><span class="p">):</span>
-    <span class="n">agent_agent_interaction_circle</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">agents_circular</span><span class="o">.</span><span class="n">array</span><span class="p">)</span>
+<span class="n">CELL_SIZE</span> <span class="o">=</span> <span class="mf">3.6</span>
+<span class="n">agent_attributes</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;radius&#39;</span><span class="p">:</span> <span class="n">testing</span><span class="o">.</span><span class="n">reals</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">exclude_zero</span><span class="o">=</span><span class="s1">&#39;near&#39;</span><span class="p">),</span>
+    <span class="s1">&#39;mass&#39;</span><span class="p">:</span> <span class="n">testing</span><span class="o">.</span><span class="n">reals</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">exclude_zero</span><span class="o">=</span><span class="s1">&#39;near&#39;</span><span class="p">),</span>
+    <span class="s1">&#39;positions&#39;</span><span class="p">:</span> <span class="n">testing</span><span class="o">.</span><span class="n">reals</span><span class="p">(</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span>
+    <span class="s1">&#39;velocity&#39;</span><span class="p">:</span> <span class="n">testing</span><span class="o">.</span><span class="n">reals</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span>
+    <span class="s1">&#39;body_type&#39;</span><span class="p">:</span> <span class="n">st</span><span class="o">.</span><span class="n">just</span><span class="p">(</span><span class="s1">&#39;adult&#39;</span><span class="p">)</span>
+<span class="p">}</span>
+
+
+<span class="c1"># Agent-agent</span>
+
+<span class="nd">@given</span><span class="p">(</span><span class="n">testing</span><span class="o">.</span><span class="n">agents</span><span class="p">(</span><span class="n">size_strategy</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">just</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span>
+                      <span class="n">agent_type</span><span class="o">=</span><span class="n">Circular</span><span class="p">,</span>
+                      <span class="n">attributes</span><span class="o">=</span><span class="n">agent_attributes</span><span class="p">))</span>
+<div class="viewcode-block" id="test_agent_interactions_circular"><a class="viewcode-back" href="../../../../../apidocs/crowddynamics.core.interactions.tests.html#crowddynamics.core.interactions.tests.test_interactions.test_agent_interactions_circular">[docs]</a><span class="k">def</span> <span class="nf">test_agent_interactions_circular</span><span class="p">(</span><span class="n">agents</span><span class="p">):</span>
+    <span class="n">interaction_agent_agent_circular</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">agents</span><span class="p">)</span>
     <span class="k">assert</span> <span class="kc">True</span></div>
 
 
-<div class="viewcode-block" id="test_agent_agent_interaction_three_circle"><a class="viewcode-back" href="../../../../../apidocs/crowddynamics.core.interactions.tests.html#crowddynamics.core.interactions.tests.test_interactions.test_agent_agent_interaction_three_circle">[docs]</a><span class="k">def</span> <span class="nf">test_agent_agent_interaction_three_circle</span><span class="p">(</span><span class="n">agents_three_circle</span><span class="p">):</span>
-    <span class="n">agent_agent_interaction_three_circle</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">agents_three_circle</span><span class="o">.</span><span class="n">array</span><span class="p">)</span>
+<span class="nd">@given</span><span class="p">(</span><span class="n">testing</span><span class="o">.</span><span class="n">agents</span><span class="p">(</span><span class="n">size_strategy</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">just</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span>
+                      <span class="n">agent_type</span><span class="o">=</span><span class="n">ThreeCircle</span><span class="p">,</span>
+                      <span class="n">attributes</span><span class="o">=</span><span class="n">agent_attributes</span><span class="p">))</span>
+<div class="viewcode-block" id="test_agent_interactions_three_circle"><a class="viewcode-back" href="../../../../../apidocs/crowddynamics.core.interactions.tests.html#crowddynamics.core.interactions.tests.test_interactions.test_agent_interactions_three_circle">[docs]</a><span class="k">def</span> <span class="nf">test_agent_interactions_three_circle</span><span class="p">(</span><span class="n">agents</span><span class="p">):</span>
+    <span class="n">interaction_agent_agent_three_circle</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">agents</span><span class="p">)</span>
     <span class="k">assert</span> <span class="kc">True</span></div>
 
 
-<div class="viewcode-block" id="test_agent_agent_block_list_circular"><a class="viewcode-back" href="../../../../../apidocs/crowddynamics.core.interactions.tests.html#crowddynamics.core.interactions.tests.test_interactions.test_agent_agent_block_list_circular">[docs]</a><span class="k">def</span> <span class="nf">test_agent_agent_block_list_circular</span><span class="p">(</span><span class="n">agents_circular</span><span class="p">):</span>
-    <span class="n">agent_agent_block_list</span><span class="p">(</span><span class="n">agents_circular</span><span class="o">.</span><span class="n">array</span><span class="p">)</span>
+<span class="nd">@given</span><span class="p">(</span><span class="n">testing</span><span class="o">.</span><span class="n">agents</span><span class="p">(</span><span class="n">size_strategy</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">integers</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+                      <span class="n">agent_type</span><span class="o">=</span><span class="n">Circular</span><span class="p">,</span>
+                      <span class="n">attributes</span><span class="o">=</span><span class="n">agent_attributes</span><span class="p">))</span>
+<div class="viewcode-block" id="test_agent_block_list_circular"><a class="viewcode-back" href="../../../../../apidocs/crowddynamics.core.interactions.tests.html#crowddynamics.core.interactions.tests.test_interactions.test_agent_block_list_circular">[docs]</a><span class="k">def</span> <span class="nf">test_agent_block_list_circular</span><span class="p">(</span><span class="n">agents</span><span class="p">):</span>
+    <span class="n">agent_agent_block_list</span><span class="p">(</span><span class="n">agents</span><span class="p">,</span> <span class="n">CELL_SIZE</span><span class="p">)</span>
     <span class="k">assert</span> <span class="kc">True</span></div>
 
 
-<div class="viewcode-block" id="test_agent_agent_block_list_three_circle"><a class="viewcode-back" href="../../../../../apidocs/crowddynamics.core.interactions.tests.html#crowddynamics.core.interactions.tests.test_interactions.test_agent_agent_block_list_three_circle">[docs]</a><span class="k">def</span> <span class="nf">test_agent_agent_block_list_three_circle</span><span class="p">(</span><span class="n">agents_three_circle</span><span class="p">):</span>
-    <span class="n">agent_agent_block_list</span><span class="p">(</span><span class="n">agents_three_circle</span><span class="o">.</span><span class="n">array</span><span class="p">)</span>
+<span class="nd">@given</span><span class="p">(</span><span class="n">testing</span><span class="o">.</span><span class="n">agents</span><span class="p">(</span><span class="n">size_strategy</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">integers</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+                      <span class="n">agent_type</span><span class="o">=</span><span class="n">ThreeCircle</span><span class="p">,</span>
+                      <span class="n">attributes</span><span class="o">=</span><span class="n">agent_attributes</span><span class="p">))</span>
+<div class="viewcode-block" id="test_agent_block_list_three_circle"><a class="viewcode-back" href="../../../../../apidocs/crowddynamics.core.interactions.tests.html#crowddynamics.core.interactions.tests.test_interactions.test_agent_block_list_three_circle">[docs]</a><span class="k">def</span> <span class="nf">test_agent_block_list_three_circle</span><span class="p">(</span><span class="n">agents</span><span class="p">):</span>
+    <span class="n">agent_agent_block_list</span><span class="p">(</span><span class="n">agents</span><span class="p">,</span> <span class="n">CELL_SIZE</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="kc">True</span></div>
+
+
+<span class="c1"># Agent-obstacle</span>
+
+<span class="nd">@given</span><span class="p">(</span><span class="n">agents</span><span class="o">=</span><span class="n">testing</span><span class="o">.</span><span class="n">agents</span><span class="p">(</span><span class="n">size_strategy</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">just</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+                             <span class="n">agent_type</span><span class="o">=</span><span class="n">Circular</span><span class="p">,</span>
+                             <span class="n">attributes</span><span class="o">=</span><span class="n">agent_attributes</span><span class="p">),</span>
+       <span class="n">obstacles</span><span class="o">=</span><span class="n">arrays</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">obstacle_type_linear</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                        <span class="n">elements</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">tuples</span><span class="p">(</span><span class="n">testing</span><span class="o">.</span><span class="n">reals</span><span class="p">(</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span>
+                                           <span class="n">testing</span><span class="o">.</span><span class="n">reals</span><span class="p">(</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">))))</span>
+<div class="viewcode-block" id="test_agent_circular_obstacle"><a class="viewcode-back" href="../../../../../apidocs/crowddynamics.core.interactions.tests.html#crowddynamics.core.interactions.tests.test_interactions.test_agent_circular_obstacle">[docs]</a><span class="k">def</span> <span class="nf">test_agent_circular_obstacle</span><span class="p">(</span><span class="n">agents</span><span class="p">,</span> <span class="n">obstacles</span><span class="p">):</span>
+    <span class="n">agent_circular_obstacle</span><span class="p">(</span><span class="n">agents</span><span class="p">,</span> <span class="n">obstacles</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="kc">True</span></div>
+
+
+<span class="nd">@given</span><span class="p">(</span><span class="n">agents</span><span class="o">=</span><span class="n">testing</span><span class="o">.</span><span class="n">agents</span><span class="p">(</span><span class="n">size_strategy</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">just</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+                             <span class="n">agent_type</span><span class="o">=</span><span class="n">ThreeCircle</span><span class="p">,</span>
+                             <span class="n">attributes</span><span class="o">=</span><span class="n">agent_attributes</span><span class="p">),</span>
+       <span class="n">obstacles</span><span class="o">=</span><span class="n">arrays</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">obstacle_type_linear</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                        <span class="n">elements</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">tuples</span><span class="p">(</span><span class="n">testing</span><span class="o">.</span><span class="n">reals</span><span class="p">(</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span>
+                                           <span class="n">testing</span><span class="o">.</span><span class="n">reals</span><span class="p">(</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">))))</span>
+<div class="viewcode-block" id="test_agent_three_circle_obstacle"><a class="viewcode-back" href="../../../../../apidocs/crowddynamics.core.interactions.tests.html#crowddynamics.core.interactions.tests.test_interactions.test_agent_three_circle_obstacle">[docs]</a><span class="k">def</span> <span class="nf">test_agent_three_circle_obstacle</span><span class="p">(</span><span class="n">agents</span><span class="p">,</span> <span class="n">obstacles</span><span class="p">):</span>
+    <span class="n">agent_three_circle_obstacle</span><span class="p">(</span><span class="n">agents</span><span class="p">,</span> <span class="n">obstacles</span><span class="p">)</span>
     <span class="k">assert</span> <span class="kc">True</span></div>
 </pre></div>
 
@@ -221,7 +278,7 @@
   <div role="contentinfo">
     <p>
         &copy; Copyright Jaan Tollander de Balsch.
-      Last updated on 2017-05-18.
+      Last updated on 2017-05-31.
 
     </p>
   </div>
@@ -243,7 +300,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../../../',
-            VERSION:'legacy+303.g1e68f25.dirty',
+            VERSION:'legacy+318.gb8d04f6.dirty',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

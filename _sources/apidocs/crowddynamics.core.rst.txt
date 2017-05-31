@@ -10,19 +10,10 @@ Subpackages
     crowddynamics.core.motion
     crowddynamics.core.rand
     crowddynamics.core.steering
-    crowddynamics.core.structures
     crowddynamics.core.tests
 
 Submodules
 ----------
-
-crowddynamics\.core\.conftest module
-------------------------------------
-
-.. automodule:: crowddynamics.core.conftest
-    :members:
-    :undoc-members:
-    :show-inheritance:
 
 crowddynamics\.core\.evacuation module
 --------------------------------------
@@ -64,10 +55,10 @@ crowddynamics\.core\.quantities module
     :undoc-members:
     :show-inheritance:
 
-crowddynamics\.core\.tree module
---------------------------------
+crowddynamics\.core\.struct module
+----------------------------------
 
-.. automodule:: crowddynamics.core.tree
+.. automodule:: crowddynamics.core.struct
     :members:
     :undoc-members:
     :show-inheritance:

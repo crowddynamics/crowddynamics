@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>crowddynamics.core.motion.tests.test_motion &mdash; crowddynamics legacy+303.g1e68f25.dirty documentation</title>
+  <title>crowddynamics.core.motion.tests.test_motion &mdash; crowddynamics legacy+318.gb8d04f6.dirty documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../../../../genindex.html"/>
         <link rel="search" title="Search" href="../../../../../search.html"/>
-    <link rel="top" title="crowddynamics legacy+303.g1e68f25.dirty documentation" href="../../../../../index.html"/>
+    <link rel="top" title="crowddynamics legacy+318.gb8d04f6.dirty documentation" href="../../../../../index.html"/>
         <link rel="up" title="Module code" href="../../../../index.html"/> 
 
   
@@ -70,7 +70,7 @@
             
             
               <div class="version">
-                legacy+303legacy+303.g1e68f25.dirtyg1e68f25
+                legacy+318legacy+318.gb8d04f6.dirtygb8d04f6
               </div>
             
           
@@ -103,6 +103,7 @@
 </ul>
 <p class="caption"><span class="caption-text">Crowddynamics</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../architecture.html">Architecture</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../multiagent.html">Multi-Agent Simulation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../interactions.html">Interactions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../motion.html">Motion</a></li>
@@ -117,7 +118,6 @@
 <p class="caption"><span class="caption-text">Api</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../apidocs/crowddynamics.html">crowddynamics package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../apidocs_examples/examples.html">examples package</a></li>
 </ul>
 
             
@@ -191,13 +191,13 @@
     <span class="n">torque_fluctuation</span>
 <span class="kn">from</span> <span class="nn">crowddynamics.core.motion.helbing</span> <span class="k">import</span> \
     <span class="n">force_social_helbing</span>
-<span class="kn">from</span> <span class="nn">crowddynamics.testing</span> <span class="k">import</span> <span class="n">real</span>
+<span class="kn">from</span> <span class="nn">crowddynamics.testing</span> <span class="k">import</span> <span class="n">reals</span>
 
 <span class="n">SIZE</span> <span class="o">=</span> <span class="mi">10</span>
 
 
-<span class="nd">@given</span><span class="p">(</span><span class="n">mass</span><span class="o">=</span><span class="n">real</span><span class="p">(</span><span class="n">min_value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="n">SIZE</span><span class="p">),</span>
-       <span class="n">scale</span><span class="o">=</span><span class="n">real</span><span class="p">(</span><span class="n">min_value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="n">SIZE</span><span class="p">))</span>
+<span class="nd">@given</span><span class="p">(</span><span class="n">mass</span><span class="o">=</span><span class="n">reals</span><span class="p">(</span><span class="n">min_value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="n">SIZE</span><span class="p">),</span>
+       <span class="n">scale</span><span class="o">=</span><span class="n">reals</span><span class="p">(</span><span class="n">min_value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="n">SIZE</span><span class="p">))</span>
 <div class="viewcode-block" id="test_force_fluctuation"><a class="viewcode-back" href="../../../../../apidocs/crowddynamics.core.motion.tests.html#crowddynamics.core.motion.tests.test_motion.test_force_fluctuation">[docs]</a><span class="k">def</span> <span class="nf">test_force_fluctuation</span><span class="p">(</span><span class="n">mass</span><span class="p">,</span> <span class="n">scale</span><span class="p">):</span>
     <span class="n">ans</span> <span class="o">=</span> <span class="n">force_fluctuation</span><span class="p">(</span><span class="n">mass</span><span class="p">,</span> <span class="n">scale</span><span class="p">)</span>
     <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ans</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span>
@@ -205,11 +205,11 @@
     <span class="k">assert</span> <span class="n">ans</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="n">SIZE</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span></div>
 
 
-<span class="nd">@given</span><span class="p">(</span><span class="n">mass</span><span class="o">=</span><span class="n">real</span><span class="p">(</span><span class="n">min_value</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
-       <span class="n">tau_adj</span><span class="o">=</span><span class="n">real</span><span class="p">(</span><span class="n">min_value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">exclude_zero</span><span class="o">=</span><span class="s1">&#39;near&#39;</span><span class="p">),</span>
-       <span class="n">v0</span><span class="o">=</span><span class="n">real</span><span class="p">(</span><span class="n">min_value</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
-       <span class="n">e0</span><span class="o">=</span><span class="n">real</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span>
-       <span class="n">v</span><span class="o">=</span><span class="n">real</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span>
+<span class="nd">@given</span><span class="p">(</span><span class="n">mass</span><span class="o">=</span><span class="n">reals</span><span class="p">(</span><span class="n">min_value</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
+       <span class="n">tau_adj</span><span class="o">=</span><span class="n">reals</span><span class="p">(</span><span class="n">min_value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">exclude_zero</span><span class="o">=</span><span class="s1">&#39;near&#39;</span><span class="p">),</span>
+       <span class="n">v0</span><span class="o">=</span><span class="n">reals</span><span class="p">(</span><span class="n">min_value</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
+       <span class="n">e0</span><span class="o">=</span><span class="n">reals</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span>
+       <span class="n">v</span><span class="o">=</span><span class="n">reals</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span>
 <div class="viewcode-block" id="test_force_adjust"><a class="viewcode-back" href="../../../../../apidocs/crowddynamics.core.motion.tests.html#crowddynamics.core.motion.tests.test_motion.test_force_adjust">[docs]</a><span class="k">def</span> <span class="nf">test_force_adjust</span><span class="p">(</span><span class="n">mass</span><span class="p">,</span> <span class="n">tau_adj</span><span class="p">,</span> <span class="n">v0</span><span class="p">,</span> <span class="n">e0</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
     <span class="n">ans</span> <span class="o">=</span> <span class="n">force_adjust</span><span class="p">(</span><span class="n">mass</span><span class="p">,</span> <span class="n">tau_adj</span><span class="p">,</span> <span class="n">v0</span><span class="p">,</span> <span class="n">e0</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
     <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ans</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span>
@@ -217,10 +217,10 @@
     <span class="k">assert</span> <span class="n">ans</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">2</span><span class="p">,)</span></div>
 
 
-<span class="nd">@given</span><span class="p">(</span><span class="n">h</span><span class="o">=</span><span class="n">real</span><span class="p">(),</span>
-       <span class="n">n</span><span class="o">=</span><span class="n">real</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span>
-       <span class="n">a</span><span class="o">=</span><span class="n">real</span><span class="p">(</span><span class="n">min_value</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
-       <span class="n">b</span><span class="o">=</span><span class="n">real</span><span class="p">(</span><span class="n">min_value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">exclude_zero</span><span class="o">=</span><span class="s1">&#39;near&#39;</span><span class="p">))</span>
+<span class="nd">@given</span><span class="p">(</span><span class="n">h</span><span class="o">=</span><span class="n">reals</span><span class="p">(),</span>
+       <span class="n">n</span><span class="o">=</span><span class="n">reals</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span>
+       <span class="n">a</span><span class="o">=</span><span class="n">reals</span><span class="p">(</span><span class="n">min_value</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
+       <span class="n">b</span><span class="o">=</span><span class="n">reals</span><span class="p">(</span><span class="n">min_value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">exclude_zero</span><span class="o">=</span><span class="s1">&#39;near&#39;</span><span class="p">))</span>
 <div class="viewcode-block" id="test_force_social_helbing"><a class="viewcode-back" href="../../../../../apidocs/crowddynamics.core.motion.tests.html#crowddynamics.core.motion.tests.test_motion.test_force_social_helbing">[docs]</a><span class="k">def</span> <span class="nf">test_force_social_helbing</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
     <span class="n">ans</span> <span class="o">=</span> <span class="n">force_social_helbing</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
     <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ans</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span>
@@ -228,13 +228,13 @@
     <span class="k">assert</span> <span class="n">ans</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">2</span><span class="p">,)</span></div>
 
 
-<span class="nd">@given</span><span class="p">(</span><span class="n">h</span><span class="o">=</span><span class="n">real</span><span class="p">(),</span>
-       <span class="n">n</span><span class="o">=</span><span class="n">real</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span>
-       <span class="n">v</span><span class="o">=</span><span class="n">real</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span>
-       <span class="n">t</span><span class="o">=</span><span class="n">real</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span>
-       <span class="n">mu</span><span class="o">=</span><span class="n">real</span><span class="p">(</span><span class="n">min_value</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
-       <span class="n">kappa</span><span class="o">=</span><span class="n">real</span><span class="p">(</span><span class="n">min_value</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
-       <span class="n">damping</span><span class="o">=</span><span class="n">real</span><span class="p">(</span><span class="n">min_value</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
+<span class="nd">@given</span><span class="p">(</span><span class="n">h</span><span class="o">=</span><span class="n">reals</span><span class="p">(),</span>
+       <span class="n">n</span><span class="o">=</span><span class="n">reals</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span>
+       <span class="n">v</span><span class="o">=</span><span class="n">reals</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span>
+       <span class="n">t</span><span class="o">=</span><span class="n">reals</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span>
+       <span class="n">mu</span><span class="o">=</span><span class="n">reals</span><span class="p">(</span><span class="n">min_value</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
+       <span class="n">kappa</span><span class="o">=</span><span class="n">reals</span><span class="p">(</span><span class="n">min_value</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
+       <span class="n">damping</span><span class="o">=</span><span class="n">reals</span><span class="p">(</span><span class="n">min_value</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
 <div class="viewcode-block" id="test_force_contact"><a class="viewcode-back" href="../../../../../apidocs/crowddynamics.core.motion.tests.html#crowddynamics.core.motion.tests.test_motion.test_force_contact">[docs]</a><span class="k">def</span> <span class="nf">test_force_contact</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">kappa</span><span class="p">,</span> <span class="n">damping</span><span class="p">):</span>
     <span class="n">ans</span> <span class="o">=</span> <span class="n">force_contact</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">kappa</span><span class="p">,</span> <span class="n">damping</span><span class="p">)</span>
     <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ans</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span>
@@ -242,7 +242,7 @@
     <span class="k">assert</span> <span class="n">ans</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">2</span><span class="p">,)</span></div>
 
 
-<span class="nd">@given</span><span class="p">(</span><span class="n">inertia_rot</span><span class="o">=</span><span class="n">real</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="n">SIZE</span><span class="p">),</span> <span class="n">scale</span><span class="o">=</span><span class="n">real</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="n">SIZE</span><span class="p">))</span>
+<span class="nd">@given</span><span class="p">(</span><span class="n">inertia_rot</span><span class="o">=</span><span class="n">reals</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="n">SIZE</span><span class="p">),</span> <span class="n">scale</span><span class="o">=</span><span class="n">reals</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="n">SIZE</span><span class="p">))</span>
 <div class="viewcode-block" id="test_torque_fluctuation"><a class="viewcode-back" href="../../../../../apidocs/crowddynamics.core.motion.tests.html#crowddynamics.core.motion.tests.test_motion.test_torque_fluctuation">[docs]</a><span class="k">def</span> <span class="nf">test_torque_fluctuation</span><span class="p">(</span><span class="n">inertia_rot</span><span class="p">,</span> <span class="n">scale</span><span class="p">):</span>
     <span class="n">ans</span> <span class="o">=</span> <span class="n">torque_fluctuation</span><span class="p">(</span><span class="n">inertia_rot</span><span class="p">,</span> <span class="n">scale</span><span class="p">)</span>
     <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ans</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span>
@@ -250,12 +250,12 @@
     <span class="k">assert</span> <span class="n">ans</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="n">SIZE</span><span class="p">,)</span></div>
 
 
-<span class="nd">@given</span><span class="p">(</span><span class="n">inertia_rot</span><span class="o">=</span><span class="n">real</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-       <span class="n">tau_rot</span><span class="o">=</span><span class="n">real</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">exclude_zero</span><span class="o">=</span><span class="s1">&#39;near&#39;</span><span class="p">),</span>
-       <span class="n">phi_0</span><span class="o">=</span><span class="n">real</span><span class="p">(),</span>
-       <span class="n">phi</span><span class="o">=</span><span class="n">real</span><span class="p">(),</span>
-       <span class="n">omega_0</span><span class="o">=</span><span class="n">real</span><span class="p">(),</span>
-       <span class="n">omega</span><span class="o">=</span><span class="n">real</span><span class="p">())</span>
+<span class="nd">@given</span><span class="p">(</span><span class="n">inertia_rot</span><span class="o">=</span><span class="n">reals</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+       <span class="n">tau_rot</span><span class="o">=</span><span class="n">reals</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">exclude_zero</span><span class="o">=</span><span class="s1">&#39;near&#39;</span><span class="p">),</span>
+       <span class="n">phi_0</span><span class="o">=</span><span class="n">reals</span><span class="p">(),</span>
+       <span class="n">phi</span><span class="o">=</span><span class="n">reals</span><span class="p">(),</span>
+       <span class="n">omega_0</span><span class="o">=</span><span class="n">reals</span><span class="p">(),</span>
+       <span class="n">omega</span><span class="o">=</span><span class="n">reals</span><span class="p">())</span>
 <div class="viewcode-block" id="test_torque_adjust"><a class="viewcode-back" href="../../../../../apidocs/crowddynamics.core.motion.tests.html#crowddynamics.core.motion.tests.test_motion.test_torque_adjust">[docs]</a><span class="k">def</span> <span class="nf">test_torque_adjust</span><span class="p">(</span><span class="n">inertia_rot</span><span class="p">,</span> <span class="n">tau_rot</span><span class="p">,</span> <span class="n">phi_0</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">omega_0</span><span class="p">,</span> <span class="n">omega</span><span class="p">):</span>
     <span class="n">ans</span> <span class="o">=</span> <span class="n">torque_adjust</span><span class="p">(</span><span class="n">inertia_rot</span><span class="p">,</span> <span class="n">tau_rot</span><span class="p">,</span> <span class="n">phi_0</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">omega_0</span><span class="p">,</span>
                         <span class="n">omega</span><span class="p">)</span>
@@ -275,7 +275,7 @@
   <div role="contentinfo">
     <p>
         &copy; Copyright Jaan Tollander de Balsch.
-      Last updated on 2017-05-18.
+      Last updated on 2017-05-31.
 
     </p>
   </div>
@@ -297,7 +297,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../../../',
-            VERSION:'legacy+303.g1e68f25.dirty',
+            VERSION:'legacy+318.gb8d04f6.dirty',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

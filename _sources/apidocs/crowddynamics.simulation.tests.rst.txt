@@ -1,0 +1,30 @@
+crowddynamics\.simulation\.tests package
+========================================
+
+Submodules
+----------
+
+crowddynamics\.simulation\.tests\.test\_agents module
+-----------------------------------------------------
+
+.. automodule:: crowddynamics.simulation.tests.test_agents
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+crowddynamics\.simulation\.tests\.test\_base module
+---------------------------------------------------
+
+.. automodule:: crowddynamics.simulation.tests.test_base
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: crowddynamics.simulation.tests
+    :members:
+    :undoc-members:
+    :show-inheritance:

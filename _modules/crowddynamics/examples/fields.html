@@ -1,0 +1,399 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>crowddynamics.examples.fields &mdash; crowddynamics legacy+318.gb8d04f6.dirty documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../../genindex.html"/>
+        <link rel="search" title="Search" href="../../../search.html"/>
+    <link rel="top" title="crowddynamics legacy+318.gb8d04f6.dirty documentation" href="../../../index.html"/>
+        <link rel="up" title="Module code" href="../../index.html"/> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> crowddynamics
+          
+
+          
+            
+            <img src="../../../_static/logo.svg" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                legacy+318legacy+318.gb8d04f6.dirtygb8d04f6
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">General</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../developing.html">Developing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../resources.html">Resources</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Crowddynamics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../architecture.html">Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../multiagent.html">Multi-Agent Simulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../interactions.html">Interactions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../motion.html">Motion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../steering.html">Steering</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quantities.html">Quantities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../evacuation.html">Evacuation</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Research</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../phenomena.html">Phenomena</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Api</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../apidocs/crowddynamics.html">crowddynamics package</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">crowddynamics</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>crowddynamics.examples.fields</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for crowddynamics.examples.fields</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">shapely.geometry</span> <span class="k">import</span> <span class="n">Polygon</span><span class="p">,</span> <span class="n">LineString</span><span class="p">,</span> <span class="n">Point</span>
+<span class="kn">from</span> <span class="nn">shapely.geometry.base</span> <span class="k">import</span> <span class="n">BaseGeometry</span>
+<span class="kn">from</span> <span class="nn">traitlets.traitlets</span> <span class="k">import</span> <span class="n">Float</span><span class="p">,</span> <span class="n">observe</span><span class="p">,</span> <span class="n">default</span>
+
+<span class="kn">from</span> <span class="nn">crowddynamics.simulation.field</span> <span class="k">import</span> <span class="n">Field</span>
+
+
+<span class="k">def</span> <span class="nf">_rectangle</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">Polygon</span><span class="p">(</span>
+        <span class="p">[(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">),</span> <span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">width</span><span class="p">,</span> <span class="n">y</span><span class="p">),</span> <span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">width</span><span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="n">height</span><span class="p">),</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="n">height</span><span class="p">)])</span>
+
+
+<div class="viewcode-block" id="OutdoorField"><a class="viewcode-back" href="../../../apidocs/crowddynamics.examples.html#crowddynamics.examples.fields.OutdoorField">[docs]</a><span class="k">class</span> <span class="nc">OutdoorField</span><span class="p">(</span><span class="n">Field</span><span class="p">):</span>
+    <span class="n">width</span> <span class="o">=</span> <span class="n">Float</span><span class="p">(</span>
+        <span class="n">default_value</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span>
+        <span class="nb">min</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">height</span> <span class="o">=</span> <span class="n">Float</span><span class="p">(</span>
+        <span class="n">default_value</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span>
+        <span class="nb">min</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="nd">@default</span><span class="p">(</span><span class="s1">&#39;domain&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_default_domain</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Polygon</span><span class="p">([</span>
+            <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="p">),</span>
+            <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="p">),</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="p">])</span>
+
+    <span class="nd">@default</span><span class="p">(</span><span class="s1">&#39;spawns&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_default_spawns</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">domain</span><span class="p">]</span>
+
+    <span class="nd">@observe</span><span class="p">(</span><span class="s1">&#39;width&#39;</span><span class="p">,</span> <span class="s1">&#39;height&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_observe_field</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">domain</span> <span class="o">=</span> <span class="n">Polygon</span><span class="p">([</span>
+            <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="p">),</span>
+            <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="p">),</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spawns</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">domain</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="HallwayField"><a class="viewcode-back" href="../../../apidocs/crowddynamics.examples.html#crowddynamics.examples.fields.HallwayField">[docs]</a><span class="k">class</span> <span class="nc">HallwayField</span><span class="p">(</span><span class="n">Field</span><span class="p">):</span>
+    <span class="n">width</span> <span class="o">=</span> <span class="n">Float</span><span class="p">(</span>
+        <span class="n">default_value</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span>
+        <span class="nb">min</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">height</span> <span class="o">=</span> <span class="n">Float</span><span class="p">(</span>
+        <span class="n">default_value</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span>
+        <span class="nb">min</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">ratio</span> <span class="o">=</span> <span class="n">Float</span><span class="p">(</span>
+        <span class="n">default_value</span><span class="o">=</span><span class="mi">1</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span>
+        <span class="nb">min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="nd">@default</span><span class="p">(</span><span class="s1">&#39;obstacles&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_default_obstacles</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">LineString</span><span class="p">([(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="mi">0</span><span class="p">)])</span> <span class="o">|</span> \
+               <span class="n">LineString</span><span class="p">([(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="p">),</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="p">)])</span>
+
+    <span class="nd">@default</span><span class="p">(</span><span class="s1">&#39;targets&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_default_targets</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">LineString</span><span class="p">([(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="p">)]),</span>
+                <span class="n">LineString</span><span class="p">([(</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="p">)])]</span>
+
+    <span class="nd">@default</span><span class="p">(</span><span class="s1">&#39;spawns&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_default_spawns</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">_rectangle</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ratio</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="p">),</span>
+                <span class="n">_rectangle</span><span class="p">((</span><span class="mi">1</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">ratio</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ratio</span> <span class="o">*</span>
+                           <span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="p">)]</span>
+
+    <span class="nd">@default</span><span class="p">(</span><span class="s1">&#39;domain&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_default_domain</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">convex_hull</span><span class="p">()</span>
+
+    <span class="nd">@observe</span><span class="p">(</span><span class="s1">&#39;width&#39;</span><span class="p">,</span> <span class="s1">&#39;height&#39;</span><span class="p">,</span> <span class="s1">&#39;ratio&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_observe_field</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change</span><span class="p">):</span>
+        <span class="n">obstacles</span> <span class="o">=</span> <span class="n">LineString</span><span class="p">([(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="mi">0</span><span class="p">)])</span> <span class="o">|</span> \
+                    <span class="n">LineString</span><span class="p">([(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="p">),</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="p">)])</span>
+        <span class="n">spawn0</span> <span class="o">=</span> <span class="n">_rectangle</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ratio</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="p">)</span>
+        <span class="n">spawn1</span> <span class="o">=</span> <span class="n">_rectangle</span><span class="p">((</span><span class="mi">1</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">ratio</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ratio</span> <span class="o">*</span>
+                   <span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="p">)</span>
+
+        <span class="n">target0</span> <span class="o">=</span> <span class="n">LineString</span><span class="p">([(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="p">)])</span>
+        <span class="n">target1</span> <span class="o">=</span> <span class="n">LineString</span><span class="p">([(</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="p">)])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">obstacles</span> <span class="o">=</span> <span class="n">obstacles</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spawns</span> <span class="o">=</span> <span class="p">[</span><span class="n">spawn0</span><span class="p">,</span> <span class="n">spawn1</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">targets</span> <span class="o">=</span> <span class="p">[</span><span class="n">target0</span><span class="p">,</span> <span class="n">target1</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">domain</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convex_hull</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="FourExitsField"><a class="viewcode-back" href="../../../apidocs/crowddynamics.examples.html#crowddynamics.examples.fields.FourExitsField">[docs]</a><span class="k">class</span> <span class="nc">FourExitsField</span><span class="p">(</span><span class="n">Field</span><span class="p">):</span>
+    <span class="n">exit_width</span> <span class="o">=</span> <span class="n">Float</span><span class="p">(</span>
+        <span class="n">default_value</span><span class="o">=</span><span class="mf">1.25</span><span class="p">,</span>
+        <span class="nb">min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">FourExitsField</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="n">A</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">B</span> <span class="o">=</span> <span class="p">(</span><span class="mi">87</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">C</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+        <span class="n">D</span> <span class="o">=</span> <span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">40</span><span class="p">)</span>
+        <span class="n">E</span> <span class="o">=</span> <span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">F</span> <span class="o">=</span> <span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+        <span class="n">G</span> <span class="o">=</span> <span class="p">(</span><span class="mi">40</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+        <span class="n">H</span> <span class="o">=</span> <span class="p">(</span><span class="mi">60</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">I</span> <span class="o">=</span> <span class="p">(</span><span class="mi">60</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+
+        <span class="n">J</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">exit_width</span><span class="p">)</span>
+        <span class="n">K</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">80</span><span class="p">)</span>
+        <span class="n">L</span> <span class="o">=</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">80</span><span class="p">)</span>
+        <span class="n">M</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">60</span><span class="p">)</span>
+        <span class="n">N</span> <span class="o">=</span> <span class="p">(</span><span class="mi">40</span><span class="p">,</span> <span class="mi">60</span><span class="p">)</span>
+
+        <span class="n">O</span> <span class="o">=</span> <span class="p">(</span><span class="mi">6</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">exit_width</span><span class="p">,</span> <span class="mi">80</span><span class="p">)</span>
+        <span class="n">P</span> <span class="o">=</span> <span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">80</span><span class="p">)</span>
+        <span class="n">Q</span> <span class="o">=</span> <span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">50</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">exit_width</span><span class="p">)</span>
+        <span class="n">R</span> <span class="o">=</span> <span class="p">(</span><span class="mi">60</span><span class="p">,</span> <span class="mi">60</span><span class="p">)</span>
+        <span class="n">S</span> <span class="o">=</span> <span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">60</span><span class="p">)</span>
+        <span class="n">T</span> <span class="o">=</span> <span class="p">(</span><span class="mi">70</span><span class="p">,</span> <span class="mi">60</span><span class="p">)</span>
+        <span class="n">U</span> <span class="o">=</span> <span class="p">(</span><span class="mi">70</span><span class="p">,</span> <span class="mi">40</span><span class="p">)</span>
+
+        <span class="n">V</span> <span class="o">=</span> <span class="p">(</span><span class="mi">87</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">exit_width</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">W</span> <span class="o">=</span> <span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">Z</span> <span class="o">=</span> <span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>
+
+        <span class="n">obstacles</span> <span class="o">=</span> <span class="n">BaseGeometry</span><span class="p">()</span>
+
+        <span class="n">obstacles</span> <span class="o">|=</span> <span class="n">LineString</span><span class="p">([</span><span class="n">C</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">])</span>
+        <span class="n">obstacles</span> <span class="o">|=</span> <span class="n">LineString</span><span class="p">([</span><span class="n">E</span><span class="p">,</span> <span class="n">D</span><span class="p">])</span>
+        <span class="n">obstacles</span> <span class="o">|=</span> <span class="n">LineString</span><span class="p">([</span><span class="n">F</span><span class="p">,</span> <span class="n">G</span><span class="p">])</span>
+        <span class="n">obstacles</span> <span class="o">|=</span> <span class="n">LineString</span><span class="p">([</span><span class="n">H</span><span class="p">,</span> <span class="n">I</span><span class="p">])</span>
+        <span class="n">obstacles</span> <span class="o">|=</span> <span class="n">LineString</span><span class="p">([</span><span class="n">J</span><span class="p">,</span> <span class="n">K</span><span class="p">,</span> <span class="n">L</span><span class="p">])</span>
+        <span class="n">obstacles</span> <span class="o">|=</span> <span class="n">LineString</span><span class="p">([</span><span class="n">M</span><span class="p">,</span> <span class="n">N</span><span class="p">])</span>
+        <span class="n">obstacles</span> <span class="o">|=</span> <span class="n">LineString</span><span class="p">([</span><span class="n">O</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">Q</span><span class="p">])</span>
+        <span class="n">obstacles</span> <span class="o">|=</span> <span class="n">LineString</span><span class="p">([</span><span class="n">S</span><span class="p">,</span> <span class="n">R</span><span class="p">])</span>
+        <span class="n">obstacles</span> <span class="o">|=</span> <span class="n">LineString</span><span class="p">([</span><span class="n">T</span><span class="p">,</span> <span class="n">U</span><span class="p">])</span>
+        <span class="n">obstacles</span> <span class="o">|=</span> <span class="n">LineString</span><span class="p">([</span><span class="n">Z</span><span class="p">,</span> <span class="n">W</span><span class="p">,</span> <span class="n">V</span><span class="p">])</span>
+
+        <span class="n">targets</span> <span class="o">=</span> <span class="p">[</span><span class="n">LineString</span><span class="p">([</span><span class="n">C</span><span class="p">,</span> <span class="n">J</span><span class="p">]),</span>
+                   <span class="n">LineString</span><span class="p">([</span><span class="n">L</span><span class="p">,</span> <span class="n">O</span><span class="p">]),</span>
+                   <span class="n">LineString</span><span class="p">([</span><span class="n">Q</span><span class="p">,</span> <span class="n">Z</span><span class="p">]),</span>
+                   <span class="n">LineString</span><span class="p">([</span><span class="n">B</span><span class="p">,</span> <span class="n">V</span><span class="p">])]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">obstacles</span> <span class="o">=</span> <span class="n">obstacles</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">targets</span> <span class="o">=</span> <span class="n">targets</span>
+
+        <span class="n">domain</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convex_hull</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spawns</span> <span class="o">=</span> <span class="p">[</span><span class="n">domain</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">domain</span> <span class="o">=</span> <span class="n">domain</span></div>
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright Jaan Tollander de Balsch.
+      Last updated on 2017-05-31.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'legacy+318.gb8d04f6.dirty',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

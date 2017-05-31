@@ -1,23 +1,28 @@
 Multi-Agent Simulation
 ======================
 
+.. graphviz:: graphviz/multiagent.dot
+
 .. autoclass:: crowddynamics.simulation.multiagent.MultiAgentSimulation
    :noindex:
 
 
 Field
 -----
-.. autoclass:: crowddynamics.simulation.multiagent.Field
+.. automodule:: crowddynamics.simulation.field
+   :members: Field
    :noindex:
 
 Agents
 ------
-.. autoclass:: crowddynamics.simulation.multiagent.Agents
+.. automodule:: crowddynamics.simulation.agents
+   :members: Circular, ThreeCircle, Capsule
    :noindex:
 
 Logic
 -----
-.. autoclass:: crowddynamics.simulation.multiagent.LogicNode
+.. automodule:: crowddynamics.simulation.logic
+   :members: LogicNode
    :noindex:
 
 

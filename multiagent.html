@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Multi-Agent Simulation &mdash; crowddynamics legacy+303.g1e68f25.dirty documentation</title>
+  <title>Multi-Agent Simulation &mdash; crowddynamics legacy+318.gb8d04f6.dirty documentation</title>
   
 
   
@@ -37,9 +37,9 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="crowddynamics legacy+303.g1e68f25.dirty documentation" href="index.html"/>
+    <link rel="top" title="crowddynamics legacy+318.gb8d04f6.dirty documentation" href="index.html"/>
         <link rel="next" title="Interactions" href="interactions.html"/>
-        <link rel="prev" title="Resources" href="resources.html"/> 
+        <link rel="prev" title="Architecture" href="architecture.html"/> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
@@ -71,7 +71,7 @@
             
             
               <div class="version">
-                legacy+303legacy+303.g1e68f25.dirtyg1e68f25
+                legacy+318legacy+318.gb8d04f6.dirtygb8d04f6
               </div>
             
           
@@ -104,6 +104,7 @@
 </ul>
 <p class="caption"><span class="caption-text">Crowddynamics</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="architecture.html">Architecture</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Multi-Agent Simulation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#field">Field</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#agents">Agents</a></li>
@@ -124,7 +125,6 @@
 <p class="caption"><span class="caption-text">Api</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="apidocs/crowddynamics.html">crowddynamics package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="apidocs_examples/examples.html">examples package</a></li>
 </ul>
 
             
@@ -190,9 +190,17 @@
             
   <div class="section" id="multi-agent-simulation">
 <h1>Multi-Agent Simulation<a class="headerlink" href="#multi-agent-simulation" title="Permalink to this headline">¶</a></h1>
+<img src="_images/graphviz-e55810c7e7468fb2f4262da3aa03202cd2047b19.png" alt="digraph multiagent {
+  /* Entities */
+  /*name  [label=&quot;&quot;, shape=&quot;square&quot;];*/
+  /* Relationships */
+  MultiAgentSimulation -&gt; {Field, Agents, Logic};
+  Field -&gt; {Domain, Obstacles, Targets, Spawns};
+  Targets -&gt; {Exits};
+}" />
 <dl class="class">
 <dt>
-<em class="property">class </em><code class="descclassname">crowddynamics.simulation.multiagent.</code><code class="descname">MultiAgentSimulation</code><span class="sig-paren">(</span><em>configfile='/home/jaan/Projects/CrowdDynamics/crowddynamics/conf/multiagent.cfg'</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crowddynamics/simulation/multiagent.html#MultiAgentSimulation"><span class="viewcode-link">[source]</span></a></dt>
+<em class="property">class </em><code class="descclassname">crowddynamics.simulation.multiagent.</code><code class="descname">MultiAgentSimulation</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crowddynamics/simulation/multiagent.html#MultiAgentSimulation"><span class="viewcode-link">[source]</span></a></dt>
 <dd><p>Constructing a multi-agent simulation</p>
 <dl class="docutils">
 <dt>Field</dt>
@@ -210,20 +218,30 @@ using <em>post-order</em> traversal.</dd>
 <h2>Field<a class="headerlink" href="#field" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt>
-<em class="property">class </em><code class="descclassname">crowddynamics.simulation.multiagent.</code><code class="descname">Field</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crowddynamics/simulation/multiagent.html#Field"><span class="viewcode-link">[source]</span></a></dt>
-<dd><p>Multi-Agent simulation Field consists of</p>
+<em class="property">class </em><code class="descclassname">crowddynamics.simulation.field.</code><code class="descname">Field</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crowddynamics/simulation/field.html#Field"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Field is a collection of geometric static geometric objects that can
+exist in crowd dynamics simulations. This module uses geometric types
+from <a class="reference external" href="http://toblerity.org/shapely/manual.html">Shapely</a> module. Shapely&#8217;s fundamental geometric types are <em>points</em>,
+<em>curves</em> and <em>surfaces</em>, which correspond to shapely objects</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">Point</span></code>: Individual point</li>
+<li><code class="docutils literal"><span class="pre">LineString</span></code>: Curve created by set of points connected by line
+segments. Closed <code class="docutils literal"><span class="pre">LineString</span></code> has special type <code class="docutils literal"><span class="pre">LinearRing</span></code>.</li>
+<li><code class="docutils literal"><span class="pre">Polygon</span></code>: Surface created by set of points covered by closed curve
+excluding points that belong to holes that the surface may have.</li>
+</ul>
 <div class="figure">
-<p><img src="_images/tikz-0f44439ad94496fb021d93a98ad69515e6fa5cc3.png" alt="\draw[color=gray!20] (-2, -1) grid (12, 7);
+<p><img src="_images/tikz-cb4d939aba88849927086b38627837c6869148cb.png" alt="\draw[color=gray!20] (-2, -1) grid (12, 7);
 % Domain
 \fill[gray!20] (0, 0) rectangle (10, 6);
 \node[] () at (5, 3) {$ \Omega $};
 % Spawn 0
 \fill[blue!20] (0, 3) -- ++(2, 0) -- ++(1, 1) -- ++(0, 2)
-               -- ++(-3, 0) -- ++(0, -3);
+              -- ++(-3, 0) -- ++(0, -3);
 \node[] () at (1.5, 4.5) {$ \mathcal{S}_0 $};
 % Spawn 1
 \fill[blue!20] (3, 0) -- ++(0, 1) -- ++(1, 1) -- ++(2, 0) -- ++(1, -1)
-               -- ++(0, -1);
+              -- ++(0, -1);
 \node[] () at (5, 0.5) {$ \mathcal{S}_1 $};
 % Obstacles
 \draw[thick] (0, 0) rectangle (10, 6);
@@ -254,11 +272,12 @@ other agents, there will be friction force between the agent and the
 obstacles. Obstacles avoidance is handled by a navigation algorithm.</dd>
 <dt>Targets</dt>
 <dd><img class="math" src="_images/tikz-d4b179364775c1be743188621e7d72c2aa2db162.png" alt="\draw[thick, dashed, black] (0, 0) rectangle (0.4, 0.4);"/>
-<strong>Targets</strong> <span class="math">\(\mathcal{E}_i \subset \Omega\)</span> for
-<span class="math">\(i \in \{0, ..., m-1\}\)</span> are passable regions of the domain. Agents
+<strong>Targets</strong> <span class="math">\(\mathcal{T}_i \subset \Omega\)</span> for
+<span class="math">\(i \in T = \{0, ..., m-1\}\)</span> are passable regions of the domain. Agents
 can have a psychological tendency  to try to reach one or more of these
 regions. This psycological tendency is also handled by a navigation
-algorithm.</dd>
+algorithm. Targets can for examples be exit doors denoted
+<span class="math">\(\mathcal{E} \subset \mathcal{T}_{i \in T}\)</span>.</dd>
 <dt>Spawns</dt>
 <dd><img class="math" src="_images/tikz-d1078615264fd8b9afa678ca123e8c392cedd09b.png" alt="\draw[fill=blue!20] (0, 0) rectangle (0.4, 0.4);"/>
 <strong>Spawns</strong> <span class="math">\(\mathcal{S}_j \subset \Omega\)</span> for
@@ -269,6 +288,19 @@ of new potential points for  placing the agent and then algorithm test
 that the agent does not  overlap with other agents of obstacles. If it
 doesn&#8217;t new agent is  placed here.</dd>
 </dl>
+<dl class="method">
+<dt>
+<code class="descname">convex_hull</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/crowddynamics/simulation/field.html#Field.convex_hull"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Convex hull of union of all objects in the field.</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">sample_spawn</code><span class="sig-paren">(</span><em>spawn_index: int</em>, <em>radius: float = 0.3</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crowddynamics/simulation/field.html#Field.sample_spawn"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Generator for sampling points inside spawn without overlapping with
+obstacles</p>
+</dd></dl>
+
 </dd></dl>
 
 </div>
@@ -276,20 +308,19 @@ doesn&#8217;t new agent is  placed here.</dd>
 <h2>Agents<a class="headerlink" href="#agents" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt>
-<em class="property">class </em><code class="descclassname">crowddynamics.simulation.multiagent.</code><code class="descname">Agents</code><span class="sig-paren">(</span><em>size</em>, <em>agent_type='circular'</em>, <em>agent_cfg='/home/jaan/Projects/CrowdDynamics/crowddynamics/conf/agent.cfg'</em>, <em>agent_cfg_spec='/home/jaan/Projects/CrowdDynamics/crowddynamics/conf/agent_spec.cfg'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crowddynamics/simulation/multiagent.html#Agents"><span class="viewcode-link">[source]</span></a></dt>
-<dd><p>Multi-Agent simulation agent types. Modelled as rigid bodies.</p>
-<dl class="docutils">
-<dt>Circular</dt>
-<dd><div class="first figure">
-<p><img src="_images/tikz-1fb5700d5e3c3ec98ccb6e7ad0ec15a682ee40a2.png" alt="\begin{scope}[scale=3]
-  \draw[color=gray!20] (-2, -1) grid (2, 1);
-  \draw[thick] (0, 0) circle (1);
-  \fill[color=gray!20, opacity=0.5] (0, 0) circle (1);
-  \node[below] () at (0, 0) {$ \mathbf{x} $};
-  \fill (0, 0) circle(0.5pt);
-  \draw[dashed, &lt;-&gt;] (0, 0) -- node[above] {$ r $} ++(135:1);
+<em class="property">class </em><code class="descclassname">crowddynamics.simulation.agents.</code><code class="descname">Circular</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crowddynamics/simulation/agents.html#Circular"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Circular agent type</p>
+<blockquote>
+<div><div class="figure">
+<p><img src="_images/tikz-9b461e73f099addb8adfe9d79f8e926d851afea2.png" alt="\begin{scope}[scale=3]
+    \draw[color=gray!20] (-2, -1) grid (2, 1);
+    \draw[thick] (0, 0) circle (1);
+    \fill[color=gray!20, opacity=0.5] (0, 0) circle (1);
+    \node[below] () at (0, 0) {$ \mathbf{x} $};
+    \fill (0, 0) circle(0.5pt);
+    \draw[dashed, &lt;-&gt;] (0, 0) -- node[above] {$ r $} ++(135:1);
 \end{scope}" /></p>
-</div><p class="last"><strong>Circular</strong> agents are modelled as a disk with radius <span class="math">\(r &gt; 0\)</span>
+<p class="caption">Circular agent</p></div><p><strong>Circular</strong> agents are modelled as a disk with radius <span class="math">\(r &gt; 0\)</span>
 from the center of mass <span class="math">\(\mathbf{x}\)</span>. This type of agents do not
 have orientation. This is the simplest model for an agent and works
 quite well for sparse and medium density crowds, but modelling higher
@@ -297,30 +328,229 @@ density crowds with this model can be unrealistic because circular
 model is too wide in the  perpendicular width compared to three-circle
 or capsule representations  and lacks the ability change orientation to
 fit through smaller spaces. <a class="reference internal" href="#helbing2000a" id="id1">[Helbing2000a]</a></p>
-</dd>
-<dt>Three-Circle</dt>
-<dd><div class="first figure">
-<p><img src="_images/tikz-1178fa2b5519daa20fc43cdaac6a4ab138c20828.png" alt="\begin{scope}[scale=3]
-  \draw[color=gray!20] (-2, -1) grid (2, 1);
-  \draw[thick] (0, 0) circle (0.59);
-  \draw[thick] (-0.63, 0) circle (0.37);
-  \draw[thick] (0.63, 0) circle (0.37);
-  \fill[gray!20, opacity=0.5] (0, 0) circle (0.59);
-  \fill[gray!20, opacity=0.5] (-0.63, 0) circle (0.37);
-  \fill[gray!20, opacity=0.5] (0.63, 0) circle (0.37);
-  \node[below] () at (0, 0) {$ \mathbf{x} $};
-  \fill (0, 0) circle(0.5pt);
-  \fill (-0.63, 0) circle(0.5pt);
-  \fill (0.63, 0) circle(0.5pt);
-  \draw[dashed, &lt;-&gt;] (0, 0) -- node[above] {$ r_{t} $} ++(135:0.59);
-  \draw[dashed, &lt;-&gt;] (-0.63, 0) -- node[above] {$ r_{s} $} ++(135:0.37);
-  \draw[dashed, &lt;-&gt;] (0.63, 0) -- node[above] {$ r_{s} $} ++(45:0.37);
-  \draw[dashed, &lt;-&gt;] (0, 0) -- node[above] {$ r_{ts} $} (-0.63, 0);
-  \draw[dashed, &lt;-&gt;] (0, 0) -- node[above] {$ r_{ts} $} (0.63, 0);
-  %\draw[thick, -&gt;] (0, 0) -- node[left] {$ \mathbf{\hat{e}_n} $} (0, 0.3);
-  %\draw[thick, -&gt;] (0, 0) -- node[below] {$ \mathbf{\hat{e}_t} $} (0.3, 0);
+</div></blockquote>
+<table border="1" class="docutils" id="id6">
+<caption><span class="caption-text">Traits</span><a class="headerlink" href="#id6" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col width="25%" />
+<col width="25%" />
+<col width="25%" />
+<col width="25%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">name</th>
+<th class="head">symbol</th>
+<th class="head">default value</th>
+<th class="head">help</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">active</span></code></td>
+<td>&#160;</td>
+<td><code class="docutils literal"><span class="pre">True</span></code></td>
+<td>Denotes if agent is currently active</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">target_reached</span></code></td>
+<td>&#160;</td>
+<td><code class="docutils literal"><span class="pre">False</span></code></td>
+<td>Denotes if agent has reached its target</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">target</span></code></td>
+<td>&#160;</td>
+<td><code class="docutils literal"><span class="pre">0</span></code></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">herding</span></code></td>
+<td>&#160;</td>
+<td><code class="docutils literal"><span class="pre">False</span></code></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">body_type</span></code></td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>Selected body type</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">body_types</span></code></td>
+<td>&#160;</td>
+<td><code class="docutils literal"><span class="pre">traitlets.Undefined</span></code></td>
+<td>Mapping of body type names to values</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">ratio_rt</span></code></td>
+<td>&#160;</td>
+<td><code class="docutils literal"><span class="pre">0</span></code></td>
+<td>Ratio between total radius and torso radius</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">ratio_rs</span></code></td>
+<td>&#160;</td>
+<td><code class="docutils literal"><span class="pre">0</span></code></td>
+<td>Ratio between total radius and shoulder radius</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">ratio_ts</span></code></td>
+<td>&#160;</td>
+<td><code class="docutils literal"><span class="pre">0</span></code></td>
+<td>Ratio between total radius and distance from torso to shoulder</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">radius_mean</span></code></td>
+<td>&#160;</td>
+<td><code class="docutils literal"><span class="pre">0</span></code></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">radius_scale</span></code></td>
+<td>&#160;</td>
+<td><code class="docutils literal"><span class="pre">0</span></code></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">target_velocity_mean</span></code></td>
+<td>&#160;</td>
+<td><code class="docutils literal"><span class="pre">0</span></code></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">target_velocity_scale</span></code></td>
+<td>&#160;</td>
+<td><code class="docutils literal"><span class="pre">0</span></code></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">mass_mean</span></code></td>
+<td>&#160;</td>
+<td><code class="docutils literal"><span class="pre">0</span></code></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">mass_scale</span></code></td>
+<td>&#160;</td>
+<td><code class="docutils literal"><span class="pre">0</span></code></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">radius</span></code></td>
+<td><span class="math">\(r\)</span></td>
+<td><code class="docutils literal"><span class="pre">0.0</span></code></td>
+<td>Radius</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">r_t</span></code></td>
+<td><span class="math">\(r_t\)</span></td>
+<td><code class="docutils literal"><span class="pre">0.0</span></code></td>
+<td>Torso radius</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">r_s</span></code></td>
+<td><span class="math">\(r_s\)</span></td>
+<td><code class="docutils literal"><span class="pre">0.0</span></code></td>
+<td>Shoulder radius</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">r_ts</span></code></td>
+<td><span class="math">\(r_{ts}\)</span></td>
+<td><code class="docutils literal"><span class="pre">0.0</span></code></td>
+<td>Distance from torso to shoulder</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">mass</span></code></td>
+<td><span class="math">\(m\)</span></td>
+<td><code class="docutils literal"><span class="pre">0.0</span></code></td>
+<td>Mass</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">inertia_rot</span></code></td>
+<td><span class="math">\(I_{rot}\)</span></td>
+<td><code class="docutils literal"><span class="pre">0.0</span></code></td>
+<td>Rotational moment</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">target_velocity</span></code></td>
+<td><span class="math">\(v_0\)</span></td>
+<td><code class="docutils literal"><span class="pre">0.0</span></code></td>
+<td>Target velocity</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">target_angular_velocity</span></code></td>
+<td><span class="math">\(\omega_0\)</span></td>
+<td><code class="docutils literal"><span class="pre">0.0</span></code></td>
+<td>Target angular velocity</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">position</span></code></td>
+<td><span class="math">\(\mathbf{x}\)</span></td>
+<td><code class="docutils literal"><span class="pre">[</span> <span class="pre">0.</span>&#160; <span class="pre">0.]</span></code></td>
+<td>Position</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">velocity</span></code></td>
+<td><span class="math">\(\mathbf{v}\)</span></td>
+<td><code class="docutils literal"><span class="pre">[</span> <span class="pre">0.</span>&#160; <span class="pre">0.]</span></code></td>
+<td>Velocity</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">target_direction</span></code></td>
+<td><span class="math">\(\mathbf{\hat{e}}_0\)</span></td>
+<td><code class="docutils literal"><span class="pre">[</span> <span class="pre">0.</span>&#160; <span class="pre">0.]</span></code></td>
+<td>Target direction</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">force</span></code></td>
+<td><span class="math">\(\mathbf{f}\)</span></td>
+<td><code class="docutils literal"><span class="pre">[</span> <span class="pre">0.</span>&#160; <span class="pre">0.]</span></code></td>
+<td>Force</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">force_prev</span></code></td>
+<td><span class="math">\(\mathbf{f}_{prev}\)</span></td>
+<td><code class="docutils literal"><span class="pre">[</span> <span class="pre">0.</span>&#160; <span class="pre">0.]</span></code></td>
+<td>Previous force</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">tau_adj</span></code></td>
+<td><span class="math">\(\tau_{adj}\)</span></td>
+<td><code class="docutils literal"><span class="pre">0.5</span></code></td>
+<td>Characteristic time for agent adjusting its movement</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">k_soc</span></code></td>
+<td><span class="math">\(k_{soc}\)</span></td>
+<td><code class="docutils literal"><span class="pre">1.5</span></code></td>
+<td>Social force scaling constant</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">tau_0</span></code></td>
+<td><span class="math">\(\tau_{0}\)</span></td>
+<td><code class="docutils literal"><span class="pre">3.0</span></code></td>
+<td>Interaction time horizon</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">mu</span></code></td>
+<td><span class="math">\(\mu\)</span></td>
+<td><code class="docutils literal"><span class="pre">120000.0</span></code></td>
+<td>Compression counteraction constant</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">kappa</span></code></td>
+<td><span class="math">\(\kappa\)</span></td>
+<td><code class="docutils literal"><span class="pre">40000.0</span></code></td>
+<td>Sliding friction constant</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">damping</span></code></td>
+<td><span class="math">\(c_{d}\)</span></td>
+<td><code class="docutils literal"><span class="pre">500</span></code></td>
+<td>Damping coefficient for contact force</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">std_rand_force</span></code></td>
+<td><span class="math">\(\xi / m\)</span></td>
+<td><code class="docutils literal"><span class="pre">0.1</span></code></td>
+<td>Standard deviation for fluctuation force</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt>
+<em class="property">class </em><code class="descclassname">crowddynamics.simulation.agents.</code><code class="descname">ThreeCircle</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crowddynamics/simulation/agents.html#ThreeCircle"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Three-circle agent type</p>
+<blockquote>
+<div><div class="figure">
+<p><img src="_images/tikz-027b0943f92c8ef317bb4d532731e865cc933af8.png" alt="\begin{scope}[scale=3]
+    \draw[color=gray!20] (-2, -1) grid (2, 1);
+    \draw[thick] (0, 0) circle (0.59);
+    \draw[thick] (-0.63, 0) circle (0.37);
+    \draw[thick] (0.63, 0) circle (0.37);
+    \fill[gray!20, opacity=0.5] (0, 0) circle (0.59);
+    \fill[gray!20, opacity=0.5] (-0.63, 0) circle (0.37);
+    \fill[gray!20, opacity=0.5] (0.63, 0) circle (0.37);
+    \node[below] () at (0, 0) {$ \mathbf{x} $};
+    \fill (0, 0) circle(0.5pt);
+    \fill (-0.63, 0) circle(0.5pt);
+    \fill (0.63, 0) circle(0.5pt);
+    \draw[dashed, &lt;-&gt;] (0, 0) -- node[above] {$ r_{t} $} ++(135:0.59);
+    \draw[dashed, &lt;-&gt;] (-0.63, 0) -- node[above] {$ r_{s} $} ++(135:0.37);
+    \draw[dashed, &lt;-&gt;] (0.63, 0) -- node[above] {$ r_{s} $} ++(45:0.37);
+    \draw[dashed, &lt;-&gt;] (0, 0) -- node[above] {$ r_{ts} $} (-0.63, 0);
+    \draw[dashed, &lt;-&gt;] (0, 0) -- node[above] {$ r_{ts} $} (0.63, 0);
+    %\draw[thick, -&gt;] (0, 0) -- node[left] {$ \mathbf{\hat{e}_n} $} (0, 0.3);
+    %\draw[thick, -&gt;] (0, 0) -- node[below] {$ \mathbf{\hat{e}_t} $} (0.3, 0);
 \end{scope}" /></p>
-</div><p class="last"><strong>Three-circle</strong> agents are modelled as three disks representing the
+<p class="caption">Three circle agent</p></div><p><strong>Three-circle</strong> agents are modelled as three disks representing the
 torso and two shoulders of an average human. Torso is a disk with radius
 <span class="math">\(r_t &gt; 0\)</span> from the center of mass <span class="math">\(\mathbf{x}\)</span>. Two
 shoulders are disks with radius <span class="math">\(r_s\)</span> located at along the
@@ -330,44 +560,510 @@ tangents at distance <span class="math">\(r_{ts}\)</span> from the center of mas
 circle type has orientation of <span class="math">\(\varphi\)</span>. Model was proposed
 <em>Crowd dynamics discrete element multi-circle model</em> <a class="reference internal" href="#langston2006" id="id2">[Langston2006]</a> and
 has been used for example in FDS+EVAC <a class="reference internal" href="#korhonen2008b" id="id3">[Korhonen2008b]</a>.</p>
-</dd>
-<dt>Capsule</dt>
-<dd><div class="first admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Capsule is not implemented yet</p>
-</div>
-<div class="figure">
-<p><img src="_images/tikz-713c55955f021dc73d4d99b979805277b79e0f64.png" alt="\begin{scope}[scale=3]
-  \draw[color=gray!20] (-2, -1) grid (2, 1);
-  \draw[thick] (0.5, 0.5) arc (90:-90:0.5)
-               -- ++(-1, 0) arc (270:90:0.5)
-               -- ++(1, 0);
-   \fill[gray!20, opacity=0.5] (0.5, 0.5) arc (90:-90:0.5)
-               -- ++(-1, 0) arc (270:90:0.5)
-               -- ++(1, 0);
-  \node[below] () at (0, 0) {$ \mathbf{x} $};
-  \fill (0, 0) circle(0.5pt);
-  \fill (-0.5, 0) circle(0.5pt);
-  \fill (0.5, 0) circle(0.5pt);
-  \draw[thick] (-0.5, 0) -- (0.5, 0);
-  \draw[dashed, &lt;-&gt;] (-0.5, 0) -- node[above] {$ r $} ++(135:0.5);
-  \draw[dashed, &lt;-&gt;] (-0.5, -0.2) -- node[below]{$ w $} (0.5, -0.2);
-  %\draw[thick, -&gt;] (0, 0) -- node[left] {$ \mathbf{\hat{e}_n} $} (0, 0.3);
-  %\draw[thick, -&gt;] (0, 0) -- node[below] {$ \mathbf{\hat{e}_t} $} (0.3, 0);
+</div></blockquote>
+<table border="1" class="docutils" id="id7">
+<caption><span class="caption-text">Traits</span><a class="headerlink" href="#id7" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col width="25%" />
+<col width="25%" />
+<col width="25%" />
+<col width="25%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">name</th>
+<th class="head">symbol</th>
+<th class="head">default value</th>
+<th class="head">help</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">position_ls</span></code></td>
+<td>&#160;</td>
+<td><code class="docutils literal"><span class="pre">[</span> <span class="pre">0.</span>&#160; <span class="pre">0.]</span></code></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">position_rs</span></code></td>
+<td>&#160;</td>
+<td><code class="docutils literal"><span class="pre">[</span> <span class="pre">0.</span>&#160; <span class="pre">0.]</span></code></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">active</span></code></td>
+<td>&#160;</td>
+<td><code class="docutils literal"><span class="pre">True</span></code></td>
+<td>Denotes if agent is currently active</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">target_reached</span></code></td>
+<td>&#160;</td>
+<td><code class="docutils literal"><span class="pre">False</span></code></td>
+<td>Denotes if agent has reached its target</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">target</span></code></td>
+<td>&#160;</td>
+<td><code class="docutils literal"><span class="pre">0</span></code></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">herding</span></code></td>
+<td>&#160;</td>
+<td><code class="docutils literal"><span class="pre">False</span></code></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">body_type</span></code></td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>Selected body type</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">body_types</span></code></td>
+<td>&#160;</td>
+<td><code class="docutils literal"><span class="pre">traitlets.Undefined</span></code></td>
+<td>Mapping of body type names to values</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">ratio_rt</span></code></td>
+<td>&#160;</td>
+<td><code class="docutils literal"><span class="pre">0</span></code></td>
+<td>Ratio between total radius and torso radius</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">ratio_rs</span></code></td>
+<td>&#160;</td>
+<td><code class="docutils literal"><span class="pre">0</span></code></td>
+<td>Ratio between total radius and shoulder radius</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">ratio_ts</span></code></td>
+<td>&#160;</td>
+<td><code class="docutils literal"><span class="pre">0</span></code></td>
+<td>Ratio between total radius and distance from torso to shoulder</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">radius_mean</span></code></td>
+<td>&#160;</td>
+<td><code class="docutils literal"><span class="pre">0</span></code></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">radius_scale</span></code></td>
+<td>&#160;</td>
+<td><code class="docutils literal"><span class="pre">0</span></code></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">target_velocity_mean</span></code></td>
+<td>&#160;</td>
+<td><code class="docutils literal"><span class="pre">0</span></code></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">target_velocity_scale</span></code></td>
+<td>&#160;</td>
+<td><code class="docutils literal"><span class="pre">0</span></code></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">mass_mean</span></code></td>
+<td>&#160;</td>
+<td><code class="docutils literal"><span class="pre">0</span></code></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">mass_scale</span></code></td>
+<td>&#160;</td>
+<td><code class="docutils literal"><span class="pre">0</span></code></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">radius</span></code></td>
+<td><span class="math">\(r\)</span></td>
+<td><code class="docutils literal"><span class="pre">0.0</span></code></td>
+<td>Radius</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">r_t</span></code></td>
+<td><span class="math">\(r_t\)</span></td>
+<td><code class="docutils literal"><span class="pre">0.0</span></code></td>
+<td>Torso radius</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">r_s</span></code></td>
+<td><span class="math">\(r_s\)</span></td>
+<td><code class="docutils literal"><span class="pre">0.0</span></code></td>
+<td>Shoulder radius</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">r_ts</span></code></td>
+<td><span class="math">\(r_{ts}\)</span></td>
+<td><code class="docutils literal"><span class="pre">0.0</span></code></td>
+<td>Distance from torso to shoulder</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">mass</span></code></td>
+<td><span class="math">\(m\)</span></td>
+<td><code class="docutils literal"><span class="pre">0.0</span></code></td>
+<td>Mass</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">inertia_rot</span></code></td>
+<td><span class="math">\(I_{rot}\)</span></td>
+<td><code class="docutils literal"><span class="pre">0.0</span></code></td>
+<td>Rotational moment</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">target_velocity</span></code></td>
+<td><span class="math">\(v_0\)</span></td>
+<td><code class="docutils literal"><span class="pre">0.0</span></code></td>
+<td>Target velocity</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">target_angular_velocity</span></code></td>
+<td><span class="math">\(\omega_0\)</span></td>
+<td><code class="docutils literal"><span class="pre">0.0</span></code></td>
+<td>Target angular velocity</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">position</span></code></td>
+<td><span class="math">\(\mathbf{x}\)</span></td>
+<td><code class="docutils literal"><span class="pre">[</span> <span class="pre">0.</span>&#160; <span class="pre">0.]</span></code></td>
+<td>Position</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">velocity</span></code></td>
+<td><span class="math">\(\mathbf{v}\)</span></td>
+<td><code class="docutils literal"><span class="pre">[</span> <span class="pre">0.</span>&#160; <span class="pre">0.]</span></code></td>
+<td>Velocity</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">target_direction</span></code></td>
+<td><span class="math">\(\mathbf{\hat{e}}_0\)</span></td>
+<td><code class="docutils literal"><span class="pre">[</span> <span class="pre">0.</span>&#160; <span class="pre">0.]</span></code></td>
+<td>Target direction</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">force</span></code></td>
+<td><span class="math">\(\mathbf{f}\)</span></td>
+<td><code class="docutils literal"><span class="pre">[</span> <span class="pre">0.</span>&#160; <span class="pre">0.]</span></code></td>
+<td>Force</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">force_prev</span></code></td>
+<td><span class="math">\(\mathbf{f}_{prev}\)</span></td>
+<td><code class="docutils literal"><span class="pre">[</span> <span class="pre">0.</span>&#160; <span class="pre">0.]</span></code></td>
+<td>Previous force</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">tau_adj</span></code></td>
+<td><span class="math">\(\tau_{adj}\)</span></td>
+<td><code class="docutils literal"><span class="pre">0.5</span></code></td>
+<td>Characteristic time for agent adjusting its movement</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">k_soc</span></code></td>
+<td><span class="math">\(k_{soc}\)</span></td>
+<td><code class="docutils literal"><span class="pre">1.5</span></code></td>
+<td>Social force scaling constant</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">tau_0</span></code></td>
+<td><span class="math">\(\tau_{0}\)</span></td>
+<td><code class="docutils literal"><span class="pre">3.0</span></code></td>
+<td>Interaction time horizon</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">mu</span></code></td>
+<td><span class="math">\(\mu\)</span></td>
+<td><code class="docutils literal"><span class="pre">120000.0</span></code></td>
+<td>Compression counteraction constant</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">kappa</span></code></td>
+<td><span class="math">\(\kappa\)</span></td>
+<td><code class="docutils literal"><span class="pre">40000.0</span></code></td>
+<td>Sliding friction constant</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">damping</span></code></td>
+<td><span class="math">\(c_{d}\)</span></td>
+<td><code class="docutils literal"><span class="pre">500</span></code></td>
+<td>Damping coefficient for contact force</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">std_rand_force</span></code></td>
+<td><span class="math">\(\xi / m\)</span></td>
+<td><code class="docutils literal"><span class="pre">0.1</span></code></td>
+<td>Standard deviation for fluctuation force</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">orientation</span></code></td>
+<td><span class="math">\(\varphi\)</span></td>
+<td><code class="docutils literal"><span class="pre">0.0</span></code></td>
+<td>Orientation</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">angular_velocity</span></code></td>
+<td><span class="math">\(\omega\)</span></td>
+<td><code class="docutils literal"><span class="pre">0.0</span></code></td>
+<td>Angular velocity</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">target_orientation</span></code></td>
+<td><span class="math">\(\varphi_0\)</span></td>
+<td><code class="docutils literal"><span class="pre">0.0</span></code></td>
+<td>Target orientation</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">torque</span></code></td>
+<td><span class="math">\(M\)</span></td>
+<td><code class="docutils literal"><span class="pre">0.0</span></code></td>
+<td>Torque</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">torque_prev</span></code></td>
+<td><span class="math">\(M_{prev}\)</span></td>
+<td><code class="docutils literal"><span class="pre">0.0</span></code></td>
+<td>Previous torque</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">tau_rot</span></code></td>
+<td><span class="math">\(\tau_{adjrot}\)</span></td>
+<td><code class="docutils literal"><span class="pre">0.2</span></code></td>
+<td>Characteristic time for agent adjusting its rotational movement</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">std_rand_torque</span></code></td>
+<td><span class="math">\(\eta / I{rot}\)</span></td>
+<td><code class="docutils literal"><span class="pre">0.1</span></code></td>
+<td>Standard deviation for fluctuation torque</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt>
+<em class="property">class </em><code class="descclassname">crowddynamics.simulation.agents.</code><code class="descname">Capsule</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crowddynamics/simulation/agents.html#Capsule"><span class="viewcode-link">[source]</span></a></dt>
+<dd><blockquote>
+<div><div class="figure">
+<p><img src="_images/tikz-b4c35a3ddb7218143a7c5a41d483b1adfe36824d.png" alt="\begin{scope}[scale=3]
+    \draw[color=gray!20] (-2, -1) grid (2, 1);
+    \draw[thick] (0.5, 0.5) arc (90:-90:0.5)
+              -- ++(-1, 0) arc (270:90:0.5)
+              -- ++(1, 0);
+    \fill[gray!20, opacity=0.5] (0.5, 0.5) arc (90:-90:0.5)
+              -- ++(-1, 0) arc (270:90:0.5)
+              -- ++(1, 0);
+    \node[below] () at (0, 0) {$ \mathbf{x} $};
+    \fill (0, 0) circle(0.5pt);
+    \fill (-0.5, 0) circle(0.5pt);
+    \fill (0.5, 0) circle(0.5pt);
+    \draw[thick] (-0.5, 0) -- (0.5, 0);
+    \draw[dashed, &lt;-&gt;] (-0.5, 0) -- node[above] {$ r $} ++(135:0.5);
+    \draw[dashed, &lt;-&gt;] (-0.5, -0.2) -- node[below]{$ w $} (0.5, -0.2);
+    %\draw[thick, -&gt;] (0, 0) -- node[left] {$ \mathbf{\hat{e}_n} $} (0, 0.3);
+    %\draw[thick, -&gt;] (0, 0) -- node[below] {$ \mathbf{\hat{e}_t} $} (0.3, 0);
 \end{scope}" /></p>
-</div><p><strong>Capsule</strong> shaped model used in <em>Dense Crowds of Virtual Humans</em>
+<p class="caption">Capsule agent</p></div><p><strong>Capsule</strong> shaped model used in <em>Dense Crowds of Virtual Humans</em>
 <a class="reference internal" href="#stuvel2016" id="id4">[Stuvel2016]</a> and <em>Simulating competitive egress of noncircular
 pedestrians</em> <a class="reference internal" href="#hidalgo2017" id="id5">[Hidalgo2017]</a>.</p>
 <div class="math">
 \[\begin{split}r &amp;= T / 2 \\
 w &amp;= W - 2 r\end{split}\]</div>
 <p>where</p>
-<ul class="last simple">
+<ul class="simple">
 <li><span class="math">\(T\)</span> is the thickness of the chest</li>
 <li><span class="math">\(W\)</span> is the width of the chest</li>
 </ul>
-</dd>
-</dl>
+</div></blockquote>
+<table border="1" class="docutils" id="id8">
+<caption><span class="caption-text">Traits</span><a class="headerlink" href="#id8" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col width="25%" />
+<col width="25%" />
+<col width="25%" />
+<col width="25%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">name</th>
+<th class="head">symbol</th>
+<th class="head">default value</th>
+<th class="head">help</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">active</span></code></td>
+<td>&#160;</td>
+<td><code class="docutils literal"><span class="pre">True</span></code></td>
+<td>Denotes if agent is currently active</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">target_reached</span></code></td>
+<td>&#160;</td>
+<td><code class="docutils literal"><span class="pre">False</span></code></td>
+<td>Denotes if agent has reached its target</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">target</span></code></td>
+<td>&#160;</td>
+<td><code class="docutils literal"><span class="pre">0</span></code></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">herding</span></code></td>
+<td>&#160;</td>
+<td><code class="docutils literal"><span class="pre">False</span></code></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">body_type</span></code></td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>Selected body type</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">body_types</span></code></td>
+<td>&#160;</td>
+<td><code class="docutils literal"><span class="pre">traitlets.Undefined</span></code></td>
+<td>Mapping of body type names to values</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">ratio_rt</span></code></td>
+<td>&#160;</td>
+<td><code class="docutils literal"><span class="pre">0</span></code></td>
+<td>Ratio between total radius and torso radius</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">ratio_rs</span></code></td>
+<td>&#160;</td>
+<td><code class="docutils literal"><span class="pre">0</span></code></td>
+<td>Ratio between total radius and shoulder radius</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">ratio_ts</span></code></td>
+<td>&#160;</td>
+<td><code class="docutils literal"><span class="pre">0</span></code></td>
+<td>Ratio between total radius and distance from torso to shoulder</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">radius_mean</span></code></td>
+<td>&#160;</td>
+<td><code class="docutils literal"><span class="pre">0</span></code></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">radius_scale</span></code></td>
+<td>&#160;</td>
+<td><code class="docutils literal"><span class="pre">0</span></code></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">target_velocity_mean</span></code></td>
+<td>&#160;</td>
+<td><code class="docutils literal"><span class="pre">0</span></code></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">target_velocity_scale</span></code></td>
+<td>&#160;</td>
+<td><code class="docutils literal"><span class="pre">0</span></code></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">mass_mean</span></code></td>
+<td>&#160;</td>
+<td><code class="docutils literal"><span class="pre">0</span></code></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">mass_scale</span></code></td>
+<td>&#160;</td>
+<td><code class="docutils literal"><span class="pre">0</span></code></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">radius</span></code></td>
+<td><span class="math">\(r\)</span></td>
+<td><code class="docutils literal"><span class="pre">0.0</span></code></td>
+<td>Radius</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">r_t</span></code></td>
+<td><span class="math">\(r_t\)</span></td>
+<td><code class="docutils literal"><span class="pre">0.0</span></code></td>
+<td>Torso radius</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">r_s</span></code></td>
+<td><span class="math">\(r_s\)</span></td>
+<td><code class="docutils literal"><span class="pre">0.0</span></code></td>
+<td>Shoulder radius</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">r_ts</span></code></td>
+<td><span class="math">\(r_{ts}\)</span></td>
+<td><code class="docutils literal"><span class="pre">0.0</span></code></td>
+<td>Distance from torso to shoulder</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">mass</span></code></td>
+<td><span class="math">\(m\)</span></td>
+<td><code class="docutils literal"><span class="pre">0.0</span></code></td>
+<td>Mass</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">inertia_rot</span></code></td>
+<td><span class="math">\(I_{rot}\)</span></td>
+<td><code class="docutils literal"><span class="pre">0.0</span></code></td>
+<td>Rotational moment</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">target_velocity</span></code></td>
+<td><span class="math">\(v_0\)</span></td>
+<td><code class="docutils literal"><span class="pre">0.0</span></code></td>
+<td>Target velocity</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">target_angular_velocity</span></code></td>
+<td><span class="math">\(\omega_0\)</span></td>
+<td><code class="docutils literal"><span class="pre">0.0</span></code></td>
+<td>Target angular velocity</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">position</span></code></td>
+<td><span class="math">\(\mathbf{x}\)</span></td>
+<td><code class="docutils literal"><span class="pre">[</span> <span class="pre">0.</span>&#160; <span class="pre">0.]</span></code></td>
+<td>Position</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">velocity</span></code></td>
+<td><span class="math">\(\mathbf{v}\)</span></td>
+<td><code class="docutils literal"><span class="pre">[</span> <span class="pre">0.</span>&#160; <span class="pre">0.]</span></code></td>
+<td>Velocity</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">target_direction</span></code></td>
+<td><span class="math">\(\mathbf{\hat{e}}_0\)</span></td>
+<td><code class="docutils literal"><span class="pre">[</span> <span class="pre">0.</span>&#160; <span class="pre">0.]</span></code></td>
+<td>Target direction</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">force</span></code></td>
+<td><span class="math">\(\mathbf{f}\)</span></td>
+<td><code class="docutils literal"><span class="pre">[</span> <span class="pre">0.</span>&#160; <span class="pre">0.]</span></code></td>
+<td>Force</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">force_prev</span></code></td>
+<td><span class="math">\(\mathbf{f}_{prev}\)</span></td>
+<td><code class="docutils literal"><span class="pre">[</span> <span class="pre">0.</span>&#160; <span class="pre">0.]</span></code></td>
+<td>Previous force</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">tau_adj</span></code></td>
+<td><span class="math">\(\tau_{adj}\)</span></td>
+<td><code class="docutils literal"><span class="pre">0.5</span></code></td>
+<td>Characteristic time for agent adjusting its movement</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">k_soc</span></code></td>
+<td><span class="math">\(k_{soc}\)</span></td>
+<td><code class="docutils literal"><span class="pre">1.5</span></code></td>
+<td>Social force scaling constant</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">tau_0</span></code></td>
+<td><span class="math">\(\tau_{0}\)</span></td>
+<td><code class="docutils literal"><span class="pre">3.0</span></code></td>
+<td>Interaction time horizon</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">mu</span></code></td>
+<td><span class="math">\(\mu\)</span></td>
+<td><code class="docutils literal"><span class="pre">120000.0</span></code></td>
+<td>Compression counteraction constant</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">kappa</span></code></td>
+<td><span class="math">\(\kappa\)</span></td>
+<td><code class="docutils literal"><span class="pre">40000.0</span></code></td>
+<td>Sliding friction constant</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">damping</span></code></td>
+<td><span class="math">\(c_{d}\)</span></td>
+<td><code class="docutils literal"><span class="pre">500</span></code></td>
+<td>Damping coefficient for contact force</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">std_rand_force</span></code></td>
+<td><span class="math">\(\xi / m\)</span></td>
+<td><code class="docutils literal"><span class="pre">0.1</span></code></td>
+<td>Standard deviation for fluctuation force</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">orientation</span></code></td>
+<td><span class="math">\(\varphi\)</span></td>
+<td><code class="docutils literal"><span class="pre">0.0</span></code></td>
+<td>Orientation</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">angular_velocity</span></code></td>
+<td><span class="math">\(\omega\)</span></td>
+<td><code class="docutils literal"><span class="pre">0.0</span></code></td>
+<td>Angular velocity</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">target_orientation</span></code></td>
+<td><span class="math">\(\varphi_0\)</span></td>
+<td><code class="docutils literal"><span class="pre">0.0</span></code></td>
+<td>Target orientation</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">torque</span></code></td>
+<td><span class="math">\(M\)</span></td>
+<td><code class="docutils literal"><span class="pre">0.0</span></code></td>
+<td>Torque</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">torque_prev</span></code></td>
+<td><span class="math">\(M_{prev}\)</span></td>
+<td><code class="docutils literal"><span class="pre">0.0</span></code></td>
+<td>Previous torque</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">tau_rot</span></code></td>
+<td><span class="math">\(\tau_{adjrot}\)</span></td>
+<td><code class="docutils literal"><span class="pre">0.2</span></code></td>
+<td>Characteristic time for agent adjusting its rotational movement</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">std_rand_torque</span></code></td>
+<td><span class="math">\(\eta / I{rot}\)</span></td>
+<td><code class="docutils literal"><span class="pre">0.1</span></code></td>
+<td>Standard deviation for fluctuation torque</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </div>
@@ -375,7 +1071,7 @@ w &amp;= W - 2 r\end{split}\]</div>
 <h2>Logic<a class="headerlink" href="#logic" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt>
-<em class="property">class </em><code class="descclassname">crowddynamics.simulation.multiagent.</code><code class="descname">LogicNode</code><span class="sig-paren">(</span><em>simulation</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crowddynamics/simulation/multiagent.html#LogicNode"><span class="viewcode-link">[source]</span></a></dt>
+<em class="property">class </em><code class="descclassname">crowddynamics.simulation.logic.</code><code class="descname">LogicNode</code><span class="sig-paren">(</span><em>simulation</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crowddynamics/simulation/logic.html#LogicNode"><span class="viewcode-link">[source]</span></a></dt>
 <dd><p>Simulation logic is programmed as a tree of dependencies of the order of
 the execution. For example simulation&#8217;s logic tree could look like:</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span>Reset
@@ -448,7 +1144,7 @@ nodes.</p>
         <a href="interactions.html" class="btn btn-neutral float-right" title="Interactions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="resources.html" class="btn btn-neutral" title="Resources" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="architecture.html" class="btn btn-neutral" title="Architecture" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -458,7 +1154,7 @@ nodes.</p>
   <div role="contentinfo">
     <p>
         &copy; Copyright Jaan Tollander de Balsch.
-      Last updated on 2017-05-18.
+      Last updated on 2017-05-31.
 
     </p>
   </div>
@@ -480,7 +1176,7 @@ nodes.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'legacy+303.g1e68f25.dirty',
+            VERSION:'legacy+318.gb8d04f6.dirty',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

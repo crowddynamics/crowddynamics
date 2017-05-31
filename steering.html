@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Steering &mdash; crowddynamics legacy+303.g1e68f25.dirty documentation</title>
+  <title>Steering &mdash; crowddynamics legacy+318.gb8d04f6.dirty documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="crowddynamics legacy+303.g1e68f25.dirty documentation" href="index.html"/>
+    <link rel="top" title="crowddynamics legacy+318.gb8d04f6.dirty documentation" href="index.html"/>
         <link rel="next" title="Quantities" href="quantities.html"/>
         <link rel="prev" title="Motion" href="motion.html"/> 
 
@@ -71,7 +71,7 @@
             
             
               <div class="version">
-                legacy+303legacy+303.g1e68f25.dirtyg1e68f25
+                legacy+318legacy+318.gb8d04f6.dirtygb8d04f6
               </div>
             
           
@@ -104,6 +104,7 @@
 </ul>
 <p class="caption"><span class="caption-text">Crowddynamics</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="architecture.html">Architecture</a></li>
 <li class="toctree-l1"><a class="reference internal" href="multiagent.html">Multi-Agent Simulation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="interactions.html">Interactions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="motion.html">Motion</a></li>
@@ -123,7 +124,6 @@
 <p class="caption"><span class="caption-text">Api</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="apidocs/crowddynamics.html">crowddynamics package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="apidocs_examples/examples.html">examples package</a></li>
 </ul>
 
             
@@ -242,12 +242,12 @@ pushed towards obstacles by other agents).</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>step</strong> (<em>float</em>) &#8211; </li>
+<li><strong>step</strong> (<a class="reference internal" href="apidocs/crowddynamics.tests.html#crowddynamics.tests.test_traits.Traits.float" title="crowddynamics.tests.test_traits.Traits.float"><em>float</em></a>) &#8211; </li>
 <li><strong>domain</strong> (<em>Polygon</em>) &#8211; </li>
 <li><strong>targets</strong> (<em>LineString</em><em>, </em><em>optional</em>) &#8211; </li>
 <li><strong>obstacles</strong> (<em>LineString</em><em>, </em><em>optional</em>) &#8211; </li>
-<li><strong>strength</strong> (<em>float</em>) &#8211; </li>
-<li><strong>radius</strong> (<em>float</em>) &#8211; </li>
+<li><strong>strength</strong> (<a class="reference internal" href="apidocs/crowddynamics.tests.html#crowddynamics.tests.test_traits.Traits.float" title="crowddynamics.tests.test_traits.Traits.float"><em>float</em></a>) &#8211; </li>
+<li><strong>radius</strong> (<a class="reference internal" href="apidocs/crowddynamics.tests.html#crowddynamics.tests.test_traits.Traits.float" title="crowddynamics.tests.test_traits.Traits.float"><em>float</em></a>) &#8211; </li>
 </ul>
 </td>
 </tr>
@@ -263,7 +263,7 @@ pushed towards obstacles by other agents).</p>
 
 <dl class="function">
 <dt>
-<code class="descclassname">crowddynamics.core.steering.quickest_path.</code><code class="descname">distance_map</code><span class="sig-paren">(</span><em>mgrid: crowddynamics.core.steering.quickest_path.MeshGrid, targets: shapely.geometry.base.BaseGeometry, obstacles: typing.Union[shapely.geometry.base.BaseGeometry, NoneType]</em><span class="sig-paren">)</span> &#x2192; numpy.ma.core.MaskedArray<a class="reference internal" href="_modules/crowddynamics/core/steering/quickest_path.html#distance_map"><span class="viewcode-link">[source]</span></a></dt>
+<code class="descclassname">crowddynamics.core.steering.quickest_path.</code><code class="descname">distance_map</code><span class="sig-paren">(</span><em>mgrid: crowddynamics.core.steering.quickest_path.MeshGrid, targets: shapely.geometry.base.BaseGeometry, obstacles: typing.Union[shapely.geometry.base.BaseGeometry, NoneType]</em><span class="sig-paren">)</span> &#x2192; numpy.ndarray<a class="reference internal" href="_modules/crowddynamics/core/steering/quickest_path.html#distance_map"><span class="viewcode-link">[source]</span></a></dt>
 <dd><p>Distance map <span class="math">\(S(\mathbf{x})\)</span> is obtained by solving <em>Eikonal equation</em>
 (Continuos shortest path problem) using fast marching <em>Fast Marching Method
 (FMM)</em>.</p>
@@ -309,7 +309,7 @@ f(\mathbf{x}) \to 0, &amp; \mathbf{x} \in \mathcal{O}
 
 <dl class="function">
 <dt>
-<code class="descclassname">crowddynamics.core.steering.quickest_path.</code><code class="descname">direction_map</code><span class="sig-paren">(</span><em>dmap: numpy.ma.core.MaskedArray</em><span class="sig-paren">)</span> &#x2192; typing.Tuple[numpy.ma.core.MaskedArray, numpy.ma.core.MaskedArray]<a class="reference internal" href="_modules/crowddynamics/core/steering/quickest_path.html#direction_map"><span class="viewcode-link">[source]</span></a></dt>
+<code class="descclassname">crowddynamics.core.steering.quickest_path.</code><code class="descname">direction_map</code><span class="sig-paren">(</span><em>dmap: numpy.ndarray</em><span class="sig-paren">)</span> &#x2192; typing.Tuple[numpy.ma.core.MaskedArray, numpy.ma.core.MaskedArray]<a class="reference internal" href="_modules/crowddynamics/core/steering/quickest_path.html#direction_map"><span class="viewcode-link">[source]</span></a></dt>
 <dd><p>Computes normalized gradient of distance map. Not defined when length of
 the gradient is zero.</p>
 <div class="math">
@@ -328,118 +328,15 @@ the gradient is zero.</p>
 </table>
 </dd></dl>
 
-<dl class="function">
+<dl class="attribute">
 <dt>
-<code class="descclassname">crowddynamics.core.steering.obstacle_handling.</code><code class="descname">obstacle_handling</code><span class="sig-paren">(</span><em>dmap_obs</em>, <em>dir_map_obs</em>, <em>dir_map_targets</em>, <em>radius</em>, <em>strength</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crowddynamics/core/steering/obstacle_handling.html#obstacle_handling"><span class="viewcode-link">[source]</span></a></dt>
-<dd><p>Function that merges two direction maps together. Let distance map from
-obstacles be <span class="math">\(\Phi(\mathbf{x})\)</span> and <span class="math">\(\lambda(x)\)</span>
-be any decreasing function <span class="math">\(\frac{\partial}{\partial\Phi}\lambda(x) &lt; 0\)</span> of
-distance from obstacles such that</p>
-<div class="math">
-\[\begin{split}\lambda(\Phi) &amp;=
-\begin{cases}
-1 &amp; \Phi = 0 \\
-0 &amp; \Phi &gt; M &gt; 0
-\end{cases}\end{split}\]</div>
-<p>Take weighted average between the direction from the obstacles and the
-direction from the target using <span class="math">\(p\)</span> using the decreasing function
-defined above.</p>
-<div class="math">
-\[\begin{split}p &amp;= \lambda(\Phi(\mathbf{x})) \\
-\hat{\mathbf{e}}_{out} &amp;= \mathcal{N}\big(p \hat{\mathbf{e}}_{obstacle} +
-(1 - p) \hat{\mathbf{e}}_{target}\big)\end{split}\]</div>
-<p>Numerically this algorithm uses exponential function as <span class="math">\(\lambda\)</span></p>
-<div class="math">
-\[c^{\frac{x}{r}}\]</div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>dmap_obs</strong> &#8211; </li>
-<li><strong>dir_map_obs</strong> &#8211; </li>
-<li><strong>dir_map_targets</strong> &#8211; </li>
-<li><strong>radius</strong> (<em>float</em>) &#8211; Radius</li>
-<li><strong>strength</strong> (<em>float</em>) &#8211; Value between (0, 1). Value denoting the strength of dir_map1 at
-distance of radius.</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"></p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">Tuple[numpy.ndarray, numpy.ndarray]</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
+<code class="descclassname">crowddynamics.core.steering.functions.</code><code class="descname">weighted_average</code></dt>
+<dd></dd></dl>
 
-<dl class="class">
+<dl class="attribute">
 <dt>
-<em class="property">class </em><code class="descclassname">crowddynamics.core.steering.functions.</code><code class="descname">weighted_average</code><a class="reference internal" href="_modules/crowddynamics/core/steering/functions.html#weighted_average"><span class="viewcode-link">[source]</span></a></dt>
-<dd><p>Weighted average of two (unit)vectors</p>
-<div class="math">
-\[\mathbf{\hat{e}}_{out} =
-\mathcal{N} \big(p \mathbf{\hat{e}_{0}} + (1 - p) \mathbf{\hat{e}_{1}} \big)\]</div>
-<p>where</p>
-<ul class="simple">
-<li><span class="math">\(\mathcal{N}(\mathbf{v}) = \frac{\mathbf{v}}{\|\mathbf{v}\|}\)</span> is the
-normalization of the vector</li>
-</ul>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>e0</strong> (<em>numpy.ndarray</em>) &#8211; Unit vector <span class="math">\(\mathbf{\hat{e}_{0}}\)</span></li>
-<li><strong>e1</strong> (<em>numpy.ndarray</em>) &#8211; Unit vector <span class="math">\(\mathbf{\hat{e}_{1}}\)</span></li>
-<li><strong>p</strong> (<em>float</em>) &#8211; Weight between <span class="math">\(p \in [0, 1]\)</span></li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"></p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy.ndarray</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="class">
-<dt>
-<em class="property">class </em><code class="descclassname">crowddynamics.core.steering.herding.</code><code class="descname">herding_interaction</code><a class="reference internal" href="_modules/crowddynamics/core/steering/herding.html#herding_interaction"><span class="viewcode-link">[source]</span></a></dt>
-<dd><p>Herding effect. Computed from the average directions of neighbouring
-agents.</p>
-<div class="math">
-\[\mathbf{\hat{e}_{herding}} =
-\frac{\sum_{j \in Neigh} \mathbf{\hat{e}}_j}{N_{neigh}}\]</div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>position</strong> (<em>numpy.ndarray</em>) &#8211; Positions of herding agents</li>
-<li><strong>direction</strong> (<em>numpy.ndarray</em>) &#8211; Directions (unit vectors) of herding agents</li>
-<li><strong>sight_herding</strong> &#8211; </li>
-<li><strong>index_list</strong> &#8211; </li>
-<li><strong>count</strong> &#8211; </li>
-<li><strong>offset</strong> &#8211; </li>
-<li><strong>shape</strong> &#8211; </li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">New direction vector <span class="math">\(\mathbf{\hat{e}_{herding}}\)</span></p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy.ndarray</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
+<code class="descclassname">crowddynamics.core.steering.herding.</code><code class="descname">herding_interaction</code></dt>
+<dd></dd></dl>
 
 <div class="section" id="orientation">
 <h2>Orientation<a class="headerlink" href="#orientation" title="Permalink to this headline">¶</a></h2>
@@ -485,7 +382,7 @@ agents.</p>
   <div role="contentinfo">
     <p>
         &copy; Copyright Jaan Tollander de Balsch.
-      Last updated on 2017-05-18.
+      Last updated on 2017-05-31.
 
     </p>
   </div>
@@ -507,7 +404,7 @@ agents.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'legacy+303.g1e68f25.dirty',
+            VERSION:'legacy+318.gb8d04f6.dirty',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

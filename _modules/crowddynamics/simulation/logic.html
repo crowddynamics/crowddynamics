@@ -1,0 +1,544 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>crowddynamics.simulation.logic &mdash; crowddynamics legacy+318.gb8d04f6.dirty documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../../genindex.html"/>
+        <link rel="search" title="Search" href="../../../search.html"/>
+    <link rel="top" title="crowddynamics legacy+318.gb8d04f6.dirty documentation" href="../../../index.html"/>
+        <link rel="up" title="Module code" href="../../index.html"/> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> crowddynamics
+          
+
+          
+            
+            <img src="../../../_static/logo.svg" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                legacy+318legacy+318.gb8d04f6.dirtygb8d04f6
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">General</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../developing.html">Developing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../resources.html">Resources</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Crowddynamics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../architecture.html">Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../multiagent.html">Multi-Agent Simulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../interactions.html">Interactions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../motion.html">Motion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../steering.html">Steering</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quantities.html">Quantities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../evacuation.html">Evacuation</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Research</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../phenomena.html">Phenomena</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Api</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../apidocs/crowddynamics.html">crowddynamics package</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">crowddynamics</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>crowddynamics.simulation.logic</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for crowddynamics.simulation.logic</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">Callable</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">loggingtools.log_with</span> <span class="k">import</span> <span class="n">log_with</span>
+<span class="kn">from</span> <span class="nn">matplotlib.path</span> <span class="k">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">traitlets.traitlets</span> <span class="k">import</span> <span class="n">Float</span><span class="p">,</span> <span class="n">Instance</span><span class="p">,</span> <span class="n">Unicode</span><span class="p">,</span> <span class="n">observe</span><span class="p">,</span> <span class="n">default</span><span class="p">,</span> \
+    <span class="n">validate</span><span class="p">,</span> <span class="n">Int</span>
+
+<span class="kn">from</span> <span class="nn">crowddynamics.core.geometry</span> <span class="k">import</span> <span class="n">geom_to_linear_obstacles</span>
+<span class="kn">from</span> <span class="nn">crowddynamics.core.integrator</span> <span class="k">import</span> <span class="n">velocity_verlet_integrator</span>
+<span class="kn">from</span> <span class="nn">crowddynamics.core.interactions.interactions</span> <span class="k">import</span> <span class="n">agent_agent_block_list</span><span class="p">,</span> \
+    <span class="n">agent_obstacle</span>
+<span class="kn">from</span> <span class="nn">crowddynamics.core.motion.adjusting</span> <span class="k">import</span> <span class="n">force_adjust_agents</span><span class="p">,</span> \
+    <span class="n">torque_adjust_agents</span>
+<span class="kn">from</span> <span class="nn">crowddynamics.core.motion.fluctuation</span> <span class="k">import</span> <span class="n">force_fluctuation</span><span class="p">,</span> \
+    <span class="n">torque_fluctuation</span>
+<span class="kn">from</span> <span class="nn">crowddynamics.core.steering.navigation</span> <span class="k">import</span> <span class="n">navigation</span><span class="p">,</span> <span class="n">herding</span>
+<span class="kn">from</span> <span class="nn">crowddynamics.core.steering.orientation</span> <span class="k">import</span> \
+    <span class="n">orient_towards_target_direction</span>
+<span class="kn">from</span> <span class="nn">crowddynamics.exceptions</span> <span class="k">import</span> <span class="n">InvalidValue</span><span class="p">,</span> <span class="n">ValidationError</span>
+<span class="kn">from</span> <span class="nn">crowddynamics.io</span> <span class="k">import</span> <span class="n">save_npy</span><span class="p">,</span> <span class="n">save_csv</span><span class="p">,</span> <span class="n">save_geometry_json</span>
+<span class="kn">from</span> <span class="nn">crowddynamics.simulation.agents</span> <span class="k">import</span> <span class="n">reset_motion</span><span class="p">,</span> <span class="n">is_model</span>
+<span class="kn">from</span> <span class="nn">crowddynamics.simulation.base</span> <span class="k">import</span> <span class="n">LogicNodeBase</span>
+
+
+<div class="viewcode-block" id="LogicNode"><a class="viewcode-back" href="../../../multiagent.html#crowddynamics.simulation.logic.LogicNode">[docs]</a><span class="k">class</span> <span class="nc">LogicNode</span><span class="p">(</span><span class="n">LogicNodeBase</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Simulation logic is programmed as a tree of dependencies of the order of</span>
+<span class="sd">    the execution. For example simulation&#39;s logic tree could look like::</span>
+
+<span class="sd">        Reset</span>
+<span class="sd">        └── Integrator</span>
+<span class="sd">            ├── Fluctuation</span>
+<span class="sd">            ├── Adjusting</span>
+<span class="sd">            │   ├── Navigation</span>
+<span class="sd">            │   └── Orientation</span>
+<span class="sd">            ├── AgentAgentInteractions</span>
+<span class="sd">            └── AgentObstacleInteractions</span>
+
+<span class="sd">    In this tree we can notice the dependencies. For example before using</span>
+<span class="sd">    updating `Adjusting` node we need to update `Navigation` and `Orientation`</span>
+<span class="sd">    nodes.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">simulation</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">simulation</span> <span class="o">=</span> <span class="n">simulation</span>
+
+<div class="viewcode-block" id="LogicNode.update"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.logic.LogicNode.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div></div>
+
+
+<span class="c1"># Motion</span>
+
+<div class="viewcode-block" id="Reset"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.logic.Reset">[docs]</a><span class="k">class</span> <span class="nc">Reset</span><span class="p">(</span><span class="n">LogicNode</span><span class="p">):</span>
+<div class="viewcode-block" id="Reset.update"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.logic.Reset.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">reset_motion</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">array</span><span class="p">)</span></div></div>
+        <span class="c1"># TODO: reset agent neighbor</span>
+
+
+<div class="viewcode-block" id="Integrator"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.logic.Integrator">[docs]</a><span class="k">class</span> <span class="nc">Integrator</span><span class="p">(</span><span class="n">LogicNode</span><span class="p">):</span>
+    <span class="n">dt_min</span> <span class="o">=</span> <span class="n">Float</span><span class="p">(</span><span class="n">default_value</span><span class="o">=</span><span class="mf">0.001</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Minimum timestep&#39;</span><span class="p">)</span>
+    <span class="n">dt_max</span> <span class="o">=</span> <span class="n">Float</span><span class="p">(</span><span class="n">default_value</span><span class="o">=</span><span class="mf">0.010</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Maximum timestep&#39;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Integrator.update"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.logic.Integrator.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">dt</span> <span class="o">=</span> <span class="n">velocity_verlet_integrator</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">array</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dt_min</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dt_max</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;dt&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dt</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;time_tot&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="n">dt</span></div></div>
+
+
+<div class="viewcode-block" id="Fluctuation"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.logic.Fluctuation">[docs]</a><span class="k">class</span> <span class="nc">Fluctuation</span><span class="p">(</span><span class="n">LogicNode</span><span class="p">):</span>
+<div class="viewcode-block" id="Fluctuation.update"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.logic.Fluctuation.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">agents</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">array</span>
+        <span class="n">agents</span><span class="p">[</span><span class="s1">&#39;force&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="n">force_fluctuation</span><span class="p">(</span><span class="n">agents</span><span class="p">[</span><span class="s1">&#39;mass&#39;</span><span class="p">],</span>
+                                             <span class="n">agents</span><span class="p">[</span><span class="s1">&#39;std_rand_force&#39;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">is_model</span><span class="p">(</span><span class="n">agents</span><span class="p">,</span> <span class="s1">&#39;three_circle&#39;</span><span class="p">):</span>
+            <span class="n">agents</span><span class="p">[</span><span class="s1">&#39;torque&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="n">torque_fluctuation</span><span class="p">(</span><span class="n">agents</span><span class="p">[</span><span class="s1">&#39;inertia_rot&#39;</span><span class="p">],</span>
+                                                   <span class="n">agents</span><span class="p">[</span><span class="s1">&#39;std_rand_torque&#39;</span><span class="p">])</span></div></div>
+
+
+<div class="viewcode-block" id="Adjusting"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.logic.Adjusting">[docs]</a><span class="k">class</span> <span class="nc">Adjusting</span><span class="p">(</span><span class="n">LogicNode</span><span class="p">):</span>
+<div class="viewcode-block" id="Adjusting.update"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.logic.Adjusting.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">agents</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">array</span>
+        <span class="n">force_adjust_agents</span><span class="p">(</span><span class="n">agents</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">is_model</span><span class="p">(</span><span class="n">agents</span><span class="p">,</span> <span class="s1">&#39;three_circle&#39;</span><span class="p">):</span>
+            <span class="n">torque_adjust_agents</span><span class="p">(</span><span class="n">agents</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="AgentAgentInteractions"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.logic.AgentAgentInteractions">[docs]</a><span class="k">class</span> <span class="nc">AgentAgentInteractions</span><span class="p">(</span><span class="n">LogicNode</span><span class="p">):</span>
+    <span class="n">sight_soc</span> <span class="o">=</span> <span class="n">Float</span><span class="p">(</span>
+        <span class="n">default_value</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span>
+        <span class="nb">min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">max_agent_radius</span> <span class="o">=</span> <span class="n">Float</span><span class="p">(</span>
+        <span class="n">default_value</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span>
+        <span class="nb">min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">f_soc_max</span> <span class="o">=</span> <span class="n">Float</span><span class="p">(</span>
+        <span class="n">default_value</span><span class="o">=</span><span class="mf">2e3</span><span class="p">,</span>
+        <span class="nb">min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">cell_size</span> <span class="o">=</span> <span class="n">Float</span><span class="p">(</span>
+        <span class="nb">min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+
+    <span class="nd">@default</span><span class="p">(</span><span class="s1">&#39;cell_size&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_default_cell_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sight_soc</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_agent_radius</span>
+
+<div class="viewcode-block" id="AgentAgentInteractions.update"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.logic.AgentAgentInteractions.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">agent_agent_block_list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">array</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell_size</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="AgentObstacleInteractions"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.logic.AgentObstacleInteractions">[docs]</a><span class="k">class</span> <span class="nc">AgentObstacleInteractions</span><span class="p">(</span><span class="n">LogicNode</span><span class="p">):</span>
+<div class="viewcode-block" id="AgentObstacleInteractions.update"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.logic.AgentObstacleInteractions.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">agents</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">array</span>
+        <span class="n">obstacles</span> <span class="o">=</span> <span class="n">geom_to_linear_obstacles</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">field</span><span class="o">.</span><span class="n">obstacles</span><span class="p">)</span>
+        <span class="n">agent_obstacle</span><span class="p">(</span><span class="n">agents</span><span class="p">,</span> <span class="n">obstacles</span><span class="p">)</span></div></div>
+
+
+<span class="c1"># Steering</span>
+
+<div class="viewcode-block" id="Navigation"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.logic.Navigation">[docs]</a><span class="k">class</span> <span class="nc">Navigation</span><span class="p">(</span><span class="n">LogicNode</span><span class="p">):</span>
+    <span class="n">step</span> <span class="o">=</span> <span class="n">Float</span><span class="p">(</span>
+        <span class="n">default_value</span><span class="o">=</span><span class="mf">0.02</span><span class="p">,</span>
+        <span class="nb">min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Step size for meshgrid used for discretization.&#39;</span><span class="p">)</span>
+    <span class="n">radius</span> <span class="o">=</span> <span class="n">Float</span><span class="p">(</span>
+        <span class="n">default_value</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+        <span class="nb">min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">strength</span> <span class="o">=</span> <span class="n">Float</span><span class="p">(</span>
+        <span class="n">default_value</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span>
+        <span class="nb">min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Navigation.update"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.logic.Navigation.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">agents</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">array</span>
+        <span class="n">targets</span> <span class="o">=</span> <span class="n">agents</span><span class="p">[</span><span class="s1">&#39;target&#39;</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">target</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">targets</span><span class="p">):</span>
+            <span class="n">mgrid</span><span class="p">,</span> <span class="n">distance_map</span><span class="p">,</span> <span class="n">direction_map</span> <span class="o">=</span> \
+                <span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">field</span><span class="o">.</span><span class="n">navigation_to_target</span><span class="p">(</span>
+                    <span class="n">target</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">radius</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">strength</span><span class="p">)</span>
+            <span class="n">navigation</span><span class="p">(</span><span class="n">agents</span><span class="p">,</span> <span class="n">targets</span> <span class="o">==</span> <span class="n">target</span><span class="p">,</span> <span class="n">mgrid</span><span class="p">,</span> <span class="n">direction_map</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="Herding"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.logic.Herding">[docs]</a><span class="k">class</span> <span class="nc">Herding</span><span class="p">(</span><span class="n">LogicNode</span><span class="p">):</span>
+    <span class="n">sight_herding</span> <span class="o">=</span> <span class="n">Float</span><span class="p">(</span>
+        <span class="n">default_value</span><span class="o">=</span><span class="mf">5.0</span><span class="p">,</span>
+        <span class="nb">min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Maximum distance between agents that are accounted as neighbours &#39;</span>
+             <span class="s1">&#39;that can be followed.&#39;</span><span class="p">)</span>
+    <span class="n">num_nearest_agents</span> <span class="o">=</span> <span class="n">Int</span><span class="p">(</span>
+        <span class="n">default_value</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+        <span class="nb">min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Maximum number of nearest agents inside sight_herding radius &#39;</span>
+             <span class="s1">&#39;that herding agent are following.&#39;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Herding.update"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.logic.Herding.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">agents</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">array</span>
+        <span class="n">herding</span><span class="p">(</span><span class="n">agents</span><span class="p">,</span> <span class="n">agents</span><span class="p">[</span><span class="s1">&#39;herding&#39;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">sight_herding</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="Orientation"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.logic.Orientation">[docs]</a><span class="k">class</span> <span class="nc">Orientation</span><span class="p">(</span><span class="n">LogicNode</span><span class="p">):</span>
+<div class="viewcode-block" id="Orientation.update"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.logic.Orientation.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">is_model</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">array</span><span class="p">,</span> <span class="s1">&#39;three_circle&#39;</span><span class="p">):</span>
+            <span class="n">orient_towards_target_direction</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">array</span><span class="p">)</span></div></div>
+
+
+<span class="c1"># IO</span>
+
+<div class="viewcode-block" id="SaveSimulationData"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.logic.SaveSimulationData">[docs]</a><span class="k">class</span> <span class="nc">SaveSimulationData</span><span class="p">(</span><span class="n">LogicNode</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Logic for saving simulation data.</span>
+<span class="sd">    </span>
+<span class="sd">    Saved once</span>
+<span class="sd">    - Geometry</span>
+<span class="sd">    - Metadata</span>
+<span class="sd">    </span>
+<span class="sd">    Saved continuously</span>
+<span class="sd">    - Agents</span>
+<span class="sd">    - Data</span>
+<span class="sd">    </span>
+<span class="sd">    Examples:</span>
+<span class="sd">        &gt;&gt;&gt; def save_condition(simulation, frequency=100):</span>
+<span class="sd">        &gt;&gt;&gt;     return (simulation.data[&#39;iterations&#39;] + 1) % frequency == 0</span>
+<span class="sd">        &gt;&gt;&gt; </span>
+<span class="sd">        &gt;&gt;&gt; node = SaveSimulationData(save_condition=save_condition, </span>
+<span class="sd">        &gt;&gt;&gt;                           base_directory=&#39;.&#39;)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">save_condition</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span>
+        <span class="n">Callable</span><span class="p">,</span>
+        <span class="c1"># allow_none=True,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Function to trigger saving of data.&#39;</span><span class="p">)</span>
+    <span class="n">base_directory</span> <span class="o">=</span> <span class="n">Unicode</span><span class="p">(</span>
+        <span class="n">default_value</span><span class="o">=</span><span class="s1">&#39;.&#39;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Path to the directory where simulation data should be saved.&#39;</span><span class="p">)</span>
+    <span class="n">save_directory</span> <span class="o">=</span> <span class="n">Unicode</span><span class="p">(</span>
+        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Name of the directory to save current simulation.&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">simulation</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">full_path</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="c1"># Metadata</span>
+        <span class="n">save_data_csv</span> <span class="o">=</span> <span class="n">save_csv</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">full_path</span><span class="p">,</span> <span class="s1">&#39;metadata&#39;</span><span class="p">)</span>
+        <span class="n">save_data_csv</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+        <span class="n">save_data_csv</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">metadata</span><span class="p">)</span>
+        <span class="n">save_data_csv</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="c1"># Geometry</span>
+        <span class="n">geometries</span> <span class="o">=</span> <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">field</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span>
+                      <span class="p">(</span><span class="s1">&#39;domain&#39;</span><span class="p">,</span> <span class="s1">&#39;obstacles&#39;</span><span class="p">,</span> <span class="s1">&#39;targets&#39;</span><span class="p">,</span> <span class="s1">&#39;spawns&#39;</span><span class="p">)}</span>
+        <span class="n">save_geometry_json</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">full_path</span><span class="p">,</span> <span class="s1">&#39;geometry.json&#39;</span><span class="p">),</span>
+                           <span class="n">geometries</span><span class="p">)</span>
+
+        <span class="c1"># Data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">save_data_csv</span> <span class="o">=</span> <span class="n">save_csv</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">full_path</span><span class="p">,</span> <span class="s1">&#39;data&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">save_data_csv</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+
+        <span class="c1"># Agents</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">save_agent_npy</span> <span class="o">=</span> <span class="n">save_npy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">full_path</span><span class="p">,</span> <span class="s1">&#39;agents&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">save_agent_npy</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">full_path</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base_directory</span><span class="p">),</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">save_directory</span><span class="p">)</span>
+
+    <span class="nd">@default</span><span class="p">(</span><span class="s1">&#39;save_directory&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_default_save_directory</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">name_with_timestamp</span>
+
+    <span class="c1"># @validate(&#39;save_directory&#39;)</span>
+    <span class="c1"># def _valid_save_directory(self, proposal):</span>
+    <span class="c1">#     path = proposal[&#39;value&#39;]</span>
+    <span class="c1">#     new = os.path.join(self.base_directory, path)</span>
+    <span class="c1">#     if os.path.exists(new):</span>
+    <span class="c1">#         raise ValidationError(&#39;Path: &quot;{}&quot; already exists.&#39;.format(new))</span>
+    <span class="c1">#     return path</span>
+
+    <span class="c1"># @observe(&#39;save_directory&#39;)</span>
+    <span class="c1"># def _observe_save_directory(self, change):</span>
+    <span class="c1">#     os.makedirs(self.full_path, exist_ok=True)</span>
+
+<div class="viewcode-block" id="SaveSimulationData.add_to_simulation_logic"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.logic.SaveSimulationData.add_to_simulation_logic">[docs]</a>    <span class="k">def</span> <span class="nf">add_to_simulation_logic</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">logic</span><span class="p">[</span><span class="s1">&#39;Reset&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">inject_before</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+
+    <span class="nd">@log_with</span><span class="p">(</span><span class="n">timed</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">arguments</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<div class="viewcode-block" id="SaveSimulationData.update"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.logic.SaveSimulationData.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">save</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">save_condition</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">save_agent_npy</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">array</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">save_agent_npy</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">save</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">save_data_csv</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">save_data_csv</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">save</span><span class="p">)</span></div></div>
+
+
+<span class="c1"># States</span>
+
+<div class="viewcode-block" id="contains"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.logic.contains">[docs]</a><span class="k">def</span> <span class="nf">contains</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span> <span class="n">vertices</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Contains</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        simulation (MultiAgentSimulation):</span>
+<span class="sd">        vertices (numpy.ndarray): Vertices of a polygon</span>
+<span class="sd">        state (str):</span>
+
+<span class="sd">    Yields:</span>
+<span class="sd">        int: Number of states that changed</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">geom</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">vertices</span><span class="p">)</span>
+    <span class="n">old_state</span> <span class="o">=</span> <span class="n">simulation</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">array</span><span class="p">[</span><span class="n">state</span><span class="p">]</span>
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">position</span> <span class="o">=</span> <span class="n">simulation</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">array</span><span class="p">[</span><span class="s1">&#39;position&#39;</span><span class="p">]</span>
+        <span class="n">new_state</span> <span class="o">=</span> <span class="n">geom</span><span class="o">.</span><span class="n">contains_points</span><span class="p">(</span><span class="n">position</span><span class="p">)</span>
+        <span class="n">simulation</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">array</span><span class="p">[</span><span class="n">state</span><span class="p">][:]</span> <span class="o">=</span> <span class="n">new_state</span>
+        <span class="n">changed</span> <span class="o">=</span> <span class="n">old_state</span> <span class="o">^</span> <span class="n">new_state</span>
+        <span class="n">old_state</span> <span class="o">=</span> <span class="n">new_state</span>
+        <span class="k">yield</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">changed</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="InsideDomain"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.logic.InsideDomain">[docs]</a><span class="k">class</span> <span class="nc">InsideDomain</span><span class="p">(</span><span class="n">LogicNode</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">simulation</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">simulation</span><span class="p">)</span>
+        <span class="c1"># TODO: handle domain is None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gen</span> <span class="o">=</span> <span class="n">contains</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span>
+                            <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">field</span><span class="o">.</span><span class="n">domain</span><span class="o">.</span><span class="n">exterior</span><span class="p">),</span>
+                            <span class="s1">&#39;active&#39;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="InsideDomain.update"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.logic.InsideDomain.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;goal_reached&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gen</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright Jaan Tollander de Balsch.
+      Last updated on 2017-05-31.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'legacy+318.gb8d04f6.dirty',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

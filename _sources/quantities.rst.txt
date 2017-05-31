@@ -51,7 +51,7 @@ Crowd flow which has similarities with granular flow, gas kinetics and fluid-dyn
 
 There are several types of crowd flow, which can be classified [Duives2014]_
 
-.. graphviz:: graphs/crowdflow.dot
+.. graphviz:: graphviz/crowdflow.dot
 
 Mathematically the direction of the flow can be derived from the dot product. For agents with velocities :math:`\mathbf{v}_{i}` and :math:`\mathbf{v}_{j}` the dot product
 

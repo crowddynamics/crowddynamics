@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>crowddynamics.core.tests.test_integrator &mdash; crowddynamics legacy+303.g1e68f25.dirty documentation</title>
+  <title>crowddynamics.core.tests.test_integrator &mdash; crowddynamics legacy+318.gb8d04f6.dirty documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../../../genindex.html"/>
         <link rel="search" title="Search" href="../../../../search.html"/>
-    <link rel="top" title="crowddynamics legacy+303.g1e68f25.dirty documentation" href="../../../../index.html"/>
+    <link rel="top" title="crowddynamics legacy+318.gb8d04f6.dirty documentation" href="../../../../index.html"/>
         <link rel="up" title="Module code" href="../../../index.html"/> 
 
   
@@ -70,7 +70,7 @@
             
             
               <div class="version">
-                legacy+303legacy+303.g1e68f25.dirtyg1e68f25
+                legacy+318legacy+318.gb8d04f6.dirtygb8d04f6
               </div>
             
           
@@ -103,6 +103,7 @@
 </ul>
 <p class="caption"><span class="caption-text">Crowddynamics</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../architecture.html">Architecture</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../multiagent.html">Multi-Agent Simulation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../interactions.html">Interactions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../motion.html">Motion</a></li>
@@ -117,7 +118,6 @@
 <p class="caption"><span class="caption-text">Api</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../apidocs/crowddynamics.html">crowddynamics package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../apidocs_examples/examples.html">examples package</a></li>
 </ul>
 
             
@@ -186,51 +186,51 @@
 
 <span class="kn">from</span> <span class="nn">crowddynamics.core.integrator</span> <span class="k">import</span> <span class="n">adaptive_timestep</span><span class="p">,</span> \
     <span class="n">euler_integrator</span><span class="p">,</span> <span class="n">velocity_verlet_integrator</span>
-<span class="kn">from</span> <span class="nn">crowddynamics.testing</span> <span class="k">import</span> <span class="n">real</span>
+<span class="kn">from</span> <span class="nn">crowddynamics.testing</span> <span class="k">import</span> <span class="n">reals</span>
 
 
-<span class="nd">@given</span><span class="p">(</span><span class="n">dt_min</span><span class="o">=</span><span class="n">real</span><span class="p">(</span><span class="n">min_value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_value</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">exclude_zero</span><span class="o">=</span><span class="s1">&#39;near&#39;</span><span class="p">),</span>
-       <span class="n">dt_max</span><span class="o">=</span><span class="n">real</span><span class="p">(</span><span class="n">min_value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_value</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">exclude_zero</span><span class="o">=</span><span class="s1">&#39;near&#39;</span><span class="p">))</span>
+<span class="nd">@given</span><span class="p">(</span><span class="n">dt_min</span><span class="o">=</span><span class="n">reals</span><span class="p">(</span><span class="n">min_value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_value</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">exclude_zero</span><span class="o">=</span><span class="s1">&#39;near&#39;</span><span class="p">),</span>
+       <span class="n">dt_max</span><span class="o">=</span><span class="n">reals</span><span class="p">(</span><span class="n">min_value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_value</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">exclude_zero</span><span class="o">=</span><span class="s1">&#39;near&#39;</span><span class="p">))</span>
 <div class="viewcode-block" id="test_adaptive_timestep1"><a class="viewcode-back" href="../../../../apidocs/crowddynamics.core.tests.html#crowddynamics.core.tests.test_integrator.test_adaptive_timestep1">[docs]</a><span class="k">def</span> <span class="nf">test_adaptive_timestep1</span><span class="p">(</span><span class="n">agents_circular</span><span class="p">,</span> <span class="n">dt_min</span><span class="p">,</span> <span class="n">dt_max</span><span class="p">):</span>
     <span class="n">assume</span><span class="p">(</span><span class="mi">0</span> <span class="o">&lt;</span> <span class="n">dt_min</span> <span class="o">&lt;</span> <span class="n">dt_max</span><span class="p">)</span>
     <span class="n">dt</span> <span class="o">=</span> <span class="n">adaptive_timestep</span><span class="p">(</span><span class="n">agents_circular</span><span class="o">.</span><span class="n">array</span><span class="p">,</span> <span class="n">dt_min</span><span class="p">,</span> <span class="n">dt_max</span><span class="p">)</span>
     <span class="k">assert</span> <span class="mi">0</span> <span class="o">&lt;</span> <span class="n">dt_min</span> <span class="o">&lt;=</span> <span class="n">dt</span> <span class="o">&lt;=</span> <span class="n">dt_max</span></div>
 
 
-<span class="nd">@given</span><span class="p">(</span><span class="n">dt_min</span><span class="o">=</span><span class="n">real</span><span class="p">(</span><span class="n">min_value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_value</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">exclude_zero</span><span class="o">=</span><span class="s1">&#39;near&#39;</span><span class="p">),</span>
-       <span class="n">dt_max</span><span class="o">=</span><span class="n">real</span><span class="p">(</span><span class="n">min_value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_value</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">exclude_zero</span><span class="o">=</span><span class="s1">&#39;near&#39;</span><span class="p">))</span>
+<span class="nd">@given</span><span class="p">(</span><span class="n">dt_min</span><span class="o">=</span><span class="n">reals</span><span class="p">(</span><span class="n">min_value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_value</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">exclude_zero</span><span class="o">=</span><span class="s1">&#39;near&#39;</span><span class="p">),</span>
+       <span class="n">dt_max</span><span class="o">=</span><span class="n">reals</span><span class="p">(</span><span class="n">min_value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_value</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">exclude_zero</span><span class="o">=</span><span class="s1">&#39;near&#39;</span><span class="p">))</span>
 <div class="viewcode-block" id="test_adaptive_timestep2"><a class="viewcode-back" href="../../../../apidocs/crowddynamics.core.tests.html#crowddynamics.core.tests.test_integrator.test_adaptive_timestep2">[docs]</a><span class="k">def</span> <span class="nf">test_adaptive_timestep2</span><span class="p">(</span><span class="n">agents_three_circle</span><span class="p">,</span> <span class="n">dt_min</span><span class="p">,</span> <span class="n">dt_max</span><span class="p">):</span>
     <span class="n">assume</span><span class="p">(</span><span class="mi">0</span> <span class="o">&lt;</span> <span class="n">dt_min</span> <span class="o">&lt;</span> <span class="n">dt_max</span><span class="p">)</span>
     <span class="n">dt</span> <span class="o">=</span> <span class="n">adaptive_timestep</span><span class="p">(</span><span class="n">agents_three_circle</span><span class="o">.</span><span class="n">array</span><span class="p">,</span> <span class="n">dt_min</span><span class="p">,</span> <span class="n">dt_max</span><span class="p">)</span>
     <span class="k">assert</span> <span class="mi">0</span> <span class="o">&lt;</span> <span class="n">dt_min</span> <span class="o">&lt;=</span> <span class="n">dt</span> <span class="o">&lt;=</span> <span class="n">dt_max</span></div>
 
 
-<span class="nd">@given</span><span class="p">(</span><span class="n">dt_min</span><span class="o">=</span><span class="n">real</span><span class="p">(</span><span class="n">min_value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_value</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">exclude_zero</span><span class="o">=</span><span class="s1">&#39;near&#39;</span><span class="p">),</span>
-       <span class="n">dt_max</span><span class="o">=</span><span class="n">real</span><span class="p">(</span><span class="n">min_value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_value</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">exclude_zero</span><span class="o">=</span><span class="s1">&#39;near&#39;</span><span class="p">))</span>
+<span class="nd">@given</span><span class="p">(</span><span class="n">dt_min</span><span class="o">=</span><span class="n">reals</span><span class="p">(</span><span class="n">min_value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_value</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">exclude_zero</span><span class="o">=</span><span class="s1">&#39;near&#39;</span><span class="p">),</span>
+       <span class="n">dt_max</span><span class="o">=</span><span class="n">reals</span><span class="p">(</span><span class="n">min_value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_value</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">exclude_zero</span><span class="o">=</span><span class="s1">&#39;near&#39;</span><span class="p">))</span>
 <div class="viewcode-block" id="test_euler_integration1"><a class="viewcode-back" href="../../../../apidocs/crowddynamics.core.tests.html#crowddynamics.core.tests.test_integrator.test_euler_integration1">[docs]</a><span class="k">def</span> <span class="nf">test_euler_integration1</span><span class="p">(</span><span class="n">agents_circular</span><span class="p">,</span> <span class="n">dt_min</span><span class="p">,</span> <span class="n">dt_max</span><span class="p">):</span>
     <span class="n">assume</span><span class="p">(</span><span class="mi">0</span> <span class="o">&lt;</span> <span class="n">dt_min</span> <span class="o">&lt;</span> <span class="n">dt_max</span><span class="p">)</span>
     <span class="n">dt</span> <span class="o">=</span> <span class="n">euler_integrator</span><span class="p">(</span><span class="n">agents_circular</span><span class="o">.</span><span class="n">array</span><span class="p">,</span> <span class="n">dt_min</span><span class="p">,</span> <span class="n">dt_max</span><span class="p">)</span>
     <span class="k">assert</span> <span class="mi">0</span> <span class="o">&lt;</span> <span class="n">dt_min</span> <span class="o">&lt;=</span> <span class="n">dt</span> <span class="o">&lt;=</span> <span class="n">dt_max</span></div>
 
 
-<span class="nd">@given</span><span class="p">(</span><span class="n">dt_min</span><span class="o">=</span><span class="n">real</span><span class="p">(</span><span class="n">min_value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_value</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">exclude_zero</span><span class="o">=</span><span class="s1">&#39;near&#39;</span><span class="p">),</span>
-       <span class="n">dt_max</span><span class="o">=</span><span class="n">real</span><span class="p">(</span><span class="n">min_value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_value</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">exclude_zero</span><span class="o">=</span><span class="s1">&#39;near&#39;</span><span class="p">))</span>
+<span class="nd">@given</span><span class="p">(</span><span class="n">dt_min</span><span class="o">=</span><span class="n">reals</span><span class="p">(</span><span class="n">min_value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_value</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">exclude_zero</span><span class="o">=</span><span class="s1">&#39;near&#39;</span><span class="p">),</span>
+       <span class="n">dt_max</span><span class="o">=</span><span class="n">reals</span><span class="p">(</span><span class="n">min_value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_value</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">exclude_zero</span><span class="o">=</span><span class="s1">&#39;near&#39;</span><span class="p">))</span>
 <div class="viewcode-block" id="test_euler_integration2"><a class="viewcode-back" href="../../../../apidocs/crowddynamics.core.tests.html#crowddynamics.core.tests.test_integrator.test_euler_integration2">[docs]</a><span class="k">def</span> <span class="nf">test_euler_integration2</span><span class="p">(</span><span class="n">agents_three_circle</span><span class="p">,</span> <span class="n">dt_min</span><span class="p">,</span> <span class="n">dt_max</span><span class="p">):</span>
     <span class="n">assume</span><span class="p">(</span><span class="mi">0</span> <span class="o">&lt;</span> <span class="n">dt_min</span> <span class="o">&lt;</span> <span class="n">dt_max</span><span class="p">)</span>
     <span class="n">dt</span> <span class="o">=</span> <span class="n">euler_integrator</span><span class="p">(</span><span class="n">agents_three_circle</span><span class="o">.</span><span class="n">array</span><span class="p">,</span> <span class="n">dt_min</span><span class="p">,</span> <span class="n">dt_max</span><span class="p">)</span>
     <span class="k">assert</span> <span class="mi">0</span> <span class="o">&lt;</span> <span class="n">dt_min</span> <span class="o">&lt;=</span> <span class="n">dt</span> <span class="o">&lt;=</span> <span class="n">dt_max</span></div>
 
 
-<span class="nd">@given</span><span class="p">(</span><span class="n">dt_min</span><span class="o">=</span><span class="n">real</span><span class="p">(</span><span class="n">min_value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_value</span><span class="o">=</span><span class="mf">10.0</span><span class="p">),</span>
-       <span class="n">dt_max</span><span class="o">=</span><span class="n">real</span><span class="p">(</span><span class="n">min_value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_value</span><span class="o">=</span><span class="mf">10.0</span><span class="p">))</span>
+<span class="nd">@given</span><span class="p">(</span><span class="n">dt_min</span><span class="o">=</span><span class="n">reals</span><span class="p">(</span><span class="n">min_value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_value</span><span class="o">=</span><span class="mf">10.0</span><span class="p">),</span>
+       <span class="n">dt_max</span><span class="o">=</span><span class="n">reals</span><span class="p">(</span><span class="n">min_value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_value</span><span class="o">=</span><span class="mf">10.0</span><span class="p">))</span>
 <div class="viewcode-block" id="test_velocity_verlet1"><a class="viewcode-back" href="../../../../apidocs/crowddynamics.core.tests.html#crowddynamics.core.tests.test_integrator.test_velocity_verlet1">[docs]</a><span class="k">def</span> <span class="nf">test_velocity_verlet1</span><span class="p">(</span><span class="n">agents_circular</span><span class="p">,</span> <span class="n">dt_min</span><span class="p">,</span> <span class="n">dt_max</span><span class="p">):</span>
     <span class="n">assume</span><span class="p">(</span><span class="mi">0</span> <span class="o">&lt;</span> <span class="n">dt_min</span> <span class="o">&lt;</span> <span class="n">dt_max</span><span class="p">)</span>
     <span class="n">dt</span> <span class="o">=</span> <span class="n">velocity_verlet_integrator</span><span class="p">(</span><span class="n">agents_circular</span><span class="o">.</span><span class="n">array</span><span class="p">,</span> <span class="n">dt_min</span><span class="p">,</span> <span class="n">dt_max</span><span class="p">)</span>
     <span class="k">assert</span> <span class="mi">0</span> <span class="o">&lt;</span> <span class="n">dt_min</span> <span class="o">&lt;=</span> <span class="n">dt</span> <span class="o">&lt;=</span> <span class="n">dt_max</span></div>
 
 
-<span class="nd">@given</span><span class="p">(</span><span class="n">dt_min</span><span class="o">=</span><span class="n">real</span><span class="p">(</span><span class="n">min_value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_value</span><span class="o">=</span><span class="mf">10.0</span><span class="p">),</span>
-       <span class="n">dt_max</span><span class="o">=</span><span class="n">real</span><span class="p">(</span><span class="n">min_value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_value</span><span class="o">=</span><span class="mf">10.0</span><span class="p">))</span>
+<span class="nd">@given</span><span class="p">(</span><span class="n">dt_min</span><span class="o">=</span><span class="n">reals</span><span class="p">(</span><span class="n">min_value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_value</span><span class="o">=</span><span class="mf">10.0</span><span class="p">),</span>
+       <span class="n">dt_max</span><span class="o">=</span><span class="n">reals</span><span class="p">(</span><span class="n">min_value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_value</span><span class="o">=</span><span class="mf">10.0</span><span class="p">))</span>
 <div class="viewcode-block" id="test_velocity_verlet2"><a class="viewcode-back" href="../../../../apidocs/crowddynamics.core.tests.html#crowddynamics.core.tests.test_integrator.test_velocity_verlet2">[docs]</a><span class="k">def</span> <span class="nf">test_velocity_verlet2</span><span class="p">(</span><span class="n">agents_three_circle</span><span class="p">,</span> <span class="n">dt_min</span><span class="p">,</span> <span class="n">dt_max</span><span class="p">):</span>
     <span class="n">assume</span><span class="p">(</span><span class="mi">0</span> <span class="o">&lt;</span> <span class="n">dt_min</span> <span class="o">&lt;</span> <span class="n">dt_max</span><span class="p">)</span>
     <span class="n">dt</span> <span class="o">=</span> <span class="n">velocity_verlet_integrator</span><span class="p">(</span><span class="n">agents_three_circle</span><span class="o">.</span><span class="n">array</span><span class="p">,</span> <span class="n">dt_min</span><span class="p">,</span> <span class="n">dt_max</span><span class="p">)</span>
@@ -250,7 +250,7 @@
   <div role="contentinfo">
     <p>
         &copy; Copyright Jaan Tollander de Balsch.
-      Last updated on 2017-05-18.
+      Last updated on 2017-05-31.
 
     </p>
   </div>
@@ -272,7 +272,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../../',
-            VERSION:'legacy+303.g1e68f25.dirty',
+            VERSION:'legacy+318.gb8d04f6.dirty',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>crowddynamics.core.rand.tests.test_random &mdash; crowddynamics legacy+303.g1e68f25.dirty documentation</title>
+  <title>crowddynamics.core.rand.tests.test_random &mdash; crowddynamics legacy+318.gb8d04f6.dirty documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../../../../genindex.html"/>
         <link rel="search" title="Search" href="../../../../../search.html"/>
-    <link rel="top" title="crowddynamics legacy+303.g1e68f25.dirty documentation" href="../../../../../index.html"/>
+    <link rel="top" title="crowddynamics legacy+318.gb8d04f6.dirty documentation" href="../../../../../index.html"/>
         <link rel="up" title="Module code" href="../../../../index.html"/> 
 
   
@@ -70,7 +70,7 @@
             
             
               <div class="version">
-                legacy+303legacy+303.g1e68f25.dirtyg1e68f25
+                legacy+318legacy+318.gb8d04f6.dirtygb8d04f6
               </div>
             
           
@@ -103,6 +103,7 @@
 </ul>
 <p class="caption"><span class="caption-text">Crowddynamics</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../architecture.html">Architecture</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../multiagent.html">Multi-Agent Simulation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../interactions.html">Interactions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../motion.html">Motion</a></li>
@@ -117,7 +118,6 @@
 <p class="caption"><span class="caption-text">Api</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../apidocs/crowddynamics.html">crowddynamics package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../apidocs_examples/examples.html">examples package</a></li>
 </ul>
 
             
@@ -183,12 +183,15 @@
             
   <h1>Source code for crowddynamics.core.rand.tests.test_random</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">hypothesis</span> <span class="k">import</span> <span class="n">given</span><span class="p">,</span> <span class="n">assume</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">hypothesis.strategies</span> <span class="k">as</span> <span class="nn">st</span>
+<span class="kn">from</span> <span class="nn">hypothesis.extra.numpy</span> <span class="k">import</span> <span class="n">arrays</span>
 
 <span class="kn">from</span> <span class="nn">crowddynamics.core.rand.functions</span> <span class="k">import</span> <span class="n">poisson_clock</span><span class="p">,</span> <span class="n">poisson_timings</span>
-<span class="kn">from</span> <span class="nn">crowddynamics.testing</span> <span class="k">import</span> <span class="n">real</span>
+<span class="kn">from</span> <span class="nn">crowddynamics.testing</span> <span class="k">import</span> <span class="n">reals</span>
 
 
-<span class="nd">@given</span><span class="p">(</span><span class="n">interval</span><span class="o">=</span><span class="n">real</span><span class="p">(</span><span class="mf">0.001</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">),</span> <span class="n">dt</span><span class="o">=</span><span class="n">real</span><span class="p">(</span><span class="mf">0.001</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">))</span>
+<span class="nd">@given</span><span class="p">(</span><span class="n">interval</span><span class="o">=</span><span class="n">reals</span><span class="p">(</span><span class="mf">0.001</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">),</span> <span class="n">dt</span><span class="o">=</span><span class="n">reals</span><span class="p">(</span><span class="mf">0.001</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">))</span>
 <div class="viewcode-block" id="test_poisson_clock"><a class="viewcode-back" href="../../../../../apidocs/crowddynamics.core.rand.tests.html#crowddynamics.core.rand.tests.test_random.test_poisson_clock">[docs]</a><span class="k">def</span> <span class="nf">test_poisson_clock</span><span class="p">(</span><span class="n">interval</span><span class="p">,</span> <span class="n">dt</span><span class="p">):</span>
     <span class="c1"># Limit the ratio so test doesn&#39;t run forever</span>
     <span class="n">assume</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">100</span> <span class="o">&lt;</span> <span class="n">interval</span> <span class="o">/</span> <span class="n">dt</span> <span class="o">&lt;</span> <span class="mi">100</span><span class="p">)</span>
@@ -200,9 +203,10 @@
         <span class="n">time_prev</span> <span class="o">=</span> <span class="n">time</span></div>
 
 
-<span class="nd">@given</span><span class="p">(</span><span class="n">players</span><span class="o">=</span><span class="n">real</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="o">**</span><span class="mi">7</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">),</span>
-       <span class="n">interval</span><span class="o">=</span><span class="n">real</span><span class="p">(</span><span class="mf">0.001</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">),</span>
-       <span class="n">dt</span><span class="o">=</span><span class="n">real</span><span class="p">(</span><span class="mf">0.001</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">))</span>
+<span class="nd">@given</span><span class="p">(</span><span class="n">players</span><span class="o">=</span><span class="n">arrays</span><span class="p">(</span><span class="n">elements</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">integers</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span> <span class="o">**</span> <span class="mi">7</span><span class="p">),</span> <span class="n">shape</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+                      <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">),</span>
+       <span class="n">interval</span><span class="o">=</span><span class="n">reals</span><span class="p">(</span><span class="mf">0.001</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">),</span>
+       <span class="n">dt</span><span class="o">=</span><span class="n">reals</span><span class="p">(</span><span class="mf">0.001</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">))</span>
 <div class="viewcode-block" id="test_poisson_timings"><a class="viewcode-back" href="../../../../../apidocs/crowddynamics.core.rand.tests.html#crowddynamics.core.rand.tests.test_random.test_poisson_timings">[docs]</a><span class="k">def</span> <span class="nf">test_poisson_timings</span><span class="p">(</span><span class="n">players</span><span class="p">,</span> <span class="n">interval</span><span class="p">,</span> <span class="n">dt</span><span class="p">):</span>
     <span class="c1"># Limit the ratio so test doesn&#39;t run forever</span>
     <span class="n">assume</span><span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="mi">100</span> <span class="o">&lt;</span> <span class="n">interval</span> <span class="o">/</span> <span class="n">dt</span> <span class="o">&lt;</span> <span class="mi">100</span><span class="p">)</span>
@@ -225,7 +229,7 @@
   <div role="contentinfo">
     <p>
         &copy; Copyright Jaan Tollander de Balsch.
-      Last updated on 2017-05-18.
+      Last updated on 2017-05-31.
 
     </p>
   </div>
@@ -247,7 +251,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../../../',
-            VERSION:'legacy+303.g1e68f25.dirty',
+            VERSION:'legacy+318.gb8d04f6.dirty',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

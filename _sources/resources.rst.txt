@@ -53,8 +53,12 @@ Resources
    * - RVO2_
      - *Reciprocal Collision Avoidance* algorithm
      - C++
+   * - FDS+EVAC_
+     - Fire dynamics simulator (FDS) with evacuation model (EVAC)
+     - Fortran
 
 
 .. _JuPedSim: http://www.jupedsim.org/
 .. _PedSim: http://pedsim.silmaril.org/
 .. _RVO2: http://gamma.cs.unc.edu/RVO2/
+.. _FDS+EVAC: https://github.com/firemodels/fds

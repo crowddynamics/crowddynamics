@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>crowddynamics.core.motion.tests.test_power_law_benchmark &mdash; crowddynamics legacy+303.g1e68f25.dirty documentation</title>
+  <title>crowddynamics.core.motion.tests.test_power_law_benchmark &mdash; crowddynamics legacy+318.gb8d04f6.dirty documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../../../../genindex.html"/>
         <link rel="search" title="Search" href="../../../../../search.html"/>
-    <link rel="top" title="crowddynamics legacy+303.g1e68f25.dirty documentation" href="../../../../../index.html"/>
+    <link rel="top" title="crowddynamics legacy+318.gb8d04f6.dirty documentation" href="../../../../../index.html"/>
         <link rel="up" title="Module code" href="../../../../index.html"/> 
 
   
@@ -70,7 +70,7 @@
             
             
               <div class="version">
-                legacy+303legacy+303.g1e68f25.dirtyg1e68f25
+                legacy+318legacy+318.gb8d04f6.dirtygb8d04f6
               </div>
             
           
@@ -103,6 +103,7 @@
 </ul>
 <p class="caption"><span class="caption-text">Crowddynamics</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../architecture.html">Architecture</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../multiagent.html">Multi-Agent Simulation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../interactions.html">Interactions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../motion.html">Motion</a></li>
@@ -117,7 +118,6 @@
 <p class="caption"><span class="caption-text">Api</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../apidocs/crowddynamics.html">crowddynamics package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../apidocs_examples/examples.html">examples package</a></li>
 </ul>
 
             
@@ -182,51 +182,48 @@
            <div itemprop="articleBody">
             
   <h1>Source code for crowddynamics.core.motion.tests.test_power_law_benchmark</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">pytest</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pytest</span>
 
 <span class="kn">from</span> <span class="nn">crowddynamics.core.motion.power_law</span> <span class="k">import</span> <span class="n">force_social_circular</span><span class="p">,</span> \
     <span class="n">force_social_three_circle</span>
-<span class="kn">from</span> <span class="nn">crowddynamics.core.structures.agents</span> <span class="k">import</span> <span class="n">agent_type_circular</span><span class="p">,</span> \
-    <span class="n">agent_type_three_circle</span>
-<span class="kn">from</span> <span class="nn">crowddynamics.simulation.multiagent</span> <span class="k">import</span> <span class="n">Agents</span>
 <span class="kn">from</span> <span class="nn">crowddynamics.core.vector2D</span> <span class="k">import</span> <span class="n">length</span>
+<span class="kn">from</span> <span class="nn">crowddynamics.simulation.agents</span> <span class="k">import</span> <span class="n">Circular</span><span class="p">,</span> <span class="n">ThreeCircle</span>
 
 
 <span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">parametrize</span><span class="p">(</span><span class="s1">&#39;agent_type,force&#39;</span><span class="p">,</span> <span class="p">[</span>
-    <span class="p">(</span><span class="n">agent_type_circular</span><span class="p">,</span> <span class="n">force_social_circular</span><span class="p">),</span>
-    <span class="p">(</span><span class="n">agent_type_three_circle</span><span class="p">,</span> <span class="n">force_social_three_circle</span><span class="p">)])</span>
+    <span class="p">(</span><span class="n">Circular</span><span class="p">,</span> <span class="n">force_social_circular</span><span class="p">),</span>
+    <span class="p">(</span><span class="n">ThreeCircle</span><span class="p">,</span> <span class="n">force_social_three_circle</span><span class="p">)])</span>
 <div class="viewcode-block" id="test_not_colliding"><a class="viewcode-back" href="../../../../../apidocs/crowddynamics.core.motion.tests.html#crowddynamics.core.motion.tests.test_power_law_benchmark.test_not_colliding">[docs]</a><span class="k">def</span> <span class="nf">test_not_colliding</span><span class="p">(</span><span class="n">benchmark</span><span class="p">,</span> <span class="n">agent_type</span><span class="p">,</span> <span class="n">force</span><span class="p">):</span>
-    <span class="n">agents</span> <span class="o">=</span> <span class="n">Agents</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">agent_type</span><span class="p">)</span>
-    <span class="n">agents</span><span class="o">.</span><span class="n">add_group</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="p">{</span>
-        <span class="s1">&#39;body_type&#39;</span><span class="p">:</span> <span class="s1">&#39;adult&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;position&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">((</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)),</span>
-        <span class="s1">&#39;orientation&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
-        <span class="s1">&#39;velocity&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">((</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)),</span>
-        <span class="s1">&#39;angular_velocity&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
-        <span class="s1">&#39;target_direction&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">((</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)),</span>
-        <span class="s1">&#39;target_orientation&#39;</span><span class="p">:</span> <span class="mf">0.0</span>
-    <span class="p">})</span>
-    <span class="n">agents</span><span class="o">.</span><span class="n">add_group</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="p">{</span>
-        <span class="s1">&#39;body_type&#39;</span><span class="p">:</span> <span class="s1">&#39;adult&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;position&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">((</span><span class="mf">2.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)),</span>
-        <span class="s1">&#39;orientation&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
-        <span class="s1">&#39;velocity&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">((</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)),</span>
-        <span class="s1">&#39;angular_velocity&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
-        <span class="s1">&#39;target_direction&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">((</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)),</span>
-        <span class="s1">&#39;target_orientation&#39;</span><span class="p">:</span> <span class="mf">0.0</span>
-    <span class="p">})</span>
-    <span class="n">force_i</span><span class="p">,</span> <span class="n">force_j</span> <span class="o">=</span> <span class="n">benchmark</span><span class="p">(</span><span class="n">force</span><span class="p">,</span> <span class="n">agents</span><span class="o">.</span><span class="n">array</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">agent1</span> <span class="o">=</span> <span class="n">agent_type</span><span class="p">(</span><span class="o">**</span><span class="p">{</span>
+            <span class="s1">&#39;body_type&#39;</span><span class="p">:</span> <span class="s1">&#39;adult&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;position&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">((</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)),</span>
+            <span class="s1">&#39;orientation&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
+            <span class="s1">&#39;velocity&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">((</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)),</span>
+            <span class="s1">&#39;angular_velocity&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
+            <span class="s1">&#39;target_direction&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">((</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)),</span>
+            <span class="s1">&#39;target_orientation&#39;</span><span class="p">:</span> <span class="mf">0.0</span>
+        <span class="p">})</span>
+    <span class="n">agent2</span> <span class="o">=</span> <span class="n">agent_type</span><span class="p">(</span><span class="o">**</span><span class="p">{</span>
+            <span class="s1">&#39;body_type&#39;</span><span class="p">:</span> <span class="s1">&#39;adult&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;position&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">((</span><span class="mf">2.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)),</span>
+            <span class="s1">&#39;orientation&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
+            <span class="s1">&#39;velocity&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">((</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)),</span>
+            <span class="s1">&#39;angular_velocity&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
+            <span class="s1">&#39;target_direction&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">((</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)),</span>
+            <span class="s1">&#39;target_orientation&#39;</span><span class="p">:</span> <span class="mf">0.0</span>
+        <span class="p">})</span>
+    <span class="n">array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">agent1</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">agent2</span><span class="p">)))</span>
+    <span class="n">force_i</span><span class="p">,</span> <span class="n">force_j</span> <span class="o">=</span> <span class="n">benchmark</span><span class="p">(</span><span class="n">force</span><span class="p">,</span> <span class="n">array</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
     <span class="k">assert</span> <span class="n">length</span><span class="p">(</span><span class="n">force_i</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span>
     <span class="k">assert</span> <span class="n">length</span><span class="p">(</span><span class="n">force_j</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span></div>
 
 
 <span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">parametrize</span><span class="p">(</span><span class="s1">&#39;agent_type,force&#39;</span><span class="p">,</span> <span class="p">[</span>
-    <span class="p">(</span><span class="n">agent_type_circular</span><span class="p">,</span> <span class="n">force_social_circular</span><span class="p">),</span>
-    <span class="p">(</span><span class="n">agent_type_three_circle</span><span class="p">,</span> <span class="n">force_social_three_circle</span><span class="p">)])</span>
+    <span class="p">(</span><span class="n">Circular</span><span class="p">,</span> <span class="n">force_social_circular</span><span class="p">),</span>
+    <span class="p">(</span><span class="n">ThreeCircle</span><span class="p">,</span> <span class="n">force_social_three_circle</span><span class="p">)])</span>
 <div class="viewcode-block" id="test_colliding"><a class="viewcode-back" href="../../../../../apidocs/crowddynamics.core.motion.tests.html#crowddynamics.core.motion.tests.test_power_law_benchmark.test_colliding">[docs]</a><span class="k">def</span> <span class="nf">test_colliding</span><span class="p">(</span><span class="n">benchmark</span><span class="p">,</span> <span class="n">agent_type</span><span class="p">,</span> <span class="n">force</span><span class="p">):</span>
-    <span class="n">agents</span> <span class="o">=</span> <span class="n">Agents</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">agent_type</span><span class="p">)</span>
-    <span class="n">agents</span><span class="o">.</span><span class="n">add_group</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="p">{</span>
+    <span class="n">agent1</span> <span class="o">=</span> <span class="n">agent_type</span><span class="p">({</span>
         <span class="s1">&#39;body_type&#39;</span><span class="p">:</span> <span class="s1">&#39;adult&#39;</span><span class="p">,</span>
         <span class="s1">&#39;position&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">((</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)),</span>
         <span class="s1">&#39;orientation&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
@@ -235,7 +232,7 @@
         <span class="s1">&#39;target_direction&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">((</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)),</span>
         <span class="s1">&#39;target_orientation&#39;</span><span class="p">:</span> <span class="mf">0.0</span>
     <span class="p">})</span>
-    <span class="n">agents</span><span class="o">.</span><span class="n">add_group</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="p">{</span>
+    <span class="n">agent2</span> <span class="o">=</span> <span class="n">agent_type</span><span class="p">({</span>
         <span class="s1">&#39;body_type&#39;</span><span class="p">:</span> <span class="s1">&#39;adult&#39;</span><span class="p">,</span>
         <span class="s1">&#39;position&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">((</span><span class="mf">2.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)),</span>
         <span class="s1">&#39;orientation&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span>
@@ -244,7 +241,8 @@
         <span class="s1">&#39;target_direction&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">((</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)),</span>
         <span class="s1">&#39;target_orientation&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
     <span class="p">})</span>
-    <span class="n">force_i</span><span class="p">,</span> <span class="n">force_j</span> <span class="o">=</span> <span class="n">benchmark</span><span class="p">(</span><span class="n">force</span><span class="p">,</span> <span class="n">agents</span><span class="o">.</span><span class="n">array</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">agent1</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">agent2</span><span class="p">)))</span>
+    <span class="n">force_i</span><span class="p">,</span> <span class="n">force_j</span> <span class="o">=</span> <span class="n">benchmark</span><span class="p">(</span><span class="n">force</span><span class="p">,</span> <span class="n">array</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
     <span class="k">assert</span> <span class="n">length</span><span class="p">(</span><span class="n">force_i</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
     <span class="k">assert</span> <span class="n">length</span><span class="p">(</span><span class="n">force_j</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span></div>
 </pre></div>
@@ -262,7 +260,7 @@
   <div role="contentinfo">
     <p>
         &copy; Copyright Jaan Tollander de Balsch.
-      Last updated on 2017-05-18.
+      Last updated on 2017-05-31.
 
     </p>
   </div>
@@ -284,7 +282,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../../../',
-            VERSION:'legacy+303.g1e68f25.dirty',
+            VERSION:'legacy+318.gb8d04f6.dirty',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

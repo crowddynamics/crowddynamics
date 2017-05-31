@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Evacuation &mdash; crowddynamics legacy+303.g1e68f25.dirty documentation</title>
+  <title>Evacuation &mdash; crowddynamics legacy+318.gb8d04f6.dirty documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="crowddynamics legacy+303.g1e68f25.dirty documentation" href="index.html"/>
+    <link rel="top" title="crowddynamics legacy+318.gb8d04f6.dirty documentation" href="index.html"/>
         <link rel="next" title="Phenomena" href="phenomena.html"/>
         <link rel="prev" title="Quantities" href="quantities.html"/> 
 
@@ -71,7 +71,7 @@
             
             
               <div class="version">
-                legacy+303legacy+303.g1e68f25.dirtyg1e68f25
+                legacy+318legacy+318.gb8d04f6.dirtygb8d04f6
               </div>
             
           
@@ -104,6 +104,7 @@
 </ul>
 <p class="caption"><span class="caption-text">Crowddynamics</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="architecture.html">Architecture</a></li>
 <li class="toctree-l1"><a class="reference internal" href="multiagent.html">Multi-Agent Simulation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="interactions.html">Interactions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="motion.html">Motion</a></li>
@@ -121,7 +122,6 @@
 <p class="caption"><span class="caption-text">Api</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="apidocs/crowddynamics.html">crowddynamics package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="apidocs_examples/examples.html">examples package</a></li>
 </ul>
 
             
@@ -187,154 +187,28 @@
             
   <div class="section" id="evacuation">
 <h1>Evacuation<a class="headerlink" href="#evacuation" title="Permalink to this headline">¶</a></h1>
-<dl class="class">
+<dl class="attribute">
 <dt>
-<em class="property">class </em><code class="descclassname">crowddynamics.core.evacuation.</code><code class="descname">narrow_exit_capacity</code><a class="reference internal" href="_modules/crowddynamics/core/evacuation.html#narrow_exit_capacity"><span class="viewcode-link">[source]</span></a></dt>
-<dd><p>Capacity estimation <span class="math">\(\beta\)</span> of unidirectional flow through narrow
-bottleneck. Capacity of the bottleneck increases in stepwise manner.</p>
-<dl class="docutils">
-<dt>Estimation 1</dt>
-<dd><p class="first">Simple estimation</p>
-<div class="last math">
-\[\beta_{simple} = c \left \lfloor \frac{d_{door}}{d_{agent}} \right \rfloor\]</div>
-</dd>
-<dt>Estimation 2</dt>
-<dd><p class="first">More sophisticated estimation <a class="reference internal" href="#hoogendoorn2005a" id="id1">[Hoogendoorn2005a]</a>, <a class="reference internal" href="#seyfried2007a" id="id2">[Seyfried2007a]</a></p>
-<div class="last math">
-\[\beta_{hoogen} = c \left \lfloor \frac{d_{door} - (d_{agent} - d_{layer})}{d_{layer}} \right \rfloor,\quad d_{door} \geq d_{agent}\]</div>
-</dd>
-</dl>
-<p>We have relationship between simple and Hoogendoorn&#8217;s estimation</p>
-<div class="math">
-\[\beta_{hoogen} = \beta_{simple}, \quad d_{layer} = d_{agent}\]</div>
-<table border="1" class="docutils" id="id3">
-<caption><span class="caption-text">Variables</span><a class="headerlink" href="#id3" title="Permalink to this table">¶</a></caption>
-<colgroup>
-<col width="33%" />
-<col width="33%" />
-<col width="33%" />
-</colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">Variable</th>
-<th class="head">Reference value</th>
-<th class="head">Unit</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr class="row-even"><td><span class="math">\(d_{door} \in [0, 3]\)</span></td>
-<td>&#160;</td>
-<td>m</td>
-</tr>
-<tr class="row-odd"><td><span class="math">\(d_{agent} &gt; 0\)</span></td>
-<td>&#160;</td>
-<td>m</td>
-</tr>
-<tr class="row-even"><td><span class="math">\(d_{layer} &gt; 0\)</span></td>
-<td><span class="math">\(0.45\)</span></td>
-<td>m</td>
-</tr>
-<tr class="row-odd"><td><span class="math">\(c &gt; 0\)</span></td>
-<td>&#160;</td>
-<td>&#160;</td>
-</tr>
-</tbody>
-</table>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>d_door</strong> (<em>float</em>) &#8211; Width of the door <span class="math">\(d_{door}\)</span>.</li>
-<li><strong>d_agent</strong> (<em>float</em>) &#8211; Width of the agent <span class="math">\(d_{agent}\)</span>.</li>
-<li><strong>d_layer</strong> (<em>float</em><em>, </em><em>optional</em>) &#8211; Width of layer <span class="math">\(d_{layer}\)</span>.</li>
-<li><strong>coeff</strong> (<em>float</em>) &#8211; Scaling coefficient <span class="math">\(c\)</span>.</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><p>Depending on the value of <code class="docutils literal"><span class="pre">d_layer</span></code> either simple or hoogen
-estimation is returned</p>
-<ul class="simple">
-<li><code class="docutils literal"><span class="pre">None</span></code>: Uses simple estimation <span class="math">\(\beta_{simple}\)</span></li>
-<li><code class="docutils literal"><span class="pre">float</span></code>: Uses Hoogendoorn&#8217;s estimation <span class="math">\(\beta_{hoogen}\)</span></li>
-</ul>
-</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">float</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
+<code class="descclassname">crowddynamics.core.evacuation.</code><code class="descname">narrow_exit_capacity</code></dt>
+<dd></dd></dl>
 
-<dl class="class">
+<dl class="attribute">
 <dt>
-<em class="property">class </em><code class="descclassname">crowddynamics.core.evacuation.</code><code class="descname">agent_closer_to_exit</code><a class="reference internal" href="_modules/crowddynamics/core/evacuation.html#agent_closer_to_exit"><span class="viewcode-link">[source]</span></a></dt>
-<dd><p>Amount of positions (agents) closer to center of the exit.</p>
-<ol class="arabic simple">
-<li>Denote <span class="math">\(i\)</span> as indices of the positions <span class="math">\(\mathbf{x}\)</span>.</li>
-<li>Distance from narrow exit can be estimated</li>
-</ol>
-<blockquote>
-<div><div class="math">
-\[d_i = \| \mathbf{c} - \mathbf{x}_{i} \|\]</div>
-</div></blockquote>
-<ol class="arabic simple" start="3">
-<li>By sorting the values <span class="math">\(d_i\)</span> by its indices we obtain array</li>
-</ol>
-<blockquote>
-<div><div class="math">
-\[a_i = \underset{i \in P}{\operatorname{arg\,sort}}(d_i)\]</div>
-<p>where</p>
-<ul class="simple">
-<li>Values: Indices of the positions sorted by the distance from the exit</li>
-<li>Indices: Number of positions closer to the exit</li>
-</ul>
-</div></blockquote>
-<ol class="arabic simple" start="4">
-<li>By sorting the values <span class="math">\(a_i\)</span> by it indices we obtain array</li>
-</ol>
-<blockquote>
-<div><div class="math">
-\[\lambda_i = \operatorname{arg\,sort} (a_i)\]</div>
-<p>where</p>
-<ul class="simple">
-<li>Values: Number of positions closer to the exit</li>
-<li>Indices: Indices of the positions</li>
-</ul>
-</div></blockquote>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>c_door</strong> (<em>numpy.ndarray</em>) &#8211; Center of the exit <span class="math">\(\mathbf{c}\)</span>.</li>
-<li><strong>position</strong> (<em>numpy.ndarray</em>) &#8211; Positions <span class="math">\(\mathbf{x}\)</span> of the agents.</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Array <span class="math">\(\lambda_i\)</span></p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy.ndarray</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
+<code class="descclassname">crowddynamics.core.evacuation.</code><code class="descname">agent_closer_to_exit</code></dt>
+<dd></dd></dl>
 
 <div class="section" id="references">
 <h2>References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h2>
 <table class="docutils citation" frame="void" id="seyfried2007a" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id2">[Seyfried2007a]</a></td><td>Seyfried, A., Rupprecht, T., Passon, O., Steffen, B., Klingsch, W., &amp; Boltes, M. (2007). New insights into pedestrian flow through bottlenecks. Transportation Science, 43:395–406, 43(3), 16. <a class="reference external" href="http://doi.org/10.1287/trsc.1090.0263">http://doi.org/10.1287/trsc.1090.0263</a></td></tr>
+<tr><td class="label">[Seyfried2007a]</td><td>Seyfried, A., Rupprecht, T., Passon, O., Steffen, B., Klingsch, W., &amp; Boltes, M. (2007). New insights into pedestrian flow through bottlenecks. Transportation Science, 43:395–406, 43(3), 16. <a class="reference external" href="http://doi.org/10.1287/trsc.1090.0263">http://doi.org/10.1287/trsc.1090.0263</a></td></tr>
 </tbody>
 </table>
 <table class="docutils citation" frame="void" id="hoogendoorn2005a" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id1">[Hoogendoorn2005a]</a></td><td>Hoogendoorn, S. P., &amp; Daamen, W. (2005). Pedestrian Behavior at Bottlenecks. Transportation Science, 39(2), 147–159. <a class="reference external" href="http://doi.org/10.1287/trsc.1040.0102">http://doi.org/10.1287/trsc.1040.0102</a></td></tr>
+<tr><td class="label">[Hoogendoorn2005a]</td><td>Hoogendoorn, S. P., &amp; Daamen, W. (2005). Pedestrian Behavior at Bottlenecks. Transportation Science, 39(2), 147–159. <a class="reference external" href="http://doi.org/10.1287/trsc.1040.0102">http://doi.org/10.1287/trsc.1040.0102</a></td></tr>
 </tbody>
 </table>
 </div>
@@ -363,7 +237,7 @@ estimation is returned</p>
   <div role="contentinfo">
     <p>
         &copy; Copyright Jaan Tollander de Balsch.
-      Last updated on 2017-05-18.
+      Last updated on 2017-05-31.
 
     </p>
   </div>
@@ -385,7 +259,7 @@ estimation is returned</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'legacy+303.g1e68f25.dirty',
+            VERSION:'legacy+318.gb8d04f6.dirty',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

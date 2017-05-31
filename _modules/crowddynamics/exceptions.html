@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>crowddynamics.exceptions &mdash; crowddynamics legacy+303.g1e68f25.dirty documentation</title>
+  <title>crowddynamics.exceptions &mdash; crowddynamics legacy+318.gb8d04f6.dirty documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="crowddynamics legacy+303.g1e68f25.dirty documentation" href="../../index.html"/>
+    <link rel="top" title="crowddynamics legacy+318.gb8d04f6.dirty documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   
@@ -70,7 +70,7 @@
             
             
               <div class="version">
-                legacy+303legacy+303.g1e68f25.dirtyg1e68f25
+                legacy+318legacy+318.gb8d04f6.dirtygb8d04f6
               </div>
             
           
@@ -103,6 +103,7 @@
 </ul>
 <p class="caption"><span class="caption-text">Crowddynamics</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../architecture.html">Architecture</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../multiagent.html">Multi-Agent Simulation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../interactions.html">Interactions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../motion.html">Motion</a></li>
@@ -117,7 +118,6 @@
 <p class="caption"><span class="caption-text">Api</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../apidocs/crowddynamics.html">crowddynamics package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../apidocs_examples/examples.html">examples package</a></li>
 </ul>
 
             
@@ -183,8 +183,13 @@
             
   <h1>Source code for crowddynamics.exceptions</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;CrowdDynamics exceptions&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">traitlets</span> <span class="k">import</span> <span class="n">TraitError</span>
+<span class="kn">import</span> <span class="nn">functools</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
 
+<span class="kn">import</span> <span class="nn">traitlets</span>
+
+
+<span class="c1"># Exceptions</span>
 
 <div class="viewcode-block" id="CrowdDynamicsException"><a class="viewcode-back" href="../../apidocs/crowddynamics.html#crowddynamics.exceptions.CrowdDynamicsException">[docs]</a><span class="k">class</span> <span class="nc">CrowdDynamicsException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;CrowdDynamics base exception.&quot;&quot;&quot;</span>
@@ -201,7 +206,7 @@
 <span class="sd">    incorrect value.&quot;&quot;&quot;</span></div>
 
 
-<div class="viewcode-block" id="ValidationError"><a class="viewcode-back" href="../../apidocs/crowddynamics.html#crowddynamics.exceptions.ValidationError">[docs]</a><span class="k">class</span> <span class="nc">ValidationError</span><span class="p">(</span><span class="n">CrowdDynamicsException</span><span class="p">,</span> <span class="n">TraitError</span><span class="p">):</span>
+<div class="viewcode-block" id="ValidationError"><a class="viewcode-back" href="../../apidocs/crowddynamics.html#crowddynamics.exceptions.ValidationError">[docs]</a><span class="k">class</span> <span class="nc">ValidationError</span><span class="p">(</span><span class="n">CrowdDynamicsException</span><span class="p">,</span> <span class="n">traitlets</span><span class="o">.</span><span class="n">TraitError</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Argument is invalid&quot;&quot;&quot;</span></div>
 
 
@@ -220,6 +225,29 @@
 <div class="viewcode-block" id="DirectoryIsAlreadyCrowdDynamicsDirectory"><a class="viewcode-back" href="../../apidocs/crowddynamics.html#crowddynamics.exceptions.DirectoryIsAlreadyCrowdDynamicsDirectory">[docs]</a><span class="k">class</span> <span class="nc">DirectoryIsAlreadyCrowdDynamicsDirectory</span><span class="p">(</span><span class="n">CrowdDynamicsException</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Directory is already recognized as a crowddynamics simulation </span>
 <span class="sd">    directory&quot;&quot;&quot;</span></div>
+
+
+<span class="c1"># Warnings</span>
+
+
+<div class="viewcode-block" id="deprecated"><a class="viewcode-back" href="../../apidocs/crowddynamics.html#crowddynamics.exceptions.deprecated">[docs]</a><span class="k">def</span> <span class="nf">deprecated</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;This is a decorator which can be used to mark functions</span>
+<span class="sd">    as deprecated. It will result in a warning being emitted</span>
+<span class="sd">    when the function is used.</span>
+
+<span class="sd">    https://wiki.python.org/moin/PythonDecoratorLibrary#Generating_Deprecation_Warnings</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">new_func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn_explicit</span><span class="p">(</span>
+            <span class="s2">&quot;Call to deprecated function </span><span class="si">{}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="vm">__name__</span><span class="p">),</span>
+            <span class="n">category</span><span class="o">=</span><span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">filename</span><span class="o">=</span><span class="n">func</span><span class="o">.</span><span class="n">func_code</span><span class="o">.</span><span class="n">co_filename</span><span class="p">,</span>
+            <span class="n">lineno</span><span class="o">=</span><span class="n">func</span><span class="o">.</span><span class="n">func_code</span><span class="o">.</span><span class="n">co_firstlineno</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">new_func</span></div>
 </pre></div>
 
            </div>
@@ -235,7 +263,7 @@
   <div role="contentinfo">
     <p>
         &copy; Copyright Jaan Tollander de Balsch.
-      Last updated on 2017-05-18.
+      Last updated on 2017-05-31.
 
     </p>
   </div>
@@ -257,7 +285,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'legacy+303.g1e68f25.dirty',
+            VERSION:'legacy+318.gb8d04f6.dirty',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

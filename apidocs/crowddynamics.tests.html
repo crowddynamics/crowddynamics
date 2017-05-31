@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>crowddynamics.tests package &mdash; crowddynamics legacy+303.g1e68f25.dirty documentation</title>
+  <title>crowddynamics.tests package &mdash; crowddynamics legacy+318.gb8d04f6.dirty documentation</title>
   
 
   
@@ -37,10 +37,9 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="crowddynamics legacy+303.g1e68f25.dirty documentation" href="../index.html"/>
+    <link rel="top" title="crowddynamics legacy+318.gb8d04f6.dirty documentation" href="../index.html"/>
         <link rel="up" title="crowddynamics package" href="crowddynamics.html"/>
-        <link rel="next" title="crowddynamics.visualization package" href="crowddynamics.visualization.html"/>
-        <link rel="prev" title="crowddynamics.simulation package" href="crowddynamics.simulation.html"/> 
+        <link rel="prev" title="crowddynamics.simulation.tests package" href="crowddynamics.simulation.tests.html"/> 
 
   
   <script src="../_static/js/modernizr.min.js"></script>
@@ -72,7 +71,7 @@
             
             
               <div class="version">
-                legacy+303legacy+303.g1e68f25.dirtyg1e68f25
+                legacy+318legacy+318.gb8d04f6.dirtygb8d04f6
               </div>
             
           
@@ -105,6 +104,7 @@
 </ul>
 <p class="caption"><span class="caption-text">Crowddynamics</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../architecture.html">Architecture</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../multiagent.html">Multi-Agent Simulation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../interactions.html">Interactions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../motion.html">Motion</a></li>
@@ -121,6 +121,7 @@
 <li class="toctree-l1 current"><a class="reference internal" href="crowddynamics.html">crowddynamics package</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="crowddynamics.html#subpackages">Subpackages</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="crowddynamics.core.html">crowddynamics.core package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="crowddynamics.examples.html">crowddynamics.examples package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="crowddynamics.simulation.html">crowddynamics.simulation package</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">crowddynamics.tests package</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#submodules">Submodules</a></li>
@@ -128,24 +129,26 @@
 <li class="toctree-l4"><a class="reference internal" href="#module-crowddynamics.tests.test_io">crowddynamics.tests.test_io module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-crowddynamics.tests.test_plot">crowddynamics.tests.test_plot module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-crowddynamics.tests.test_testing">crowddynamics.tests.test_testing module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-crowddynamics.tests.test_traits">crowddynamics.tests.test_traits module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-crowddynamics.tests">Module contents</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="crowddynamics.visualization.html">crowddynamics.visualization package</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="crowddynamics.html#submodules">Submodules</a></li>
 <li class="toctree-l2"><a class="reference internal" href="crowddynamics.html#module-crowddynamics.cli">crowddynamics.cli module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="crowddynamics.html#module-crowddynamics.config">crowddynamics.config module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.html#module-crowddynamics.conftest">crowddynamics.conftest module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="crowddynamics.html#module-crowddynamics.exceptions">crowddynamics.exceptions module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="crowddynamics.html#module-crowddynamics.io">crowddynamics.io module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="crowddynamics.html#module-crowddynamics.logging">crowddynamics.logging module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="crowddynamics.html#module-crowddynamics.parse">crowddynamics.parse module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="crowddynamics.html#module-crowddynamics.testing">crowddynamics.testing module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.html#module-crowddynamics.traits">crowddynamics.traits module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.html#module-crowddynamics.utils">crowddynamics.utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.html#module-crowddynamics.visualizations">crowddynamics.visualizations module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="crowddynamics.html#module-crowddynamics">Module contents</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../apidocs_examples/examples.html">examples package</a></li>
 </ul>
 
             
@@ -248,8 +251,92 @@
 <div class="section" id="module-crowddynamics.tests.test_testing">
 <span id="crowddynamics-tests-test-testing-module"></span><h2>crowddynamics.tests.test_testing module<a class="headerlink" href="#module-crowddynamics.tests.test_testing" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
-<dt id="crowddynamics.tests.test_testing.test_strategies">
-<code class="descclassname">crowddynamics.tests.test_testing.</code><code class="descname">test_strategies</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/tests/test_testing.html#test_strategies"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.tests.test_testing.test_strategies" title="Permalink to this definition">¶</a></dt>
+<dt id="crowddynamics.tests.test_testing.test_agents">
+<code class="descclassname">crowddynamics.tests.test_testing.</code><code class="descname">test_agents</code><span class="sig-paren">(</span><em>agent_type</em>, <em>attributes</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/tests/test_testing.html#test_agents"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.tests.test_testing.test_agents" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="crowddynamics.tests.test_testing.test_linestring">
+<code class="descclassname">crowddynamics.tests.test_testing.</code><code class="descname">test_linestring</code><span class="sig-paren">(</span><em>num_verts</em>, <em>closed</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/tests/test_testing.html#test_linestring"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.tests.test_testing.test_linestring" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="crowddynamics.tests.test_testing.test_obstacles">
+<code class="descclassname">crowddynamics.tests.test_testing.</code><code class="descname">test_obstacles</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/tests/test_testing.html#test_obstacles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.tests.test_testing.test_obstacles" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="crowddynamics.tests.test_testing.test_points">
+<code class="descclassname">crowddynamics.tests.test_testing.</code><code class="descname">test_points</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/tests/test_testing.html#test_points"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.tests.test_testing.test_points" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="crowddynamics.tests.test_testing.test_polygons">
+<code class="descclassname">crowddynamics.tests.test_testing.</code><code class="descname">test_polygons</code><span class="sig-paren">(</span><em>num_verts</em>, <em>has_holes</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/tests/test_testing.html#test_polygons"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.tests.test_testing.test_polygons" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="crowddynamics.tests.test_testing.test_reals">
+<code class="descclassname">crowddynamics.tests.test_testing.</code><code class="descname">test_reals</code><span class="sig-paren">(</span><em>exclude_zero</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/tests/test_testing.html#test_reals"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.tests.test_testing.test_reals" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="crowddynamics.tests.test_testing.test_unit_vectors">
+<code class="descclassname">crowddynamics.tests.test_testing.</code><code class="descname">test_unit_vectors</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/tests/test_testing.html#test_unit_vectors"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.tests.test_testing.test_unit_vectors" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-crowddynamics.tests.test_traits">
+<span id="crowddynamics-tests-test-traits-module"></span><h2>crowddynamics.tests.test_traits module<a class="headerlink" href="#module-crowddynamics.tests.test_traits" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="crowddynamics.tests.test_traits.Traits">
+<em class="property">class </em><code class="descclassname">crowddynamics.tests.test_traits.</code><code class="descname">Traits</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/tests/test_traits.html#Traits"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.tests.test_traits.Traits" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">traitlets.traitlets.HasTraits</span></code></p>
+<dl class="attribute">
+<dt id="crowddynamics.tests.test_traits.Traits.array">
+<code class="descname">array</code><a class="headerlink" href="#crowddynamics.tests.test_traits.Traits.array" title="Permalink to this definition">¶</a></dt>
+<dd><p>A numpy array trait type.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.tests.test_traits.Traits.bool">
+<code class="descname">bool</code><a class="headerlink" href="#crowddynamics.tests.test_traits.Traits.bool" title="Permalink to this definition">¶</a></dt>
+<dd><p>A boolean (True, False) trait.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.tests.test_traits.Traits.complex">
+<code class="descname">complex</code><a class="headerlink" href="#crowddynamics.tests.test_traits.Traits.complex" title="Permalink to this definition">¶</a></dt>
+<dd><p>A trait for complex numbers.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.tests.test_traits.Traits.float">
+<code class="descname">float</code><a class="headerlink" href="#crowddynamics.tests.test_traits.Traits.float" title="Permalink to this definition">¶</a></dt>
+<dd><p>A float trait.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.tests.test_traits.Traits.int">
+<code class="descname">int</code><a class="headerlink" href="#crowddynamics.tests.test_traits.Traits.int" title="Permalink to this definition">¶</a></dt>
+<dd><p>An int trait.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="crowddynamics.tests.test_traits.test_length_validator">
+<code class="descclassname">crowddynamics.tests.test_traits.</code><code class="descname">test_length_validator</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/tests/test_traits.html#test_length_validator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.tests.test_traits.test_length_validator" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="crowddynamics.tests.test_traits.test_shape_validator">
+<code class="descclassname">crowddynamics.tests.test_traits.</code><code class="descname">test_shape_validator</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/tests/test_traits.html#test_shape_validator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.tests.test_traits.test_shape_validator" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="crowddynamics.tests.test_traits.test_trait_to_primitive_dtype">
+<code class="descclassname">crowddynamics.tests.test_traits.</code><code class="descname">test_trait_to_primitive_dtype</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/tests/test_traits.html#test_trait_to_primitive_dtype"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.tests.test_traits.test_trait_to_primitive_dtype" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </div>
@@ -268,10 +355,8 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="crowddynamics.visualization.html" class="btn btn-neutral float-right" title="crowddynamics.visualization package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
-      
-        <a href="crowddynamics.simulation.html" class="btn btn-neutral" title="crowddynamics.simulation package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="crowddynamics.simulation.tests.html" class="btn btn-neutral" title="crowddynamics.simulation.tests package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -281,7 +366,7 @@
   <div role="contentinfo">
     <p>
         &copy; Copyright Jaan Tollander de Balsch.
-      Last updated on 2017-05-18.
+      Last updated on 2017-05-31.
 
     </p>
   </div>
@@ -303,7 +388,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'legacy+303.g1e68f25.dirty',
+            VERSION:'legacy+318.gb8d04f6.dirty',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

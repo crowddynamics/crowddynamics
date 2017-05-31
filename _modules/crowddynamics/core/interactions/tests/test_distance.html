@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>crowddynamics.core.interactions.tests.test_distance &mdash; crowddynamics legacy+303.g1e68f25.dirty documentation</title>
+  <title>crowddynamics.core.interactions.tests.test_distance &mdash; crowddynamics legacy+318.gb8d04f6.dirty documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../../../../genindex.html"/>
         <link rel="search" title="Search" href="../../../../../search.html"/>
-    <link rel="top" title="crowddynamics legacy+303.g1e68f25.dirty documentation" href="../../../../../index.html"/>
+    <link rel="top" title="crowddynamics legacy+318.gb8d04f6.dirty documentation" href="../../../../../index.html"/>
         <link rel="up" title="Module code" href="../../../../index.html"/> 
 
   
@@ -70,7 +70,7 @@
             
             
               <div class="version">
-                legacy+303legacy+303.g1e68f25.dirtyg1e68f25
+                legacy+318legacy+318.gb8d04f6.dirtygb8d04f6
               </div>
             
           
@@ -103,6 +103,7 @@
 </ul>
 <p class="caption"><span class="caption-text">Crowddynamics</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../architecture.html">Architecture</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../multiagent.html">Multi-Agent Simulation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../interactions.html">Interactions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../motion.html">Motion</a></li>
@@ -117,7 +118,6 @@
 <p class="caption"><span class="caption-text">Api</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../apidocs/crowddynamics.html">crowddynamics package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../apidocs_examples/examples.html">examples package</a></li>
 </ul>
 
             
@@ -186,15 +186,15 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">hypothesis</span> <span class="k">import</span> <span class="n">given</span>
 
-<span class="kn">from</span> <span class="nn">crowddynamics.testing</span> <span class="k">import</span> <span class="n">real</span>
+<span class="kn">from</span> <span class="nn">crowddynamics.testing</span> <span class="k">import</span> <span class="n">reals</span>
 <span class="kn">from</span> <span class="nn">crowddynamics.core.interactions.distance</span> <span class="k">import</span> <span class="n">distance_circles</span><span class="p">,</span> \
     <span class="n">distance_three_circles</span><span class="p">,</span> <span class="n">distance_circle_line</span><span class="p">,</span> <span class="n">distance_three_circle_line</span>
 
 
-<span class="nd">@given</span><span class="p">(</span><span class="n">x0</span><span class="o">=</span><span class="n">real</span><span class="p">(</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span>
-       <span class="n">r0</span><span class="o">=</span><span class="n">real</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span>
-       <span class="n">x1</span><span class="o">=</span><span class="n">real</span><span class="p">(</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span>
-       <span class="n">r1</span><span class="o">=</span><span class="n">real</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">))</span>
+<span class="nd">@given</span><span class="p">(</span><span class="n">x0</span><span class="o">=</span><span class="n">reals</span><span class="p">(</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span>
+       <span class="n">r0</span><span class="o">=</span><span class="n">reals</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span>
+       <span class="n">x1</span><span class="o">=</span><span class="n">reals</span><span class="p">(</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span>
+       <span class="n">r1</span><span class="o">=</span><span class="n">reals</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">))</span>
 <div class="viewcode-block" id="test_distance_circle_circle"><a class="viewcode-back" href="../../../../../apidocs/crowddynamics.core.interactions.tests.html#crowddynamics.core.interactions.tests.test_distance.test_distance_circle_circle">[docs]</a><span class="k">def</span> <span class="nf">test_distance_circle_circle</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">r0</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">r1</span><span class="p">):</span>
     <span class="n">h</span><span class="p">,</span> <span class="n">n</span> <span class="o">=</span> <span class="n">distance_circles</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">r0</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">r1</span><span class="p">)</span>
     <span class="n">x</span> <span class="o">=</span> <span class="n">x0</span> <span class="o">-</span> <span class="n">x1</span>
@@ -207,10 +207,10 @@
     <span class="k">assert</span> <span class="n">h</span> <span class="o">&gt;=</span> <span class="o">-</span><span class="n">r_tot</span></div>
 
 
-<span class="nd">@given</span><span class="p">(</span><span class="n">x0</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">tuples</span><span class="p">(</span><span class="o">*</span><span class="mi">3</span> <span class="o">*</span> <span class="p">[</span><span class="n">real</span><span class="p">(</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="mi">2</span><span class="p">)]),</span>
-       <span class="n">r0</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">tuples</span><span class="p">(</span><span class="o">*</span><span class="mi">3</span> <span class="o">*</span> <span class="p">[</span><span class="n">real</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)]),</span>
-       <span class="n">x1</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">tuples</span><span class="p">(</span><span class="o">*</span><span class="mi">3</span> <span class="o">*</span> <span class="p">[</span><span class="n">real</span><span class="p">(</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="mi">2</span><span class="p">)]),</span>
-       <span class="n">r1</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">tuples</span><span class="p">(</span><span class="o">*</span><span class="mi">3</span> <span class="o">*</span> <span class="p">[</span><span class="n">real</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)]))</span>
+<span class="nd">@given</span><span class="p">(</span><span class="n">x0</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">tuples</span><span class="p">(</span><span class="o">*</span><span class="mi">3</span> <span class="o">*</span> <span class="p">[</span><span class="n">reals</span><span class="p">(</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="mi">2</span><span class="p">)]),</span>
+       <span class="n">r0</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">tuples</span><span class="p">(</span><span class="o">*</span><span class="mi">3</span> <span class="o">*</span> <span class="p">[</span><span class="n">reals</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)]),</span>
+       <span class="n">x1</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">tuples</span><span class="p">(</span><span class="o">*</span><span class="mi">3</span> <span class="o">*</span> <span class="p">[</span><span class="n">reals</span><span class="p">(</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="mi">2</span><span class="p">)]),</span>
+       <span class="n">r1</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">tuples</span><span class="p">(</span><span class="o">*</span><span class="mi">3</span> <span class="o">*</span> <span class="p">[</span><span class="n">reals</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)]))</span>
 <div class="viewcode-block" id="test_distance_three_circle"><a class="viewcode-back" href="../../../../../apidocs/crowddynamics.core.interactions.tests.html#crowddynamics.core.interactions.tests.test_distance.test_distance_three_circle">[docs]</a><span class="k">def</span> <span class="nf">test_distance_three_circle</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">r0</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">r1</span><span class="p">):</span>
     <span class="n">h</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">r_moment0</span><span class="p">,</span> <span class="n">r_moment1</span> <span class="o">=</span> <span class="n">distance_three_circles</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">r0</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">r1</span><span class="p">)</span>
 
@@ -223,10 +223,10 @@
     <span class="k">assert</span> <span class="n">r_moment1</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">type</span> <span class="ow">is</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span></div>
 
 
-<span class="nd">@given</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">real</span><span class="p">(</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span>
-       <span class="n">r</span><span class="o">=</span><span class="n">real</span><span class="p">(</span><span class="n">min_value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_value</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
-       <span class="n">p0</span><span class="o">=</span><span class="n">real</span><span class="p">(</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span>
-       <span class="n">p1</span><span class="o">=</span><span class="n">real</span><span class="p">(</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span>
+<span class="nd">@given</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">reals</span><span class="p">(</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span>
+       <span class="n">r</span><span class="o">=</span><span class="n">reals</span><span class="p">(</span><span class="n">min_value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_value</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+       <span class="n">p0</span><span class="o">=</span><span class="n">reals</span><span class="p">(</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span>
+       <span class="n">p1</span><span class="o">=</span><span class="n">reals</span><span class="p">(</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span>
 <div class="viewcode-block" id="test_distance_circle_line"><a class="viewcode-back" href="../../../../../apidocs/crowddynamics.core.interactions.tests.html#crowddynamics.core.interactions.tests.test_distance.test_distance_circle_line">[docs]</a><span class="k">def</span> <span class="nf">test_distance_circle_line</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">p0</span><span class="p">,</span> <span class="n">p1</span><span class="p">):</span>
     <span class="n">h</span><span class="p">,</span> <span class="n">n</span> <span class="o">=</span> <span class="n">distance_circle_line</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">p0</span><span class="p">,</span> <span class="n">p1</span><span class="p">)</span>
     <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="nb">float</span><span class="p">)</span>
@@ -234,10 +234,10 @@
     <span class="k">assert</span> <span class="n">n</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">type</span> <span class="ow">is</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span></div>
 
 
-<span class="nd">@given</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">tuples</span><span class="p">(</span><span class="o">*</span><span class="mi">3</span> <span class="o">*</span> <span class="p">[</span><span class="n">real</span><span class="p">(</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="mi">2</span><span class="p">)]),</span>
-       <span class="n">r</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">tuples</span><span class="p">(</span><span class="o">*</span><span class="mi">3</span> <span class="o">*</span> <span class="p">[</span><span class="n">real</span><span class="p">(</span><span class="n">min_value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_value</span><span class="o">=</span><span class="mi">1</span><span class="p">)]),</span>
-       <span class="n">p0</span><span class="o">=</span><span class="n">real</span><span class="p">(</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span>
-       <span class="n">p1</span><span class="o">=</span><span class="n">real</span><span class="p">(</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span>
+<span class="nd">@given</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">tuples</span><span class="p">(</span><span class="o">*</span><span class="mi">3</span> <span class="o">*</span> <span class="p">[</span><span class="n">reals</span><span class="p">(</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="mi">2</span><span class="p">)]),</span>
+       <span class="n">r</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">tuples</span><span class="p">(</span><span class="o">*</span><span class="mi">3</span> <span class="o">*</span> <span class="p">[</span><span class="n">reals</span><span class="p">(</span><span class="n">min_value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_value</span><span class="o">=</span><span class="mi">1</span><span class="p">)]),</span>
+       <span class="n">p0</span><span class="o">=</span><span class="n">reals</span><span class="p">(</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span>
+       <span class="n">p1</span><span class="o">=</span><span class="n">reals</span><span class="p">(</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span>
 <div class="viewcode-block" id="test_distance_three_circle_line"><a class="viewcode-back" href="../../../../../apidocs/crowddynamics.core.interactions.tests.html#crowddynamics.core.interactions.tests.test_distance.test_distance_three_circle_line">[docs]</a><span class="k">def</span> <span class="nf">test_distance_three_circle_line</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">p0</span><span class="p">,</span> <span class="n">p1</span><span class="p">):</span>
     <span class="n">h</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">r_moment</span> <span class="o">=</span> <span class="n">distance_three_circle_line</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">p0</span><span class="p">,</span> <span class="n">p1</span><span class="p">)</span>
     <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="nb">float</span><span class="p">)</span>
@@ -260,7 +260,7 @@
   <div role="contentinfo">
     <p>
         &copy; Copyright Jaan Tollander de Balsch.
-      Last updated on 2017-05-18.
+      Last updated on 2017-05-31.
 
     </p>
   </div>
@@ -282,7 +282,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../../../',
-            VERSION:'legacy+303.g1e68f25.dirty',
+            VERSION:'legacy+318.gb8d04f6.dirty',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

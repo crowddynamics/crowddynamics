@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Motion &mdash; crowddynamics legacy+303.g1e68f25.dirty documentation</title>
+  <title>Motion &mdash; crowddynamics legacy+318.gb8d04f6.dirty documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="crowddynamics legacy+303.g1e68f25.dirty documentation" href="index.html"/>
+    <link rel="top" title="crowddynamics legacy+318.gb8d04f6.dirty documentation" href="index.html"/>
         <link rel="next" title="Steering" href="steering.html"/>
         <link rel="prev" title="Interactions" href="interactions.html"/> 
 
@@ -71,7 +71,7 @@
             
             
               <div class="version">
-                legacy+303legacy+303.g1e68f25.dirtyg1e68f25
+                legacy+318legacy+318.gb8d04f6.dirtygb8d04f6
               </div>
             
           
@@ -104,6 +104,7 @@
 </ul>
 <p class="caption"><span class="caption-text">Crowddynamics</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="architecture.html">Architecture</a></li>
 <li class="toctree-l1"><a class="reference internal" href="multiagent.html">Multi-Agent Simulation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="interactions.html">Interactions</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Motion</a><ul>
@@ -125,7 +126,6 @@
 <p class="caption"><span class="caption-text">Api</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="apidocs/crowddynamics.html">crowddynamics package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="apidocs_examples/examples.html">examples package</a></li>
 </ul>
 
             
@@ -277,183 +277,15 @@ colliding and social force is <span class="math">\(\mathbf{0}\)</span>.</p>
 \draw[color=gray!60, dashed] (c1) -- node[below] {$h$} (c2);
 \draw[thick, -&gt;] (c1) -- node[below] {$r_i$} ++(14:1);
 \draw[thick, -&gt;] (c2) -- node[below] {$r_j$} ++(194:1);" /></p>
-</div><dl class="attribute">
-<dt>
-<code class="descclassname">crowddynamics.core.motion.power_law.</code><code class="descname">magnitude</code><a class="reference internal" href="_modules/crowddynamics/core/motion/power_law.html#magnitude"><span class="viewcode-link">[source]</span></a></dt>
-<dd><p>Magnitude of social force.</p>
-<div class="math">
-\[\left(\frac{1}{\tau^{2}}\right) \left(\frac{2}{\tau} + \frac{1}{\tau_{0}}\right) \exp\left (-\frac{\tau}{\tau_{0}}\right )\]</div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>tau</strong> (<em>float</em>) &#8211; Time-to-collision <span class="math">\(\tau &gt; 0\)</span> is obtained by linearly extrapolating
-current trajectories and finding where or if agents collide i.e
-skin-to-skin distance <span class="math">\(h\)</span> equals zero.</li>
-<li><strong>tau_0</strong> (<em>float</em>) &#8211; Interaction time horizon <span class="math">\(\tau_{0} &gt; 0\)</span>.</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Magnitude</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">float</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="attribute">
-<dt>
-<code class="descclassname">crowddynamics.core.motion.power_law.</code><code class="descname">gradient_circle_circle</code><a class="reference internal" href="_modules/crowddynamics/core/motion/power_law.html#gradient_circle_circle"><span class="viewcode-link">[source]</span></a></dt>
-<dd><p>Gradient of <span class="math">\(\tau\)</span> between two circles.</p>
-<div class="math">
-\[\nabla_{\tilde{\mathbf{x}}} \tau\]</div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>x_rel</strong> (<em>numpy.ndarray</em>) &#8211; Relative position of the centers of mass.
-<span class="math">\(\tilde{x} = x_i - x_j\)</span></li>
-<li><strong>v_rel</strong> (<em>numpy.ndarray</em>) &#8211; Relative velocity between two agents.
-<span class="math">\(\tilde{v} = v_i - v_j\)</span></li>
-<li><strong>a</strong> (<em>float</em>) &#8211; </li>
-<li><strong>b</strong> (<em>float</em>) &#8211; </li>
-<li><strong>d</strong> (<em>float</em>) &#8211; </li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"></p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy.ndarray</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="attribute">
-<dt>
-<code class="descclassname">crowddynamics.core.motion.power_law.</code><code class="descname">gradient_three_circle</code><a class="reference internal" href="_modules/crowddynamics/core/motion/power_law.html#gradient_three_circle"><span class="viewcode-link">[source]</span></a></dt>
-<dd><p>Gradient of <span class="math">\(\tau\)</span> between two three-circle representations.</p>
-<div class="math">
-\[\nabla_{\tilde{\mathbf{x}}} \tau\]</div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>x_rel</strong> (<em>numpy.ndarray</em>) &#8211; </li>
-<li><strong>v_rel</strong> (<em>numpy.ndarray</em>) &#8211; </li>
-<li><strong>r_off</strong> (<em>numpy.ndarray</em>) &#8211; </li>
-<li><strong>a</strong> (<em>float</em>) &#8211; </li>
-<li><strong>b</strong> (<em>float</em>) &#8211; </li>
-<li><strong>d</strong> (<em>float</em>) &#8211; </li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"></p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy.ndarray</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="attribute">
-<dt>
-<code class="descclassname">crowddynamics.core.motion.power_law.</code><code class="descname">force_social_circular</code><a class="reference internal" href="_modules/crowddynamics/core/motion/power_law.html#force_social_circular"><span class="viewcode-link">[source]</span></a></dt>
-<dd><p>Social force based on human anticipatory behaviour.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>agent</strong> (<em>numpy.ndarray</em>) &#8211; </li>
-<li><strong>i</strong> (<em>int</em>) &#8211; </li>
-<li><strong>j</strong> (<em>int</em>) &#8211; </li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"></p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(numpy.ndarray, numpy.ndarray)</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="attribute">
-<dt>
-<code class="descclassname">crowddynamics.core.motion.power_law.</code><code class="descname">force_social_three_circle</code><a class="reference internal" href="_modules/crowddynamics/core/motion/power_law.html#force_social_three_circle"><span class="viewcode-link">[source]</span></a></dt>
-<dd><p>Social force based on human anticipatory behaviour.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>agent</strong> (<em>numpy.ndarray</em>) &#8211; </li>
-<li><strong>i</strong> (<em>int</em>) &#8211; </li>
-<li><strong>j</strong> (<em>int</em>) &#8211; </li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"></p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(numpy.ndarray, numpy.ndarray)</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</div>
+</div></div>
 <div class="section" id="contact">
 <h2>Contact<a class="headerlink" href="#contact" title="Permalink to this headline">¶</a></h2>
 <p>Physical contact with other objects.</p>
 </div>
-<dl class="class">
+<dl class="attribute">
 <dt>
-<em class="property">class </em><code class="descclassname">crowddynamics.core.motion.contact.</code><code class="descname">force_contact</code><a class="reference internal" href="_modules/crowddynamics/core/motion/contact.html#force_contact"><span class="viewcode-link">[source]</span></a></dt>
-<dd><p>Physical contact force with damping. Helbing&#8217;s original model did not
-include damping, which was added by Langston.</p>
-<div class="math">
-\[\mathbf{f}^{c}(h) = - h \cdot \left(\mu \cdot \hat{\mathbf{n}} -
-\kappa \cdot (\mathbf{v} \cdot \hat{\mathbf{t}}) \hat{\mathbf{t}}\right) +
-c \cdot (\mathbf{v} \cdot \hat{\mathbf{n}}) \hat{\mathbf{n}}\]</div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>h</strong> (<em>float</em>) &#8211; Skin-to-skin distance <span class="math">\(h\)</span> between agents</li>
-<li><strong>n</strong> (<em>numpy.ndarray</em>) &#8211; Normal vector <span class="math">\(\mathbf{\hat{n}}\)</span></li>
-<li><strong>v</strong> (<em>numpy.ndarray</em>) &#8211; Velocity vector <span class="math">\(\mathbf{v}\)</span></li>
-<li><strong>t</strong> (<em>numpy.ndarray</em>) &#8211; Tangent vector <span class="math">\(\mathbf{\hat{t}}\)</span></li>
-<li><strong>mu</strong> (<em>float</em>) &#8211; Constant <span class="math">\(\mu = 1.2 \cdot 10^{5}\,\mathrm{kg\,s^{-2}}\)</span></li>
-<li><strong>kappa</strong> (<em>float</em>) &#8211; Constant <span class="math">\(\kappa = 4.0 \cdot 10^{4}\,\mathrm{kg\,m^{-1}s^{-1}}\)</span></li>
-<li><strong>damping</strong> (<em>float</em>) &#8211; Constant <span class="math">\(c = 500 \,\mathrm{N}\)</span></li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Contact force vector</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy.ndarray</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
+<code class="descclassname">crowddynamics.core.motion.contact.</code><code class="descname">force_contact</code></dt>
+<dd></dd></dl>
 
 <div class="section" id="fluctuation">
 <h2>Fluctuation<a class="headerlink" href="#fluctuation" title="Permalink to this headline">¶</a></h2>
@@ -526,80 +358,15 @@ truncated normal distribution.</p>
 <p>Adjusting motion account for agents desire to move and rotate towards their
 desired goal.</p>
 </div>
-<dl class="class">
+<dl class="attribute">
 <dt>
-<em class="property">class </em><code class="descclassname">crowddynamics.core.motion.adjusting.</code><code class="descname">force_adjust</code><a class="reference internal" href="_modules/crowddynamics/core/motion/adjusting.html#force_adjust"><span class="viewcode-link">[source]</span></a></dt>
-<dd><p><em>Adjusting</em> aka <em>driving</em> force accounts of agent&#8217;s desire to reach a
-certain destination. In high crowd densities term <em>manoeuvring</em> is used.
-Force affecting the agent takes form</p>
-<div class="math">
-\[\mathbf{f}_{adj} = \frac{m}{\tau_{adj}} (v_{0} \mathbf{\hat{e}_{0}} - \mathbf{v}),\]</div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>mass</strong> (<em>float</em>) &#8211; Mass <span class="math">\(m\)</span></li>
-<li><strong>tau_adj</strong> (<em>float</em>) &#8211; Characteristic time <span class="math">\(\tau_{adj}\)</span> time for agent to adjust it
-movement. Value <span class="math">\(0.5\)</span> is often used, but for example impatient
-agent that tend to push other agent more this value can be reduced.</li>
-<li><strong>v0</strong> (<em>float</em>) &#8211; Target velocity <span class="math">\(v_{0}\)</span> is usually <em>average walking speed</em> for
-agent in its current situation.</li>
-<li><strong>e0</strong> (<em>numpy.ndarray</em>) &#8211; Target direction <span class="math">\(\mathbf{\hat{e}_{0}}\)</span> is solved by
-<em>navigation</em> or <em>path planning</em> algorithm. More details in the
-navigation section.</li>
-<li><strong>v</strong> (<em>numpy.ndarray</em>) &#8211; Velocity <span class="math">\(\mathbf{v}\)</span></li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Adjusting force vector <span class="math">\(\mathbf{f}_{adj}\)</span></p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy.ndarray</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
+<code class="descclassname">crowddynamics.core.motion.adjusting.</code><code class="descname">force_adjust</code></dt>
+<dd></dd></dl>
 
-<dl class="class">
+<dl class="attribute">
 <dt>
-<em class="property">class </em><code class="descclassname">crowddynamics.core.motion.adjusting.</code><code class="descname">torque_adjust</code><a class="reference internal" href="_modules/crowddynamics/core/motion/adjusting.html#torque_adjust"><span class="viewcode-link">[source]</span></a></dt>
-<dd><p>Adjusting torque accounts for agent&#8217;s desire to rotate it orientation.</p>
-<div class="math">
-\[M_{adj} = \frac{I_{rot}}{\tau_{rot}} \left( \omega_{0} \left (
-          \frac{\varphi - \varphi_{0}}{\pi} \right ) - \omega\right),\]</div>
-<p>Angular difference <span class="math">\(\varphi - \varphi_{0}\)</span> is wrapped between interval
-<span class="math">\([-\pi, \pi]\)</span> so that division by <span class="math">\(\pi\)</span> returns value between
-<span class="math">\([-1, 1]\)</span>. This gives direction and magnitude for the torque.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>inertia_rot</strong> (<em>float</em>) &#8211; Rotational inertia <span class="math">\(I_{rot}\)</span></li>
-<li><strong>tau_rot</strong> (<em>float</em>) &#8211; Characteristic time <span class="math">\(\tau_{rot}\)</span> time for agent to adjust it
-orientation.</li>
-<li><strong>phi_0</strong> (<em>float</em>) &#8211; Target orientation <span class="math">\(\varphi_{0}\)</span>. In low and medium crowd
-densities the angle of the target direction can be sufficient for
-target orientation. In high crowd densities agents may twist their
-body differently for example to try to squeeze through narrow
-spaces, requiring more sophisticated algorithms.</li>
-<li><strong>phi</strong> (<em>float</em>) &#8211; Current orientation <span class="math">\(\varphi\)</span></li>
-<li><strong>omega_0</strong> (<em>float</em>) &#8211; Maximum angular velocity <span class="math">\(\omega_{0}\)</span>.</li>
-<li><strong>omega</strong> (<em>float</em>) &#8211; Angular velocity <span class="math">\(\omega\)</span></li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Adjusting torque scalar <span class="math">\(M_{adj}\)</span></p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">float</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
+<code class="descclassname">crowddynamics.core.motion.adjusting.</code><code class="descname">torque_adjust</code></dt>
+<dd></dd></dl>
 
 </div>
 
@@ -626,7 +393,7 @@ spaces, requiring more sophisticated algorithms.</li>
   <div role="contentinfo">
     <p>
         &copy; Copyright Jaan Tollander de Balsch.
-      Last updated on 2017-05-18.
+      Last updated on 2017-05-31.
 
     </p>
   </div>
@@ -648,7 +415,7 @@ spaces, requiring more sophisticated algorithms.</li>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'legacy+303.g1e68f25.dirty',
+            VERSION:'legacy+318.gb8d04f6.dirty',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

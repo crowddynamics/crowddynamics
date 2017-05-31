@@ -1,0 +1,921 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>crowddynamics.simulation.agents &mdash; crowddynamics legacy+318.gb8d04f6.dirty documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../../genindex.html"/>
+        <link rel="search" title="Search" href="../../../search.html"/>
+    <link rel="top" title="crowddynamics legacy+318.gb8d04f6.dirty documentation" href="../../../index.html"/>
+        <link rel="up" title="Module code" href="../../index.html"/> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> crowddynamics
+          
+
+          
+            
+            <img src="../../../_static/logo.svg" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                legacy+318legacy+318.gb8d04f6.dirtygb8d04f6
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">General</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../developing.html">Developing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../resources.html">Resources</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Crowddynamics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../architecture.html">Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../multiagent.html">Multi-Agent Simulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../interactions.html">Interactions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../motion.html">Motion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../steering.html">Steering</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quantities.html">Quantities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../evacuation.html">Evacuation</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Research</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../phenomena.html">Phenomena</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Api</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../apidocs/crowddynamics.html">crowddynamics package</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">crowddynamics</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>crowddynamics.simulation.agents</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for crowddynamics.simulation.agents</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Collection</span><span class="p">,</span> <span class="n">Generator</span>
+
+<span class="kn">import</span> <span class="nn">numba</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">configobj</span> <span class="k">import</span> <span class="n">ConfigObj</span>
+<span class="kn">from</span> <span class="nn">numba</span> <span class="k">import</span> <span class="n">typeof</span><span class="p">,</span> <span class="n">void</span><span class="p">,</span> <span class="n">boolean</span><span class="p">,</span> <span class="n">float64</span>
+<span class="kn">from</span> <span class="nn">numba.types</span> <span class="k">import</span> <span class="n">UniTuple</span>
+<span class="kn">from</span> <span class="nn">traitlets.traitlets</span> <span class="k">import</span> <span class="n">HasTraits</span><span class="p">,</span> <span class="n">Float</span><span class="p">,</span> <span class="n">default</span><span class="p">,</span> <span class="n">Unicode</span><span class="p">,</span> \
+    <span class="n">observe</span><span class="p">,</span> <span class="n">Bool</span><span class="p">,</span> <span class="n">Int</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">Instance</span><span class="p">,</span> <span class="n">TraitError</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">List</span>
+<span class="kn">from</span> <span class="nn">traittypes</span> <span class="k">import</span> <span class="n">Array</span>
+
+<span class="kn">from</span> <span class="nn">crowddynamics.config</span> <span class="k">import</span> <span class="n">load_config</span><span class="p">,</span> <span class="n">BODY_TYPES_CFG</span><span class="p">,</span> \
+    <span class="n">BODY_TYPES_CFG_SPEC</span>
+<span class="kn">from</span> <span class="nn">crowddynamics.core.interactions.block_list</span> <span class="k">import</span> <span class="n">MutableBlockList</span>
+<span class="kn">from</span> <span class="nn">crowddynamics.core.interactions.distance</span> <span class="k">import</span> <span class="n">distance_circles</span><span class="p">,</span> \
+    <span class="n">distance_circle_line</span><span class="p">,</span> <span class="n">distance_three_circle_line</span>
+<span class="kn">from</span> <span class="nn">crowddynamics.core.interactions.distance</span> <span class="k">import</span> <span class="n">distance_three_circles</span>
+<span class="kn">from</span> <span class="nn">crowddynamics.core.rand.functions</span> <span class="k">import</span> <span class="n">truncnorm</span>
+<span class="kn">from</span> <span class="nn">crowddynamics.core.struct</span> <span class="k">import</span> <span class="n">obstacle_type_linear</span>
+<span class="kn">from</span> <span class="nn">crowddynamics.core.vector2D</span> <span class="k">import</span> <span class="n">unit_vector</span><span class="p">,</span> <span class="n">rotate270</span>
+<span class="kn">from</span> <span class="nn">crowddynamics.exceptions</span> <span class="k">import</span> <span class="n">CrowdDynamicsException</span>
+<span class="kn">from</span> <span class="nn">crowddynamics.simulation.base</span> <span class="k">import</span> <span class="n">AgentsBase</span>
+<span class="kn">from</span> <span class="nn">crowddynamics.traits</span> <span class="k">import</span> <span class="n">shape_validator</span><span class="p">,</span> <span class="n">length_validator</span><span class="p">,</span> \
+    <span class="n">table_of_traits</span><span class="p">,</span> \
+    <span class="n">class_to_struct_dtype</span>
+<span class="kn">from</span> <span class="nn">crowddynamics.utils</span> <span class="k">import</span> <span class="n">interpolate_docstring</span>
+
+
+<div class="viewcode-block" id="States"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.agents.States">[docs]</a><span class="k">class</span> <span class="nc">States</span><span class="p">(</span><span class="n">HasTraits</span><span class="p">):</span>
+    <span class="n">active</span> <span class="o">=</span> <span class="n">Bool</span><span class="p">(</span>
+        <span class="n">default_value</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Denotes if agent is currently active&#39;</span><span class="p">)</span>
+    <span class="n">target_reached</span> <span class="o">=</span> <span class="n">Bool</span><span class="p">(</span>
+        <span class="n">default_value</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Denotes if agent has reached its target&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Navigation</span>
+    <span class="n">target</span> <span class="o">=</span> <span class="n">Int</span><span class="p">(</span>
+        <span class="n">default_value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">herding</span> <span class="o">=</span> <span class="n">Bool</span><span class="p">(</span>
+        <span class="n">default_value</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Body"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.agents.Body">[docs]</a><span class="k">class</span> <span class="nc">Body</span><span class="p">(</span><span class="n">HasTraits</span><span class="p">):</span>
+    <span class="n">radius</span> <span class="o">=</span> <span class="n">Float</span><span class="p">(</span>
+        <span class="nb">min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Radius&#39;</span><span class="p">,</span>
+        <span class="n">symbol</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>
+    <span class="n">r_t</span> <span class="o">=</span> <span class="n">Float</span><span class="p">(</span>
+        <span class="nb">min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Torso radius&#39;</span><span class="p">,</span>
+        <span class="n">symbol</span><span class="o">=</span><span class="s1">&#39;r_t&#39;</span><span class="p">)</span>
+    <span class="n">r_s</span> <span class="o">=</span> <span class="n">Float</span><span class="p">(</span>
+        <span class="nb">min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Shoulder radius&#39;</span><span class="p">,</span>
+        <span class="n">symbol</span><span class="o">=</span><span class="s1">&#39;r_s&#39;</span><span class="p">)</span>
+    <span class="n">r_ts</span> <span class="o">=</span> <span class="n">Float</span><span class="p">(</span>
+        <span class="nb">min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Distance from torso to shoulder&#39;</span><span class="p">,</span>
+        <span class="n">symbol</span><span class="o">=</span><span class="s1">&#39;r_</span><span class="si">{ts}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">mass</span> <span class="o">=</span> <span class="n">Float</span><span class="p">(</span>
+        <span class="nb">min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Mass&#39;</span><span class="p">,</span>
+        <span class="n">symbol</span><span class="o">=</span><span class="s1">&#39;m&#39;</span><span class="p">)</span>
+    <span class="n">inertia_rot</span> <span class="o">=</span> <span class="n">Float</span><span class="p">(</span>
+        <span class="nb">min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Rotational moment&#39;</span><span class="p">,</span>
+        <span class="n">symbol</span><span class="o">=</span><span class="s1">&#39;I_</span><span class="si">{rot}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">target_velocity</span> <span class="o">=</span> <span class="n">Float</span><span class="p">(</span>
+        <span class="nb">min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Target velocity&#39;</span><span class="p">,</span>
+        <span class="n">symbol</span><span class="o">=</span><span class="s1">&#39;v_0&#39;</span><span class="p">)</span>
+    <span class="n">target_angular_velocity</span> <span class="o">=</span> <span class="n">Float</span><span class="p">(</span>
+        <span class="nb">min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Target angular velocity&#39;</span><span class="p">,</span>
+        <span class="n">symbol</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;\omega_0&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="BodyType"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.agents.BodyType">[docs]</a><span class="k">class</span> <span class="nc">BodyType</span><span class="p">(</span><span class="n">Body</span><span class="p">):</span>
+    <span class="n">body_type</span> <span class="o">=</span> <span class="n">Unicode</span><span class="p">(</span>
+        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Selected body type&#39;</span><span class="p">)</span>
+    <span class="n">body_types</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span>
+        <span class="n">ConfigObj</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Mapping of body type names to values&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Ratios of radii for shoulders and torso</span>
+    <span class="n">ratio_rt</span> <span class="o">=</span> <span class="n">Float</span><span class="p">(</span>
+        <span class="n">default_value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Ratio between total radius and torso radius&#39;</span><span class="p">)</span>
+    <span class="n">ratio_rs</span> <span class="o">=</span> <span class="n">Float</span><span class="p">(</span>
+        <span class="n">default_value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Ratio between total radius and shoulder radius&#39;</span><span class="p">)</span>
+    <span class="n">ratio_ts</span> <span class="o">=</span> <span class="n">Float</span><span class="p">(</span>
+        <span class="n">default_value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Ratio between total radius and distance from torso to shoulder&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Scales for settings values from truncated normal distribution</span>
+    <span class="c1"># TODO: Distributions class as instance traits</span>
+    <span class="n">radius_mean</span> <span class="o">=</span> <span class="n">Float</span><span class="p">(</span>
+        <span class="n">default_value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">radius_scale</span> <span class="o">=</span> <span class="n">Float</span><span class="p">(</span>
+        <span class="n">default_value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">target_velocity_mean</span> <span class="o">=</span> <span class="n">Float</span><span class="p">(</span>
+        <span class="n">default_value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">target_velocity_scale</span> <span class="o">=</span> <span class="n">Float</span><span class="p">(</span>
+        <span class="n">default_value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">mass_mean</span> <span class="o">=</span> <span class="n">Float</span><span class="p">(</span>
+        <span class="n">default_value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">mass_scale</span> <span class="o">=</span> <span class="n">Float</span><span class="p">(</span>
+        <span class="n">default_value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_truncnorm</span><span class="p">(</span><span class="n">mean</span><span class="p">,</span> <span class="n">abs_scale</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Individual value from truncnorm&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">asscalar</span><span class="p">(</span><span class="n">truncnorm</span><span class="p">(</span><span class="o">-</span><span class="mf">3.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="n">mean</span><span class="p">,</span> <span class="n">abs_scale</span><span class="o">=</span><span class="n">abs_scale</span><span class="p">))</span>
+
+    <span class="nd">@default</span><span class="p">(</span><span class="s1">&#39;body_types&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_default_body_types</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">load_config</span><span class="p">(</span><span class="n">BODY_TYPES_CFG</span><span class="p">,</span> <span class="n">BODY_TYPES_CFG_SPEC</span><span class="p">)</span>
+
+    <span class="nd">@observe</span><span class="p">(</span><span class="s1">&#39;body_type&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_observe_body_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">change</span><span class="p">[</span><span class="s1">&#39;old&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+            <span class="n">new</span> <span class="o">=</span> <span class="n">change</span><span class="p">[</span><span class="s1">&#39;new&#39;</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">body_types</span><span class="p">[</span><span class="n">new</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">TraitError</span><span class="p">(</span><span class="s1">&#39;Body type can only be set once.&#39;</span><span class="p">)</span>
+
+    <span class="nd">@observe</span><span class="p">(</span><span class="s1">&#39;radius_mean&#39;</span><span class="p">,</span> <span class="s1">&#39;radius_scale&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_observe_radius_truncnorm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">radius</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">radius_mean</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">radius_scale</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">radius</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_truncnorm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">radius_mean</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">radius_scale</span><span class="p">)</span>
+
+    <span class="nd">@observe</span><span class="p">(</span><span class="s1">&#39;radius&#39;</span><span class="p">,</span> <span class="s1">&#39;ratio_rt&#39;</span><span class="p">,</span> <span class="s1">&#39;ratio_rs&#39;</span><span class="p">,</span> <span class="s1">&#39;ratio_ts&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_observe_radius</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set torso radius if ratio_rt changes and radius is defined or if</span>
+<span class="sd">        radius changes and ratio_rt is defined.&quot;&quot;&quot;</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">change</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;radius&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ratio_rt</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">r_t</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ratio_rt</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">radius</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ratio_rs</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">r_s</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ratio_rs</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">radius</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ratio_ts</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">r_ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ratio_ts</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">radius</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">radius</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;ratio_rt&#39;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">r_t</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ratio_rt</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">radius</span>
+            <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;ratio_rs&#39;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">r_s</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ratio_rs</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">radius</span>
+            <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;ratio_ts&#39;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">r_ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ratio_ts</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">radius</span>
+
+    <span class="nd">@observe</span><span class="p">(</span><span class="s1">&#39;mass_mean&#39;</span><span class="p">,</span> <span class="s1">&#39;mass_scale&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_observe_mass_truncnorm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mass</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">mass_mean</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">mass_scale</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mass</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_truncnorm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mass_mean</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mass_scale</span><span class="p">)</span>
+
+    <span class="nd">@observe</span><span class="p">(</span><span class="s1">&#39;velocity_mean&#39;</span><span class="p">,</span> <span class="s1">&#39;velocity_scale&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_observe_target_velocity_truncnorm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">target_velocity</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">target_velocity_mean</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">target_velocity_scale</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">target_velocity</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_truncnorm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">target_velocity_mean</span><span class="p">,</span>
+                                                   <span class="bp">self</span><span class="o">.</span><span class="n">target_velocity_scale</span><span class="p">)</span>
+
+    <span class="nd">@observe</span><span class="p">(</span><span class="s1">&#39;mass&#39;</span><span class="p">,</span> <span class="s1">&#39;radius&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_observe_inertia_rot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">inertia_rot</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">mass</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">radius</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">inertia</span> <span class="o">=</span> <span class="mf">4.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
+            <span class="n">mass</span> <span class="o">=</span> <span class="mf">80.0</span>
+            <span class="n">radius</span> <span class="o">=</span> <span class="mf">0.27</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">inertia_rot</span> <span class="o">=</span> <span class="n">inertia</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mass</span> <span class="o">/</span> <span class="n">mass</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span>
+                                                                  <span class="bp">self</span><span class="o">.</span><span class="n">radius</span> <span class="o">/</span> <span class="n">radius</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span></div>
+
+
+<div class="viewcode-block" id="TranslationalMotion"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.agents.TranslationalMotion">[docs]</a><span class="k">class</span> <span class="nc">TranslationalMotion</span><span class="p">(</span><span class="n">HasTraits</span><span class="p">):</span>
+    <span class="n">position</span> <span class="o">=</span> <span class="n">Array</span><span class="p">(</span>
+        <span class="n">default_value</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+        <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Position&#39;</span><span class="p">,</span>
+        <span class="n">symbol</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;\mathbf</span><span class="si">{x}</span><span class="s1">&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">valid</span><span class="p">(</span><span class="n">shape_validator</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+    <span class="n">velocity</span> <span class="o">=</span> <span class="n">Array</span><span class="p">(</span>
+        <span class="n">default_value</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+        <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Velocity&#39;</span><span class="p">,</span>
+        <span class="n">symbol</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;\mathbf</span><span class="si">{v}</span><span class="s1">&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">valid</span><span class="p">(</span><span class="n">shape_validator</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+    <span class="n">target_direction</span> <span class="o">=</span> <span class="n">Array</span><span class="p">(</span>
+        <span class="n">default_value</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+        <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Target direction&#39;</span><span class="p">,</span>
+        <span class="n">symbol</span><span class="o">=</span><span class="s1">&#39;\mathbf{\hat</span><span class="si">{e}</span><span class="s1">}_0&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">valid</span><span class="p">(</span><span class="n">shape_validator</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span>
+                                           <span class="n">length_validator</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="n">force</span> <span class="o">=</span> <span class="n">Array</span><span class="p">(</span>
+        <span class="n">default_value</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+        <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Force&#39;</span><span class="p">,</span>
+        <span class="n">symbol</span><span class="o">=</span><span class="s1">&#39;\mathbf</span><span class="si">{f}</span><span class="s1">&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">valid</span><span class="p">(</span><span class="n">shape_validator</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+    <span class="n">force_prev</span> <span class="o">=</span> <span class="n">Array</span><span class="p">(</span>
+        <span class="n">default_value</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+        <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Previous force&#39;</span><span class="p">,</span>
+        <span class="n">symbol</span><span class="o">=</span><span class="s1">&#39;\mathbf</span><span class="si">{f}</span><span class="s1">_</span><span class="si">{prev}</span><span class="s1">&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">valid</span><span class="p">(</span><span class="n">shape_validator</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+
+    <span class="n">tau_adj</span> <span class="o">=</span> <span class="n">Float</span><span class="p">(</span>
+        <span class="n">default_value</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+        <span class="nb">min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Characteristic time for agent adjusting its movement&#39;</span><span class="p">,</span>
+        <span class="n">symbol</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;\tau_</span><span class="si">{adj}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">k_soc</span> <span class="o">=</span> <span class="n">Float</span><span class="p">(</span>
+        <span class="n">default_value</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span>
+        <span class="nb">min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Social force scaling constant&#39;</span><span class="p">,</span>
+        <span class="n">symbol</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;k_</span><span class="si">{soc}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">tau_0</span> <span class="o">=</span> <span class="n">Float</span><span class="p">(</span>
+        <span class="n">default_value</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span>
+        <span class="nb">min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Interaction time horizon&#39;</span><span class="p">,</span>
+        <span class="n">symbol</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;\tau_</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">mu</span> <span class="o">=</span> <span class="n">Float</span><span class="p">(</span>
+        <span class="n">default_value</span><span class="o">=</span><span class="mf">1.2e5</span><span class="p">,</span>
+        <span class="nb">min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Compression counteraction constant&#39;</span><span class="p">,</span>
+        <span class="n">symbol</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;\mu&#39;</span><span class="p">)</span>
+    <span class="n">kappa</span> <span class="o">=</span> <span class="n">Float</span><span class="p">(</span>
+        <span class="n">default_value</span><span class="o">=</span><span class="mf">4e4</span><span class="p">,</span>
+        <span class="nb">min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Sliding friction constant&#39;</span><span class="p">,</span>
+        <span class="n">symbol</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;\kappa&#39;</span><span class="p">)</span>
+    <span class="n">damping</span> <span class="o">=</span> <span class="n">Float</span><span class="p">(</span>
+        <span class="n">default_value</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
+        <span class="nb">min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Damping coefficient for contact force&#39;</span><span class="p">,</span>
+        <span class="n">symbol</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;c_</span><span class="si">{d}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">std_rand_force</span> <span class="o">=</span> <span class="n">Float</span><span class="p">(</span>
+        <span class="n">default_value</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+        <span class="nb">min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Standard deviation for fluctuation force&#39;</span><span class="p">,</span>
+        <span class="n">symbol</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;\xi / m&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="RotationalMotion"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.agents.RotationalMotion">[docs]</a><span class="k">class</span> <span class="nc">RotationalMotion</span><span class="p">(</span><span class="n">HasTraits</span><span class="p">):</span>
+    <span class="n">orientation</span> <span class="o">=</span> <span class="n">Float</span><span class="p">(</span>
+        <span class="n">default_value</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+        <span class="nb">min</span><span class="o">=-</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Orientation&#39;</span><span class="p">,</span>
+        <span class="n">symbol</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;\varphi&#39;</span><span class="p">)</span>
+    <span class="n">angular_velocity</span> <span class="o">=</span> <span class="n">Float</span><span class="p">(</span>
+        <span class="n">default_value</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Angular velocity&#39;</span><span class="p">,</span>
+        <span class="n">symbol</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;\omega&#39;</span><span class="p">)</span>
+    <span class="n">target_orientation</span> <span class="o">=</span> <span class="n">Float</span><span class="p">(</span>
+        <span class="n">default_value</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Target orientation&#39;</span><span class="p">,</span>
+        <span class="n">symbol</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;\varphi_0&#39;</span><span class="p">)</span>
+    <span class="n">torque</span> <span class="o">=</span> <span class="n">Float</span><span class="p">(</span>
+        <span class="n">default_value</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Torque&#39;</span><span class="p">,</span>
+        <span class="n">symbol</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;M&#39;</span><span class="p">)</span>
+    <span class="n">torque_prev</span> <span class="o">=</span> <span class="n">Float</span><span class="p">(</span>
+        <span class="n">default_value</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Previous torque&#39;</span><span class="p">,</span>
+        <span class="n">symbol</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;M_</span><span class="si">{prev}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="n">tau_rot</span> <span class="o">=</span> <span class="n">Float</span><span class="p">(</span>
+        <span class="n">default_value</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span>
+        <span class="nb">min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Characteristic time for agent adjusting its rotational movement&#39;</span><span class="p">,</span>
+        <span class="n">symbol</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;\tau_</span><span class="si">{adjrot}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">std_rand_torque</span> <span class="o">=</span> <span class="n">Float</span><span class="p">(</span>
+        <span class="n">default_value</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+        <span class="nb">min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Standard deviation for fluctuation torque&#39;</span><span class="p">,</span>
+        <span class="n">symbol</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;\eta / I</span><span class="si">{rot}</span><span class="s1">&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="AgentType"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.agents.AgentType">[docs]</a><span class="k">class</span> <span class="nc">AgentType</span><span class="p">(</span><span class="n">HasTraits</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Mixin for different agent types. Implements some common methods.&quot;&quot;&quot;</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="AgentType.dtype"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.agents.AgentType.dtype">[docs]</a>    <span class="k">def</span> <span class="nf">dtype</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Structured numpy.dtype for forming an array of the value of agent</span>
+<span class="sd">        type.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            numpy.dtype: Numpy structured dtype for the agent type</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">class_to_struct_dtype</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">c</span><span class="p">:</span> <span class="n">c</span> <span class="ow">is</span> <span class="n">BodyType</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">__array__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Array interface for using ``numpy.array`` on the agent type. </span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            numpy.ndarray:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">dtype</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">()</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">)</span> <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">dtype</span><span class="o">.</span><span class="n">fields</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">values</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+
+    <span class="n">array</span> <span class="o">=</span> <span class="n">__array__</span>
+
+<div class="viewcode-block" id="AgentType.overlapping"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.agents.AgentType.overlapping">[docs]</a>    <span class="k">def</span> <span class="nf">overlapping</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">others</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Determines if agent is overlapping with any of the agent supplied </span>
+<span class="sd">        in other argument.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            others: </span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+<div class="viewcode-block" id="AgentType.overlapping_obstacles"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.agents.AgentType.overlapping_obstacles">[docs]</a>    <span class="k">def</span> <span class="nf">overlapping_obstacles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obstacles</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+<div class="viewcode-block" id="AgentType.from_array"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.agents.AgentType.from_array">[docs]</a>    <span class="k">def</span> <span class="nf">from_array</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">array</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set values from array.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">array</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Array should be length 1&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">field</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">array</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">fields</span><span class="p">,</span> <span class="n">array</span><span class="o">.</span><span class="n">item</span><span class="p">()):</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span></div>
+
+
+<span class="nd">@interpolate_docstring</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="s1">&#39;table_of_traits&#39;</span><span class="p">:</span> <span class="n">table_of_traits</span><span class="p">})</span>
+<div class="viewcode-block" id="Circular"><a class="viewcode-back" href="../../../multiagent.html#crowddynamics.simulation.agents.Circular">[docs]</a><span class="k">class</span> <span class="nc">Circular</span><span class="p">(</span><span class="n">AgentType</span><span class="p">,</span> <span class="n">States</span><span class="p">,</span> <span class="n">BodyType</span><span class="p">,</span> <span class="n">TranslationalMotion</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Circular agent type</span>
+<span class="sd">    </span>
+<span class="sd">    .. tikz:: Circular agent</span>
+<span class="sd">       :include: ../docs/tikz/circular_agent.tex</span>
+
+<span class="sd">    **Circular** agents are modelled as a disk with radius :math:`r &gt; 0`</span>
+<span class="sd">    from the center of mass :math:`\mathbf{x}`. This type of agents do not</span>
+<span class="sd">    have orientation. This is the simplest model for an agent and works</span>
+<span class="sd">    quite well for sparse and medium density crowds, but modelling higher</span>
+<span class="sd">    density crowds with this model can be unrealistic because circular</span>
+<span class="sd">    model is too wide in the  perpendicular width compared to three-circle</span>
+<span class="sd">    or capsule representations  and lacks the ability change orientation to</span>
+<span class="sd">    fit through smaller spaces. [Helbing2000a]_</span>
+<span class="sd">    </span>
+<span class="sd">    %(table_of_traits)s</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="Circular.overlapping"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.agents.Circular.overlapping">[docs]</a>    <span class="k">def</span> <span class="nf">overlapping</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">others</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">overlapping_circles</span><span class="p">(</span><span class="n">others</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">position</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">radius</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Circular.overlapping_obstacles"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.agents.Circular.overlapping_obstacles">[docs]</a>    <span class="k">def</span> <span class="nf">overlapping_obstacles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obstacles</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">overlapping_circle_line</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="n">obstacles</span><span class="p">)</span></div></div>
+
+
+<span class="nd">@interpolate_docstring</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="s1">&#39;table_of_traits&#39;</span><span class="p">:</span> <span class="n">table_of_traits</span><span class="p">})</span>
+<div class="viewcode-block" id="ThreeCircle"><a class="viewcode-back" href="../../../multiagent.html#crowddynamics.simulation.agents.ThreeCircle">[docs]</a><span class="k">class</span> <span class="nc">ThreeCircle</span><span class="p">(</span><span class="n">AgentType</span><span class="p">,</span> <span class="n">States</span><span class="p">,</span> <span class="n">BodyType</span><span class="p">,</span> <span class="n">TranslationalMotion</span><span class="p">,</span>
+                  <span class="n">RotationalMotion</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Three-circle agent type</span>
+<span class="sd">    </span>
+<span class="sd">    .. tikz:: Three circle agent </span>
+<span class="sd">       :include: ../docs/tikz/three_circle_agent.tex</span>
+
+<span class="sd">    **Three-circle** agents are modelled as three disks representing the</span>
+<span class="sd">    torso and two shoulders of an average human. Torso is a disk with radius</span>
+<span class="sd">    :math:`r_t &gt; 0` from the center of mass :math:`\mathbf{x}`. Two</span>
+<span class="sd">    shoulders are disks with radius :math:`r_s` located at along the</span>
+<span class="sd">    tangents at distance :math:`r_{ts}` from the center of mass</span>
+<span class="sd">    :math:`\mathbf{x} \pm r_{ts} \mathbf{\hat{e}_t}`, where</span>
+<span class="sd">    :math:`\mathbf{\hat{e}_t} = [\sin(\varphi), -\cos(\varphi)]`. Three</span>
+<span class="sd">    circle type has orientation of :math:`\varphi`. Model was proposed </span>
+<span class="sd">    *Crowd dynamics discrete element multi-circle model* [Langston2006]_ and</span>
+<span class="sd">    has been used for example in FDS+EVAC [Korhonen2008b]_.</span>
+<span class="sd">    </span>
+<span class="sd">    %(table_of_traits)s</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">position_ls</span> <span class="o">=</span> <span class="n">Array</span><span class="p">(</span>
+        <span class="n">default_value</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+        <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span><span class="o">.</span><span class="n">valid</span><span class="p">(</span><span class="n">shape_validator</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+
+    <span class="n">position_rs</span> <span class="o">=</span> <span class="n">Array</span><span class="p">(</span>
+        <span class="n">default_value</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+        <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span><span class="o">.</span><span class="n">valid</span><span class="p">(</span><span class="n">shape_validator</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+
+    <span class="nd">@default</span><span class="p">(</span><span class="s1">&#39;position_ls&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_default_position_ls</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">position</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">r_ts</span> <span class="o">*</span> <span class="n">rotate270</span><span class="p">(</span>
+            <span class="n">unit_vector</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">orientation</span><span class="p">))</span>
+
+    <span class="nd">@default</span><span class="p">(</span><span class="s1">&#39;position_rs&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_default_position_rs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">position</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">r_ts</span> <span class="o">*</span> <span class="n">rotate270</span><span class="p">(</span>
+            <span class="n">unit_vector</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">orientation</span><span class="p">))</span>
+
+<div class="viewcode-block" id="ThreeCircle.overlapping"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.agents.ThreeCircle.overlapping">[docs]</a>    <span class="k">def</span> <span class="nf">overlapping</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">others</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">overlapping_three_circles</span><span class="p">(</span>
+            <span class="n">others</span><span class="p">,</span>
+            <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">position</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">position_ls</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">position_rs</span><span class="p">),</span>
+            <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">r_t</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">r_s</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">r_s</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="ThreeCircle.overlapping_obstacles"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.agents.ThreeCircle.overlapping_obstacles">[docs]</a>    <span class="k">def</span> <span class="nf">overlapping_obstacles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obstacles</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">overlapping_three_circle_line</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="n">obstacles</span><span class="p">)</span></div></div>
+
+
+<span class="nd">@interpolate_docstring</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="s1">&#39;table_of_traits&#39;</span><span class="p">:</span> <span class="n">table_of_traits</span><span class="p">})</span>
+<div class="viewcode-block" id="Capsule"><a class="viewcode-back" href="../../../multiagent.html#crowddynamics.simulation.agents.Capsule">[docs]</a><span class="k">class</span> <span class="nc">Capsule</span><span class="p">(</span><span class="n">AgentType</span><span class="p">,</span> <span class="n">States</span><span class="p">,</span> <span class="n">BodyType</span><span class="p">,</span> <span class="n">TranslationalMotion</span><span class="p">,</span>
+              <span class="n">RotationalMotion</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Capsule</span>
+<span class="sd">    </span>
+<span class="sd">    .. tikz:: Capsule agent</span>
+<span class="sd">       :include: ../docs/tikz/capsule_agent.tex</span>
+
+<span class="sd">    **Capsule** shaped model used in *Dense Crowds of Virtual Humans* </span>
+<span class="sd">    [Stuvel2016]_ and *Simulating competitive egress of noncircular </span>
+<span class="sd">    pedestrians* [Hidalgo2017]_.</span>
+<span class="sd">    </span>
+<span class="sd">    .. math::</span>
+<span class="sd">       r &amp;= T / 2 \\</span>
+<span class="sd">       w &amp;= W - 2 r</span>
+<span class="sd">    </span>
+<span class="sd">    where </span>
+<span class="sd">    </span>
+<span class="sd">    - :math:`T` is the thickness of the chest</span>
+<span class="sd">    - :math:`W` is the width of the chest</span>
+<span class="sd">    </span>
+<span class="sd">    %(table_of_traits)s</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">pass</span></div>
+
+
+<span class="n">agent_type_circular</span> <span class="o">=</span> <span class="n">Circular</span><span class="o">.</span><span class="n">dtype</span><span class="p">()</span>
+<span class="n">agent_type_three_circle</span> <span class="o">=</span> <span class="n">ThreeCircle</span><span class="o">.</span><span class="n">dtype</span><span class="p">()</span>
+<span class="c1"># agent_type_capsule = Capsule.dtype()</span>
+<span class="n">AgentTypes</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">Circular</span><span class="p">,</span>
+    <span class="n">ThreeCircle</span><span class="p">,</span>
+<span class="p">]</span>
+<span class="n">AgentModelToType</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;circular&#39;</span><span class="p">:</span> <span class="n">agent_type_circular</span><span class="p">,</span>
+    <span class="s1">&#39;three_circle&#39;</span><span class="p">:</span> <span class="n">agent_type_three_circle</span><span class="p">,</span>
+<span class="p">}</span>
+
+
+<div class="viewcode-block" id="is_model"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.agents.is_model">[docs]</a><span class="k">def</span> <span class="nf">is_model</span><span class="p">(</span><span class="n">agents</span><span class="p">,</span> <span class="n">model</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Test if agent if type same type as model name</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        agents (numpy.ndarray): </span>
+<span class="sd">        model (str): </span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        bool:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="n">agents</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span> <span class="o">==</span> <span class="nb">hash</span><span class="p">(</span><span class="n">AgentModelToType</span><span class="p">[</span><span class="n">model</span><span class="p">])</span></div>
+
+
+<span class="nd">@numba</span><span class="o">.</span><span class="n">jit</span><span class="p">(</span><span class="n">void</span><span class="p">(</span><span class="n">typeof</span><span class="p">(</span><span class="n">agent_type_three_circle</span><span class="p">)[:]),</span>
+           <span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nogil</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">shoulders</span><span class="p">(</span><span class="n">agents</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Positions of the center of mass, left- and right shoulders.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        agents (ndarray):</span>
+<span class="sd">            Numpy array of datatype ``dtype=agent_type_three_circle``.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">agent</span> <span class="ow">in</span> <span class="n">agents</span><span class="p">:</span>
+        <span class="n">tangent</span> <span class="o">=</span> <span class="n">rotate270</span><span class="p">(</span><span class="n">unit_vector</span><span class="p">(</span><span class="n">agent</span><span class="p">[</span><span class="s1">&#39;orientation&#39;</span><span class="p">]))</span>
+        <span class="n">offset</span> <span class="o">=</span> <span class="n">tangent</span> <span class="o">*</span> <span class="n">agent</span><span class="p">[</span><span class="s1">&#39;r_ts&#39;</span><span class="p">]</span>
+        <span class="n">agent</span><span class="p">[</span><span class="s1">&#39;position_ls&#39;</span><span class="p">][:]</span> <span class="o">=</span> <span class="n">agent</span><span class="p">[</span><span class="s1">&#39;position&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">offset</span>
+        <span class="n">agent</span><span class="p">[</span><span class="s1">&#39;position_rs&#39;</span><span class="p">][:]</span> <span class="o">=</span> <span class="n">agent</span><span class="p">[</span><span class="s1">&#39;position&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">offset</span>
+
+
+<span class="nd">@numba</span><span class="o">.</span><span class="n">generated_jit</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">reset_motion</span><span class="p">(</span><span class="n">agent</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_reset</span><span class="p">(</span><span class="n">agent</span><span class="p">):</span>
+        <span class="n">agent</span><span class="p">[</span><span class="s1">&#39;force&#39;</span><span class="p">][:]</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">def</span> <span class="nf">_reset2</span><span class="p">(</span><span class="n">agent</span><span class="p">):</span>
+        <span class="n">agent</span><span class="p">[</span><span class="s1">&#39;force&#39;</span><span class="p">][:]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">agent</span><span class="p">[</span><span class="s1">&#39;torque&#39;</span><span class="p">][:]</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">if</span> <span class="n">agent</span><span class="o">.</span><span class="n">dtype</span> <span class="ow">is</span> <span class="n">numba</span><span class="o">.</span><span class="n">from_dtype</span><span class="p">(</span><span class="n">agent_type_circular</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">_reset</span>
+    <span class="k">if</span> <span class="n">agent</span><span class="o">.</span><span class="n">dtype</span> <span class="ow">is</span> <span class="n">numba</span><span class="o">.</span><span class="n">from_dtype</span><span class="p">(</span><span class="n">agent_type_three_circle</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">_reset2</span>
+
+
+<span class="nd">@numba</span><span class="o">.</span><span class="n">jit</span><span class="p">([</span><span class="n">boolean</span><span class="p">(</span><span class="n">typeof</span><span class="p">(</span><span class="n">agent_type_circular</span><span class="p">)[:],</span> <span class="n">float64</span><span class="p">[:],</span> <span class="n">float64</span><span class="p">)],</span>
+           <span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nogil</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">overlapping_circles</span><span class="p">(</span><span class="n">agents</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">r</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Test if two circles are overlapping.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        agents:</span>
+<span class="sd">        x: Position of agent that is tested</span>
+<span class="sd">        r: Radius of agent that is tested</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        bool:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">agent</span> <span class="ow">in</span> <span class="n">agents</span><span class="p">:</span>
+        <span class="n">h</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">distance_circles</span><span class="p">(</span><span class="n">agent</span><span class="p">[</span><span class="s1">&#39;position&#39;</span><span class="p">],</span> <span class="n">agent</span><span class="p">[</span><span class="s1">&#39;radius&#39;</span><span class="p">],</span> <span class="n">x</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">h</span> <span class="o">&lt;</span> <span class="mf">0.0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">return</span> <span class="kc">False</span>
+
+
+<span class="nd">@numba</span><span class="o">.</span><span class="n">jit</span><span class="p">([</span><span class="n">boolean</span><span class="p">(</span><span class="n">typeof</span><span class="p">(</span><span class="n">agent_type_three_circle</span><span class="p">)[:],</span>
+                    <span class="n">UniTuple</span><span class="p">(</span><span class="n">float64</span><span class="p">[:],</span> <span class="mi">3</span><span class="p">),</span> <span class="n">UniTuple</span><span class="p">(</span><span class="n">float64</span><span class="p">,</span> <span class="mi">3</span><span class="p">))],</span>
+           <span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nogil</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">overlapping_three_circles</span><span class="p">(</span><span class="n">agents</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">r</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Test if two three-circle models are overlapping.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        x1: Positions of other agents</span>
+<span class="sd">        r1: Radii of other agents</span>
+<span class="sd">        x: Position of agent that is tested</span>
+<span class="sd">        r: Radius of agent that is tested</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        bool:</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">agent</span> <span class="ow">in</span> <span class="n">agents</span><span class="p">:</span>
+        <span class="n">h</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">distance_three_circles</span><span class="p">(</span>
+            <span class="p">(</span><span class="n">agent</span><span class="p">[</span><span class="s1">&#39;position&#39;</span><span class="p">],</span> <span class="n">agent</span><span class="p">[</span><span class="s1">&#39;position_ls&#39;</span><span class="p">],</span> <span class="n">agent</span><span class="p">[</span><span class="s1">&#39;position_rs&#39;</span><span class="p">]),</span>
+            <span class="p">(</span><span class="n">agent</span><span class="p">[</span><span class="s1">&#39;r_t&#39;</span><span class="p">],</span> <span class="n">agent</span><span class="p">[</span><span class="s1">&#39;r_s&#39;</span><span class="p">],</span> <span class="n">agent</span><span class="p">[</span><span class="s1">&#39;r_s&#39;</span><span class="p">]),</span>
+            <span class="n">x</span><span class="p">,</span> <span class="n">r</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">h</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">return</span> <span class="kc">False</span>
+
+
+<span class="nd">@numba</span><span class="o">.</span><span class="n">jit</span><span class="p">([</span><span class="n">boolean</span><span class="p">(</span><span class="n">typeof</span><span class="p">(</span><span class="n">agent_type_circular</span><span class="p">)[:],</span>
+                    <span class="n">typeof</span><span class="p">(</span><span class="n">obstacle_type_linear</span><span class="p">)[:])],</span>
+           <span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nogil</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">overlapping_circle_line</span><span class="p">(</span><span class="n">agents</span><span class="p">,</span> <span class="n">obstacles</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">agent</span> <span class="ow">in</span> <span class="n">agents</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">obstacle</span> <span class="ow">in</span> <span class="n">obstacles</span><span class="p">:</span>
+            <span class="n">h</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">distance_circle_line</span><span class="p">(</span><span class="n">agent</span><span class="p">[</span><span class="s1">&#39;position&#39;</span><span class="p">],</span> <span class="n">agent</span><span class="p">[</span><span class="s1">&#39;radius&#39;</span><span class="p">],</span>
+                                        <span class="n">obstacle</span><span class="p">[</span><span class="s1">&#39;p0&#39;</span><span class="p">],</span> <span class="n">obstacle</span><span class="p">[</span><span class="s1">&#39;p1&#39;</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">h</span> <span class="o">&lt;</span> <span class="mf">0.0</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">return</span> <span class="kc">False</span>
+
+
+<span class="nd">@numba</span><span class="o">.</span><span class="n">jit</span><span class="p">([</span><span class="n">boolean</span><span class="p">(</span><span class="n">typeof</span><span class="p">(</span><span class="n">agent_type_three_circle</span><span class="p">)[:],</span>
+                    <span class="n">typeof</span><span class="p">(</span><span class="n">obstacle_type_linear</span><span class="p">)[:])],</span>
+           <span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nogil</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">overlapping_three_circle_line</span><span class="p">(</span><span class="n">agents</span><span class="p">,</span> <span class="n">obstacles</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">agent</span> <span class="ow">in</span> <span class="n">agents</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">obstacle</span> <span class="ow">in</span> <span class="n">obstacles</span><span class="p">:</span>
+            <span class="n">h</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">distance_three_circle_line</span><span class="p">(</span>
+                <span class="p">(</span><span class="n">agent</span><span class="p">[</span><span class="s1">&#39;position&#39;</span><span class="p">],</span> <span class="n">agent</span><span class="p">[</span><span class="s1">&#39;position_ls&#39;</span><span class="p">],</span> <span class="n">agent</span><span class="p">[</span><span class="s1">&#39;position_rs&#39;</span><span class="p">]),</span>
+                <span class="p">(</span><span class="n">agent</span><span class="p">[</span><span class="s1">&#39;r_t&#39;</span><span class="p">],</span> <span class="n">agent</span><span class="p">[</span><span class="s1">&#39;r_s&#39;</span><span class="p">],</span> <span class="n">agent</span><span class="p">[</span><span class="s1">&#39;r_s&#39;</span><span class="p">]),</span>
+                <span class="n">obstacle</span><span class="p">[</span><span class="s1">&#39;p0&#39;</span><span class="p">],</span> <span class="n">obstacle</span><span class="p">[</span><span class="s1">&#39;p1&#39;</span><span class="p">]</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="n">h</span> <span class="o">&lt;</span> <span class="mf">0.0</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">return</span> <span class="kc">False</span>
+
+
+<div class="viewcode-block" id="AgentGroup"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.agents.AgentGroup">[docs]</a><span class="k">class</span> <span class="nc">AgentGroup</span><span class="p">(</span><span class="n">HasTraits</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Group of agents</span>
+<span class="sd">    </span>
+<span class="sd">    Examples:</span>
+<span class="sd">        &gt;&gt;&gt; group = AgentGroup(</span>
+<span class="sd">        &gt;&gt;&gt;             size=10,</span>
+<span class="sd">        &gt;&gt;&gt;             agent_type=Circular,</span>
+<span class="sd">        &gt;&gt;&gt;             attributes=...,</span>
+<span class="sd">        &gt;&gt;&gt;         )</span>
+<span class="sd">        </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">agent_type</span> <span class="o">=</span> <span class="n">Type</span><span class="p">(</span>
+        <span class="n">AgentType</span><span class="p">,</span>
+        <span class="n">allow_none</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;AgentType for generating agent from attributes.&#39;</span><span class="p">)</span>
+    <span class="n">size</span> <span class="o">=</span> <span class="n">Int</span><span class="p">(</span>
+        <span class="n">default_value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Size of the agent group. Optional is attributes are instance of &#39;</span>
+             <span class="s1">&#39;collection&#39;</span><span class="p">)</span>
+    <span class="n">attributes</span> <span class="o">=</span> <span class="n">Union</span><span class="p">(</span>
+        <span class="p">(</span><span class="n">Instance</span><span class="p">(</span><span class="n">Collection</span><span class="p">),</span> <span class="n">Instance</span><span class="p">(</span><span class="n">Generator</span><span class="p">),</span> <span class="n">Instance</span><span class="p">(</span><span class="n">Callable</span><span class="p">)),</span>
+        <span class="n">allow_none</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Attributes of the chosen agent type.&#39;</span><span class="p">)</span>
+    <span class="n">members</span> <span class="o">=</span> <span class="n">List</span><span class="p">(</span>
+        <span class="n">Instance</span><span class="p">(</span><span class="n">AgentType</span><span class="p">),</span>
+        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+
+    <span class="nd">@observe</span><span class="p">(</span><span class="s1">&#39;size&#39;</span><span class="p">,</span> <span class="s1">&#39;agent_type&#39;</span><span class="p">,</span> <span class="s1">&#39;attributes&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_observe_members</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">agent_type</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="p">,</span> <span class="n">Collection</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">members</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">agent_type</span><span class="p">(</span><span class="o">**</span><span class="n">a</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="p">]</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="p">,</span> <span class="n">Generator</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">members</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">agent_type</span><span class="p">(</span><span class="o">**</span><span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="p">))</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">)]</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="p">,</span> <span class="n">Callable</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">members</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">agent_type</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="p">())</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">)]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">TraitError</span></div>
+
+
+<div class="viewcode-block" id="Agents"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.agents.Agents">[docs]</a><span class="k">class</span> <span class="nc">Agents</span><span class="p">(</span><span class="n">AgentsBase</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Set groups of agents</span>
+<span class="sd">    </span>
+<span class="sd">    Examples:</span>
+<span class="sd">        &gt;&gt;&gt; agent = Agents(agent_type=Circular)</span>
+<span class="sd">        &gt;&gt;&gt; agent.add_non_overlapping_group(...)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">agent_type</span> <span class="o">=</span> <span class="n">Type</span><span class="p">(</span>
+        <span class="n">klass</span><span class="o">=</span><span class="n">AgentType</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Instance of AgentType. This will be used to create attributes &#39;</span>
+             <span class="s1">&#39;for the agent.&#39;</span><span class="p">)</span>
+    <span class="n">size_max</span> <span class="o">=</span> <span class="n">Int</span><span class="p">(</span>
+        <span class="n">allow_none</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Maximum number of agents that can be created.None allows the &#39;</span>
+             <span class="s1">&#39;size grow dynamically.&#39;</span><span class="p">)</span>
+    <span class="n">cell_size</span> <span class="o">=</span> <span class="n">Float</span><span class="p">(</span>
+        <span class="n">default_value</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Cell size for block list. Value should be little over the &#39;</span>
+             <span class="s1">&#39;maximum of agent radii&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">agent_type</span><span class="o">.</span><span class="n">dtype</span><span class="p">())</span>
+        <span class="c1"># Block list for speeding up overlapping checks</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_neighbours</span> <span class="o">=</span> <span class="n">MutableBlockList</span><span class="p">(</span><span class="n">cell_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cell_size</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Agents.add_non_overlapping_group"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.agents.Agents.add_non_overlapping_group">[docs]</a>    <span class="k">def</span> <span class="nf">add_non_overlapping_group</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">,</span> <span class="n">position_gen</span><span class="p">,</span> <span class="n">obstacles</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Add group of agents</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            group (AgentGroup):</span>
+<span class="sd">            position_gen (Generator|Callable):</span>
+<span class="sd">            obstacles (numpy.ndarray): </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">agent_type</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">group</span><span class="o">.</span><span class="n">agent_type</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">CrowdDynamicsException</span>
+
+        <span class="n">array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">group</span><span class="o">.</span><span class="n">agent_type</span><span class="o">.</span><span class="n">dtype</span><span class="p">())</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">overlaps</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">overlaps_max</span> <span class="o">=</span> <span class="mi">10</span> <span class="o">*</span> <span class="n">group</span><span class="o">.</span><span class="n">size</span>
+
+        <span class="k">while</span> <span class="n">index</span> <span class="o">&lt;</span> <span class="n">group</span><span class="o">.</span><span class="n">size</span> <span class="ow">and</span> <span class="n">overlaps</span> <span class="o">&lt;</span> <span class="n">overlaps_max</span><span class="p">:</span>
+            <span class="n">new_agent</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">members</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+            <span class="n">new_agent</span><span class="o">.</span><span class="n">position</span> <span class="o">=</span> <span class="n">position_gen</span><span class="p">()</span> <span class="k">if</span> <span class="n">callable</span><span class="p">(</span><span class="n">position_gen</span><span class="p">)</span> \
+                <span class="k">else</span> <span class="nb">next</span><span class="p">(</span><span class="n">position_gen</span><span class="p">)</span>
+
+            <span class="c1"># Overlapping check</span>
+            <span class="n">neighbours</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_neighbours</span><span class="o">.</span><span class="n">nearest</span><span class="p">(</span><span class="n">new_agent</span><span class="o">.</span><span class="n">position</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">new_agent</span><span class="o">.</span><span class="n">overlapping</span><span class="p">(</span><span class="n">array</span><span class="p">[</span><span class="n">neighbours</span><span class="p">]):</span>
+                <span class="c1"># Agent is overlapping other agent.</span>
+                <span class="n">overlaps</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">continue</span>
+
+            <span class="k">if</span> <span class="n">obstacles</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">new_agent</span><span class="o">.</span><span class="n">overlapping_obstacles</span><span class="p">(</span><span class="n">obstacles</span><span class="p">):</span>
+                <span class="c1"># Agent is overlapping with an obstacle.</span>
+                <span class="n">overlaps</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">continue</span>
+
+            <span class="c1"># Agent can be successfully placed</span>
+            <span class="n">array</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">new_agent</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_neighbours</span><span class="p">[</span><span class="n">new_agent</span><span class="o">.</span><span class="n">position</span><span class="p">]</span> <span class="o">=</span> <span class="n">index</span>
+            <span class="n">index</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">array</span><span class="p">,</span> <span class="n">array</span><span class="p">[:</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]))</span>
+        <span class="c1"># Array should remain contiguous</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">array</span><span class="o">.</span><span class="n">flags</span><span class="o">.</span><span class="n">c_contiguous</span></div></div>
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright Jaan Tollander de Balsch.
+      Last updated on 2017-05-31.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'legacy+318.gb8d04f6.dirty',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

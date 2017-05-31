@@ -18,6 +18,7 @@ Crowd Dynamics
    :caption: Crowddynamics
    :maxdepth: 2
 
+   architecture.rst
    multiagent.rst
    interactions.rst
    motion.rst
@@ -38,7 +39,6 @@ Crowd Dynamics
    :maxdepth: 2
 
    apidocs/crowddynamics.rst
-   apidocs_examples/examples.rst
 
 
 Indices and tables

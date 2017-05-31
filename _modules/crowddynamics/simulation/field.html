@@ -1,0 +1,392 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>crowddynamics.simulation.field &mdash; crowddynamics legacy+318.gb8d04f6.dirty documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../../genindex.html"/>
+        <link rel="search" title="Search" href="../../../search.html"/>
+    <link rel="top" title="crowddynamics legacy+318.gb8d04f6.dirty documentation" href="../../../index.html"/>
+        <link rel="up" title="Module code" href="../../index.html"/> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> crowddynamics
+          
+
+          
+            
+            <img src="../../../_static/logo.svg" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                legacy+318legacy+318.gb8d04f6.dirtygb8d04f6
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">General</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../developing.html">Developing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../resources.html">Resources</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Crowddynamics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../architecture.html">Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../multiagent.html">Multi-Agent Simulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../interactions.html">Interactions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../motion.html">Motion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../steering.html">Steering</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quantities.html">Quantities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../evacuation.html">Evacuation</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Research</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../phenomena.html">Phenomena</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Api</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../apidocs/crowddynamics.html">crowddynamics package</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">crowddynamics</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>crowddynamics.simulation.field</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for crowddynamics.simulation.field</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">functools</span> <span class="k">import</span> <span class="n">lru_cache</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">shapely.geometry</span> <span class="k">import</span> <span class="n">Polygon</span>
+<span class="kn">from</span> <span class="nn">shapely.geometry.base</span> <span class="k">import</span> <span class="n">BaseGeometry</span>
+<span class="kn">from</span> <span class="nn">traitlets</span> <span class="k">import</span> <span class="n">Instance</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">validate</span>
+
+<span class="kn">from</span> <span class="nn">crowddynamics.core.geometry</span> <span class="k">import</span> <span class="n">union</span>
+<span class="kn">from</span> <span class="nn">crowddynamics.core.rand.sampling</span> <span class="k">import</span> <span class="n">polygon_sample</span>
+<span class="kn">from</span> <span class="nn">crowddynamics.core.steering.navigation</span> <span class="k">import</span> <span class="n">static_potential</span>
+<span class="kn">from</span> <span class="nn">crowddynamics.exceptions</span> <span class="k">import</span> <span class="n">ValidationError</span><span class="p">,</span> <span class="n">CrowdDynamicsException</span><span class="p">,</span> \
+    <span class="n">InvalidType</span>
+<span class="kn">from</span> <span class="nn">crowddynamics.simulation.base</span> <span class="k">import</span> <span class="n">FieldBase</span>
+
+
+<div class="viewcode-block" id="Field"><a class="viewcode-back" href="../../../multiagent.html#crowddynamics.simulation.field.Field">[docs]</a><span class="k">class</span> <span class="nc">Field</span><span class="p">(</span><span class="n">FieldBase</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Field is a collection of geometric static geometric objects that can</span>
+<span class="sd">    exist in crowd dynamics simulations. This module uses geometric types</span>
+<span class="sd">    from Shapely_ module. Shapely&#39;s fundamental geometric types are *points*,</span>
+<span class="sd">    *curves* and *surfaces*, which correspond to shapely objects</span>
+
+<span class="sd">    - ``Point``: Individual point</span>
+<span class="sd">    - ``LineString``: Curve created by set of points connected by line</span>
+<span class="sd">      segments. Closed ``LineString`` has special type ``LinearRing``.</span>
+<span class="sd">    - ``Polygon``: Surface created by set of points covered by closed curve</span>
+<span class="sd">      excluding points that belong to holes that the surface may have.</span>
+
+<span class="sd">    .. _shapely: http://toblerity.org/shapely/manual.html</span>
+<span class="sd">    .. _spatial data model: http://toblerity.org/shapely/manual.html#spatial-data-model</span>
+
+<span class="sd">    .. tikz:: Example of Field</span>
+<span class="sd">        :include: ../docs/tikz/field_example.tex</span>
+
+<span class="sd">    Domain</span>
+<span class="sd">        :tikz:`\draw[black, fill=gray!20] (0, 0) rectangle (0.4, 0.4);`</span>
+<span class="sd">        **Domain** :math:`\Omega \subset \mathbb{R}^{2}` is a plane that</span>
+<span class="sd">        contains  all the other objects in the simulation such as agents and</span>
+<span class="sd">        obstacles. Agents that move outside the domain will be marked as</span>
+<span class="sd">        inactive and not used to compute any of the simulation logic.</span>
+
+<span class="sd">    Obstacles</span>
+<span class="sd">        :tikz:`\draw[black, fill=black] (0, 0) rectangle (0.4, 0.4);`</span>
+<span class="sd">        **Obstacles** :math:`\mathcal{O} \subset \Omega` are impassable regions</span>
+<span class="sd">        of the domain. Agents have have psychological tendency to try to avoid</span>
+<span class="sd">        colliding with an obstacle, but if they do, for example being pushed by</span>
+<span class="sd">        other agents, there will be friction force between the agent and the</span>
+<span class="sd">        obstacles. Obstacles avoidance is handled by a navigation algorithm.</span>
+
+<span class="sd">    Targets</span>
+<span class="sd">        :tikz:`\draw[thick, dashed, black] (0, 0) rectangle (0.4, 0.4);`</span>
+<span class="sd">        **Targets** :math:`\mathcal{T}_i \subset \Omega` for</span>
+<span class="sd">        :math:`i \in T = \{0, ..., m-1\}` are passable regions of the domain. Agents</span>
+<span class="sd">        can have a psychological tendency  to try to reach one or more of these</span>
+<span class="sd">        regions. This psycological tendency is also handled by a navigation</span>
+<span class="sd">        algorithm. Targets can for examples be exit doors denoted</span>
+<span class="sd">        :math:`\mathcal{E} \subset \mathcal{T}_{i \in T}`.</span>
+
+<span class="sd">    Spawns</span>
+<span class="sd">        :tikz:`\draw[fill=blue!20] (0, 0) rectangle (0.4, 0.4);`</span>
+<span class="sd">        **Spawns** :math:`\mathcal{S}_j \subset \Omega` for</span>
+<span class="sd">        :math:`j \in \{0, ..., n-1\}` are passable regions of the domain. These</span>
+<span class="sd">        are the regions where new agents can be placed in the beginning or</span>
+<span class="sd">        during the simulation. Polygon sampling algorithm handles the sampling</span>
+<span class="sd">        of new potential points for  placing the agent and then algorithm test</span>
+<span class="sd">        that the agent does not  overlap with other agents of obstacles. If it</span>
+<span class="sd">        doesn&#39;t new agent is  placed here.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># TODO: classes?</span>
+    <span class="n">domain</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span>
+        <span class="n">Polygon</span><span class="p">,</span>
+        <span class="n">allow_none</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Domain&#39;</span><span class="p">)</span>
+    <span class="n">obstacles</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span>
+        <span class="n">BaseGeometry</span><span class="p">,</span>
+        <span class="n">allow_none</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Obstacles&#39;</span><span class="p">)</span>
+    <span class="n">targets</span> <span class="o">=</span> <span class="n">List</span><span class="p">(</span>
+        <span class="n">Instance</span><span class="p">(</span><span class="n">BaseGeometry</span><span class="p">),</span>
+        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;List of targets&#39;</span><span class="p">)</span>
+    <span class="n">spawns</span> <span class="o">=</span> <span class="n">List</span><span class="p">(</span>
+        <span class="n">Instance</span><span class="p">(</span><span class="n">BaseGeometry</span><span class="p">),</span>
+        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;List of spawns&#39;</span><span class="p">)</span>
+
+    <span class="nd">@validate</span><span class="p">(</span><span class="s1">&#39;domain&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_valid_domain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">proposal</span><span class="p">):</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">proposal</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">value</span><span class="o">.</span><span class="n">is_valid</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> should not be invalid&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">value</span><span class="o">.</span><span class="n">is_empty</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> should not empty&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">value</span>
+
+    <span class="nd">@validate</span><span class="p">(</span><span class="s1">&#39;obstacles&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_valid_obstacles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">proposal</span><span class="p">):</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">proposal</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">value</span><span class="o">.</span><span class="n">is_valid</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> should not be invalid&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">value</span><span class="o">.</span><span class="n">is_empty</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> should not empty&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">value</span>
+
+<div class="viewcode-block" id="Field.convex_hull"><a class="viewcode-back" href="../../../multiagent.html#crowddynamics.simulation.field.Field.convex_hull">[docs]</a>    <span class="k">def</span> <span class="nf">convex_hull</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Convex hull of union of all objects in the field.&quot;&quot;&quot;</span>
+        <span class="n">field</span> <span class="o">=</span> <span class="n">BaseGeometry</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">obstacles</span><span class="p">:</span>
+            <span class="n">field</span> <span class="o">|=</span> <span class="bp">self</span><span class="o">.</span><span class="n">obstacles</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">targets</span><span class="p">:</span>
+            <span class="n">field</span> <span class="o">|=</span> <span class="n">union</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">targets</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">spawns</span><span class="p">:</span>
+            <span class="n">field</span> <span class="o">|=</span> <span class="n">union</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">spawns</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">field</span><span class="o">.</span><span class="n">convex_hull</span></div>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_samples</span><span class="p">(</span><span class="n">spawn</span><span class="p">,</span> <span class="n">obstacles</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="mf">0.3</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Generates positions for agents&quot;&quot;&quot;</span>
+        <span class="n">geom</span> <span class="o">=</span> <span class="n">spawn</span> <span class="o">-</span> <span class="n">obstacles</span><span class="o">.</span><span class="n">buffer</span><span class="p">(</span><span class="n">radius</span><span class="p">)</span> <span class="k">if</span> <span class="n">obstacles</span> <span class="k">else</span> <span class="n">spawn</span>
+        <span class="n">vertices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">geom</span><span class="o">.</span><span class="n">convex_hull</span><span class="o">.</span><span class="n">exterior</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">polygon_sample</span><span class="p">(</span><span class="n">vertices</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Field.sample_spawn"><a class="viewcode-back" href="../../../multiagent.html#crowddynamics.simulation.field.Field.sample_spawn">[docs]</a>    <span class="k">def</span> <span class="nf">sample_spawn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spawn_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">radius</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.3</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Generator for sampling points inside spawn without overlapping with</span>
+<span class="sd">        obstacles&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_samples</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spawns</span><span class="p">[</span><span class="n">spawn_index</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">obstacles</span><span class="p">,</span> <span class="n">radius</span><span class="p">)</span></div>
+
+    <span class="c1"># TODO: invalidate caches if field changes?</span>
+    <span class="nd">@lru_cache</span><span class="p">()</span>
+<div class="viewcode-block" id="Field.navigation_to_target"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.field.Field.navigation_to_target">[docs]</a>    <span class="k">def</span> <span class="nf">navigation_to_target</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">radius</span><span class="p">,</span> <span class="n">strength</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">targets</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">CrowdDynamicsException</span><span class="p">(</span><span class="s1">&#39;No targets are set.&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)):</span>
+            <span class="n">targets</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">targets</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">index</span> <span class="o">==</span> <span class="s1">&#39;closest&#39;</span><span class="p">:</span>
+            <span class="n">targets</span> <span class="o">=</span> <span class="n">union</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">targets</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">InvalidType</span><span class="p">(</span><span class="s1">&#39;Index &quot;</span><span class="si">{0}</span><span class="s1">&quot; should be integer or &#39;</span>
+                              <span class="s1">&#39;&quot;closest&quot;.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">index</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">static_potential</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">domain</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">obstacles</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span>
+                                <span class="n">radius</span><span class="p">,</span> <span class="n">strength</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright Jaan Tollander de Balsch.
+      Last updated on 2017-05-31.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'legacy+318.gb8d04f6.dirty',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

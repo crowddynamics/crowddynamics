@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>crowddynamics.simulation.multiagent &mdash; crowddynamics legacy+303.g1e68f25.dirty documentation</title>
+  <title>crowddynamics.simulation.multiagent &mdash; crowddynamics legacy+318.gb8d04f6.dirty documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../../genindex.html"/>
         <link rel="search" title="Search" href="../../../search.html"/>
-    <link rel="top" title="crowddynamics legacy+303.g1e68f25.dirty documentation" href="../../../index.html"/>
+    <link rel="top" title="crowddynamics legacy+318.gb8d04f6.dirty documentation" href="../../../index.html"/>
         <link rel="up" title="Module code" href="../../index.html"/> 
 
   
@@ -70,7 +70,7 @@
             
             
               <div class="version">
-                legacy+303legacy+303.g1e68f25.dirtyg1e68f25
+                legacy+318legacy+318.gb8d04f6.dirtygb8d04f6
               </div>
             
           
@@ -103,6 +103,7 @@
 </ul>
 <p class="caption"><span class="caption-text">Crowddynamics</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../architecture.html">Architecture</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../multiagent.html">Multi-Agent Simulation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../interactions.html">Interactions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../motion.html">Motion</a></li>
@@ -117,7 +118,6 @@
 <p class="caption"><span class="caption-text">Api</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../apidocs/crowddynamics.html">crowddynamics package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../apidocs_examples/examples.html">examples package</a></li>
 </ul>
 
             
@@ -182,643 +182,22 @@
            <div itemprop="articleBody">
             
   <h1>Source code for crowddynamics.simulation.multiagent</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">json</span>
-<span class="kn">import</span> <span class="nn">logging</span>
+<span></span><span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">multiprocessing</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">OrderedDict</span><span class="p">,</span> <span class="n">Iterable</span>
-<span class="kn">from</span> <span class="nn">datetime</span> <span class="k">import</span> <span class="n">datetime</span>
-<span class="kn">from</span> <span class="nn">functools</span> <span class="k">import</span> <span class="n">lru_cache</span>
 <span class="kn">from</span> <span class="nn">multiprocessing</span> <span class="k">import</span> <span class="n">Process</span><span class="p">,</span> <span class="n">Event</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Optional</span>
 
-<span class="kn">import</span> <span class="nn">bokeh.io</span>
-<span class="kn">import</span> <span class="nn">bokeh.plotting</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">anytree.iterators</span> <span class="k">import</span> <span class="n">PostOrderIter</span>
 <span class="kn">from</span> <span class="nn">loggingtools</span> <span class="k">import</span> <span class="n">log_with</span>
-<span class="kn">from</span> <span class="nn">matplotlib.path</span> <span class="k">import</span> <span class="n">Path</span>
-<span class="kn">from</span> <span class="nn">shapely.geometry</span> <span class="k">import</span> <span class="n">Polygon</span>
-<span class="kn">from</span> <span class="nn">shapely.geometry</span> <span class="k">import</span> <span class="n">mapping</span><span class="p">,</span> <span class="n">shape</span>
-<span class="kn">from</span> <span class="nn">shapely.geometry.base</span> <span class="k">import</span> <span class="n">BaseGeometry</span>
-<span class="kn">from</span> <span class="nn">sortedcontainers</span> <span class="k">import</span> <span class="n">SortedSet</span>
-<span class="kn">from</span> <span class="nn">traitlets</span> <span class="k">import</span> <span class="n">HasTraits</span><span class="p">,</span> <span class="n">Unicode</span><span class="p">,</span> <span class="n">Instance</span><span class="p">,</span> <span class="n">default</span><span class="p">,</span> <span class="n">validate</span><span class="p">,</span> \
-    <span class="n">List</span>
+<span class="kn">from</span> <span class="nn">traitlets</span> <span class="k">import</span> <span class="n">Instance</span>
 
-<span class="kn">from</span> <span class="nn">crowddynamics.config</span> <span class="k">import</span> <span class="n">load_config</span><span class="p">,</span> <span class="n">MULTIAGENT_CFG</span><span class="p">,</span> \
-    <span class="n">MULTIAGENT_CFG_SPEC</span><span class="p">,</span> <span class="n">AGENT_CFG</span><span class="p">,</span> <span class="n">AGENT_CFG_SPEC</span>
-<span class="kn">from</span> <span class="nn">crowddynamics.core.geometry</span> <span class="k">import</span> <span class="n">geom_to_linear_obstacles</span><span class="p">,</span> <span class="n">union</span>
-<span class="kn">from</span> <span class="nn">crowddynamics.core.integrator</span> <span class="k">import</span> <span class="n">velocity_verlet_integrator</span>
-<span class="kn">from</span> <span class="nn">crowddynamics.core.interactions.block_list</span> <span class="k">import</span> <span class="n">MutableBlockList</span>
-<span class="kn">from</span> <span class="nn">crowddynamics.core.interactions.interactions</span> <span class="k">import</span> \
-    <span class="n">agent_agent_block_list</span><span class="p">,</span> <span class="n">agent_obstacle</span>
-<span class="kn">from</span> <span class="nn">crowddynamics.core.motion.adjusting</span> <span class="k">import</span> <span class="n">force_adjust_agents</span><span class="p">,</span> \
-    <span class="n">torque_adjust_agents</span>
-<span class="kn">from</span> <span class="nn">crowddynamics.core.motion.fluctuation</span> <span class="k">import</span> <span class="n">force_fluctuation</span><span class="p">,</span> \
-    <span class="n">torque_fluctuation</span>
-<span class="kn">from</span> <span class="nn">crowddynamics.core.rand.functions</span> <span class="k">import</span> <span class="n">truncnorm</span>
-<span class="kn">from</span> <span class="nn">crowddynamics.core.rand.sampling</span> <span class="k">import</span> <span class="n">polygon_sample</span>
-<span class="kn">from</span> <span class="nn">crowddynamics.core.steering.navigation</span> <span class="k">import</span> <span class="n">navigation</span><span class="p">,</span> <span class="n">static_potential</span><span class="p">,</span> \
-    <span class="n">herding</span>
-<span class="kn">from</span> <span class="nn">crowddynamics.core.steering.orientation</span> <span class="k">import</span> \
-    <span class="n">orient_towards_target_direction</span>
-<span class="kn">from</span> <span class="nn">crowddynamics.core.structures.agents</span> <span class="k">import</span> <span class="n">is_model</span><span class="p">,</span> <span class="n">reset_motion</span><span class="p">,</span> \
-    <span class="n">AgentModelToType</span><span class="p">,</span> <span class="n">shoulders</span><span class="p">,</span> <span class="n">overlapping_circles</span><span class="p">,</span> <span class="n">overlapping_three_circles</span>
-<span class="kn">from</span> <span class="nn">crowddynamics.core.tree</span> <span class="k">import</span> <span class="n">Node</span>
-<span class="kn">from</span> <span class="nn">crowddynamics.exceptions</span> <span class="k">import</span> <span class="n">CrowdDynamicsException</span><span class="p">,</span> <span class="n">InvalidType</span><span class="p">,</span> \
-    <span class="n">AgentStructureFull</span><span class="p">,</span> <span class="n">OverlappingError</span><span class="p">,</span> <span class="n">ValidationError</span>
-<span class="kn">from</span> <span class="nn">crowddynamics.io</span> <span class="k">import</span> <span class="n">save_npy</span><span class="p">,</span> <span class="n">save_csv</span>
-<span class="kn">from</span> <span class="nn">crowddynamics.visualization.bokeh</span> <span class="k">import</span> <span class="n">set_aspect</span><span class="p">,</span> <span class="n">plot_geom</span><span class="p">,</span> \
-    <span class="n">plot_distance_map</span><span class="p">,</span> <span class="n">plot_direction_map</span>
+<span class="kn">from</span> <span class="nn">crowddynamics.exceptions</span> <span class="k">import</span> <span class="n">CrowdDynamicsException</span>
+<span class="kn">from</span> <span class="nn">crowddynamics.simulation.agents</span> <span class="k">import</span> <span class="n">Agents</span>
+<span class="kn">from</span> <span class="nn">crowddynamics.simulation.base</span> <span class="k">import</span> <span class="n">SimulationBase</span>
+<span class="kn">from</span> <span class="nn">crowddynamics.simulation.field</span> <span class="k">import</span> <span class="n">Field</span>
+<span class="kn">from</span> <span class="nn">crowddynamics.simulation.logic</span> <span class="k">import</span> <span class="n">LogicNode</span>
 
-<span class="n">Domain</span> <span class="o">=</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Polygon</span><span class="p">]</span>
-<span class="n">Obstacles</span> <span class="o">=</span> <span class="n">Optional</span><span class="p">[</span><span class="n">BaseGeometry</span><span class="p">]</span>
-<span class="n">Spawn</span> <span class="o">=</span> <span class="n">Polygon</span>
-<span class="n">Targets</span> <span class="o">=</span> <span class="n">BaseGeometry</span>
 
-
-<span class="k">def</span> <span class="nf">_truncnorm</span><span class="p">(</span><span class="n">mean</span><span class="p">,</span> <span class="n">abs_scale</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Individual value from truncnorm&quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">asscalar</span><span class="p">(</span><span class="n">truncnorm</span><span class="p">(</span><span class="o">-</span><span class="mf">3.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="n">mean</span><span class="p">,</span> <span class="n">abs_scale</span><span class="o">=</span><span class="n">abs_scale</span><span class="p">))</span>
-
-
-<div class="viewcode-block" id="call"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.multiagent.call">[docs]</a><span class="k">def</span> <span class="nf">call</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Iterate, call or return the value.&quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s1">&#39;__next__&#39;</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">next</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">callable</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">obj</span><span class="p">()</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">obj</span></div>
-
-
-<div class="viewcode-block" id="Field"><a class="viewcode-back" href="../../../multiagent.html#crowddynamics.simulation.multiagent.Field">[docs]</a><span class="k">class</span> <span class="nc">Field</span><span class="p">(</span><span class="n">HasTraits</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Multi-Agent simulation Field consists of</span>
-
-<span class="sd">    .. tikz:: Example of Field</span>
-
-<span class="sd">       \draw[color=gray!20] (-2, -1) grid (12, 7);</span>
-<span class="sd">       % Domain</span>
-<span class="sd">       \fill[gray!20] (0, 0) rectangle (10, 6);</span>
-<span class="sd">       \node[] () at (5, 3) {$ \Omega $};</span>
-<span class="sd">       % Spawn 0</span>
-<span class="sd">       \fill[blue!20] (0, 3) -- ++(2, 0) -- ++(1, 1) -- ++(0, 2) </span>
-<span class="sd">                      -- ++(-3, 0) -- ++(0, -3);</span>
-<span class="sd">       \node[] () at (1.5, 4.5) {$ \mathcal{S}_0 $};</span>
-<span class="sd">       % Spawn 1</span>
-<span class="sd">       \fill[blue!20] (3, 0) -- ++(0, 1) -- ++(1, 1) -- ++(2, 0) -- ++(1, -1)</span>
-<span class="sd">                      -- ++(0, -1);</span>
-<span class="sd">       \node[] () at (5, 0.5) {$ \mathcal{S}_1 $};</span>
-<span class="sd">       % Obstacles</span>
-<span class="sd">       \draw[thick] (0, 0) rectangle (10, 6);</span>
-<span class="sd">       \draw[fill=black] (9, 2) circle (0.5);</span>
-<span class="sd">       \draw[fill=black] (9, 4) circle (0.5);</span>
-<span class="sd">       % Room 1</span>
-<span class="sd">       \draw[thick] (0, 3) -- ++(2, 0) -- ++(1, 1);</span>
-<span class="sd">       \draw[thick] (3, 5) -- ++(0, 1);</span>
-<span class="sd">       % Target 0</span>
-<span class="sd">       \draw[thick, white] (4, 6) -- ++(2, 0);</span>
-<span class="sd">       \draw[thick, dashed] (4, 6) -- node[above] {$ \mathcal{E}_0 $} ++(2, 0);</span>
-<span class="sd">       % Target 1</span>
-<span class="sd">       \draw[thick, white] (10, 2) -- ++(0, 2);</span>
-<span class="sd">       \draw[thick, dashed] (10, 2) -- node[right] {$ \mathcal{E}_1 $} ++(0, 2);</span>
-<span class="sd">       </span>
-
-<span class="sd">    Domain</span>
-<span class="sd">        :tikz:`\draw[black, fill=gray!20] (0, 0) rectangle (0.4, 0.4);`</span>
-<span class="sd">        **Domain** :math:`\Omega \subset \mathbb{R}^{2}` is a plane that</span>
-<span class="sd">        contains  all the other objects in the simulation such as agents and</span>
-<span class="sd">        obstacles. Agents that move outside the domain will be marked as</span>
-<span class="sd">        inactive and not used to compute any of the simulation logic.</span>
-
-<span class="sd">    Obstacles</span>
-<span class="sd">        :tikz:`\draw[black, fill=black] (0, 0) rectangle (0.4, 0.4);`</span>
-<span class="sd">        **Obstacles** :math:`\mathcal{O} \subset \Omega` are impassable regions</span>
-<span class="sd">        of the domain. Agents have have psychological tendency to try to avoid</span>
-<span class="sd">        colliding with an obstacle, but if they do, for example being pushed by</span>
-<span class="sd">        other agents, there will be friction force between the agent and the</span>
-<span class="sd">        obstacles. Obstacles avoidance is handled by a navigation algorithm.</span>
-<span class="sd">        </span>
-<span class="sd">    Targets</span>
-<span class="sd">        :tikz:`\draw[thick, dashed, black] (0, 0) rectangle (0.4, 0.4);`</span>
-<span class="sd">        **Targets** :math:`\mathcal{E}_i \subset \Omega` for</span>
-<span class="sd">        :math:`i \in \{0, ..., m-1\}` are passable regions of the domain. Agents</span>
-<span class="sd">        can have a psychological tendency  to try to reach one or more of these</span>
-<span class="sd">        regions. This psycological tendency is also handled by a navigation</span>
-<span class="sd">        algorithm.</span>
-
-<span class="sd">    Spawns</span>
-<span class="sd">        :tikz:`\draw[fill=blue!20] (0, 0) rectangle (0.4, 0.4);`</span>
-<span class="sd">        **Spawns** :math:`\mathcal{S}_j \subset \Omega` for</span>
-<span class="sd">        :math:`j \in \{0, ..., n-1\}` are passable regions of the domain. These</span>
-<span class="sd">        are the regions where new agents can be placed in the beginning or</span>
-<span class="sd">        during the simulation. Polygon sampling algorithm handles the sampling</span>
-<span class="sd">        of new potential points for  placing the agent and then algorithm test</span>
-<span class="sd">        that the agent does not  overlap with other agents of obstacles. If it</span>
-<span class="sd">        doesn&#39;t new agent is  placed here.</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># TODO: invalidate caches if field changes?</span>
-    <span class="c1"># TODO: validation, spawn should be convex</span>
-    <span class="n">name</span> <span class="o">=</span> <span class="n">Unicode</span><span class="p">()</span>
-    <span class="n">domain</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">Polygon</span><span class="p">,</span> <span class="n">allow_none</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="n">obstacles</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">BaseGeometry</span><span class="p">,</span> <span class="n">allow_none</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="n">targets</span> <span class="o">=</span> <span class="n">List</span><span class="p">(</span><span class="n">Instance</span><span class="p">(</span><span class="n">BaseGeometry</span><span class="p">))</span>
-    <span class="n">spawns</span> <span class="o">=</span> <span class="n">List</span><span class="p">(</span><span class="n">Instance</span><span class="p">(</span><span class="n">BaseGeometry</span><span class="p">))</span>
-
-    <span class="nd">@default</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">_default_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
-
-    <span class="nd">@validate</span><span class="p">(</span><span class="s1">&#39;domain&#39;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">_valid_domain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">proposal</span><span class="p">):</span>
-        <span class="n">value</span> <span class="o">=</span> <span class="n">proposal</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">value</span><span class="o">.</span><span class="n">is_valid</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> should not be invalid&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
-        <span class="k">if</span> <span class="n">value</span><span class="o">.</span><span class="n">is_empty</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> should not empty&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
-        <span class="k">return</span> <span class="n">value</span>
-
-    <span class="nd">@validate</span><span class="p">(</span><span class="s1">&#39;obstacles&#39;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">_valid_obstacles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">proposal</span><span class="p">):</span>
-        <span class="n">value</span> <span class="o">=</span> <span class="n">proposal</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">value</span><span class="o">.</span><span class="n">is_valid</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> should not be invalid&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
-        <span class="k">if</span> <span class="n">value</span><span class="o">.</span><span class="n">is_empty</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> should not empty&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
-        <span class="k">return</span> <span class="n">value</span>
-
-<div class="viewcode-block" id="Field.add_spawns"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.multiagent.Field.add_spawns">[docs]</a>    <span class="k">def</span> <span class="nf">add_spawns</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">spawns</span><span class="p">:</span> <span class="n">Spawn</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Add new spawns&quot;&quot;&quot;</span>
-        <span class="k">for</span> <span class="n">spawn</span> <span class="ow">in</span> <span class="n">spawns</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">spawns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">spawn</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="Field.add_targets"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.multiagent.Field.add_targets">[docs]</a>    <span class="k">def</span> <span class="nf">add_targets</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">targets</span><span class="p">:</span> <span class="n">Targets</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Add new targets&quot;&quot;&quot;</span>
-        <span class="k">for</span> <span class="n">target</span> <span class="ow">in</span> <span class="n">targets</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">targets</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">target</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="Field.remove_spawn"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.multiagent.Field.remove_spawn">[docs]</a>    <span class="k">def</span> <span class="nf">remove_spawn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">spawns</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">index</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="Field.remove_target"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.multiagent.Field.remove_target">[docs]</a>    <span class="k">def</span> <span class="nf">remove_target</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">targets</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">index</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="Field.convex_hull"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.multiagent.Field.convex_hull">[docs]</a>    <span class="k">def</span> <span class="nf">convex_hull</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Convex hull of union of all objects in the field.&quot;&quot;&quot;</span>
-        <span class="n">field</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">obstacles</span> <span class="o">|</span> <span class="n">union</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">targets</span><span class="p">)</span> <span class="o">|</span> <span class="n">union</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">spawns</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">field</span><span class="o">.</span><span class="n">convex_hull</span></div>
-
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_samples</span><span class="p">(</span><span class="n">spawn</span><span class="p">,</span> <span class="n">obstacles</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="mf">0.3</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Generates positions for agents&quot;&quot;&quot;</span>
-        <span class="n">geom</span> <span class="o">=</span> <span class="n">spawn</span> <span class="o">-</span> <span class="n">obstacles</span><span class="o">.</span><span class="n">buffer</span><span class="p">(</span><span class="n">radius</span><span class="p">)</span> <span class="k">if</span> <span class="n">obstacles</span> <span class="k">else</span> <span class="n">spawn</span>
-        <span class="n">vertices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">geom</span><span class="o">.</span><span class="n">convex_hull</span><span class="o">.</span><span class="n">exterior</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">polygon_sample</span><span class="p">(</span><span class="n">vertices</span><span class="p">)</span>
-
-<div class="viewcode-block" id="Field.sample_spawn"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.multiagent.Field.sample_spawn">[docs]</a>    <span class="k">def</span> <span class="nf">sample_spawn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spawn_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">radius</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.3</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Generator for sampling points inside spawn without overlapping with</span>
-<span class="sd">        obstacles&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_samples</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spawns</span><span class="p">[</span><span class="n">spawn_index</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">obstacles</span><span class="p">,</span> <span class="n">radius</span><span class="p">)</span></div>
-
-    <span class="nd">@lru_cache</span><span class="p">()</span>
-<div class="viewcode-block" id="Field.navigation_to_target"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.multiagent.Field.navigation_to_target">[docs]</a>    <span class="k">def</span> <span class="nf">navigation_to_target</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">radius</span><span class="p">,</span> <span class="n">strength</span><span class="p">):</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">targets</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">CrowdDynamicsException</span><span class="p">(</span><span class="s1">&#39;No targets are set.&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)):</span>
-            <span class="n">targets</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">targets</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
-        <span class="k">elif</span> <span class="n">index</span> <span class="o">==</span> <span class="s1">&#39;closest&#39;</span><span class="p">:</span>
-            <span class="n">targets</span> <span class="o">=</span> <span class="n">union</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">targets</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">InvalidType</span><span class="p">(</span><span class="s1">&#39;Index &quot;</span><span class="si">{0}</span><span class="s1">&quot; should be integer or &#39;</span>
-                              <span class="s1">&#39;&quot;closest&quot;.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">index</span><span class="p">))</span>
-
-        <span class="k">return</span> <span class="n">static_potential</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">domain</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">obstacles</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span>
-                                <span class="n">radius</span><span class="p">,</span> <span class="n">strength</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="Field.dump_json"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.multiagent.Field.dump_json">[docs]</a>    <span class="k">def</span> <span class="nf">dump_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fname</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Dump field into JSON&quot;&quot;&quot;</span>
-
-        <span class="k">def</span> <span class="nf">_mapping</span><span class="p">(</span><span class="n">geom</span><span class="p">):</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">geom</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">):</span>
-                <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">mapping</span><span class="p">,</span> <span class="n">geom</span><span class="p">))</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">mapping</span><span class="p">(</span><span class="n">geom</span><span class="p">)</span> <span class="k">if</span> <span class="n">geom</span> <span class="k">else</span> <span class="n">geom</span>
-
-        <span class="n">_</span><span class="p">,</span> <span class="n">ext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">ext</span> <span class="o">!=</span> <span class="s1">&#39;.json&#39;</span><span class="p">:</span>
-            <span class="n">fname</span> <span class="o">+=</span> <span class="s1">&#39;.json&#39;</span>
-
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
-            <span class="n">obj</span> <span class="o">=</span> <span class="p">{</span>
-                <span class="s1">&#39;domain&#39;</span><span class="p">:</span> <span class="n">_mapping</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">domain</span><span class="p">),</span>
-                <span class="s1">&#39;obstacles&#39;</span><span class="p">:</span> <span class="n">_mapping</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">obstacles</span><span class="p">),</span>
-                <span class="s1">&#39;targets&#39;</span><span class="p">:</span> <span class="n">_mapping</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">targets</span><span class="p">),</span>
-                <span class="s1">&#39;spawns&#39;</span><span class="p">:</span> <span class="n">_mapping</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spawns</span><span class="p">)</span>
-            <span class="p">}</span>
-            <span class="c1"># TODO: maybe compact layout?</span>
-            <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">fp</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">separators</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;, &#39;</span><span class="p">,</span> <span class="s1">&#39;: &#39;</span><span class="p">))</span></div>
-
-<div class="viewcode-block" id="Field.load_json"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.multiagent.Field.load_json">[docs]</a>    <span class="k">def</span> <span class="nf">load_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fname</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Load field from JSON&quot;&quot;&quot;</span>
-
-        <span class="k">def</span> <span class="nf">_shape</span><span class="p">(</span><span class="n">geom</span><span class="p">):</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">geom</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">):</span>
-                <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">geom</span><span class="p">))</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">shape</span><span class="p">(</span><span class="n">geom</span><span class="p">)</span> <span class="k">if</span> <span class="n">geom</span> <span class="k">else</span> <span class="n">geom</span>
-
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
-            <span class="n">obj</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">domain</span> <span class="o">=</span> <span class="n">_shape</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="s1">&#39;domain&#39;</span><span class="p">])</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">obstacles</span> <span class="o">=</span> <span class="n">_shape</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="s1">&#39;obstacles&#39;</span><span class="p">])</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">add_targets</span><span class="p">(</span><span class="o">*</span><span class="n">_shape</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="s1">&#39;targets&#39;</span><span class="p">]))</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">add_spawns</span><span class="p">(</span><span class="o">*</span><span class="n">_shape</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="s1">&#39;spawns&#39;</span><span class="p">]))</span></div>
-
-<div class="viewcode-block" id="Field.plot"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.multiagent.Field.plot">[docs]</a>    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mf">0.02</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">strength</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="n">bokeh</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">output_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s1">&#39;.html&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
-        <span class="n">p</span> <span class="o">=</span> <span class="n">bokeh</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">Figure</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">domain</span><span class="p">:</span>
-            <span class="n">minx</span><span class="p">,</span> <span class="n">miny</span><span class="p">,</span> <span class="n">maxx</span><span class="p">,</span> <span class="n">maxy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">domain</span><span class="o">.</span><span class="n">bounds</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">minx</span><span class="p">,</span> <span class="n">miny</span><span class="p">,</span> <span class="n">maxx</span><span class="p">,</span> <span class="n">maxy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convex_hull</span><span class="p">()</span><span class="o">.</span><span class="n">bounds</span>
-
-        <span class="n">set_aspect</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="p">(</span><span class="n">minx</span><span class="p">,</span> <span class="n">maxx</span><span class="p">),</span> <span class="p">(</span><span class="n">miny</span><span class="p">,</span> <span class="n">maxy</span><span class="p">))</span>
-        <span class="n">p</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">minor_grid_line_color</span> <span class="o">=</span> <span class="s1">&#39;navy&#39;</span>
-        <span class="n">p</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">minor_grid_line_alpha</span> <span class="o">=</span> <span class="mf">0.05</span>
-
-        <span class="c1"># indices = chain(range(len(self.targets)), (&#39;closest&#39;,))</span>
-        <span class="c1"># for index in indices:</span>
-        <span class="c1">#     mgrid, distance_map, direction_map = \</span>
-        <span class="c1">#         self.navigation_to_target(index, step, radius, strength)</span>
-
-        <span class="n">mgrid</span><span class="p">,</span> <span class="n">distance_map</span><span class="p">,</span> <span class="n">direction_map</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">navigation_to_target</span><span class="p">(</span>
-            <span class="s1">&#39;closest&#39;</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">radius</span><span class="p">,</span> <span class="n">strength</span><span class="p">)</span>
-
-        <span class="c1"># TODO: masked values on distance map</span>
-        <span class="n">plot_distance_map</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">mgrid</span><span class="p">,</span> <span class="n">distance_map</span><span class="o">.</span><span class="n">filled</span><span class="p">(</span><span class="mf">1.0</span><span class="p">),</span>
-                          <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;distance_map&#39;</span><span class="p">)</span>
-        <span class="n">plot_direction_map</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">mgrid</span><span class="p">,</span> <span class="n">direction_map</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;direction_map&#39;</span><span class="p">)</span>
-
-        <span class="n">plot_geom</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">domain</span><span class="p">,</span>
-                  <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;domain&#39;</span><span class="p">,</span>
-                  <span class="n">alpha</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>
-                  <span class="p">)</span>
-
-        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">spawn</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spawns</span><span class="p">):</span>
-            <span class="n">plot_geom</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">spawn</span><span class="p">,</span>
-                      <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;spawn_</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">),</span>
-                      <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
-                      <span class="n">line_width</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-                      <span class="n">color</span><span class="o">=</span><span class="s1">&#39;green&#39;</span><span class="p">,</span>
-                      <span class="p">)</span>
-
-        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">target</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">targets</span><span class="p">):</span>
-            <span class="n">plot_geom</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span>
-                      <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;target_</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">),</span>
-                      <span class="n">alpha</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span>
-                      <span class="n">line_width</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span>
-                      <span class="n">line_dash</span><span class="o">=</span><span class="s1">&#39;dashed&#39;</span><span class="p">,</span>
-                      <span class="n">color</span><span class="o">=</span><span class="s1">&#39;olive&#39;</span><span class="p">,</span>
-                      <span class="p">)</span>
-
-        <span class="n">plot_geom</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">obstacles</span><span class="p">,</span>
-                  <span class="n">legend</span><span class="o">=</span><span class="s1">&#39;obstacles&#39;</span><span class="p">,</span>
-                  <span class="n">line_width</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span>
-                  <span class="n">alpha</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span>
-                  <span class="p">)</span>
-
-        <span class="n">p</span><span class="o">.</span><span class="n">legend</span><span class="o">.</span><span class="n">location</span> <span class="o">=</span> <span class="s2">&quot;top_left&quot;</span>
-        <span class="n">p</span><span class="o">.</span><span class="n">legend</span><span class="o">.</span><span class="n">click_policy</span> <span class="o">=</span> <span class="s2">&quot;hide&quot;</span>
-
-        <span class="n">bokeh</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">p</span><span class="p">)</span></div></div>
-
-
-<div class="viewcode-block" id="Agents"><a class="viewcode-back" href="../../../multiagent.html#crowddynamics.simulation.multiagent.Agents">[docs]</a><span class="k">class</span> <span class="nc">Agents</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Multi-Agent simulation agent types. Modelled as rigid bodies.</span>
-<span class="sd">     </span>
-<span class="sd">    Circular</span>
-<span class="sd">        .. tikz::</span>
-<span class="sd">           \begin{scope}[scale=3]</span>
-<span class="sd">             \draw[color=gray!20] (-2, -1) grid (2, 1);</span>
-<span class="sd">             \draw[thick] (0, 0) circle (1);</span>
-<span class="sd">             \fill[color=gray!20, opacity=0.5] (0, 0) circle (1);</span>
-<span class="sd">             \node[below] () at (0, 0) {$ \mathbf{x} $};</span>
-<span class="sd">             \fill (0, 0) circle(0.5pt);</span>
-<span class="sd">             \draw[dashed, &lt;-&gt;] (0, 0) -- node[above] {$ r $} ++(135:1);</span>
-<span class="sd">           \end{scope}</span>
-
-<span class="sd">        **Circular** agents are modelled as a disk with radius :math:`r &gt; 0`</span>
-<span class="sd">        from the center of mass :math:`\mathbf{x}`. This type of agents do not</span>
-<span class="sd">        have orientation. This is the simplest model for an agent and works</span>
-<span class="sd">        quite well for sparse and medium density crowds, but modelling higher</span>
-<span class="sd">        density crowds with this model can be unrealistic because circular</span>
-<span class="sd">        model is too wide in the  perpendicular width compared to three-circle</span>
-<span class="sd">        or capsule representations  and lacks the ability change orientation to</span>
-<span class="sd">        fit through smaller spaces. [Helbing2000a]_</span>
-
-<span class="sd">    Three-Circle</span>
-<span class="sd">        .. tikz:: </span>
-<span class="sd">           \begin{scope}[scale=3]</span>
-<span class="sd">             \draw[color=gray!20] (-2, -1) grid (2, 1);</span>
-<span class="sd">             \draw[thick] (0, 0) circle (0.59);</span>
-<span class="sd">             \draw[thick] (-0.63, 0) circle (0.37);</span>
-<span class="sd">             \draw[thick] (0.63, 0) circle (0.37);</span>
-<span class="sd">             \fill[gray!20, opacity=0.5] (0, 0) circle (0.59);</span>
-<span class="sd">             \fill[gray!20, opacity=0.5] (-0.63, 0) circle (0.37);</span>
-<span class="sd">             \fill[gray!20, opacity=0.5] (0.63, 0) circle (0.37);</span>
-<span class="sd">             \node[below] () at (0, 0) {$ \mathbf{x} $};</span>
-<span class="sd">             \fill (0, 0) circle(0.5pt);</span>
-<span class="sd">             \fill (-0.63, 0) circle(0.5pt);</span>
-<span class="sd">             \fill (0.63, 0) circle(0.5pt);</span>
-<span class="sd">             \draw[dashed, &lt;-&gt;] (0, 0) -- node[above] {$ r_{t} $} ++(135:0.59);</span>
-<span class="sd">             \draw[dashed, &lt;-&gt;] (-0.63, 0) -- node[above] {$ r_{s} $} ++(135:0.37);</span>
-<span class="sd">             \draw[dashed, &lt;-&gt;] (0.63, 0) -- node[above] {$ r_{s} $} ++(45:0.37);</span>
-<span class="sd">             \draw[dashed, &lt;-&gt;] (0, 0) -- node[above] {$ r_{ts} $} (-0.63, 0);</span>
-<span class="sd">             \draw[dashed, &lt;-&gt;] (0, 0) -- node[above] {$ r_{ts} $} (0.63, 0);</span>
-<span class="sd">             %\draw[thick, -&gt;] (0, 0) -- node[left] {$ \mathbf{\hat{e}_n} $} (0, 0.3);</span>
-<span class="sd">             %\draw[thick, -&gt;] (0, 0) -- node[below] {$ \mathbf{\hat{e}_t} $} (0.3, 0);</span>
-<span class="sd">           \end{scope}</span>
-
-<span class="sd">        **Three-circle** agents are modelled as three disks representing the</span>
-<span class="sd">        torso and two shoulders of an average human. Torso is a disk with radius</span>
-<span class="sd">        :math:`r_t &gt; 0` from the center of mass :math:`\mathbf{x}`. Two</span>
-<span class="sd">        shoulders are disks with radius :math:`r_s` located at along the</span>
-<span class="sd">        tangents at distance :math:`r_{ts}` from the center of mass</span>
-<span class="sd">        :math:`\mathbf{x} \pm r_{ts} \mathbf{\hat{e}_t}`, where</span>
-<span class="sd">        :math:`\mathbf{\hat{e}_t} = [\sin(\varphi), -\cos(\varphi)]`. Three</span>
-<span class="sd">        circle type has orientation of :math:`\varphi`. Model was proposed </span>
-<span class="sd">        *Crowd dynamics discrete element multi-circle model* [Langston2006]_ and</span>
-<span class="sd">        has been used for example in FDS+EVAC [Korhonen2008b]_.</span>
-
-<span class="sd">    Capsule</span>
-<span class="sd">        .. note:: Capsule is not implemented yet</span>
-
-<span class="sd">        .. tikz::</span>
-<span class="sd">           \begin{scope}[scale=3]</span>
-<span class="sd">             \draw[color=gray!20] (-2, -1) grid (2, 1);</span>
-<span class="sd">             \draw[thick] (0.5, 0.5) arc (90:-90:0.5) </span>
-<span class="sd">                          -- ++(-1, 0) arc (270:90:0.5) </span>
-<span class="sd">                          -- ++(1, 0);</span>
-<span class="sd">              \fill[gray!20, opacity=0.5] (0.5, 0.5) arc (90:-90:0.5) </span>
-<span class="sd">                          -- ++(-1, 0) arc (270:90:0.5) </span>
-<span class="sd">                          -- ++(1, 0);</span>
-<span class="sd">             \node[below] () at (0, 0) {$ \mathbf{x} $};</span>
-<span class="sd">             \fill (0, 0) circle(0.5pt);</span>
-<span class="sd">             \fill (-0.5, 0) circle(0.5pt);</span>
-<span class="sd">             \fill (0.5, 0) circle(0.5pt);</span>
-<span class="sd">             \draw[thick] (-0.5, 0) -- (0.5, 0);</span>
-<span class="sd">             \draw[dashed, &lt;-&gt;] (-0.5, 0) -- node[above] {$ r $} ++(135:0.5);</span>
-<span class="sd">             \draw[dashed, &lt;-&gt;] (-0.5, -0.2) -- node[below]{$ w $} (0.5, -0.2);</span>
-<span class="sd">             %\draw[thick, -&gt;] (0, 0) -- node[left] {$ \mathbf{\hat{e}_n} $} (0, 0.3);</span>
-<span class="sd">             %\draw[thick, -&gt;] (0, 0) -- node[below] {$ \mathbf{\hat{e}_t} $} (0.3, 0);</span>
-<span class="sd">           \end{scope}</span>
-
-<span class="sd">        **Capsule** shaped model used in *Dense Crowds of Virtual Humans* </span>
-<span class="sd">        [Stuvel2016]_ and *Simulating competitive egress of noncircular </span>
-<span class="sd">        pedestrians* [Hidalgo2017]_.</span>
-<span class="sd">        </span>
-<span class="sd">        .. math::</span>
-<span class="sd">           r &amp;= T / 2 \\</span>
-<span class="sd">           w &amp;= W - 2 r</span>
-<span class="sd">        </span>
-<span class="sd">        where </span>
-<span class="sd">        </span>
-<span class="sd">        - :math:`T` is the thickness of the chest</span>
-<span class="sd">        - :math:`W` is the width of the chest</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
-    <span class="c1"># TODO: remove size -&gt; make it resize with addition of new agents</span>
-    <span class="c1"># TODO: traits: agent_type, body_types, configuration</span>
-    <span class="c1"># TODO: set attributes -&gt; attributes to Callable[_, dict]</span>
-
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-                 <span class="n">size</span><span class="p">,</span>
-                 <span class="n">agent_type</span><span class="o">=</span><span class="s1">&#39;circular&#39;</span><span class="p">,</span>
-                 <span class="n">agent_cfg</span><span class="o">=</span><span class="n">AGENT_CFG</span><span class="p">,</span>
-                 <span class="n">agent_cfg_spec</span><span class="o">=</span><span class="n">AGENT_CFG_SPEC</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Agent manager</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            size (int):</span>
-<span class="sd">                Number of agents</span>
-<span class="sd">            agent_type (str|numpy.dtype):</span>
-<span class="sd">                AgentModelToType</span>
-<span class="sd">            agent_cfg:</span>
-<span class="sd">                Agent configuration filepath</span>
-<span class="sd">            agent_cfg_spec:</span>
-<span class="sd">                Agent configuration spec filepath</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">agent_type</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="n">dtype</span> <span class="o">=</span> <span class="n">AgentModelToType</span><span class="p">[</span><span class="n">agent_type</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">dtype</span> <span class="o">=</span> <span class="n">agent_type</span>
-
-        <span class="c1"># Keeps track of which agents are active and which in active. Stores</span>
-        <span class="c1"># indices of agents.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_active</span> <span class="o">=</span> <span class="n">SortedSet</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_inactive</span> <span class="o">=</span> <span class="n">SortedSet</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">size</span><span class="p">))</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">load_config</span><span class="p">(</span><span class="n">infile</span><span class="o">=</span><span class="n">agent_cfg</span><span class="p">,</span> <span class="n">configspec</span><span class="o">=</span><span class="n">agent_cfg_spec</span><span class="p">)</span>
-
-        <span class="c1"># Faster check for neighbouring agents for initializing agents into</span>
-        <span class="c1"># random positions.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_grid</span> <span class="o">=</span> <span class="n">MutableBlockList</span><span class="p">(</span>
-            <span class="n">cell_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;constants&#39;</span><span class="p">][</span><span class="s1">&#39;cell_size&#39;</span><span class="p">])</span>
-
-    <span class="nd">@staticmethod</span>
-<div class="viewcode-block" id="Agents.reset_agent"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.multiagent.Agents.reset_agent">[docs]</a>    <span class="k">def</span> <span class="nf">reset_agent</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">agents</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Reset agent&quot;&quot;&quot;</span>
-        <span class="n">agents</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">agents</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span></div>
-
-    <span class="nd">@staticmethod</span>
-<div class="viewcode-block" id="Agents.body_to_values"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.multiagent.Agents.body_to_values">[docs]</a>    <span class="k">def</span> <span class="nf">body_to_values</span><span class="p">(</span><span class="n">body</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Body to values&quot;&quot;&quot;</span>
-        <span class="n">radius</span> <span class="o">=</span> <span class="n">_truncnorm</span><span class="p">(</span><span class="n">body</span><span class="p">[</span><span class="s1">&#39;radius&#39;</span><span class="p">],</span> <span class="n">body</span><span class="p">[</span><span class="s1">&#39;radius_scale&#39;</span><span class="p">])</span>
-        <span class="n">mass</span> <span class="o">=</span> <span class="n">_truncnorm</span><span class="p">(</span><span class="n">body</span><span class="p">[</span><span class="s1">&#39;mass&#39;</span><span class="p">],</span> <span class="n">body</span><span class="p">[</span><span class="s1">&#39;mass_scale&#39;</span><span class="p">])</span>
-        <span class="c1"># Rotational inertia of mass 80 kg and radius 0.27 m agent.</span>
-        <span class="c1"># Should be scaled to correct value for agents.</span>
-        <span class="n">inertia_rot</span> <span class="o">=</span> <span class="mf">4.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="p">(</span><span class="n">mass</span> <span class="o">/</span> <span class="mf">80.0</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">radius</span> <span class="o">/</span> <span class="mf">0.27</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
-        <span class="k">return</span> <span class="p">{</span>
-            <span class="s1">&#39;r_t&#39;</span><span class="p">:</span> <span class="n">body</span><span class="p">[</span><span class="s1">&#39;ratio_rt&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">radius</span><span class="p">,</span>
-            <span class="s1">&#39;r_s&#39;</span><span class="p">:</span> <span class="n">body</span><span class="p">[</span><span class="s1">&#39;ratio_rs&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">radius</span><span class="p">,</span>
-            <span class="s1">&#39;r_ts&#39;</span><span class="p">:</span> <span class="n">body</span><span class="p">[</span><span class="s1">&#39;ratio_ts&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">radius</span><span class="p">,</span>
-            <span class="s1">&#39;radius&#39;</span><span class="p">:</span> <span class="n">radius</span><span class="p">,</span>
-            <span class="s1">&#39;target_velocity&#39;</span><span class="p">:</span> <span class="n">_truncnorm</span><span class="p">(</span><span class="n">body</span><span class="p">[</span><span class="s1">&#39;velocity&#39;</span><span class="p">],</span>
-                                          <span class="n">body</span><span class="p">[</span><span class="s1">&#39;velocity_scale&#39;</span><span class="p">]),</span>
-            <span class="s1">&#39;mass&#39;</span><span class="p">:</span> <span class="n">mass</span><span class="p">,</span>
-            <span class="s1">&#39;target_angular_velocity&#39;</span><span class="p">:</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span>
-            <span class="s1">&#39;inertia_rot&#39;</span><span class="p">:</span> <span class="n">inertia_rot</span>
-        <span class="p">}</span></div>
-
-    <span class="nd">@staticmethod</span>
-<div class="viewcode-block" id="Agents.set_agent_attributes"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.multiagent.Agents.set_agent_attributes">[docs]</a>    <span class="k">def</span> <span class="nf">set_agent_attributes</span><span class="p">(</span><span class="n">agents</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">attributes</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Set attributes for agent</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            agents:</span>
-<span class="sd">            attributes:</span>
-<span class="sd">                Dictionary values, iterators or callables.</span>
-<span class="sd">                - Iterator; return value of next is used</span>
-<span class="sd">                - Callable: return value of __call__ will be used</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">for</span> <span class="n">attribute</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">attributes</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">agents</span><span class="p">[</span><span class="n">index</span><span class="p">][</span><span class="n">attribute</span><span class="p">]</span> <span class="o">=</span> <span class="n">call</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
-            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-                <span class="c1"># logger = logging.getLogger(__name__)</span>
-                <span class="c1"># logger.warning(&#39;Agent: {} doesn\&#39;t have attribute {}&#39;.format(</span>
-                <span class="c1">#     of_model(agents), attribute</span>
-                <span class="c1"># ))</span>
-                <span class="k">pass</span></div>
-
-    <span class="k">def</span> <span class="nf">_add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attributes</span><span class="p">,</span> <span class="n">check_overlapping</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Add new agent with given attributes</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            check_overlapping (bool):</span>
-<span class="sd">            attributes:</span>
-
-<span class="sd">                - body_type:</span>
-<span class="sd">                - position: Initial position of the agent</span>
-<span class="sd">                - orientation: Initial orientation [-π, π] of the agent.</span>
-<span class="sd">                - velocity: Initial velocity</span>
-<span class="sd">                - angular_velocity: Angular velocity</span>
-<span class="sd">                - target_direction: Unit vector to desired direction</span>
-<span class="sd">                - target_orientation:</span>
-
-<span class="sd">        Raises:</span>
-<span class="sd">            AgentStructureFull: When no more agents can be added.</span>
-<span class="sd">            OverlappingError: When two agents overlap each other.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inactive</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">AgentStructureFull</span>
-
-        <span class="n">attrs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;defaults&#39;</span><span class="p">])</span>
-        <span class="n">attrs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">attributes</span><span class="p">)</span>
-
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">body_type</span> <span class="o">=</span> <span class="n">call</span><span class="p">(</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;body_type&#39;</span><span class="p">])</span>
-            <span class="n">body</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;body_types&#39;</span><span class="p">][</span><span class="n">body_type</span><span class="p">]</span>
-            <span class="n">attrs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">body_to_values</span><span class="p">(</span><span class="n">body</span><span class="p">))</span>
-            <span class="k">del</span> <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;body_type&#39;</span><span class="p">]</span>
-        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-            <span class="k">pass</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">set_agent_attributes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">array</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">attrs</span><span class="p">)</span>
-
-        <span class="c1"># Update shoulder positions for three circle agents</span>
-        <span class="k">if</span> <span class="n">is_model</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">array</span><span class="p">,</span> <span class="s1">&#39;three_circle&#39;</span><span class="p">):</span>
-            <span class="n">shoulders</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">array</span><span class="p">)</span>
-
-        <span class="n">agent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">array</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
-        <span class="n">radius</span> <span class="o">=</span> <span class="n">agent</span><span class="p">[</span><span class="s1">&#39;radius&#39;</span><span class="p">]</span>
-        <span class="n">position</span> <span class="o">=</span> <span class="n">agent</span><span class="p">[</span><span class="s1">&#39;position&#39;</span><span class="p">]</span>
-
-        <span class="k">if</span> <span class="n">check_overlapping</span><span class="p">:</span>
-            <span class="n">neighbours</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_grid</span><span class="o">.</span><span class="n">nearest</span><span class="p">(</span><span class="n">position</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-            <span class="n">agents</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">array</span><span class="p">[</span><span class="n">neighbours</span><span class="p">]</span>
-
-            <span class="k">if</span> <span class="n">is_model</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">array</span><span class="p">,</span> <span class="s1">&#39;circular&#39;</span><span class="p">):</span>
-                <span class="k">if</span> <span class="n">overlapping_circles</span><span class="p">(</span><span class="n">agents</span><span class="p">,</span> <span class="n">position</span><span class="p">,</span> <span class="n">radius</span><span class="p">):</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">reset_agent</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">array</span><span class="p">)</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_inactive</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
-                    <span class="k">raise</span> <span class="n">OverlappingError</span>
-            <span class="k">elif</span> <span class="n">is_model</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">array</span><span class="p">,</span> <span class="s1">&#39;three_circle&#39;</span><span class="p">):</span>
-                <span class="k">if</span> <span class="n">overlapping_three_circles</span><span class="p">(</span>
-                        <span class="n">agents</span><span class="p">,</span>
-                        <span class="p">(</span><span class="n">agent</span><span class="p">[</span><span class="s1">&#39;position&#39;</span><span class="p">],</span> <span class="n">agent</span><span class="p">[</span><span class="s1">&#39;position_ls&#39;</span><span class="p">],</span>
-                         <span class="n">agent</span><span class="p">[</span><span class="s1">&#39;position_rs&#39;</span><span class="p">]),</span>
-                        <span class="p">(</span><span class="n">agent</span><span class="p">[</span><span class="s1">&#39;r_t&#39;</span><span class="p">],</span> <span class="n">agent</span><span class="p">[</span><span class="s1">&#39;r_s&#39;</span><span class="p">],</span> <span class="n">agent</span><span class="p">[</span><span class="s1">&#39;r_s&#39;</span><span class="p">])):</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">reset_agent</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">array</span><span class="p">)</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_inactive</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
-                    <span class="k">raise</span> <span class="n">OverlappingError</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="n">CrowdDynamicsException</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">_grid</span><span class="p">[</span><span class="n">position</span><span class="p">]</span> <span class="o">=</span> <span class="n">index</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_active</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">array</span><span class="p">[</span><span class="n">index</span><span class="p">][</span><span class="s1">&#39;active&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="k">return</span> <span class="n">index</span>
-
-    <span class="nd">@log_with</span><span class="p">(</span><span class="n">qualname</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">timed</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ignore</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;self&#39;</span><span class="p">,))</span>
-<div class="viewcode-block" id="Agents.add_group"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.multiagent.Agents.add_group">[docs]</a>    <span class="k">def</span> <span class="nf">add_group</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">attributes</span><span class="p">,</span> <span class="n">check_overlapping</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Add group of agents</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            check_overlapping:</span>
-<span class="sd">            size (int):</span>
-<span class="sd">            attributes (dict|Callable[dict]):</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">overlaps</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="n">iteration</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="n">iterations_max</span> <span class="o">=</span> <span class="mi">10</span> <span class="o">*</span> <span class="n">size</span>
-
-        <span class="c1"># Progress bar for displaying number of agents placed</span>
-        <span class="c1"># FIXME: tqdm does not work with tests</span>
-        <span class="c1"># success = tqdm(desc=&#39;Agents placed: &#39;, total=amount)</span>
-        <span class="c1"># overlapping = tqdm(desc=&#39;Agent overlaps: &#39;, total=iterations_max)</span>
-        <span class="k">while</span> <span class="n">iteration</span> <span class="o">&lt;</span> <span class="n">size</span> <span class="ow">and</span> <span class="n">overlaps</span> <span class="o">&lt;</span> <span class="n">iterations_max</span><span class="p">:</span>
-            <span class="n">a</span> <span class="o">=</span> <span class="n">attributes</span><span class="p">()</span> <span class="k">if</span> <span class="n">callable</span><span class="p">(</span><span class="n">attributes</span><span class="p">)</span> <span class="k">else</span> <span class="n">attributes</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_add</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">check_overlapping</span><span class="o">=</span><span class="n">check_overlapping</span><span class="p">)</span>
-                <span class="c1"># success.update(1)</span>
-            <span class="k">except</span> <span class="n">OverlappingError</span><span class="p">:</span>
-                <span class="n">overlaps</span> <span class="o">+=</span> <span class="mi">1</span>
-                <span class="c1"># overlapping.update(1)</span>
-                <span class="k">continue</span>
-            <span class="k">except</span> <span class="n">AgentStructureFull</span><span class="p">:</span>
-                <span class="k">break</span>
-            <span class="n">iteration</span> <span class="o">+=</span> <span class="mi">1</span>
-        <span class="c1"># success.close()</span>
-        <span class="c1"># overlapping.close()</span>
-
-        <span class="k">if</span> <span class="n">is_model</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">array</span><span class="p">,</span> <span class="s1">&#39;three_circle&#39;</span><span class="p">):</span>
-            <span class="n">shoulders</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">array</span><span class="p">)</span></div>
-
-    <span class="nd">@log_with</span><span class="p">(</span><span class="n">qualname</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">timed</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ignore</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;self&#39;</span><span class="p">,))</span>
-<div class="viewcode-block" id="Agents.remove"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.multiagent.Agents.remove">[docs]</a>    <span class="k">def</span> <span class="nf">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Remove agent&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">index</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_active</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_active</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_inactive</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">array</span><span class="p">[</span><span class="n">index</span><span class="p">][</span><span class="s1">&#39;active&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">reset_agent</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">array</span><span class="p">)</span>
-            <span class="k">return</span> <span class="kc">True</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">False</span></div></div>
-
-
-<div class="viewcode-block" id="LogicNode"><a class="viewcode-back" href="../../../multiagent.html#crowddynamics.simulation.multiagent.LogicNode">[docs]</a><span class="k">class</span> <span class="nc">LogicNode</span><span class="p">(</span><span class="n">Node</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Simulation logic is programmed as a tree of dependencies of the order of</span>
-<span class="sd">    the execution. For example simulation&#39;s logic tree could look like::</span>
-
-<span class="sd">        Reset</span>
-<span class="sd">        └── Integrator</span>
-<span class="sd">            ├── Fluctuation</span>
-<span class="sd">            ├── Adjusting</span>
-<span class="sd">            │   ├── Navigation</span>
-<span class="sd">            │   └── Orientation</span>
-<span class="sd">            ├── AgentAgentInteractions</span>
-<span class="sd">            └── AgentObstacleInteractions</span>
-
-<span class="sd">    In this tree we can notice the dependencies. For example before using</span>
-<span class="sd">    updating `Adjusting` node we need to update `Navigation` and `Orientation`</span>
-<span class="sd">    nodes.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">simulation</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">LogicNode</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">simulation</span> <span class="o">=</span> <span class="n">simulation</span></div>
-
-
-<div class="viewcode-block" id="MultiAgentSimulation"><a class="viewcode-back" href="../../../multiagent.html#crowddynamics.simulation.multiagent.MultiAgentSimulation">[docs]</a><span class="k">class</span> <span class="nc">MultiAgentSimulation</span><span class="p">(</span><span class="n">HasTraits</span><span class="p">):</span>
+<div class="viewcode-block" id="MultiAgentSimulation"><a class="viewcode-back" href="../../../multiagent.html#crowddynamics.simulation.multiagent.MultiAgentSimulation">[docs]</a><span class="k">class</span> <span class="nc">MultiAgentSimulation</span><span class="p">(</span><span class="n">SimulationBase</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Constructing a multi-agent simulation</span>
 
 <span class="sd">    Field</span>
@@ -833,58 +212,33 @@
 <span class="sd">        using *post-order* traversal.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">name</span> <span class="o">=</span> <span class="n">Unicode</span><span class="p">()</span>
-    <span class="n">field</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">Field</span><span class="p">)</span>
-    <span class="n">agents</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">Agents</span><span class="p">)</span>
-    <span class="n">tasks</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">LogicNode</span><span class="p">)</span>
+    <span class="n">field</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span>
+        <span class="n">Field</span><span class="p">,</span>
+        <span class="n">allow_none</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">agents</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span>
+        <span class="n">Agents</span><span class="p">,</span>
+        <span class="n">allow_none</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">logic</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span>
+        <span class="n">LogicNode</span><span class="p">,</span>
+        <span class="n">allow_none</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">configfile</span><span class="o">=</span><span class="n">MULTIAGENT_CFG</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">configs</span> <span class="o">=</span> <span class="n">load_config</span><span class="p">(</span><span class="n">configfile</span><span class="p">,</span> <span class="n">MULTIAGENT_CFG_SPEC</span><span class="p">)</span>
-
-        <span class="c1"># Generated simulation data that is shared between task nodes.</span>
-        <span class="c1"># This should be data that can be updated and should be saved on</span>
-        <span class="c1"># every iteration.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;iterations&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;time_tot&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;dt&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;goal_reached&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
 
-    <span class="nd">@default</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">_default_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
-
-    <span class="nd">@lru_cache</span><span class="p">()</span>
-<div class="viewcode-block" id="MultiAgentSimulation.name_with_timestamp"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.multiagent.MultiAgentSimulation.name_with_timestamp">[docs]</a>    <span class="k">def</span> <span class="nf">name_with_timestamp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Simulation name with timestamp. First call is cached.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">_%H:%M:%S.</span><span class="si">%f</span><span class="s1">&#39;</span><span class="p">)</span></div>
-
+    <span class="nd">@log_with</span><span class="p">(</span><span class="n">timed</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">arguments</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <div class="viewcode-block" id="MultiAgentSimulation.update"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.multiagent.MultiAgentSimulation.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Execute new iteration cycle of the simulation.&quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">PostOrderIter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">logic</span><span class="o">.</span><span class="n">root</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
             <span class="n">node</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;iterations&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span></div>
-
-    <span class="nd">@log_with</span><span class="p">(</span><span class="n">qualname</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ignore</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;self&#39;</span><span class="p">})</span>
-<div class="viewcode-block" id="MultiAgentSimulation.run"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.multiagent.MultiAgentSimulation.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exit_condition</span><span class="o">=</span><span class="k">lambda</span> <span class="n">_</span><span class="p">:</span> <span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Updates simulation until exit condition is met (returns True).</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            exit_condition (Callable[MultiAgentSimulation, bool]):</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">while</span> <span class="ow">not</span> <span class="n">exit_condition</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span></div>
-
-<div class="viewcode-block" id="MultiAgentSimulation.dump_config"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.multiagent.MultiAgentSimulation.dump_config">[docs]</a>    <span class="k">def</span> <span class="nf">dump_config</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
-
-<div class="viewcode-block" id="MultiAgentSimulation.plot_logic"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.multiagent.MultiAgentSimulation.plot_logic">[docs]</a>    <span class="k">def</span> <span class="nf">plot_logic</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fname</span><span class="p">):</span>
-        <span class="kn">from</span> <span class="nn">anytree.dotexport</span> <span class="k">import</span> <span class="n">RenderTreeGraph</span>
-        <span class="n">name</span><span class="p">,</span> <span class="n">ext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">ext</span> <span class="o">!=</span> <span class="s1">&#39;.png&#39;</span><span class="p">:</span>
-            <span class="n">fname</span> <span class="o">+=</span> <span class="s1">&#39;.png&#39;</span>
-        <span class="n">RenderTreeGraph</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">logic</span><span class="o">.</span><span class="n">root</span><span class="p">)</span><span class="o">.</span><span class="n">to_picture</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span></div></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;iterations&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span></div></div>
 
 
 <div class="viewcode-block" id="MultiAgentProcess"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.multiagent.MultiAgentProcess">[docs]</a><span class="k">class</span> <span class="nc">MultiAgentProcess</span><span class="p">(</span><span class="n">Process</span><span class="p">):</span>
@@ -912,7 +266,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">exit</span> <span class="o">=</span> <span class="n">Event</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">queue</span> <span class="o">=</span> <span class="n">queue</span>
 
-    <span class="nd">@log_with</span><span class="p">(</span><span class="n">qualname</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="nd">@log_with</span><span class="p">(</span><span class="n">qualname</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ignore</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;self&#39;</span><span class="p">})</span>
 <div class="viewcode-block" id="MultiAgentProcess.run"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.multiagent.MultiAgentProcess.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Runs simulation process by calling update method repeatedly until</span>
 <span class="sd">        stop is called. This method is called automatically by Process class</span>
@@ -925,153 +279,10 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">EndProcess</span><span class="p">)</span></div>
 
-    <span class="nd">@log_with</span><span class="p">(</span><span class="n">qualname</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="nd">@log_with</span><span class="p">(</span><span class="n">qualname</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ignore</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;self&#39;</span><span class="p">})</span>
 <div class="viewcode-block" id="MultiAgentProcess.stop"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.multiagent.MultiAgentProcess.stop">[docs]</a>    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Sets event to true in order to stop the simulation process.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">exit</span><span class="o">.</span><span class="n">set</span><span class="p">()</span></div></div>
-
-
-<div class="viewcode-block" id="Reset"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.multiagent.Reset">[docs]</a><span class="k">class</span> <span class="nc">Reset</span><span class="p">(</span><span class="n">LogicNode</span><span class="p">):</span>
-<div class="viewcode-block" id="Reset.update"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.multiagent.Reset.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">reset_motion</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">array</span><span class="p">)</span></div></div>
-        <span class="c1"># TODO: reset agent neighbor</span>
-
-
-<div class="viewcode-block" id="Integrator"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.multiagent.Integrator">[docs]</a><span class="k">class</span> <span class="nc">Integrator</span><span class="p">(</span><span class="n">LogicNode</span><span class="p">):</span>
-<div class="viewcode-block" id="Integrator.update"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.multiagent.Integrator.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">dt_min</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;integrator&#39;</span><span class="p">][</span><span class="s1">&#39;dt_min&#39;</span><span class="p">]</span>
-        <span class="n">dt_max</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;integrator&#39;</span><span class="p">][</span><span class="s1">&#39;dt_max&#39;</span><span class="p">]</span>
-        <span class="n">dt</span> <span class="o">=</span> <span class="n">velocity_verlet_integrator</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">array</span><span class="p">,</span>
-                                        <span class="n">dt_min</span><span class="p">,</span> <span class="n">dt_max</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;dt&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dt</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;time_tot&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="n">dt</span></div></div>
-
-
-<div class="viewcode-block" id="Fluctuation"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.multiagent.Fluctuation">[docs]</a><span class="k">class</span> <span class="nc">Fluctuation</span><span class="p">(</span><span class="n">LogicNode</span><span class="p">):</span>
-<div class="viewcode-block" id="Fluctuation.update"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.multiagent.Fluctuation.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">agents</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">array</span>
-        <span class="n">agents</span><span class="p">[</span><span class="s1">&#39;force&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="n">force_fluctuation</span><span class="p">(</span><span class="n">agents</span><span class="p">[</span><span class="s1">&#39;mass&#39;</span><span class="p">],</span>
-                                             <span class="n">agents</span><span class="p">[</span><span class="s1">&#39;std_rand_force&#39;</span><span class="p">])</span>
-        <span class="k">if</span> <span class="n">is_model</span><span class="p">(</span><span class="n">agents</span><span class="p">,</span> <span class="s1">&#39;three_circle&#39;</span><span class="p">):</span>
-            <span class="n">agents</span><span class="p">[</span><span class="s1">&#39;torque&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="n">torque_fluctuation</span><span class="p">(</span><span class="n">agents</span><span class="p">[</span><span class="s1">&#39;inertia_rot&#39;</span><span class="p">],</span>
-                                                   <span class="n">agents</span><span class="p">[</span><span class="s1">&#39;std_rand_torque&#39;</span><span class="p">])</span></div></div>
-
-
-<div class="viewcode-block" id="Adjusting"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.multiagent.Adjusting">[docs]</a><span class="k">class</span> <span class="nc">Adjusting</span><span class="p">(</span><span class="n">LogicNode</span><span class="p">):</span>
-<div class="viewcode-block" id="Adjusting.update"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.multiagent.Adjusting.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">agents</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">array</span>
-        <span class="n">force_adjust_agents</span><span class="p">(</span><span class="n">agents</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">is_model</span><span class="p">(</span><span class="n">agents</span><span class="p">,</span> <span class="s1">&#39;three_circle&#39;</span><span class="p">):</span>
-            <span class="n">torque_adjust_agents</span><span class="p">(</span><span class="n">agents</span><span class="p">)</span></div></div>
-
-
-<div class="viewcode-block" id="AgentAgentInteractions"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.multiagent.AgentAgentInteractions">[docs]</a><span class="k">class</span> <span class="nc">AgentAgentInteractions</span><span class="p">(</span><span class="n">LogicNode</span><span class="p">):</span>
-<div class="viewcode-block" id="AgentAgentInteractions.update"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.multiagent.AgentAgentInteractions.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">agent_agent_block_list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">array</span><span class="p">)</span></div></div>
-
-
-<div class="viewcode-block" id="AgentObstacleInteractions"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.multiagent.AgentObstacleInteractions">[docs]</a><span class="k">class</span> <span class="nc">AgentObstacleInteractions</span><span class="p">(</span><span class="n">LogicNode</span><span class="p">):</span>
-<div class="viewcode-block" id="AgentObstacleInteractions.update"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.multiagent.AgentObstacleInteractions.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">agents</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">array</span>
-        <span class="n">obstacles</span> <span class="o">=</span> <span class="n">geom_to_linear_obstacles</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">field</span><span class="o">.</span><span class="n">obstacles</span><span class="p">)</span>
-        <span class="n">agent_obstacle</span><span class="p">(</span><span class="n">agents</span><span class="p">,</span> <span class="n">obstacles</span><span class="p">)</span></div></div>
-
-
-<div class="viewcode-block" id="Navigation"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.multiagent.Navigation">[docs]</a><span class="k">class</span> <span class="nc">Navigation</span><span class="p">(</span><span class="n">LogicNode</span><span class="p">):</span>
-<div class="viewcode-block" id="Navigation.update"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.multiagent.Navigation.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">step</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;navigation&#39;</span><span class="p">][</span><span class="s1">&#39;step&#39;</span><span class="p">]</span>
-        <span class="n">radius</span> <span class="o">=</span> <span class="n">radius</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;navigation&#39;</span><span class="p">][</span><span class="s1">&#39;radius&#39;</span><span class="p">]</span>
-        <span class="n">value</span> <span class="o">=</span> <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;navigation&#39;</span><span class="p">][</span><span class="s1">&#39;strength&#39;</span><span class="p">]</span>
-        <span class="n">agents</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">array</span>
-        <span class="n">targets</span> <span class="o">=</span> <span class="n">agents</span><span class="p">[</span><span class="s1">&#39;target&#39;</span><span class="p">]</span>
-        <span class="k">for</span> <span class="n">target</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">targets</span><span class="p">):</span>
-            <span class="n">mgrid</span><span class="p">,</span> <span class="n">distance_map</span><span class="p">,</span> <span class="n">direction_map</span> <span class="o">=</span> \
-                <span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">field</span><span class="o">.</span><span class="n">navigation_to_target</span><span class="p">(</span>
-                    <span class="n">target</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">radius</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
-            <span class="n">navigation</span><span class="p">(</span><span class="n">agents</span><span class="p">,</span> <span class="n">targets</span> <span class="o">==</span> <span class="n">target</span><span class="p">,</span> <span class="n">mgrid</span><span class="p">,</span> <span class="n">direction_map</span><span class="p">)</span></div></div>
-
-
-<div class="viewcode-block" id="Herding"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.multiagent.Herding">[docs]</a><span class="k">class</span> <span class="nc">Herding</span><span class="p">(</span><span class="n">LogicNode</span><span class="p">):</span>
-<div class="viewcode-block" id="Herding.update"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.multiagent.Herding.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="n">sight_herding</span> <span class="o">=</span> <span class="mf">3.0</span>
-        <span class="n">agents</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">array</span>
-        <span class="n">herding</span><span class="p">(</span><span class="n">agents</span><span class="p">,</span> <span class="n">agents</span><span class="p">[</span><span class="s1">&#39;herding&#39;</span><span class="p">],</span> <span class="n">sight_herding</span><span class="p">)</span></div></div>
-
-
-<div class="viewcode-block" id="Orientation"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.multiagent.Orientation">[docs]</a><span class="k">class</span> <span class="nc">Orientation</span><span class="p">(</span><span class="n">LogicNode</span><span class="p">):</span>
-<div class="viewcode-block" id="Orientation.update"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.multiagent.Orientation.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">is_model</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">array</span><span class="p">,</span> <span class="s1">&#39;three_circle&#39;</span><span class="p">):</span>
-            <span class="n">orient_towards_target_direction</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">array</span><span class="p">)</span></div></div>
-
-
-<span class="k">def</span> <span class="nf">_save_condition</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span> <span class="n">frequency</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
-    <span class="k">return</span> <span class="p">(</span><span class="n">simulation</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;iterations&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">frequency</span> <span class="o">==</span> <span class="mi">0</span>
-
-
-<div class="viewcode-block" id="SaveSimulationData"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.multiagent.SaveSimulationData">[docs]</a><span class="k">class</span> <span class="nc">SaveSimulationData</span><span class="p">(</span><span class="n">LogicNode</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">simulation</span><span class="p">,</span> <span class="n">directory</span><span class="p">,</span> <span class="n">save_condition</span><span class="o">=</span><span class="n">_save_condition</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">simulation</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">save_condition</span> <span class="o">=</span> <span class="n">save_condition</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">directory</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">directory</span><span class="p">,</span>
-                                      <span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">name_with_timestamp</span><span class="p">())</span>
-        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">directory</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">field</span><span class="o">.</span><span class="n">dump_geometry</span><span class="p">(</span>
-            <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">directory</span><span class="p">,</span> <span class="s1">&#39;geometry.json&#39;</span><span class="p">))</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">save_agent_npy</span> <span class="o">=</span> <span class="n">save_npy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">directory</span><span class="p">,</span> <span class="s1">&#39;agents&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">save_agent_npy</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">save_data_csv</span> <span class="o">=</span> <span class="n">save_csv</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">directory</span><span class="p">,</span> <span class="s1">&#39;data&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">save_data_csv</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
-
-<div class="viewcode-block" id="SaveSimulationData.update"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.multiagent.SaveSimulationData.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">save</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">save_condition</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">save_agent_npy</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">array</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">save_agent_npy</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">save</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">save_data_csv</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">save_data_csv</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">save</span><span class="p">)</span></div></div>
-
-
-<div class="viewcode-block" id="save_simulation_data"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.multiagent.save_simulation_data">[docs]</a><span class="k">def</span> <span class="nf">save_simulation_data</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span> <span class="n">directory</span><span class="p">):</span>
-    <span class="n">node</span> <span class="o">=</span> <span class="n">SaveSimulationData</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span> <span class="n">directory</span><span class="p">)</span>
-    <span class="n">simulation</span><span class="o">.</span><span class="n">logic</span><span class="p">[</span><span class="s1">&#39;Reset&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">inject_before</span><span class="p">(</span><span class="n">node</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="contains"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.multiagent.contains">[docs]</a><span class="k">def</span> <span class="nf">contains</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span> <span class="n">vertices</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Contains</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        simulation (MultiAgentSimulation):</span>
-<span class="sd">        vertices (numpy.ndarray): Vertices of a polygon</span>
-<span class="sd">        state (str):</span>
-
-<span class="sd">    Yields:</span>
-<span class="sd">        int: Number of states that changed</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">geom</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">vertices</span><span class="p">)</span>
-    <span class="n">old_state</span> <span class="o">=</span> <span class="n">simulation</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">array</span><span class="p">[</span><span class="n">state</span><span class="p">]</span>
-    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
-        <span class="n">position</span> <span class="o">=</span> <span class="n">simulation</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">array</span><span class="p">[</span><span class="s1">&#39;position&#39;</span><span class="p">]</span>
-        <span class="n">new_state</span> <span class="o">=</span> <span class="n">geom</span><span class="o">.</span><span class="n">contains_points</span><span class="p">(</span><span class="n">position</span><span class="p">)</span>
-        <span class="n">simulation</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">array</span><span class="p">[</span><span class="n">state</span><span class="p">][:]</span> <span class="o">=</span> <span class="n">new_state</span>
-        <span class="n">changed</span> <span class="o">=</span> <span class="n">old_state</span> <span class="o">^</span> <span class="n">new_state</span>
-        <span class="n">old_state</span> <span class="o">=</span> <span class="n">new_state</span>
-        <span class="k">yield</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">changed</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="InsideDomain"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.multiagent.InsideDomain">[docs]</a><span class="k">class</span> <span class="nc">InsideDomain</span><span class="p">(</span><span class="n">LogicNode</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">simulation</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">simulation</span><span class="p">)</span>
-        <span class="c1"># TODO: handle domain is None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">gen</span> <span class="o">=</span> <span class="n">contains</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span>
-                            <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">field</span><span class="o">.</span><span class="n">domain</span><span class="o">.</span><span class="n">exterior</span><span class="p">),</span>
-                            <span class="s1">&#39;active&#39;</span><span class="p">)</span>
-
-<div class="viewcode-block" id="InsideDomain.update"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.multiagent.InsideDomain.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;goal_reached&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gen</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>
@@ -1087,7 +298,7 @@
   <div role="contentinfo">
     <p>
         &copy; Copyright Jaan Tollander de Balsch.
-      Last updated on 2017-05-18.
+      Last updated on 2017-05-31.
 
     </p>
   </div>
@@ -1109,7 +320,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'legacy+303.g1e68f25.dirty',
+            VERSION:'legacy+318.gb8d04f6.dirty',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

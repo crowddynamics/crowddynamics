@@ -1,0 +1,530 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>crowddynamics.examples package &mdash; crowddynamics legacy+318.gb8d04f6.dirty documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="crowddynamics legacy+318.gb8d04f6.dirty documentation" href="../index.html"/>
+        <link rel="up" title="crowddynamics package" href="crowddynamics.html"/>
+        <link rel="next" title="crowddynamics.examples.tests package" href="crowddynamics.examples.tests.html"/>
+        <link rel="prev" title="crowddynamics.core.tests package" href="crowddynamics.core.tests.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> crowddynamics
+          
+
+          
+            
+            <img src="../_static/logo.svg" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                legacy+318legacy+318.gb8d04f6.dirtygb8d04f6
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">General</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developing.html">Developing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../resources.html">Resources</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Crowddynamics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../architecture.html">Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../multiagent.html">Multi-Agent Simulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../interactions.html">Interactions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../motion.html">Motion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../steering.html">Steering</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../quantities.html">Quantities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../evacuation.html">Evacuation</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Research</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../phenomena.html">Phenomena</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Api</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="crowddynamics.html">crowddynamics package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="crowddynamics.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="crowddynamics.core.html">crowddynamics.core package</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">crowddynamics.examples package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#subpackages">Subpackages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-crowddynamics.examples.fields">crowddynamics.examples.fields module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-crowddynamics.examples.profiled">crowddynamics.examples.profiled module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-crowddynamics.examples.simulations">crowddynamics.examples.simulations module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-crowddynamics.examples">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="crowddynamics.simulation.html">crowddynamics.simulation package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="crowddynamics.tests.html">crowddynamics.tests package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.html#module-crowddynamics.cli">crowddynamics.cli module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.html#module-crowddynamics.config">crowddynamics.config module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.html#module-crowddynamics.conftest">crowddynamics.conftest module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.html#module-crowddynamics.exceptions">crowddynamics.exceptions module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.html#module-crowddynamics.io">crowddynamics.io module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.html#module-crowddynamics.logging">crowddynamics.logging module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.html#module-crowddynamics.testing">crowddynamics.testing module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.html#module-crowddynamics.traits">crowddynamics.traits module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.html#module-crowddynamics.utils">crowddynamics.utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.html#module-crowddynamics.visualizations">crowddynamics.visualizations module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.html#module-crowddynamics">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">crowddynamics</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="crowddynamics.html">crowddynamics package</a> &raquo;</li>
+        
+      <li>crowddynamics.examples package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/apidocs/crowddynamics.examples.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="crowddynamics-examples-package">
+<h1>crowddynamics.examples package<a class="headerlink" href="#crowddynamics-examples-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="crowddynamics.examples.tests.html">crowddynamics.examples.tests package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.examples.tests.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.examples.tests.html#module-crowddynamics.examples.tests.test_simulations">crowddynamics.examples.tests.test_simulations module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crowddynamics.examples.tests.html#module-crowddynamics.examples.tests">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-crowddynamics.examples.fields">
+<span id="crowddynamics-examples-fields-module"></span><h2>crowddynamics.examples.fields module<a class="headerlink" href="#module-crowddynamics.examples.fields" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="crowddynamics.examples.fields.FourExitsField">
+<em class="property">class </em><code class="descclassname">crowddynamics.examples.fields.</code><code class="descname">FourExitsField</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/examples/fields.html#FourExitsField"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.examples.fields.FourExitsField" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="crowddynamics.simulation.html#crowddynamics.simulation.field.Field" title="crowddynamics.simulation.field.Field"><code class="xref py py-class docutils literal"><span class="pre">crowddynamics.simulation.field.Field</span></code></a></p>
+<dl class="attribute">
+<dt id="crowddynamics.examples.fields.FourExitsField.exit_width">
+<code class="descname">exit_width</code><a class="headerlink" href="#crowddynamics.examples.fields.FourExitsField.exit_width" title="Permalink to this definition">¶</a></dt>
+<dd><p>A float trait.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="crowddynamics.examples.fields.HallwayField">
+<em class="property">class </em><code class="descclassname">crowddynamics.examples.fields.</code><code class="descname">HallwayField</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/examples/fields.html#HallwayField"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.examples.fields.HallwayField" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="crowddynamics.simulation.html#crowddynamics.simulation.field.Field" title="crowddynamics.simulation.field.Field"><code class="xref py py-class docutils literal"><span class="pre">crowddynamics.simulation.field.Field</span></code></a></p>
+<dl class="attribute">
+<dt id="crowddynamics.examples.fields.HallwayField.height">
+<code class="descname">height</code><a class="headerlink" href="#crowddynamics.examples.fields.HallwayField.height" title="Permalink to this definition">¶</a></dt>
+<dd><p>A float trait.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.examples.fields.HallwayField.ratio">
+<code class="descname">ratio</code><a class="headerlink" href="#crowddynamics.examples.fields.HallwayField.ratio" title="Permalink to this definition">¶</a></dt>
+<dd><p>A float trait.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.examples.fields.HallwayField.width">
+<code class="descname">width</code><a class="headerlink" href="#crowddynamics.examples.fields.HallwayField.width" title="Permalink to this definition">¶</a></dt>
+<dd><p>A float trait.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="crowddynamics.examples.fields.OutdoorField">
+<em class="property">class </em><code class="descclassname">crowddynamics.examples.fields.</code><code class="descname">OutdoorField</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/examples/fields.html#OutdoorField"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.examples.fields.OutdoorField" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="crowddynamics.simulation.html#crowddynamics.simulation.field.Field" title="crowddynamics.simulation.field.Field"><code class="xref py py-class docutils literal"><span class="pre">crowddynamics.simulation.field.Field</span></code></a></p>
+<dl class="attribute">
+<dt id="crowddynamics.examples.fields.OutdoorField.height">
+<code class="descname">height</code><a class="headerlink" href="#crowddynamics.examples.fields.OutdoorField.height" title="Permalink to this definition">¶</a></dt>
+<dd><p>A float trait.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.examples.fields.OutdoorField.width">
+<code class="descname">width</code><a class="headerlink" href="#crowddynamics.examples.fields.OutdoorField.width" title="Permalink to this definition">¶</a></dt>
+<dd><p>A float trait.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-crowddynamics.examples.profiled">
+<span id="crowddynamics-examples-profiled-module"></span><h2>crowddynamics.examples.profiled module<a class="headerlink" href="#module-crowddynamics.examples.profiled" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="crowddynamics.examples.profiled.main">
+<code class="descclassname">crowddynamics.examples.profiled.</code><code class="descname">main</code><span class="sig-paren">(</span><em>simulation</em>, <em>iterations: int</em>, <em>size: int</em>, <em>agent_type=&lt;class 'crowddynamics.simulation.agents.Circular'&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/examples/profiled.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.examples.profiled.main" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-crowddynamics.examples.simulations">
+<span id="crowddynamics-examples-simulations-module"></span><h2>crowddynamics.examples.simulations module<a class="headerlink" href="#module-crowddynamics.examples.simulations" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="crowddynamics.examples.simulations.FourExits">
+<em class="property">class </em><code class="descclassname">crowddynamics.examples.simulations.</code><code class="descname">FourExits</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/examples/simulations.html#FourExits"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.examples.simulations.FourExits" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="crowddynamics.simulation.html#crowddynamics.simulation.multiagent.MultiAgentSimulation" title="crowddynamics.simulation.multiagent.MultiAgentSimulation"><code class="xref py py-class docutils literal"><span class="pre">crowddynamics.simulation.multiagent.MultiAgentSimulation</span></code></a></p>
+<dl class="attribute">
+<dt id="crowddynamics.examples.simulations.FourExits.agent_type">
+<code class="descname">agent_type</code><a class="headerlink" href="#crowddynamics.examples.simulations.FourExits.agent_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>An enum whose value must be in a given sequence.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="crowddynamics.examples.simulations.FourExits.attributes">
+<code class="descname">attributes</code><span class="sig-paren">(</span><em>target: int</em>, <em>herding: bool</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/examples/simulations.html#FourExits.attributes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.examples.simulations.FourExits.attributes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.examples.simulations.FourExits.body_type">
+<code class="descname">body_type</code><a class="headerlink" href="#crowddynamics.examples.simulations.FourExits.body_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>An enum whose value must be in a given sequence.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.examples.simulations.FourExits.exit_width">
+<code class="descname">exit_width</code><a class="headerlink" href="#crowddynamics.examples.simulations.FourExits.exit_width" title="Permalink to this definition">¶</a></dt>
+<dd><p>A float trait.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.examples.simulations.FourExits.size">
+<code class="descname">size</code><a class="headerlink" href="#crowddynamics.examples.simulations.FourExits.size" title="Permalink to this definition">¶</a></dt>
+<dd><p>An int trait.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.examples.simulations.FourExits.size_active">
+<code class="descname">size_active</code><a class="headerlink" href="#crowddynamics.examples.simulations.FourExits.size_active" title="Permalink to this definition">¶</a></dt>
+<dd><p>An int trait.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.examples.simulations.FourExits.size_herding">
+<code class="descname">size_herding</code><a class="headerlink" href="#crowddynamics.examples.simulations.FourExits.size_herding" title="Permalink to this definition">¶</a></dt>
+<dd><p>An int trait.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="crowddynamics.examples.simulations.Hallway">
+<em class="property">class </em><code class="descclassname">crowddynamics.examples.simulations.</code><code class="descname">Hallway</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/examples/simulations.html#Hallway"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.examples.simulations.Hallway" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="crowddynamics.simulation.html#crowddynamics.simulation.multiagent.MultiAgentSimulation" title="crowddynamics.simulation.multiagent.MultiAgentSimulation"><code class="xref py py-class docutils literal"><span class="pre">crowddynamics.simulation.multiagent.MultiAgentSimulation</span></code></a></p>
+<ul class="simple">
+<li>Low / medium / high crowd density</li>
+<li>Overtaking</li>
+<li>Counterflow</li>
+<li>Bidirectional flow</li>
+<li>Unidirectional flow</li>
+</ul>
+<dl class="attribute">
+<dt id="crowddynamics.examples.simulations.Hallway.agent_type">
+<code class="descname">agent_type</code><a class="headerlink" href="#crowddynamics.examples.simulations.Hallway.agent_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>An enum whose value must be in a given sequence.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="crowddynamics.examples.simulations.Hallway.attributes1">
+<code class="descname">attributes1</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/examples/simulations.html#Hallway.attributes1"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.examples.simulations.Hallway.attributes1" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="crowddynamics.examples.simulations.Hallway.attributes2">
+<code class="descname">attributes2</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/examples/simulations.html#Hallway.attributes2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.examples.simulations.Hallway.attributes2" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.examples.simulations.Hallway.body_type">
+<code class="descname">body_type</code><a class="headerlink" href="#crowddynamics.examples.simulations.Hallway.body_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>An enum whose value must be in a given sequence.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.examples.simulations.Hallway.height">
+<code class="descname">height</code><a class="headerlink" href="#crowddynamics.examples.simulations.Hallway.height" title="Permalink to this definition">¶</a></dt>
+<dd><p>A float trait.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.examples.simulations.Hallway.ratio">
+<code class="descname">ratio</code><a class="headerlink" href="#crowddynamics.examples.simulations.Hallway.ratio" title="Permalink to this definition">¶</a></dt>
+<dd><p>A float trait.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.examples.simulations.Hallway.size">
+<code class="descname">size</code><a class="headerlink" href="#crowddynamics.examples.simulations.Hallway.size" title="Permalink to this definition">¶</a></dt>
+<dd><p>An int trait.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.examples.simulations.Hallway.width">
+<code class="descname">width</code><a class="headerlink" href="#crowddynamics.examples.simulations.Hallway.width" title="Permalink to this definition">¶</a></dt>
+<dd><p>A float trait.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="crowddynamics.examples.simulations.Outdoor">
+<em class="property">class </em><code class="descclassname">crowddynamics.examples.simulations.</code><code class="descname">Outdoor</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/examples/simulations.html#Outdoor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.examples.simulations.Outdoor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="crowddynamics.simulation.html#crowddynamics.simulation.multiagent.MultiAgentSimulation" title="crowddynamics.simulation.multiagent.MultiAgentSimulation"><code class="xref py py-class docutils literal"><span class="pre">crowddynamics.simulation.multiagent.MultiAgentSimulation</span></code></a></p>
+<p>Simulation for visualizing collision avoidance.</p>
+<dl class="attribute">
+<dt id="crowddynamics.examples.simulations.Outdoor.agent_type">
+<code class="descname">agent_type</code><a class="headerlink" href="#crowddynamics.examples.simulations.Outdoor.agent_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>An enum whose value must be in a given sequence.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="crowddynamics.examples.simulations.Outdoor.attributes">
+<code class="descname">attributes</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/crowddynamics/examples/simulations.html#Outdoor.attributes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.examples.simulations.Outdoor.attributes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.examples.simulations.Outdoor.body_type">
+<code class="descname">body_type</code><a class="headerlink" href="#crowddynamics.examples.simulations.Outdoor.body_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>An enum whose value must be in a given sequence.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.examples.simulations.Outdoor.height">
+<code class="descname">height</code><a class="headerlink" href="#crowddynamics.examples.simulations.Outdoor.height" title="Permalink to this definition">¶</a></dt>
+<dd><p>A float trait.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.examples.simulations.Outdoor.size">
+<code class="descname">size</code><a class="headerlink" href="#crowddynamics.examples.simulations.Outdoor.size" title="Permalink to this definition">¶</a></dt>
+<dd><p>An int trait.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.examples.simulations.Outdoor.width">
+<code class="descname">width</code><a class="headerlink" href="#crowddynamics.examples.simulations.Outdoor.width" title="Permalink to this definition">¶</a></dt>
+<dd><p>A float trait.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-crowddynamics.examples">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-crowddynamics.examples" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="crowddynamics.examples.tests.html" class="btn btn-neutral float-right" title="crowddynamics.examples.tests package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="crowddynamics.core.tests.html" class="btn btn-neutral" title="crowddynamics.core.tests package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright Jaan Tollander de Balsch.
+      Last updated on 2017-05-31.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'legacy+318.gb8d04f6.dirty',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

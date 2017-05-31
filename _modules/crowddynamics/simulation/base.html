@@ -1,0 +1,377 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>crowddynamics.simulation.base &mdash; crowddynamics legacy+318.gb8d04f6.dirty documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../../genindex.html"/>
+        <link rel="search" title="Search" href="../../../search.html"/>
+    <link rel="top" title="crowddynamics legacy+318.gb8d04f6.dirty documentation" href="../../../index.html"/>
+        <link rel="up" title="Module code" href="../../index.html"/> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> crowddynamics
+          
+
+          
+            
+            <img src="../../../_static/logo.svg" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                legacy+318legacy+318.gb8d04f6.dirtygb8d04f6
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">General</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../developing.html">Developing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../resources.html">Resources</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Crowddynamics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../architecture.html">Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../multiagent.html">Multi-Agent Simulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../interactions.html">Interactions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../motion.html">Motion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../steering.html">Steering</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quantities.html">Quantities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../evacuation.html">Evacuation</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Research</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../phenomena.html">Phenomena</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Api</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../apidocs/crowddynamics.html">crowddynamics package</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">crowddynamics</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>crowddynamics.simulation.base</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for crowddynamics.simulation.base</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Base classes for simulation objects&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">OrderedDict</span><span class="p">,</span> <span class="n">Callable</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="k">import</span> <span class="n">datetime</span>
+
+<span class="kn">from</span> <span class="nn">anytree.node</span> <span class="k">import</span> <span class="n">NodeMixin</span><span class="p">,</span> <span class="n">PreOrderIter</span>
+<span class="kn">from</span> <span class="nn">dateutil.tz.tz</span> <span class="k">import</span> <span class="n">tzutc</span>
+<span class="kn">from</span> <span class="nn">traitlets.traitlets</span> <span class="k">import</span> <span class="n">HasTraits</span><span class="p">,</span> <span class="n">Unicode</span><span class="p">,</span> <span class="n">default</span><span class="p">,</span> <span class="n">Instance</span>
+
+
+<div class="viewcode-block" id="CrowdDynamicsObject"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.base.CrowdDynamicsObject">[docs]</a><span class="k">class</span> <span class="nc">CrowdDynamicsObject</span><span class="p">(</span><span class="n">HasTraits</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Base class for CrowdDynamics simulation objects&quot;&quot;&quot;</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">Unicode</span><span class="p">(</span><span class="n">help</span><span class="o">=</span><span class="s1">&#39;Name for the object. Default to class name.&#39;</span><span class="p">)</span>
+
+    <span class="nd">@default</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_default_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span></div>
+
+
+<div class="viewcode-block" id="FieldBase"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.base.FieldBase">[docs]</a><span class="k">class</span> <span class="nc">FieldBase</span><span class="p">(</span><span class="n">CrowdDynamicsObject</span><span class="p">):</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="AgentsBase"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.base.AgentsBase">[docs]</a><span class="k">class</span> <span class="nc">AgentsBase</span><span class="p">(</span><span class="n">CrowdDynamicsObject</span><span class="p">):</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="LogicNodeBase"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.base.LogicNodeBase">[docs]</a><span class="k">class</span> <span class="nc">LogicNodeBase</span><span class="p">(</span><span class="n">CrowdDynamicsObject</span><span class="p">,</span> <span class="n">NodeMixin</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Node for implementing trees for controlling evaluation order for </span>
+<span class="sd">    simulation logic.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="LogicNodeBase.update"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.base.LogicNodeBase.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Method that is called when the node is evaluated.&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+<div class="viewcode-block" id="LogicNodeBase.inject_before"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.base.LogicNodeBase.inject_before">[docs]</a>    <span class="k">def</span> <span class="nf">inject_before</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Inject before&quot;&quot;&quot;</span>
+        <span class="n">parent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parent</span> <span class="o">=</span> <span class="n">node</span>
+        <span class="n">node</span><span class="o">.</span><span class="n">parent</span> <span class="o">=</span> <span class="n">parent</span></div>
+
+<div class="viewcode-block" id="LogicNodeBase.inject_after"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.base.LogicNodeBase.inject_after">[docs]</a>    <span class="k">def</span> <span class="nf">inject_after</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Inject after&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">:</span>
+            <span class="n">child</span><span class="o">.</span><span class="n">parent</span> <span class="o">=</span> <span class="n">node</span>
+        <span class="n">node</span><span class="o">.</span><span class="n">parent</span> <span class="o">=</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="LogicNodeBase.add_children"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.base.LogicNodeBase.add_children">[docs]</a>    <span class="k">def</span> <span class="nf">add_children</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Add new child node.&quot;&quot;&quot;</span>
+        <span class="n">node</span><span class="o">.</span><span class="n">parent</span> <span class="o">=</span> <span class="bp">self</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+    <span class="k">def</span> <span class="nf">__lshift__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Syntactic sugar for forming task graphs::</span>
+
+<span class="sd">            simu.tasks = \</span>
+<span class="sd">                Reset(simu) &lt;&lt; (</span>
+<span class="sd">                    Integrator(simu) &lt;&lt; (</span>
+<span class="sd">                        Fluctuation(simu),</span>
+<span class="sd">                        Adjusting(simu) &lt;&lt; Orientation(simu),</span>
+<span class="sd">                        AgentAgentInteractions(simu),</span>
+<span class="sd">                        AgentObstacleInteractions(simu),</span>
+<span class="sd">                    )</span>
+<span class="sd">                )</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            other (TaskNode, Tuple[TaskNode]): </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">LogicNodeBase</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_children</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">_other</span> <span class="ow">in</span> <span class="n">other</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">add_children</span><span class="p">(</span><span class="n">_other</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
+
+    <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Slow get item which find node named &quot;item&quot; by iterating over the all </span>
+<span class="sd">        nodes.&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">PreOrderIter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">item</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">node</span>
+        <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s1">&#39;Key: &quot;</span><span class="si">{}</span><span class="s1">&quot; not in the tree.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">item</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="SimulationBase"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.base.SimulationBase">[docs]</a><span class="k">class</span> <span class="nc">SimulationBase</span><span class="p">(</span><span class="n">CrowdDynamicsObject</span><span class="p">):</span>
+    <span class="c1"># TODO: timezone information: tzutc? json serialization.</span>
+    <span class="n">timestamp</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span>
+        <span class="n">datetime</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Timestamp of current utc time. Defaults to time when object was &#39;</span>
+             <span class="s1">&#39;first created.&#39;</span><span class="p">)</span>
+    <span class="n">metadata</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span>
+        <span class="n">klass</span><span class="o">=</span><span class="n">OrderedDict</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(),</span>
+        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Simulation metadata as dictionary.&#39;</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span>
+        <span class="n">klass</span><span class="o">=</span><span class="n">OrderedDict</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(),</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Generated simulation data that is shared between logic nodes. &quot;</span>
+             <span class="s2">&quot;This should be data that can be updated and should be saved on &quot;</span>
+             <span class="s2">&quot;every iteration.&quot;</span><span class="p">)</span>
+    <span class="n">exit_condition</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span>
+        <span class="n">Callable</span><span class="p">,</span>
+        <span class="n">allow_none</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;timestamp&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">timestamp</span><span class="p">)</span>
+
+    <span class="nd">@default</span><span class="p">(</span><span class="s1">&#39;timestamp&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_default_timestamp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">tz</span><span class="o">=</span><span class="n">tzutc</span><span class="p">())</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">name_with_timestamp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Name with timestamp.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="s1">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">timestamp</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span><span class="p">)))</span>
+
+<div class="viewcode-block" id="SimulationBase.update"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.base.SimulationBase.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+<div class="viewcode-block" id="SimulationBase.run"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.base.SimulationBase.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Updates simulation until exit condition is met (returns True).&quot;&quot;&quot;</span>
+        <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">exit_condition</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">exit_condition</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span></div></div>
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright Jaan Tollander de Balsch.
+      Last updated on 2017-05-31.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'legacy+318.gb8d04f6.dirty',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

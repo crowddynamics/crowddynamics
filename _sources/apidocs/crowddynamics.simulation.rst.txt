@@ -1,13 +1,44 @@
 crowddynamics\.simulation package
 =================================
 
+Subpackages
+-----------
+
+.. toctree::
+
+    crowddynamics.simulation.tests
+
 Submodules
 ----------
 
-crowddynamics\.simulation\.agent module
+crowddynamics\.simulation\.agents module
+----------------------------------------
+
+.. automodule:: crowddynamics.simulation.agents
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+crowddynamics\.simulation\.base module
+--------------------------------------
+
+.. automodule:: crowddynamics.simulation.base
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+crowddynamics\.simulation\.field module
 ---------------------------------------
 
-.. automodule:: crowddynamics.simulation.agent
+.. automodule:: crowddynamics.simulation.field
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+crowddynamics\.simulation\.logic module
+---------------------------------------
+
+.. automodule:: crowddynamics.simulation.logic
     :members:
     :undoc-members:
     :show-inheritance:

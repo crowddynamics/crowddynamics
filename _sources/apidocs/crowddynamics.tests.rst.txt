@@ -36,6 +36,14 @@ crowddynamics\.tests\.test\_testing module
     :undoc-members:
     :show-inheritance:
 
+crowddynamics\.tests\.test\_traits module
+-----------------------------------------
+
+.. automodule:: crowddynamics.tests.test_traits
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 
 Module contents
 ---------------
