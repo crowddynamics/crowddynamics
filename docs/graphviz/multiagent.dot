@@ -1,0 +1,8 @@
+digraph multiagent {
+  /* Entities */
+  /*name  [label="", shape="square"];*/
+  /* Relationships */
+  MultiAgentSimulation -> {Field, Agents, Logic};
+  Field -> {Domain, Obstacles, Targets, Spawns};
+  Targets -> {Exits};
+}

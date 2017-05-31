@@ -7,30 +7,11 @@ sys.path.insert(0, os.path.abspath('.'))
 sys.path.insert(0, os.path.abspath('..'))
 import crowddynamics
 
-# -- Mock imports --------------------------------
 
-# from unittest.mock import Mock, MagicMock
-# import inspect
-#
-#
-# def decorator_mock(f, *args, **kwargs):
-#     if inspect.isfunction(f):
-#         return f
-#     else:
-#         return decorator_mock
-#
-#
-# import numba
-# numba.jit = Mock(side_effect=decorator_mock)
-# numba.vectorize = Mock(side_effect=decorator_mock)
+# -- Disable numba jit and vectorize -------------------------------------
 
-
-# class Mock(MagicMock):
-#     @classmethod
-#     def __getattr__(cls, name):
-#         return MagicMock()
-# MOCK_MODULES = []
-# sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
+# http://numba.pydata.org/numba-doc/dev/reference/envvars.html
+os.environ['NUMBA_DISABLE_JIT'] = '1'
 
 
 # -- Build apidocs automatically when sphinx is run ----------------------
@@ -46,12 +27,6 @@ main(['--separate',
       '--no-toc',
       '--force'])
 
-out_path2 = 'apidocs_examples'
-module_path2 = os.path.join(ROOT_PATH, 'examples')
-main(['--separate',
-      '--output-dir', out_path2, module_path2,
-      '--no-toc',
-      '--force'])
 
 # -- General configuration ------------------------------------------------
 

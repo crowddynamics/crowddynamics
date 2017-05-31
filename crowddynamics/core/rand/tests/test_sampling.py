@@ -10,7 +10,7 @@ from crowddynamics.core.geom2D import polygon_area
 from crowddynamics.core.rand.sampling import random_sample_triangle, \
     triangle_area_cumsum, polygon_sample, \
     linestring_sample
-from crowddynamics.testing import real
+from crowddynamics.testing import reals
 
 # Convex shapes
 triangle = Polygon([(1.0, 1.0), (0.0, 0.0), (2.0, 0.0)])
@@ -34,9 +34,9 @@ def test_triangle_area_cumsum(trimesh):
     assert np.all(np.sort(cumsum) == cumsum)
 
 
-@given(real(min_value=-100, max_value=100, shape=2),
-       real(min_value=-100, max_value=100, shape=2),
-       real(min_value=-100, max_value=100, shape=2))
+@given(reals(min_value=-100, max_value=100, shape=2),
+       reals(min_value=-100, max_value=100, shape=2),
+       reals(min_value=-100, max_value=100, shape=2))
 def test_random_sample_triangle(a, b, c):
     # Assume that the area of the triangle is not zero.
     area = polygon_area(np.stack((a, b, c)))

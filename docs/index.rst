@@ -39,7 +39,6 @@ Crowd Dynamics
    :maxdepth: 2
 
    apidocs/crowddynamics.rst
-   apidocs_examples/examples.rst
 
 
 Indices and tables

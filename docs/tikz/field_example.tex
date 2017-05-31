@@ -1,0 +1,25 @@
+\draw[color=gray!20] (-2, -1) grid (12, 7);
+% Domain
+\fill[gray!20] (0, 0) rectangle (10, 6);
+\node[] () at (5, 3) {$ \Omega $};
+% Spawn 0
+\fill[blue!20] (0, 3) -- ++(2, 0) -- ++(1, 1) -- ++(0, 2)
+              -- ++(-3, 0) -- ++(0, -3);
+\node[] () at (1.5, 4.5) {$ \mathcal{S}_0 $};
+% Spawn 1
+\fill[blue!20] (3, 0) -- ++(0, 1) -- ++(1, 1) -- ++(2, 0) -- ++(1, -1)
+              -- ++(0, -1);
+\node[] () at (5, 0.5) {$ \mathcal{S}_1 $};
+% Obstacles
+\draw[thick] (0, 0) rectangle (10, 6);
+\draw[fill=black] (9, 2) circle (0.5);
+\draw[fill=black] (9, 4) circle (0.5);
+% Room 1
+\draw[thick] (0, 3) -- ++(2, 0) -- ++(1, 1);
+\draw[thick] (3, 5) -- ++(0, 1);
+% Target 0
+\draw[thick, white] (4, 6) -- ++(2, 0);
+\draw[thick, dashed] (4, 6) -- node[above] {$ \mathcal{E}_0 $} ++(2, 0);
+% Target 1
+\draw[thick, white] (10, 2) -- ++(0, 2);
+\draw[thick, dashed] (10, 2) -- node[right] {$ \mathcal{E}_1 $} ++(0, 2);

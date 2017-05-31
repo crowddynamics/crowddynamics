@@ -23,10 +23,7 @@ def attributes():
 @pytest.fixture(scope='function')
 def agents_circular(size=10):
     agents = Agents(agent_type=Circular)
-    group = AgentGroup(
-        agent_type=Circular,
-        size=size,
-        attributes=attributes)
+    group = AgentGroup(agent_type=Circular, size=size, attributes=attributes)
     agents.add_non_overlapping_group(
         group, position_gen=lambda: np.random.uniform(-10.0, 10.0, 2))
     return agents
@@ -35,10 +32,7 @@ def agents_circular(size=10):
 @pytest.fixture(scope='function')
 def agents_three_circle(size=10):
     agents = Agents(agent_type=ThreeCircle)
-    group = AgentGroup(
-        agent_type=ThreeCircle,
-        size=size,
-        attributes=attributes)
+    group = AgentGroup(agent_type=ThreeCircle, size=size, attributes=attributes)
     agents.add_non_overlapping_group(
         group, position_gen=lambda: np.random.uniform(-10.0, 10.0, 2))
     return agents

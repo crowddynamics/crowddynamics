@@ -64,7 +64,6 @@ For :math:`N` agents the number of blocks :math:`N / M`.
    \mathcal{O}(N)
 
 """
-
 import numba
 import numpy as np
 from numba import void, i8, typeof
@@ -76,6 +75,7 @@ from crowddynamics.core.interactions.distance import distance_circles, \
 from crowddynamics.core.motion.contact import force_contact
 from crowddynamics.core.motion.power_law import \
     force_social_circular, force_social_three_circle
+from crowddynamics.exceptions import InvalidType
 from crowddynamics.simulation.agents import agent_type_circular, \
     agent_type_three_circle, is_model
 from crowddynamics.core.struct import obstacle_type_linear
@@ -90,7 +90,7 @@ SIGTH_SOC = 3.0  # TODO: load from config
 
 @numba.jit(void(i8, i8, typeof(agent_type_circular)[:]),
            nopython=True, nogil=True, cache=True)
-def agent_agent_interaction_circle(i, j, agents):
+def interaction_agent_agent_circular(i, j, agents):
     """Interaction between two circular agents."""
     h, n = distance_circles(agents[i]['position'], agents[i]['radius'],
                             agents[j]['position'], agents[j]['radius'])
@@ -99,10 +99,12 @@ def agent_agent_interaction_circle(i, j, agents):
         force_i, force_j = force_social_circular(agents, i, j)
 
         if h < 0:
-            t = rotate270(n)  # Tangent vector
-            v = agents[i]['velocity'] - agents[j]['velocity']  # Relative velocity
-            force_i += force_contact(h, n, v, t, agents[i]['mu'], agents[i]['kappa'], agents[i]['damping'])
-            force_j -= force_contact(h, n, v, t, agents[j]['mu'], agents[j]['kappa'], agents[j]['damping'])
+            t = rotate270(n)
+            v = agents[i]['velocity'] - agents[j]['velocity']
+            force_i += force_contact(h, n, v, t, agents[i]['mu'],
+                                     agents[i]['kappa'], agents[i]['damping'])
+            force_j -= force_contact(h, n, v, t, agents[j]['mu'],
+                                     agents[j]['kappa'], agents[j]['damping'])
 
         agents[i]['force'][:] += force_i
         agents[j]['force'][:] += force_j
@@ -110,11 +112,13 @@ def agent_agent_interaction_circle(i, j, agents):
 
 @numba.jit(void(i8, i8, typeof(agent_type_three_circle)[:]),
            nopython=True, nogil=True, cache=True)
-def agent_agent_interaction_three_circle(i, j, agents):
+def interaction_agent_agent_three_circle(i, j, agents):
     """Interaction between two three circle agents."""
     # Positions: center, left, right
-    x_i = (agents[i]['position'], agents[i]['position_ls'], agents[i]['position_rs'])
-    x_j = (agents[j]['position'], agents[j]['position_ls'], agents[j]['position_rs'])
+    x_i = (agents[i]['position'], agents[i]['position_ls'],
+           agents[i]['position_rs'])
+    x_j = (agents[j]['position'], agents[j]['position_ls'],
+           agents[j]['position_rs'])
 
     # Radii of torso and shoulders
     r_i = (agents[i]['r_t'], agents[i]['r_s'], agents[i]['r_s'])
@@ -126,10 +130,12 @@ def agent_agent_interaction_three_circle(i, j, agents):
         force_i, force_j = force_social_three_circle(agents, i, j)
 
         if h < 0:
-            t = rotate270(n)  # Tangent vector
-            v = agents[i]['velocity'] - agents[j]['velocity']  # Relative velocity
-            force_i += force_contact(h, n, v, t, agents[i]['mu'], agents[i]['kappa'], agents[i]['damping'])
-            force_j -= force_contact(h, n, v, t, agents[j]['mu'], agents[j]['kappa'], agents[j]['damping'])
+            t = rotate270(n)
+            v = agents[i]['velocity'] - agents[j]['velocity']
+            force_i += force_contact(h, n, v, t, agents[i]['mu'],
+                                     agents[i]['kappa'], agents[i]['damping'])
+            force_j -= force_contact(h, n, v, t, agents[j]['mu'],
+                                     agents[j]['kappa'], agents[j]['damping'])
 
         agents[i]['force'][:] += force_i
         agents[j]['force'][:] += force_j
@@ -141,7 +147,7 @@ def agent_agent_interaction_three_circle(i, j, agents):
 @numba.jit(void(i8, i8, typeof(agent_type_circular)[:],
                 typeof(obstacle_type_linear)[:]),
            nopython=True, nogil=True, cache=True)
-def agent_obstacle_interaction_circle(i, w, agents, obstacles):
+def interaction_agent_circular_obstacle(i, w, agents, obstacles):
     """Interaction between circular agent and line obstacle."""
     h, n = distance_circle_line(agents[i]['position'], agents[i]['radius'],
                                 obstacles[w]['p0'], obstacles[w]['p1'])
@@ -157,13 +163,14 @@ def agent_obstacle_interaction_circle(i, w, agents, obstacles):
 @numba.jit(void(i8, i8, typeof(agent_type_three_circle)[:],
                 typeof(obstacle_type_linear)[:]),
            nopython=True, nogil=True, cache=True)
-def agent_obstacle_interaction_three_circle(i, w, agents, obstacles):
+def interaction_agent_three_circle_obstacle(i, w, agents, obstacles):
     """Interaction between three circle agent and line obstacle."""
-    x_i = (agents[i]['position'], agents[i]['position_ls'], agents[i]['position_rs'])
+    x_i = (agents[i]['position'], agents[i]['position_ls'],
+           agents[i]['position_rs'])
     r_i = (agents[i]['r_t'], agents[i]['r_s'], agents[i]['r_s'])
 
-    h, n, r_moment = distance_three_circle_line(x_i, r_i,
-                                                obstacles[w]['p0'], obstacles[w]['p1'])
+    h, n, r_moment = distance_three_circle_line(
+        x_i, r_i, obstacles[w]['p0'], obstacles[w]['p1'])
     if h < 0:
         t = rotate270(n)  # Tangent
         v = agents[i]['velocity']
@@ -183,7 +190,7 @@ def agent_agent_brute_circular(agents, indices):
     """Compute interaction forces between set of agents using brute force."""
     for l, i in enumerate(indices[:-1]):
         for j in indices[l + 1:]:
-            agent_agent_interaction_circle(i, j, agents)
+            interaction_agent_agent_circular(i, j, agents)
 
 
 @numba.jit(void(typeof(agent_type_three_circle)[:], i8[:]),
@@ -192,7 +199,7 @@ def agent_agent_brute_three_circle(agents, indices):
     """Compute interaction forces between set of agents using brute force."""
     for l, i in enumerate(indices[:-1]):
         for j in indices[l + 1:]:
-            agent_agent_interaction_three_circle(i, j, agents)
+            interaction_agent_agent_three_circle(i, j, agents)
 
 
 @numba.jit(void(typeof(agent_type_circular)[:], i8[:], i8[:]),
@@ -202,7 +209,7 @@ def agent_agent_brute_disjoint_circular(agents, indices_0, indices_1):
     brute force. Disjoint sets ``indices_0 ∩ indices_1 = ∅``."""
     for i in indices_0:
         for j in indices_1:
-            agent_agent_interaction_circle(i, j, agents)
+            interaction_agent_agent_circular(i, j, agents)
 
 
 @numba.jit(void(typeof(agent_type_three_circle)[:], i8[:], i8[:]),
@@ -212,7 +219,7 @@ def agent_agent_brute_disjoint_three_circle(agents, indices_0, indices_1):
     brute force. Disjoint sets ``indices_0 ∩ indices_1 = ∅``."""
     for i in indices_0:
         for j in indices_1:
-            agent_agent_interaction_three_circle(i, j, agents)
+            interaction_agent_agent_three_circle(i, j, agents)
 
 
 @numba.jit(void(typeof(agent_type_circular)[:],
@@ -263,37 +270,44 @@ def agent_agent_block_list_three_circle(agents, index_list, count, offset, shape
                                                             ilist2)
 
 
-def agent_agent_block_list(agents):
-    max_agent_radius = 0.3
-    index_list, count, offset, shape = block_list(
-        agents['position'], SIGTH_SOC + 2 * max_agent_radius)
+@numba.jit(void(typeof(agent_type_circular)[:],
+                typeof(obstacle_type_linear)[:]),
+           nopython=True, nogil=True, cache=True)
+def agent_circular_obstacle(agents, obstacles):
+    """Agent obstacle"""
+    for i in range(len(agents)):
+        for w in range(len(obstacles)):
+            interaction_agent_circular_obstacle(i, w, agents, obstacles)
+
+
+@numba.jit(void(typeof(agent_type_three_circle)[:],
+                typeof(obstacle_type_linear)[:]),
+           nopython=True, nogil=True, cache=True)
+def agent_three_circle_obstacle(agents, obstacles):
+    """Agent obstacle"""
+    for i in range(len(agents)):
+        for w in range(len(obstacles)):
+            interaction_agent_three_circle_obstacle(i, w, agents, obstacles)
+
+
+# Higher level API
+
+def agent_agent_block_list(agents, cell_size):
+    positions = agents['position']
+    index_list, count, offset, shape = block_list(positions, cell_size)
 
     if is_model(agents, 'circular'):
         agent_agent_block_list_circular(agents, index_list, count, offset, shape)
     elif is_model(agents, 'three_circle'):
         agent_agent_block_list_three_circle(agents, index_list, count, offset, shape)
-
-
-@numba.jit(void(typeof(agent_type_circular)[:], typeof(obstacle_type_linear)[:]),
-           nopython=True, nogil=True, cache=True)
-def circular_agent_linear_wall(agents, obstacles):
-    """Agent wall"""
-    for i in range(len(agents)):
-        for w in range(len(obstacles)):
-            agent_obstacle_interaction_circle(i, w, agents, obstacles)
-
-
-@numba.jit(void(typeof(agent_type_three_circle)[:], typeof(obstacle_type_linear)[:]),
-           nopython=True, nogil=True, cache=True)
-def three_circle_agent_linear_wall(agents, obstacles):
-    """Agent wall"""
-    for i in range(len(agents)):
-        for w in range(len(obstacles)):
-            agent_obstacle_interaction_three_circle(i, w, agents, obstacles)
+    else:
+        raise InvalidType
 
 
 def agent_obstacle(agents, obstacles):
     if is_model(agents, 'circular'):
-        circular_agent_linear_wall(agents, obstacles)
+        agent_circular_obstacle(agents, obstacles)
     elif is_model(agents, 'three_circle'):
-        three_circle_agent_linear_wall(agents, obstacles)
+        agent_three_circle_obstacle(agents, obstacles)
+    else:
+        raise InvalidType

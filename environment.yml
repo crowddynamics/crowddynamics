@@ -4,6 +4,7 @@
 name: crowd36
 channels:
     - conda-forge
+#    - intel
 dependencies:
     - python=3.6
     - numpy

@@ -3,7 +3,9 @@ import inspect
 import io
 import textwrap
 
+import click
 import numpy as np
+from traitlets import Tuple
 from traitlets.traitlets import TraitError, TraitType, Int, Float, Complex, \
     Bool, HasTraits, Unicode, Enum, is_trait
 from traittypes import Array
@@ -55,7 +57,26 @@ def length_validator(*lengths):
     return validator
 
 
-def trait_to_primitive_dtype(name, trait):
+def trait_to_type(trait):
+    if is_trait(trait):
+        if isinstance(trait, Int):
+            return int
+        elif isinstance(trait, Float):
+            return float
+        elif isinstance(trait, Complex):
+            return complex
+        elif isinstance(trait, Bool):
+            return bool
+        elif isinstance(trait, Unicode):
+            raise str
+        else:
+            raise InvalidValue('Trait conversion is not supported for: '
+                               '{}'.format(trait))
+    else:
+        raise InvalidType('Trait should be instance of {}'.format(TraitType))
+
+
+def trait_to_dtype(name, trait):
     """Convert TraitType to numpy.dtype in format (name, dtype, shape)::
     
         Int -> numpy.int64
@@ -74,7 +95,7 @@ def trait_to_primitive_dtype(name, trait):
             - Array: (str, numpy.dtype, shape)
     """
     if is_trait(trait):
-        if isinstance(trait, Int) or type(trait) is Int:
+        if isinstance(trait, Int):
             return name, np.int64
         elif isinstance(trait, Float):
             return name, np.float64
@@ -88,6 +109,45 @@ def trait_to_primitive_dtype(name, trait):
             raise NotImplementedError
         elif isinstance(trait, Array):
             return name, trait.dtype, trait.default_value.shape
+        else:
+            raise InvalidValue('Trait conversion is not supported for: '
+                               '{}'.format(trait))
+    else:
+        raise InvalidType('Trait should be instance of {}'.format(TraitType))
+
+
+def trait_to_option(name, trait):
+    if is_trait(trait):
+        if isinstance(trait, Int):
+            return click.Option(param_decls=('--' + name,),
+                                default=trait.default_value,
+                                type=click.IntRange(trait.min, trait.max))
+        elif isinstance(trait, Float):
+            return click.Option(param_decls=('--' + name,),
+                                default=trait.default_value,
+                                type=float)
+        elif isinstance(trait, Complex):
+            return click.Option(param_decls=('--' + name,),
+                                default=trait.default_value,
+                                type=complex)
+        elif isinstance(trait, Bool):
+            return click.Option(param_decls=('--' + name,),
+                                default=trait.default_value,
+                                is_flag=True)
+        elif isinstance(trait, Unicode):
+            return click.Option(param_decls=('--' + name,),
+                                default=trait.default_value,
+                                type=str)
+        elif isinstance(trait, Enum):
+            # FIXME: trait.values should be strings
+            return click.Option(param_decls=('--' + name,),
+                                default=str(trait.default_value),
+                                type=click.Choice(list(map(str, trait.values))))
+        elif isinstance(trait, Tuple):
+            return click.Option(param_decls=('--' + name,),
+                                default=trait.default_value,
+                                type=tuple(
+                                    trait_to_type(t) for t in trait._traits))
         else:
             raise InvalidValue('Trait conversion is not supported for: '
                                '{}'.format(trait))
@@ -151,7 +211,7 @@ def class_to_struct_dtype(cls, exclude_attrs, exclude_cls):
         numpy.dtype: Numpy structured dtype for the class
     """
     return np.dtype([
-        trait_to_primitive_dtype(name, trait) for name, trait in
+        trait_to_dtype(name, trait) for name, trait in
         class_traits(
             cls,
             exclude_attrs=exclude_attrs,
@@ -160,6 +220,7 @@ def class_to_struct_dtype(cls, exclude_attrs, exclude_cls):
 
 
 class Rst(object):
+
     """Name space for ReStructuredText related functions"""
 
     @staticmethod
@@ -168,7 +229,6 @@ class Rst(object):
             return ''
         else:
             return ':math:`%s`' % s
-
     @staticmethod
     def literal(s):
         if isinstance(s, str) and s == '':

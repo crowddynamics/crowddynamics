@@ -10,13 +10,11 @@
 .doit.db.bak
 .doit.db.dat
 .doit.db.dir
-examples/run.py
-examples/*.html
-/docs/apidocs/
-/docs/apidocs_examples/
+
 *.logs/
-*_build/
 notebooks/
+/docs/_build/
+/docs/apidocs/
 
 
 # Created by .ignore support plugin (hsz.mobi)

@@ -62,7 +62,7 @@ def static_potential(domain,
     return mgrid, dmap_targets, dir_map
 
 
-@numba.jit()
+@numba.jit(nopython=True, nogil=True, cache=True)
 def is_inside(a, lower, upper):
     for l, i, u in zip(lower, a, upper):
         if not (l <= i < u):
@@ -84,7 +84,7 @@ def getdefault(indices, dir_map, defaults):
     return out
 
 
-@numba.jit()
+@numba.jit(nopython=True, nogil=True, cache=True)
 def set_target_direction(array, indices, values):
     for j, i in enumerate(indices):
         array[i]['target_direction'][:] = values[j, :]

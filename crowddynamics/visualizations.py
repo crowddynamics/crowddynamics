@@ -169,6 +169,62 @@ def add_direction_map(fig: Figure, mgrid, direction_map, freq=2, **kwargs):
                                   U[::freq, ::freq].flatten()) - np.pi / 2)
 
 
+def plot_field(field, step=0.02, radius=0.3, strength=0.3, **kwargs):
+    bokeh.io.output_file(field.name + '.html', field.name)
+    p = bokeh.plotting.Figure(**kwargs)
+
+    if field.domain:
+        minx, miny, maxx, maxy = field.domain.bounds
+    else:
+        minx, miny, maxx, maxy = field.convex_hull().bounds
+
+    set_aspect(p, (minx, maxx), (miny, maxy))
+    p.grid.minor_grid_line_color = 'navy'
+    p.grid.minor_grid_line_alpha = 0.05
+
+    # indices = chain(range(len(self.targets)), ('closest',))
+    # for index in indices:
+    #     mgrid, distance_map, direction_map = \
+    #         self.navigation_to_target(index, step, radius, strength)
+
+    mgrid, distance_map, direction_map = field.navigation_to_target(
+        'closest', step, radius, strength)
+
+    # TODO: masked values on distance map
+    add_distance_map(p, mgrid, distance_map.filled(1.0),
+                     legend='distance_map')
+    add_direction_map(p, mgrid, direction_map, legend='direction_map')
+
+    add_geom(p, field.domain,
+             legend='domain',
+             alpha=0.05)
+
+    for i, spawn in enumerate(field.spawns):
+        add_geom(p, spawn,
+                 legend='spawn_{}'.format(i),
+                 alpha=0.5,
+                 line_width=0,
+                 color='green',)
+
+    for i, target in enumerate(field.targets):
+        add_geom(p, target,
+                 legend='target_{}'.format(i),
+                 alpha=0.8,
+                 line_width=3.0,
+                 line_dash='dashed',
+                 color='olive',)
+
+    add_geom(p, field.obstacles,
+             legend='obstacles',
+             line_width=3.0,
+             alpha=0.8, )
+
+    p.legend.location = "top_left"
+    p.legend.click_policy = "hide"
+
+    bokeh.io.show(p)
+
+
 # Anytree
 
 def render_tree(tree, filepath):

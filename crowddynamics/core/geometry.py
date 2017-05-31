@@ -6,28 +6,62 @@ References:
 from collections import Iterable
 from functools import reduce
 from itertools import chain
-from typing import Tuple, Iterator, Callable
+from typing import Callable
 
 import numpy as np
+import shapely.geometry as geometry
 import skimage.draw
 from loggingtools import log_with
-from matplotlib.path import Path
 from shapely import speedups
 from shapely.geometry import Polygon, LineString, Point
 from shapely.geometry.base import BaseGeometry, BaseMultipartGeometry
 
 from crowddynamics.core.struct import obstacle_type_linear
-from crowddynamics.exceptions import InvalidType, InvalidValue
 
 if speedups.available:
     speedups.enable()
 
 
-PointPair = Tuple[float, float]
-LineSegment = Tuple[PointPair, PointPair]
+class GeomTypes(object):
+    POINT = 0.0
+    LINESTRING = 1.0
+    POLYGON_HOLE = 2.0
+    POLYGON_SHELL = 3.0
 
 
-def geom_to_linesegment(geom: BaseGeometry) -> Iterator[LineSegment]:
+def _geom_to_array(geom: BaseGeometry):
+    if isinstance(geom, geometry.Point):
+        yield np.array([(np.nan, GeomTypes.POINT)])
+        yield np.asarray(geom.coords)
+    elif isinstance(geom, geometry.LineString):
+        yield np.array([(np.nan, GeomTypes.LINESTRING)])
+        yield np.asarray(geom.coords)
+    elif isinstance(geom, geometry.Polygon):
+        for interior in geom.interiors:
+            yield np.array([(np.nan, GeomTypes.POLYGON_HOLE)])
+            yield np.asarray(interior)
+        yield np.array([(np.nan, GeomTypes.POLYGON_SHELL)])
+        yield np.asarray(geom.exterior)
+    elif isinstance(geom, BaseMultipartGeometry):
+        return chain.from_iterable(map(geom_to_array, geom))
+    else:
+        raise TypeError
+
+
+def geom_to_array(geom: BaseGeometry):
+    """Breaking geometry object into continuous array where objects are
+     separated by array of elements (np.nan, FLAG)
+
+    Args:
+        geom:
+
+    Returns:
+
+    """
+    return np.concatenate(list(_geom_to_array(geom)))
+
+
+def geom_to_linesegment(geom: BaseGeometry):
     """Converts shapes to point pairs.
 
     >>> ls = LineString([(1, 2), (3, 4)])

@@ -208,7 +208,7 @@ def block_list(points, cell_size):
         for j in range(m):
             indices[i, j] = np.int64(points[i, j] / cell_size) - x_min[j]
 
-    shape = x_max - x_min + 1
+    shape = (x_max - x_min) + 1
 
     # Count how many points go into each cell
     size = np.prod(shape)

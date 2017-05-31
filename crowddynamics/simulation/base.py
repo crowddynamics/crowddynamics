@@ -1,15 +1,14 @@
 """Base classes for simulation objects"""
-from collections import OrderedDict
+from collections import OrderedDict, Callable
 from datetime import datetime
 
 from anytree.node import NodeMixin, PreOrderIter
+from dateutil.tz.tz import tzutc
 from traitlets.traitlets import HasTraits, Unicode, default, Instance
 
 
 class CrowdDynamicsObject(HasTraits):
     """Base class for CrowdDynamics simulation objects"""
-    _datetime_fmt = '%Y-%m-%d_%H:%M:%S.%f'
-
     name = Unicode(help='Name for the object. Default to class name.')
 
     @default('name')
@@ -29,7 +28,7 @@ class LogicNodeBase(CrowdDynamicsObject, NodeMixin):
     """Node for implementing trees for controlling evaluation order for 
     simulation logic."""
 
-    def update(self, *args, **kwargs):
+    def update(self):
         """Method that is called when the node is evaluated."""
         raise NotImplementedError
 
@@ -86,31 +85,42 @@ class LogicNodeBase(CrowdDynamicsObject, NodeMixin):
 
 
 class SimulationBase(CrowdDynamicsObject):
+    # TODO: timezone information: tzutc? json serialization.
     timestamp = Instance(
         datetime,
-        help='Timestamp. Defaults to time when object was first created.')
+        help='Timestamp of current utc time. Defaults to time when object was '
+             'first created.')
+    metadata = Instance(
+        klass=OrderedDict, args=(),
+        help='Simulation metadata as dictionary.')
     data = Instance(
-        klass=OrderedDict,
+        klass=OrderedDict, args=(),
         help="Generated simulation data that is shared between logic nodes. "
              "This should be data that can be updated and should be saved on "
              "every iteration.")
+    exit_condition = Instance(
+        Callable,
+        allow_none=True,
+        help='')
 
-    @default('data')
-    def _default_data(self):
-        return OrderedDict()
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.metadata['name'] = self.name
+        self.metadata['timestamp'] = str(self.timestamp)
 
     @default('timestamp')
     def _default_timestamp(self):
-        return datetime.now()
+        return datetime.now(tz=tzutc())
 
     @property
     def name_with_timestamp(self):
         """Name with timestamp."""
-        return '_'.join(
-            (self.name, self.timestamp.strftime(self._datetime_fmt)))
+        return '_'.join((self.name, str(self.timestamp).replace(' ', '_')))
 
     def update(self):
         raise NotImplementedError
 
-    def run(self, *args, **kwargs):
-        raise NotImplementedError
+    def run(self):
+        """Updates simulation until exit condition is met (returns True)."""
+        while self.exit_condition is None or not self.exit_condition(self):
+            self.update()

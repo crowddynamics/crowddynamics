@@ -1,5 +1,5 @@
 from collections import namedtuple
-from typing import Tuple, Optional
+from typing import Tuple, Optional, NamedTuple, Callable, Union
 
 import numpy as np
 import skfmm
@@ -10,8 +10,12 @@ from skimage.segmentation import find_boundaries
 
 from crowddynamics.core.geometry import draw_geom
 
-MeshGrid = namedtuple('MeshGrid', 'values shape step bounds indicer')
-DistanceMap = np.ma.MaskedArray
+MeshGrid = NamedTuple('MeshGrid', [('values', np.ndarray),
+                                   ('shape', tuple),
+                                   ('step', float),
+                                   ('bounds', tuple),
+                                   ('indicer', Callable)])
+DistanceMap = np.ndarray  # can be masked array
 DirectionMap = Tuple[np.ma.MaskedArray, np.ma.MaskedArray]
 
 

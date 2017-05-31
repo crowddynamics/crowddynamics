@@ -1,6 +1,5 @@
 import logging
 import multiprocessing
-import os
 from multiprocessing import Process, Event
 
 from anytree.iterators import PostOrderIter
@@ -31,12 +30,15 @@ class MultiAgentSimulation(SimulationBase):
     """
     field = Instance(
         Field,
+        allow_none=True,
         help='')
     agents = Instance(
         Agents,
+        allow_none=True,
         help='')
     logic = Instance(
         LogicNode,
+        allow_none=True,
         help='')
 
     def __init__(self, *args, **kwargs):
@@ -46,21 +48,13 @@ class MultiAgentSimulation(SimulationBase):
         self.data['dt'] = 0.0
         self.data['goal_reached'] = 0
 
+    @log_with(timed=True, arguments=False)
     def update(self):
         """Execute new iteration cycle of the simulation."""
         for node in PostOrderIter(self.logic.root):
+            print(node)
             node.update()
         self.data['iterations'] += 1
-
-    @log_with(qualname=True, ignore={'self'})
-    def run(self, exit_condition=lambda _: False):
-        """Updates simulation until exit condition is met (returns True).
-
-        Args:
-            exit_condition (Callable[MultiAgentSimulation, bool]):
-        """
-        while not exit_condition(self):
-            self.update()
 
 
 class MultiAgentProcess(Process):
@@ -88,7 +82,7 @@ class MultiAgentProcess(Process):
         self.exit = Event()
         self.queue = queue
 
-    @log_with(qualname=True)
+    @log_with(qualname=True, ignore={'self'})
     def run(self):
         """Runs simulation process by calling update method repeatedly until
         stop is called. This method is called automatically by Process class
@@ -101,7 +95,7 @@ class MultiAgentProcess(Process):
             self.stop()
         self.queue.put(self.EndProcess)
 
-    @log_with(qualname=True)
+    @log_with(qualname=True, ignore={'self'})
     def stop(self):
         """Sets event to true in order to stop the simulation process."""
         self.exit.set()

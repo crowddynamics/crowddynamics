@@ -1,7 +1,5 @@
 from functools import lru_cache
 
-import bokeh.io
-import bokeh.plotting
 import numpy as np
 from shapely.geometry import Polygon
 from shapely.geometry.base import BaseGeometry
@@ -13,57 +11,25 @@ from crowddynamics.core.steering.navigation import static_potential
 from crowddynamics.exceptions import ValidationError, CrowdDynamicsException, \
     InvalidType
 from crowddynamics.simulation.base import FieldBase
-from crowddynamics.visualizations import set_aspect, add_geom, add_distance_map, \
-    add_direction_map
-
-
-class Domain(object):
-    pass
-
-
-class Obstacles(object):
-    pass
-
-
-class Target(object):
-    pass
-
-
-class Spawn(object):
-    pass
 
 
 class Field(FieldBase):
-    r"""Multi-Agent simulation Field consists of
+    r"""Field is a collection of geometric static geometric objects that can
+    exist in crowd dynamics simulations. This module uses geometric types
+    from Shapely_ module. Shapely's fundamental geometric types are *points*,
+    *curves* and *surfaces*, which correspond to shapely objects
+
+    - ``Point``: Individual point
+    - ``LineString``: Curve created by set of points connected by line
+      segments. Closed ``LineString`` has special type ``LinearRing``.
+    - ``Polygon``: Surface created by set of points covered by closed curve
+      excluding points that belong to holes that the surface may have.
+
+    .. _shapely: http://toblerity.org/shapely/manual.html
+    .. _spatial data model: http://toblerity.org/shapely/manual.html#spatial-data-model
 
     .. tikz:: Example of Field
-
-       \draw[color=gray!20] (-2, -1) grid (12, 7);
-       % Domain
-       \fill[gray!20] (0, 0) rectangle (10, 6);
-       \node[] () at (5, 3) {$ \Omega $};
-       % Spawn 0
-       \fill[blue!20] (0, 3) -- ++(2, 0) -- ++(1, 1) -- ++(0, 2) 
-                      -- ++(-3, 0) -- ++(0, -3);
-       \node[] () at (1.5, 4.5) {$ \mathcal{S}_0 $};
-       % Spawn 1
-       \fill[blue!20] (3, 0) -- ++(0, 1) -- ++(1, 1) -- ++(2, 0) -- ++(1, -1)
-                      -- ++(0, -1);
-       \node[] () at (5, 0.5) {$ \mathcal{S}_1 $};
-       % Obstacles
-       \draw[thick] (0, 0) rectangle (10, 6);
-       \draw[fill=black] (9, 2) circle (0.5);
-       \draw[fill=black] (9, 4) circle (0.5);
-       % Room 1
-       \draw[thick] (0, 3) -- ++(2, 0) -- ++(1, 1);
-       \draw[thick] (3, 5) -- ++(0, 1);
-       % Target 0
-       \draw[thick, white] (4, 6) -- ++(2, 0);
-       \draw[thick, dashed] (4, 6) -- node[above] {$ \mathcal{E}_0 $} ++(2, 0);
-       % Target 1
-       \draw[thick, white] (10, 2) -- ++(0, 2);
-       \draw[thick, dashed] (10, 2) -- node[right] {$ \mathcal{E}_1 $} ++(0, 2);
-       
+        :include: ../docs/tikz/field_example.tex
 
     Domain
         :tikz:`\draw[black, fill=gray!20] (0, 0) rectangle (0.4, 0.4);`
@@ -79,14 +45,15 @@ class Field(FieldBase):
         colliding with an obstacle, but if they do, for example being pushed by
         other agents, there will be friction force between the agent and the
         obstacles. Obstacles avoidance is handled by a navigation algorithm.
-        
+
     Targets
         :tikz:`\draw[thick, dashed, black] (0, 0) rectangle (0.4, 0.4);`
-        **Targets** :math:`\mathcal{E}_i \subset \Omega` for
-        :math:`i \in \{0, ..., m-1\}` are passable regions of the domain. Agents
+        **Targets** :math:`\mathcal{T}_i \subset \Omega` for
+        :math:`i \in T = \{0, ..., m-1\}` are passable regions of the domain. Agents
         can have a psychological tendency  to try to reach one or more of these
         regions. This psycological tendency is also handled by a navigation
-        algorithm.
+        algorithm. Targets can for examples be exit doors denoted
+        :math:`\mathcal{E} \subset \mathcal{T}_{i \in T}`.
 
     Spawns
         :tikz:`\draw[fill=blue!20] (0, 0) rectangle (0.4, 0.4);`
@@ -99,6 +66,7 @@ class Field(FieldBase):
         doesn't new agent is  placed here.
 
     """
+    # TODO: classes?
     domain = Instance(
         Polygon,
         allow_none=True,
@@ -134,7 +102,13 @@ class Field(FieldBase):
 
     def convex_hull(self):
         """Convex hull of union of all objects in the field."""
-        field = self.obstacles | union(*self.targets) | union(*self.spawns)
+        field = BaseGeometry()
+        if self.obstacles:
+            field |= self.obstacles
+        if self.targets:
+            field |= union(*self.targets)
+        if self.spawns:
+            field |= union(*self.spawns)
         return field.convex_hull
 
     @staticmethod
@@ -154,6 +128,7 @@ class Field(FieldBase):
     def navigation_to_target(self, index, step, radius, strength):
         if not self.targets:
             raise CrowdDynamicsException('No targets are set.')
+
         if isinstance(index, (int, np.int64)):
             targets = self.targets[index]
         elif index == 'closest':
@@ -164,63 +139,3 @@ class Field(FieldBase):
 
         return static_potential(self.domain, targets, self.obstacles, step,
                                 radius, strength)
-
-    # TODO: Move to visualizations
-    def plot(self, step=0.02, radius=0.3, strength=0.3, **kwargs):
-        bokeh.io.output_file(self.name + '.html', self.name)
-        p = bokeh.plotting.Figure(**kwargs)
-
-        if self.domain:
-            minx, miny, maxx, maxy = self.domain.bounds
-        else:
-            minx, miny, maxx, maxy = self.convex_hull().bounds
-
-        set_aspect(p, (minx, maxx), (miny, maxy))
-        p.grid.minor_grid_line_color = 'navy'
-        p.grid.minor_grid_line_alpha = 0.05
-
-        # indices = chain(range(len(self.targets)), ('closest',))
-        # for index in indices:
-        #     mgrid, distance_map, direction_map = \
-        #         self.navigation_to_target(index, step, radius, strength)
-
-        mgrid, distance_map, direction_map = self.navigation_to_target(
-            'closest', step, radius, strength)
-
-        # TODO: masked values on distance map
-        add_distance_map(p, mgrid, distance_map.filled(1.0),
-                         legend='distance_map')
-        add_direction_map(p, mgrid, direction_map, legend='direction_map')
-
-        add_geom(p, self.domain,
-                 legend='domain',
-                 alpha=0.05,
-                 )
-
-        for i, spawn in enumerate(self.spawns):
-            add_geom(p, spawn,
-                     legend='spawn_{}'.format(i),
-                     alpha=0.5,
-                     line_width=0,
-                     color='green',
-                     )
-
-        for i, target in enumerate(self.targets):
-            add_geom(p, target,
-                     legend='target_{}'.format(i),
-                     alpha=0.8,
-                     line_width=3.0,
-                     line_dash='dashed',
-                     color='olive',
-                     )
-
-        add_geom(p, self.obstacles,
-                 legend='obstacles',
-                 line_width=3.0,
-                 alpha=0.8,
-                 )
-
-        p.legend.location = "top_left"
-        p.legend.click_policy = "hide"
-
-        bokeh.io.show(p)

@@ -1,12 +1,10 @@
-"""Structure numpy.dtypes
-
-Attributes:
-   obstacle_type_linear: Linear obstacle defined by two points.
-"""
+"""Structure numpy.dtypes"""
 from collections import namedtuple
 
 import numpy as np
 
+
+# TODO: replace
 obstacle_type_linear = np.dtype([
     ('p0', np.float64, 2),
     ('p1', np.float64, 2),

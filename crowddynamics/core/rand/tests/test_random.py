@@ -1,10 +1,13 @@
 from hypothesis import given, assume
+import numpy as np
+import hypothesis.strategies as st
+from hypothesis.extra.numpy import arrays
 
 from crowddynamics.core.rand.functions import poisson_clock, poisson_timings
-from crowddynamics.testing import real
+from crowddynamics.testing import reals
 
 
-@given(interval=real(0.001, 0.01), dt=real(0.001, 0.01))
+@given(interval=reals(0.001, 0.01), dt=reals(0.001, 0.01))
 def test_poisson_clock(interval, dt):
     # Limit the ratio so test doesn't run forever
     assume(1/100 < interval / dt < 100)
@@ -16,9 +19,10 @@ def test_poisson_clock(interval, dt):
         time_prev = time
 
 
-@given(players=real(0, 10**7, shape=10, dtype=int),
-       interval=real(0.001, 0.01),
-       dt=real(0.001, 0.01))
+@given(players=arrays(elements=st.integers(0, 10 ** 7), shape=10,
+                      dtype=np.int64),
+       interval=reals(0.001, 0.01),
+       dt=reals(0.001, 0.01))
 def test_poisson_timings(players, interval, dt):
     # Limit the ratio so test doesn't run forever
     assume(1 / 100 < interval / dt < 100)

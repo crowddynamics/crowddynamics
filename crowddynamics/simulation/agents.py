@@ -26,67 +26,24 @@ from crowddynamics.traits import shape_validator, length_validator, \
 from crowddynamics.utils import interpolate_docstring
 
 
-class AgentType(HasTraits):
-    """Mixin for different agent types. Implements some common methods."""
-
-    @classmethod
-    def dtype(cls):
-        """Structured numpy.dtype for forming an array of the value of agent
-        type.
-
-        Returns:
-            numpy.dtype: Numpy structured dtype for the agent type
-        """
-        return class_to_struct_dtype(cls, None, lambda c: c is BodyType)
-
-    def __array__(self):
-        """Array interface for using ``numpy.array`` on the agent type. 
-        
-        Returns:
-            numpy.ndarray:
-        """
-        dtype = self.dtype()
-        values = tuple(getattr(self, field) for field in dtype.fields)
-        return np.array([values], dtype=dtype)
-
-    array = __array__
-
-    def overlapping(self, others) -> bool:
-        """Determines if agent is overlapping with any of the agent supplied 
-        in other argument.
-
-        Args:
-            others: 
-
-        Returns:
-            bool: 
-        """
-        raise NotImplementedError
-
-    def from_array(self, array):
-        """Set values from array."""
-        if len(array) != 1:
-            raise ValueError('Array should be length 1')
-        for field, value in zip(array.dtype.fields, array.item()):
-            setattr(self, field, value)
-
-    def __str__(self):
-        return self.__class__.__name__
-
-
 class States(HasTraits):
     active = Bool(
         default_value=True,
         help='Denotes if agent is currently active')
+
     target_reached = Bool(
         default_value=False,
         help='Denotes if agent has reached its target')
+
+    # Navigation
     target = Int(
-        default_value=0,
-        help='')
+        default_value=-1, min=-1,
+        help='Positive integer for target index, -1 for agent that do not have '
+             'a target.')
     herding = Bool(
         default_value=False,
-        help='')
+        help='Boolean indicating if agent is herding (following average '
+             'direction of other agent).')
 
 
 class Body(HasTraits):
@@ -130,7 +87,6 @@ class BodyType(Body):
     body_types = Instance(
         ConfigObj,
         help='Mapping of body type names to values')
-    # body_types = load_config(BODY_TYPES_CFG, BODY_TYPES_CFG_SPEC)
 
     # Ratios of radii for shoulders and torso
     ratio_rt = Float(
@@ -224,88 +180,154 @@ class BodyType(Body):
 
 class TranslationalMotion(HasTraits):
     position = Array(
-        (0, 0),
+        default_value=(0, 0),
         dtype=np.float64,
         help='Position',
         symbol=r'\mathbf{x}').valid(shape_validator(2))
     velocity = Array(
-        (0, 0),
+        default_value=(0, 0),
         dtype=np.float64,
         help='Velocity',
         symbol=r'\mathbf{v}').valid(shape_validator(2))
     target_direction = Array(
-        (0, 0),
+        default_value=(0, 0),
         dtype=np.float64,
         help='Target direction',
         symbol='\mathbf{\hat{e}}_0').valid(shape_validator(2),
                                            length_validator(0, 1))
     force = Array(
-        (0, 0),
+        default_value=(0, 0),
         dtype=np.float64,
         help='Force',
         symbol='\mathbf{f}').valid(shape_validator(2))
     force_prev = Array(
-        (0, 0),
+        default_value=(0, 0),
         dtype=np.float64,
         help='Previous force',
         symbol='\mathbf{f}_{prev}').valid(shape_validator(2))
 
     tau_adj = Float(
-        min=0, default_value=0.5,
+        default_value=0.5,
+        min=0,
         help='Characteristic time for agent adjusting its movement',
         symbol=r'\tau_{adj}')
     k_soc = Float(
-        min=0, default_value=1.5,
+        default_value=1.5,
+        min=0,
         help='Social force scaling constant',
         symbol=r'k_{soc}')
     tau_0 = Float(
-        min=0, default_value=3.0,
+        default_value=3.0,
+        min=0,
         help='Interaction time horizon',
         symbol=r'\tau_{0}')
     mu = Float(
-        min=0, default_value=1.2e5,
+        default_value=1.2e5,
+        min=0,
         help='Compression counteraction constant',
         symbol=r'\mu')
     kappa = Float(
-        min=0, default_value=4e4,
+        default_value=4e4,
+        min=0,
         help='Sliding friction constant',
         symbol=r'\kappa')
     damping = Float(
-        min=0, default_value=500,
+        default_value=500,
+        min=0,
         help='Damping coefficient for contact force',
         symbol=r'c_{d}')
     std_rand_force = Float(
-        min=0, default_value=0.1,
+        default_value=0.1,
+        min=0,
         help='Standard deviation for fluctuation force',
         symbol=r'\xi / m')
 
 
 class RotationalMotion(HasTraits):
     orientation = Float(
+        default_value=0.0,
         min=-np.pi, max=np.pi,
         help='Orientation',
         symbol=r'\varphi')
     angular_velocity = Float(
+        default_value=0.0,
         help='Angular velocity',
         symbol=r'\omega')
     target_orientation = Float(
+        default_value=0.0,
         help='Target orientation',
         symbol=r'\varphi_0')
     torque = Float(
+        default_value=0.0,
         help='Torque',
         symbol=r'M')
     torque_prev = Float(
+        default_value=0.0,
         help='Previous torque',
         symbol=r'M_{prev}')
 
     tau_rot = Float(
-        min=0, default_value=0.2,
+        default_value=0.2,
+        min=0,
         help='Characteristic time for agent adjusting its rotational movement',
         symbol=r'\tau_{adjrot}')
     std_rand_torque = Float(
-        min=0, default_value=0.1,
+        default_value=0.1,
+        min=0,
         help='Standard deviation for fluctuation torque',
         symbol=r'\eta / I{rot}')
+
+
+class AgentType(HasTraits):
+    """Mixin for different agent types. Implements some common methods."""
+    __slots__ = ()
+
+    @classmethod
+    def dtype(cls):
+        """Structured numpy.dtype for forming an array of the value of agent
+        type.
+
+        Returns:
+            numpy.dtype: Numpy structured dtype for the agent type
+        """
+        return class_to_struct_dtype(cls, None, lambda c: c is BodyType)
+
+    def __array__(self):
+        """Array interface for using ``numpy.array`` on the agent type. 
+        
+        Returns:
+            numpy.ndarray:
+        """
+        dtype = self.dtype()
+        values = tuple(getattr(self, field) for field in dtype.fields)
+        return np.array([values], dtype=dtype)
+
+    array = __array__
+
+    def overlapping(self, others) -> bool:
+        """Determines if agent is overlapping with any of the agent supplied 
+        in other argument.
+
+        Args:
+            others: 
+
+        Returns:
+            bool: 
+        """
+        raise NotImplementedError
+
+    def overlapping_obstacles(self, obstacles) -> bool:
+        raise NotImplementedError
+
+    def from_array(self, array):
+        """Set values from array."""
+        if len(array) != 1:
+            raise ValueError('Array should be length 1')
+        for field, value in zip(array.dtype.fields, array.item()):
+            setattr(self, field, value)
+
+    def __str__(self):
+        return self.__class__.__name__
 
 
 @interpolate_docstring(**{'table_of_traits': table_of_traits})
@@ -313,7 +335,7 @@ class Circular(AgentType, States, BodyType, TranslationalMotion):
     r"""Circular agent type
     
     .. tikz:: Circular agent
-       :include: ../../docs/tikz/circular_agent.tex
+       :include: ../docs/tikz/circular_agent.tex
 
     **Circular** agents are modelled as a disk with radius :math:`r > 0`
     from the center of mass :math:`\mathbf{x}`. This type of agents do not
@@ -326,9 +348,11 @@ class Circular(AgentType, States, BodyType, TranslationalMotion):
     
     %(table_of_traits)s
     """
-
     def overlapping(self, others):
         return overlapping_circles(others, self.position, self.radius)
+
+    def overlapping_obstacles(self, obstacles):
+        return overlapping_circle_line(np.array(self), obstacles)
 
 
 @interpolate_docstring(**{'table_of_traits': table_of_traits})
@@ -337,7 +361,7 @@ class ThreeCircle(AgentType, States, BodyType, TranslationalMotion,
     r"""Three-circle agent type
     
     .. tikz:: Three circle agent 
-       :include: ../../docs/tikz/three_circle_agent.tex
+       :include: ../docs/tikz/three_circle_agent.tex
 
     **Three-circle** agents are modelled as three disks representing the
     torso and two shoulders of an average human. Torso is a disk with radius
@@ -352,8 +376,13 @@ class ThreeCircle(AgentType, States, BodyType, TranslationalMotion,
     
     %(table_of_traits)s
     """
-    position_ls = Array((0, 0), dtype=np.float64).valid(shape_validator(2))
-    position_rs = Array((0, 0), dtype=np.float64).valid(shape_validator(2))
+    position_ls = Array(
+        default_value=(0, 0),
+        dtype=np.float64).valid(shape_validator(2))
+
+    position_rs = Array(
+        default_value=(0, 0),
+        dtype=np.float64).valid(shape_validator(2))
 
     @default('position_ls')
     def _default_position_ls(self):
@@ -371,6 +400,9 @@ class ThreeCircle(AgentType, States, BodyType, TranslationalMotion,
             (self.position, self.position_ls, self.position_rs),
             (self.r_t, self.r_s, self.r_s))
 
+    def overlapping_obstacles(self, obstacles) -> bool:
+        return overlapping_three_circle_line(np.array(self), obstacles)
+
 
 @interpolate_docstring(**{'table_of_traits': table_of_traits})
 class Capsule(AgentType, States, BodyType, TranslationalMotion,
@@ -378,7 +410,7 @@ class Capsule(AgentType, States, BodyType, TranslationalMotion,
     r"""Capsule
     
     .. tikz:: Capsule agent
-       :include: ../../docs/tikz/capsule_agent.tex
+       :include: ../docs/tikz/capsule_agent.tex
 
     **Capsule** shaped model used in *Dense Crowds of Virtual Humans* 
     [Stuvel2016]_ and *Simulating competitive egress of noncircular 
@@ -524,8 +556,7 @@ def overlapping_three_circle_line(agents, obstacles):
             h, _, _ = distance_three_circle_line(
                 (agent['position'], agent['position_ls'], agent['position_rs']),
                 (agent['r_t'], agent['r_s'], agent['r_s']),
-                obstacle['p0'],
-                obstacle['p1']
+                obstacle['p0'], obstacle['p1']
             )
             if h < 0.0:
                 return True
@@ -599,15 +630,14 @@ class Agents(AgentsBase):
         # Block list for speeding up overlapping checks
         self._neighbours = MutableBlockList(cell_size=self.cell_size)
 
-    def add_non_overlapping_group(self, group, position_gen):
+    def add_non_overlapping_group(self, group, position_gen, obstacles=None):
         """Add group of agents
 
         Args:
             group (AgentGroup):
-            position_gen (Generator | Callable):
+            position_gen (Generator|Callable):
+            obstacles (numpy.ndarray): 
         """
-        # TODO: check overlapping with obstacles
-
         if self.agent_type is not group.agent_type:
             raise CrowdDynamicsException
 
@@ -624,7 +654,12 @@ class Agents(AgentsBase):
             # Overlapping check
             neighbours = self._neighbours.nearest(new_agent.position, radius=1)
             if new_agent.overlapping(array[neighbours]):
-                # Agent is overlapping other agent. Generate new position.
+                # Agent is overlapping other agent.
+                overlaps += 1
+                continue
+
+            if obstacles is not None and new_agent.overlapping_obstacles(obstacles):
+                # Agent is overlapping with an obstacle.
                 overlaps += 1
                 continue
 

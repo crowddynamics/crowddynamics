@@ -6,7 +6,7 @@ import traitlets
 import traittypes
 
 from crowddynamics.traits import shape_validator, length_validator, \
-    trait_to_primitive_dtype
+    trait_to_dtype
 
 
 def test_shape_validator():
@@ -45,5 +45,5 @@ class Traits(traitlets.HasTraits):
 
 def test_trait_to_primitive_dtype():
     for name, trait in Traits.class_traits().items():
-        dtypespec = trait_to_primitive_dtype(name, trait)
+        dtypespec = trait_to_dtype(name, trait)
         assert True
