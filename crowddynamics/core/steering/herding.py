@@ -1,46 +1,30 @@
 """Herding / Flocking / Leader-Follower effect"""
 import numba
 import numpy as np
-from numba import f8
-from numba import i8
+from numba import f8, i8
 
-from crowddynamics.core.interactions.block_list import block_list
-from crowddynamics.core.interactions.block_list import get_block
+from crowddynamics.core.interactions.block_list import block_list, get_block
 from crowddynamics.core.vector2D import length, normalize
 
+EMPTY = -1
+NEIGHBOR_INDICES = ((1, 0), (1, 1), (0, 1), (1, -1))
 
-@numba.jit([f8[:, :](f8[:, :], f8[:, :], f8, i8[:], i8[:], i8[:], i8[:])],
-           nopython=True, nogil=True, cache=True)
-def herding_interaction(position, direction, sight_herding, index_list, count,
-                        offset, shape):
-    r"""Herding effect. Computed from the average directions of neighbouring 
-    agents.
 
-    .. math::
-       \mathbf{\hat{e}_{herding}} = 
-       \frac{\sum_{j \in Neigh} \mathbf{\hat{e}}_j}{N_{neigh}}
+@numba.jit([(i8[:], i8[:], i8[:], i8[:])], nopython=True, nogil=True)
+def block_list_iter(index_list, count, offset, shape):
+    r"""Iterate over blocklist
 
     Args:
-        position (numpy.ndarray):
-            Positions of herding agents
-        direction (numpy.ndarray):
-            Directions (unit vectors) of herding agents
-        sight_herding: 
-        index_list: 
-        count: 
-        offset: 
-        shape: 
+        index_list:
+        count:
+        offset:
+        shape:
 
     Returns:
-        numpy.ndarray: 
+        numpy.ndarray:
             New direction vector :math:`\mathbf{\hat{e}_{herding}}`
     """
-    # Neighbouring blocks
-    nb = np.array(((1, 0), (1, 1), (0, 1), (1, -1)), dtype=np.int64)
     n, m = shape
-
-    sum_e0_neigh = np.zeros_like(direction)
-    # n_neigh = np.zeros((position.shape[0], 1), dtype=np.int64)
 
     for i in range(n):
         for j in range(m):
@@ -48,35 +32,86 @@ def herding_interaction(position, direction, sight_herding, index_list, count,
             ilist = get_block((i, j), index_list, count, offset, shape)
             for l, i_agent in enumerate(ilist[:-1]):
                 for j_agent in ilist[l + 1:]:
-                    sum_e0_neigh[i_agent] += direction[j_agent]
-                    sum_e0_neigh[j_agent] += direction[i_agent]
-                    # n_neigh[i_agent] += 1
-                    # n_neigh[j_agent] += 1
+                    yield i_agent, j_agent
 
             # Herding between agent inside the block and neighbouring agents
-            for k in range(len(nb)):
-                i2, j2 = nb[k]
+            for k in range(len(NEIGHBOR_INDICES)):
+                i2, j2 = NEIGHBOR_INDICES[k]
                 if 0 <= (i + i2) < n and 0 <= (j + j2) < m:
                     ilist2 = get_block((i + i2, j + j2), index_list, count,
                                        offset, shape)
                     for i_agent in ilist:
                         for j_agent in ilist2:
-                            if length(position[i_agent] - position[j_agent]) \
-                                    <= sight_herding:
-                                sum_e0_neigh[i_agent] += direction[j_agent]
-                                sum_e0_neigh[j_agent] += direction[i_agent]
-                                # n_neigh[i_agent] += 1
-                                # n_neigh[j_agent] += 1
-
-    # Normalize
-    for i in range(len(sum_e0_neigh)):
-        sum_e0_neigh[i] = normalize(sum_e0_neigh[i])
-
-    return sum_e0_neigh
+                            yield i_agent, j_agent
 
 
-def herding_block_list(position, direction, sight_herding):
-    """Compute herding using block list"""
-    index_list, count, offset, shape = block_list(position, sight_herding)
-    return herding_interaction(position, direction, sight_herding, index_list, count,
-                               offset, shape)
+@numba.jit([(f8[:, :], f8, i8, i8[:], i8[:], i8[:], i8[:])],
+           nopython=True, nogil=True)
+def compute_neighbors(position, sight, neighborhood_size,
+                      index_list, count, offset, shape):
+    agent_size = len(position)
+
+    neighbors = np.full((agent_size, neighborhood_size),
+                        fill_value=EMPTY,
+                        dtype=np.int64)
+    '''Current nearest neighbours.'''
+    distances = np.full((agent_size, neighborhood_size),
+                        fill_value=np.inf,
+                        dtype=np.float64)
+    '''Distance to current nearest neighbours.'''
+    distances_max = np.full(agent_size,
+                            fill_value=np.inf,
+                            dtype=np.float64)
+    '''Distance to furthest neighbor.'''
+
+    for i, j in block_list_iter(index_list, count, offset, shape):
+        l = length(position[i] - position[j])
+        if l < sight:
+            if l < distances_max[i]:
+                argmax = np.argmax(distances[i, :])
+                neighbors[i, argmax] = j
+                distances[i, argmax] = l
+                distances_max[i] = np.max(distances[i, :])
+
+            if l < distances_max[j]:
+                argmax = np.argmax(distances[j, :])
+                neighbors[j, argmax] = i
+                distances[j, argmax] = l
+                distances_max[j] = np.max(distances[j, :])
+
+    return neighbors
+
+
+@numba.jit([f8[:, :](f8[:, :], i8[:, :])], nopython=True, nogil=True, cache=True)
+def herding(direction, neighbors):
+    """Herding effect.
+
+    .. math::
+       \mathbf{\hat{e}_{herding}} = \mathcal{N}
+       \left(\sum_{j \in Neigh} \mathbf{\hat{e}}_j\right)
+
+    Args:
+        direction:
+        neighbors:
+
+    Returns:
+        numpy.ndarray:
+            New direction vector :math:`\mathbf{\hat{e}_{herding}}`
+    """
+    new_direction = np.zeros_like(direction)
+    n, m = neighbors.shape
+    for i in range(n):
+        for row in range(m):
+            j = neighbors[i, row]
+            if j == EMPTY:
+                continue
+            new_direction[i, :] += direction[j, :]
+        new_direction[i, :] = normalize(new_direction[i, :])
+    return new_direction
+
+
+def herding_block_list(position, direction, sight, neighborhood_size):
+    index_list, count, offset, shape = block_list(position, sight)
+    neighbors = compute_neighbors(position, sight, neighborhood_size,
+                                  index_list, count, offset, shape)
+    return herding(direction, neighbors)

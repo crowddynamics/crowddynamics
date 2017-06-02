@@ -52,7 +52,6 @@ class MultiAgentSimulation(SimulationBase):
     def update(self):
         """Execute new iteration cycle of the simulation."""
         for node in PostOrderIter(self.logic.root):
-            print(node)
             node.update()
         self.data['iterations'] += 1
 

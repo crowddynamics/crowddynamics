@@ -9,7 +9,7 @@ from crowddynamics.core.interactions.interactions import (
     agent_agent_block_list,
     agent_circular_obstacle, agent_three_circle_obstacle)
 import crowddynamics.testing as testing
-from crowddynamics.core.struct import obstacle_type_linear
+from crowddynamics.core.structures import obstacle_type_linear
 from crowddynamics.simulation.agents import Circular, ThreeCircle
 
 

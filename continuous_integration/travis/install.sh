@@ -40,6 +40,7 @@ pip install -q \
     colorlog \
     traitlets \
     traittypes \
+    diskcache \
     pytest \
     pytest-cov \
     coverage \

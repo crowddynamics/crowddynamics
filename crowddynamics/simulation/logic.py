@@ -122,7 +122,7 @@ class AgentObstacleInteractions(LogicNode):
 
 class Navigation(LogicNode):
     step = Float(
-        default_value=0.02,
+        default_value=0.04,
         min=0,
         help='Step size for meshgrid used for discretization.')
     radius = Float(
@@ -163,7 +163,8 @@ class Herding(LogicNode):
 
     def update(self):
         agents = self.simulation.agents.array
-        herding(agents, agents['herding'], self.sight_herding)
+        herding(agents, agents['herding'], self.sight_herding,
+                self.num_nearest_agents)
 
 
 class Orientation(LogicNode):
@@ -176,20 +177,20 @@ class Orientation(LogicNode):
 
 class SaveSimulationData(LogicNode):
     """Logic for saving simulation data.
-    
+
     Saved once
     - Geometry
     - Metadata
-    
+
     Saved continuously
     - Agents
     - Data
-    
+
     Examples:
         >>> def save_condition(simulation, frequency=100):
         >>>     return (simulation.data['iterations'] + 1) % frequency == 0
-        >>> 
-        >>> node = SaveSimulationData(save_condition=save_condition, 
+        >>>
+        >>> node = SaveSimulationData(save_condition=save_condition,
         >>>                           base_directory='.')
     """
     save_condition = Instance(

@@ -8,12 +8,6 @@ sys.path.insert(0, os.path.abspath('..'))
 import crowddynamics
 
 
-# -- Disable numba jit and vectorize -------------------------------------
-
-# http://numba.pydata.org/numba-doc/dev/reference/envvars.html
-os.environ['NUMBA_DISABLE_JIT'] = '1'
-
-
 # -- Build apidocs automatically when sphinx is run ----------------------
 
 from sphinx.apidoc import main

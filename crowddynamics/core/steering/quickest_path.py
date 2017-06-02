@@ -1,9 +1,7 @@
-from collections import namedtuple
-from typing import Tuple, Optional, NamedTuple, Callable, Union
+from typing import Tuple, Optional, NamedTuple, Callable
 
 import numpy as np
 import skfmm
-from loggingtools.log_with import log_with
 from scipy.interpolate import NearestNDInterpolator
 from shapely.geometry.base import BaseGeometry
 from skimage.segmentation import find_boundaries
@@ -21,20 +19,19 @@ DirectionMap = Tuple[np.ma.MaskedArray, np.ma.MaskedArray]
 
 # Grid
 
-@log_with(arguments=False, timed=True)
 def meshgrid(step: float, minx: float, miny: float,
              maxx: float, maxy: float) -> MeshGrid:
     """2-Dimensional meshgrid with inclusive end points maxx and maxy
 
     Args:
-        step (float): 
-        minx (float): 
-        miny (float): 
-        maxx (float): 
+        step (float):
+        minx (float):
+        miny (float):
+        maxx (float):
         maxy (float):
 
     Returns:
-        MeshGrid: 
+        MeshGrid:
     """
     x = np.arange(minx, maxx + step, step=step)
     y = np.arange(miny, maxy + step, step=step)
@@ -54,13 +51,12 @@ def meshgrid(step: float, minx: float, miny: float,
 
 # Maps
 
-@log_with(arguments=False, timed=True)
 def distance_map(mgrid: MeshGrid,
                  targets: BaseGeometry,
                  obstacles: Optional[BaseGeometry]) -> DistanceMap:
     r"""
     Distance map :math:`S(\mathbf{x})` is obtained by solving *Eikonal equation*
-    (Continuos shortest path problem) using fast marching *Fast Marching Method 
+    (Continuos shortest path problem) using fast marching *Fast Marching Method
     (FMM)*.
 
     .. math::
@@ -145,9 +141,8 @@ def travel_time_map():
     return NotImplementedError
 
 
-@log_with(arguments=False, timed=True)
 def direction_map(dmap: DistanceMap) -> DirectionMap:
-    r"""Computes normalized gradient of distance map. Not defined when length of 
+    r"""Computes normalized gradient of distance map. Not defined when length of
     the gradient is zero.
 
     .. math::
@@ -170,9 +165,8 @@ def direction_map(dmap: DistanceMap) -> DirectionMap:
 
 # Potentials
 
-@log_with(arguments=False, timed=True)
 def fill_missing(mask, x, y, u, v):
-    """Fill missing value with by interpolating the values from nearest 
+    """Fill missing value with by interpolating the values from nearest
     neighbours"""
     # Construct the interpolators from the boundary values surrounding the
     # missing values.
@@ -187,7 +181,6 @@ def fill_missing(mask, x, y, u, v):
     v[mask] = ip_v(missing)
 
 
-@log_with(arguments=False, timed=True)
 def shortest_path(mgrid, domain, targets, obstacles, buffer_radius):
     """Vector field guiding towards targets."""
     obstacles_buffered = obstacles.buffer(buffer_radius).intersection(domain)

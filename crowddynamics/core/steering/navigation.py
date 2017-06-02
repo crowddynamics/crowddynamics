@@ -1,18 +1,17 @@
 r"""
 Navigation
 ----------
-Navigation aka path-planing algorithms computes target direction 
-:math:`\mathbf{\hat{e}_0}` for each agent. Target direction accounts for agents 
+Navigation aka path-planing algorithms computes target direction
+:math:`\mathbf{\hat{e}_0}` for each agent. Target direction accounts for agents
 desire to move towards some direction.
 
-Navigation algorithms can be combined. For examples `static potential` is 
+Navigation algorithms can be combined. For examples `static potential` is
 combination of `shortest path` and `obstacle handling`.
 """
 from typing import Tuple
 
 import numba
 import numpy as np
-from loggingtools import log_with
 from numba import f8, i8
 from shapely.geometry import Polygon
 
@@ -23,7 +22,6 @@ from crowddynamics.core.steering.quickest_path import MeshGrid, DistanceMap, \
     DirectionMap, meshgrid, shortest_path
 
 
-@log_with(timed=True)
 def static_potential(domain,
                      targets,
                      obstacles,
@@ -32,9 +30,9 @@ def static_potential(domain,
                      strength: float) -> \
         Tuple[MeshGrid, DistanceMap, DirectionMap]:
     r"""
-    Navigation algorithm that uses combines `shortest path` and  
-    `obstacle handling` into single navigation mesh that guides agents towards 
-    targets so that they don't willingly collide with obstacles (they can be 
+    Navigation algorithm that uses combines `shortest path` and
+    `obstacle handling` into single navigation mesh that guides agents towards
+    targets so that they don't willingly collide with obstacles (they can be
     pushed towards obstacles by other agents).
 
     Args:
@@ -107,11 +105,13 @@ def navigation(agents, mask, mgrid, dir_map):
     # Flip x and y to array index i and j
     indices = np.fliplr(mgrid.indicer(agents[mask]['position']))
     new_direction = getdefault(indices, dir_map, agents[mask]['target_direction'])
-    set_target_direction(agents, np.arange(len(agents))[mask], new_direction)
+    indices2 = np.arange(len(agents))
+    set_target_direction(agents, indices2[mask], new_direction)
 
 
-def herding(agents, mask, sight_herding):
-    new_direction = herding_block_list(agents[mask]['position'],
-                                       agents[mask]['velocity'],
-                                       sight_herding)
-    set_target_direction(agents, np.arange(len(agents))[mask], new_direction)
+def herding(agents, mask, sight_herding, num_nearest_agents):
+    new_direction = herding_block_list(
+        agents[mask]['position'], agents[mask]['velocity'], sight_herding,
+        num_nearest_agents)
+    indices = np.arange(len(agents))
+    set_target_direction(agents, indices[mask], new_direction)

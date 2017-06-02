@@ -11,12 +11,11 @@ from typing import Callable
 import numpy as np
 import shapely.geometry as geometry
 import skimage.draw
-from loggingtools import log_with
 from shapely import speedups
 from shapely.geometry import Polygon, LineString, Point
 from shapely.geometry.base import BaseGeometry, BaseMultipartGeometry
 
-from crowddynamics.core.struct import obstacle_type_linear
+from crowddynamics.core.structures import obstacle_type_linear
 
 if speedups.available:
     speedups.enable()
@@ -73,16 +72,16 @@ def geom_to_linesegment(geom: BaseGeometry):
      ((7.0, 8.0), (9.0, 10.0)),
      ((9.0, 10.0), (5.0, 6.0))]
     >>> list(geom_to_linesegment(ls | poly))
-    [((1.0, 2.0), (3.0, 4.0)), 
-     ((5.0, 6.0), (7.0, 8.0)), 
-     ((7.0, 8.0), (9.0, 10.0)), 
+    [((1.0, 2.0), (3.0, 4.0)),
+     ((5.0, 6.0), (7.0, 8.0)),
+     ((7.0, 8.0), (9.0, 10.0)),
      ((9.0, 10.0), (5.0, 6.0))]
 
     Args:
         geom (BaseGeometry): BaseGeometry type.
 
     Returns:
-        Iterable[LineSegment]: Iterable of linesegments 
+        Iterable[LineSegment]: Iterable of linesegments
 
     """
     if isinstance(geom, Point):
@@ -103,7 +102,6 @@ def geom_to_linear_obstacles(geom):
     return np.array(segments, dtype=obstacle_type_linear)
 
 
-@log_with(arguments=False, timed=True)
 def draw_geom(geom: BaseGeometry,
               grid,
               indicer: Callable,

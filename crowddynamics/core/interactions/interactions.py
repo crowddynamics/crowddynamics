@@ -2,17 +2,17 @@ r"""
 Interactions
 ------------
 Mathematically agent-agent and agent-obstacle interactions are governed by
-summing over all agent-agent or agent-obstacle pairs. This is analogous to 
+summing over all agent-agent or agent-obstacle pairs. This is analogous to
 n-body problems in physics.
 
 Interactions between agents
 
 .. math::
-   \mathbf{f}_{i}^{agent-agent} = 
+   \mathbf{f}_{i}^{agent-agent} =
    \sum_{j\neq i}^{} \left(\mathbf{f}_{ij}^{soc} + \mathbf{f}_{ij}^{c}\right)
 
 .. math::
-   M_{i}^{agent-agent} = 
+   M_{i}^{agent-agent} =
    \sum_{j\neq i}^{} \left(M_{ij}^{soc} + M_{ij}^{c}\right)
 
 
@@ -27,18 +27,18 @@ Interactions between agents and obstacles
 
 Brute Force Summation
 ^^^^^^^^^^^^^^^^^^^^^
-Number of iterations for set of :math:`N > 0` agents 
+Number of iterations for set of :math:`N > 0` agents
 
 .. math::
    N - 1 + N - 2 + ... + 1 =  \frac{(N - 1)^2}{2} \in \mathcal{O}(N^2)
 
-Number of iterations for two disjoint sets of :math:`N > 0` and :math:`M > 0` 
+Number of iterations for two disjoint sets of :math:`N > 0` and :math:`M > 0`
 agents
 
 .. math::
    M N
 
-Because the computational complexity of naive brute force summation scales 
+Because the computational complexity of naive brute force summation scales
 :math:`\mathcal{O}(N^2)` it is unfeasible to use for large numbers of agents.
 
 
@@ -49,18 +49,18 @@ Iterations per block
 .. math::
    ((N_0-1)^{2} + N_0 \sum_{i=1}^{8} N_i) / 2
 
-Number of iterations if maximum number of agents that can be fit into a cell 
+Number of iterations if maximum number of agents that can be fit into a cell
 is :math:`M` is some constant.
 
 Iterations per block
 
 .. math::
    I = \frac{(M - 1)^2}{2} + \frac{9}{2} M^{2}
- 
-For :math:`N` agents the number of blocks :math:`N / M`. 
+
+For :math:`N` agents the number of blocks :math:`N / M`.
 
 .. math::
-   I \frac{N}{M} = \frac{N}{M} \left(5 M^{2} - M + \frac{1}{2}\right) \in 
+   I \frac{N}{M} = \frac{N}{M} \left(5 M^{2} - M + \frac{1}{2}\right) \in
    \mathcal{O}(N)
 
 """
@@ -78,7 +78,7 @@ from crowddynamics.core.motion.power_law import \
 from crowddynamics.exceptions import InvalidType
 from crowddynamics.simulation.agents import agent_type_circular, \
     agent_type_three_circle, is_model
-from crowddynamics.core.struct import obstacle_type_linear
+from crowddynamics.core.structures import obstacle_type_linear
 from crowddynamics.core.vector2D import rotate270, cross
 
 

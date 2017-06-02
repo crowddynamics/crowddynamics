@@ -19,7 +19,7 @@ def shape_validator(*dimensions):
 
     Args:
         *dimensions (int): Dimensions of the array
-    
+
     Returns:
         Callable[trait, value]: Validator function
     """
@@ -39,8 +39,8 @@ def length_validator(*lengths):
     """Validates the length of :class:`traittypes.Array` trait.
 
     Args:
-        *lengths (numbers.Real): 
-        
+        *lengths (numbers.Real):
+
     Returns:
         Callable[trait, value]: Validator function
     """
@@ -78,7 +78,7 @@ def trait_to_type(trait):
 
 def trait_to_dtype(name, trait):
     """Convert TraitType to numpy.dtype in format (name, dtype, shape)::
-    
+
         Int -> numpy.int64
         Float -> numpy.float64
         Complex -> numpy.complex128
@@ -87,8 +87,8 @@ def trait_to_dtype(name, trait):
 
     Args:
         name (str): Name of the trait
-        trait (TraitType): Instance of TraitType 
-    
+        trait (TraitType): Instance of TraitType
+
     Returns:
         tuple:
             - Scalar: (str, numpy.dtype)
@@ -160,8 +160,8 @@ def class_own_traits(cls, exclude_attrs=None):
     defined in the class.
 
     Args:
-        cls: 
-        exclude_attrs: 
+        cls:
+        exclude_attrs:
     """
     if issubclass(cls, HasTraits):
         for name, trait in vars(cls).items():
@@ -172,11 +172,11 @@ def class_own_traits(cls, exclude_attrs=None):
 
 
 def class_traits(cls, exclude_attrs=None, exclude_cls=None):
-    """Traverse the class hierarchy and yield traits in order defined in the 
+    """Traverse the class hierarchy and yield traits in order defined in the
     classes.
 
     Args:
-        cls (type): 
+        cls (type):
             Subclass of HasTraits
         exclude_attrs (Callable[str, bool], optional):
             Optional function to exclude class attribute names.
@@ -184,12 +184,12 @@ def class_traits(cls, exclude_attrs=None, exclude_cls=None):
             Optional function to exclude classes
 
     Yields:
-        (str, TraitType): Tuple of the trait's name and type. 
-        
+        (str, TraitType): Tuple of the trait's name and type.
+
     Examples:
         >>> cls = ...  # Class with traits
         >>> # excludes private attributes
-        >>> class_traits(cls, exclude_attrs=lambda name: name.startswith('_')) 
+        >>> class_traits(cls, exclude_attrs=lambda name: name.startswith('_'))
     """
     for c in inspect.getmro(cls):
         if callable(exclude_cls) and exclude_cls(c):
@@ -201,7 +201,7 @@ def class_to_struct_dtype(cls, exclude_attrs, exclude_cls):
     """Construct structured numpy.dtype from class with traits.
 
     Args:
-        cls (type): 
+        cls (type):
         exclude_attrs (Callable[str, bool], optional):
             Optional function to exclude class attribute names.
         exclude_cls (Callable[type, bool], optional):
@@ -239,17 +239,17 @@ class Rst(object):
 
 def table_of_traits(cls):
     """Generate ReStructuredText table from trait of class::
-    
+
         .. csv-table::
            :header-rows: 1
-           
+
            name, help, symbol, default value
            radius, Radius, :math:`r`, ""
            ...
 
     Args:
         cls: Class that has traits
-    
+
     Returns:
         str: Table as string
     """

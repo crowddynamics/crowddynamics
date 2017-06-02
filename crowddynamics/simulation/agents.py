@@ -16,7 +16,7 @@ from crowddynamics.core.interactions.distance import distance_circles, \
     distance_circle_line, distance_three_circle_line
 from crowddynamics.core.interactions.distance import distance_three_circles
 from crowddynamics.core.rand.functions import truncnorm
-from crowddynamics.core.struct import obstacle_type_linear
+from crowddynamics.core.structures import obstacle_type_linear
 from crowddynamics.core.vector2D import unit_vector, rotate270
 from crowddynamics.exceptions import CrowdDynamicsException
 from crowddynamics.simulation.base import AgentsBase
@@ -293,8 +293,8 @@ class AgentType(HasTraits):
         return class_to_struct_dtype(cls, None, lambda c: c is BodyType)
 
     def __array__(self):
-        """Array interface for using ``numpy.array`` on the agent type. 
-        
+        """Array interface for using ``numpy.array`` on the agent type.
+
         Returns:
             numpy.ndarray:
         """
@@ -305,14 +305,14 @@ class AgentType(HasTraits):
     array = __array__
 
     def overlapping(self, others) -> bool:
-        """Determines if agent is overlapping with any of the agent supplied 
+        """Determines if agent is overlapping with any of the agent supplied
         in other argument.
 
         Args:
-            others: 
+            others:
 
         Returns:
-            bool: 
+            bool:
         """
         raise NotImplementedError
 
@@ -333,7 +333,7 @@ class AgentType(HasTraits):
 @interpolate_docstring(**{'table_of_traits': table_of_traits})
 class Circular(AgentType, States, BodyType, TranslationalMotion):
     r"""Circular agent type
-    
+
     .. tikz:: Circular agent
        :include: ../docs/tikz/circular_agent.tex
 
@@ -345,7 +345,7 @@ class Circular(AgentType, States, BodyType, TranslationalMotion):
     model is too wide in the  perpendicular width compared to three-circle
     or capsule representations  and lacks the ability change orientation to
     fit through smaller spaces. [Helbing2000a]_
-    
+
     %(table_of_traits)s
     """
     def overlapping(self, others):
@@ -359,8 +359,8 @@ class Circular(AgentType, States, BodyType, TranslationalMotion):
 class ThreeCircle(AgentType, States, BodyType, TranslationalMotion,
                   RotationalMotion):
     r"""Three-circle agent type
-    
-    .. tikz:: Three circle agent 
+
+    .. tikz:: Three circle agent
        :include: ../docs/tikz/three_circle_agent.tex
 
     **Three-circle** agents are modelled as three disks representing the
@@ -370,10 +370,10 @@ class ThreeCircle(AgentType, States, BodyType, TranslationalMotion,
     tangents at distance :math:`r_{ts}` from the center of mass
     :math:`\mathbf{x} \pm r_{ts} \mathbf{\hat{e}_t}`, where
     :math:`\mathbf{\hat{e}_t} = [\sin(\varphi), -\cos(\varphi)]`. Three
-    circle type has orientation of :math:`\varphi`. Model was proposed 
+    circle type has orientation of :math:`\varphi`. Model was proposed
     *Crowd dynamics discrete element multi-circle model* [Langston2006]_ and
     has been used for example in FDS+EVAC [Korhonen2008b]_.
-    
+
     %(table_of_traits)s
     """
     position_ls = Array(
@@ -408,23 +408,23 @@ class ThreeCircle(AgentType, States, BodyType, TranslationalMotion,
 class Capsule(AgentType, States, BodyType, TranslationalMotion,
               RotationalMotion):
     r"""Capsule
-    
+
     .. tikz:: Capsule agent
        :include: ../docs/tikz/capsule_agent.tex
 
-    **Capsule** shaped model used in *Dense Crowds of Virtual Humans* 
-    [Stuvel2016]_ and *Simulating competitive egress of noncircular 
+    **Capsule** shaped model used in *Dense Crowds of Virtual Humans*
+    [Stuvel2016]_ and *Simulating competitive egress of noncircular
     pedestrians* [Hidalgo2017]_.
-    
+
     .. math::
        r &= T / 2 \\
        w &= W - 2 r
-    
-    where 
-    
+
+    where
+
     - :math:`T` is the thickness of the chest
     - :math:`W` is the width of the chest
-    
+
     %(table_of_traits)s
     """
     pass
@@ -447,8 +447,8 @@ def is_model(agents, model):
     """Test if agent if type same type as model name
 
     Args:
-        agents (numpy.ndarray): 
-        model (str): 
+        agents (numpy.ndarray):
+        model (str):
 
     Returns:
         bool:
@@ -565,14 +565,14 @@ def overlapping_three_circle_line(agents, obstacles):
 
 class AgentGroup(HasTraits):
     """Group of agents
-    
+
     Examples:
         >>> group = AgentGroup(
         >>>             size=10,
         >>>             agent_type=Circular,
         >>>             attributes=...,
         >>>         )
-        
+
     """
     agent_type = Type(
         AgentType,
@@ -605,7 +605,7 @@ class AgentGroup(HasTraits):
 
 class Agents(AgentsBase):
     """Set groups of agents
-    
+
     Examples:
         >>> agent = Agents(agent_type=Circular)
         >>> agent.add_non_overlapping_group(...)
@@ -636,7 +636,7 @@ class Agents(AgentsBase):
         Args:
             group (AgentGroup):
             position_gen (Generator|Callable):
-            obstacles (numpy.ndarray): 
+            obstacles (numpy.ndarray):
         """
         if self.agent_type is not group.agent_type:
             raise CrowdDynamicsException

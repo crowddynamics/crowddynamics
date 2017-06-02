@@ -20,7 +20,6 @@ AUTHOR = ''
 PROJECT = ''
 GITHUB_REPO = ''
 
-
 # Sphinx
 SPHINXOPTS = ''
 SOURCEDIR = 'docs'
@@ -130,14 +129,16 @@ def task_clean_pyc():
 
 def task_clean_test():
     """Clean test and coverage artifacts"""
-    files = ['.tox/',
-             '.coverage',
-             'htmlcov/',
-             '**/htmlcov/',
-             '.benchmarks',
-             '.cache',
-             '.hypothesis']
-    return {'actions': [(remove_files, files)]}
+    files = [
+        '.tox/',
+        '.coverage',
+        'htmlcov/',
+        '.benchmarks',
+        '.cache',
+        '.hypothesis'
+    ]
+    files_rec = ['**/' + file for file in files]
+    return {'actions': [(remove_files, files + files_rec)]}
 
 
 def task_clean_docs():
@@ -148,8 +149,7 @@ def task_clean_docs():
 
 def task_clean_apidocs():
     """Clean documentation"""
-    files = [os.path.join(SOURCEDIR, 'apidocs'),
-             os.path.join(SOURCEDIR, 'apidocs_examples')]
+    files = [os.path.join(SOURCEDIR, 'apidocs')]
     return {'actions': [(remove_files, files)]}
 
 
