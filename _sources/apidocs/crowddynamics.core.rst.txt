@@ -55,10 +55,10 @@ crowddynamics\.core\.quantities module
     :undoc-members:
     :show-inheritance:
 
-crowddynamics\.core\.struct module
-----------------------------------
+crowddynamics\.core\.structures module
+--------------------------------------
 
-.. automodule:: crowddynamics.core.struct
+.. automodule:: crowddynamics.core.structures
     :members:
     :undoc-members:
     :show-inheritance:

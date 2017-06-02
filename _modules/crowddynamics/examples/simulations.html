@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>crowddynamics.examples.simulations &mdash; crowddynamics legacy+318.gb8d04f6.dirty documentation</title>
+  <title>crowddynamics.examples.simulations &mdash; crowddynamics legacy+319.g4c897c8.dirty documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../../genindex.html"/>
         <link rel="search" title="Search" href="../../../search.html"/>
-    <link rel="top" title="crowddynamics legacy+318.gb8d04f6.dirty documentation" href="../../../index.html"/>
+    <link rel="top" title="crowddynamics legacy+319.g4c897c8.dirty documentation" href="../../../index.html"/>
         <link rel="up" title="Module code" href="../../index.html"/> 
 
   
@@ -70,7 +70,7 @@
             
             
               <div class="version">
-                legacy+318legacy+318.gb8d04f6.dirtygb8d04f6
+                legacy+319legacy+319.g4c897c8.dirtyg4c897c8
               </div>
             
           
@@ -183,8 +183,10 @@
             
   <h1>Source code for crowddynamics.examples.simulations</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">scipy.stats._discrete_distns</span> <span class="k">import</span> <span class="n">geom</span>
 <span class="kn">from</span> <span class="nn">traitlets.traitlets</span> <span class="k">import</span> <span class="n">Float</span><span class="p">,</span> <span class="n">Int</span><span class="p">,</span> <span class="n">observe</span><span class="p">,</span> <span class="n">Enum</span><span class="p">,</span> <span class="n">default</span>
 
+<span class="kn">from</span> <span class="nn">crowddynamics.core.geometry</span> <span class="k">import</span> <span class="n">geom_to_linear_obstacles</span>
 <span class="kn">from</span> <span class="nn">crowddynamics.examples</span> <span class="k">import</span> <span class="n">fields</span>
 <span class="kn">from</span> <span class="nn">crowddynamics.core.vector2D</span> <span class="k">import</span> <span class="n">unit_vector</span>
 <span class="kn">from</span> <span class="nn">crowddynamics.simulation.agents</span> <span class="k">import</span> <span class="n">Agents</span><span class="p">,</span> <span class="n">AgentGroup</span><span class="p">,</span> <span class="n">Circular</span><span class="p">,</span> \
@@ -403,12 +405,14 @@
 
 
 <div class="viewcode-block" id="FourExits"><a class="viewcode-back" href="../../../apidocs/crowddynamics.examples.html#crowddynamics.examples.simulations.FourExits">[docs]</a><span class="k">class</span> <span class="nc">FourExits</span><span class="p">(</span><span class="n">MultiAgentSimulation</span><span class="p">):</span>
-    <span class="c1"># TODO: exit_selection</span>
-    <span class="c1"># TODO: active agents</span>
-    <span class="c1"># TODO: herding agents</span>
-    <span class="n">size</span> <span class="o">=</span> <span class="n">Int</span><span class="p">(</span>
-        <span class="n">default_value</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
-        <span class="nb">min</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">size_active</span> <span class="o">=</span> <span class="n">Int</span><span class="p">(</span>
+        <span class="n">default_value</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+        <span class="nb">min</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Amount of active agents&#39;</span><span class="p">)</span>
+    <span class="n">size_herding</span> <span class="o">=</span> <span class="n">Int</span><span class="p">(</span>
+        <span class="n">default_value</span><span class="o">=</span><span class="mi">90</span><span class="p">,</span>
+        <span class="nb">min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Amount of herding agents&#39;</span><span class="p">)</span>
     <span class="n">agent_type</span> <span class="o">=</span> <span class="n">Enum</span><span class="p">(</span>
         <span class="n">values</span><span class="o">=</span><span class="p">(</span><span class="n">Circular</span><span class="p">,</span> <span class="n">ThreeCircle</span><span class="p">),</span>
         <span class="n">allow_none</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -419,26 +423,21 @@
         <span class="n">default_value</span><span class="o">=</span><span class="mf">1.25</span><span class="p">,</span>
         <span class="nb">min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
 
-    <span class="c1"># Amount of active and herding agents</span>
-    <span class="n">size_active</span> <span class="o">=</span> <span class="n">Int</span><span class="p">(</span>
-        <span class="nb">min</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Amount of active agents&#39;</span><span class="p">)</span>
-    <span class="n">size_herding</span> <span class="o">=</span> <span class="n">Int</span><span class="p">(</span>
-        <span class="nb">min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Amount of herding agents&#39;</span><span class="p">)</span>
-
-<div class="viewcode-block" id="FourExits.attributes"><a class="viewcode-back" href="../../../apidocs/crowddynamics.examples.html#crowddynamics.examples.simulations.FourExits.attributes">[docs]</a>    <span class="k">def</span> <span class="nf">attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">herding</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
-        <span class="n">orientation</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
-        <span class="n">d</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
-            <span class="n">target</span><span class="o">=</span><span class="n">target</span><span class="p">,</span>
-            <span class="n">herding</span><span class="o">=</span><span class="n">herding</span><span class="p">,</span>
-            <span class="n">body_type</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">body_type</span><span class="p">,</span>
-            <span class="n">orientation</span><span class="o">=</span><span class="n">orientation</span><span class="p">,</span>
-            <span class="n">velocity</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span>
-            <span class="n">angular_velocity</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
-            <span class="n">target_direction</span><span class="o">=</span><span class="n">unit_vector</span><span class="p">(</span><span class="n">orientation</span><span class="p">),</span>
-            <span class="n">target_orientation</span><span class="o">=</span><span class="n">orientation</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">d</span></div>
+<div class="viewcode-block" id="FourExits.attributes"><a class="viewcode-back" href="../../../apidocs/crowddynamics.examples.html#crowddynamics.examples.simulations.FourExits.attributes">[docs]</a>    <span class="k">def</span> <span class="nf">attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">has_target</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">herding</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">wrapper</span><span class="p">():</span>
+            <span class="n">target</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span> <span class="k">if</span> <span class="n">has_target</span> <span class="k">else</span> <span class="o">-</span><span class="mi">1</span>
+            <span class="n">orientation</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+                <span class="n">target</span><span class="o">=</span><span class="n">target</span><span class="p">,</span>
+                <span class="n">herding</span><span class="o">=</span><span class="n">herding</span><span class="p">,</span>
+                <span class="n">body_type</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">body_type</span><span class="p">,</span>
+                <span class="n">orientation</span><span class="o">=</span><span class="n">orientation</span><span class="p">,</span>
+                <span class="n">velocity</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span>
+                <span class="n">angular_velocity</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+                <span class="n">target_direction</span><span class="o">=</span><span class="n">unit_vector</span><span class="p">(</span><span class="n">orientation</span><span class="p">),</span>
+                <span class="n">target_orientation</span><span class="o">=</span><span class="n">orientation</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">d</span>
+        <span class="k">return</span> <span class="n">wrapper</span></div>
 
     <span class="nd">@default</span><span class="p">(</span><span class="s1">&#39;logic&#39;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">_default_logic</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -466,13 +465,21 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">agent_type</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">agents</span> <span class="o">=</span> <span class="n">Agents</span><span class="p">(</span><span class="n">agent_type</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">agent_type</span><span class="p">)</span>
 
-            <span class="n">group</span> <span class="o">=</span> <span class="n">AgentGroup</span><span class="p">(</span>
+            <span class="n">group_active</span> <span class="o">=</span> <span class="n">AgentGroup</span><span class="p">(</span>
                 <span class="n">agent_type</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">agent_type</span><span class="p">,</span>
-                <span class="n">size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">,</span>
-                <span class="n">attributes</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="p">)</span>
+                <span class="n">size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">size_active</span><span class="p">,</span>
+                <span class="n">attributes</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="p">(</span><span class="n">has_target</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">herding</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
 
-            <span class="n">agents</span><span class="o">.</span><span class="n">add_non_overlapping_group</span><span class="p">(</span>
-                <span class="n">group</span><span class="p">,</span> <span class="n">position_gen</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">field</span><span class="o">.</span><span class="n">sample_spawn</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+            <span class="n">group_herding</span> <span class="o">=</span> <span class="n">AgentGroup</span><span class="p">(</span>
+                <span class="n">agent_type</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">agent_type</span><span class="p">,</span>
+                <span class="n">size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">size_herding</span><span class="p">,</span>
+                <span class="n">attributes</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="p">(</span><span class="n">has_target</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">herding</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+
+            <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="p">(</span><span class="n">group_active</span><span class="p">,</span> <span class="n">group_herding</span><span class="p">):</span>
+                <span class="n">agents</span><span class="o">.</span><span class="n">add_non_overlapping_group</span><span class="p">(</span>
+                    <span class="n">group</span><span class="p">,</span>
+                    <span class="n">position_gen</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">field</span><span class="o">.</span><span class="n">sample_spawn</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+                    <span class="n">obstacles</span><span class="o">=</span><span class="n">geom_to_linear_obstacles</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">field</span><span class="o">.</span><span class="n">obstacles</span><span class="p">))</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">agents</span> <span class="o">=</span> <span class="n">agents</span></div>
 </pre></div>
@@ -490,7 +497,7 @@
   <div role="contentinfo">
     <p>
         &copy; Copyright Jaan Tollander de Balsch.
-      Last updated on 2017-05-31.
+      Last updated on 2017-06-02.
 
     </p>
   </div>
@@ -512,7 +519,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'legacy+318.gb8d04f6.dirty',
+            VERSION:'legacy+319.g4c897c8.dirty',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

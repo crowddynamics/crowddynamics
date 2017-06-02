@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Overview: module code &mdash; crowddynamics legacy+318.gb8d04f6.dirty documentation</title>
+  <title>Overview: module code &mdash; crowddynamics legacy+319.g4c897c8.dirty documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="crowddynamics legacy+318.gb8d04f6.dirty documentation" href="../index.html"/> 
+    <link rel="top" title="crowddynamics legacy+319.g4c897c8.dirty documentation" href="../index.html"/> 
 
   
   <script src="../_static/js/modernizr.min.js"></script>
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                legacy+318legacy+318.gb8d04f6.dirtygb8d04f6
+                legacy+319legacy+319.g4c897c8.dirtyg4c897c8
               </div>
             
           
@@ -182,9 +182,12 @@
 <ul><li><a href="crowddynamics/cli.html">crowddynamics.cli</a></li>
 <li><a href="crowddynamics/config.html">crowddynamics.config</a></li>
 <li><a href="crowddynamics/conftest.html">crowddynamics.conftest</a></li>
+<li><a href="crowddynamics/core/evacuation.html">crowddynamics.core.evacuation</a></li>
+<li><a href="crowddynamics/core/geom2D.html">crowddynamics.core.geom2D</a></li>
 <li><a href="crowddynamics/core/geometry.html">crowddynamics.core.geometry</a></li>
 <li><a href="crowddynamics/core/integrator.html">crowddynamics.core.integrator</a></li>
 <li><a href="crowddynamics/core/interactions/block_list.html">crowddynamics.core.interactions.block_list</a></li>
+<li><a href="crowddynamics/core/interactions/distance.html">crowddynamics.core.interactions.distance</a></li>
 <li><a href="crowddynamics/core/interactions/interactions.html">crowddynamics.core.interactions.interactions</a></li>
 <li><a href="crowddynamics/core/interactions/interactions_mt.html">crowddynamics.core.interactions.interactions_mt</a></li>
 <li><a href="crowddynamics/core/interactions/tests/test_block_list.html">crowddynamics.core.interactions.tests.test_block_list</a></li>
@@ -193,16 +196,22 @@
 <li><a href="crowddynamics/core/interactions/tests/test_interactions.html">crowddynamics.core.interactions.tests.test_interactions</a></li>
 <li><a href="crowddynamics/core/interactions/tests/test_interactions_benchmark.html">crowddynamics.core.interactions.tests.test_interactions_benchmark</a></li>
 <li><a href="crowddynamics/core/interactions/tests/test_interactions_mt.html">crowddynamics.core.interactions.tests.test_interactions_mt</a></li>
+<li><a href="crowddynamics/core/motion/adjusting.html">crowddynamics.core.motion.adjusting</a></li>
+<li><a href="crowddynamics/core/motion/contact.html">crowddynamics.core.motion.contact</a></li>
 <li><a href="crowddynamics/core/motion/fluctuation.html">crowddynamics.core.motion.fluctuation</a></li>
+<li><a href="crowddynamics/core/motion/helbing.html">crowddynamics.core.motion.helbing</a></li>
+<li><a href="crowddynamics/core/motion/power_law.html">crowddynamics.core.motion.power_law</a></li>
 <li><a href="crowddynamics/core/motion/subgroups.html">crowddynamics.core.motion.subgroups</a></li>
 <li><a href="crowddynamics/core/motion/tests/test_motion.html">crowddynamics.core.motion.tests.test_motion</a></li>
 <li><a href="crowddynamics/core/motion/tests/test_power_law.html">crowddynamics.core.motion.tests.test_power_law</a></li>
 <li><a href="crowddynamics/core/motion/tests/test_power_law_benchmark.html">crowddynamics.core.motion.tests.test_power_law_benchmark</a></li>
+<li><a href="crowddynamics/core/neighborhood.html">crowddynamics.core.neighborhood</a></li>
 <li><a href="crowddynamics/core/quantities.html">crowddynamics.core.quantities</a></li>
 <li><a href="crowddynamics/core/rand/functions.html">crowddynamics.core.rand.functions</a></li>
 <li><a href="crowddynamics/core/rand/sampling.html">crowddynamics.core.rand.sampling</a></li>
 <li><a href="crowddynamics/core/rand/tests/test_random.html">crowddynamics.core.rand.tests.test_random</a></li>
 <li><a href="crowddynamics/core/rand/tests/test_sampling.html">crowddynamics.core.rand.tests.test_sampling</a></li>
+<li><a href="crowddynamics/core/steering/functions.html">crowddynamics.core.steering.functions</a></li>
 <li><a href="crowddynamics/core/steering/herding.html">crowddynamics.core.steering.herding</a></li>
 <li><a href="crowddynamics/core/steering/navigation.html">crowddynamics.core.steering.navigation</a></li>
 <li><a href="crowddynamics/core/steering/obstacle_handling.html">crowddynamics.core.steering.obstacle_handling</a></li>
@@ -217,6 +226,7 @@
 <li><a href="crowddynamics/core/tests/test_integrator.html">crowddynamics.core.tests.test_integrator</a></li>
 <li><a href="crowddynamics/core/tests/test_vector2D.html">crowddynamics.core.tests.test_vector2D</a></li>
 <li><a href="crowddynamics/core/tests/test_vector2D_benchmarks.html">crowddynamics.core.tests.test_vector2D_benchmarks</a></li>
+<li><a href="crowddynamics/core/vector2D.html">crowddynamics.core.vector2D</a></li>
 <li><a href="crowddynamics/examples/fields.html">crowddynamics.examples.fields</a></li>
 <li><a href="crowddynamics/examples/profiled.html">crowddynamics.examples.profiled</a></li>
 <li><a href="crowddynamics/examples/simulations.html">crowddynamics.examples.simulations</a></li>
@@ -259,7 +269,7 @@
   <div role="contentinfo">
     <p>
         &copy; Copyright Jaan Tollander de Balsch.
-      Last updated on 2017-05-31.
+      Last updated on 2017-06-02.
 
     </p>
   </div>
@@ -281,7 +291,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'legacy+318.gb8d04f6.dirty',
+            VERSION:'legacy+319.g4c897c8.dirty',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

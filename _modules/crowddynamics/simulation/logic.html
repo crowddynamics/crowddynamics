@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>crowddynamics.simulation.logic &mdash; crowddynamics legacy+318.gb8d04f6.dirty documentation</title>
+  <title>crowddynamics.simulation.logic &mdash; crowddynamics legacy+319.g4c897c8.dirty documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../../genindex.html"/>
         <link rel="search" title="Search" href="../../../search.html"/>
-    <link rel="top" title="crowddynamics legacy+318.gb8d04f6.dirty documentation" href="../../../index.html"/>
+    <link rel="top" title="crowddynamics legacy+319.g4c897c8.dirty documentation" href="../../../index.html"/>
         <link rel="up" title="Module code" href="../../index.html"/> 
 
   
@@ -70,7 +70,7 @@
             
             
               <div class="version">
-                legacy+318legacy+318.gb8d04f6.dirtygb8d04f6
+                legacy+319legacy+319.g4c897c8.dirtyg4c897c8
               </div>
             
           
@@ -188,8 +188,8 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">loggingtools.log_with</span> <span class="k">import</span> <span class="n">log_with</span>
 <span class="kn">from</span> <span class="nn">matplotlib.path</span> <span class="k">import</span> <span class="n">Path</span>
-<span class="kn">from</span> <span class="nn">traitlets.traitlets</span> <span class="k">import</span> <span class="n">Float</span><span class="p">,</span> <span class="n">Instance</span><span class="p">,</span> <span class="n">Unicode</span><span class="p">,</span> <span class="n">observe</span><span class="p">,</span> <span class="n">default</span><span class="p">,</span> \
-    <span class="n">validate</span><span class="p">,</span> <span class="n">Int</span>
+<span class="kn">from</span> <span class="nn">traitlets.traitlets</span> <span class="k">import</span> <span class="n">Float</span><span class="p">,</span> <span class="n">Instance</span><span class="p">,</span> <span class="n">Unicode</span><span class="p">,</span> <span class="n">default</span><span class="p">,</span> \
+    <span class="n">Int</span>
 
 <span class="kn">from</span> <span class="nn">crowddynamics.core.geometry</span> <span class="k">import</span> <span class="n">geom_to_linear_obstacles</span>
 <span class="kn">from</span> <span class="nn">crowddynamics.core.integrator</span> <span class="k">import</span> <span class="n">velocity_verlet_integrator</span>
@@ -202,7 +202,6 @@
 <span class="kn">from</span> <span class="nn">crowddynamics.core.steering.navigation</span> <span class="k">import</span> <span class="n">navigation</span><span class="p">,</span> <span class="n">herding</span>
 <span class="kn">from</span> <span class="nn">crowddynamics.core.steering.orientation</span> <span class="k">import</span> \
     <span class="n">orient_towards_target_direction</span>
-<span class="kn">from</span> <span class="nn">crowddynamics.exceptions</span> <span class="k">import</span> <span class="n">InvalidValue</span><span class="p">,</span> <span class="n">ValidationError</span>
 <span class="kn">from</span> <span class="nn">crowddynamics.io</span> <span class="k">import</span> <span class="n">save_npy</span><span class="p">,</span> <span class="n">save_csv</span><span class="p">,</span> <span class="n">save_geometry_json</span>
 <span class="kn">from</span> <span class="nn">crowddynamics.simulation.agents</span> <span class="k">import</span> <span class="n">reset_motion</span><span class="p">,</span> <span class="n">is_model</span>
 <span class="kn">from</span> <span class="nn">crowddynamics.simulation.base</span> <span class="k">import</span> <span class="n">LogicNodeBase</span>
@@ -321,12 +320,17 @@
 
 <div class="viewcode-block" id="Navigation.update"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.logic.Navigation.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">agents</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">array</span>
-        <span class="n">targets</span> <span class="o">=</span> <span class="n">agents</span><span class="p">[</span><span class="s1">&#39;target&#39;</span><span class="p">]</span>
-        <span class="k">for</span> <span class="n">target</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">targets</span><span class="p">):</span>
+        <span class="n">targets</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">field</span><span class="o">.</span><span class="n">targets</span><span class="p">)))</span>
+        <span class="k">for</span> <span class="n">target</span> <span class="ow">in</span> <span class="n">targets</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">target</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">mask</span> <span class="o">=</span> <span class="n">agents</span><span class="p">[</span><span class="s1">&#39;target&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">target</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">continue</span>
             <span class="n">mgrid</span><span class="p">,</span> <span class="n">distance_map</span><span class="p">,</span> <span class="n">direction_map</span> <span class="o">=</span> \
                 <span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">field</span><span class="o">.</span><span class="n">navigation_to_target</span><span class="p">(</span>
                     <span class="n">target</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">radius</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">strength</span><span class="p">)</span>
-            <span class="n">navigation</span><span class="p">(</span><span class="n">agents</span><span class="p">,</span> <span class="n">targets</span> <span class="o">==</span> <span class="n">target</span><span class="p">,</span> <span class="n">mgrid</span><span class="p">,</span> <span class="n">direction_map</span><span class="p">)</span></div></div>
+            <span class="n">navigation</span><span class="p">(</span><span class="n">agents</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="n">mgrid</span><span class="p">,</span> <span class="n">direction_map</span><span class="p">)</span></div></div>
 
 
 <div class="viewcode-block" id="Herding"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.logic.Herding">[docs]</a><span class="k">class</span> <span class="nc">Herding</span><span class="p">(</span><span class="n">LogicNode</span><span class="p">):</span>
@@ -343,7 +347,8 @@
 
 <div class="viewcode-block" id="Herding.update"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.logic.Herding.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">agents</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">array</span>
-        <span class="n">herding</span><span class="p">(</span><span class="n">agents</span><span class="p">,</span> <span class="n">agents</span><span class="p">[</span><span class="s1">&#39;herding&#39;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">sight_herding</span><span class="p">)</span></div></div>
+        <span class="n">herding</span><span class="p">(</span><span class="n">agents</span><span class="p">,</span> <span class="n">agents</span><span class="p">[</span><span class="s1">&#39;herding&#39;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">sight_herding</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">num_nearest_agents</span><span class="p">)</span></div></div>
 
 
 <div class="viewcode-block" id="Orientation"><a class="viewcode-back" href="../../../apidocs/crowddynamics.simulation.html#crowddynamics.simulation.logic.Orientation">[docs]</a><span class="k">class</span> <span class="nc">Orientation</span><span class="p">(</span><span class="n">LogicNode</span><span class="p">):</span>
@@ -490,7 +495,7 @@
   <div role="contentinfo">
     <p>
         &copy; Copyright Jaan Tollander de Balsch.
-      Last updated on 2017-05-31.
+      Last updated on 2017-06-02.
 
     </p>
   </div>
@@ -512,7 +517,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'legacy+318.gb8d04f6.dirty',
+            VERSION:'legacy+319.g4c897c8.dirty',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>numba.decorators &mdash; crowddynamics legacy+318.gb8d04f6.dirty documentation</title>
+  <title>numba.decorators &mdash; crowddynamics legacy+319.g4c897c8.dirty documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="crowddynamics legacy+318.gb8d04f6.dirty documentation" href="../../index.html"/>
+    <link rel="top" title="crowddynamics legacy+319.g4c897c8.dirty documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   
@@ -70,7 +70,7 @@
             
             
               <div class="version">
-                legacy+318legacy+318.gb8d04f6.dirtygb8d04f6
+                legacy+319legacy+319.g4c897c8.dirtyg4c897c8
               </div>
             
           
@@ -224,7 +224,7 @@
 <span class="k">def</span> <span class="nf">jit</span><span class="p">(</span><span class="n">signature_or_function</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="nb">locals</span><span class="o">=</span><span class="p">{},</span> <span class="n">target</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This decorator is used to compile a Python function into native code.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Args</span>
 <span class="sd">    -----</span>
 <span class="sd">    signature:</span>
@@ -242,7 +242,7 @@
 <span class="sd">        Specifies the target platform to compile for. Valid targets are cpu,</span>
 <span class="sd">        gpu, npyufunc, and cuda. Defaults to cpu.</span>
 
-<span class="sd">    targetoptions:</span>
+<span class="sd">    options:</span>
 <span class="sd">        For a cpu target, valid options are:</span>
 <span class="sd">            nopython: bool</span>
 <span class="sd">                Set to True to disable the use of PyObjects and Python API</span>
@@ -260,6 +260,12 @@
 <span class="sd">                tight loops in the function can still be compiled in nopython</span>
 <span class="sd">                mode. Any arrays that the tight loop uses should be created</span>
 <span class="sd">                before the loop is entered. Default value is True.</span>
+
+<span class="sd">            error_model: str</span>
+<span class="sd">                The error-model affects divide-by-zero behavior.</span>
+<span class="sd">                Valid values are &#39;python&#39; and &#39;numpy&#39;. The &#39;python&#39; model</span>
+<span class="sd">                raises exception.  The &#39;numpy&#39; model sets the result to</span>
+<span class="sd">                *+/-inf* or *nan*.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    --------</span>
@@ -430,7 +436,7 @@
   <div role="contentinfo">
     <p>
         &copy; Copyright Jaan Tollander de Balsch.
-      Last updated on 2017-05-31.
+      Last updated on 2017-06-02.
 
     </p>
   </div>
@@ -452,7 +458,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'legacy+318.gb8d04f6.dirty',
+            VERSION:'legacy+319.g4c897c8.dirty',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

@@ -1,0 +1,614 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>crowddynamics.core.motion.power_law &mdash; crowddynamics legacy+319.g4c897c8.dirty documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../../../_static/favicon.ico"/>
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../../../genindex.html"/>
+        <link rel="search" title="Search" href="../../../../search.html"/>
+    <link rel="top" title="crowddynamics legacy+319.g4c897c8.dirty documentation" href="../../../../index.html"/>
+        <link rel="up" title="Module code" href="../../../index.html"/> 
+
+  
+  <script src="../../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../../index.html" class="icon icon-home"> crowddynamics
+          
+
+          
+            
+            <img src="../../../../_static/logo.svg" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                legacy+319legacy+319.g4c897c8.dirtyg4c897c8
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">General</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../developing.html">Developing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../resources.html">Resources</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Crowddynamics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../architecture.html">Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../multiagent.html">Multi-Agent Simulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../interactions.html">Interactions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../motion.html">Motion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../steering.html">Steering</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../quantities.html">Quantities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../evacuation.html">Evacuation</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Research</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../phenomena.html">Phenomena</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Api</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apidocs/crowddynamics.html">crowddynamics package</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">crowddynamics</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+        
+      <li>crowddynamics.core.motion.power_law</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for crowddynamics.core.motion.power_law</h1><div class="highlight"><pre>
+<span></span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Power Law</span>
+<span class="sd">---------</span>
+<span class="sd">Anticipatory collision avoidance algorithm introduced in *Universal power law </span>
+<span class="sd">governing pedestrian interactions* [Karamouzas2014b]_. Algorithm is derived from</span>
+<span class="sd">real world data from the behaviour movement of people in crowds.</span>
+
+<span class="sd">Force affecting agent can be derived by taking spatial gradient of the energy,</span>
+<span class="sd">where time-to-collision :math:`\tau` is function of the relative displacement</span>
+<span class="sd">of the mass centers :math:`\tilde{\mathbf{x}} = \mathbf{x}_i - \mathbf{x}_j`</span>
+
+<span class="sd">.. math::</span>
+<span class="sd">   \mathbf{f}^{soc} &amp;= -\nabla_{\tilde{\mathbf{x}}} E(\tau) \\</span>
+<span class="sd">   &amp;= - k \cdot m \left(\frac{1}{\tau^{2}}\right) \left(\frac{2}{\tau} + </span>
+<span class="sd">   \frac{1}{\tau_{0}}\right) \exp\left (-\frac{\tau}{\tau_{0}}\right ) </span>
+<span class="sd">   \nabla_{\tilde{\mathbf{x}}} \tau</span>
+
+<span class="sd">If :math:`\tau &lt; 0` or :math:`\tau` is undefined trajectories are not</span>
+<span class="sd">colliding and social force is :math:`\mathbf{0}`.</span>
+
+<span class="sd">.. tikz::</span>
+<span class="sd">   </span>
+<span class="sd">   \draw[color=gray!20] (0, 0) grid (12, 8);</span>
+<span class="sd">   % Agent i</span>
+<span class="sd">   \coordinate (c1) at (2, 2);</span>
+<span class="sd">   \draw[] (c1) circle (1pt) node[below] {$ \mathbf{x}_i $};</span>
+<span class="sd">   \draw[] (c1) circle (1);</span>
+<span class="sd">   \draw[dashed, color=gray!80] (c1) -- ++(60:7);</span>
+<span class="sd">   \draw[thick, -&gt;] (c1) -- node[right] {$ \mathbf{v}_i $} ++(60:1.5);</span>
+<span class="sd">   % Agent j</span>
+<span class="sd">   \coordinate (c2) at (10, 4);</span>
+<span class="sd">   \draw[] (c2) circle (1pt) node[below] {$ \mathbf{x}_i $};</span>
+<span class="sd">   \draw[] (c2) circle (1);</span>
+<span class="sd">   \draw[dashed, color=gray!80] (c2) -- ++(155:8);</span>
+<span class="sd">   \draw[thick, -&gt;] (c2) -- node[left] {$ \mathbf{v}_i $} ++(155:1.5);</span>
+<span class="sd">   % Distance</span>
+<span class="sd">   \draw[color=gray!60, dashed] (c1) -- node[below] {$h$} (c2);</span>
+<span class="sd">   \draw[thick, -&gt;] (c1) -- node[below] {$r_i$} ++(14:1);</span>
+<span class="sd">   \draw[thick, -&gt;] (c2) -- node[below] {$r_j$} ++(194:1);</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">numba</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">numba</span> <span class="k">import</span> <span class="n">f8</span><span class="p">,</span> <span class="n">i8</span><span class="p">,</span> <span class="n">typeof</span>
+<span class="kn">from</span> <span class="nn">numba.types</span> <span class="k">import</span> <span class="n">Tuple</span>
+
+<span class="kn">from</span> <span class="nn">crowddynamics.simulation.agents</span> <span class="k">import</span> <span class="n">agent_type_three_circle</span><span class="p">,</span> \
+    <span class="n">agent_type_circular</span>
+<span class="kn">from</span> <span class="nn">crowddynamics.core.vector2D</span> <span class="k">import</span> <span class="n">dot</span><span class="p">,</span> <span class="n">truncate</span>
+
+
+<span class="n">F_SOC_MAX</span> <span class="o">=</span> <span class="mf">2e3</span>  <span class="c1"># TODO: load from config</span>
+
+
+<span class="nd">@numba</span><span class="o">.</span><span class="n">jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nogil</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="viewcode-block" id="potential"><a class="viewcode-back" href="../../../../apidocs/crowddynamics.core.motion.html#crowddynamics.core.motion.power_law.potential">[docs]</a><span class="k">def</span> <span class="nf">potential</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">tau</span><span class="p">,</span> <span class="n">tau_0</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Psychological force based on human anticipatory behaviour. Interaction potential</span>
+<span class="sd">    between two agents is defined</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">       E(\tau) = m \frac{k}{\tau^{2}} \exp \left( -\frac{\tau}{\tau_{0}} \right)</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        k (float):</span>
+<span class="sd">            Scaling parameter for the magnitude. Reference value of</span>
+<span class="sd">            :math:`k=1.5`.</span>
+
+<span class="sd">        tau (float):</span>
+<span class="sd">            Time-to-collision :math:`\tau &gt; 0` is obtained by linearly extrapolating</span>
+<span class="sd">            current trajectories and finding where or if agents collide i.e</span>
+<span class="sd">            skin-to-skin distance :math:`h` equals zero.</span>
+
+<span class="sd">        tau_0 (float): Interaction time horizon :math:`\tau_{0} &gt; 0`.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        float: Interaction potential</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">k</span> <span class="o">/</span> <span class="n">tau</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">tau</span> <span class="o">/</span> <span class="n">tau_0</span><span class="p">)</span></div>
+
+
+<span class="nd">@numba</span><span class="o">.</span><span class="n">jit</span><span class="p">(</span><span class="n">f8</span><span class="p">(</span><span class="n">f8</span><span class="p">,</span> <span class="n">f8</span><span class="p">),</span> <span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nogil</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="viewcode-block" id="magnitude"><a class="viewcode-back" href="../../../../apidocs/crowddynamics.core.motion.html#crowddynamics.core.motion.power_law.magnitude">[docs]</a><span class="k">def</span> <span class="nf">magnitude</span><span class="p">(</span><span class="n">tau</span><span class="p">,</span> <span class="n">tau_0</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Magnitude of social force.</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">       \left(\frac{1}{\tau^{2}}\right) \left(\frac{2}{\tau} + \frac{1}{\tau_{0}}\right) \exp\left (-\frac{\tau}{\tau_{0}}\right )</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        tau (float):</span>
+<span class="sd">            Time-to-collision :math:`\tau &gt; 0` is obtained by linearly extrapolating</span>
+<span class="sd">            current trajectories and finding where or if agents collide i.e</span>
+<span class="sd">            skin-to-skin distance :math:`h` equals zero.</span>
+
+<span class="sd">        tau_0 (float): Interaction time horizon :math:`\tau_{0} &gt; 0`.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        float: Magnitude</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">(</span><span class="mf">2.0</span> <span class="o">/</span> <span class="n">tau</span> <span class="o">+</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">tau_0</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">tau</span> <span class="o">/</span> <span class="n">tau_0</span><span class="p">)</span> <span class="o">/</span> <span class="n">tau</span> <span class="o">**</span> <span class="mi">2</span></div>
+
+
+<span class="nd">@numba</span><span class="o">.</span><span class="n">jit</span><span class="p">(</span><span class="n">f8</span><span class="p">[:](</span><span class="n">f8</span><span class="p">[:],</span> <span class="n">f8</span><span class="p">[:],</span> <span class="n">f8</span><span class="p">,</span> <span class="n">f8</span><span class="p">,</span> <span class="n">f8</span><span class="p">),</span>
+           <span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nogil</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="viewcode-block" id="gradient_circle_circle"><a class="viewcode-back" href="../../../../apidocs/crowddynamics.core.motion.html#crowddynamics.core.motion.power_law.gradient_circle_circle">[docs]</a><span class="k">def</span> <span class="nf">gradient_circle_circle</span><span class="p">(</span><span class="n">x_rel</span><span class="p">,</span> <span class="n">v_rel</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Gradient of :math:`\tau` between two circles.</span>
+<span class="sd">    </span>
+<span class="sd">    .. math::</span>
+<span class="sd">       \nabla_{\tilde{\mathbf{x}}} \tau       </span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        x_rel (numpy.ndarray): Relative position of the centers of mass.</span>
+<span class="sd">            :math:`\tilde{x} = x_i - x_j`</span>
+<span class="sd">        v_rel (numpy.ndarray): Relative velocity between two agents.</span>
+<span class="sd">            :math:`\tilde{v} = v_i - v_j`</span>
+<span class="sd">        a (float):</span>
+<span class="sd">        b (float):</span>
+<span class="sd">        d (float):</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        numpy.ndarray:</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">v_rel</span> <span class="o">-</span> <span class="p">(</span><span class="n">v_rel</span> <span class="o">*</span> <span class="n">b</span> <span class="o">+</span> <span class="n">x_rel</span> <span class="o">*</span> <span class="n">a</span><span class="p">)</span> <span class="o">/</span> <span class="n">d</span><span class="p">)</span> <span class="o">/</span> <span class="n">a</span></div>
+
+
+<span class="nd">@numba</span><span class="o">.</span><span class="n">jit</span><span class="p">(</span><span class="n">f8</span><span class="p">[:](</span><span class="n">f8</span><span class="p">[:],</span> <span class="n">f8</span><span class="p">[:],</span> <span class="n">f8</span><span class="p">[:],</span> <span class="n">f8</span><span class="p">,</span> <span class="n">f8</span><span class="p">,</span> <span class="n">f8</span><span class="p">),</span>
+           <span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nogil</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="viewcode-block" id="gradient_three_circle"><a class="viewcode-back" href="../../../../apidocs/crowddynamics.core.motion.html#crowddynamics.core.motion.power_law.gradient_three_circle">[docs]</a><span class="k">def</span> <span class="nf">gradient_three_circle</span><span class="p">(</span><span class="n">x_rel</span><span class="p">,</span> <span class="n">v_rel</span><span class="p">,</span> <span class="n">r_off</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Gradient of :math:`\tau` between two three-circle representations.</span>
+<span class="sd">    </span>
+<span class="sd">    .. math::</span>
+<span class="sd">       \nabla_{\tilde{\mathbf{x}}} \tau</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        x_rel (numpy.ndarray):</span>
+<span class="sd">        v_rel (numpy.ndarray):</span>
+<span class="sd">        r_off (numpy.ndarray):</span>
+<span class="sd">        a (float):</span>
+<span class="sd">        b (float):</span>
+<span class="sd">        d (float):</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        numpy.ndarray:</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">v_rel</span> <span class="o">-</span> <span class="p">(</span><span class="n">a</span> <span class="o">*</span> <span class="p">(</span><span class="n">x_rel</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">r_off</span><span class="p">)</span> <span class="o">+</span> <span class="n">b</span> <span class="o">*</span> <span class="n">v_rel</span><span class="p">)</span> <span class="o">/</span> <span class="n">d</span><span class="p">)</span> <span class="o">/</span> <span class="n">a</span></div>
+
+
+<span class="nd">@numba</span><span class="o">.</span><span class="n">jit</span><span class="p">(</span><span class="n">Tuple</span><span class="p">((</span><span class="n">f8</span><span class="p">,</span> <span class="n">f8</span><span class="p">[:]))(</span><span class="n">f8</span><span class="p">[:],</span> <span class="n">f8</span><span class="p">[:],</span> <span class="n">f8</span><span class="p">),</span>
+           <span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nogil</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="viewcode-block" id="time_to_collision_circle_circle"><a class="viewcode-back" href="../../../../apidocs/crowddynamics.core.motion.html#crowddynamics.core.motion.power_law.time_to_collision_circle_circle">[docs]</a><span class="k">def</span> <span class="nf">time_to_collision_circle_circle</span><span class="p">(</span><span class="n">x_rel</span><span class="p">,</span> <span class="n">v_rel</span><span class="p">,</span> <span class="n">r_tot</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Time-to-collision of two circles. From *skin-to-skin* distance</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">       h(\tau) = \| \tau \tilde{\mathbf{v}} + \mathbf{c} \| - \tilde{r}.</span>
+
+<span class="sd">    Solve for root</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">       h(\tau) &amp;= 0 \\</span>
+<span class="sd">       \| \mathbf{c} + \tau \tilde{\mathbf{v}} \| &amp;= \tilde{r} \\</span>
+<span class="sd">       \| \mathbf{c} + \tau \tilde{\mathbf{v}} \|^2 &amp;= \tilde{r}^2</span>
+
+<span class="sd">    Quadratic equation is obtained</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">       \tau^2 (\tilde{\mathbf{v}} \cdot \tilde{\mathbf{v}}) + 2 \tau (\mathbf{c} \cdot \tilde{\mathbf{v}}) + \mathbf{c} \cdot \mathbf{c} - \tilde{r}^2 =0</span>
+
+<span class="sd">    Solution with quadratic formula gives us</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">       a &amp;= \tilde{\mathbf{v}} \cdot \tilde{\mathbf{v}} \\</span>
+<span class="sd">       b &amp;= -\mathbf{c} \cdot \tilde{\mathbf{v}} \\</span>
+<span class="sd">       c &amp;= \mathbf{c} \cdot \mathbf{c} - \tilde{r}^{2}\\</span>
+<span class="sd">       d &amp;= \sqrt{b^{2} - a c} \\</span>
+<span class="sd">       \tau &amp;= \frac{b - d}{a}.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        x_rel (numpy.ndarray):</span>
+<span class="sd">            Relative center of mass :math:`\mathbf{c}`.</span>
+
+<span class="sd">        v_rel (numpy.ndarray):</span>
+<span class="sd">            Relative velocity :math:`\mathbf{\tilde{v}}`.</span>
+
+<span class="sd">        r_tot (float):</span>
+<span class="sd">            Total radius of :math:`\tilde{r} = \mathrm{constant}`.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        (float, numpy.ndarray):</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">dot</span><span class="p">(</span><span class="n">v_rel</span><span class="p">,</span> <span class="n">v_rel</span><span class="p">)</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="o">-</span><span class="n">dot</span><span class="p">(</span><span class="n">x_rel</span><span class="p">,</span> <span class="n">v_rel</span><span class="p">)</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="n">dot</span><span class="p">(</span><span class="n">x_rel</span><span class="p">,</span> <span class="n">x_rel</span><span class="p">)</span> <span class="o">-</span> <span class="n">r_tot</span> <span class="o">**</span> <span class="mi">2</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">b</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">-</span> <span class="n">a</span> <span class="o">*</span> <span class="n">c</span><span class="p">)</span>
+
+    <span class="c1"># No interaction if tau cannot be defined.</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="ow">or</span> <span class="n">d</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">a</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+
+    <span class="n">tau</span> <span class="o">=</span> <span class="p">(</span><span class="n">b</span> <span class="o">-</span> <span class="n">d</span><span class="p">)</span> <span class="o">/</span> <span class="n">a</span>  <span class="c1"># Time-to-collision. In seconds</span>
+
+    <span class="k">if</span> <span class="n">tau</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+
+    <span class="n">grad</span> <span class="o">=</span> <span class="n">gradient_circle_circle</span><span class="p">(</span><span class="n">x_rel</span><span class="p">,</span> <span class="n">v_rel</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">tau</span><span class="p">,</span> <span class="n">grad</span></div>
+
+
+<span class="nd">@numba</span><span class="o">.</span><span class="n">jit</span><span class="p">(</span><span class="n">Tuple</span><span class="p">((</span><span class="n">f8</span><span class="p">[:],</span> <span class="n">f8</span><span class="p">[:]))(</span><span class="n">typeof</span><span class="p">(</span><span class="n">agent_type_circular</span><span class="p">)[:],</span> <span class="n">i8</span><span class="p">,</span> <span class="n">i8</span><span class="p">),</span>
+           <span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nogil</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="viewcode-block" id="force_social_circular"><a class="viewcode-back" href="../../../../apidocs/crowddynamics.core.motion.html#crowddynamics.core.motion.power_law.force_social_circular">[docs]</a><span class="k">def</span> <span class="nf">force_social_circular</span><span class="p">(</span><span class="n">agent</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Social force based on human anticipatory behaviour.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        agent (numpy.ndarray):</span>
+<span class="sd">        i (int):</span>
+<span class="sd">        j (int):</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        (numpy.ndarray, numpy.ndarray):</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">force_i</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">force_j</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+
+    <span class="n">x_rel</span> <span class="o">=</span> <span class="n">agent</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;position&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">agent</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="s1">&#39;position&#39;</span><span class="p">]</span>
+    <span class="n">v_rel</span> <span class="o">=</span> <span class="n">agent</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;velocity&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">agent</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="s1">&#39;velocity&#39;</span><span class="p">]</span>
+    <span class="n">r_tot</span> <span class="o">=</span> <span class="n">agent</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;radius&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">agent</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="s1">&#39;radius&#39;</span><span class="p">]</span>
+
+    <span class="n">a</span> <span class="o">=</span> <span class="n">dot</span><span class="p">(</span><span class="n">v_rel</span><span class="p">,</span> <span class="n">v_rel</span><span class="p">)</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="o">-</span><span class="n">dot</span><span class="p">(</span><span class="n">x_rel</span><span class="p">,</span> <span class="n">v_rel</span><span class="p">)</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="n">dot</span><span class="p">(</span><span class="n">x_rel</span><span class="p">,</span> <span class="n">x_rel</span><span class="p">)</span> <span class="o">-</span> <span class="n">r_tot</span> <span class="o">**</span> <span class="mi">2</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">b</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">-</span> <span class="n">a</span> <span class="o">*</span> <span class="n">c</span><span class="p">)</span>
+
+    <span class="c1"># No interaction if tau cannot be defined.</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="ow">or</span> <span class="n">d</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">a</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">force_i</span><span class="p">,</span> <span class="n">force_j</span>
+
+    <span class="n">tau</span> <span class="o">=</span> <span class="p">(</span><span class="n">b</span> <span class="o">-</span> <span class="n">d</span><span class="p">)</span> <span class="o">/</span> <span class="n">a</span>  <span class="c1"># Time-to-collision. In seconds</span>
+    <span class="n">tau_max</span> <span class="o">=</span> <span class="mf">30.0</span>  <span class="c1"># Maximum time for interaction.</span>
+
+    <span class="k">if</span> <span class="n">tau</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">tau</span> <span class="o">&gt;</span> <span class="n">tau_max</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">force_i</span><span class="p">,</span> <span class="n">force_j</span>
+
+    <span class="c1"># Force is returned negative as repulsive force</span>
+    <span class="n">grad</span> <span class="o">=</span> <span class="n">gradient_circle_circle</span><span class="p">(</span><span class="n">x_rel</span><span class="p">,</span> <span class="n">v_rel</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
+    <span class="n">force_i</span><span class="p">[:]</span> <span class="o">+=</span> <span class="o">-</span> <span class="n">agent</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;mass&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">agent</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;k_soc&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">grad</span> <span class="o">*</span> \
+                  <span class="n">magnitude</span><span class="p">(</span><span class="n">tau</span><span class="p">,</span> <span class="n">agent</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;tau_0&#39;</span><span class="p">])</span>
+    <span class="n">force_j</span><span class="p">[:]</span> <span class="o">-=</span> <span class="o">-</span> <span class="n">agent</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="s1">&#39;mass&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">agent</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="s1">&#39;k_soc&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">grad</span> <span class="o">*</span> \
+                  <span class="n">magnitude</span><span class="p">(</span><span class="n">tau</span><span class="p">,</span> <span class="n">agent</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="s1">&#39;tau_0&#39;</span><span class="p">])</span>
+
+    <span class="c1"># Truncation for small tau</span>
+    <span class="n">truncate</span><span class="p">(</span><span class="n">force_i</span><span class="p">,</span> <span class="n">F_SOC_MAX</span><span class="p">)</span>
+    <span class="n">truncate</span><span class="p">(</span><span class="n">force_j</span><span class="p">,</span> <span class="n">F_SOC_MAX</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">force_i</span><span class="p">,</span> <span class="n">force_j</span></div>
+
+
+<span class="nd">@numba</span><span class="o">.</span><span class="n">jit</span><span class="p">(</span><span class="n">Tuple</span><span class="p">((</span><span class="n">f8</span><span class="p">[:],</span> <span class="n">f8</span><span class="p">[:]))(</span><span class="n">typeof</span><span class="p">(</span><span class="n">agent_type_three_circle</span><span class="p">)[:],</span> <span class="n">i8</span><span class="p">,</span> <span class="n">i8</span><span class="p">),</span>
+           <span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nogil</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="viewcode-block" id="force_social_three_circle"><a class="viewcode-back" href="../../../../apidocs/crowddynamics.core.motion.html#crowddynamics.core.motion.power_law.force_social_three_circle">[docs]</a><span class="k">def</span> <span class="nf">force_social_three_circle</span><span class="p">(</span><span class="n">agent</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Social force based on human anticipatory behaviour.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        agent (numpy.ndarray):</span>
+<span class="sd">        i (int):</span>
+<span class="sd">        j (int):</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        (numpy.ndarray, numpy.ndarray):</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Forces for agent i and j</span>
+    <span class="n">force_i</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">force_j</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+
+    <span class="n">v_rel</span> <span class="o">=</span> <span class="n">agent</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;velocity&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">agent</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="s1">&#39;velocity&#39;</span><span class="p">]</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">dot</span><span class="p">(</span><span class="n">v_rel</span><span class="p">,</span> <span class="n">v_rel</span><span class="p">)</span>
+
+    <span class="c1"># Agents are not moving relative to each other.</span>
+    <span class="k">if</span> <span class="n">a</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">force_i</span><span class="p">,</span> <span class="n">force_j</span>
+
+    <span class="c1"># Meaning of indexes for tuples of three</span>
+    <span class="c1"># 0 = torso</span>
+    <span class="c1"># 1 = left shoulder</span>
+    <span class="c1"># 2 = right shoulder</span>
+
+    <span class="c1"># Positions: center, left, right</span>
+    <span class="n">x_i</span> <span class="o">=</span> <span class="p">(</span><span class="n">agent</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;position&#39;</span><span class="p">],</span> <span class="n">agent</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;position_ls&#39;</span><span class="p">],</span> <span class="n">agent</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;position_rs&#39;</span><span class="p">])</span>
+    <span class="n">x_j</span> <span class="o">=</span> <span class="p">(</span><span class="n">agent</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="s1">&#39;position&#39;</span><span class="p">],</span> <span class="n">agent</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="s1">&#39;position_ls&#39;</span><span class="p">],</span> <span class="n">agent</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="s1">&#39;position_rs&#39;</span><span class="p">])</span>
+
+    <span class="c1"># Radii of torso and shoulders</span>
+    <span class="n">r_i</span> <span class="o">=</span> <span class="p">(</span><span class="n">agent</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;r_t&#39;</span><span class="p">],</span> <span class="n">agent</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;r_s&#39;</span><span class="p">],</span> <span class="n">agent</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;r_s&#39;</span><span class="p">])</span>
+    <span class="n">r_j</span> <span class="o">=</span> <span class="p">(</span><span class="n">agent</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="s1">&#39;r_t&#39;</span><span class="p">],</span> <span class="n">agent</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="s1">&#39;r_s&#39;</span><span class="p">],</span> <span class="n">agent</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="s1">&#39;r_s&#39;</span><span class="p">])</span>
+
+    <span class="c1"># Parts that will be first in contact for agents i and j if colliding.</span>
+    <span class="n">contact_i</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">contact_j</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="c1"># Find smallest time-to-collision. In seconds.</span>
+    <span class="n">tau</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+    <span class="n">b_min</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+    <span class="n">d_min</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+
+    <span class="k">for</span> <span class="n">part_i</span><span class="p">,</span> <span class="p">(</span><span class="n">xi</span><span class="p">,</span> <span class="n">ri</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">x_i</span><span class="p">,</span> <span class="n">r_i</span><span class="p">)):</span>
+        <span class="k">for</span> <span class="n">part_j</span><span class="p">,</span> <span class="p">(</span><span class="n">xj</span><span class="p">,</span> <span class="n">rj</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">x_j</span><span class="p">,</span> <span class="n">r_j</span><span class="p">)):</span>
+            <span class="c1"># Relative position and total radius</span>
+            <span class="n">x_rel</span> <span class="o">=</span> <span class="n">xi</span> <span class="o">-</span> <span class="n">xj</span>
+            <span class="n">r_tot</span> <span class="o">=</span> <span class="n">ri</span> <span class="o">+</span> <span class="n">rj</span>
+
+            <span class="c1"># Coefficients for time-to-collision</span>
+            <span class="n">b</span> <span class="o">=</span> <span class="o">-</span><span class="n">dot</span><span class="p">(</span><span class="n">x_rel</span><span class="p">,</span> <span class="n">v_rel</span><span class="p">)</span>
+            <span class="n">c</span> <span class="o">=</span> <span class="n">dot</span><span class="p">(</span><span class="n">x_rel</span><span class="p">,</span> <span class="n">x_rel</span><span class="p">)</span> <span class="o">-</span> <span class="n">r_tot</span> <span class="o">**</span> <span class="mi">2</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">b</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">-</span> <span class="n">a</span> <span class="o">*</span> <span class="n">c</span><span class="p">)</span>
+
+            <span class="c1"># No interaction if tau cannot be defined.</span>
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="ow">or</span> <span class="n">d</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="n">tau_new</span> <span class="o">=</span> <span class="p">(</span><span class="n">b</span> <span class="o">-</span> <span class="n">d</span><span class="p">)</span> <span class="o">/</span> <span class="n">a</span>
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">tau</span><span class="p">)</span> <span class="ow">or</span> <span class="mi">0</span> <span class="o">&lt;</span> <span class="n">tau_new</span> <span class="o">&lt;</span> <span class="n">tau</span><span class="p">:</span>
+                <span class="n">contact_i</span><span class="p">,</span> <span class="n">contact_j</span> <span class="o">=</span> <span class="n">part_i</span><span class="p">,</span> <span class="n">part_j</span>
+                <span class="n">tau</span> <span class="o">=</span> <span class="n">tau_new</span>
+                <span class="n">b_min</span> <span class="o">=</span> <span class="n">b</span>
+                <span class="n">d_min</span> <span class="o">=</span> <span class="n">d</span>
+
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">tau</span><span class="p">)</span> <span class="ow">or</span> <span class="n">tau</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">force_i</span><span class="p">,</span> <span class="n">force_j</span>
+
+    <span class="c1"># Shoulder displacement vectors</span>
+    <span class="n">r_off_i</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">r_off_j</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+
+    <span class="c1"># TODO: Fix signs</span>
+    <span class="k">if</span> <span class="n">contact_i</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">phi</span> <span class="o">=</span> <span class="n">agent</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;orientation&#39;</span><span class="p">]</span>
+        <span class="n">r_off_i</span> <span class="o">+=</span> <span class="n">agent</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;r_ts&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">phi</span><span class="p">),</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">phi</span><span class="p">)))</span>
+    <span class="k">elif</span> <span class="n">contact_i</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="n">phi</span> <span class="o">=</span> <span class="n">agent</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;orientation&#39;</span><span class="p">]</span>
+        <span class="n">r_off_i</span> <span class="o">-=</span> <span class="n">agent</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;r_ts&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">phi</span><span class="p">),</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">phi</span><span class="p">)))</span>
+
+    <span class="k">if</span> <span class="n">contact_j</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">phi</span> <span class="o">=</span> <span class="n">agent</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="s1">&#39;orientation&#39;</span><span class="p">]</span>
+        <span class="n">r_off_j</span> <span class="o">+=</span> <span class="n">agent</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="s1">&#39;r_ts&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">phi</span><span class="p">),</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">phi</span><span class="p">)))</span>
+    <span class="k">elif</span> <span class="n">contact_j</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="n">phi</span> <span class="o">=</span> <span class="n">agent</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="s1">&#39;orientation&#39;</span><span class="p">]</span>
+        <span class="n">r_off_j</span> <span class="o">-=</span> <span class="n">agent</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="s1">&#39;r_ts&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">phi</span><span class="p">),</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">phi</span><span class="p">)))</span>
+
+    <span class="n">x_rel</span> <span class="o">=</span> <span class="n">agent</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;position&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">agent</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="s1">&#39;position&#39;</span><span class="p">]</span>
+    <span class="n">r_off</span> <span class="o">=</span> <span class="n">r_off_i</span> <span class="o">-</span> <span class="n">r_off_j</span>
+
+    <span class="c1"># Force</span>
+    <span class="n">grad</span> <span class="o">=</span> <span class="n">gradient_three_circle</span><span class="p">(</span><span class="n">x_rel</span><span class="p">,</span> <span class="n">v_rel</span><span class="p">,</span> <span class="n">r_off</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b_min</span><span class="p">,</span> <span class="n">d_min</span><span class="p">)</span>
+    <span class="n">force_i</span><span class="p">[:]</span> <span class="o">+=</span> <span class="o">-</span> <span class="n">agent</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;mass&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">agent</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;k_soc&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">grad</span> <span class="o">*</span> <span class="n">magnitude</span><span class="p">(</span><span class="n">tau</span><span class="p">,</span> <span class="n">agent</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;tau_0&#39;</span><span class="p">])</span>
+    <span class="n">force_j</span><span class="p">[:]</span> <span class="o">-=</span> <span class="o">-</span> <span class="n">agent</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="s1">&#39;mass&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">agent</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="s1">&#39;k_soc&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">grad</span> <span class="o">*</span> <span class="n">magnitude</span><span class="p">(</span><span class="n">tau</span><span class="p">,</span> <span class="n">agent</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="s1">&#39;tau_0&#39;</span><span class="p">])</span>
+
+    <span class="n">truncate</span><span class="p">(</span><span class="n">force_i</span><span class="p">,</span> <span class="n">F_SOC_MAX</span><span class="p">)</span>
+    <span class="n">truncate</span><span class="p">(</span><span class="n">force_j</span><span class="p">,</span> <span class="n">F_SOC_MAX</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">force_i</span><span class="p">,</span> <span class="n">force_j</span></div>
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright Jaan Tollander de Balsch.
+      Last updated on 2017-06-02.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../../',
+            VERSION:'legacy+319.g4c897c8.dirty',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

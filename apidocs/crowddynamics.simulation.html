@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>crowddynamics.simulation package &mdash; crowddynamics legacy+318.gb8d04f6.dirty documentation</title>
+  <title>crowddynamics.simulation package &mdash; crowddynamics legacy+319.g4c897c8.dirty documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="crowddynamics legacy+318.gb8d04f6.dirty documentation" href="../index.html"/>
+    <link rel="top" title="crowddynamics legacy+319.g4c897c8.dirty documentation" href="../index.html"/>
         <link rel="up" title="crowddynamics package" href="crowddynamics.html"/>
         <link rel="next" title="crowddynamics.simulation.tests package" href="crowddynamics.simulation.tests.html"/>
         <link rel="prev" title="crowddynamics.examples.tests package" href="crowddynamics.examples.tests.html"/> 
@@ -72,7 +72,7 @@
             
             
               <div class="version">
-                legacy+318legacy+318.gb8d04f6.dirtygb8d04f6
+                legacy+319legacy+319.g4c897c8.dirtyg4c897c8
               </div>
             
           
@@ -568,13 +568,13 @@ w &amp;= W - 2 r\end{split}\]</div>
 </tr>
 <tr class="row-even"><td><code class="docutils literal"><span class="pre">target</span></code></td>
 <td>&#160;</td>
-<td><code class="docutils literal"><span class="pre">0</span></code></td>
-<td>&#160;</td>
+<td><code class="docutils literal"><span class="pre">-1</span></code></td>
+<td>Positive integer for target index, -1 for agent that do not have a target.</td>
 </tr>
 <tr class="row-odd"><td><code class="docutils literal"><span class="pre">herding</span></code></td>
 <td>&#160;</td>
 <td><code class="docutils literal"><span class="pre">False</span></code></td>
-<td>&#160;</td>
+<td>Boolean indicating if agent is herding (following average direction of other agent).</td>
 </tr>
 <tr class="row-even"><td><code class="docutils literal"><span class="pre">body_type</span></code></td>
 <td>&#160;</td>
@@ -812,13 +812,13 @@ fit through smaller spaces. <a class="reference internal" href="../multiagent.ht
 </tr>
 <tr class="row-even"><td><code class="docutils literal"><span class="pre">target</span></code></td>
 <td>&#160;</td>
-<td><code class="docutils literal"><span class="pre">0</span></code></td>
-<td>&#160;</td>
+<td><code class="docutils literal"><span class="pre">-1</span></code></td>
+<td>Positive integer for target index, -1 for agent that do not have a target.</td>
 </tr>
 <tr class="row-odd"><td><code class="docutils literal"><span class="pre">herding</span></code></td>
 <td>&#160;</td>
 <td><code class="docutils literal"><span class="pre">False</span></code></td>
-<td>&#160;</td>
+<td>Boolean indicating if agent is herding (following average direction of other agent).</td>
 </tr>
 <tr class="row-even"><td><code class="docutils literal"><span class="pre">body_type</span></code></td>
 <td>&#160;</td>
@@ -1121,13 +1121,13 @@ has been used for example in FDS+EVAC <a class="reference internal" href="../mul
 </tr>
 <tr class="row-even"><td><code class="docutils literal"><span class="pre">target</span></code></td>
 <td>&#160;</td>
-<td><code class="docutils literal"><span class="pre">0</span></code></td>
-<td>&#160;</td>
+<td><code class="docutils literal"><span class="pre">-1</span></code></td>
+<td>Positive integer for target index, -1 for agent that do not have a target.</td>
 </tr>
 <tr class="row-odd"><td><code class="docutils literal"><span class="pre">herding</span></code></td>
 <td>&#160;</td>
 <td><code class="docutils literal"><span class="pre">False</span></code></td>
-<td>&#160;</td>
+<td>Boolean indicating if agent is herding (following average direction of other agent).</td>
 </tr>
 <tr class="row-even"><td><code class="docutils literal"><span class="pre">body_type</span></code></td>
 <td>&#160;</td>
@@ -1442,6 +1442,86 @@ has been used for example in FDS+EVAC <a class="reference internal" href="../mul
 </tr>
 <tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="crowddynamics.tests.html#crowddynamics.tests.test_traits.Traits.bool" title="crowddynamics.tests.test_traits.Traits.bool">bool</a></p>
 </td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.simulation.agents.overlapping_circle_line">
+<code class="descclassname">crowddynamics.simulation.agents.</code><code class="descname">overlapping_circle_line</code><a class="reference internal" href="../_modules/crowddynamics/simulation/agents.html#overlapping_circle_line"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.simulation.agents.overlapping_circle_line" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.simulation.agents.overlapping_circles">
+<code class="descclassname">crowddynamics.simulation.agents.</code><code class="descname">overlapping_circles</code><a class="reference internal" href="../_modules/crowddynamics/simulation/agents.html#overlapping_circles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.simulation.agents.overlapping_circles" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test if two circles are overlapping.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>agents</strong> &#8211; </li>
+<li><strong>x</strong> &#8211; Position of agent that is tested</li>
+<li><strong>r</strong> &#8211; Radius of agent that is tested</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="crowddynamics.tests.html#crowddynamics.tests.test_traits.Traits.bool" title="crowddynamics.tests.test_traits.Traits.bool">bool</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.simulation.agents.overlapping_three_circle_line">
+<code class="descclassname">crowddynamics.simulation.agents.</code><code class="descname">overlapping_three_circle_line</code><a class="reference internal" href="../_modules/crowddynamics/simulation/agents.html#overlapping_three_circle_line"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.simulation.agents.overlapping_three_circle_line" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.simulation.agents.overlapping_three_circles">
+<code class="descclassname">crowddynamics.simulation.agents.</code><code class="descname">overlapping_three_circles</code><a class="reference internal" href="../_modules/crowddynamics/simulation/agents.html#overlapping_three_circles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.simulation.agents.overlapping_three_circles" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test if two three-circle models are overlapping.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x1</strong> &#8211; Positions of other agents</li>
+<li><strong>r1</strong> &#8211; Radii of other agents</li>
+<li><strong>x</strong> &#8211; Position of agent that is tested</li>
+<li><strong>r</strong> &#8211; Radius of agent that is tested</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="crowddynamics.tests.html#crowddynamics.tests.test_traits.Traits.bool" title="crowddynamics.tests.test_traits.Traits.bool">bool</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.simulation.agents.reset_motion">
+<code class="descclassname">crowddynamics.simulation.agents.</code><code class="descname">reset_motion</code><a class="reference internal" href="../_modules/crowddynamics/simulation/agents.html#reset_motion"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.simulation.agents.reset_motion" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="crowddynamics.simulation.agents.shoulders">
+<code class="descclassname">crowddynamics.simulation.agents.</code><code class="descname">shoulders</code><a class="reference internal" href="../_modules/crowddynamics/simulation/agents.html#shoulders"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crowddynamics.simulation.agents.shoulders" title="Permalink to this definition">¶</a></dt>
+<dd><p>Positions of the center of mass, left- and right shoulders.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>agents</strong> (<em>ndarray</em>) &#8211; Numpy array of datatype <code class="docutils literal"><span class="pre">dtype=agent_type_three_circle</span></code>.</td>
 </tr>
 </tbody>
 </table>
@@ -2056,7 +2136,7 @@ using <em>post-order</em> traversal.</dd>
   <div role="contentinfo">
     <p>
         &copy; Copyright Jaan Tollander de Balsch.
-      Last updated on 2017-05-31.
+      Last updated on 2017-06-02.
 
     </p>
   </div>
@@ -2078,7 +2158,7 @@ using <em>post-order</em> traversal.</dd>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'legacy+318.gb8d04f6.dirty',
+            VERSION:'legacy+319.g4c897c8.dirty',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

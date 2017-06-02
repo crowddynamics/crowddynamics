@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>crowddynamics.traits &mdash; crowddynamics legacy+318.gb8d04f6.dirty documentation</title>
+  <title>crowddynamics.traits &mdash; crowddynamics legacy+319.g4c897c8.dirty documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="crowddynamics legacy+318.gb8d04f6.dirty documentation" href="../../index.html"/>
+    <link rel="top" title="crowddynamics legacy+319.g4c897c8.dirty documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   
@@ -70,7 +70,7 @@
             
             
               <div class="version">
-                legacy+318legacy+318.gb8d04f6.dirtygb8d04f6
+                legacy+319legacy+319.g4c897c8.dirtyg4c897c8
               </div>
             
           
@@ -203,7 +203,7 @@
 
 <span class="sd">    Args:</span>
 <span class="sd">        *dimensions (int): Dimensions of the array</span>
-<span class="sd">    </span>
+
 <span class="sd">    Returns:</span>
 <span class="sd">        Callable[trait, value]: Validator function</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -223,8 +223,8 @@
     <span class="sd">&quot;&quot;&quot;Validates the length of :class:`traittypes.Array` trait.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        *lengths (numbers.Real): </span>
-<span class="sd">        </span>
+<span class="sd">        *lengths (numbers.Real):</span>
+
 <span class="sd">    Returns:</span>
 <span class="sd">        Callable[trait, value]: Validator function</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -262,7 +262,7 @@
 
 <div class="viewcode-block" id="trait_to_dtype"><a class="viewcode-back" href="../../apidocs/crowddynamics.html#crowddynamics.traits.trait_to_dtype">[docs]</a><span class="k">def</span> <span class="nf">trait_to_dtype</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">trait</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Convert TraitType to numpy.dtype in format (name, dtype, shape)::</span>
-<span class="sd">    </span>
+
 <span class="sd">        Int -&gt; numpy.int64</span>
 <span class="sd">        Float -&gt; numpy.float64</span>
 <span class="sd">        Complex -&gt; numpy.complex128</span>
@@ -271,8 +271,8 @@
 
 <span class="sd">    Args:</span>
 <span class="sd">        name (str): Name of the trait</span>
-<span class="sd">        trait (TraitType): Instance of TraitType </span>
-<span class="sd">    </span>
+<span class="sd">        trait (TraitType): Instance of TraitType</span>
+
 <span class="sd">    Returns:</span>
 <span class="sd">        tuple:</span>
 <span class="sd">            - Scalar: (str, numpy.dtype)</span>
@@ -344,8 +344,8 @@
 <span class="sd">    defined in the class.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        cls: </span>
-<span class="sd">        exclude_attrs: </span>
+<span class="sd">        cls:</span>
+<span class="sd">        exclude_attrs:</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">HasTraits</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">trait</span> <span class="ow">in</span> <span class="nb">vars</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
@@ -356,11 +356,11 @@
 
 
 <div class="viewcode-block" id="class_traits"><a class="viewcode-back" href="../../apidocs/crowddynamics.html#crowddynamics.traits.class_traits">[docs]</a><span class="k">def</span> <span class="nf">class_traits</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">exclude_attrs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">exclude_cls</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Traverse the class hierarchy and yield traits in order defined in the </span>
+    <span class="sd">&quot;&quot;&quot;Traverse the class hierarchy and yield traits in order defined in the</span>
 <span class="sd">    classes.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        cls (type): </span>
+<span class="sd">        cls (type):</span>
 <span class="sd">            Subclass of HasTraits</span>
 <span class="sd">        exclude_attrs (Callable[str, bool], optional):</span>
 <span class="sd">            Optional function to exclude class attribute names.</span>
@@ -368,12 +368,12 @@
 <span class="sd">            Optional function to exclude classes</span>
 
 <span class="sd">    Yields:</span>
-<span class="sd">        (str, TraitType): Tuple of the trait&#39;s name and type. </span>
-<span class="sd">        </span>
+<span class="sd">        (str, TraitType): Tuple of the trait&#39;s name and type.</span>
+
 <span class="sd">    Examples:</span>
 <span class="sd">        &gt;&gt;&gt; cls = ...  # Class with traits</span>
 <span class="sd">        &gt;&gt;&gt; # excludes private attributes</span>
-<span class="sd">        &gt;&gt;&gt; class_traits(cls, exclude_attrs=lambda name: name.startswith(&#39;_&#39;)) </span>
+<span class="sd">        &gt;&gt;&gt; class_traits(cls, exclude_attrs=lambda name: name.startswith(&#39;_&#39;))</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getmro</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">callable</span><span class="p">(</span><span class="n">exclude_cls</span><span class="p">)</span> <span class="ow">and</span> <span class="n">exclude_cls</span><span class="p">(</span><span class="n">c</span><span class="p">):</span>
@@ -385,7 +385,7 @@
     <span class="sd">&quot;&quot;&quot;Construct structured numpy.dtype from class with traits.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        cls (type): </span>
+<span class="sd">        cls (type):</span>
 <span class="sd">        exclude_attrs (Callable[str, bool], optional):</span>
 <span class="sd">            Optional function to exclude class attribute names.</span>
 <span class="sd">        exclude_cls (Callable[type, bool], optional):</span>
@@ -423,17 +423,17 @@
 
 <div class="viewcode-block" id="table_of_traits"><a class="viewcode-back" href="../../apidocs/crowddynamics.html#crowddynamics.traits.table_of_traits">[docs]</a><span class="k">def</span> <span class="nf">table_of_traits</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Generate ReStructuredText table from trait of class::</span>
-<span class="sd">    </span>
+
 <span class="sd">        .. csv-table::</span>
 <span class="sd">           :header-rows: 1</span>
-<span class="sd">           </span>
+
 <span class="sd">           name, help, symbol, default value</span>
 <span class="sd">           radius, Radius, :math:`r`, &quot;&quot;</span>
 <span class="sd">           ...</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        cls: Class that has traits</span>
-<span class="sd">    </span>
+
 <span class="sd">    Returns:</span>
 <span class="sd">        str: Table as string</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -474,7 +474,7 @@
   <div role="contentinfo">
     <p>
         &copy; Copyright Jaan Tollander de Balsch.
-      Last updated on 2017-05-31.
+      Last updated on 2017-06-02.
 
     </p>
   </div>
@@ -496,7 +496,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'legacy+318.gb8d04f6.dirty',
+            VERSION:'legacy+319.g4c897c8.dirty',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

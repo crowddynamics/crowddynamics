@@ -19,14 +19,6 @@ crowddynamics\.examples\.fields module
     :undoc-members:
     :show-inheritance:
 
-crowddynamics\.examples\.profiled module
-----------------------------------------
-
-.. automodule:: crowddynamics.examples.profiled
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 crowddynamics\.examples\.simulations module
 -------------------------------------------
 

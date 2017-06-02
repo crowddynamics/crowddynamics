@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>crowddynamics.core.rand.sampling &mdash; crowddynamics legacy+318.gb8d04f6.dirty documentation</title>
+  <title>crowddynamics.core.rand.sampling &mdash; crowddynamics legacy+319.g4c897c8.dirty documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../../../../genindex.html"/>
         <link rel="search" title="Search" href="../../../../search.html"/>
-    <link rel="top" title="crowddynamics legacy+318.gb8d04f6.dirty documentation" href="../../../../index.html"/>
+    <link rel="top" title="crowddynamics legacy+319.g4c897c8.dirty documentation" href="../../../../index.html"/>
         <link rel="up" title="Module code" href="../../../index.html"/> 
 
   
@@ -70,7 +70,7 @@
             
             
               <div class="version">
-                legacy+318legacy+318.gb8d04f6.dirtygb8d04f6
+                legacy+319legacy+319.g4c897c8.dirtyg4c897c8
               </div>
             
           
@@ -192,17 +192,17 @@
 
 
 <span class="nd">@numba</span><span class="o">.</span><span class="n">jit</span><span class="p">(</span><span class="n">f8</span><span class="p">[:](</span><span class="n">f8</span><span class="p">[:,</span> <span class="p">:]),</span> <span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nogil</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">linestring_length_cumsum</span><span class="p">(</span><span class="n">vertices</span><span class="p">):</span>
+<div class="viewcode-block" id="linestring_length_cumsum"><a class="viewcode-back" href="../../../../apidocs/crowddynamics.core.rand.html#crowddynamics.core.rand.sampling.linestring_length_cumsum">[docs]</a><span class="k">def</span> <span class="nf">linestring_length_cumsum</span><span class="p">(</span><span class="n">vertices</span><span class="p">):</span>
     <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">vertices</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
     <span class="n">cumsum</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
         <span class="n">diff</span> <span class="o">=</span> <span class="n">vertices</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">vertices</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
         <span class="n">cumsum</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hypot</span><span class="p">(</span><span class="n">diff</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">diff</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-    <span class="k">return</span> <span class="n">cumsum</span>
+    <span class="k">return</span> <span class="n">cumsum</span></div>
 
 
 <span class="nd">@numba</span><span class="o">.</span><span class="n">jit</span><span class="p">(</span><span class="n">f8</span><span class="p">[:](</span><span class="n">f8</span><span class="p">[:],</span> <span class="n">f8</span><span class="p">[:]),</span> <span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nogil</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">random_sample_line</span><span class="p">(</span><span class="n">p0</span><span class="p">,</span> <span class="n">p1</span><span class="p">):</span>
+<div class="viewcode-block" id="random_sample_line"><a class="viewcode-back" href="../../../../apidocs/crowddynamics.core.rand.html#crowddynamics.core.rand.sampling.random_sample_line">[docs]</a><span class="k">def</span> <span class="nf">random_sample_line</span><span class="p">(</span><span class="n">p0</span><span class="p">,</span> <span class="n">p1</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Random sample line</span>
 
 <span class="sd">    Args:</span>
@@ -213,7 +213,7 @@
 <span class="sd">        numpy.ndarray</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span>
-    <span class="k">return</span> <span class="n">x</span> <span class="o">*</span> <span class="p">(</span><span class="n">p1</span> <span class="o">-</span> <span class="n">p0</span><span class="p">)</span> <span class="o">+</span> <span class="n">p0</span>
+    <span class="k">return</span> <span class="n">x</span> <span class="o">*</span> <span class="p">(</span><span class="n">p1</span> <span class="o">-</span> <span class="n">p0</span><span class="p">)</span> <span class="o">+</span> <span class="n">p0</span></div>
 
 
 <div class="viewcode-block" id="linestring_sample"><a class="viewcode-back" href="../../../../apidocs/crowddynamics.core.rand.html#crowddynamics.core.rand.sampling.linestring_sample">[docs]</a><span class="k">def</span> <span class="nf">linestring_sample</span><span class="p">(</span><span class="n">vertices</span><span class="p">):</span>
@@ -240,7 +240,7 @@
 
 
 <span class="nd">@numba</span><span class="o">.</span><span class="n">jit</span><span class="p">([</span><span class="n">f8</span><span class="p">[:](</span><span class="n">f8</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">:])],</span> <span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nogil</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">triangle_area_cumsum</span><span class="p">(</span><span class="n">trimesh</span><span class="p">):</span>
+<div class="viewcode-block" id="triangle_area_cumsum"><a class="viewcode-back" href="../../../../apidocs/crowddynamics.core.rand.html#crowddynamics.core.rand.sampling.triangle_area_cumsum">[docs]</a><span class="k">def</span> <span class="nf">triangle_area_cumsum</span><span class="p">(</span><span class="n">trimesh</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Computes cumulative sum of the areas of the triangle mesh.</span>
 
 <span class="sd">    Args:</span>
@@ -257,11 +257,11 @@
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">rows</span><span class="p">):</span>
         <span class="n">area</span> <span class="o">+=</span> <span class="n">polygon_area</span><span class="p">(</span><span class="n">trimesh</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:])</span>
         <span class="n">cumsum</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">area</span>
-    <span class="k">return</span> <span class="n">cumsum</span>
+    <span class="k">return</span> <span class="n">cumsum</span></div>
 
 
 <span class="nd">@numba</span><span class="o">.</span><span class="n">jit</span><span class="p">(</span><span class="n">f8</span><span class="p">[:](</span><span class="n">f8</span><span class="p">[:],</span> <span class="n">f8</span><span class="p">[:],</span> <span class="n">f8</span><span class="p">[:]),</span> <span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nogil</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">random_sample_triangle</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
+<div class="viewcode-block" id="random_sample_triangle"><a class="viewcode-back" href="../../../../apidocs/crowddynamics.core.rand.html#crowddynamics.core.rand.sampling.random_sample_triangle">[docs]</a><span class="k">def</span> <span class="nf">random_sample_triangle</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Generate uniform random sample from inside of a triangle defined by points</span>
 <span class="sd">    :math:`a`, :math:`b` and :math:`c`. [1]_</span>
@@ -293,7 +293,7 @@
     <span class="n">r2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span>
     <span class="k">return</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">r1</span><span class="p">))</span> <span class="o">*</span> <span class="n">a</span> <span class="o">+</span> \
            <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">r1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">r2</span><span class="p">)</span> <span class="o">*</span> <span class="n">b</span> <span class="o">+</span> \
-           <span class="n">r2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">r1</span><span class="p">)</span> <span class="o">*</span> <span class="n">c</span>
+           <span class="n">r2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">r1</span><span class="p">)</span> <span class="o">*</span> <span class="n">c</span></div>
 
 
 <div class="viewcode-block" id="polygon_sample"><a class="viewcode-back" href="../../../../apidocs/crowddynamics.core.rand.html#crowddynamics.core.rand.sampling.polygon_sample">[docs]</a><span class="k">def</span> <span class="nf">polygon_sample</span><span class="p">(</span><span class="n">vertices</span><span class="p">):</span>
@@ -353,7 +353,7 @@
   <div role="contentinfo">
     <p>
         &copy; Copyright Jaan Tollander de Balsch.
-      Last updated on 2017-05-31.
+      Last updated on 2017-06-02.
 
     </p>
   </div>
@@ -375,7 +375,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../../',
-            VERSION:'legacy+318.gb8d04f6.dirty',
+            VERSION:'legacy+319.g4c897c8.dirty',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
