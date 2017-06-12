@@ -13,6 +13,7 @@ from crowddynamics.simulation.multiagent import MultiAgentSimulation
 
 
 # TODO: agent_type traits should accept classes or class.__name__
+# TODO: do not use observe patterns
 
 
 class Outdoor(MultiAgentSimulation):
@@ -27,8 +28,8 @@ class Outdoor(MultiAgentSimulation):
         default_value=20.0,
         min=0)
     agent_type = Enum(
-        values=(Circular, ThreeCircle),
-        allow_none=True)
+        default_value=Circular,
+        values=(Circular, ThreeCircle))
     body_type = Enum(
         default_value='adult',
         values=('adult',))
@@ -58,26 +59,19 @@ class Outdoor(MultiAgentSimulation):
     def _default_field(self):
         return fields.OutdoorField(width=self.width, height=self.height)
 
-    @observe('width', 'height')
-    def _observe_field(self, change):
-        self.field = fields.OutdoorField(
-            width=self.width,
-            height=self.height)
+    @default('agents')
+    def _default_agents(self):
+        agents = Agents(agent_type=self.agent_type)
 
-    @observe('size', 'agent_type')
-    def _observe_agents(self, change):
-        if self.agent_type is not None:
-            agents = Agents(agent_type=self.agent_type)
+        group = AgentGroup(
+            agent_type=self.agent_type,
+            size=self.size,
+            attributes=self.attributes)
 
-            group = AgentGroup(
-                agent_type=self.agent_type,
-                size=self.size,
-                attributes=self.attributes)
+        agents.add_non_overlapping_group(
+            group, position_gen=self.field.sample_spawn(0))
 
-            agents.add_non_overlapping_group(
-                group, position_gen=self.field.sample_spawn(0))
-
-            self.agents = agents
+        return agents
 
 
 class Hallway(MultiAgentSimulation):
@@ -101,11 +95,10 @@ class Hallway(MultiAgentSimulation):
         min=0)
     ratio = Float(
         default_value=1 / 3,
-        min=0, max=1
-    )
+        min=0, max=1)
     agent_type = Enum(
-        values=(Circular, ThreeCircle),
-        allow_none=True)
+        default_value=Circular,
+        values=(Circular, ThreeCircle),)
     body_type = Enum(
         default_value='adult',
         values=('adult',))
@@ -152,47 +145,39 @@ class Hallway(MultiAgentSimulation):
             height=self.height,
             ratio=self.ratio)
 
-    @observe('width', 'height', 'ratio')
-    def _observe_field(self, change):
-        self.field = fields.HallwayField(
-            width=self.width,
-            height=self.height,
-            ratio=self.ratio)
+    @default('agents')
+    def _default_agents(self):
+        agents = Agents(agent_type=self.agent_type)
 
-    @observe('size', 'agent_type')
-    def _observe_agents(self, change):
-        if self.agent_type is not None:
-            agents = Agents(agent_type=self.agent_type)
+        group1 = AgentGroup(size=self.size // 2,
+                            agent_type=self.agent_type,
+                            attributes=self.attributes1)
+        group2 = AgentGroup(size=self.size // 2,
+                            agent_type=self.agent_type,
+                            attributes=self.attributes2)
 
-            group1 = AgentGroup(size=self.size // 2,
-                                agent_type=self.agent_type,
-                                attributes=self.attributes1)
-            group2 = AgentGroup(size=self.size // 2,
-                                agent_type=self.agent_type,
-                                attributes=self.attributes2)
+        agents.add_non_overlapping_group(
+            group=group1,
+            position_gen=self.field.sample_spawn(0))
+        agents.add_non_overlapping_group(
+            group=group2,
+            position_gen=self.field.sample_spawn(1))
 
-            agents.add_non_overlapping_group(
-                group=group1,
-                position_gen=self.field.sample_spawn(0))
-            agents.add_non_overlapping_group(
-                group=group2,
-                position_gen=self.field.sample_spawn(1))
-
-            self.agents = agents
+        return agents
 
 
 class FourExits(MultiAgentSimulation):
     size_active = Int(
-        default_value=10,
+        default_value=1,
         min=1,
         help='Amount of active agents')
     size_herding = Int(
-        default_value=90,
+        default_value=99,
         min=0,
         help='Amount of herding agents')
     agent_type = Enum(
-        values=(Circular, ThreeCircle),
-        allow_none=True)
+        default_value=Circular,
+        values=(Circular, ThreeCircle))
     body_type = Enum(
         default_value='adult',
         values=('adult',))
@@ -211,7 +196,7 @@ class FourExits(MultiAgentSimulation):
                 orientation=orientation,
                 velocity=np.zeros(2),
                 angular_velocity=0.0,
-                target_direction=unit_vector(orientation),
+                target_direction=np.zeros(2),
                 target_orientation=orientation)
             return d
         return wrapper
@@ -236,25 +221,24 @@ class FourExits(MultiAgentSimulation):
     def _default_field(self):
         return fields.FourExitsField(exit_width=self.exit_width)
 
-    @observe('size_active', 'size_herding', 'agent_type')
-    def _observe_agents(self, change):
-        if self.agent_type is not None:
-            agents = Agents(agent_type=self.agent_type)
+    @default('agents')
+    def _default_agents(self):
+        agents = Agents(agent_type=self.agent_type)
 
-            group_active = AgentGroup(
-                agent_type=self.agent_type,
-                size=self.size_active,
-                attributes=self.attributes(has_target=True, herding=False))
+        group_active = AgentGroup(
+            agent_type=self.agent_type,
+            size=self.size_active,
+            attributes=self.attributes(has_target=True, herding=False))
 
-            group_herding = AgentGroup(
-                agent_type=self.agent_type,
-                size=self.size_herding,
-                attributes=self.attributes(has_target=False, herding=True))
+        group_herding = AgentGroup(
+            agent_type=self.agent_type,
+            size=self.size_herding,
+            attributes=self.attributes(has_target=False, herding=True))
 
-            for group in (group_active, group_herding):
-                agents.add_non_overlapping_group(
-                    group,
-                    position_gen=self.field.sample_spawn(0),
-                    obstacles=geom_to_linear_obstacles(self.field.obstacles))
+        for group in (group_active, group_herding):
+            agents.add_non_overlapping_group(
+                group,
+                position_gen=self.field.sample_spawn(0),
+                obstacles=geom_to_linear_obstacles(self.field.obstacles))
 
-            self.agents = agents
+        return agents

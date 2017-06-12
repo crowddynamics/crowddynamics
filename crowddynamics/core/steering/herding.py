@@ -83,7 +83,7 @@ def compute_neighbors(position, sight, neighborhood_size,
 
 
 @numba.jit([f8[:, :](f8[:, :], i8[:, :])], nopython=True, nogil=True, cache=True)
-def herding_interaction(direction, neighbors):
+def herding_interaction(velocity, neighbors):
     r"""Herding effect.
 
     .. math::
@@ -91,27 +91,27 @@ def herding_interaction(direction, neighbors):
        \left(\sum_{j \in Neigh} \mathbf{\hat{e}}_j\right)
 
     Args:
-        direction:
+        velocity:
         neighbors:
 
     Returns:
         numpy.ndarray:
             New direction vector :math:`\mathbf{\hat{e}_{herding}}`
     """
-    new_direction = np.zeros_like(direction)
+    new_direction = np.zeros_like(velocity)
     n, m = neighbors.shape
     for i in range(n):
         for row in range(m):
             j = neighbors[i, row]
             if j == EMPTY:
                 continue
-            new_direction[i, :] += direction[j, :]
+            new_direction[i, :] += velocity[j, :]
         new_direction[i, :] = normalize(new_direction[i, :])
     return new_direction
 
 
-def herding_block_list(position, direction, sight, neighborhood_size):
+def herding_block_list(position, velocity, sight, neighborhood_size):
     index_list, count, offset, shape = block_list(position, sight)
     neighbors = compute_neighbors(position, sight, neighborhood_size,
                                   index_list, count, offset, shape)
-    return herding_interaction(direction, neighbors)
+    return herding_interaction(velocity, neighbors)
