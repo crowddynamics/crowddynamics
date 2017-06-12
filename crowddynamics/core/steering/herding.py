@@ -2,8 +2,11 @@
 import numba
 import numpy as np
 from numba import f8, i8
+from numba.typing.typeof import typeof
 
+from crowddynamics.core.geom2D import line_intersect
 from crowddynamics.core.interactions.block_list import block_list, get_block
+from crowddynamics.core.structures import obstacle_type_linear
 from crowddynamics.core.vector2D import length, normalize
 
 EMPTY = -1
@@ -45,10 +48,12 @@ def block_list_iter(index_list, count, offset, shape):
                             yield i_agent, j_agent
 
 
-@numba.jit([(f8[:, :], f8, i8, i8[:], i8[:], i8[:], i8[:])],
+@numba.jit([(f8[:, :], f8, i8, i8[:], i8[:], i8[:], i8[:],
+             typeof(obstacle_type_linear)[:])],
            nopython=True, nogil=True)
 def compute_neighbors(position, sight, neighborhood_size,
-                      index_list, count, offset, shape):
+                      index_list, count, offset, shape,
+                      obstacles):
     agent_size = len(position)
 
     neighbors = np.full((agent_size, neighborhood_size),
@@ -66,6 +71,18 @@ def compute_neighbors(position, sight, neighborhood_size,
 
     for i, j in block_list_iter(index_list, count, offset, shape):
         l = length(position[i] - position[j])
+
+        # Test if line of sight is obstructed by an obstacle
+        obstructed = False
+        for w in range(len(obstacles)):
+            if line_intersect(obstacles[w]['p0'], obstacles[w]['p1'],
+                              position[i], position[j]):
+                obstructed = True
+                break
+
+        if obstructed:
+            continue
+
         if l < sight:
             if l < distances_max[i]:
                 argmax = np.argmax(distances[i, :])
@@ -110,8 +127,8 @@ def herding_interaction(velocity, neighbors):
     return new_direction
 
 
-def herding_block_list(position, velocity, sight, neighborhood_size):
+def herding_block_list(position, velocity, sight, neighborhood_size, obstacles):
     index_list, count, offset, shape = block_list(position, sight)
     neighbors = compute_neighbors(position, sight, neighborhood_size,
-                                  index_list, count, offset, shape)
+                                  index_list, count, offset, shape, obstacles)
     return herding_interaction(velocity, neighbors)

@@ -166,8 +166,12 @@ class Herding(LogicNode):
 
     def update(self):
         agents = self.simulation.agents.array
-        herding(agents, agents['herding'], self.sight_herding,
-                self.num_nearest_agents)
+        obstacles = geom_to_linear_obstacles(self.simulation.field.obstacles)
+        herding(agents=agents,
+                obstacles=obstacles,
+                mask=agents['herding'],
+                sight_herding=self.sight_herding,
+                num_nearest_agents=self.num_nearest_agents)
 
 
 class Orientation(LogicNode):

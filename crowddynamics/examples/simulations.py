@@ -168,8 +168,8 @@ class Hallway(MultiAgentSimulation):
 
 class FourExits(MultiAgentSimulation):
     size_active = Int(
-        default_value=1,
-        min=1,
+        default_value=0,
+        min=0,
         help='Amount of active agents')
     size_herding = Int(
         default_value=99,

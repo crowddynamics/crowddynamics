@@ -109,9 +109,9 @@ def navigation(agents, mask, mgrid, dir_map):
     set_target_direction(agents, indices2[mask], new_direction)
 
 
-def herding(agents, mask, sight_herding, num_nearest_agents):
+def herding(agents, obstacles, mask, sight_herding, num_nearest_agents):
     new_direction = herding_block_list(
         agents[mask]['position'], agents[mask]['velocity'], sight_herding,
-        num_nearest_agents)
+        num_nearest_agents, obstacles)
     indices = np.arange(len(agents))
     set_target_direction(agents, indices[mask], new_direction)
