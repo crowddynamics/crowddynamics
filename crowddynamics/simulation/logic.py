@@ -19,7 +19,7 @@ from crowddynamics.core.steering.navigation import navigation, herding
 from crowddynamics.core.steering.orientation import \
     orient_towards_target_direction
 from crowddynamics.io import save_npy, save_csv, save_geometry_json
-from crowddynamics.simulation.agents import reset_motion, is_model
+from crowddynamics.simulation.agents import is_model
 from crowddynamics.simulation.base import LogicNodeBase
 
 
@@ -53,13 +53,15 @@ class LogicNode(LogicNodeBase):
 
 class Reset(LogicNode):
     def update(self):
-        reset_motion(self.simulation.agents.array)
-        # TODO: reset agent neighbor
+        agents = self.simulation.agents.array
+        agents[:]['force'] = 0
+        if is_model(agents, 'three_circle'):
+            agents[:]['torque'] = 0
 
 
 class Integrator(LogicNode):
-    dt_min = Float(default_value=0.001, min=0, help='Minimum timestep')
-    dt_max = Float(default_value=0.010, min=0, help='Maximum timestep')
+    dt_min = Float(default_value=0.01, min=0, help='Minimum timestep')
+    dt_max = Float(default_value=0.01, min=0, help='Maximum timestep')
 
     def update(self):
         dt = velocity_verlet_integrator(
@@ -71,11 +73,12 @@ class Integrator(LogicNode):
 class Fluctuation(LogicNode):
     def update(self):
         agents = self.simulation.agents.array
-        agents['force'] += force_fluctuation(agents['mass'],
-                                             agents['std_rand_force'])
+        force = force_fluctuation(agents['mass'], agents['std_rand_force'])
+        agents['force'] += force
         if is_model(agents, 'three_circle'):
-            agents['torque'] += torque_fluctuation(agents['inertia_rot'],
-                                                   agents['std_rand_torque'])
+            torque = torque_fluctuation(agents['inertia_rot'],
+                                        agents['std_rand_torque'])
+            agents['torque'] += torque
 
 
 class Adjusting(LogicNode):

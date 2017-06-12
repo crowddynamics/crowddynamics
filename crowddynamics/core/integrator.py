@@ -1,7 +1,7 @@
 r"""
 Integrator
 ----------
-Numerical solver for differential system consisting of translational and 
+Numerical solver for differential system consisting of translational and
 rotational motion which produces the movement for agents in crowddynamics
 
 .. math::
@@ -119,7 +119,6 @@ def rotational_euler(agents, dt):
                                 angular_acceleration / 2 * dt ** 2
         agent['angular_velocity'] += angular_acceleration * dt
         agent['orientation'] = wrap_to_pi(agent['orientation'])
-    shoulders(agents)
 
 
 def euler_integrator(agents, dt_min, dt_max):
@@ -158,6 +157,7 @@ def euler_integrator(agents, dt_min, dt_max):
     translational_euler(agents, dt)
     if agents.dtype is agent_type_three_circle:
         rotational_euler(agents, dt)
+        shoulders(agents)
     return dt
 
 
@@ -191,7 +191,6 @@ def rotational_verlet(agents, dt):
                                 new_angular_acceleration / 2 * dt ** 2
 
         agent['orientation'] = wrap_to_pi(agent['orientation'])
-    shoulders(agents)
 
 
 def velocity_verlet_integrator_init(agents, dt_min, dt_max):
@@ -203,6 +202,7 @@ def velocity_verlet_integrator_init(agents, dt_min, dt_max):
         rotational_euler(agents, dt)
         for agent in agents:
             agent['torque_prev'] = agent['torque']
+        shoulders(agents)
     return dt
 
 
@@ -211,23 +211,23 @@ def velocity_verlet_integrator(agents, dt_min, dt_max):
 
     Translational motion
 
-    1. 
+    1.
 
         .. math::
             \mathbf{v}_{k+1/2} = \mathbf{v}_{k} + \frac{1}{2} a_{k} \Delta t
-    
+
     2.
-    
+
         .. math::
             \mathbf{x}_{k+1} = \mathbf{x}_{k} + \mathbf{v}_{k+1/2} \Delta t
-    
-    3. 
-    
+
+    3.
+
         .. math::
             a_{k+1} = \mathbf{f}_{k+1} / m
-    
-    4. 
-    
+
+    4.
+
         .. math::
             \mathbf{v}_{k+1} = \mathbf{v}_{k+1/2} + \frac{1}{2} a_{k+1} \Delta t
 
@@ -252,4 +252,5 @@ def velocity_verlet_integrator(agents, dt_min, dt_max):
     translational_verlet(agents, dt)
     if agents.dtype is agent_type_three_circle:
         rotational_verlet(agents, dt)
+        shoulders(agents)
     return dt

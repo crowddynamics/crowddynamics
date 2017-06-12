@@ -14,7 +14,10 @@ Density
 .. autoclass:: crowddynamics.core.quantities.density_classical
       :noindex:
 
-.. autoclass:: crowddynamics.core.quantities.density_voronoi
+.. autoclass:: crowddynamics.core.quantities.density_voronoi_1
+      :noindex:
+
+.. autoclass:: crowddynamics.core.quantities.density_voronoi_2
       :noindex:
 
 Density ranges can be classified in increasing order [gkstill]_

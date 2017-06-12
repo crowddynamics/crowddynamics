@@ -86,8 +86,9 @@ class MultiAgentProcess(Process):
         """Runs simulation process by calling update method repeatedly until
         stop is called. This method is called automatically by Process class
         when start is called."""
+        self.simulation.exit_condition = lambda _: self.exit.is_set()
         try:
-            self.simulation.run(exit_condition=lambda _: self.exit.is_set())
+            self.simulation.run()
         except CrowdDynamicsException as error:
             self.logger.error(
                 'Simulation stopped to error: {}'.format(error))

@@ -7,7 +7,7 @@ import pytest
 from crowddynamics.core.vector2D import unit_vector
 from crowddynamics.simulation.agents import (
     Circular, ThreeCircle, AgentGroup, Agents,
-    AgentType, reset_motion, shoulders, overlapping_circles,
+    AgentType, overlapping_circles,
     overlapping_three_circles)
 
 SIZE = 10
@@ -66,17 +66,6 @@ def test_agents(agent_type, attributes):
     agents.add_non_overlapping_group(
         group=group,
         position_gen=lambda: np.random.uniform(XMIN, XMAX, 2))
-    assert True
-
-
-def test_circular(agents_circular):
-    reset_motion(agents_circular.array)
-    assert True
-
-
-def test_three_circle(agents_three_circle):
-    reset_motion(agents_three_circle.array)
-    shoulders(agents_three_circle.array)
     assert True
 
 

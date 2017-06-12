@@ -20,7 +20,7 @@ DirectionMap = Tuple[np.ma.MaskedArray, np.ma.MaskedArray]
 # Grid
 
 def meshgrid(step: float, minx: float, miny: float,
-             maxx: float, maxy: float) -> MeshGrid:
+             maxx: float, maxy: float):
     """2-Dimensional meshgrid with inclusive end points maxx and maxy
 
     Args:
@@ -53,7 +53,7 @@ def meshgrid(step: float, minx: float, miny: float,
 
 def distance_map(mgrid: MeshGrid,
                  targets: BaseGeometry,
-                 obstacles: Optional[BaseGeometry]) -> DistanceMap:
+                 obstacles: Optional[BaseGeometry]):
     r"""
     Distance map :math:`S(\mathbf{x})` is obtained by solving *Eikonal equation*
     (Continuos shortest path problem) using fast marching *Fast Marching Method
@@ -93,7 +93,7 @@ def distance_map(mgrid: MeshGrid,
             Target regions :math:`\mathcal{E}` in the domain.
 
     Return:
-        numpy.ma.MaskedArray: Distance map
+        DistanceMap: Distance map
     """
     # Numerical values for objects in the domain
     empty_region = -1.0
@@ -141,7 +141,7 @@ def travel_time_map():
     return NotImplementedError
 
 
-def direction_map(dmap: DistanceMap) -> DirectionMap:
+def direction_map(dmap: DistanceMap):
     r"""Computes normalized gradient of distance map. Not defined when length of
     the gradient is zero.
 
@@ -153,7 +153,7 @@ def direction_map(dmap: DistanceMap) -> DirectionMap:
             Distance map.
 
     Returns:
-        (numpy.ndarray, numpy.ndarray): Direction map.
+        DirectionMap: Direction map.
     """
     u, v = np.gradient(dmap)
     l = np.hypot(u, v)

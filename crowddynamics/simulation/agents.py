@@ -162,7 +162,7 @@ class BodyType(Body):
         if self.mass == 0 and self.mass_mean > 0 and self.mass_scale > 0:
             self.mass = self._truncnorm(self.mass_mean, self.mass_scale)
 
-    @observe('velocity_mean', 'velocity_scale')
+    @observe('target_velocity_mean', 'target_velocity_scale')
     def _observe_target_velocity_truncnorm(self, change):
         if self.target_velocity == 0 and self.target_velocity_mean > 0 and self.target_velocity_scale > 0:
             self.target_velocity = self._truncnorm(self.target_velocity_mean,
@@ -335,7 +335,7 @@ class Circular(AgentType, States, BodyType, TranslationalMotion):
     r"""Circular agent type
 
     .. tikz:: Circular agent
-       :include: ../docs/tikz/circular_agent.tex
+       :include: ../tikz/circular_agent.tex
 
     **Circular** agents are modelled as a disk with radius :math:`r > 0`
     from the center of mass :math:`\mathbf{x}`. This type of agents do not
@@ -361,7 +361,7 @@ class ThreeCircle(AgentType, States, BodyType, TranslationalMotion,
     r"""Three-circle agent type
 
     .. tikz:: Three circle agent
-       :include: ../docs/tikz/three_circle_agent.tex
+       :include: ../tikz/three_circle_agent.tex
 
     **Three-circle** agents are modelled as three disks representing the
     torso and two shoulders of an average human. Torso is a disk with radius
@@ -410,7 +410,7 @@ class Capsule(AgentType, States, BodyType, TranslationalMotion,
     r"""Capsule
 
     .. tikz:: Capsule agent
-       :include: ../docs/tikz/capsule_agent.tex
+       :include: ../tikz/capsule_agent.tex
 
     **Capsule** shaped model used in *Dense Crowds of Virtual Humans*
     [Stuvel2016]_ and *Simulating competitive egress of noncircular
@@ -470,21 +470,6 @@ def shoulders(agents):
         offset = tangent * agent['r_ts']
         agent['position_ls'][:] = agent['position'] - offset
         agent['position_rs'][:] = agent['position'] + offset
-
-
-@numba.generated_jit(cache=True)
-def reset_motion(agent):
-    def _reset(agent):
-        agent['force'][:] = 0
-
-    def _reset2(agent):
-        agent['force'][:] = 0
-        agent['torque'][:] = 0
-
-    if agent.dtype is numba.from_dtype(agent_type_circular):
-        return _reset
-    if agent.dtype is numba.from_dtype(agent_type_three_circle):
-        return _reset2
 
 
 @numba.jit([boolean(typeof(agent_type_circular)[:], float64[:], float64)],

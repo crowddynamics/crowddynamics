@@ -83,8 +83,8 @@ def compute_neighbors(position, sight, neighborhood_size,
 
 
 @numba.jit([f8[:, :](f8[:, :], i8[:, :])], nopython=True, nogil=True, cache=True)
-def herding(direction, neighbors):
-    """Herding effect.
+def herding_interaction(direction, neighbors):
+    r"""Herding effect.
 
     .. math::
        \mathbf{\hat{e}_{herding}} = \mathcal{N}
@@ -114,4 +114,4 @@ def herding_block_list(position, direction, sight, neighborhood_size):
     index_list, count, offset, shape = block_list(position, sight)
     neighbors = compute_neighbors(position, sight, neighborhood_size,
                                   index_list, count, offset, shape)
-    return herding(direction, neighbors)
+    return herding_interaction(direction, neighbors)

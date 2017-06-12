@@ -1,10 +1,9 @@
 import numpy as np
-from scipy.stats._discrete_distns import geom
 from traitlets.traitlets import Float, Int, observe, Enum, default
 
 from crowddynamics.core.geometry import geom_to_linear_obstacles
-from crowddynamics.examples import fields
 from crowddynamics.core.vector2D import unit_vector
+from crowddynamics.examples import fields
 from crowddynamics.simulation.agents import Agents, AgentGroup, Circular, \
     ThreeCircle
 from crowddynamics.simulation.logic import Reset, Integrator, Fluctuation, \
@@ -13,16 +12,19 @@ from crowddynamics.simulation.logic import Reset, Integrator, Fluctuation, \
 from crowddynamics.simulation.multiagent import MultiAgentSimulation
 
 
+# TODO: agent_type traits should accept classes or class.__name__
+
+
 class Outdoor(MultiAgentSimulation):
     r"""Simulation for visualizing collision avoidance."""
     size = Int(
         default_value=100,
         min=1)
     width = Float(
-        default_value=10.0,
+        default_value=20.0,
         min=0)
     height = Float(
-        default_value=10.0,
+        default_value=20.0,
         min=0)
     agent_type = Enum(
         values=(Circular, ThreeCircle),
@@ -36,7 +38,7 @@ class Outdoor(MultiAgentSimulation):
         d = dict(
             body_type=self.body_type,
             orientation=orientation,
-            velocity=np.zeros(2),
+            velocity=1.0 * unit_vector(orientation),
             angular_velocity=0.0,
             target_direction=unit_vector(orientation),
             target_orientation=orientation)
@@ -55,28 +57,6 @@ class Outdoor(MultiAgentSimulation):
     @default('field')
     def _default_field(self):
         return fields.OutdoorField(width=self.width, height=self.height)
-
-    # @default('agents')
-    # def _default_agents(self):
-    #     agents = Agents(agent_type=self.agent_type)
-    #
-    #     def attributes():
-    #         orientation = np.random.uniform(-np.pi, np.pi)
-    #         return dict(
-    #             body_type=self.body_type,
-    #             orientation=orientation,
-    #             velocity=np.zeros(2),
-    #             angular_velocity=0.0,
-    #             target_direction=unit_vector(orientation),
-    #             target_orientation=orientation)
-    #
-    #     group = AgentGroup(
-    #         agent_type=self.agent_type,
-    #         size=self.size,
-    #         attributes=attributes)
-    #
-    #     agents.add_non_overlapping_group(group, position_gen=self.field.sample_spawn(0))
-    #     return agents
 
     @observe('width', 'height')
     def _observe_field(self, change):
@@ -134,7 +114,7 @@ class Hallway(MultiAgentSimulation):
         orientation = 0.0
         return dict(body_type=self.body_type,
                     orientation=orientation,
-                    velocity=np.zeros(2),
+                    velocity=unit_vector(orientation),
                     angular_velocity=0.0,
                     target_direction=unit_vector(orientation),
                     target_orientation=orientation,
@@ -144,7 +124,7 @@ class Hallway(MultiAgentSimulation):
         orientation = np.pi
         return dict(body_type=self.body_type,
                     orientation=orientation,
-                    velocity=np.zeros(2),
+                    velocity=unit_vector(orientation),
                     angular_velocity=0.0,
                     target_direction=unit_vector(orientation),
                     target_orientation=orientation,
@@ -171,25 +151,6 @@ class Hallway(MultiAgentSimulation):
             width=self.width,
             height=self.height,
             ratio=self.ratio)
-
-    # @default('agents')
-    # def _default_agents(self):
-    #     agents = Agents(agent_type=self.agent_type)
-    #
-    #     group1 = AgentGroup(size=self.size // 2,
-    #                         agent_type=self.agent_type,
-    #                         attributes=self.attributes1)
-    #     group2 = AgentGroup(size=self.size // 2,
-    #                         agent_type=self.agent_type,
-    #                         attributes=self.attributes2)
-    #
-    #     agents.add_non_overlapping_group(
-    #         group=group1,
-    #         position_gen=self.field.sample_spawn(0))
-    #     agents.add_non_overlapping_group(
-    #         group=group2,
-    #         position_gen=self.field.sample_spawn(1))
-    #     return agents
 
     @observe('width', 'height', 'ratio')
     def _observe_field(self, change):
@@ -273,10 +234,9 @@ class FourExits(MultiAgentSimulation):
 
     @default('field')
     def _default_field(self):
-        return fields.FourExitsField(
-            exit_width=self.exit_width)
+        return fields.FourExitsField(exit_width=self.exit_width)
 
-    @observe('size', 'agent_type')
+    @observe('size_active', 'size_herding', 'agent_type')
     def _observe_agents(self, change):
         if self.agent_type is not None:
             agents = Agents(agent_type=self.agent_type)

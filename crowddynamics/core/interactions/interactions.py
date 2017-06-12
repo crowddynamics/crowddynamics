@@ -293,8 +293,7 @@ def agent_three_circle_obstacle(agents, obstacles):
 # Higher level API
 
 def agent_agent_block_list(agents, cell_size):
-    positions = agents['position']
-    index_list, count, offset, shape = block_list(positions, cell_size)
+    index_list, count, offset, shape = block_list(agents['position'], cell_size)
 
     if is_model(agents, 'circular'):
         agent_agent_block_list_circular(agents, index_list, count, offset, shape)

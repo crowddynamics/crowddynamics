@@ -14,7 +14,7 @@ from crowddynamics.simulation.base import FieldBase
 
 
 class Field(FieldBase):
-    r"""Field is a collection of geometric static geometric objects that can
+    r"""Field is a collection of static geometric objects that can
     exist in crowd dynamics simulations. This module uses geometric types
     from Shapely_ module. Shapely's fundamental geometric types are *points*,
     *curves* and *surfaces*, which correspond to shapely objects
