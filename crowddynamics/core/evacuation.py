@@ -1,8 +1,15 @@
 """Evacuation related functions"""
 import numba
 import numpy as np
+from numba.typing.typeof import typeof
+
+from crowddynamics.core.geom2D import line_intersect
+from crowddynamics.core.sensory_region import is_obstacle_between_points
+from crowddynamics.core.structures import obstacle_type_linear
 from crowddynamics.core.vector2D import length
 from numba import i8, f8, optional
+
+from crowddynamics.simulation.agents import NO_TARGET
 
 
 @numba.jit(f8(f8, f8, optional(f8), f8),
@@ -14,7 +21,7 @@ def narrow_exit_capacity(d_door, d_agent, d_layer=None, coeff=1.0):
 
     Estimation 1
         Simple estimation
-        
+
         .. math::
            \beta_{simple} = c \left \lfloor \frac{d_{door}}{d_{agent}} \right \rfloor
 
@@ -31,15 +38,15 @@ def narrow_exit_capacity(d_door, d_agent, d_layer=None, coeff=1.0):
 
     .. list-table:: Variables
        :header-rows: 1
-       
+
        * - Variable
          - Reference value
          - Unit
        * - :math:`d_{door} \in [0, 3]`
-         - 
+         -
          - m
        * - :math:`d_{agent} > 0`
-         - 
+         -
          - m
        * - :math:`d_{layer} > 0`
          - :math:`0.45`
@@ -125,3 +132,37 @@ def agent_closer_to_exit(c_door, position):
     d_sorted = np.argsort(distances)
     num = np.argsort(d_sorted)
     return num
+
+
+@numba.jit(i8[:](f8[:, :], f8[:, :], typeof(obstacle_type_linear)[:], f8),
+           nopython=True, nogil=True, cache=True)
+def exit_detection(center_door, position, obstacles, detection_range):
+    """Exit detection. Detects closest exit in detection range that is in line
+    of sight.
+
+    Args:
+        detection_range:
+        center_door:
+        position:
+        obstacles:
+
+    Returns:
+        ndarray: Selected exits
+    """
+    n = len(position)
+    distance = np.full(shape=n, fill_value=detection_range, dtype=np.float64)
+    selected_exit = np.full(shape=n, fill_value=NO_TARGET, dtype=np.int64)
+
+    for i in range(n):
+        for c in range(len(center_door)):
+            # If line of sight is obstructed skip the exit
+            if is_obstacle_between_points(position[i], center_door[c],
+                                          obstacles):
+                continue
+
+            d = length(center_door[c] - position[i])
+            if d < distance[i]:
+                distance[i] = d
+                selected_exit[i] = c
+
+    return selected_exit

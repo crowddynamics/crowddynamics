@@ -39,7 +39,7 @@ def wrap_to_pi(rad):
 @numba.jit(f8[:](f8[:]), nopython=True, nogil=True, cache=True)
 def rotate90(v):
     r"""90 degree counterclockwise rotation for 2D vector.
-    
+
     .. tikz::
        \begin{scope}[scale=0.5]
        \draw[color=gray!20] (-1, -1) grid (6, 6);
@@ -100,7 +100,7 @@ def angle(v):
            nopython=True, nogil=True, cache=True)
 def length(v):
     r"""Length of an vector
-    
+
     .. math::
        \|\mathbf{v}\|
 
@@ -117,7 +117,7 @@ def length(v):
            nopython=True, nogil=True, cache=True)
 def dot(v0, v1):
     r"""Dot product for 2D vectors.
-    
+
     .. math::
        \mathbf{v}_0 \cdot \mathbf{v}_1
 
@@ -168,7 +168,7 @@ def truncate(v, l):
     r"""
     Truncate vector :math:`\mathbf{v}` to length :math:`l > 0` if
     :math:`\|\mathbf{v}\| > l`.
-    
+
     .. math::
         \begin{cases}
         l \frac{\mathbf{v}}{\|\mathbf{v}\|} & \|\mathbf{v}\| > l \\
@@ -198,3 +198,29 @@ def unit_vector(orientation):
             (np.cos(orientation), np.sin(orientation))).T
     else:
         raise TypeError('')
+
+
+@numba.jit([f8[:](f8[:], f8[:], f8),
+            f8[:, :](f8[:, :], f8[:, :], f8)],
+           nopython=True, nogil=True, cache=True)
+def weighted_average(e0, e1, weight):
+    r"""Weighted average of two (unit)vectors
+
+    .. math::
+       \mathbf{\hat{e}}_{out} =
+       \mathcal{N} \big(p \mathbf{\hat{e}_{0}} + (1 - p) \mathbf{\hat{e}_{1}} \big)
+
+    where
+
+    - :math:`\mathcal{N}(\mathbf{v}) = \frac{\mathbf{v}}{\|\mathbf{v}\|}` is the
+      normalization of the vector
+
+    Args:
+        e0 (numpy.ndarray): Unit vector :math:`\mathbf{\hat{e}_{0}}`
+        e1 (numpy.ndarray): Unit vector :math:`\mathbf{\hat{e}_{1}}`
+        weight (float): Weight between :math:`p \in [0, 1]`
+
+    Returns:
+        numpy.ndarray:
+    """
+    return weight * e0 + (1 - weight) * e1

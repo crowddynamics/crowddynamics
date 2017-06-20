@@ -1,7 +1,7 @@
 from line_profiler import LineProfiler
 import memory_profiler
 
-from crowddynamics.examples.simulations import FourExits
+from crowddynamics.examples.collective_motion import FourExits
 from crowddynamics.logging import setup_logging
 from crowddynamics.simulation.agents import ThreeCircle, Circular
 

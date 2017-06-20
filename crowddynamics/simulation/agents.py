@@ -26,6 +26,10 @@ from crowddynamics.traits import shape_validator, length_validator, \
 from crowddynamics.utils import interpolate_docstring
 
 
+NO_TARGET = -1
+NO_LEADER = -1
+
+
 class States(HasTraits):
     active = Bool(
         default_value=True,
@@ -37,13 +41,21 @@ class States(HasTraits):
 
     # Navigation
     target = Int(
-        default_value=-1, min=-1,
+        default_value=NO_TARGET,
+        min=NO_TARGET,
         help='Positive integer for target index, -1 for agent that do not have '
              'a target.')
-    herding = Bool(
+
+    is_leader = Bool(
+        default_value=False,
+        help='Boolean indicating if agent is leader')
+    is_herding = Bool(
         default_value=False,
         help='Boolean indicating if agent is herding (following average '
              'direction of other agent).')
+    index_leader = Int(
+        default_value=NO_LEADER,
+        help='Index of the agent that is the leader of this agent.')
 
 
 class Body(HasTraits):

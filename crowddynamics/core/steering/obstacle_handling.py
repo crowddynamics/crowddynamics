@@ -25,17 +25,17 @@ def obstacle_handling(dmap_obs, dir_map_obs, dir_map_targets, radius, strength):
        0 & \Phi > M > 0
        \end{cases}
 
-    Take weighted average between the direction from the obstacles and the 
-    direction from the target using :math:`p` using the decreasing function 
+    Take weighted average between the direction from the obstacles and the
+    direction from the target using :math:`p` using the decreasing function
     defined above.
 
     .. math::
        p &= \lambda(\Phi(\mathbf{x})) \\
-       \hat{\mathbf{e}}_{out} &= \mathcal{N}\big(p \hat{\mathbf{e}}_{obstacle} + 
+       \hat{\mathbf{e}}_{out} &= \mathcal{N}\big(p \hat{\mathbf{e}}_{obstacle} +
        (1 - p) \hat{\mathbf{e}}_{target}\big)
 
     Numerically this algorithm uses exponential function as :math:`\lambda`
-    
+
     .. math::
        c^{\frac{x}{r}}
 
@@ -52,7 +52,6 @@ def obstacle_handling(dmap_obs, dir_map_obs, dir_map_targets, radius, strength):
     Returns:
         Tuple[numpy.ndarray, numpy.ndarray]:
     """
-    # FIXME: artifacts near radius distance from obstacles
     u1, v1 = dir_map_obs
     u2, v2 = dir_map_targets
     u_out, v_out = np.copy(u2), np.copy(v2)

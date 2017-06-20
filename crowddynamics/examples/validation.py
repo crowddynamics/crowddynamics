@@ -10,7 +10,7 @@ from crowddynamics.simulation.agents import Agents, AgentGroup, Circular, \
     ThreeCircle
 from crowddynamics.simulation.logic import Reset, Integrator, Fluctuation, \
     Adjusting, AgentAgentInteractions, AgentObstacleInteractions, \
-    Orientation, Navigation, InsideDomain, Herding
+    Orientation, Navigation, InsideDomain, LeaderFollower
 from crowddynamics.simulation.multiagent import MultiAgentSimulation
 
 

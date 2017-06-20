@@ -15,19 +15,15 @@ import numpy as np
 from numba import f8, i8
 from shapely.geometry import Polygon
 
-from crowddynamics.core.steering.herding import herding_block_list
+from crowddynamics.core.steering.collective_motion import herding_block_list
 from crowddynamics.core.steering.obstacle_handling import \
     direction_map_obstacles, obstacle_handling
 from crowddynamics.core.steering.quickest_path import MeshGrid, DistanceMap, \
     DirectionMap, meshgrid, shortest_path
 
 
-def static_potential(domain,
-                     targets,
-                     obstacles,
-                     step: float,
-                     radius: float,
-                     strength: float) -> \
+def static_potential(domain, targets, obstacles,
+                     step: float, radius: float, strength: float) -> \
         Tuple[MeshGrid, DistanceMap, DirectionMap]:
     r"""
     Navigation algorithm that uses combines `shortest path` and
@@ -80,38 +76,3 @@ def getdefault(indices, dir_map, defaults):
             out[k][0] = x[i, j]
             out[k][1] = y[i, j]
     return out
-
-
-@numba.jit(nopython=True, nogil=True, cache=True)
-def set_target_direction(array, indices, values):
-    for j, i in enumerate(indices):
-        array[i]['target_direction'][:] = values[j, :]
-
-
-def navigation(agents, mask, mgrid, dir_map):
-    """Find directions for positions
-
-    Args:
-        position (numpy.ndarray): Shape (n, 2)
-        step (float):
-        dir_map (Tuple[numpy.ndarray, numpy.ndarray]):
-
-    Returns:
-        numpy.ndarray:
-
-    References:
-        - https://docs.scipy.org/doc/numpy/reference/arrays.indexing.html
-    """
-    # Flip x and y to array index i and j
-    indices = np.fliplr(mgrid.indicer(agents[mask]['position']))
-    new_direction = getdefault(indices, dir_map, agents[mask]['target_direction'])
-    indices2 = np.arange(len(agents))
-    set_target_direction(agents, indices2[mask], new_direction)
-
-
-def herding(agents, obstacles, mask, sight_herding, num_nearest_agents):
-    new_direction = herding_block_list(
-        agents[mask]['position'], agents[mask]['velocity'], sight_herding,
-        num_nearest_agents, obstacles)
-    indices = np.arange(len(agents))
-    set_target_direction(agents, indices[mask], new_direction)

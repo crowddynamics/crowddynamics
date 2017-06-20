@@ -46,7 +46,7 @@ class HallwayField(Field):
         default_value=10.0,
         min=0)
     ratio = Float(
-        default_value=1/3,
+        default_value=1 / 3,
         min=0, max=1)
 
     @default('obstacles')
@@ -75,7 +75,7 @@ class HallwayField(Field):
                     LineString([(0, self.height), (self.width, self.height)])
         spawn0 = _rectangle(0, 0, self.ratio * self.width, self.height)
         spawn1 = _rectangle((1 - self.ratio) * self.width, 0, self.ratio *
-                   self.width, self.height)
+                            self.width, self.height)
 
         target0 = LineString([(0, 0), (0, self.height)])
         target1 = LineString([(self.width, 0), (self.width, self.height)])
@@ -83,6 +83,99 @@ class HallwayField(Field):
         self.obstacles = obstacles
         self.spawns = [spawn0, spawn1]
         self.targets = [target0, target1]
+        self.domain = self.convex_hull()
+
+
+class Rounding(Field):
+    width = Float(
+        default_value=10.0,
+        min=0)
+    height = Float(
+        default_value=10.0,
+        min=0)
+    ratio = Float(
+        default_value=0.6,
+        min=0, max=1)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        height = self.height
+        width = self.width
+
+        domain = Polygon([(0, 0), (0, height), (width, height), (width, 0)])
+        target = LineString([(0, height / 2), (0, height)])
+        spawn = Polygon([(0, 0),
+                         (0, height / 2),
+                         (width / 2, height / 2),
+                         (width / 2, 0)])
+
+        obstacles = LineString([(0, height / 2),
+                                (width * self.ratio, height / 2)]) | \
+                    domain.exterior - target
+
+        self.obstacles = obstacles
+        self.targets = [target]
+        self.spawns = [spawn]
+        self.domain = domain
+
+
+class ClosedRoom(Field):
+    width = Float(
+        default_value=10.0,
+        min=0)
+    height = Float(
+        default_value=10.0,
+        min=0)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        domain = Polygon([
+            (0, 0), (0, self.height),
+            (self.width, self.height), (self.width, 0)
+        ])
+        obstacles = domain.exterior
+        spawn = domain
+
+        self.obstacles = obstacles
+        self.spawns = [spawn]
+        self.domain = domain
+
+
+class RoomWithOneExit(Field):
+    width = Float(
+        default_value=10.0,
+        min=0)
+    height = Float(
+        default_value=10.0,
+        min=0)
+    exit_width = Float(
+        default_value=1.25,
+        min=0, max=10)
+    exit_hall_width = Float(
+        default_value=2.0,
+        min=0)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        width = self.width
+        height = self.height
+        exit_width = self.exit_width
+        exit_hall_width = self.exit_hall_width
+
+        self.room = LineString(
+            [(width, 0), (0, 0), (0, height), (width, height)])
+        self.hall = _rectangle(width, (height + exit_width) / 2,
+                               exit_hall_width, (height - exit_width) / 2) | \
+                    _rectangle(width, 0,
+                               exit_hall_width, (height - exit_width) / 2)
+        target = LineString(
+            [(width + exit_hall_width, (height - exit_width) / 2),
+             (width + exit_hall_width, (height + exit_width) / 2)])
+
+        # Field attributes
+        self.obstacles = self.room | self.hall
+        self.targets = [target]
+        self.spawns = [self.room.convex_hull]
         self.domain = self.convex_hull()
 
 
@@ -143,6 +236,7 @@ class FourExitsField(Field):
         self.obstacles = obstacles
         self.targets = targets
 
-        domain = self.convex_hull()
-        self.spawns = [domain]
+        spawn = self.convex_hull()
+        domain = Polygon([(-5, -5), (-5, 85), (105, 85), (105, -5)])
+        self.spawns = [spawn]
         self.domain = domain

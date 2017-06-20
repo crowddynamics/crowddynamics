@@ -1,8 +1,7 @@
 import numba
-from numba import f8
 
 
-@numba.jit(f8(f8[:, :]), nopython=True, nogil=True, cache=True)
+@numba.jit(['f8(f8[:, :])'], nopython=True, nogil=True, cache=True)
 def polygon_area(vertices):
     r"""Shoelace formula for computing area of polygon
 
@@ -37,7 +36,7 @@ def polygon_area(vertices):
 @numba.jit(['boolean(f8[:], f8[:], f8[:], f8[:])'],
            nopython=True, nogil=True, cache=True)
 def line_intersect(x0, x1, y0, y1):
-    """Test if two lines intersect
+    """Test if two lines intersect. Assumes that lines have finite length.
 
     Args:
         x0 (numpy.ndarray): Start point of first line
@@ -48,14 +47,13 @@ def line_intersect(x0, x1, y0, y1):
     Returns:
         bool:
     """
-    q = x1 - x0
-    p = y1 - y0
+    # FIXME: if u or v is zero vector
+    u = x1 - x0
+    v = y1 - y0
     b = y0 - x0
-
-    denominator = p[0] * q[1] - p[1] * q[0]
-    if -10e-08 <= denominator <= 10e-08:
+    d = v[0] * u[1] - v[1] * u[0]
+    if d == 0:
         return False
-    else:
-        s = (b[0] * q[1] - b[1] * q[0])
-        t = (-b[0] * p[1] + b[1] * p[0])
-        return 0 <= s <= denominator and 0 <= t <= denominator
+    t0 = -b[0] * u[1] + b[1] * u[0]
+    t1 = -b[0] * v[1] + b[1] * v[0]
+    return 0 <= t0 <= d and 0 <= t1 <= d

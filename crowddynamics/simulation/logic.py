@@ -7,6 +7,7 @@ from matplotlib.path import Path
 from traitlets.traitlets import Float, Instance, Unicode, default, \
     Int
 
+from crowddynamics.core.evacuation import exit_detection
 from crowddynamics.core.geometry import geom_to_linear_obstacles
 from crowddynamics.core.integrator import velocity_verlet_integrator
 from crowddynamics.core.interactions.interactions import agent_agent_block_list, \
@@ -15,11 +16,13 @@ from crowddynamics.core.motion.adjusting import force_adjust_agents, \
     torque_adjust_agents
 from crowddynamics.core.motion.fluctuation import force_fluctuation, \
     torque_fluctuation
-from crowddynamics.core.steering.navigation import navigation, herding
+from crowddynamics.core.steering.collective_motion import herding_block_list
+from crowddynamics.core.steering.navigation import getdefault
 from crowddynamics.core.steering.orientation import \
     orient_towards_target_direction
+from crowddynamics.core.structures import obstacle_type_linear
 from crowddynamics.io import save_npy, save_csv, save_geometry_json
-from crowddynamics.simulation.agents import is_model
+from crowddynamics.simulation.agents import is_model, NO_TARGET
 from crowddynamics.simulation.base import LogicNodeBase
 
 
@@ -117,7 +120,10 @@ class AgentAgentInteractions(LogicNode):
 class AgentObstacleInteractions(LogicNode):
     def update(self):
         agents = self.simulation.agents.array
-        obstacles = geom_to_linear_obstacles(self.simulation.field.obstacles)
+        if self.simulation.field.obstacles is None:
+            obstacles = np.zeros(shape=0, dtype=obstacle_type_linear)
+        else:
+            obstacles = geom_to_linear_obstacles(self.simulation.field.obstacles)
         agent_obstacle(agents, obstacles)
 
 
@@ -125,7 +131,7 @@ class AgentObstacleInteractions(LogicNode):
 
 class Navigation(LogicNode):
     step = Float(
-        default_value=0.04,
+        default_value=0.1,
         min=0,
         help='Step size for meshgrid used for discretization.')
     radius = Float(
@@ -141,24 +147,38 @@ class Navigation(LogicNode):
         agents = self.simulation.agents.array
         targets = set(range(len(self.simulation.field.targets)))
         for target in targets:
-            if target == -1:
+            if target == NO_TARGET:
                 continue
+
             mask = agents['target'] == target
             if len(mask) == 0:
                 continue
+
             mgrid, distance_map, direction_map = \
                 self.simulation.field.navigation_to_target(
                     target, self.step, self.radius, self.strength)
-            navigation(agents, mask, mgrid, direction_map)
+
+            # navigation(agents, mask, mgrid, direction_map)
+
+            # Navigation
+            # Flip x and y to array index i and j
+            indices = np.fliplr(mgrid.indicer(agents[mask]['position']))
+            new_direction = getdefault(indices, direction_map,
+                                       agents[mask]['target_direction'])
+            agents['target_direction'][mask] = new_direction
 
 
-class Herding(LogicNode):
-    sight_herding = Float(
-        default_value=5.0,
+class LeaderFollower(LogicNode):
+    sight_follower = Float(
+        default_value=20.0,
         min=0,
         help='Maximum distance between agents that are accounted as neighbours '
              'that can be followed.')
-    num_nearest_agents = Int(
+    size_nearest_leaders = Int(
+        default_value=1,
+        min=0,
+        help='')
+    size_nearest_other = Int(
         default_value=5,
         min=0,
         help='Maximum number of nearest agents inside sight_herding radius '
@@ -166,12 +186,47 @@ class Herding(LogicNode):
 
     def update(self):
         agents = self.simulation.agents.array
-        obstacles = geom_to_linear_obstacles(self.simulation.field.obstacles)
-        herding(agents=agents,
-                obstacles=obstacles,
-                mask=agents['herding'],
-                sight_herding=self.sight_herding,
-                num_nearest_agents=self.num_nearest_agents)
+        if self.simulation.field.obstacles is None:
+            obstacles = np.zeros(shape=0, dtype=obstacle_type_linear)
+        else:
+            obstacles = geom_to_linear_obstacles(self.simulation.field.obstacles)
+
+        is_herding = agents['is_herding']
+        new_direction = herding_block_list(
+            agents['position'], agents['velocity'],
+            is_herding, agents['is_leader'],
+            self.sight_follower, self.size_nearest_leaders,
+            self.size_nearest_other, obstacles)
+        agents['target_direction'][is_herding] = new_direction[is_herding]
+
+
+class ExitDetection(LogicNode):
+    """Herding agents can detect an exit that is within exit detection range"""
+    detection_range = Float(
+        default_value=20.0,
+        min=1.0)
+
+    def update(self):
+        agents = self.simulation.agents.array
+        if self.simulation.field.obstacles is None:
+            obstacles = np.zeros(shape=0, dtype=obstacle_type_linear)
+        else:
+            obstacles = geom_to_linear_obstacles(self.simulation.field.obstacles)
+        targets = self.simulation.field.targets
+
+        # Assume here that target
+        # TODO: check that this is correct
+        center_door = np.stack(
+            [np.mean(np.asarray(target), axis=0) for target in targets])
+
+        is_herding = agents['is_herding']
+        position = agents['position'][is_herding]
+
+        targets = exit_detection(center_door, position, obstacles,
+                                 self.detection_range)
+        agents['target'][is_herding] = targets
+        # Not herding anymore
+        agents['is_herding'][is_herding] = targets == NO_TARGET
 
 
 class Orientation(LogicNode):

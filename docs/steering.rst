@@ -42,7 +42,7 @@ Steering
 .. autoclass:: crowddynamics.core.steering.functions.weighted_average
    :noindex:
 
-.. autoclass:: crowddynamics.core.steering.herding.herding_interaction
+.. autoclass:: crowddynamics.core.steering.collective_motion.herding_interaction
    :noindex:
 
 

@@ -18,18 +18,18 @@ import numpy as np
 
 def save_npy(directory, basename):
     """Save simulation data
-      
+
     Args:
-        directory (str|Path): 
-        basename (str): 
-        
+        directory (str|Path):
+        basename (str):
+
     Examples:
         >>> storage = save_npy('.', 'basename')
         >>> storage.send(None)  # Initialise coroutine
         >>> storage.send(data)  # Send some data (ndarray)
         >>> storage.send(False)  # False dumps data into buffers
         >>> storage.send(data)
-        >>> storage.send(True)  # True dumps data into file 
+        >>> storage.send(True)  # True dumps data into file
     """
     filepath = os.path.join(directory, basename + '_{index}.npy')
     buffer = []
@@ -49,8 +49,8 @@ def find_npy_files(directory, basename):
     """Find data files
 
     Args:
-        directory (str|Path): 
-        basename (str): 
+        directory (str|Path):
+        basename (str):
 
     Yields:
         (int, numpy.ndarray): Tuple containing (index, data)
@@ -64,14 +64,14 @@ def find_npy_files(directory, basename):
 
 def load_npy(directory, basename):
     """Load simulation data files in order
-    
+
     Args:
-        directory (str|Path): 
+        directory (str|Path):
         basename (str):
-    
+
     Yields:
         numpy.ndarray:
-    
+
     Examples:
         >>> for data in load_npy('.', 'basename'):
         >>>     ...
@@ -83,15 +83,15 @@ def load_npy(directory, basename):
 
 
 def load_npy_concatenated(directory, basename):
-    """Load simulation data files concatenated into one 
-    
+    """Load simulation data files concatenated into one
+
     Args:
-        directory (str|Path): 
+        directory (str|Path):
         basename (str):
-    
+
     Returns:
         numpy.ndarray:
-    
+
     Examples:
         >>> load_npy_concatenated('.', 'basename')
     """
@@ -102,11 +102,11 @@ def load_npy_concatenated(directory, basename):
 
 def save_csv(directory, basename):
     """Save dictionary data into csv file.
-    
+
     Args:
-        directory (str|Path): 
-        basename (str): 
-    
+        directory (str|Path):
+        basename (str):
+
     Examples:
         >>> storage = save_csv('.', 'basename')
         >>> storage.send(None)
@@ -168,10 +168,10 @@ def geometry_shape(geom):
 
 def save_geometry_json(filename, geometries):
     """Save dictonary of geometries to filename (.json).
-    
+
     Args:
-        filename: 
-        geometries (dict): 
+        filename:
+        geometries (dict):
 
     """
     with open(filename, 'a') as fp:
@@ -184,7 +184,7 @@ def load_geometry_json(filename):
     """Load dictonary of geometries from filename (.json).
 
         Args:
-            filename: 
+            filename:
 
         """
     with open(filename, 'r') as fp:
