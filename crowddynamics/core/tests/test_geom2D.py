@@ -16,7 +16,7 @@ def test_polygon_area(vertices):
     assert np.isclose(area, poly.area)
 
 
-@pytest.mark.skip('Fix line_intersect function')
+# @pytest.mark.skip('Fix line_intersect function')
 @given(x0=reals(0.0, 1.0, shape=2, exclude_zero='near'),
        x1=reals(0.0, 1.0, shape=2, exclude_zero='near'),
        y0=reals(0.0, 1.0, shape=2, exclude_zero='near'),

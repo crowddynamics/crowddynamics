@@ -18,6 +18,8 @@ from crowddynamics.core.motion.fluctuation import force_fluctuation, \
     torque_fluctuation
 from crowddynamics.core.steering.collective_motion import herding_block_list
 from crowddynamics.core.steering.navigation import getdefault
+from crowddynamics.core.steering.obstacle_handling import \
+    obstacle_handling_continuous
 from crowddynamics.core.steering.orientation import \
     orient_towards_target_direction
 from crowddynamics.core.structures import obstacle_type_linear
@@ -158,8 +160,6 @@ class Navigation(LogicNode):
                 self.simulation.field.navigation_to_target(
                     target, self.step, self.radius, self.strength)
 
-            # navigation(agents, mask, mgrid, direction_map)
-
             # Navigation
             # Flip x and y to array index i and j
             indices = np.fliplr(mgrid.indicer(agents[mask]['position']))
@@ -184,6 +184,19 @@ class LeaderFollower(LogicNode):
         help='Maximum number of nearest agents inside sight_herding radius '
              'that herding agent are following.')
 
+    step = Float(
+        default_value=0.1,
+        min=0,
+        help='Step size for meshgrid used for discretization.')
+    radius = Float(
+        default_value=0.5,
+        min=0,
+        help='')
+    strength = Float(
+        default_value=0.3,
+        min=0, max=1,
+        help='')
+
     def update(self):
         agents = self.simulation.agents.array
         if self.simulation.field.obstacles is None:
@@ -192,12 +205,24 @@ class LeaderFollower(LogicNode):
             obstacles = geom_to_linear_obstacles(self.simulation.field.obstacles)
 
         is_herding = agents['is_herding']
-        new_direction = herding_block_list(
+        direction_herding = herding_block_list(
             agents['position'], agents['velocity'],
             is_herding, agents['is_leader'],
             self.sight_follower, self.size_nearest_leaders,
             self.size_nearest_other, obstacles)
-        agents['target_direction'][is_herding] = new_direction[is_herding]
+
+        # agents['target_direction'][is_herding] = direction_herding[is_herding]
+
+        # TODO: add obstacle avoidance
+        mgrid = self.simulation.field.meshgrid(self.step)
+        dir_map_obs, dmap_obs = self.simulation.field.direction_map_obstacles(self.step)
+        indices = np.fliplr(mgrid.indicer(agents['position'][is_herding]))
+
+        direction = obstacle_handling_continuous(
+            dmap_obs, dir_map_obs, direction_herding[is_herding], indices,
+            self.radius, self.strength)
+
+        agents['target_direction'][is_herding] = direction
 
 
 class ExitDetection(LogicNode):

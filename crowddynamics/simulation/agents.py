@@ -623,6 +623,7 @@ class Agents(AgentsBase):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.index = 0
         self.array = np.zeros(0, dtype=self.agent_type.dtype())
         # Block list for speeding up overlapping checks
         self._neighbours = MutableBlockList(cell_size=self.cell_size)
@@ -638,7 +639,10 @@ class Agents(AgentsBase):
         if self.agent_type is not group.agent_type:
             raise CrowdDynamicsException
 
+        # resize self.array to fit new agents
         array = np.zeros(group.size, dtype=group.agent_type.dtype())
+        self.array = np.concatenate((self.array, array))
+
         index = 0
         overlaps = 0
         overlaps_max = 10 * group.size
@@ -650,7 +654,7 @@ class Agents(AgentsBase):
 
             # Overlapping check
             neighbours = self._neighbours.nearest(new_agent.position, radius=1)
-            if new_agent.overlapping(array[neighbours]):
+            if new_agent.overlapping(self.array[neighbours]):
                 # Agent is overlapping other agent.
                 overlaps += 1
                 continue
@@ -661,10 +665,14 @@ class Agents(AgentsBase):
                 continue
 
             # Agent can be successfully placed
-            array[index] = np.array(new_agent)
-            self._neighbours[new_agent.position] = index
+            self.array[self.index] = np.array(new_agent)
+            self._neighbours[new_agent.position] = self.index
+            self.index += 1
             index += 1
 
-        self.array = np.concatenate((self.array, array[:index + 1]))
+        # TODO: remove agents that didn't fit from self.array
+        if self.index + 1 < self.array.size:
+            pass
+
         # Array should remain contiguous
         assert self.array.flags.c_contiguous

@@ -19,7 +19,7 @@ class Outdoor(MultiAgentSimulation):
         min=0, max=1,
         help='Amount of active agents')
     size_herding = Int(
-        default_value=150,
+        default_value=100,
         min=0,
         help='Amount of herding agents')
     agent_type = Enum(
@@ -29,11 +29,17 @@ class Outdoor(MultiAgentSimulation):
         default_value='adult',
         values=('adult',))
     width = Float(
-        default_value=40.0,
+        default_value=20.0,
         min=0)
     height = Float(
-        default_value=40.0,
+        default_value=20.0,
         min=0)
+    vertical_ratio =  Float(
+        default_value=0.5,
+        min=-0.5, max=1.5)
+    horizontal_ratio = Float(
+        default_value=0.7,
+        min=-0.5, max=1.5)
 
     def attributes(self, is_leader):
         def wrapper():
@@ -78,7 +84,8 @@ class Outdoor(MultiAgentSimulation):
 
         agents.add_non_overlapping_group(
             group_leader,
-            position_gen=lambda: np.array((0.8 * self.width, 0.5 * self.height)))
+            position_gen=lambda: np.array((self.horizontal_ratio * self.width,
+                                           self.vertical_ratio * self.height)))
 
         group_herding = AgentGroup(
             agent_type=self.agent_type,
@@ -188,10 +195,10 @@ class ClosedRoom(MultiAgentSimulation):
         default_value='adult',
         values=('adult',))
     width = Float(
-        default_value=40.0,
+        default_value=20.0,
         min=0)
     height = Float(
-        default_value=40.0,
+        default_value=20.0,
         min=0)
 
     def attributes(self, is_leader):

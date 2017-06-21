@@ -7,7 +7,9 @@ from traitlets import Instance, List, validate
 
 from crowddynamics.core.geometry import union
 from crowddynamics.core.rand.sampling import polygon_sample
-from crowddynamics.core.steering.navigation import static_potential
+from crowddynamics.core.steering.obstacle_handling import \
+    direction_map_obstacles, obstacle_handling
+from crowddynamics.core.steering.quickest_path import meshgrid, shortest_path
 from crowddynamics.exceptions import ValidationError, CrowdDynamicsException, \
     InvalidType
 from crowddynamics.simulation.base import FieldBase
@@ -82,6 +84,9 @@ class Field(FieldBase):
         Instance(BaseGeometry),
         help='List of spawns')
 
+    # TODO: invalidate caches if field changes?
+    # TODO: implement direction and distance map as lazy properties
+
     @validate('domain')
     def _valid_domain(self, proposal):
         value = proposal['value']
@@ -123,12 +128,15 @@ class Field(FieldBase):
         obstacles"""
         return self._samples(self.spawns[spawn_index], self.obstacles, radius)
 
-    # TODO: invalidate caches if field changes?
     @lru_cache()
-    def navigation_to_target(self, index, step, radius, strength):
-        if not self.targets:
-            raise CrowdDynamicsException('No targets are set.')
+    def meshgrid(self, step):
+        if self.domain is None:
+            raise CrowdDynamicsException(
+                'Domain cannot be dicretized if it is None.')
+        return meshgrid(step, *self.domain.bounds)
 
+    @lru_cache()
+    def shortest_path_target(self, step, index, radius):
         if isinstance(index, (int, np.int64)):
             targets = self.targets[index]
         elif index == 'closest':
@@ -137,5 +145,20 @@ class Field(FieldBase):
             raise InvalidType('Index "{0}" should be integer or '
                               '"closest".'.format(index))
 
-        return static_potential(self.domain, targets, self.obstacles, step,
-                                radius, strength)
+        return shortest_path(self.meshgrid(step), self.domain, targets,
+                             self.obstacles, radius)
+
+    @lru_cache()
+    def direction_map_obstacles(self, step):
+        return direction_map_obstacles(self.meshgrid(step), self.obstacles)
+
+    @lru_cache()
+    def navigation_to_target(self, index, step, radius, strength):
+        if not self.targets:
+            raise CrowdDynamicsException('No targets are set.')
+
+        dir_map_targets, dmap_targets = self.shortest_path_target(step, index, radius)
+        dir_map_obs, dmap_obs = self.direction_map_obstacles(step)
+        dir_map = obstacle_handling(dmap_obs, dir_map_obs, dir_map_targets,
+                                    radius, strength)
+        return self.meshgrid(step), dmap_targets, dir_map

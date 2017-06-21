@@ -51,9 +51,9 @@ def line_intersect(x0, x1, y0, y1):
     u = x1 - x0
     v = y1 - y0
     b = y0 - x0
-    d = v[0] * u[1] - v[1] * u[0]
+    d = u[0] * v[1] - u[1] * v[0]
     if d == 0:
         return False
-    t0 = -b[0] * u[1] + b[1] * u[0]
-    t1 = -b[0] * v[1] + b[1] * v[0]
-    return 0 <= t0 <= d and 0 <= t1 <= d
+    t0 = b[0] * v[1] - b[1] * v[0]
+    t1 = b[0] * u[1] - b[1] * u[0]
+    return 0 <= t0 / d <= 1 and 0 <= t1 / d <= 1

@@ -30,9 +30,9 @@ def follower_relationship(x1, x2, v1, v2, phi):
     e_rel = normalize(x2 - x1)
     c1 = dot(e_rel, normalize(v1))
     c2 = -dot(e_rel, normalize(v2))
-    cos_phi = np.cos(phi)
 
     # 1.0 = cos(0)
+    cos_phi = np.cos(phi)
     if cos_phi < c1 < 1.0:
         if cos_phi < c2 < 1.0:
             return False, False
@@ -148,12 +148,12 @@ def set_neighbor(i, j, l, neighbors, distances, distances_max):
 
 
 @numba.jit([(boolean[:], f8[:, :], f8[:, :], f8, i8, i8, i8[:], i8[:], i8[:],
-             i8[:], typeof(obstacle_type_linear)[:])],
+             i8[:], typeof(obstacle_type_linear)[:], f8)],
            nopython=True, nogil=True)
 def find_nearest_neighbors_with_leaders(
         is_leader, position, velocity,
         sight, size_nearest_leaders, size_nearest_other,
-        index_list, count, offset, shape, obstacles):
+        index_list, count, offset, shape, obstacles, phi):
     agent_size = len(position)
 
     # TODO: This memory could be allocated only once?
@@ -190,7 +190,7 @@ def find_nearest_neighbors_with_leaders(
 
             c1, c2 = follower_relationship(position[i], position[j],
                                            velocity[i], velocity[j],
-                                           phi=np.pi / 2)
+                                           phi=phi)
 
             if c1 and l < distances_max_leader[i]:
                 if is_leader[j]:
@@ -271,9 +271,10 @@ def normalize_nx2(v):
 
 def herding_block_list(position, velocity, is_herding, is_leader, sight,
                        size_nearest_leaders, size_nearest_other, obstacles):
-    weight_position_herding = 0.15
-    weight_position_leader = 0.30
-    weight_direction_leader = 0.5
+    phi = 0.45 * np.pi
+    weight_position_herding = 0.15  # < 0.5
+    weight_position_leader = 0.40   # < 0.5
+    weight_direction_leader = 0.55  # > 0.5
 
     # Indices of all agents
     indices = np.arange(len(position))
@@ -282,7 +283,8 @@ def herding_block_list(position, velocity, is_herding, is_leader, sight,
 
     neighbors, neighbors_leaders = find_nearest_neighbors_with_leaders(
         is_leader, position, velocity, sight, size_nearest_leaders,
-        size_nearest_other, index_list, count, offset, shape, obstacles)
+        size_nearest_other, index_list, count, offset, shape, obstacles,
+        phi=phi)
 
     direction = herding_interaction(is_herding, position, velocity, neighbors,
                                     weight_position=weight_position_herding)

@@ -1,10 +1,11 @@
 import numba
 import numpy as np
 from loggingtools import log_with
-from numba import f8
+from numba import f8, i8
 
 from crowddynamics.core.steering.quickest_path import distance_map, \
     direction_map
+from crowddynamics.core.vector2D import normalize
 
 
 @log_with(arguments=False, timed=True)
@@ -71,6 +72,34 @@ def obstacle_handling(dmap_obs, dir_map_obs, dir_map_targets, radius, strength):
     # Normalize the output
     l = np.hypot(u_out, v_out)
     return u_out / l, v_out / l
+
+
+@numba.jit((f8[:, :], numba.types.Tuple((f8[:, :], f8[:, :])),
+            f8[:, :], i8[:, :], f8, f8),
+           nopython=True, nogil=True, cache=True)
+def obstacle_handling_continuous(dmap_obs, dir_map_obs, direction_target,
+                                 indices, radius, strength):
+    n, m = dmap_obs.shape
+    u1, v1 = dir_map_obs
+    new_direction = np.copy(direction_target)
+
+    for k in range(len(indices)):
+        i, j = indices[k, 0], indices[k, 1]
+        u2, v2 = direction_target[k, 1], direction_target[k, 1]
+        x = -dmap_obs[i, j]
+
+        if not (0 <= i < n and 0 <= j < m):
+            continue
+
+        if 0 < x < radius:
+            # Decreasing function
+            p = strength ** (x / radius)
+            # Weighted average
+            new_direction[k, 0] = - p * u1[i, j] + (1 - p) * u2
+            new_direction[k, 1] = - p * v1[i, j] + (1 - p) * v2
+            new_direction[k, :] = normalize(new_direction[k, :])
+
+    return new_direction
 
 
 @log_with(arguments=False, timed=True)
