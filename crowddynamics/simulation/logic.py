@@ -185,7 +185,7 @@ class LeaderFollower(LogicNode):
              'that herding agent are following.')
 
     step = Float(
-        default_value=0.1,
+        default_value=0.05,
         min=0,
         help='Step size for meshgrid used for discretization.')
     radius = Float(
@@ -211,18 +211,20 @@ class LeaderFollower(LogicNode):
             self.sight_follower, self.size_nearest_leaders,
             self.size_nearest_other, obstacles)
 
-        # agents['target_direction'][is_herding] = direction_herding[is_herding]
+        # Obstacle avoidance
+        if self.simulation.field.obstacles is not None:
+            mgrid = self.simulation.field.meshgrid(self.step)
+            dir_map_obs, dmap_obs = self.simulation.field.direction_map_obstacles(self.step)
+            indices = np.fliplr(mgrid.indicer(agents['position'][is_herding]))
 
-        # TODO: add obstacle avoidance
-        mgrid = self.simulation.field.meshgrid(self.step)
-        dir_map_obs, dmap_obs = self.simulation.field.direction_map_obstacles(self.step)
-        indices = np.fliplr(mgrid.indicer(agents['position'][is_herding]))
+            direction = obstacle_handling_continuous(
+                dmap_obs, dir_map_obs, direction_herding[is_herding], indices,
+                self.radius, self.strength)
 
-        direction = obstacle_handling_continuous(
-            dmap_obs, dir_map_obs, direction_herding[is_herding], indices,
-            self.radius, self.strength)
-
-        agents['target_direction'][is_herding] = direction
+            agents['target_direction'][is_herding] = direction
+        else:
+            agents['target_direction'][is_herding] = direction_herding[
+                is_herding]
 
 
 class ExitDetection(LogicNode):

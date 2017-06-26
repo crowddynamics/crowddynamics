@@ -254,6 +254,46 @@ class ClosedRoom(MultiAgentSimulation):
         return agents
 
 
+class AroundCircle(MultiAgentSimulation):
+    width = Float(
+        default_value=20.0,
+        min=0)
+    height = Float(
+        default_value=20.0,
+        min=0)
+    radius_pillar = Float(
+        default_value=1.0,
+        min=0)
+    radius_trajectory = Float(
+        default_value=5.0,
+        min=0)
+
+    @default('logic')
+    def _default_logic(self):
+        return Reset(self) << (
+            Integrator(self) << (
+                Fluctuation(self),
+                Adjusting(self) << (
+                    LeaderFollower(self),
+                    Orientation(self),),
+                AgentAgentInteractions(self),
+                AgentObstacleInteractions(self)))
+
+    @default('field')
+    def _default_field(self):
+        return fields.PillarInTheMiddle(
+            width=self.width, height=self.height,
+            radius_pillar=self.radius_pillar)
+
+    @default('agents')
+    def _default_agents(self):
+        return
+
+
+class AvoidPillar(MultiAgentSimulation):
+    pass
+
+
 class FourExits(MultiAgentSimulation):
     size_leaders = Int(
         default_value=4,

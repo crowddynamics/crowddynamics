@@ -1,6 +1,6 @@
 from shapely.geometry import Polygon, LineString, Point
 from shapely.geometry.base import BaseGeometry
-from traitlets.traitlets import Float, observe, default
+from traitlets.traitlets import Float, observe, default, Enum
 
 from crowddynamics.simulation.field import Field
 
@@ -240,3 +240,47 @@ class FourExitsField(Field):
         domain = Polygon([(-5, -5), (-5, 85), (105, 85), (105, -5)])
         self.spawns = [spawn]
         self.domain = domain
+
+
+class PillarInTheMiddle(Field):
+    width = Float(
+        default_value=20.0,
+        min=0)
+    height = Float(
+        default_value=20.0,
+        min=0)
+    radius_pillar = Float(
+        default_value=1.0,
+        min=0)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        domain = _rectangle(self.width / 2, self.height / 2,
+                            self.width / 2, self.height / 2)
+        obstacles = Point(0, 0).buffer(self.radius_pillar)
+
+        self.domain = domain
+        self.obstacles = obstacles
+        self.spawns = [domain]
+
+
+class AvoidPillar(Field):
+    width = Float(
+        default_value=10.0,
+        min=0)
+    height = Float(
+        default_value=20.0,
+        min=0)
+    pillar_type = Enum(
+        values=('ellipse', 'rectangle'),
+        default_value='ellipse')
+    width_pillar = Float(
+        default_value=2.0,
+        min=0)
+    height_pillar = Float(
+        default_value=2.0,
+        min=0)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
