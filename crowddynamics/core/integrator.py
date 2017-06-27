@@ -22,7 +22,7 @@ import numpy as np
 from numba import f8, void, typeof
 
 from crowddynamics.simulation.agents import agent_type_three_circle, \
-    agent_type_circular, shoulders
+    agent_type_circular, shoulders, is_model
 from crowddynamics.core.vector2D import wrap_to_pi, length
 
 
@@ -198,7 +198,7 @@ def velocity_verlet_integrator_init(agents, dt_min, dt_max):
     translational_euler(agents, dt)
     for agent in agents:
         agent['force_prev'][:] = agent['force'][:]
-    if agents.dtype is agent_type_three_circle:
+    if is_model(agents, 'three_circle'):
         rotational_euler(agents, dt)
         for agent in agents:
             agent['torque_prev'] = agent['torque']
@@ -250,7 +250,7 @@ def velocity_verlet_integrator(agents, dt_min, dt_max):
     """
     dt = adaptive_timestep(agents, dt_min, dt_max)
     translational_verlet(agents, dt)
-    if agents.dtype is agent_type_three_circle:
+    if is_model(agents, 'three_circle'):
         rotational_verlet(agents, dt)
         shoulders(agents)
     return dt

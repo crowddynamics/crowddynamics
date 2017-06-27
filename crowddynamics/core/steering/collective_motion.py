@@ -286,6 +286,10 @@ def leader_follower_interaction(is_herding, position, velocity, neighbors,
             e_rel = normalize(position[j] - position[i])
             c_j = -dot(e_rel, normalize(velocity[j]))
 
+            # TODO: add angle condition
+            # if 0.5 <= c_j <= 1.0:
+            #     continue
+
             weight = weight_position if c_j < 0 else \
                 weight_position + (-3 * weight_position + 3) * c_j ** 2 + \
                 (2 * weight_position - 2) * c_j ** 3
@@ -324,9 +328,12 @@ def herding_block_list(position, velocity, is_herding, is_leader, sight,
     direction = herding_interaction(is_herding, position, velocity, neighbors,
                                     weight_position=weight_position_herding,
                                     phi=phi)
-    direction_leader = leader_follower_interaction(
+    direction_leader = herding_interaction(
         is_herding, position, velocity, neighbors_leaders,
-        weight_position=weight_position_leader)
+        weight_position=weight_position_herding, phi=phi)
+    # direction_leader = leader_follower_interaction(
+    #     is_herding, position, velocity, neighbors_leaders,
+    #     weight_position=weight_position_leader)
 
     return normalize_nx2(weighted_average(direction_leader, direction,
                                           weight_direction_leader))
