@@ -45,11 +45,10 @@ class States(HasTraits):
         min=NO_TARGET,
         help='Positive integer for target index, -1 for agent that do not have '
              'a target.')
-
     is_leader = Bool(
         default_value=False,
         help='Boolean indicating if agent is leader')
-    is_herding = Bool(
+    is_follower = Bool(
         default_value=False,
         help='Boolean indicating if agent is herding (following average '
              'direction of other agent).')

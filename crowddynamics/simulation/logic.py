@@ -125,7 +125,8 @@ class AgentObstacleInteractions(LogicNode):
         if self.simulation.field.obstacles is None:
             obstacles = np.zeros(shape=0, dtype=obstacle_type_linear)
         else:
-            obstacles = geom_to_linear_obstacles(self.simulation.field.obstacles)
+            obstacles = geom_to_linear_obstacles(
+                self.simulation.field.obstacles)
         agent_obstacle(agents, obstacles)
 
 
@@ -147,20 +148,16 @@ class Navigation(LogicNode):
 
     def update(self):
         agents = self.simulation.agents.array
-        targets = set(range(len(self.simulation.field.targets)))
-        for target in targets:
-            if target == NO_TARGET:
-                continue
+        field = self.simulation.field
 
+        for target in range(len(field.targets)):
             mask = agents['target'] == target
-            if len(mask) == 0:
+            if not mask.size:
                 continue
 
-            mgrid, distance_map, direction_map = \
-                self.simulation.field.navigation_to_target(
-                    target, self.step, self.radius, self.strength)
+            mgrid, distance_map, direction_map = field.navigation_to_target(
+                target, self.step, self.radius, self.strength)
 
-            # Navigation
             # Flip x and y to array index i and j
             indices = np.fliplr(mgrid.indicer(agents[mask]['position']))
             new_direction = getdefault(indices, direction_map,
@@ -175,7 +172,7 @@ class LeaderFollower(LogicNode):
         help='Maximum distance between agents that are accounted as neighbours '
              'that can be followed.')
     size_nearest_leaders = Int(
-        default_value=1,
+        default_value=3,
         min=0,
         help='')
     size_nearest_other = Int(
@@ -199,32 +196,27 @@ class LeaderFollower(LogicNode):
 
     def update(self):
         agents = self.simulation.agents.array
-        if self.simulation.field.obstacles is None:
-            obstacles = np.zeros(shape=0, dtype=obstacle_type_linear)
-        else:
-            obstacles = geom_to_linear_obstacles(self.simulation.field.obstacles)
+        field = self.simulation.field
 
-        is_herding = agents['is_herding']
+        obstacles = geom_to_linear_obstacles(field.obstacles)
         direction_herding = herding_block_list(
-            agents['position'], agents['velocity'],
-            is_herding, agents['is_leader'],
-            self.sight_follower, self.size_nearest_leaders,
-            self.size_nearest_other, obstacles)
+            agents, obstacles, self.sight_follower, self.size_nearest_leaders,
+            self.size_nearest_other)
+        is_follower = agents['is_follower']
+        agents['target_direction'][is_follower] = direction_herding[is_follower]
 
-        # Obstacle avoidance
-        if self.simulation.field.obstacles is not None:
-            mgrid = self.simulation.field.meshgrid(self.step)
-            dir_map_obs, dmap_obs = self.simulation.field.direction_map_obstacles(self.step)
-            indices = np.fliplr(mgrid.indicer(agents['position'][is_herding]))
-
-            direction = obstacle_handling_continuous(
-                dmap_obs, dir_map_obs, direction_herding[is_herding], indices,
-                self.radius, self.strength)
-
-            agents['target_direction'][is_herding] = direction
-        else:
-            agents['target_direction'][is_herding] = direction_herding[
-                is_herding]
+        # Set target direction for herding agents that do not have a target
+        # if field.obstacles is None:
+        #     agents['target_direction'][is_follower] = direction_herding[is_follower]
+        # else:
+        #     # Obstacle avoidance
+        #     mgrid = field.meshgrid(self.step)
+        #     dir_map_obs, dmap_obs = field.direction_map_obstacles(self.step)
+        #     indices = np.fliplr(mgrid.indicer(agents['position'][is_follower]))
+        #     direction = obstacle_handling_continuous(
+        #         dmap_obs, dir_map_obs, direction_herding[is_follower], indices,
+        #         self.radius, self.strength)
+        #     agents['target_direction'][is_follower] = direction
 
 
 class ExitDetection(LogicNode):
@@ -235,25 +227,21 @@ class ExitDetection(LogicNode):
 
     def update(self):
         agents = self.simulation.agents.array
-        if self.simulation.field.obstacles is None:
-            obstacles = np.zeros(shape=0, dtype=obstacle_type_linear)
-        else:
-            obstacles = geom_to_linear_obstacles(self.simulation.field.obstacles)
-        targets = self.simulation.field.targets
+        field = self.simulation.field
 
-        # Assume here that target
-        # TODO: check that this is correct
-        center_door = np.stack(
-            [np.mean(np.asarray(target), axis=0) for target in targets])
+        obstacles = geom_to_linear_obstacles(field.obstacles)
 
-        is_herding = agents['is_herding']
-        position = agents['position'][is_herding]
+        center_door = np.stack([
+            np.mean(np.asarray(target), axis=0) for target in field.targets])
 
-        targets = exit_detection(center_door, position, obstacles,
-                                 self.detection_range)
-        agents['target'][is_herding] = targets
+        is_follower = agents['is_follower']
+        position = agents['position'][is_follower]
+        targets = exit_detection(
+            center_door, position, obstacles, self.detection_range)
+        has_detected = targets != NO_TARGET
+        agents['target'][is_follower][has_detected] = targets[has_detected]
         # Not herding anymore
-        agents['is_herding'][is_herding] = targets == NO_TARGET
+        agents['is_follower'][is_follower] = ~has_detected
 
 
 class Orientation(LogicNode):

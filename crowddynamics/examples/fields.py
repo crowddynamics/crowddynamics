@@ -5,7 +5,7 @@ from traitlets.traitlets import Float, observe, default, Enum
 from crowddynamics.simulation.field import Field
 
 
-def _rectangle(x, y, width, height):
+def rectangle(x, y, width, height):
     return Polygon(
         [(x, y), (x + width, y), (x + width, y + height), (x, y + height)])
 
@@ -61,9 +61,9 @@ class HallwayField(Field):
 
     @default('spawns')
     def _default_spawns(self):
-        return [_rectangle(0, 0, self.ratio * self.width, self.height),
-                _rectangle((1 - self.ratio) * self.width, 0, self.ratio *
-                           self.width, self.height)]
+        return [rectangle(0, 0, self.ratio * self.width, self.height),
+                rectangle((1 - self.ratio) * self.width, 0, self.ratio *
+                          self.width, self.height)]
 
     @default('domain')
     def _default_domain(self):
@@ -73,9 +73,9 @@ class HallwayField(Field):
     def _observe_field(self, change):
         obstacles = LineString([(0, 0), (self.width, 0)]) | \
                     LineString([(0, self.height), (self.width, self.height)])
-        spawn0 = _rectangle(0, 0, self.ratio * self.width, self.height)
-        spawn1 = _rectangle((1 - self.ratio) * self.width, 0, self.ratio *
-                            self.width, self.height)
+        spawn0 = rectangle(0, 0, self.ratio * self.width, self.height)
+        spawn1 = rectangle((1 - self.ratio) * self.width, 0, self.ratio *
+                           self.width, self.height)
 
         target0 = LineString([(0, 0), (0, self.height)])
         target1 = LineString([(self.width, 0), (self.width, self.height)])
@@ -116,6 +116,37 @@ class Rounding(Field):
         self.obstacles = obstacles
         self.targets = [target]
         self.spawns = [spawn]
+        self.domain = domain
+
+
+class AvoidObstacle(Field):
+    width = Float(
+        default_value=10.0,
+        min=0)
+    height = Float(
+        default_value=10.0,
+        min=0)
+    exit_width = Float(
+        default_value=3.0,
+        min=1.0)
+    ratio_obs = Float(
+        default_value=0.6,
+        min=0, max=1)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        domain = rectangle(0, 0, self.width, self.height)
+        spawn_follower = rectangle(0, 0, self.ratio_obs * self.width, self.height)
+        spawn_leader = rectangle(0, 0.5 * self.height,
+                                 self.ratio_obs * self.width, 0.5 * self.height)
+        target = LineString([(self.width, 0), (self.width, self.exit_width)])
+
+        self.obstacles = (domain.exterior - target |
+                          LineString([(self.ratio_obs * self.width, 0),
+                                      (self.ratio_obs * self.width, 0.5 * self.height)]))
+        self.targets = [target]
+        self.spawns = [spawn_leader, spawn_follower]
         self.domain = domain
 
 
@@ -164,10 +195,10 @@ class RoomWithOneExit(Field):
 
         self.room = LineString(
             [(width, 0), (0, 0), (0, height), (width, height)])
-        self.hall = _rectangle(width, (height + exit_width) / 2,
-                               exit_hall_width, (height - exit_width) / 2) | \
-                    _rectangle(width, 0,
-                               exit_hall_width, (height - exit_width) / 2)
+        self.hall = rectangle(width, (height + exit_width) / 2,
+                              exit_hall_width, (height - exit_width) / 2) | \
+                    rectangle(width, 0,
+                              exit_hall_width, (height - exit_width) / 2)
         target = LineString(
             [(width + exit_hall_width, (height - exit_width) / 2),
              (width + exit_hall_width, (height + exit_width) / 2)])
@@ -237,9 +268,9 @@ class FourExitsField(Field):
         self.targets = targets
 
         spawn = self.convex_hull()
-        domain = Polygon([(-5, -5), (-5, 85), (105, 85), (105, -5)])
+        # domain = Polygon([(-5, -5), (-5, 85), (105, 85), (105, -5)])
         self.spawns = [spawn]
-        self.domain = domain
+        self.domain = spawn
 
 
 class PillarInTheMiddle(Field):
@@ -256,8 +287,8 @@ class PillarInTheMiddle(Field):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        domain = _rectangle(self.width / 2, self.height / 2,
-                            self.width / 2, self.height / 2)
+        domain = rectangle(self.width / 2, self.height / 2,
+                           self.width / 2, self.height / 2)
         obstacles = Point(0, 0).buffer(self.radius_pillar)
 
         self.domain = domain

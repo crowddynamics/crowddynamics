@@ -49,7 +49,7 @@ class Outdoor(MultiAgentSimulation):
                 orientation = np.random.uniform(-np.pi, np.pi)
             d = dict(
                 is_leader=is_leader,
-                is_herding=not is_leader,
+                is_follower=not is_leader,
                 body_type=self.body_type,
                 orientation=orientation,
                 velocity=1.0 * unit_vector(orientation),
@@ -120,15 +120,15 @@ class Rounding(MultiAgentSimulation):
         default_value=20.0,
         min=0)
 
-    def attributes(self, has_target: bool=True, is_herding: bool=False):
+    def attributes(self, has_target: bool=True, is_follower: bool=False):
         def wrapper():
             rand_target = np.random.randint(0, len(self.field.targets))
             target = rand_target if has_target else NO_TARGET
             orientation = np.random.uniform(-np.pi, np.pi)
             d = dict(
                 target=target,
-                is_leader=not is_herding,
-                is_herding=is_herding,
+                is_leader=not is_follower,
+                is_follower=is_follower,
                 body_type=self.body_type,
                 orientation=orientation,
                 velocity=np.zeros(2),
@@ -145,8 +145,7 @@ class Rounding(MultiAgentSimulation):
                 Integrator(self) << (
                     Fluctuation(self),
                     Adjusting(self) << (
-                        Navigation(self),
-                        LeaderFollower(self),
+                        Navigation(self) << LeaderFollower(self),
                         Orientation(self)),
                     AgentAgentInteractions(self),
                     AgentObstacleInteractions(self)))
@@ -162,17 +161,104 @@ class Rounding(MultiAgentSimulation):
         group_active = AgentGroup(
             agent_type=self.agent_type,
             size=self.size_leaders,
-            attributes=self.attributes(has_target=True, is_herding=False))
+            attributes=self.attributes(has_target=True, is_follower=False))
 
         group_herding = AgentGroup(
             agent_type=self.agent_type,
             size=self.size_herding,
-            attributes=self.attributes(has_target=False, is_herding=True))
+            attributes=self.attributes(has_target=False, is_follower=True))
 
         for group in (group_active, group_herding):
             agents.add_non_overlapping_group(
                 group,
                 position_gen=self.field.sample_spawn(0),
+                obstacles=geom_to_linear_obstacles(self.field.obstacles))
+
+        return agents
+
+
+class AvoidObstacle(MultiAgentSimulation):
+    size_leaders = Int(
+        default_value=1,
+        min=0,
+        help='Amount of active agents')
+    size_herding = Int(
+        default_value=50,
+        min=0,
+        help='Amount of herding agents')
+    agent_type = Enum(
+        default_value=Circular,
+        values=(Circular, ThreeCircle))
+    body_type = Enum(
+        default_value='adult',
+        values=('adult',))
+    width = Float(
+        default_value=10.0,
+        min=0)
+    height = Float(
+        default_value=10.0,
+        min=0)
+    exit_width = Float(
+        default_value=1.25,
+        min=0, max=10)
+    ratio_obs = Float(
+        default_value=0.6,
+        min=0, max=1)
+
+    def attributes(self, has_target: bool=True, is_follower: bool=False):
+        def wrapper():
+            rand_target = np.random.randint(0, len(self.field.targets))
+            target = rand_target if has_target else NO_TARGET
+            orientation = np.random.uniform(-np.pi, np.pi)
+            d = dict(
+                target=target,
+                is_leader=not is_follower,
+                is_follower=is_follower,
+                body_type=self.body_type,
+                orientation=orientation,
+                velocity=np.zeros(2),
+                angular_velocity=0.0,
+                target_direction=np.zeros(2),
+                target_orientation=orientation)
+            return d
+        return wrapper
+
+    @default('logic')
+    def _default_logic(self):
+        return Reset(self) << \
+            InsideDomain(self) << (
+                Integrator(self) << (
+                    Fluctuation(self),
+                    Adjusting(self) << (
+                        Navigation(self) << LeaderFollower(self) << ExitDetection(self, detection_range=(1 - self.ratio_obs) * self.width),
+                        Orientation(self)),
+                    AgentAgentInteractions(self),
+                    AgentObstacleInteractions(self)))
+
+    @default('field')
+    def _default_field(self):
+        return fields.AvoidObstacle(
+            width=self.width, height=self.height, exit_width=self.exit_width,
+            ratio_obs=self.ratio_obs)
+
+    @default('agents')
+    def _default_agents(self):
+        agents = Agents(agent_type=self.agent_type)
+
+        group_leader = AgentGroup(
+            agent_type=self.agent_type,
+            size=self.size_leaders,
+            attributes=self.attributes(has_target=True, is_follower=False))
+
+        group_follower = AgentGroup(
+            agent_type=self.agent_type,
+            size=self.size_herding,
+            attributes=self.attributes(has_target=False, is_follower=True))
+
+        for group, spawn in zip((group_leader, group_follower), (0, 1)):
+            agents.add_non_overlapping_group(
+                group,
+                position_gen=self.field.sample_spawn(spawn),
                 obstacles=geom_to_linear_obstacles(self.field.obstacles))
 
         return agents
@@ -206,7 +292,7 @@ class ClosedRoom(MultiAgentSimulation):
             orientation = np.random.uniform(-np.pi, np.pi)
             d = dict(
                 is_leader=is_leader,
-                is_herding=not is_leader,
+                is_follower=not is_leader,
                 body_type=self.body_type,
                 orientation=orientation,
                 velocity=1.0 * unit_vector(orientation),
@@ -300,7 +386,7 @@ class FourExits(MultiAgentSimulation):
         min=0,
         help='Amount of active agents')
     size_herding = Int(
-        default_value=150,
+        default_value=100,
         min=0,
         help='Amount of herding agents')
     agent_type = Enum(
@@ -313,15 +399,15 @@ class FourExits(MultiAgentSimulation):
         default_value=1.25,
         min=0, max=10)
 
-    def attributes(self, has_target: bool=True, is_herding: bool=False):
+    def attributes(self, has_target: bool=True, is_follower: bool=False):
         def wrapper():
             rand_target = np.random.randint(0, len(self.field.targets))
             target = rand_target if has_target else NO_TARGET
             orientation = np.random.uniform(-np.pi, np.pi)
             d = dict(
                 target=target,
-                is_leader=not is_herding,
-                is_herding=is_herding,
+                is_leader=not is_follower,
+                is_follower=is_follower,
                 body_type=self.body_type,
                 orientation=orientation,
                 velocity=np.zeros(2),
@@ -338,8 +424,7 @@ class FourExits(MultiAgentSimulation):
                 Integrator(self) << (
                     Fluctuation(self),
                     Adjusting(self) << (
-                        Navigation(self) << ExitDetection(self),
-                        LeaderFollower(self),
+                        Navigation(self) << LeaderFollower(self) << ExitDetection(self),
                         Orientation(self)),
                     AgentAgentInteractions(self),
                     AgentObstacleInteractions(self)))
@@ -355,12 +440,12 @@ class FourExits(MultiAgentSimulation):
         group_active = AgentGroup(
             agent_type=self.agent_type,
             size=self.size_leaders,
-            attributes=self.attributes(has_target=True, is_herding=False))
+            attributes=self.attributes(has_target=True, is_follower=False))
 
         group_herding = AgentGroup(
             agent_type=self.agent_type,
             size=self.size_herding,
-            attributes=self.attributes(has_target=False, is_herding=True))
+            attributes=self.attributes(has_target=False, is_follower=True))
 
         for group in (group_active, group_herding):
             agents.add_non_overlapping_group(

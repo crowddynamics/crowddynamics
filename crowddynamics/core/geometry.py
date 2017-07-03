@@ -98,7 +98,7 @@ def geom_to_linesegment(geom: BaseGeometry):
 
 def geom_to_linear_obstacles(geom):
     """Converts shape(s) to array of linear obstacles."""
-    segments = list(geom_to_linesegment(geom))
+    segments = [] if geom is None else list(geom_to_linesegment(geom))
     return np.array(segments, dtype=obstacle_type_linear)
 
 
