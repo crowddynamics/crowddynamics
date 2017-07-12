@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from crowddynamics.core.interactions.interactions import agent_agent_block_list
+from crowddynamics.core.interactions import agent_agent_block_list
 from crowddynamics.core.vector2D import unit_vector
 from crowddynamics.simulation.agents import Agents, Circular, ThreeCircle, \
     AgentGroup

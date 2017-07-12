@@ -4,6 +4,7 @@ from traitlets import Int, Enum, Float, default
 from crowddynamics.core.geometry import geom_to_linear_obstacles
 from crowddynamics.core.vector2D import unit_vector
 from crowddynamics.examples import fields
+from crowddynamics.examples.fields import rectangle
 from crowddynamics.simulation.agents import Circular, ThreeCircle, NO_TARGET, \
     Agents, AgentGroup
 from crowddynamics.simulation.logic import Reset, InsideDomain, Integrator, \
@@ -230,7 +231,8 @@ class AvoidObstacle(MultiAgentSimulation):
                 Integrator(self) << (
                     Fluctuation(self),
                     Adjusting(self) << (
-                        Navigation(self) << LeaderFollower(self) << ExitDetection(self, detection_range=(1 - self.ratio_obs) * self.width),
+                        Navigation(self) << ExitDetection(
+                            self, detection_range=(1 - self.ratio_obs) * self.width) << LeaderFollower(self),
                         Orientation(self)),
                     AgentAgentInteractions(self),
                     AgentObstacleInteractions(self)))
@@ -380,7 +382,7 @@ class AvoidPillar(MultiAgentSimulation):
     pass
 
 
-class FourExits(MultiAgentSimulation):
+class FourExitsRandomPlacing(MultiAgentSimulation):
     size_leaders = Int(
         default_value=4,
         min=0,
@@ -413,7 +415,8 @@ class FourExits(MultiAgentSimulation):
                 velocity=np.zeros(2),
                 angular_velocity=0.0,
                 target_direction=np.zeros(2),
-                target_orientation=orientation)
+                target_orientation=orientation,
+                familiar_exit=np.random.randint(0, len(self.field.targets)))
             return d
         return wrapper
 
@@ -424,7 +427,7 @@ class FourExits(MultiAgentSimulation):
                 Integrator(self) << (
                     Fluctuation(self),
                     Adjusting(self) << (
-                        Navigation(self) << LeaderFollower(self) << ExitDetection(self),
+                        Navigation(self) << ExitDetection(self) << LeaderFollower(self),
                         Orientation(self)),
                     AgentAgentInteractions(self),
                     AgentObstacleInteractions(self)))
@@ -452,5 +455,94 @@ class FourExits(MultiAgentSimulation):
                 group,
                 position_gen=self.field.sample_spawn(0),
                 obstacles=geom_to_linear_obstacles(self.field.obstacles))
+
+        return agents
+
+
+class FourExitsFixedPlacing(MultiAgentSimulation):
+    size_leaders = Int(
+        default_value=4,
+        min=4, max=4,
+        help='Amount of active agents')
+    size_herding = Int(
+        default_value=100,
+        min=0,
+        help='Amount of herding agents')
+    agent_type = Enum(
+        default_value=Circular,
+        values=(Circular, ThreeCircle))
+    body_type = Enum(
+        default_value='adult',
+        values=('adult',))
+    exit_width = Float(
+        default_value=1.25,
+        min=0, max=10)
+
+    def attributes(self, target: int = NO_TARGET, is_follower: bool=False):
+        def wrapper():
+            orientation = np.random.uniform(-np.pi, np.pi)
+            d = dict(
+                target=target,
+                is_leader=not is_follower,
+                is_follower=is_follower,
+                body_type=self.body_type,
+                orientation=orientation,
+                velocity=np.zeros(2),
+                angular_velocity=0.0,
+                target_direction=np.zeros(2),
+                target_orientation=orientation,
+                familiar_exit=np.random.randint(0, len(self.field.targets)))
+            return d
+        return wrapper
+
+    @default('logic')
+    def _default_logic(self):
+        return Reset(self) << \
+            InsideDomain(self) << (
+                Integrator(self) << (
+                    Fluctuation(self),
+                    Adjusting(self) << (
+                        Navigation(self) << ExitDetection(self) << LeaderFollower(self),
+                        Orientation(self)),
+                    AgentAgentInteractions(self),
+                    AgentObstacleInteractions(self)))
+
+    @default('field')
+    def _default_field(self):
+        return fields.FourExitsField(exit_width=self.exit_width)
+
+    @default('agents')
+    def _default_agents(self):
+        agents = Agents(agent_type=self.agent_type)
+        obstacles = geom_to_linear_obstacles(self.field.obstacles)
+
+        # Add new spawns to the field for the leaders
+        self.field.spawns.extend([
+            rectangle(25, 45, 10, 10),
+            rectangle(80, 65, 10, 10),
+            rectangle(75, 35, 10, 10),
+            rectangle(35, 5, 10, 10),
+        ])
+
+        for i in range(self.size_leaders):
+            group_leader = AgentGroup(
+                agent_type=self.agent_type,
+                size=1,
+                attributes=self.attributes(target=i, is_follower=False))
+
+            agents.add_non_overlapping_group(
+                group_leader,
+                position_gen=self.field.sample_spawn(i + 1),
+                obstacles=obstacles)
+
+        group_herding = AgentGroup(
+            agent_type=self.agent_type,
+            size=self.size_herding,
+            attributes=self.attributes(target=NO_TARGET, is_follower=True))
+
+        agents.add_non_overlapping_group(
+            group_herding,
+            position_gen=self.field.sample_spawn(0),
+            obstacles=obstacles)
 
         return agents

@@ -11,10 +11,10 @@ from traittypes import Array
 
 from crowddynamics.config import load_config, BODY_TYPES_CFG, \
     BODY_TYPES_CFG_SPEC
-from crowddynamics.core.interactions.block_list import MutableBlockList
-from crowddynamics.core.interactions.distance import distance_circles, \
+from crowddynamics.core.block_list import MutableBlockList
+from crowddynamics.core.distance import distance_circles, \
     distance_circle_line, distance_three_circle_line
-from crowddynamics.core.interactions.distance import distance_three_circles
+from crowddynamics.core.distance import distance_three_circles
 from crowddynamics.core.rand.functions import truncnorm
 from crowddynamics.core.structures import obstacle_type_linear
 from crowddynamics.core.vector2D import unit_vector, rotate270
@@ -24,7 +24,6 @@ from crowddynamics.traits import shape_validator, length_validator, \
     table_of_traits, \
     class_to_struct_dtype
 from crowddynamics.utils import interpolate_docstring
-
 
 NO_TARGET = -1
 NO_LEADER = -1
@@ -55,6 +54,10 @@ class States(HasTraits):
     index_leader = Int(
         default_value=NO_LEADER,
         help='Index of the agent that is the leader of this agent.')
+    familiar_exit = Int(
+        default_value=NO_TARGET,
+        min=NO_TARGET,
+        help='Target that is familiar to a follower agent.')
 
 
 class Body(HasTraits):

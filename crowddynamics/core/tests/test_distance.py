@@ -2,9 +2,9 @@ import hypothesis.strategies as st
 import numpy as np
 from hypothesis import given
 
-from crowddynamics.testing import reals
-from crowddynamics.core.interactions.distance import distance_circles, \
+from crowddynamics.core.distance import distance_circles, \
     distance_three_circles, distance_circle_line, distance_three_circle_line
+from crowddynamics.testing import reals
 
 
 @given(x0=reals(-10, 10, shape=2),

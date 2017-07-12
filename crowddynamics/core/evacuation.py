@@ -134,7 +134,7 @@ def agent_closer_to_exit(c_door, position):
     return num
 
 
-@numba.jit(i8[:](f8[:, :], f8[:, :], typeof(obstacle_type_linear)[:], f8),
+@numba.jit((f8[:, :], f8[:, :], typeof(obstacle_type_linear)[:], f8),
            nopython=True, nogil=True, cache=True)
 def exit_detection(center_door, position, obstacles, detection_range):
     """Exit detection. Detects closest exit in detection range that is in line
@@ -147,11 +147,16 @@ def exit_detection(center_door, position, obstacles, detection_range):
         obstacles:
 
     Returns:
-        ndarray: Selected exits
+        ndarray: Selected exits. Array of indices denoting which exit was
+        selected. If none was selected then value is set to `not_detected = -1`.
     """
+    not_detected = -1
     n = len(position)
     distance = np.full(shape=n, fill_value=detection_range, dtype=np.float64)
-    selected_exit = np.full(shape=n, fill_value=NO_TARGET, dtype=np.int64)
+    detected_exit = np.full(shape=n, fill_value=not_detected, dtype=np.int64)
+    """Which exit has been detected by the agent if any."""
+    has_detected = np.zeros(shape=n, dtype=np.bool_)
+    """False if agent has not detected an exit else True"""
 
     for i in range(n):
         for c in range(len(center_door)):
@@ -163,6 +168,7 @@ def exit_detection(center_door, position, obstacles, detection_range):
             d = length(center_door[c] - position[i])
             if d < distance[i]:
                 distance[i] = d
-                selected_exit[i] = c
+                detected_exit[i] = c
+                has_detected[i] = True
 
-    return selected_exit
+    return detected_exit, has_detected

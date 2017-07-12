@@ -4,16 +4,7 @@ from collections import defaultdict
 import numpy as np
 import pytest
 
-from crowddynamics.core.interactions.block_list import block_list, \
-    MutableBlockList
-
-
-@pytest.mark.parametrize('cell_size', (0.27,))
-@pytest.mark.parametrize('size', (100, 250, 500, 1000, 10000))
-def test_blocklist_benchmark(benchmark, size, cell_size):
-    points = np.random.uniform(-1.0, 1.0, (size, 2))
-    benchmark(block_list, points, cell_size)
-    assert True
+from crowddynamics.core.block_list import MutableBlockList
 
 
 @pytest.mark.parametrize('cell_size', (0.27,))

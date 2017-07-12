@@ -10,21 +10,20 @@ from traitlets.traitlets import Float, Instance, Unicode, default, \
 from crowddynamics.core.evacuation import exit_detection
 from crowddynamics.core.geometry import geom_to_linear_obstacles
 from crowddynamics.core.integrator import velocity_verlet_integrator
-from crowddynamics.core.interactions.interactions import agent_agent_block_list, \
+from crowddynamics.core.interactions import agent_agent_block_list, \
     agent_obstacle
 from crowddynamics.core.motion.adjusting import force_adjust_agents, \
     torque_adjust_agents
 from crowddynamics.core.motion.fluctuation import force_fluctuation, \
     torque_fluctuation
-from crowddynamics.core.steering.collective_motion import herding_block_list
+from crowddynamics.core.steering.collective_motion import \
+    leader_follower_herding_interaction
 from crowddynamics.core.steering.navigation import getdefault
-from crowddynamics.core.steering.obstacle_handling import \
-    obstacle_handling_continuous
 from crowddynamics.core.steering.orientation import \
     orient_towards_target_direction
 from crowddynamics.core.structures import obstacle_type_linear
 from crowddynamics.io import save_npy, save_csv, save_geometry_json
-from crowddynamics.simulation.agents import is_model, NO_TARGET
+from crowddynamics.simulation.agents import is_model
 from crowddynamics.simulation.base import LogicNodeBase
 
 
@@ -151,18 +150,18 @@ class Navigation(LogicNode):
         field = self.simulation.field
 
         for target in range(len(field.targets)):
-            mask = agents['target'] == target
-            if not mask.size:
+            has_target = agents['target'] == target
+            if not has_target.size:
                 continue
 
             mgrid, distance_map, direction_map = field.navigation_to_target(
                 target, self.step, self.radius, self.strength)
 
             # Flip x and y to array index i and j
-            indices = np.fliplr(mgrid.indicer(agents[mask]['position']))
-            new_direction = getdefault(indices, direction_map,
-                                       agents[mask]['target_direction'])
-            agents['target_direction'][mask] = new_direction
+            indices = np.fliplr(mgrid.indicer(agents[has_target]['position']))
+            new_direction = getdefault(
+                indices, direction_map, agents[has_target]['target_direction'])
+            agents['target_direction'][has_target] = new_direction
 
 
 class LeaderFollower(LogicNode):
@@ -181,25 +180,28 @@ class LeaderFollower(LogicNode):
         help='Maximum number of nearest agents inside sight_herding radius '
              'that herding agent are following.')
 
-    step = Float(
-        default_value=0.05,
-        min=0,
-        help='Step size for meshgrid used for discretization.')
-    radius = Float(
-        default_value=0.5,
-        min=0,
-        help='')
-    strength = Float(
-        default_value=0.3,
-        min=0, max=1,
-        help='')
+    # step = Float(
+    #     default_value=0.05,
+    #     min=0,
+    #     help='Step size for meshgrid used for discretization.')
+    # radius = Float(
+    #     default_value=0.5,
+    #     min=0,
+    #     help='')
+    # strength = Float(
+    #     default_value=0.3,
+    #     min=0, max=1,
+    #     help='')
 
     def update(self):
         agents = self.simulation.agents.array
         field = self.simulation.field
 
+        # FIXME: virtual obstacles add too much computational overhead
+        # obstacles = geom_to_linear_obstacles(
+        #     field.obstacles.buffer(0.3, resolution=3))
         obstacles = geom_to_linear_obstacles(field.obstacles)
-        direction_herding = herding_block_list(
+        direction_herding = leader_follower_herding_interaction(
             agents, obstacles, self.sight_follower, self.size_nearest_leaders,
             self.size_nearest_other)
         is_follower = agents['is_follower']
@@ -229,19 +231,15 @@ class ExitDetection(LogicNode):
         agents = self.simulation.agents.array
         field = self.simulation.field
 
-        obstacles = geom_to_linear_obstacles(field.obstacles)
-
         center_door = np.stack([
             np.mean(np.asarray(target), axis=0) for target in field.targets])
+        obstacles = geom_to_linear_obstacles(field.obstacles)
 
-        is_follower = agents['is_follower']
-        position = agents['position'][is_follower]
-        targets = exit_detection(
-            center_door, position, obstacles, self.detection_range)
-        has_detected = targets != NO_TARGET
-        agents['target'][is_follower][has_detected] = targets[has_detected]
-        # Not herding anymore
-        agents['is_follower'][is_follower] = ~has_detected
+        targets, has_detected = exit_detection(
+            center_door, agents['position'], obstacles, self.detection_range)
+        mask = agents['is_follower'] & has_detected
+        agents['target'][mask] = targets[mask]
+        agents['is_follower'][mask] = False
 
 
 class Orientation(LogicNode):

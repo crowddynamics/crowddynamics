@@ -15,7 +15,7 @@ import numpy as np
 from numba import f8, i8
 from shapely.geometry import Polygon
 
-from crowddynamics.core.steering.collective_motion import herding_block_list
+from crowddynamics.core.steering.collective_motion import leader_follower_herding_interaction
 from crowddynamics.core.steering.obstacle_handling import \
     direction_map_obstacles, obstacle_handling
 from crowddynamics.core.steering.quickest_path import MeshGrid, DistanceMap, \

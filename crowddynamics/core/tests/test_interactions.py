@@ -1,17 +1,15 @@
-import pytest
 import hypothesis.strategies as st
 from hypothesis.core import given
 from hypothesis.extra.numpy import arrays
 
-from crowddynamics.core.interactions.interactions import (
+import crowddynamics.testing as testing
+from crowddynamics.core.interactions import (
     interaction_agent_agent_circular,
     interaction_agent_agent_three_circle,
     agent_agent_block_list,
     agent_circular_obstacle, agent_three_circle_obstacle)
-import crowddynamics.testing as testing
 from crowddynamics.core.structures import obstacle_type_linear
 from crowddynamics.simulation.agents import Circular, ThreeCircle
-
 
 CELL_SIZE = 3.6
 agent_attributes = {

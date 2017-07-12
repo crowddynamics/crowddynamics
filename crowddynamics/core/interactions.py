@@ -66,21 +66,19 @@ For :math:`N` agents the number of blocks :math:`N / M`.
 """
 import numba
 import numpy as np
+from cell_lists import add_to_cells, neighboring_cells, iter_nearest_neighbors
 from numba import void, i8, typeof
 
-from crowddynamics.core.interactions.block_list import block_list, \
-    get_block
-from crowddynamics.core.interactions.distance import distance_circles, \
+from crowddynamics.core.distance import distance_circles, \
     distance_circle_line, distance_three_circle_line, distance_three_circles
 from crowddynamics.core.motion.contact import force_contact
 from crowddynamics.core.motion.power_law import \
     force_social_circular, force_social_three_circle
+from crowddynamics.core.structures import obstacle_type_linear
+from crowddynamics.core.vector2D import rotate270, cross
 from crowddynamics.exceptions import InvalidType
 from crowddynamics.simulation.agents import agent_type_circular, \
     agent_type_three_circle, is_model
-from crowddynamics.core.structures import obstacle_type_linear
-from crowddynamics.core.vector2D import rotate270, cross
-
 
 SIGTH_SOC = 3.0  # TODO: load from config
 
@@ -184,90 +182,26 @@ def interaction_agent_three_circle_obstacle(i, w, agents, obstacles):
 # Full interactions
 
 
-@numba.jit(void(typeof(agent_type_circular)[:], i8[:]),
-           nopython=True, nogil=True, cache=True)
-def agent_agent_brute_circular(agents, indices):
-    """Compute interaction forces between set of agents using brute force."""
-    for l, i in enumerate(indices[:-1]):
-        for j in indices[l + 1:]:
-            interaction_agent_agent_circular(i, j, agents)
-
-
-@numba.jit(void(typeof(agent_type_three_circle)[:], i8[:]),
-           nopython=True, nogil=True, cache=True)
-def agent_agent_brute_three_circle(agents, indices):
-    """Compute interaction forces between set of agents using brute force."""
-    for l, i in enumerate(indices[:-1]):
-        for j in indices[l + 1:]:
-            interaction_agent_agent_three_circle(i, j, agents)
-
-
-@numba.jit(void(typeof(agent_type_circular)[:], i8[:], i8[:]),
-           nopython=True, nogil=True, cache=True)
-def agent_agent_brute_disjoint_circular(agents, indices_0, indices_1):
-    """Compute interaction forces between two disjoint sets and of agents using
-    brute force. Disjoint sets ``indices_0 ∩ indices_1 = ∅``."""
-    for i in indices_0:
-        for j in indices_1:
-            interaction_agent_agent_circular(i, j, agents)
-
-
-@numba.jit(void(typeof(agent_type_three_circle)[:], i8[:], i8[:]),
-           nopython=True, nogil=True, cache=True)
-def agent_agent_brute_disjoint_three_circle(agents, indices_0, indices_1):
-    """Compute interaction forces between two disjoint sets and of agents using
-    brute force. Disjoint sets ``indices_0 ∩ indices_1 = ∅``."""
-    for i in indices_0:
-        for j in indices_1:
-            interaction_agent_agent_three_circle(i, j, agents)
-
-
 @numba.jit(void(typeof(agent_type_circular)[:],
-                i8[:], i8[:], i8[:], i8[:]),
+                i8[:], i8[:], i8[:], i8[:], i8[:]),
            nopython=True, nogil=True, cache=True)
-def agent_agent_block_list_circular(agents, index_list, count, offset, shape):
-    """Iteration over all agents using block list algorithm."""
-    # Neighbouring blocks
-    nb = np.array(((1, 0), (1, 1), (0, 1), (1, -1)), dtype=np.int64)
-    n, m = shape
-    for i in range(n):
-        for j in range(m):
-            # Forces between agents inside the block
-            ilist = get_block((i, j), index_list, count, offset, shape)
-            agent_agent_brute_circular(agents, ilist)
-
-            # Forces between agent inside the block and neighbouring agents
-            for k in range(len(nb)):
-                i2, j2 = nb[k]
-                if 0 <= (i + i2) < n and 0 <= (j + j2) < m:
-                    ilist2 = get_block((i + i2, j + j2), index_list, count,
-                                       offset, shape)
-                    agent_agent_brute_disjoint_circular(agents, ilist, ilist2)
+def agent_agent_circular(agents,cell_indices, neigh_cells, points_indices,
+                         cells_count, cells_offset):
+    for i, j in iter_nearest_neighbors(
+            cell_indices, neigh_cells, points_indices, cells_count,
+            cells_offset):
+        interaction_agent_agent_circular(i, j, agents)
 
 
 @numba.jit(void(typeof(agent_type_three_circle)[:],
-                i8[:], i8[:], i8[:], i8[:]),
+                i8[:], i8[:], i8[:], i8[:], i8[:]),
            nopython=True, nogil=True, cache=True)
-def agent_agent_block_list_three_circle(agents, index_list, count, offset, shape):
-    """Iteration over all agents using block list algorithm."""
-    # Neighbouring blocks
-    nb = np.array(((1, 0), (1, 1), (0, 1), (1, -1)), dtype=np.int64)
-    n, m = shape
-    for i in range(n):
-        for j in range(m):
-            # Forces between agents inside the block
-            ilist = get_block((i, j), index_list, count, offset, shape)
-            agent_agent_brute_three_circle(agents, ilist)
-
-            # Forces between agent inside the block and neighbouring agents
-            for k in range(len(nb)):
-                i2, j2 = nb[k]
-                if 0 <= (i + i2) < n and 0 <= (j + j2) < m:
-                    ilist2 = get_block((i + i2, j + j2), index_list, count,
-                                       offset, shape)
-                    agent_agent_brute_disjoint_three_circle(agents,
-                                                            ilist,
-                                                            ilist2)
+def agent_agent_three_circle(agents,cell_indices, neigh_cells, points_indices,
+                             cells_count, cells_offset):
+    for i, j in iter_nearest_neighbors(
+            cell_indices, neigh_cells, points_indices, cells_count,
+            cells_offset):
+        interaction_agent_agent_three_circle(i, j, agents)
 
 
 @numba.jit(void(typeof(agent_type_circular)[:],
@@ -293,12 +227,17 @@ def agent_three_circle_obstacle(agents, obstacles):
 # Higher level API
 
 def agent_agent_block_list(agents, cell_size):
-    index_list, count, offset, shape = block_list(agents['position'], cell_size)
+    points_indices, cells_count, cells_offset, grid_shape = add_to_cells(
+        agents['position'], cell_size)
+    cell_indices = np.arange(len(cells_count))
+    neigh_cells = neighboring_cells(grid_shape)
 
     if is_model(agents, 'circular'):
-        agent_agent_block_list_circular(agents, index_list, count, offset, shape)
+        agent_agent_circular(agents, cell_indices, neigh_cells, points_indices,
+                             cells_count, cells_offset)
     elif is_model(agents, 'three_circle'):
-        agent_agent_block_list_three_circle(agents, index_list, count, offset, shape)
+        agent_agent_three_circle(agents, cell_indices, neigh_cells, points_indices,
+                                 cells_count, cells_offset)
     else:
         raise InvalidType
 

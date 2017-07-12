@@ -2,7 +2,7 @@ import numpy as np
 import pytest
 from hypothesis.core import given
 
-from crowddynamics.core.steering.collective_motion import herding_block_list
+from crowddynamics.core.steering.collective_motion import leader_follower_herding_interaction
 from crowddynamics.core.structures import obstacle_type_linear
 from crowddynamics.testing import reals
 

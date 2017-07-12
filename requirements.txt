@@ -2,6 +2,7 @@
 ## Recommended to use Conda package manager instead
 
 loggingtools==0.0.4
+git+https://github.com/jaantollander/cell_lists.git
 
 ## Package
 configobj==5.0.6
