@@ -1,8 +1,8 @@
-"""Leader-Follower effect"""
+"""Collective motion"""
 import numba
 import numpy as np
 from cell_lists import add_to_cells, neighboring_cells, iter_nearest_neighbors
-from numba import f8, i8, boolean
+from numba import f8, i8
 from numba.typing.typeof import typeof
 
 from crowddynamics.core.sensory_region import is_obstacle_between_points
@@ -11,6 +11,14 @@ from crowddynamics.core.vector2D import length, normalize, weighted_average, dot
 from crowddynamics.simulation.agents import NO_LEADER, NO_TARGET
 
 MISSING_NEIGHBOR = -1
+
+
+@numba.jit([f8[:, :](f8[:, :])], nopython=True, nogil=True, cache=True)
+def normalize_nx2(v):
+    out = np.zeros_like(v)
+    for i in range(len(v)):
+        out[i, :] = normalize(v[i, :])
+    return out
 
 
 @numba.jit([(f8[:], f8[:], f8[:], f8[:], f8)],
@@ -50,14 +58,6 @@ def herding_relationship(x1, x2, v1, v2, phi=np.pi / 2):
             return True, True
 
 
-@numba.jit([f8[:, :](f8[:, :])], nopython=True, nogil=True, cache=True)
-def normalize_nx2(v):
-    out = np.zeros_like(v)
-    for i in range(len(v)):
-        out[i, :] = normalize(v[i, :])
-    return out
-
-
 @numba.jit(nopython=True, nogil=True)
 def set_neighbor(i, j, l, neighbors, distances, distances_max):
     argmax = np.argmax(distances[i, :])
@@ -66,12 +66,11 @@ def set_neighbor(i, j, l, neighbors, distances, distances_max):
     distances_max[i] = np.max(distances[i, :])
 
 
-@numba.jit([(boolean[:], f8[:, :], f8, i8, i8, i8[:], i8[:], i8[:],
+@numba.jit([(f8[:, :], f8, i8, i8[:], i8[:], i8[:],
              i8[:], i8[:], typeof(obstacle_type_linear)[:])],
-           nopython=True, nogil=True)
-def find_nearest_neighbors_with_leaders(
-        is_leader, position,
-        sight, size_nearest_leaders, size_nearest_other,
+           nopython=True, nogil=True, cache=True)
+def find_nearest_neighbors(
+        position, sight, size_nearest_other,
         cell_indices, neigh_cells, points_indices, cells_count,
         cells_offset, obstacles):
     size = len(position)
@@ -80,63 +79,37 @@ def find_nearest_neighbors_with_leaders(
         (size, size_nearest_other),
         fill_value=MISSING_NEIGHBOR, dtype=np.int64)
     '''Current nearest neighbours.'''
+
     distances = np.full(
         (size, size_nearest_other),
         fill_value=sight, dtype=np.float64)
     '''Distance to current nearest neighbours.'''
-    distances_max = np.full(
-        size, fill_value=sight, dtype=np.float64)
-    '''Distance to furthest neighbor.'''
 
-    neighbors_leaders = np.full(
-        (size, size_nearest_leaders),
-        fill_value=MISSING_NEIGHBOR, dtype=np.int64)
-    '''Current nearest neighbours.'''
-    distances_leaders = np.full(
-        (size, size_nearest_leaders),
-        fill_value=sight, dtype=np.float64)
-    '''Distance to current nearest neighbours.'''
-    distances_max_leader = np.full(
+    distances_max = np.full(
         size, fill_value=sight, dtype=np.float64)
     '''Distance to furthest neighbor.'''
 
     for i, j in iter_nearest_neighbors(
             cell_indices, neigh_cells, points_indices, cells_count,
             cells_offset):
-        l = length(position[i] - position[j])
-
-        if l < distances_max_leader[i] and is_leader[j]:
-            set_neighbor(i, j, l, neighbors_leaders, distances_leaders,
-                         distances_max_leader)
-
-        if l < distances_max_leader[j] and is_leader[i]:
-            set_neighbor(j, i, l, neighbors_leaders, distances_leaders,
-                         distances_max_leader)
-
         # Test if line of sight is obstructed by an obstacle
         if is_obstacle_between_points(position[i], position[j], obstacles):
             continue
 
-        if l < distances_max_leader[i]:
+        l = length(position[i] - position[j])
+
+        if l < distances_max[i]:
             set_neighbor(i, j, l, neighbors, distances, distances_max)
 
-        if l < distances_max_leader[j]:
+        if l < distances_max[j]:
             set_neighbor(j, i, l, neighbors, distances, distances_max)
 
-    return neighbors, neighbors_leaders
-
-
-@numba.jit([(i8, i8[:, :])], nopython=True, nogil=True)
-def iter_neighbors(i, neighbors):
-    """Iterate over neighbors of agent i skipping missing neighbors."""
-    for j in neighbors[i, :]:
-        if j != MISSING_NEIGHBOR:
-            yield j
+    return neighbors
 
 
 @numba.jit(nopython=True, nogil=True, cache=True)
 def herding_interaction(is_herding, position, velocity, neighbors,
-                        weight_position, phi, target):
+                        weight_position, phi):
     r"""Herding effect.
 
         .. math::
@@ -145,25 +118,26 @@ def herding_interaction(is_herding, position, velocity, neighbors,
 
     """
     # [(boolean[:], f8[:, :], f8[:, :], i8[:, :], f8, f8, i8[:])]
-    m, n = neighbors.shape
-
     new_direction = np.zeros_like(position)
-    has_new_direction = np.zeros(m, dtype=np.bool_)
+    has_new_direction = np.zeros(position.shape[0], dtype=np.bool_)
 
     mean_position = np.zeros(position.shape[1])
     mean_velocity = np.zeros(velocity.shape[1])
 
-    for i in range(m):
+    for i in range(position.shape[0]):
         if not is_herding[i]:
             continue
 
         num_neigh = 0
 
-        for j in iter_neighbors(i, neighbors):
-            is_following, _ = herding_relationship(
+        for j in neighbors[i, :]:
+            if j == MISSING_NEIGHBOR:
+                continue
+
+            is_heading_away, _ = herding_relationship(
                 position[i], position[j], velocity[i], velocity[j], phi)
 
-            if is_following:
+            if is_heading_away:
                 mean_position[:] += position[j, :]
                 mean_velocity[:] += velocity[j, :]
                 num_neigh += 1
@@ -173,7 +147,6 @@ def herding_interaction(is_herding, position, velocity, neighbors,
                 normalize(mean_position[:] / num_neigh - position[i, :]),
                 normalize(mean_velocity[:]),
                 weight_position))
-            target[i] = NO_TARGET
             has_new_direction[i] = True
 
         mean_position[:] = 0
@@ -183,39 +156,35 @@ def herding_interaction(is_herding, position, velocity, neighbors,
 
 
 @numba.jit(nopython=True, nogil=True, cache=True)
-def leader_follower_interaction(
-        is_follower, position, velocity, neighbors, weight_position, phi,
-        target, index_leader, obstacles):
-    """Leader follower interaction
-
-    Args:
-        is_follower:
-        position:
-        velocity:
-        neighbors:
-        weight_position:
-        phi:
-        target:
-        index_leader:
-        obstacles:
-
-    Returns:
-
-    """
-    m, n = neighbors.shape
-
+def leader_follower_interaction_brute(
+        is_follower, is_leader, position, velocity, weight_position, phi,
+        target, index_leader, obstacles, sight):
+    has_strategy = np.zeros(len(position), dtype=np.bool_)
     new_direction = np.zeros_like(position)
-    new_target = np.zeros_like(target)
-    new_index_leader = np.zeros_like(index_leader)
-    has_strategy = np.zeros(m, dtype=np.bool_)
+    # new_target = np.zeros_like(target)
+    # new_index_leader = np.zeros_like(index_leader)
 
-    for i in range(m):
-        if not is_follower[i]:
-            continue  # i is not herding agent
+    indices = np.arange(len(position))
+    leaders = indices[is_leader]
+    distances = np.zeros(leaders.shape, dtype=np.float64)
 
+    # Iterate over followers
+    for i in indices[is_follower]:
         behind_obstacle = 0
         heading_away = 0
-        for j in iter_neighbors(i, neighbors):
+
+        # Find distances to the leaders
+        for k, j in enumerate(leaders):
+            distances[k] = length(position[i] - position[j])
+
+        # Iterate over leaders in orders from closest to furthest leader
+        # and choose a strategy.
+        for k in np.argsort(distances):
+            if distances[k] > sight:
+                continue
+
+            j = leaders[k]
+
             if is_obstacle_between_points(position[i], position[j], obstacles):
                 # We are not seeing this leader.
                 leader = index_leader[i]
@@ -226,21 +195,22 @@ def leader_follower_interaction(
                     target[i] = target[leader]
                     has_strategy[i] = True
                     break
-                continue
+                else:
+                    continue
+            else:
+                is_heading_away, _ = herding_relationship(
+                    position[i], position[j], velocity[i], velocity[j], phi)
 
-            is_heading_away, _ = herding_relationship(
-                position[i], position[j], velocity[i], velocity[j], phi)
-
-            if is_heading_away:
-                heading_away += 1
-                # We see this leader. Remember it and follow.
-                index_leader[i] = j
-                target[i] = NO_TARGET
-                new_direction[i, :] = normalize(weighted_average(
-                    normalize(position[j, :] - position[i, :]),
-                    normalize(velocity[j, :]), weight_position))
-                has_strategy[i] = True
-                break
+                if is_heading_away:
+                    heading_away += 1
+                    # We see this leader. Remember it and follow.
+                    index_leader[i] = j
+                    target[i] = NO_TARGET
+                    new_direction[i, :] = normalize(weighted_average(
+                        normalize(position[j, :] - position[i, :]),
+                        normalize(velocity[j, :]), weight_position))
+                    has_strategy[i] = True
+                    break
 
         if behind_obstacle == 0 and heading_away == 0:
             leader = index_leader[i]
@@ -251,16 +221,24 @@ def leader_follower_interaction(
     return new_direction, has_strategy
 
 
-@numba.jit(nopython=True, nogil=True, cache=True)
-def use_familiar_exit(is_lost, target, familiar_exit):
-    for i, lost in enumerate(is_lost):
-        if lost:
-            target[i] = familiar_exit[i]
+def leader_follower_interaction(
+        agents, obstacles, sight, phi=0.45 * np.pi,
+        weight_position_leader=0.40):
+    # Follow the leader
+    direction_leader, has_strategy = leader_follower_interaction_brute(
+        agents['is_follower'], agents['is_leader'], agents['position'],
+        agents['velocity'], weight_position_leader, phi,
+        agents['target'], agents['index_leader'], obstacles, sight)
+
+    # Use familiar exits
+    is_lost = ~has_strategy & agents['is_follower']
+    agents['target'][is_lost] = agents['familiar_exit'][is_lost]
+
+    return direction_leader
 
 
-def leader_follower_herding_interaction(
+def leader_follower_with_herding_interaction(
         agents, obstacles, sight,
-        size_nearest_leaders,
         size_nearest_other,
         phi=0.45 * np.pi,
         weight_position_herding=0.15,
@@ -270,9 +248,7 @@ def leader_follower_herding_interaction(
     velocity = agents['velocity']
     is_leader = agents['is_leader']
     is_follower = agents['is_follower']
-
-    # Indices of all agents
-    indices = np.arange(len(position))
+    sight_leader = 20.0
 
     cell_size = sight
     points_indices, cells_count, cells_offset, grid_shape = add_to_cells(
@@ -280,22 +256,24 @@ def leader_follower_herding_interaction(
     cell_indices = np.arange(len(cells_count))
     neigh_cells = neighboring_cells(grid_shape)
 
-    neighbors, neighbors_leaders = find_nearest_neighbors_with_leaders(
-        is_leader, position, sight, size_nearest_leaders,
+    neighbors = find_nearest_neighbors(
+        position, sight,
         size_nearest_other, cell_indices, neigh_cells, points_indices,
         cells_count, cells_offset, obstacles)
 
     direction, has_direction = herding_interaction(
         is_follower, position, velocity, neighbors, weight_position_herding,
-        phi, agents['target'])
+        phi)
 
-    direction_leader, has_strategy = leader_follower_interaction(
-        is_follower, position, velocity, neighbors_leaders,
-        weight_position_leader, phi, agents['target'], agents['index_leader'],
-        obstacles)
+    agents['target'][has_direction] = NO_TARGET
 
+    direction_leader, has_strategy = leader_follower_interaction_brute(
+        is_follower, is_leader, position, velocity, weight_position_leader,
+        phi, agents['target'], agents['index_leader'], obstacles, sight_leader)
+
+    # Use familiar exits
     is_lost = ~(has_direction | has_strategy) & is_follower
-    use_familiar_exit(is_lost, agents['target'], agents['familiar_exit'])
+    agents['target'][is_lost] = agents['familiar_exit'][is_lost]
 
     return normalize_nx2(weighted_average(
         direction_leader, direction, weight_direction_leader))

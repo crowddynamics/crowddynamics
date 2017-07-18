@@ -24,45 +24,6 @@ Interactions between agents and obstacles
 .. math::
    M_{i}^{agent-obstacles} = \sum_{w}^{} M_{iw}^{c}
 
-
-Brute Force Summation
-^^^^^^^^^^^^^^^^^^^^^
-Number of iterations for set of :math:`N > 0` agents
-
-.. math::
-   N - 1 + N - 2 + ... + 1 =  \frac{(N - 1)^2}{2} \in \mathcal{O}(N^2)
-
-Number of iterations for two disjoint sets of :math:`N > 0` and :math:`M > 0`
-agents
-
-.. math::
-   M N
-
-Because the computational complexity of naive brute force summation scales
-:math:`\mathcal{O}(N^2)` it is unfeasible to use for large numbers of agents.
-
-
-Block List Summation
-^^^^^^^^^^^^^^^^^^^^
-Iterations per block
-
-.. math::
-   ((N_0-1)^{2} + N_0 \sum_{i=1}^{8} N_i) / 2
-
-Number of iterations if maximum number of agents that can be fit into a cell
-is :math:`M` is some constant.
-
-Iterations per block
-
-.. math::
-   I = \frac{(M - 1)^2}{2} + \frac{9}{2} M^{2}
-
-For :math:`N` agents the number of blocks :math:`N / M`.
-
-.. math::
-   I \frac{N}{M} = \frac{N}{M} \left(5 M^{2} - M + \frac{1}{2}\right) \in
-   \mathcal{O}(N)
-
 """
 import numba
 import numpy as np
@@ -80,7 +41,8 @@ from crowddynamics.exceptions import InvalidType
 from crowddynamics.simulation.agents import agent_type_circular, \
     agent_type_three_circle, is_model
 
-SIGTH_SOC = 3.0  # TODO: load from config
+# TODO: load from config
+SIGTH_SOC = 3.0
 
 
 # Individual interactions
@@ -185,7 +147,7 @@ def interaction_agent_three_circle_obstacle(i, w, agents, obstacles):
 @numba.jit(void(typeof(agent_type_circular)[:],
                 i8[:], i8[:], i8[:], i8[:], i8[:]),
            nopython=True, nogil=True, cache=True)
-def agent_agent_circular(agents,cell_indices, neigh_cells, points_indices,
+def agent_agent_circular(agents, cell_indices, neigh_cells, points_indices,
                          cells_count, cells_offset):
     for i, j in iter_nearest_neighbors(
             cell_indices, neigh_cells, points_indices, cells_count,
@@ -196,7 +158,7 @@ def agent_agent_circular(agents,cell_indices, neigh_cells, points_indices,
 @numba.jit(void(typeof(agent_type_three_circle)[:],
                 i8[:], i8[:], i8[:], i8[:], i8[:]),
            nopython=True, nogil=True, cache=True)
-def agent_agent_three_circle(agents,cell_indices, neigh_cells, points_indices,
+def agent_agent_three_circle(agents, cell_indices, neigh_cells, points_indices,
                              cells_count, cells_offset):
     for i, j in iter_nearest_neighbors(
             cell_indices, neigh_cells, points_indices, cells_count,
@@ -236,7 +198,8 @@ def agent_agent_block_list(agents, cell_size):
         agent_agent_circular(agents, cell_indices, neigh_cells, points_indices,
                              cells_count, cells_offset)
     elif is_model(agents, 'three_circle'):
-        agent_agent_three_circle(agents, cell_indices, neigh_cells, points_indices,
+        agent_agent_three_circle(agents, cell_indices, neigh_cells,
+                                 points_indices,
                                  cells_count, cells_offset)
     else:
         raise InvalidType

@@ -17,7 +17,7 @@ from crowddynamics.core.motion.adjusting import force_adjust_agents, \
 from crowddynamics.core.motion.fluctuation import force_fluctuation, \
     torque_fluctuation
 from crowddynamics.core.steering.collective_motion import \
-    leader_follower_herding_interaction
+    leader_follower_with_herding_interaction, leader_follower_interaction
 from crowddynamics.core.steering.navigation import getdefault
 from crowddynamics.core.steering.orientation import \
     orient_towards_target_direction
@@ -165,15 +165,28 @@ class Navigation(LogicNode):
 
 
 class LeaderFollower(LogicNode):
-    sight_follower = Float(
+    sight = Float(
         default_value=20.0,
         min=0,
         help='Maximum distance between agents that are accounted as neighbours '
              'that can be followed.')
-    size_nearest_leaders = Int(
-        default_value=3,
+
+    def update(self):
+        agents = self.simulation.agents.array
+        field = self.simulation.field
+
+        obstacles = geom_to_linear_obstacles(field.obstacles)
+        direction = leader_follower_interaction(agents, obstacles, self.sight)
+        is_follower = agents['is_follower']
+        agents['target_direction'][is_follower] = direction[is_follower]
+
+
+class LeaderFollowerWithHerding(LogicNode):
+    sight_follower = Float(
+        default_value=10.0,
         min=0,
-        help='')
+        help='Maximum distance between agents that are accounted as neighbours '
+             'that can be followed.')
     size_nearest_other = Int(
         default_value=5,
         min=0,
@@ -201,9 +214,8 @@ class LeaderFollower(LogicNode):
         # obstacles = geom_to_linear_obstacles(
         #     field.obstacles.buffer(0.3, resolution=3))
         obstacles = geom_to_linear_obstacles(field.obstacles)
-        direction_herding = leader_follower_herding_interaction(
-            agents, obstacles, self.sight_follower, self.size_nearest_leaders,
-            self.size_nearest_other)
+        direction_herding = leader_follower_with_herding_interaction(
+            agents, obstacles, self.sight_follower, self.size_nearest_other)
         is_follower = agents['is_follower']
         agents['target_direction'][is_follower] = direction_herding[is_follower]
 
@@ -311,22 +323,9 @@ class SaveSimulationData(LogicNode):
     def _default_save_directory(self):
         return self.simulation.name_with_timestamp
 
-    # @validate('save_directory')
-    # def _valid_save_directory(self, proposal):
-    #     path = proposal['value']
-    #     new = os.path.join(self.base_directory, path)
-    #     if os.path.exists(new):
-    #         raise ValidationError('Path: "{}" already exists.'.format(new))
-    #     return path
-
-    # @observe('save_directory')
-    # def _observe_save_directory(self, change):
-    #     os.makedirs(self.full_path, exist_ok=True)
-
     def add_to_simulation_logic(self):
         self.simulation.logic['Reset'].inject_before(self)
 
-    @log_with(timed=True, arguments=False)
     def update(self):
         save = self.save_condition(self.simulation)
 

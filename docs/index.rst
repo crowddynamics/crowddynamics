@@ -6,37 +6,37 @@ Crowd Dynamics
 
 .. toctree::
    :caption: General
-   :maxdepth: 2
+   :maxdepth: 1
 
-   installation.rst
-   usage.rst
-   developing.rst
-   resources.rst
+   general/installation.rst
+   general/usage.rst
+   general/developing.rst
+   general/resources.rst
 
 
 .. toctree::
    :caption: Crowddynamics
-   :maxdepth: 2
+   :maxdepth: 1
 
-   architecture.rst
-   multiagent.rst
-   interactions.rst
-   motion.rst
-   steering.rst
-   quantities.rst
-   evacuation.rst
+   crowddynamics/architecture.rst
+   crowddynamics/multiagent.rst
+   crowddynamics/interactions.rst
+   crowddynamics/motion.rst
+   crowddynamics/steering.rst
+   crowddynamics/quantities.rst
+   crowddynamics/evacuation.rst
 
 
 .. toctree::
    :caption: Research
-   :maxdepth: 2
+   :maxdepth: 1
 
    phenomena.rst
 
 
 .. toctree::
    :caption: Api
-   :maxdepth: 2
+   :maxdepth: 1
 
    apidocs/crowddynamics.rst
 

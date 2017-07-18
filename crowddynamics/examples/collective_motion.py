@@ -8,8 +8,10 @@ from crowddynamics.examples.fields import rectangle
 from crowddynamics.simulation.agents import Circular, ThreeCircle, NO_TARGET, \
     Agents, AgentGroup
 from crowddynamics.simulation.logic import Reset, InsideDomain, Integrator, \
-    Fluctuation, Adjusting, Navigation, ExitDetection, LeaderFollower, \
-    Orientation, AgentAgentInteractions, AgentObstacleInteractions
+    Fluctuation, Adjusting, Navigation, ExitDetection, \
+    LeaderFollowerWithHerding, \
+    Orientation, AgentAgentInteractions, AgentObstacleInteractions, \
+    LeaderFollower
 from crowddynamics.simulation.multiagent import MultiAgentSimulation
 
 
@@ -66,7 +68,7 @@ class Outdoor(MultiAgentSimulation):
                 Integrator(self) << (
                     Fluctuation(self),
                     Adjusting(self) << (
-                        LeaderFollower(self),
+                        LeaderFollowerWithHerding(self),
                         Orientation(self),),
                     AgentAgentInteractions(self),))
 
@@ -146,7 +148,7 @@ class Rounding(MultiAgentSimulation):
                 Integrator(self) << (
                     Fluctuation(self),
                     Adjusting(self) << (
-                        Navigation(self) << LeaderFollower(self),
+                        Navigation(self) << LeaderFollowerWithHerding(self),
                         Orientation(self)),
                     AgentAgentInteractions(self),
                     AgentObstacleInteractions(self)))
@@ -232,7 +234,7 @@ class AvoidObstacle(MultiAgentSimulation):
                     Fluctuation(self),
                     Adjusting(self) << (
                         Navigation(self) << ExitDetection(
-                            self, detection_range=(1 - self.ratio_obs) * self.width) << LeaderFollower(self),
+                            self, detection_range=(1 - self.ratio_obs) * self.width) << LeaderFollowerWithHerding(self),
                         Orientation(self)),
                     AgentAgentInteractions(self),
                     AgentObstacleInteractions(self)))
@@ -310,7 +312,7 @@ class ClosedRoom(MultiAgentSimulation):
                 Integrator(self) << (
                     Fluctuation(self),
                     Adjusting(self) << (
-                        LeaderFollower(self),
+                        LeaderFollowerWithHerding(self),
                         Orientation(self),),
                     AgentAgentInteractions(self),
                     AgentObstacleInteractions(self)))
@@ -362,7 +364,7 @@ class AroundCircle(MultiAgentSimulation):
             Integrator(self) << (
                 Fluctuation(self),
                 Adjusting(self) << (
-                    LeaderFollower(self),
+                    LeaderFollowerWithHerding(self),
                     Orientation(self),),
                 AgentAgentInteractions(self),
                 AgentObstacleInteractions(self)))

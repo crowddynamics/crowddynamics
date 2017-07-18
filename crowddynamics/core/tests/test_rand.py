@@ -1,9 +1,9 @@
-from hypothesis import given, assume
-import numpy as np
 import hypothesis.strategies as st
+import numpy as np
+from hypothesis import given, assume
 from hypothesis.extra.numpy import arrays
 
-from crowddynamics.core.rand.functions import poisson_clock, poisson_timings
+from crowddynamics.core.rand import poisson_clock, poisson_timings
 from crowddynamics.testing import reals
 
 

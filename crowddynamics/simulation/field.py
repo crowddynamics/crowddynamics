@@ -6,7 +6,7 @@ from shapely.geometry.base import BaseGeometry
 from traitlets import Instance, List, validate
 
 from crowddynamics.core.geometry import union
-from crowddynamics.core.rand.sampling import polygon_sample
+from crowddynamics.core.sampling import polygon_sample
 from crowddynamics.core.steering.obstacle_handling import \
     direction_map_obstacles, obstacle_handling
 from crowddynamics.core.steering.quickest_path import meshgrid, shortest_path

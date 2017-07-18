@@ -15,7 +15,7 @@ from crowddynamics.core.block_list import MutableBlockList
 from crowddynamics.core.distance import distance_circles, \
     distance_circle_line, distance_three_circle_line
 from crowddynamics.core.distance import distance_three_circles
-from crowddynamics.core.rand.functions import truncnorm
+from crowddynamics.core.rand import truncnorm
 from crowddynamics.core.structures import obstacle_type_linear
 from crowddynamics.core.vector2D import unit_vector, rotate270
 from crowddynamics.exceptions import CrowdDynamicsException

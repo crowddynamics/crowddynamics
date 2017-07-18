@@ -51,11 +51,6 @@ Algorithm
 4. Crate array ``offset`` from cumulative sum of counts to track the starting
    index of indices in ``index_list`` array when querying agents in each block.
 
-
-Iteration
-^^^^^^^^^
-Iterating over block list.
-
 """
 from collections import defaultdict, MutableSequence
 from itertools import product

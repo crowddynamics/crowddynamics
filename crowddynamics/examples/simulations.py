@@ -1,6 +1,7 @@
 import numpy as np
 from traitlets.traitlets import Float, Int, Enum, default
 
+from crowddynamics.core.geometry import geom_to_linear_obstacles
 from crowddynamics.core.vector2D import unit_vector
 from crowddynamics.examples import fields
 from crowddynamics.simulation.agents import Agents, AgentGroup, Circular, \
@@ -231,5 +232,69 @@ class RoomWithOneExit(MultiAgentSimulation):
 
         agents.add_non_overlapping_group(
             group, position_gen=self.field.sample_spawn(0))
+
+        return agents
+
+
+class FourExitsRandomPlacing(MultiAgentSimulation):
+    size = Int(
+        default_value=100,
+        min=0,
+        help='Amount of herding agents')
+    agent_type = Enum(
+        default_value=Circular,
+        values=(Circular, ThreeCircle))
+    body_type = Enum(
+        default_value='adult',
+        values=('adult',))
+    exit_width = Float(
+        default_value=1.25,
+        min=0, max=10)
+
+    def attributes(self):
+        def wrapper():
+            target = np.random.randint(0, len(self.field.targets))
+            orientation = np.random.uniform(-np.pi, np.pi)
+            d = dict(
+                target=target,
+                body_type=self.body_type,
+                orientation=orientation,
+                velocity=np.zeros(2),
+                angular_velocity=0.0,
+                target_direction=np.zeros(2),
+                target_orientation=orientation,
+                familiar_exit=np.random.randint(0, len(self.field.targets)))
+            return d
+        return wrapper
+
+    @default('logic')
+    def _default_logic(self):
+        return Reset(self) << \
+            InsideDomain(self) << (
+                Integrator(self) << (
+                    Fluctuation(self),
+                    Adjusting(self) << (
+                        Navigation(self),
+                        Orientation(self)),
+                    AgentAgentInteractions(self),
+                    AgentObstacleInteractions(self)))
+
+    @default('field')
+    def _default_field(self):
+        return fields.FourExitsField(exit_width=self.exit_width)
+
+    @default('agents')
+    def _default_agents(self):
+        agents = Agents(agent_type=self.agent_type)
+
+        group = AgentGroup(
+            agent_type=self.agent_type,
+            size=self.size,
+            attributes=self.attributes())
+
+        agents.add_non_overlapping_group(
+            group,
+            position_gen=self.field.sample_spawn(0),
+            obstacles=geom_to_linear_obstacles(self.field.obstacles))
 
         return agents

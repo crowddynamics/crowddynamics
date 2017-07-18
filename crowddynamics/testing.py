@@ -1,4 +1,5 @@
 import random
+
 import numpy as np
 from hypothesis import strategies as st
 from hypothesis.extra.numpy import arrays
@@ -7,7 +8,7 @@ from shapely.geometry.linestring import LineString
 from shapely.geometry.point import Point
 from shapely.geometry.polygon import Polygon
 
-from crowddynamics.core.rand.sampling import polygon_sample
+from crowddynamics.core.sampling import polygon_sample
 from crowddynamics.simulation.agents import AgentType
 
 
@@ -21,7 +22,7 @@ def reals(min_value=None,
     Args:
         min_value (Number, optional):
         max_value (Number, optional):
-        exclude_zero (str, optional): 
+        exclude_zero (str, optional):
             Choices from: (None, 'exact', 'near')
         shape (int|tuple, optional):
             None for scalar output and int or tuple of int for array output.
@@ -100,14 +101,14 @@ def multipart_geometries():
 @st.composite
 def agents(draw, size_strategy, agent_type, attributes):
     """Agent search strategy
-    
+
     Args:
-        size_strategy (SearchStrategy): 
+        size_strategy (SearchStrategy):
             Strategy that generated integers
         agent_type (type):
             Subclass of AgentType
-        attributes (dict): 
-            Dictionary of attribute strategies. 
+        attributes (dict):
+            Dictionary of attribute strategies.
 
     Returns:
         SearchStrategy:

@@ -7,7 +7,7 @@ from hypothesis.extra.numpy import arrays
 from shapely.geometry import Polygon, Point
 
 from crowddynamics.core.geom2D import polygon_area
-from crowddynamics.core.rand.sampling import random_sample_triangle, \
+from crowddynamics.core.sampling import random_sample_triangle, \
     triangle_area_cumsum, polygon_sample, \
     linestring_sample
 from crowddynamics.testing import reals

@@ -8,7 +8,7 @@ truncated normal distribution.
 """
 import numpy as np
 
-from crowddynamics.core.rand.functions import truncnorm
+from crowddynamics.core.rand import truncnorm
 
 
 def force_fluctuation(mass, scale):

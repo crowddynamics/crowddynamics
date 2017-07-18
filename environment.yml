@@ -1,7 +1,7 @@
 # Install env with command:
-# conda env create python=3.x -n crowd3x -f environment.yml
+# conda env create -f environment.yml
 
-name: crowd36
+name: crowd36-qtgui
 channels:
     - conda-forge
 #    - intel
@@ -14,10 +14,10 @@ dependencies:
     - shapely
     - matplotlib
     - bokeh
-    - tqdm
     - pip:
         - configobj
         - loggingtools
+        - git+https://github.com/jaantollander/cell_lists.git
         - typing
         - sortedcontainers
         - anytree
@@ -27,5 +27,5 @@ dependencies:
         - colorama
         - colorlog
         - traitlets
-        - traitypes
+        - traittypes
         - diskcache

@@ -48,7 +48,7 @@ class MultiAgentSimulation(SimulationBase):
         self.data['dt'] = 0.0
         self.data['goal_reached'] = 0
 
-    @log_with(timed=True, arguments=False)
+    # @log_with(timed=True, arguments=False)
     def update(self):
         """Execute new iteration cycle of the simulation."""
         for node in PostOrderIter(self.logic.root):
