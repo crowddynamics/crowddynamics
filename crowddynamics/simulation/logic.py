@@ -4,6 +4,7 @@ from collections import Callable
 import numpy as np
 from loggingtools.log_with import log_with
 from matplotlib.path import Path
+from shapely.geometry.polygon import Polygon
 from traitlets.traitlets import Float, Instance, Unicode, default, \
     Int
 
@@ -58,9 +59,9 @@ class LogicNode(LogicNodeBase):
 class Reset(LogicNode):
     def update(self):
         agents = self.simulation.agents.array
-        agents[:]['force'] = 0
+        agents['force'] = 0
         if is_model(agents, 'three_circle'):
-            agents[:]['torque'] = 0
+            agents['torque'] = 0
 
 
 class Integrator(LogicNode):
@@ -68,8 +69,8 @@ class Integrator(LogicNode):
     dt_max = Float(default_value=0.01, min=0, help='Maximum timestep')
 
     def update(self):
-        dt = velocity_verlet_integrator(
-            self.simulation.agents.array, self.dt_min, self.dt_max)
+        agents = self.simulation.agents.array
+        dt = velocity_verlet_integrator(agents, self.dt_min, self.dt_max)
         self.simulation.data['dt'] = dt
         self.simulation.data['time_tot'] += dt
 
@@ -338,35 +339,49 @@ class SaveSimulationData(LogicNode):
 
 # States
 
-def contains(simulation, vertices, state):
-    """Contains
-
-    Args:
-        simulation (MultiAgentSimulation):
-        vertices (numpy.ndarray): Vertices of a polygon
-        state (str):
-
-    Yields:
-        int: Number of states that changed
-    """
-    geom = Path(vertices)
-    old_state = simulation.agents.array[state]
-    while True:
-        position = simulation.agents.array['position']
-        new_state = geom.contains_points(position)
-        simulation.agents.array[state][:] = new_state
-        changed = old_state ^ new_state
-        old_state = new_state
-        yield np.sum(changed)
-
 
 class InsideDomain(LogicNode):
+    """Sets agents not inside the domain inactive."""
     def __init__(self, simulation):
         super().__init__(simulation)
-        # TODO: handle domain is None
-        self.gen = contains(simulation,
-                            np.asarray(self.simulation.field.domain.exterior),
-                            'active')
+        self.simulation.data['inactive'] = 0
+        field = self.simulation.field
+        self.domain_path = Path(np.asarray(field.domain.exterior))
 
     def update(self):
-        self.simulation.data['goal_reached'] += next(self.gen)
+        agents = self.simulation.agents.array
+        new_state = self.domain_path.contains_points(agents['position'])
+        change = agents['active'] ^ new_state
+        agents['active'] = new_state
+
+        self.simulation.data['inactive'] += np.sum(change)
+
+
+class TargetReached(LogicNode):
+    """Detects if agents reached any of the targets in the field and updates
+    count for that target.
+    """
+    prefix = 'target_{index}'
+
+    def __init__(self, simulation, *args, **kwargs):
+        super().__init__(simulation, *args, **kwargs)
+        size = len(self.simulation.agents.array)
+
+        self.names = []
+        self.paths = []
+        self.reached_by = []
+
+        # We can only measure polygon targets atm
+        for i, target in enumerate(self.simulation.field.targets):
+            if isinstance(target, Polygon):
+                name = self.prefix.format(i)
+                self.names.append(name)
+                self.paths.append(Path(np.asarray(target.exterior)))
+                self.reached_by.append(np.zeros(size, dtype=np.bool_))
+                self.simulation.data[name] = 0
+
+    def update(self):
+        # TODO: update target reached
+        for name, path, reached_by in zip(self.names, self.paths, self.reached_by):
+            reached_by |= path.contains_points(self.simulation.agents.array)
+            self.simulation.data[name] = np.sum(reached_by)

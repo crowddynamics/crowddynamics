@@ -264,13 +264,19 @@ class FourExitsField(Field):
                    LineString([Q, Z]),
                    LineString([B, V])]
 
+        # h1 = LineString([(J[0] - 2, J[1]), J]) | LineString([(C[0] - 2, C[1]), C])
+        # obstacles |= h1
+        #
+        # targets = [
+        #     h1.convex_hull,
+        # ]
+
         self.obstacles = obstacles
         self.targets = targets
 
-        spawn = self.convex_hull()
-        # domain = Polygon([(-5, -5), (-5, 85), (105, 85), (105, -5)])
+        spawn = obstacles.convex_hull
         self.spawns = [spawn]
-        self.domain = spawn
+        self.domain = self.convex_hull()
 
 
 class PillarInTheMiddle(Field):

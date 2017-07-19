@@ -46,7 +46,6 @@ class MultiAgentSimulation(SimulationBase):
         self.data['iterations'] = 0
         self.data['time_tot'] = 0.0
         self.data['dt'] = 0.0
-        self.data['goal_reached'] = 0
 
     # @log_with(timed=True, arguments=False)
     def update(self):
