@@ -30,4 +30,4 @@ scikit-fmm==0.0.9
 
 ## Vizualisation
 matplotlib==2.0.2
-bokeh==0.12.5
+bokeh==0.12.6
