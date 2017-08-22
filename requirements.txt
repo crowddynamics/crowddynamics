@@ -25,7 +25,7 @@ numpy==1.12.1
 numba==0.33.0
 scipy==0.19.0
 scikit-image==0.13.0
-shapely==1.5.17.post1
+shapely==1.6.0
 scikit-fmm==0.0.9
 
 ## Vizualisation
