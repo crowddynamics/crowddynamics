@@ -18,7 +18,7 @@ diskcache==2.4.1
 ## Command-line interface
 click==6.7
 colorama==0.3.9
-colorlog==2.10.0
+colorlog==3.1.0
 
 ## Core
 numpy==1.12.1
