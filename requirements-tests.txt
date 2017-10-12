@@ -15,7 +15,7 @@ codecov==2.0.9
 
 
 ## Profiling
-psutil
+psutil==5.4.0
 line-profiler==2.0
 memory-profiler==0.47
 objgraph==3.1.0
