@@ -20,6 +20,7 @@ where
 import numba
 import numpy as np
 from numba import f8, void, typeof
+from numba.types import boolean
 
 from crowddynamics.simulation.agents import agent_type_three_circle, \
     agent_type_circular, shoulders, is_model
@@ -161,35 +162,36 @@ def euler_integrator(agents, dt_min, dt_max):
     return dt
 
 
-@numba.jit([void(typeof(agent_type_circular)[:], f8),
-            void(typeof(agent_type_three_circle)[:], f8)],
+@numba.jit([void(typeof(agent_type_circular)[:], f8, boolean[:]),
+            void(typeof(agent_type_three_circle)[:], f8, boolean[:])],
            nopython=True, nogil=True, cache=True)
-def translational_verlet(agents, dt):
+def translational_verlet(agents, dt, mask):
     """Translational motion using velocity verlet method"""
-    for agent in agents:
+    for agent, m in zip(agents, mask):
+        if not m:
+            continue
         old_acceleration = agent['force_prev'] / agent['mass']
         new_acceleration = agent['force'] / agent['mass']
         agent['force_prev'][:] = agent['force']
-
         agent['velocity'][:] += (old_acceleration + new_acceleration) / 2 * dt
         agent['position'][:] += agent['velocity'] * dt + \
                                 new_acceleration / 2 * dt ** 2
 
 
-@numba.jit(void(typeof(agent_type_three_circle)[:], f8),
+@numba.jit(void(typeof(agent_type_three_circle)[:], f8, boolean[:]),
            nopython=True, nogil=True, cache=True)
-def rotational_verlet(agents, dt):
+def rotational_verlet(agents, dt, mask):
     """Rotational motion using velocity verlet method"""
-    for agent in agents:
+    for agent, m in zip(agents, mask):
+        if not m:
+            continue
         old_angular_acceleration = agent['torque_prev'] / agent['inertia_rot']
         new_angular_acceleration = agent['torque'] / agent['inertia_rot']
         agent['torque_prev'] = agent['torque']
-
         agent['angular_velocity'] += (old_angular_acceleration +
                                       new_angular_acceleration) / 2 * dt
         agent['orientation'] += agent['angular_velocity'] * dt + \
                                 new_angular_acceleration / 2 * dt ** 2
-
         agent['orientation'] = wrap_to_pi(agent['orientation'])
 
 
@@ -206,7 +208,7 @@ def velocity_verlet_integrator_init(agents, dt_min, dt_max):
     return dt
 
 
-def velocity_verlet_integrator(agents, dt_min, dt_max):
+def velocity_verlet_integrator(agents, dt_min, dt_max, mask):
     r"""Velocity verlet integrator algorithm
 
     Translational motion
@@ -249,8 +251,8 @@ def velocity_verlet_integrator(agents, dt_min, dt_max):
         - https://en.wikipedia.org/wiki/Verlet_integration#Velocity_Verlet
     """
     dt = adaptive_timestep(agents, dt_min, dt_max)
-    translational_verlet(agents, dt)
+    translational_verlet(agents, dt, mask)
     if is_model(agents, 'three_circle'):
-        rotational_verlet(agents, dt)
-        shoulders(agents)
+        rotational_verlet(agents, dt, mask)
+        shoulders(agents, mask)
     return dt

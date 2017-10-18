@@ -2,8 +2,8 @@ import os
 from collections import Callable
 
 import numpy as np
-from loggingtools.log_with import log_with
 from matplotlib.path import Path
+from shapely.geometry.point import Point
 from shapely.geometry.polygon import Polygon
 from traitlets.traitlets import Float, Instance, Unicode, default, \
     Int
@@ -22,7 +22,6 @@ from crowddynamics.core.steering.collective_motion import \
 from crowddynamics.core.steering.navigation import getdefault
 from crowddynamics.core.steering.orientation import \
     orient_towards_target_direction
-from crowddynamics.core.structures import obstacle_type_linear
 from crowddynamics.io import save_npy, save_csv, save_geometry_json
 from crowddynamics.simulation.agents import is_model
 from crowddynamics.simulation.base import LogicNodeBase
@@ -70,7 +69,8 @@ class Integrator(LogicNode):
 
     def update(self):
         agents = self.simulation.agents.array
-        dt = velocity_verlet_integrator(agents, self.dt_min, self.dt_max)
+        mask = agents['active']
+        dt = velocity_verlet_integrator(agents, self.dt_min, self.dt_max, mask)
         self.simulation.data['dt'] = dt
         self.simulation.data['time_tot'] += dt
 
@@ -78,20 +78,21 @@ class Integrator(LogicNode):
 class Fluctuation(LogicNode):
     def update(self):
         agents = self.simulation.agents.array
-        force = force_fluctuation(agents['mass'], agents['std_rand_force'])
-        agents['force'] += force
+        mask = agents['active']
+        agents['force'][mask] += force_fluctuation(
+            agents['mass'][mask], agents['std_rand_force'][mask])
         if is_model(agents, 'three_circle'):
-            torque = torque_fluctuation(agents['inertia_rot'],
-                                        agents['std_rand_torque'])
-            agents['torque'] += torque
+            agents['torque'][mask] += torque_fluctuation(
+                agents['inertia_rot'][mask], agents['std_rand_torque'][mask])
 
 
 class Adjusting(LogicNode):
     def update(self):
         agents = self.simulation.agents.array
-        force_adjust_agents(agents)
+        mask = agents['active']
+        force_adjust_agents(agents, mask)
         if is_model(agents, 'three_circle'):
-            torque_adjust_agents(agents)
+            torque_adjust_agents(agents, mask)
 
 
 class AgentAgentInteractions(LogicNode):
@@ -116,22 +117,22 @@ class AgentAgentInteractions(LogicNode):
         return self.sight_soc + 2 * self.max_agent_radius
 
     def update(self):
-        agent_agent_block_list(self.simulation.agents.array, self.cell_size)
+        agents = self.simulation.agents.array
+        mask = agents['active']
+        agent_agent_block_list(agents, self.cell_size, mask)
 
 
 class AgentObstacleInteractions(LogicNode):
     def update(self):
         agents = self.simulation.agents.array
-        if self.simulation.field.obstacles is None:
-            obstacles = np.zeros(shape=0, dtype=obstacle_type_linear)
-        else:
-            obstacles = geom_to_linear_obstacles(
-                self.simulation.field.obstacles)
-        agent_obstacle(agents, obstacles)
+        mask = agents['active']
+        obstacles = geom_to_linear_obstacles(self.simulation.field.obstacles)
+        agent_obstacle(agents, obstacles, mask)
 
 
 # Steering
 
+# TODO: add mask
 class Navigation(LogicNode):
     step = Float(
         default_value=0.1,
@@ -165,6 +166,7 @@ class Navigation(LogicNode):
             agents['target_direction'][has_target] = new_direction
 
 
+# TODO: add mask
 class LeaderFollower(LogicNode):
     sight = Float(
         default_value=20.0,
@@ -234,6 +236,7 @@ class LeaderFollowerWithHerding(LogicNode):
         #     agents['target_direction'][is_follower] = direction
 
 
+# TODO: add mask
 class ExitDetection(LogicNode):
     """Herding agents can detect an exit that is within exit detection range"""
     detection_range = Float(
@@ -362,26 +365,32 @@ class TargetReached(LogicNode):
     count for that target.
     """
     prefix = 'target_{index}'
+    epsilon = Float(
+        0.02,
+        min=0,
+        help='Consider target reached when we are closer than this value')
 
     def __init__(self, simulation, *args, **kwargs):
         super().__init__(simulation, *args, **kwargs)
-        size = len(self.simulation.agents.array)
-
         self.names = []
-        self.paths = []
-        self.reached_by = []
-
-        # We can only measure polygon targets atm
-        for i, target in enumerate(self.simulation.field.targets):
-            if isinstance(target, Polygon):
-                name = self.prefix.format(i)
-                self.names.append(name)
-                self.paths.append(Path(np.asarray(target.exterior)))
-                self.reached_by.append(np.zeros(size, dtype=np.bool_))
-                self.simulation.data[name] = 0
+        targets = self.simulation.field.targets
+        for index, target in enumerate(targets):
+            name = self.prefix.format(index=index)
+            self.names.append(name)
+            self.simulation.data[name] = 0
 
     def update(self):
-        # TODO: update target reached
-        for name, path, reached_by in zip(self.names, self.paths, self.reached_by):
-            reached_by |= path.contains_points(self.simulation.agents.array)
-            self.simulation.data[name] = np.sum(reached_by)
+        targets = self.simulation.field.targets
+        agents = self.simulation.agents.array
+        mask = agents['active'] & ~agents['target_reached']
+
+        for i in range(len(agents)):
+            if not mask[i]:
+                continue
+            x, y = agents[i]['position']
+            point = Point(x, y)
+            for target, name in zip(targets, self.names):
+                if point.distance(target) < self.epsilon:
+                    self.simulation.data[name] += 1
+                    # agents['target_reached'][i] = True
+                    agents['active'][i] = False

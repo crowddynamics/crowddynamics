@@ -29,6 +29,7 @@ import numba
 import numpy as np
 from cell_lists import add_to_cells, neighboring_cells, iter_nearest_neighbors
 from numba import void, i8, typeof
+from numba.types import boolean
 
 from crowddynamics.core.distance import distance_circles, \
     distance_circle_line, distance_three_circle_line, distance_three_circles
@@ -145,70 +146,80 @@ def interaction_agent_three_circle_obstacle(i, w, agents, obstacles):
 
 
 @numba.jit(void(typeof(agent_type_circular)[:],
-                i8[:], i8[:], i8[:], i8[:], i8[:]),
+                i8[:], i8[:], i8[:], i8[:], i8[:], boolean[:]),
            nopython=True, nogil=True, cache=True)
 def agent_agent_circular(agents, cell_indices, neigh_cells, points_indices,
-                         cells_count, cells_offset):
+                         cells_count, cells_offset, mask):
     for i, j in iter_nearest_neighbors(
             cell_indices, neigh_cells, points_indices, cells_count,
             cells_offset):
+        if not mask[i] or not mask[j]:
+            continue
         interaction_agent_agent_circular(i, j, agents)
 
 
 @numba.jit(void(typeof(agent_type_three_circle)[:],
-                i8[:], i8[:], i8[:], i8[:], i8[:]),
+                i8[:], i8[:], i8[:], i8[:], i8[:], boolean[:]),
            nopython=True, nogil=True, cache=True)
 def agent_agent_three_circle(agents, cell_indices, neigh_cells, points_indices,
-                             cells_count, cells_offset):
+                             cells_count, cells_offset, mask):
     for i, j in iter_nearest_neighbors(
             cell_indices, neigh_cells, points_indices, cells_count,
             cells_offset):
+        if not mask[i] or not mask[j]:
+            continue
         interaction_agent_agent_three_circle(i, j, agents)
 
 
 @numba.jit(void(typeof(agent_type_circular)[:],
-                typeof(obstacle_type_linear)[:]),
+                typeof(obstacle_type_linear)[:], boolean[:]),
            nopython=True, nogil=True, cache=True)
-def agent_circular_obstacle(agents, obstacles):
+def agent_circular_obstacle(agents, obstacles, mask):
     """Agent obstacle"""
     for i in range(len(agents)):
+        if not mask[i]:
+            continue
         for w in range(len(obstacles)):
             interaction_agent_circular_obstacle(i, w, agents, obstacles)
 
 
 @numba.jit(void(typeof(agent_type_three_circle)[:],
-                typeof(obstacle_type_linear)[:]),
+                typeof(obstacle_type_linear)[:], boolean[:]),
            nopython=True, nogil=True, cache=True)
-def agent_three_circle_obstacle(agents, obstacles):
+def agent_three_circle_obstacle(agents, obstacles, mask):
     """Agent obstacle"""
     for i in range(len(agents)):
+        if not mask[i]:
+            continue
         for w in range(len(obstacles)):
             interaction_agent_three_circle_obstacle(i, w, agents, obstacles)
 
 
 # Higher level API
 
-def agent_agent_block_list(agents, cell_size):
+def agent_agent_block_list(agents, cell_size, mask):
+    position = agents['position']
     points_indices, cells_count, cells_offset, grid_shape = add_to_cells(
-        agents['position'], cell_size)
+        position, cell_size)
+
     cell_indices = np.arange(len(cells_count))
     neigh_cells = neighboring_cells(grid_shape)
 
     if is_model(agents, 'circular'):
         agent_agent_circular(agents, cell_indices, neigh_cells, points_indices,
-                             cells_count, cells_offset)
+                             cells_count, cells_offset, mask)
     elif is_model(agents, 'three_circle'):
         agent_agent_three_circle(agents, cell_indices, neigh_cells,
-                                 points_indices,
-                                 cells_count, cells_offset)
+                                 points_indices, cells_count, cells_offset,
+                                 mask)
     else:
         raise InvalidType
 
 
-def agent_obstacle(agents, obstacles):
+def agent_obstacle(agents, obstacles, mask):
     if is_model(agents, 'circular'):
-        agent_circular_obstacle(agents, obstacles)
+        agent_circular_obstacle(agents, obstacles, mask)
     elif is_model(agents, 'three_circle'):
-        agent_three_circle_obstacle(agents, obstacles)
+        agent_three_circle_obstacle(agents, obstacles, mask)
     else:
         raise InvalidType

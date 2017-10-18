@@ -470,16 +470,18 @@ def is_model(agents, model):
     return hash(agents.dtype) == hash(AgentModelToType[model])
 
 
-@numba.jit(void(typeof(agent_type_three_circle)[:]),
+@numba.jit(void(typeof(agent_type_three_circle)[:], boolean[:]),
            nopython=True, nogil=True, cache=True)
-def shoulders(agents):
+def shoulders(agents, mask):
     """Positions of the center of mass, left- and right shoulders.
 
     Args:
         agents (ndarray):
             Numpy array of datatype ``dtype=agent_type_three_circle``.
     """
-    for agent in agents:
+    for agent, m in zip(agents, mask):
+        if not m:
+            continue
         tangent = rotate270(unit_vector(agent['orientation']))
         offset = tangent * agent['r_ts']
         agent['position_ls'][:] = agent['position'] - offset

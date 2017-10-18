@@ -11,7 +11,7 @@ from crowddynamics.simulation.logic import Reset, InsideDomain, Integrator, \
     Fluctuation, Adjusting, Navigation, ExitDetection, \
     LeaderFollowerWithHerding, \
     Orientation, AgentAgentInteractions, AgentObstacleInteractions, \
-    LeaderFollower
+    LeaderFollower, TargetReached
 from crowddynamics.simulation.multiagent import MultiAgentSimulation
 
 
@@ -500,7 +500,7 @@ class FourExitsFixedPlacing(MultiAgentSimulation):
     @default('logic')
     def _default_logic(self):
         return Reset(self) << \
-            InsideDomain(self) << (
+            InsideDomain(self) << TargetReached(self) << (
                 Integrator(self) << (
                     Fluctuation(self),
                     Adjusting(self) << (

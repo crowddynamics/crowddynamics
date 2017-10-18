@@ -1,12 +1,13 @@
 """
 Adjusting
 ---------
-Adjusting motion account for agents desire to move and rotate towards their 
+Adjusting motion account for agents desire to move and rotate towards their
 desired goal.
 """
 import numba
 import numpy as np
 from numba import f8, void, typeof
+from numba.types import boolean
 
 from crowddynamics.simulation.agents import agent_type_circular, \
     agent_type_three_circle
@@ -85,7 +86,7 @@ def torque_adjust(inertia_rot, tau_rot, phi_0, phi, omega_0, omega):
         omega_0 (float):
             Maximum angular velocity :math:`\omega_{0}`.
 
-        omega (float): 
+        omega (float):
             Angular velocity :math:`\omega`
 
     Returns:
@@ -95,12 +96,14 @@ def torque_adjust(inertia_rot, tau_rot, phi_0, phi, omega_0, omega):
            (wrap_to_pi(phi_0 - phi) / np.pi * omega_0 - omega)
 
 
-@numba.jit([void(typeof(agent_type_circular)[:]),
-            void(typeof(agent_type_three_circle)[:])],
+@numba.jit([void(typeof(agent_type_circular)[:], boolean[:]),
+            void(typeof(agent_type_three_circle)[:], boolean[:])],
            nopython=True, nogil=True, cache=True)
-def force_adjust_agents(agents):
+def force_adjust_agents(agents, mask):
     """Apply adjusting force to agents"""
-    for agent in agents:
+    for agent, m in zip(agents, mask):
+        if not m:
+            continue
         agent['force'][:] += force_adjust(agent['mass'],
                                           agent['tau_adj'],
                                           agent['target_velocity'],
@@ -108,11 +111,13 @@ def force_adjust_agents(agents):
                                           agent['velocity'])
 
 
-@numba.jit(void(typeof(agent_type_three_circle)[:]),
+@numba.jit(void(typeof(agent_type_three_circle)[:], boolean[:]),
            nopython=True, nogil=True, cache=True)
-def torque_adjust_agents(agents):
+def torque_adjust_agents(agents, mask):
     """Apply adjusting torque to agents"""
-    for agent in agents:
+    for agent, m in zip(agents, mask):
+        if not m:
+            continue
         agent['torque'] += torque_adjust(agent['inertia_rot'],
                                          agent['tau_rot'],
                                          agent['target_orientation'],
