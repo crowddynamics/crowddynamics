@@ -14,11 +14,11 @@ setup(
     cmdclass=versioneer.get_cmdclass(),
     description='Python package for simulating, visualizing and analysing '
                 'movement of human crowds.',
-    long_description=readfile('README.rst'),
+    long_description=readfile('README.md'),
     author='Jaan Tollander de Balsch',
     author_email='de.tollander@aalto.fi',
     url='https://github.com/jaantollander/crowddynamics',
-    license=readfile('LICENSE.txt'),
+    license=readfile('LICENSE'),
     packages=find_packages(),
     entry_points={
         'console_scripts': [
@@ -42,12 +42,9 @@ setup(
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
         'Intended Audience :: Developers',
-        'License :: OSI Approved :: GNU General Public License v3 (GPLv3)'
+        'License :: OSI Approved :: MIT'
         'Natural Language :: English',
         'Programming Language :: Python :: 3 :: Only',
-        'Programming Language :: Python :: 3.3',
-        'Programming Language :: Python :: 3.4',
-        'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
     ],
 )

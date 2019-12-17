@@ -1,10 +1,9 @@
 # Install env with command:
 # conda env create -f environment.yml
 
-name: crowd36-qtgui
+name: crowd36
 channels:
     - conda-forge
-#    - intel
 dependencies:
     - python=3.6
     - numpy
