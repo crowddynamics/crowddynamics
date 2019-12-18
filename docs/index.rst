@@ -8,13 +8,13 @@ Crowd Dynamics
    :caption: Crowddynamics
    :maxdepth: 1
 
-   crowddynamics/architecture.rst
-   crowddynamics/multiagent.rst
-   crowddynamics/interactions.rst
-   crowddynamics/motion.rst
-   crowddynamics/steering.rst
-   crowddynamics/quantities.rst
-   crowddynamics/evacuation.rst
+   architecture.rst
+   multiagent.rst
+   interactions.rst
+   motion.rst
+   steering.rst
+   quantities.rst
+   evacuation.rst
 
 
 .. toctree::

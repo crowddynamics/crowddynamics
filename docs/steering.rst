@@ -21,7 +21,7 @@ Steering
 .. automodule:: crowddynamics.core.steering.navigation
    :noindex:
 
-.. figure:: ../figures/vector_field.png
+.. figure:: figures/vector_field.png
    :target: _images/vector_field.png
    :alt: Vector Field
 
