@@ -5,16 +5,6 @@ Crowd Dynamics
 
 
 .. toctree::
-   :caption: General
-   :maxdepth: 1
-
-   general/installation.rst
-   general/usage.rst
-   general/developing.rst
-   general/resources.rst
-
-
-.. toctree::
    :caption: Crowddynamics
    :maxdepth: 1
 
@@ -25,13 +15,6 @@ Crowd Dynamics
    crowddynamics/steering.rst
    crowddynamics/quantities.rst
    crowddynamics/evacuation.rst
-
-
-.. toctree::
-   :caption: Research
-   :maxdepth: 1
-
-   phenomena.rst
 
 
 .. toctree::
