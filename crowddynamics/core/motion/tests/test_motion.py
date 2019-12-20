@@ -5,8 +5,6 @@ from crowddynamics.core.motion.adjusting import force_adjust, torque_adjust
 from crowddynamics.core.motion.contact import force_contact
 from crowddynamics.core.motion.fluctuation import force_fluctuation, \
     torque_fluctuation
-from crowddynamics.core.motion.helbing import \
-    force_social_helbing
 from crowddynamics.testing import reals
 
 SIZE = 10
@@ -28,17 +26,6 @@ def test_force_fluctuation(mass, scale):
        v=reals(shape=2))
 def test_force_adjust(mass, tau_adj, v0, e0, v):
     ans = force_adjust(mass, tau_adj, v0, e0, v)
-    assert isinstance(ans, np.ndarray)
-    assert ans.dtype.type is np.float64
-    assert ans.shape == (2,)
-
-
-@given(h=reals(),
-       n=reals(shape=2),
-       a=reals(min_value=0),
-       b=reals(min_value=0, exclude_zero='near'))
-def test_force_social_helbing(h, n, a, b):
-    ans = force_social_helbing(h, n, a, b)
     assert isinstance(ans, np.ndarray)
     assert ans.dtype.type is np.float64
     assert ans.shape == (2,)
