@@ -2,7 +2,7 @@
 from collections import OrderedDict, Callable
 from datetime import datetime
 
-from anytree.node import NodeMixin, PreOrderIter
+from anytree import PreOrderIter, NodeMixin
 from dateutil.tz.tz import tzutc
 from traitlets.traitlets import HasTraits, Unicode, default, Instance
 
