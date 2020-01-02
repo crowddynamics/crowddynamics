@@ -28,8 +28,8 @@ git clone https://github.com/jaantollander/crowddynamics-qtgui.git
 Inside `crowddynamics-qtgui` directory, install the requirements and install `crowddynamics-qtgui` as editable. We must install `pyqt` version 4 using Conda from the `conda-force` channel for it to work correctly. Be sure that you activate the environment where you installed `crowddynamics`.  
 ```bash
 conda activate crowd36
+conda install pyqt=4 -c conda-forge
 pip install -r requirements.txt
-conda install pyqt=4 -c conda-force
 pip install --editable .
 ```
 
