@@ -1,4 +1,4 @@
-setuptools==35.0.2
+setuptools==65.5.1
 
 ## Static Type Checking
 mypy
